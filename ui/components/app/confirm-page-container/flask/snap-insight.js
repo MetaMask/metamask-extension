@@ -17,7 +17,7 @@ import SnapContentFooter from '../../flask/snap-content-footer/snap-content-foot
 import Box from '../../../ui/box/box';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 
-export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
+export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
   const t = useI18nContext();
   const {
     data: response,
@@ -26,6 +26,7 @@ export const SnapInsight = ({ transaction, chainId, selectedSnap }) => {
   } = useTransactionInsightSnap({
     transaction,
     chainId,
+    origin,
     snapId: selectedSnap.id,
   });
 
@@ -146,6 +147,10 @@ SnapInsight.propTypes = {
    * CAIP2 Chain ID
    */
   chainId: PropTypes.string,
+  /*
+   *  The origin of the transaction
+   */
+  origin: PropTypes.string,
   /*
    * The insight snap selected
    */

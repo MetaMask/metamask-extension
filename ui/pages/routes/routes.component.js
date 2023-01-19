@@ -115,6 +115,7 @@ export default class Routes extends Component {
     portfolioTooltipIsBeingShown: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
+    completedOnboarding: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -173,9 +174,7 @@ export default class Routes extends Component {
 
     const routes = (
       <Switch>
-        {process.env.ONBOARDING_V2 && (
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-        )}
+        <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
         <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
@@ -306,7 +305,7 @@ export default class Routes extends Component {
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
-        path: process.env.ONBOARDING_V2 ? ONBOARDING_ROUTE : INITIALIZE_ROUTE,
+        path: ONBOARDING_ROUTE,
         exact: false,
       }),
     );
@@ -379,6 +378,7 @@ export default class Routes extends Component {
       shouldShowSeedPhraseReminder,
       portfolioTooltipIsBeingShown,
       isCurrentProviderCustom,
+      completedOnboarding,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -391,6 +391,7 @@ export default class Routes extends Component {
       !isTestNet &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
+      completedOnboarding &&
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
@@ -433,10 +434,8 @@ export default class Routes extends Component {
             }
           />
         )}
-        {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
-          <OnboardingAppHeader />
-        )}
-        <NetworkDropdown />
+        {this.showOnboardingHeader() && <OnboardingAppHeader />}
+        {completedOnboarding ? <NetworkDropdown /> : null}
         <AccountMenu />
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

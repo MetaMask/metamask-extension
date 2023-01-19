@@ -37,6 +37,7 @@ import {
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
   getFullTxData,
+  getUseCurrencyRateCheck,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getInsightSnaps,
   ///: END:ONLY_INCLUDE_IN
@@ -97,7 +98,7 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     nextNonce,
-    allCollectibleContracts,
+    allNftContracts,
     selectedAddress,
     provider: { chainId },
   } = metamask;
@@ -175,7 +176,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
+    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
   );
@@ -221,7 +222,6 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
     unapprovedTxs,
     unapprovedTxCount,
-    currentNetworkUnapprovedTxs,
     customGas: {
       gasLimit,
       gasPrice,
@@ -255,6 +255,7 @@ const mapStateToProps = (state, ownProps) => {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     insightSnaps,
     ///: END:ONLY_INCLUDE_IN
+    useCurrencyRateCheck: getUseCurrencyRateCheck(state),
   };
 };
 

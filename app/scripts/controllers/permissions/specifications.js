@@ -1,6 +1,9 @@
-import { constructPermission, PermissionType } from '@metamask/controllers';
+import {
+  constructPermission,
+  PermissionType,
+} from '@metamask/permission-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snap-controllers';
+import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snaps-controllers';
 import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -11,7 +14,7 @@ import {
 /**
  * This file contains the specifications of the permissions and caveats
  * that are recognized by our permission system. See the PermissionController
- * README in @metamask/snap-controllers for details.
+ * README in @metamask/controllers for details.
  */
 
 /**

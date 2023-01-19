@@ -4,6 +4,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
 import Typography from '../typography';
+import { ButtonLink } from '../../component-library';
 import {
   ALIGN_ITEMS,
   COLORS,
@@ -14,6 +15,7 @@ import {
   TEXT_ALIGN,
   SIZES,
 } from '../../../helpers/constants/design-system';
+import { conversionGreaterThan } from '../../../../shared/modules/conversion.utils';
 
 export default function ReviewSpendingCap({
   tokenName,
@@ -22,6 +24,10 @@ export default function ReviewSpendingCap({
   onEdit,
 }) {
   const t = useContext(I18nContext);
+  const valueIsGreaterThanBalance = conversionGreaterThan(
+    { value: Number(tokenValue), fromNumericBase: 'dec' },
+    { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+  );
 
   return (
     <Box
@@ -64,7 +70,7 @@ export default function ReviewSpendingCap({
                   color={COLORS.TEXT_ALTERNATIVE}
                   className="review-spending-cap__heading-title__tooltip"
                 >
-                  {tokenValue > currentTokenBalance &&
+                  {valueIsGreaterThanBalance &&
                     t('warningTooltipText', [
                       <Typography
                         key="tooltip-text"
@@ -76,14 +82,15 @@ export default function ReviewSpendingCap({
                         {t('beCareful')}
                       </Typography>,
                     ])}
-                  {tokenValue === 0 && t('revokeSpendingCapTooltipText')}
+                  {Number(tokenValue) === 0 &&
+                    t('revokeSpendingCapTooltipText')}
                 </Typography>
               }
             >
-              {tokenValue > currentTokenBalance && (
+              {valueIsGreaterThanBalance && (
                 <i className="fa fa-exclamation-triangle review-spending-cap__heading-title__tooltip__warning-icon" />
               )}
-              {tokenValue === 0 && (
+              {Number(tokenValue) === 0 && (
                 <i className="far fa-question-circle review-spending-cap__heading-title__tooltip__question-icon" />
               )}
             </Tooltip>
@@ -93,23 +100,22 @@ export default function ReviewSpendingCap({
           className="review-spending-cap__heading-detail"
           textAlign={TEXT_ALIGN.END}
         >
-          <button
-            className="review-spending-cap__heading-detail__button"
-            type="link"
+          <ButtonLink
+            size={SIZES.AUTO}
             onClick={(e) => {
               e.preventDefault();
               onEdit();
             }}
           >
             {t('edit')}
-          </button>
+          </ButtonLink>
         </Box>
       </Box>
-      <Box>
+      <Box className="review-spending-cap__value">
         <Typography
           as={TYPOGRAPHY.H6}
           color={
-            tokenValue > currentTokenBalance
+            valueIsGreaterThanBalance
               ? COLORS.ERROR_DEFAULT
               : COLORS.TEXT_DEFAULT
           }
@@ -125,7 +131,7 @@ export default function ReviewSpendingCap({
 
 ReviewSpendingCap.propTypes = {
   tokenName: PropTypes.string,
-  currentTokenBalance: PropTypes.number,
-  tokenValue: PropTypes.number,
+  currentTokenBalance: PropTypes.string,
+  tokenValue: PropTypes.string,
   onEdit: PropTypes.func,
 };

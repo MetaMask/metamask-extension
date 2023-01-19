@@ -816,9 +816,6 @@
   "sign": {
     "message": "Potpišite"
   },
-  "signNotice": {
-    "message": "Potpisivanje ove poruke može imati \nopasne neželjene efekte. Potpisujte samo poruke sa \nsajtova u koje imate potpuno poverenje u pogledu svog naloga.\n Ovaj opasan metod će biti uklonjen u budućoj verziji."
-  },
   "signatureRequest": {
     "message": "Zahtev za potpis"
   },

@@ -32,6 +32,7 @@ import {
   ERC721,
 } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -82,6 +83,7 @@ export default class ConfirmApproveContent extends Component {
   state = {
     showFullTxDetails: false,
     copied: false,
+    setshowContractDetails: false,
   };
 
   renderApproveContentCard({
@@ -448,25 +450,17 @@ export default class ConfirmApproveContent extends Component {
     );
   }
 
-  getTitleTokenDescription() {
+  getTokenName() {
     const {
       tokenId,
       assetName,
-      tokenAddress,
-      rpcPrefs,
-      chainId,
       assetStandard,
       tokenSymbol,
       isSetApproveForAll,
-      userAddress,
     } = this.props;
     const { t } = this.context;
-    const useBlockExplorer =
-      rpcPrefs?.blockExplorerUrl ||
-      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
 
     let titleTokenDescription = t('token');
-    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
     if (
       assetStandard === ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
@@ -484,33 +478,46 @@ export default class ConfirmApproveContent extends Component {
       } else {
         titleTokenDescription = t('nft');
       }
+    }
 
-      if (useBlockExplorer) {
-        const blockExplorerLink = getTokenTrackerLink(
-          tokenAddress,
-          chainId,
-          null,
-          userAddress,
-          {
-            blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-          },
-        );
-        const blockExplorerElement = (
-          <>
-            <a
-              href={blockExplorerLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={tokenAddress}
-              className="confirm-approve-content__approval-asset-link"
-            >
-              {titleTokenDescription}
-            </a>
-            {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
-          </>
-        );
-        return blockExplorerElement;
-      }
+    return titleTokenDescription;
+  }
+
+  getTitleTokenDescription() {
+    const { tokenId, tokenAddress, rpcPrefs, chainId, userAddress } =
+      this.props;
+    const useBlockExplorer =
+      rpcPrefs?.blockExplorerUrl ||
+      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
+
+    const titleTokenDescription = this.getTokenName();
+    const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
+
+    if (useBlockExplorer) {
+      const blockExplorerLink = getTokenTrackerLink(
+        tokenAddress,
+        chainId,
+        null,
+        userAddress,
+        {
+          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+        },
+      );
+      const blockExplorerElement = (
+        <>
+          <a
+            href={blockExplorerLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={tokenAddress}
+            className="confirm-approve-content__approval-asset-link"
+          >
+            {titleTokenDescription}
+          </a>
+          {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
+        </>
+      );
+      return blockExplorerElement;
     }
 
     return (
@@ -531,7 +538,14 @@ export default class ConfirmApproveContent extends Component {
 
   renderTitle() {
     const { t } = this.context;
-    const { isSetApproveForAll, isApprovalOrRejection } = this.props;
+    const {
+      assetName,
+      tokenId,
+      tokenSymbol,
+      assetStandard,
+      isSetApproveForAll,
+      isApprovalOrRejection,
+    } = this.props;
     const titleTokenDescription = this.getTitleTokenDescription();
 
     let title;
@@ -541,14 +555,29 @@ export default class ConfirmApproveContent extends Component {
       if (isApprovalOrRejection === false) {
         title = t('revokeAllTokensTitle', [titleTokenDescription]);
       }
+    } else if (
+      assetStandard === ERC721 ||
+      assetStandard === ERC1155 ||
+      // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
+      (assetName && tokenId) ||
+      (tokenSymbol && tokenId)
+    ) {
+      title = t('approveTokenTitle', [titleTokenDescription]);
     }
     return title || t('allowSpendToken', [titleTokenDescription]);
   }
 
   renderDescription() {
     const { t } = this.context;
-    const { isContract, isSetApproveForAll, isApprovalOrRejection } =
-      this.props;
+    const {
+      assetStandard,
+      assetName,
+      tokenId,
+      tokenSymbol,
+      isContract,
+      isSetApproveForAll,
+      isApprovalOrRejection,
+    } = this.props;
     const grantee = isContract
       ? t('contract').toLowerCase()
       : t('account').toLowerCase();
@@ -560,8 +589,16 @@ export default class ConfirmApproveContent extends Component {
         grantee,
         this.getTitleTokenDescription(),
       ]);
+    } else if (
+      isSetApproveForAll ||
+      assetStandard === ERC721 ||
+      assetStandard === ERC1155 ||
+      // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
+      (assetName && tokenId) ||
+      (tokenSymbol && tokenId)
+    ) {
+      description = t('approveTokenDescription');
     }
-
     return description;
   }
 
@@ -588,8 +625,12 @@ export default class ConfirmApproveContent extends Component {
       isContract,
       assetStandard,
       userAddress,
+      tokenId,
+      tokenAddress,
+      assetName,
+      isSetApproveForAll,
     } = this.props;
-    const { showFullTxDetails } = this.state;
+    const { showFullTxDetails, setshowContractDetails } = this.state;
 
     return (
       <div
@@ -632,72 +673,104 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__description">
           {this.renderDescription()}
         </div>
-        <Box className="confirm-approve-content__address-display-content">
-          <Box display={DISPLAY.FLEX}>
-            <Identicon
-              className="confirm-approve-content__address-identicon"
-              diameter={20}
-              address={toAddress}
-            />
-            <Typography
-              variant={TYPOGRAPHY.H6}
-              fontWeight={FONT_WEIGHT.NORMAL}
-              color={COLORS.TEXT_ALTERNATIVE}
-              boxProps={{ marginBottom: 0 }}
-            >
-              {ellipsify(toAddress)}
-            </Typography>
-            <Button
-              type="link"
-              className="confirm-approve-content__copy-address"
-              onClick={() => {
-                this.setState({ copied: true });
-                this.copyTimeout = setTimeout(
-                  () => this.setState({ copied: false }),
-                  SECOND * 3,
-                );
-                copyToClipboard(toAddress);
-              }}
-              title={
-                this.state.copied
-                  ? t('copiedExclamation')
-                  : t('copyToClipboard')
-              }
-            >
-              <CopyIcon size={9} color="var(--color-icon-default)" />
-            </Button>
-            <Button
-              type="link"
-              className="confirm-approve-content__etherscan-link"
-              onClick={() => {
-                const blockExplorerTokenLink = isContract
-                  ? getTokenTrackerLink(toAddress, chainId, null, userAddress, {
-                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                    })
-                  : getAccountLink(
-                      toAddress,
-                      chainId,
-                      {
-                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                      },
-                      null,
-                    );
-                global.platform.openTab({
-                  url: blockExplorerTokenLink,
-                });
-              }}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={t('etherscanView')}
-            >
-              <i
-                className="fa fa-share-square fa-sm"
-                style={{ color: 'var(--color-icon-default)', fontSize: 11 }}
-                title={t('etherscanView')}
+        {assetStandard === ERC20 ||
+        (tokenSymbol && !tokenId && !isSetApproveForAll) ? (
+          <Box className="confirm-approve-content__address-display-content">
+            <Box display={DISPLAY.FLEX}>
+              <Identicon
+                className="confirm-approve-content__address-identicon"
+                diameter={20}
+                address={toAddress}
               />
-            </Button>
+              <Typography
+                variant={TYPOGRAPHY.H6}
+                fontWeight={FONT_WEIGHT.NORMAL}
+                color={COLORS.TEXT_ALTERNATIVE}
+                boxProps={{ marginBottom: 0 }}
+              >
+                {ellipsify(toAddress)}
+              </Typography>
+              <Button
+                type="link"
+                className="confirm-approve-content__copy-address"
+                onClick={() => {
+                  this.setState({ copied: true });
+                  this.copyTimeout = setTimeout(
+                    () => this.setState({ copied: false }),
+                    SECOND * 3,
+                  );
+                  copyToClipboard(toAddress);
+                }}
+                title={
+                  this.state.copied
+                    ? t('copiedExclamation')
+                    : t('copyToClipboard')
+                }
+              >
+                <CopyIcon size={9} color="var(--color-icon-default)" />
+              </Button>
+              <Button
+                type="link"
+                className="confirm-approve-content__etherscan-link"
+                onClick={() => {
+                  const blockExplorerTokenLink = isContract
+                    ? getTokenTrackerLink(
+                        toAddress,
+                        chainId,
+                        null,
+                        userAddress,
+                        {
+                          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                        },
+                      )
+                    : getAccountLink(
+                        toAddress,
+                        chainId,
+                        {
+                          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                        },
+                        null,
+                      );
+                  global.platform.openTab({
+                    url: blockExplorerTokenLink,
+                  });
+                }}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={t('etherscanView')}
+              >
+                <i
+                  className="fa fa-share-square fa-sm"
+                  style={{ color: 'var(--color-icon-default)', fontSize: 11 }}
+                  title={t('etherscanView')}
+                />
+              </Button>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <Box marginBottom={4} marginTop={2}>
+            <Button
+              type="link"
+              className="confirm-approve-content__verify-contract-details"
+              onClick={() => this.setState({ setshowContractDetails: true })}
+            >
+              {t('verifyContractDetails')}
+            </Button>
+            {setshowContractDetails && (
+              <ContractDetailsModal
+                onClose={() => this.setState({ setshowContractDetails: false })}
+                tokenName={tokenSymbol}
+                tokenAddress={tokenAddress}
+                toAddress={toAddress}
+                chainId={chainId}
+                rpcPrefs={rpcPrefs}
+                tokenId={tokenId}
+                assetName={assetName}
+                assetStandard={assetStandard}
+              />
+            )}
+          </Box>
+        )}
         {assetStandard === ERC20 ? (
           <div className="confirm-approve-content__edit-submission-button-container">
             <div

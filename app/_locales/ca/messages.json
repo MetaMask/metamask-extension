@@ -803,9 +803,6 @@
   "sign": {
     "message": "Signar"
   },
-  "signNotice": {
-    "message": "Signar aquest missatge pot tenir efectes secundaris perillosos. Signa només els missatges de llocs en els quals confiïs plenament amb la totalitat del teu compte. Aquest mètode perillós serà retirat en versions posteriors."
-  },
   "signatureRequest": {
     "message": "Sol·licitud de Signatura"
   },

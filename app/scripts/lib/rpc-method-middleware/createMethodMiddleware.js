@@ -1,7 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { handlers as permittedSnapMethods } from '@metamask/rpc-methods/dist/permitted';
 ///: END:ONLY_INCLUDE_IN
-import { permissionRpcMethods } from '@metamask/controllers';
+import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/rpc-methods/dist/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { flatten } from 'lodash';

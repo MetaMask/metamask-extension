@@ -43,6 +43,14 @@ export default class TypedMessageManager extends EventEmitter {
       unapprovedTypedMessages: {},
       unapprovedTypedMessagesCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedTypedMessages: {},
+        unapprovedTypedMessagesCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = metricsEvent;
   }

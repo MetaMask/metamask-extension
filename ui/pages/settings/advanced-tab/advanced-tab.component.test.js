@@ -8,13 +8,11 @@ import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn();
 const mockSetShowTestNetworks = jest.fn();
-const mockSetUseTokenDetection = jest.fn();
 
 jest.mock('../../../store/actions.js', () => {
   return {
     setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
     setShowTestNetworks: () => mockSetShowTestNetworks,
-    setUseTokenDetection: () => mockSetUseTokenDetection,
   };
 });
 
@@ -50,20 +48,10 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[4];
+    const testNetworkToggle = queryAllByRole('checkbox')[3];
 
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
-  });
-
-  it('should toggle token detection', () => {
-    const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
-
-    const tokenDetectionToggle = queryAllByRole('checkbox')[1];
-
-    fireEvent.click(tokenDetectionToggle);
-
-    expect(mockSetUseTokenDetection).toHaveBeenCalled();
   });
 });

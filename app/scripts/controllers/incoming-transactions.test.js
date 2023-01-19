@@ -77,6 +77,17 @@ function getMockPreferencesController({
   };
 }
 
+function getMockOnboardingController() {
+  return {
+    store: {
+      getState: sinon.stub().returns({
+        completedOnboarding: true,
+      }),
+      subscribe: sinon.spy(),
+    },
+  };
+}
+
 function getMockBlockTracker() {
   return {
     addListener: sinon.stub().callsArgWithAsync(1, '0xa'),
@@ -169,6 +180,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...mockedNetworkMethods,
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: {},
         },
       );
@@ -199,6 +211,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -217,6 +230,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: {},
         },
       );
@@ -239,6 +253,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -344,6 +359,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -394,6 +410,7 @@ describe('IncomingTransactionsController', function () {
           preferencesController: getMockPreferencesController({
             showIncomingTransactions: false,
           }),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -441,6 +458,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -486,6 +504,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -533,6 +552,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -624,6 +644,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: { ...getMockBlockTracker() },
           ...getMockNetworkControllerMethods(),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -685,6 +706,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...mockedNetworkMethods,
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -768,6 +790,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...mockedNetworkMethods,
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -822,6 +845,7 @@ describe('IncomingTransactionsController', function () {
             blockTracker: getMockBlockTracker(),
             ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
+            onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
             getCurrentChainId: () => CHAIN_IDS.GOERLI,
           });
@@ -858,6 +882,7 @@ describe('IncomingTransactionsController', function () {
             blockTracker: getMockBlockTracker(),
             ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
+            onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
             getCurrentChainId: () => CHAIN_IDS.GOERLI,
           });
@@ -911,6 +936,7 @@ describe('IncomingTransactionsController', function () {
             blockTracker: getMockBlockTracker(),
             ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
+            onboardingController: getMockOnboardingController(),
             initState: getNonEmptyInitState(),
             getCurrentChainId: () => CHAIN_IDS.GOERLI,
           });
@@ -951,6 +977,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
           getCurrentChainId: () => CHAIN_IDS.GOERLI,
         },
@@ -1026,6 +1053,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1049,6 +1077,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.MAINNET),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1072,6 +1101,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1095,6 +1125,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1128,6 +1159,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1156,6 +1188,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1179,6 +1212,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1225,6 +1259,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );
@@ -1271,6 +1306,7 @@ describe('IncomingTransactionsController', function () {
           blockTracker: getMockBlockTracker(),
           ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
+          onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
         },
       );

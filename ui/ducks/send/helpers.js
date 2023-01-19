@@ -204,7 +204,7 @@ export function generateTransactionParams(sendState) {
         sendToken: draftTransaction.asset.details,
       });
       break;
-    case ASSET_TYPES.COLLECTIBLE:
+    case ASSET_TYPES.NFT:
       // When sending a token the to address is the contract address of
       // the token being sent. The value is set to '0x0' and the data
       // is generated from the recipient address, token being sent and

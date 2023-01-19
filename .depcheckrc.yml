@@ -4,6 +4,7 @@ ignores:
   # webapp deps
   #
 
+  - '@lavamoat/snow'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
@@ -39,6 +40,8 @@ ignores:
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - '@storybook/builder-webpack5'
+  - '@storybook/manager-webpack5'
   - 'storybook-dark-mode'
   - 'style-loader'
   - 'css-loader'

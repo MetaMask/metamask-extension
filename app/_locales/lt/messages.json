@@ -825,9 +825,6 @@
   "sign": {
     "message": "Prisijunkite"
   },
-  "signNotice": {
-    "message": "Pasirašant šį pranešimą gali būti \npavojingų šalutinių efektų. Pasirašykite tik pranešimus iš vietų,\nkuriomis visiškai pasitikite su visomis savo paskyromis.\nŠis pavojingas būdas bus pašalintas ateities versijoje. "
-  },
   "signatureRequest": {
     "message": "Parašo užklausa"
   },

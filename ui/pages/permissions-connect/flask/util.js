@@ -1,4 +1,4 @@
-import { flatMap } from '@metamask/snap-utils';
+import { flatMap } from '@metamask/snaps-utils';
 import { coinTypeToProtocolName } from '../../../helpers/utils/util';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {

@@ -94,14 +94,14 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
       backgroundColor={COLORS.GOERLI}
       borderColor={COLORS.GOERLI}
       networkName="G"
-      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
+      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
     <AvatarNetwork
       {...args}
       backgroundColor={COLORS.SEPOLIA}
       borderColor={COLORS.SEPOLIA}
       networkName="G"
-      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the BaseAvatar component as a prop so we can change the color of the text and to the base avatar
+      color={COLORS.PRIMARY_INVERSE} // This will have to be added to the AvatarBase component as a prop so we can change the color of the text and to the base avatar
     />
   </Box>
 );

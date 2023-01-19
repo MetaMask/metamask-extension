@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { KEYRING_TYPES } from '../../../../shared/constants/keyrings';
 import TokenOverview from './token-overview';
 
 describe('TokenOverview', () => {
@@ -21,11 +22,11 @@ describe('TokenOverview', () => {
       selectedAddress: '0x1',
       keyrings: [
         {
-          type: 'HD Key Tree',
+          type: KEYRING_TYPES.HD_KEY_TREE,
           accounts: ['0x1', '0x2'],
         },
         {
-          type: 'Ledger Hardware',
+          type: KEYRING_TYPES.LEDGER,
           accounts: [],
         },
       ],

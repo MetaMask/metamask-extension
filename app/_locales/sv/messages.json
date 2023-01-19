@@ -809,9 +809,6 @@
   "sign": {
     "message": "Signera"
   },
-  "signNotice": {
-    "message": "Att signera det här meddelandet kan få farliga följder. Signera endast meddelanden från sidor du vågar anförtro hela ditt konto åt. Den här farliga metoden kommer att avlägsnas i kommande versioner."
-  },
   "signatureRequest": {
     "message": "Signaturbegäran"
   },

@@ -598,16 +598,6 @@
   "confirm": {
     "message": "पुष्टि करें"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "आप $1 तक ऐक्सेस प्रदान कर रहे हैं, इसमें वह भी शामिल है जिसे आप भविष्य में प्राप्त कर सकते हैं। दूसरी ओर की पार्टी आपसे पूछे बिना किसी भी समय आपके वॉलेट से NFTs ट्रान्स्फर कर सकती है, जब तक आप इस स्वीकृति को रद्द नहीं करते। $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "इस अनुबंध में सभी NFTs"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "सावधानी के साथ आगे बढ़ें।"
-  },
   "confirmPassword": {
     "message": "पासवर्ड की पुष्टि करें"
   },
@@ -1207,14 +1197,8 @@
     "message": "समापन बिंदु ने अलग चेन ID लौटाई है: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "उन्नत टोकन डिटेक्शन"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "उन्नत टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys का टोकन एपीआई विभिन्न तृतीय पक्ष टोकन सूचियों से टोकन की एक सूची एकत्र करता है। चालू होने पर, एथेरियम मेननेट, बिनेंस, पॉलीगॉन और एवलांच पर टोकन का स्वचालित रूप से पता लगाया जाएगा और खोजा जा सकेगा। बंद होने पर, स्वचालित पहचान और खोज केवल एथेरियम मेननेट पर ही की जा सकती है।"
   },
   "ensIllegalCharacter": {
     "message": "ENS के लिए गैर-कानूनी कैरेक्टर।"
@@ -1747,12 +1731,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "अमान्य निवेश! गुप्त पुनर्प्राप्ति वाक्यांश केस संवेदी है।"
   },
-  "ipfsGateway": {
-    "message": "IPFS गेटवे"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENS सामग्री रिजॉल्यूशन का उपयोग करने के लिए IPFS CID गेटवे का URL दर्ज करें।"
-  },
   "jazzAndBlockies": {
     "message": "जाज़िकॉन्स और ब्लॉकीज़ विशिष्ट आइकनों की दो अलग-अलग शैलियां हैं जो आपको एक नज़र में किसी अकाउंट की पहचान करने में मदद करती हैं।"
   },
@@ -1970,18 +1948,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "हमेशा आपको सेटिंग्स के माध्यम से ऑप्ट-आउट करने की अनुमति देगा"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "सेटिंग्स के माध्यम से हमेशा ऑप्ट-आउट करने में सक्षम हों"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "कभी नहीं",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask निम्न चीजें करेगा.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "कभी भी चाभियां, पता, लेन-देन, शेष राशि, हैश, या कोई व्यक्तिगत सूचना एकत्र ना करें"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 आपका पूरा IP पता एकत्र करेगा",
@@ -1990,12 +1962,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 कुंजी, पते, लेनदेन, शेषराशि, हैश या कोई भी व्यक्तिगत जानकारी एकत्र करता है",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "कभी भी आपका पूरा IP पता एकत्र नहीं करता"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "फायदे के लिए कभी डेटा नहीं बेचता। कभी भी!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 लाभ के लिए डेटा बेचता है। कभी भी!",
@@ -2009,12 +1975,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask इस बात की बेहतर समझ प्राप्त करने के लिए डेटा एकत्र करना चाहता है कि हमारे उपयोगकर्ता विस्तार के साथ कैसे सहभागिता करते हैं। इस डेटा का उपयोग हमारे उत्पाद और Ethereum पारिस्थितिकी तंत्र की उपयोगिता और उपयोगकर्ता अनुभव को लगातार सुधारने के लिए किया जाएगा।"
-  },
-  "metametricsOptInDescription2": {
-    "message": "हम अपने उत्पाद की उपयोगिता में सुधार के लिए बुनियादी उपयोग डेटा एकत्र करना चाहते हैं। ये मेट्रिक्स करेंगे..."
-  },
-  "metametricsTitle": {
-    "message": "MetaMask को बेहतर बनाने के लिए 6M+ उपयोगकर्ताओं से जुड़ें"
   },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण सत्यापित करें",
@@ -3065,9 +3025,6 @@
   "sepolia": {
     "message": "सेपोलिया टेस्ट नेटवर्क"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "एडवांस गोपनीयता सेटिंग्स निर्धारित करें"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का उपयोग करता है।"
   },
@@ -3116,7 +3073,8 @@
     "message": "आने वाले लेन-देन दिखाएं"
   },
   "showIncomingTransactionsDescription": {
-    "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें"
+    "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "अनुमतियां दिखाएं"
@@ -3138,9 +3096,6 @@
   },
   "sign": {
     "message": "हस्ताक्षर करें"
-  },
-  "signNotice": {
-    "message": "इस संदेश पर हस्ताक्षर करना खतरनाक हो सकता है। यह हस्ताक्षर संभावित रूप से आपके खाते की ओर से कोई भी संचालन कर सकता है, जिसमें अनुरोध करने वाली साइट को आपके खाते और उसकी सभी संपत्तियों पर पूर्ण नियंत्रण प्रदान करना शामिल है। इस संदेश पर केवल तभी हस्ताक्षर करें जब आप जानते हों कि आप क्या कर रहे हैं या अनुरोध करने वाली साइट पर पूरा भरोसा है"
   },
   "signatureRequest": {
     "message": "हस्ताक्षर का अनुरोध"

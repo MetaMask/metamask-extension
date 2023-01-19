@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Confirmer"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Vous accordez l’accès à $1, y compris à ceux que vous pourriez posséder dans le futur. L’autre partie pourra transférer des NFT de votre portefeuille à tout moment sans demander votre consentement jusqu’à ce que vous révoquiez cette approbation. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "tous les NFT inclus dans ce contrat"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Soyez prudent."
-  },
   "confirmPassword": {
     "message": "Confirmer le mot de passe"
   },
@@ -1207,14 +1197,8 @@
     "message": "Le point terminal a renvoyé un ID de chaîne différent : $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Détection améliorée des jetons"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "La détection améliorée des jetons est actuellement disponible sur $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "L’API de jetons de ConsenSys agrège une liste de jetons provenant de diverses listes de jetons tierces. Lorsqu’elle est activée, les jetons sont automatiquement détectés et peuvent être recherchés sur le réseau principal Ethereum, Binance, Polygon et Avalanche. Lorsqu’elle est désactivée, la détection automatique et la recherche ne peuvent être effectuées que sur le réseau principal Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Caractère invalide pour l’ENS."
@@ -1747,12 +1731,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Entrée invalide ! La phrase secrète de récupération est sensible à la casse."
   },
-  "ipfsGateway": {
-    "message": "Passerelle IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Entrez l’URL de la passerelle CID IPFS à utiliser pour résoudre les contenus ENS."
-  },
   "jazzAndBlockies": {
     "message": "Les Jazzicons et les Blockies sont deux styles différents d’icônes uniques qui vous aident à identifier un compte en un coup d’œil."
   },
@@ -1970,18 +1948,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Toujours pouvoir vous désinscrire via les Paramètres"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Toujours pouvoir se désinscrire via les Paramètres"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Jamais",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask :"
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Ne collectera jamais vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "Ne collectera $1 votre adresse IP complète",
@@ -1990,12 +1962,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "Ne collectera $1 vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Ne collectera jamais votre adresse IP complète"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Ne vendra jamais de données à des fins lucratives. Jamais !"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "Ne vendra $1 de données à des fins lucratives. Jamais !",
@@ -2009,12 +1975,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Elles seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Nous aimerions recueillir des données d’utilisation de base pour améliorer la convivialité de notre produit. Ces indicateurs seront…"
-  },
-  "metametricsTitle": {
-    "message": "Rejoignez plus de 6 M d’utilisateurs pour améliorer MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
@@ -3065,9 +3025,6 @@
   "sepolia": {
     "message": "Réseau de test Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Définir des paramètres de confidentialité avancés"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."
   },
@@ -3116,7 +3073,8 @@
     "message": "Afficher les transactions entrantes"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions"
+    "message": "Sélectionnez ceci pour utiliser Etherscan afin d’afficher les transactions entrantes dans la liste des transactions",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Afficher les autorisations"
@@ -3138,9 +3096,6 @@
   },
   "sign": {
     "message": "Signer"
-  },
-  "signNotice": {
-    "message": "La signature de ce message peut avoir des effets secondaires dangereux, interférant en votre nom via le contrôle de votre compte et de ses actifs par le site demandeur. Signez uniquement les messages de sites auxquels vous faites entièrement confiance."
   },
   "signatureRequest": {
     "message": "Demande de Signature"

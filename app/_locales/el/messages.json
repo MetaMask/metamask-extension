@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Επιβεβαίωση"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Παραχωρείτε πρόσβαση στον $1, συμπεριλαμβανομένου οτιδήποτε ενδέχεται να αποκτήσετε στο μέλλον. Ο συμβαλλόμενος στην άλλη πλευρά μπορεί να μεταφέρει NFT από το πορτοφόλι σας ανά πάσα στιγμή χωρίς να σας ρωτήσει, μέχρι να ανακαλέσετε αυτή την έγκριση. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "όλα τα NFT αυτού του συμβαλλόμενου"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Προχωρήστε με προσοχή."
-  },
   "confirmPassword": {
     "message": "Επιβεβαίωση Κωδικού Πρόσβασης"
   },
@@ -1207,14 +1197,8 @@
     "message": "Το τελικό σημείο επέστρεψε ένα διαφορετικό αναγνωριστικό αλυσίδας: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Βελτιωμένος εντοπισμός για token"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Ο βελτιωμένος εντοπισμός για token είναι επί του παρόντος διαθέσιμος στο $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "Το API token της ConsenSys συγκεντρώνει μια λίστα με token από διάφορες λίστες με token τρίτων. Όταν είναι ενεργοποιημένο, τα token θα εντοπίζονται αυτόματα και θα μπορούν να αναζητηθούν στο κύριο δίκτυο του Ethereum, στο Binance, στο Polygon και στο Avalanche. Όταν είναι απενεργοποιημένο, ο αυτόματος εντοπισμός και η αναζήτηση μπορεί να γίνει μόνο στο κύριο δίκτυο του Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Μη έγκυρος χαρακτήρας για το ENS."
@@ -1747,12 +1731,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Μη έγκυρη εισαγωγή! Η Μυστική σας Φράση Ανάκτησης κάνει διάκριση πεζών-κεφαλαίων."
   },
-  "ipfsGateway": {
-    "message": "Πύλη IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Εισάγετε τη διεύθυνση URL της πύλης IPFS CID που θα χρησιμοποιηθεί για την ανάλυση περιεχομένου ENS."
-  },
   "jazzAndBlockies": {
     "message": "Τα Jazzicons και τα Blockies είναι δύο διαφορετικά στυλ μοναδικών εικονιδίων που σας βοηθούν να αναγνωρίζετε έναν λογαριασμό με μια ματιά."
   },
@@ -1970,18 +1948,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Πάντα μπορείτε να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Ποτέ δεν",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "Το MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Ποτέ δεν θα συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 συλλέγει την πλήρη διεύθυνση IP σας",
@@ -1990,12 +1962,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$ συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Ποτέ δεν συλλέγει την πλήρη IP διεύθυνσή σας"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Ποτέ δεν πουλά δεδομένα για κέρδος. Ποτέ!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 πουλά δεδομένα για το κέρδος. Ποτέ!",
@@ -2009,12 +1975,6 @@
   },
   "metametricsOptInDescription": {
     "message": "Το MetaMask θα ήθελε να συγκεντρώσει δεδομένα χρήσης για να κατανοήσει καλύτερα πώς οι χρήστες μας αλληλεπιδρούν με την επέκταση. Τα δεδομένα αυτά θα χρησιμοποιηθούν για τη συνεχή βελτίωση της χρηστικότητας και της εμπειρίας χρήσης του προϊόντος μας και του οικοσυστήματος Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Θα θέλαμε να συγκεντρώσουμε βασικά δεδομένα χρήσης για τη βελτίωση της χρηστικότητας του προϊόντος μας. Αυτές οι μετρήσεις θα..."
-  },
-  "metametricsTitle": {
-    "message": "Συμμετάσχετε σε 6εκ+ χρήστες για να βελτιώσετε το MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "επαληθεύστε τα στοιχεία δικτύου",
@@ -3065,9 +3025,6 @@
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Ορίστε ρυθμίσεις απορρήτου για προχωρημένους"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Το MetaMask χρησιμοποιεί αυτές τις αξιόπιστες υπηρεσίες τρίτων για να ενισχύσει τη χρηστικότητα και την ασφάλεια των προϊόντων."
   },
@@ -3116,7 +3073,8 @@
     "message": "Εμφάνιση Εισερχομένων Συναλλαγών"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Επιλέξτε αυτό για να χρησιμοποιήσετε Etherscan για να εμφανίσετε τις εισερχόμενες συναλλαγές στη λίστα συναλλαγών"
+    "message": "Επιλέξτε αυτό για να χρησιμοποιήσετε Etherscan για να εμφανίσετε τις εισερχόμενες συναλλαγές στη λίστα συναλλαγών",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Εμφάνιση δικαιωμάτων"
@@ -3138,9 +3096,6 @@
   },
   "sign": {
     "message": "Υπογραφή"
-  },
-  "signNotice": {
-    "message": "Η υπογραφή αυτού του μηνύματος μπορεί να έχει\nεπικίνδυνες παρενέργειες. Υπογράφετε μηνύματα μόνο από\nτοποθεσίες που εμπιστεύεστε πλήρως με ολόκληρο τον λογαριασμό σας.\n  Αυτή η επικίνδυνη μέθοδος θα καταργηθεί σε μια μελλοντική έκδοση."
   },
   "signatureRequest": {
     "message": "Αίτημα Υπογραφής"

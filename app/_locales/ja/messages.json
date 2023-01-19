@@ -598,16 +598,6 @@
   "confirm": {
     "message": "確認"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "今後取得する可能性のあるものも含め、$1 へのアクセスを許可しようとしています。相手はお客様がこの承認を取り消すまで、お客様のウォレットからいつでもお客様の許可なしに NFT を送ることができます。$2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "このコントラクトのすべての NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "慎重に進めてください。"
-  },
   "confirmPassword": {
     "message": "パスワードの確認"
   },
@@ -1207,14 +1197,8 @@
     "message": "エンドポイントが別のチェーン ID を返してきました。$1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "改善されたトークン検出"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "改善されたトークン検出は現在 $1 で利用可能です。$2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys のトークン API は、さまざまなサードパーティトークンリストからトークンを集約し、リスト化します。有効にすると、トークンが自動的に検出され、Ethereum メインネット、Binance、Polygon、Avalanche で検索可能になります。無効にすると、自動検出と検索は Ethereum メインネットでのみ可能になります。"
   },
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"
@@ -1747,12 +1731,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "入力値が無効です！秘密のリカバリーフレーズは大文字・小文字が区別されます。"
   },
-  "ipfsGateway": {
-    "message": "IPFSゲートウェイ"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENSコンテンツの解決に使用するIPFS CIDゲートウェイのURLを入力します。"
-  },
   "jazzAndBlockies": {
     "message": "Jazzicon と Blockie は、アカウントを一目で見分けるためのユニークなアイコンであり、2 つの異なるスタイルが特徴です。"
   },
@@ -1970,18 +1948,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "いつでも設定からオプトアウトできるようにします"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "いつでも設定でオプトアウトできます"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "実行しない",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMaskが実行する内容"
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "キー、アドレス、トランザクション、残高、ハッシュなど、いかなる個人情報も収集されることはありません"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1が完全なIPアドレスを収集することはありません",
@@ -1990,12 +1962,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1は、キー、アドレス、トランザクション、残高、ハッシュなど、いかなる個人情報も収集しません",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "完全なIPアドレスは収集されません"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "決して利益目的にデータを販売することはありません!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1が営利目的でデータを販売することは決してありません。",
@@ -2009,12 +1975,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMaskでは、ユーザーによる拡張機能の利用状況についてよりよく理解するため、基本的な使用状況データを収集させていただきたいと考えています。このデータは、当社の製品およびイーサリアムエコシステムの使いやすさとユーザーエクスペリエンスを継続的に改善するために使用されます。"
-  },
-  "metametricsOptInDescription2": {
-    "message": "弊社の製品をより使いやすくするために、基本的な使用データを収集したいと考えています. これらの指標は..."
-  },
-  "metametricsTitle": {
-    "message": "6百万人以上のユーザーと共に、MetaMaskの改善にご協力ください"
   },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
@@ -3065,9 +3025,6 @@
   "sepolia": {
     "message": "Sepolia テストネットワーク"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "高度なプライバシー設定を設定"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMaskはこれらの信頼できるサードパーティーサービスを使用して、製品の使いやすさと安全性を向上させています。"
   },
@@ -3116,7 +3073,8 @@
     "message": "受信トランザクションを表示"
   },
   "showIncomingTransactionsDescription": {
-    "message": "これを選択すると、Etherscanを使用して受信トランザクションがトランザクションリストに表示されます"
+    "message": "これを選択すると、Etherscanを使用して受信トランザクションがトランザクションリストに表示されます",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "表示許可"
@@ -3138,9 +3096,6 @@
   },
   "sign": {
     "message": "署名"
-  },
-  "signNotice": {
-    "message": "このメッセージに署名すると、危険な可能性があります。この署名により、要求しているサイトへのアカウントやアカウントのアセットの完全な管理権の付与を含め、アカウントに代わり操作が行われる可能性があります。完全に状況を把握している場合、または要求しているサイトを完全に信頼している場合を除き、このメッセージには署名しないでください。"
   },
   "signatureRequest": {
     "message": "署名の要求"

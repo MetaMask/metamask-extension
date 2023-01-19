@@ -8,8 +8,14 @@ import { Label } from './label';
 
 describe('label', () => {
   it('should render text inside the label', () => {
-    const { getByText } = render(<Label>label</Label>);
+    const { getByText, container } = render(<Label>label</Label>);
+    expect(getByText('label')).toHaveClass('mm-label');
     expect(getByText('label')).toBeDefined();
+    expect(container).toMatchSnapshot();
+  });
+  it('should render with additional className', () => {
+    const { getByText } = render(<Label className="test-class">label</Label>);
+    expect(getByText('label')).toHaveClass('mm-label test-class');
   });
   it('should render text and react nodes as children', () => {
     const { getByText, getByTestId } = render(
@@ -59,9 +65,5 @@ describe('label', () => {
   it('should render with disabled state and have disabled class', () => {
     const { getByText } = render(<Label disabled>label</Label>);
     expect(getByText('label')).toHaveClass('mm-label--disabled');
-  });
-  it('should render with additional className', () => {
-    const { getByText } = render(<Label className="test-class">label</Label>);
-    expect(getByText('label')).toHaveClass('test-class');
   });
 });

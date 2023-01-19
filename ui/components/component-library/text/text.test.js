@@ -66,27 +66,32 @@ describe('Text', () => {
   });
 
   it('should render the Text with proper variant class name', () => {
-    const { getByText } = render(
+    const { getByText, container } = render(
       <>
         <Text variant={TEXT.DISPLAY_MD}>display-md</Text>
         <Text variant={TEXT.HEADING_LG}>heading-lg</Text>
         <Text variant={TEXT.HEADING_MD}>heading-md</Text>
         <Text variant={TEXT.HEADING_SM}>heading-sm</Text>
-        <Text variant={TEXT.BODY_LG}>body-lg-medium</Text>
+        <Text variant={TEXT.BODY_LG_MEDIUM}>body-lg-medium</Text>
         <Text variant={TEXT.BODY_MD}>body-md</Text>
+        <Text variant={TEXT.BODY_MD_BOLD}>body-md-bold</Text>
         <Text variant={TEXT.BODY_SM}>body-sm</Text>
+        <Text variant={TEXT.BODY_SM_BOLD}>body-sm-bold</Text>
         <Text variant={TEXT.BODY_XS}>body-xs</Text>
       </>,
     );
 
-    expect(getByText('display-md')).toHaveClass('text--display-md');
-    expect(getByText('heading-lg')).toHaveClass('text--heading-lg');
-    expect(getByText('heading-md')).toHaveClass('text--heading-md');
-    expect(getByText('heading-sm')).toHaveClass('text--heading-sm');
-    expect(getByText('body-lg-medium')).toHaveClass('text--body-lg-medium');
-    expect(getByText('body-md')).toHaveClass('text--body-md');
-    expect(getByText('body-sm')).toHaveClass('text--body-sm');
-    expect(getByText('body-xs')).toHaveClass('text--body-xs');
+    expect(getByText('display-md')).toHaveClass('mm-text--display-md');
+    expect(getByText('heading-lg')).toHaveClass('mm-text--heading-lg');
+    expect(getByText('heading-md')).toHaveClass('mm-text--heading-md');
+    expect(getByText('heading-sm')).toHaveClass('mm-text--heading-sm');
+    expect(getByText('body-lg-medium')).toHaveClass('mm-text--body-lg-medium');
+    expect(getByText('body-md')).toHaveClass('mm-text--body-md');
+    expect(getByText('body-md-bold')).toHaveClass('mm-text--body-md-bold');
+    expect(getByText('body-sm')).toHaveClass('mm-text--body-sm');
+    expect(getByText('body-sm-bold')).toHaveClass('mm-text--body-sm-bold');
+    expect(getByText('body-xs')).toHaveClass('mm-text--body-xs');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render the Text with proper font weight class name', () => {
@@ -97,9 +102,9 @@ describe('Text', () => {
         <Text fontWeight={FONT_WEIGHT.NORMAL}>normal</Text>
       </>,
     );
-    expect(getByText('bold')).toHaveClass('text--font-weight-bold');
-    expect(getByText('medium')).toHaveClass('text--font-weight-medium');
-    expect(getByText('normal')).toHaveClass('text--font-weight-normal');
+    expect(getByText('bold')).toHaveClass('mm-text--font-weight-bold');
+    expect(getByText('medium')).toHaveClass('mm-text--font-weight-medium');
+    expect(getByText('normal')).toHaveClass('mm-text--font-weight-normal');
   });
 
   it('should render the Text with proper text color class name', () => {
@@ -120,33 +125,43 @@ describe('Text', () => {
         <Text color={COLORS.INFO_INVERSE}>info-inverse</Text>
       </>,
     );
-    expect(getByText('text-default')).toHaveClass('text--color-text-default');
-    expect(getByText('text-alternative')).toHaveClass(
-      'text--color-text-alternative',
+    expect(getByText('text-default')).toHaveClass(
+      'mm-text--color-text-default',
     );
-    expect(getByText('text-muted')).toHaveClass('text--color-text-muted');
+    expect(getByText('text-alternative')).toHaveClass(
+      'mm-text--color-text-alternative',
+    );
+    expect(getByText('text-muted')).toHaveClass('mm-text--color-text-muted');
     expect(getByText('overlay-inverse')).toHaveClass(
-      'text--color-overlay-inverse',
+      'mm-text--color-overlay-inverse',
     );
     expect(getByText('primary-default')).toHaveClass(
-      'text--color-primary-default',
+      'mm-text--color-primary-default',
     );
     expect(getByText('primary-inverse')).toHaveClass(
-      'text--color-primary-inverse',
+      'mm-text--color-primary-inverse',
     );
-    expect(getByText('error-default')).toHaveClass('text--color-error-default');
-    expect(getByText('error-inverse')).toHaveClass('text--color-error-inverse');
+    expect(getByText('error-default')).toHaveClass(
+      'mm-text--color-error-default',
+    );
+    expect(getByText('error-inverse')).toHaveClass(
+      'mm-text--color-error-inverse',
+    );
     expect(getByText('success-default')).toHaveClass(
-      'text--color-success-default',
+      'mm-text--color-success-default',
     );
     expect(getByText('success-inverse')).toHaveClass(
-      'text--color-success-inverse',
+      'mm-text--color-success-inverse',
     );
     expect(getByText('warning-inverse')).toHaveClass(
-      'text--color-warning-inverse',
+      'mm-text--color-warning-inverse',
     );
-    expect(getByText('info-default')).toHaveClass('text--color-info-default');
-    expect(getByText('info-inverse')).toHaveClass('text--color-info-inverse');
+    expect(getByText('info-default')).toHaveClass(
+      'mm-text--color-info-default',
+    );
+    expect(getByText('info-inverse')).toHaveClass(
+      'mm-text--color-info-inverse',
+    );
   });
 
   it('should render the Text with proper font style class name', () => {
@@ -156,8 +171,8 @@ describe('Text', () => {
         <Text fontStyle={FONT_STYLE.NORMAL}>normal</Text>
       </>,
     );
-    expect(getByText('italic')).toHaveClass('text--font-style-italic');
-    expect(getByText('normal')).toHaveClass('text--font-style-normal');
+    expect(getByText('italic')).toHaveClass('mm-text--font-style-italic');
+    expect(getByText('normal')).toHaveClass('mm-text--font-style-normal');
   });
 
   it('should render the Text with proper text align class name', () => {
@@ -171,11 +186,11 @@ describe('Text', () => {
       </>,
     );
 
-    expect(getByText('left')).toHaveClass('text--text-align-left');
-    expect(getByText('center')).toHaveClass('text--text-align-center');
-    expect(getByText('right')).toHaveClass('text--text-align-right');
-    expect(getByText('justify')).toHaveClass('text--text-align-justify');
-    expect(getByText('end')).toHaveClass('text--text-align-end');
+    expect(getByText('left')).toHaveClass('mm-text--text-align-left');
+    expect(getByText('center')).toHaveClass('mm-text--text-align-center');
+    expect(getByText('right')).toHaveClass('mm-text--text-align-right');
+    expect(getByText('justify')).toHaveClass('mm-text--text-align-justify');
+    expect(getByText('end')).toHaveClass('mm-text--text-align-end');
   });
 
   it('should render the Text with proper overflow wrap class name', () => {
@@ -186,9 +201,9 @@ describe('Text', () => {
       </>,
     );
     expect(getByText('break-word')).toHaveClass(
-      'text--overflow-wrap-break-word',
+      'mm-text--overflow-wrap-break-word',
     );
-    expect(getByText('normal')).toHaveClass('text--overflow-wrap-normal');
+    expect(getByText('normal')).toHaveClass('mm-text--overflow-wrap-normal');
   });
 
   it('should render the Text with proper ellipsis class name', () => {
@@ -197,7 +212,7 @@ describe('Text', () => {
         <Text ellipsis>ellipsis</Text>
       </>,
     );
-    expect(getByText('ellipsis')).toHaveClass('text--ellipsis');
+    expect(getByText('ellipsis')).toHaveClass('mm-text--ellipsis');
   });
 
   it('should render the Text with proper text transform class name', () => {
@@ -209,13 +224,13 @@ describe('Text', () => {
       </>,
     );
     expect(getByText('uppercase')).toHaveClass(
-      'text--text-transform-uppercase',
+      'mm-text--text-transform-uppercase',
     );
     expect(getByText('lowercase')).toHaveClass(
-      'text--text-transform-lowercase',
+      'mm-text--text-transform-lowercase',
     );
     expect(getByText('capitalize')).toHaveClass(
-      'text--text-transform-capitalize',
+      'mm-text--text-transform-capitalize',
     );
   });
   it('should accept a ref prop that is passed down to the html element', () => {

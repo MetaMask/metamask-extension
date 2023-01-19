@@ -815,9 +815,6 @@
   "sign": {
     "message": "Allkirjasta"
   },
-  "signNotice": {
-    "message": "Selle sõnumi allkirjastamisel \nvõib olla ohtlikke kõrvaltoimeid. Allkirjastage sõnumeid vaid \nsaitidelt, mida te kogu kontoga usaldate.\n See ohtlik meetod eemaldatakse uues versioonis."
-  },
   "signatureRequest": {
     "message": "Allkirja taotlus"
   },

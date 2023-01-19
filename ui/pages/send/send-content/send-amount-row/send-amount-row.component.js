@@ -44,7 +44,7 @@ export default class SendAmountRow extends Component {
   render() {
     const { inError, asset } = this.props;
 
-    if (asset.type === ASSET_TYPES.COLLECTIBLE) {
+    if (asset.type === ASSET_TYPES.NFT) {
       return null;
     }
 

@@ -9,7 +9,7 @@ import {
   PLATFORM_CHROME,
   PLATFORM_EDGE,
 } from '../../../shared/constants/app';
-import { getEnvironmentType, getPlatform } from './util';
+import { deferredPromise, getEnvironmentType, getPlatform } from './util';
 
 describe('app utils', () => {
   describe('getEnvironmentType', () => {
@@ -152,6 +152,60 @@ describe('app utils', () => {
     it('should detect Chrome', () => {
       setBrowserSpecificWindow('chrome');
       expect(getPlatform()).toStrictEqual(PLATFORM_CHROME);
+    });
+  });
+
+  describe('deferredPromise', () => {
+    it('should allow rejecting a deferred Promise', async () => {
+      const { promise, reject } = deferredPromise();
+
+      reject(new Error('test'));
+
+      await expect(promise).rejects.toThrow('test');
+    });
+
+    it('should allow resolving a deferred Promise', async () => {
+      const { promise, resolve } = deferredPromise();
+
+      resolve('test');
+
+      await expect(promise).resolves.toBe('test');
+    });
+
+    it('should still be rejected after reject is called twice', async () => {
+      const { promise, reject } = deferredPromise();
+
+      reject(new Error('test'));
+      reject(new Error('different message'));
+
+      await expect(promise).rejects.toThrow('test');
+    });
+
+    it('should still be rejected after resolve is called post-rejection', async () => {
+      const { promise, resolve, reject } = deferredPromise();
+
+      reject(new Error('test'));
+      resolve('different message');
+
+      await expect(promise).rejects.toThrow('test');
+    });
+
+    it('should still be resolved after resolve is called twice', async () => {
+      const { promise, resolve } = deferredPromise();
+
+      resolve('test');
+      resolve('different message');
+
+      await expect(promise).resolves.toBe('test');
+    });
+
+    it('should still be resolved after reject is called post-resolution', async () => {
+      const { promise, resolve, reject } = deferredPromise();
+
+      resolve('test');
+      reject(new Error('different message'));
+
+      await expect(promise).resolves.toBe('test');
     });
   });
 });

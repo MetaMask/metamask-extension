@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { BaseAvatar } from '../base-avatar';
+import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
 
 import {
@@ -36,7 +36,7 @@ export const AvatarNetwork = ({
   };
 
   return (
-    <BaseAvatar
+    <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
       alignItems={ALIGN_ITEMS.CENTER}
@@ -73,7 +73,7 @@ export const AvatarNetwork = ({
           />
         </>
       )}
-    </BaseAvatar>
+    </AvatarBase>
   );
 };
 

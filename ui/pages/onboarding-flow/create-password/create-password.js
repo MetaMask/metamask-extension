@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
@@ -27,7 +27,7 @@ import {
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getFirstTimeFlowType } from '../../../selectors';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
@@ -49,6 +49,17 @@ export default function CreatePassword({
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
+  const currentKeyring = useSelector(getCurrentKeyring);
+
+  useEffect(() => {
+    if (currentKeyring) {
+      if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+      }
+    }
+  }, [currentKeyring, history, firstTimeFlowType]);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
@@ -85,13 +96,14 @@ export default function CreatePassword({
 
   const handlePasswordChange = (passwordInput) => {
     let confirmError = '';
+    let passwordInputError = '';
     const passwordEvaluation = zxcvbn(passwordInput);
     const passwordStrengthLabel = getPasswordStrengthLabel(
       passwordEvaluation.score,
       t,
     );
-    const passwordStrengthDescription = passwordStrengthLabel.description;
-    const passwordStrengthInput = t('passwordStrength', [
+    let passwordStrengthDescription = passwordStrengthLabel.description;
+    let passwordStrengthInput = t('passwordStrength', [
       <span
         key={passwordEvaluation.score}
         className={passwordStrengthLabel.className}
@@ -100,11 +112,20 @@ export default function CreatePassword({
       </span>,
     ]);
 
+    if (passwordInput.length < 8) {
+      passwordInputError = passwordInput.length
+        ? t('passwordNotLongEnough')
+        : '';
+      passwordStrengthInput = null;
+      passwordStrengthDescription = '';
+    }
+
     if (confirmPassword && passwordInput !== confirmPassword) {
       confirmError = t('passwordsDontMatch');
     }
 
     setPassword(passwordInput);
+    setPasswordError(passwordInputError);
     setPasswordStrength(passwordStrengthInput);
     setPasswordStrengthText(passwordStrengthDescription);
     setConfirmPasswordError(confirmError);
@@ -126,6 +147,12 @@ export default function CreatePassword({
     if (!isValid) {
       return;
     }
+
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_ATTEMPTED,
+    });
+
     // If secretRecoveryPhrase is defined we are in import wallet flow
     if (
       secretRecoveryPhrase &&
@@ -139,10 +166,6 @@ export default function CreatePassword({
         if (createNewAccount) {
           await createNewAccount(password);
         }
-        trackEvent({
-          event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
-          category: EVENT.CATEGORIES.ONBOARDING,
-        });
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       } catch (error) {
         setPasswordError(error.message);
@@ -175,6 +198,7 @@ export default function CreatePassword({
           <FormField
             dataTestId="create-password-new"
             autoFocus
+            error={passwordError}
             passwordStrength={passwordStrength}
             passwordStrengthText={passwordStrengthText}
             onChange={handlePasswordChange}
@@ -182,16 +206,18 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <button
-                className="create-password__form--password-button"
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowPassword(!showPassword);
-                }}
-              >
-                {showPassword ? t('hide') : t('show')}
-              </button>
+              <Typography variant={TYPOGRAPHY.H7}>
+                <a
+                  href=""
+                  className="create-password__form--password-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  {showPassword ? t('hide') : t('show')}
+                </a>
+              </Typography>
             }
           />
           <FormField

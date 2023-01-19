@@ -809,9 +809,6 @@
   "sign": {
     "message": "Undertegn"
   },
-  "signNotice": {
-    "message": "Signering av denne meldingen kan ha\nfarlige konsekvenser. Signér kun meldinger fra\nnettsteder du stoler fullt og helt på med hele kontoen din. Denne farlige metoden vil bli fjernet i en fremtidig versjon."
-  },
   "signatureRequest": {
     "message": "Signaturforespørsel"
   },

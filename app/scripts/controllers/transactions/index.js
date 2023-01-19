@@ -151,6 +151,11 @@ export default class TransactionController extends EventEmitter {
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
 
     this.memStore = new ObservableStore({});
+
+    this.resetState = () => {
+      this._updateMemstore();
+    };
+
     this.query = new EthQuery(this.provider);
 
     this.txGasUtil = new TxGasUtil(this.provider);

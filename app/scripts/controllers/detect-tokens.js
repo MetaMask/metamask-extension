@@ -113,7 +113,7 @@ export default class DetectTokensController {
     const tokensToDetect = [];
     for (const tokenAddress in tokenListUsed) {
       if (
-        !this.tokenAddresses.find(({ address }) =>
+        !this.tokenAddresses.find((address) =>
           isEqualCaseInsensitive(address, tokenAddress),
         ) &&
         !this.hiddenTokens.find((address) =>

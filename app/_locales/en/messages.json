@@ -183,6 +183,15 @@
   "addContact": {
     "message": "Add contact"
   },
+  "addCustomIPFSGateway": {
+    "message": "Add custom IPFS gateway"
+  },
+  "addCustomIPFSGatewayDescription": {
+    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
+  },
+  "addCustomNetwork": {
+    "message": "Add custom network"
+  },
   "addCustomToken": {
     "message": "Add custom token"
   },
@@ -206,6 +215,28 @@
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Allow this site to add a network?"
+  },
+  "addEthereumChainWarningModalHeader": {
+    "message": "Only add this RPC provider if you’re sure you can trust it. $1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "Malicious providers may lie about the state of the blockchain and record your network activity."
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "It's important that your provider is reliable, as it has the power to:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "See your accounts and IP address, and associate them together"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "Show account balances and other on-chain states"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "Broadcast your transactions"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "You are adding a new RPC provider for Ethereum Mainnet"
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
@@ -243,6 +274,9 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
+  },
+  "advancedConfiguration": {
+    "message": "Advanced configuration"
   },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these $1 as my default for \"Advanced\""
@@ -343,6 +377,13 @@
     "message": "Approve $1 spend limit",
     "description": "The token symbol that is being approved"
   },
+  "approveTokenDescription": {
+    "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
+  },
+  "approveTokenTitle": {
+    "message": "Allow access to and transfer of your $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
+  },
   "approved": {
     "message": "Approved"
   },
@@ -385,6 +426,13 @@
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
+  },
+  "autoDetectTokens": {
+    "message": "Autodetect tokens"
+  },
+  "autoDetectTokensDescription": {
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. $1",
+    "description": "$1 is a link to a support article"
   },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
@@ -438,21 +486,31 @@
     "message": "Beta"
   },
   "betaHeaderText": {
-    "message": "This is a BETA version. Please report bugs $1",
+    "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
   "betaMetamaskDescription": {
     "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "Beta version disclaimer"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "message": "This version allows you to test upcoming features before they’re released, which helps make MetaMask even better. As with all beta versions, there may be an increased risk of bugs.  MetaMask Beta is subject to our $1 as well as our $2.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "By proceeding, you accept and acknowledge these risks, our $1, and $2.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "Beta Terms"
+  },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Supplemental Beta Terms"
+    "message": "supplemental Beta Terms"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Terms"
+    "message": "standard Terms"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -461,13 +519,13 @@
     "message": "beta portfolio site"
   },
   "betaTerms": {
-    "message": "BETA Terms of use"
+    "message": "Beta Terms of use"
   },
   "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask BETA can’t recover your Secret Recovery Phrase."
+    "message": "MetaMask Beta can’t recover your Secret Recovery Phrase."
   },
   "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask BETA will never ask you for your Secret Recovery Phrase."
+    "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
   "betaWelcome": {
     "message": "Welcome to MetaMask Beta"
@@ -600,6 +658,13 @@
     "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
+  "chooseYourNetwork": {
+    "message": "Choose your network"
+  },
+  "chooseYourNetworkDescription": {
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data.",
+    "description": "$1 is a link to the privacy policy"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -616,6 +681,9 @@
   "close": {
     "message": "Close"
   },
+  "coingecko": {
+    "message": "CoinGecko"
+  },
   "collectibleAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
   },
@@ -625,16 +693,6 @@
   },
   "confirm": {
     "message": "Confirm"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer NFTs from your wallet at any time without asking you until you revoke this approval. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "all the NFTs on this contract"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Proceed with caution."
   },
   "confirmPassword": {
     "message": "Confirm password"
@@ -741,6 +799,10 @@
   "contacts": {
     "message": "Contacts"
   },
+  "contentFromSnap": {
+    "message": "Content from $1",
+    "description": "$1 represents the name of the snap"
+  },
   "continue": {
     "message": "Continue"
   },
@@ -773,6 +835,15 @@
   },
   "contractInteraction": {
     "message": "Contract interaction"
+  },
+  "contractNFT": {
+    "message": "NFT contract"
+  },
+  "contractRequestingAccess": {
+    "message": "Contract requesting access"
+  },
+  "contractRequestingSignature": {
+    "message": "Contract requesting signature"
   },
   "contractRequestingSpendingCap": {
     "message": "Contract requesting spending cap"
@@ -825,8 +896,18 @@
   "createPassword": {
     "message": "Create password"
   },
+  "cryptoCompare": {
+    "message": "CryptoCompare"
+  },
   "currencyConversion": {
     "message": "Currency conversion"
+  },
+  "currencyRateCheckToggle": {
+    "message": "Show balance and token price checker"
+  },
+  "currencyRateCheckToggleDescription": {
+    "message": "We use $1 and $2 APIs to display your balance and token price. $3",
+    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Currency symbol"
@@ -958,6 +1039,9 @@
   },
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
+  },
+  "deposit": {
+    "message": "Deposit"
   },
   "depositCrypto": {
     "message": "Deposit $1",
@@ -1247,14 +1331,8 @@
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Enhanced token detection"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet."
   },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
@@ -1701,6 +1779,12 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "improvedTokenAllowance": {
+    "message": "Improved token allowance experience"
+  },
+  "improvedTokenAllowanceDescription": {
+    "message": "Turn this on to go through the improved token allowance experience whenever a dapp requests an ERC20 approve"
+  },
   "inYourSettings": {
     "message": "in your Settings"
   },
@@ -1730,6 +1814,10 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or deposit from another account.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyBuyOrReceive": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3 or $4 from another account.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. Deposit $1 from another account.",
@@ -1799,12 +1887,6 @@
   },
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
-  },
-  "ipfsGateway": {
-    "message": "IPFS Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
   },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
@@ -2023,18 +2105,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Always allow you to opt-out via Settings"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Always be able to opt-out via Settings"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Never",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask will.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Never collect keys, addresses, transactions, balances, hashes, or any personal information"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 collect your full IP address",
@@ -2043,12 +2119,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 collect keys, addresses, transactions, balances, hashes, or any personal information",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Never collect your full IP address"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Never sell data for profit. Ever!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 sell data for profit. Ever!",
@@ -2063,11 +2133,8 @@
   "metametricsOptInDescription": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
-  "metametricsOptInDescription2": {
-    "message": "We would like to gather basic usage data to improve the usability of our product.  These metrics will..."
-  },
-  "metametricsTitle": {
-    "message": "Join 6M+ users to improve MetaMask"
+  "metrics": {
+    "message": "Metrics"
   },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
@@ -2180,6 +2247,9 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
+  "networkProvider": {
+    "message": "Network provider"
+  },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
   },
@@ -2268,6 +2338,17 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
+  },
+  "nftWarningContent": {
+    "message": "You're granting access to $1, including any you might own in the future. The party on the other end can transfer these NFTs from your wallet at any time without asking you until you revoke this approval. $2",
+    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
+  },
+  "nftWarningContentBold": {
+    "message": "all your $1 NFTs",
+    "description": "$1 is name of the collection"
+  },
+  "nftWarningContentGrey": {
+    "message": "Proceed with caution."
   },
   "nfts": {
     "message": "NFTs"
@@ -2393,6 +2474,24 @@
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
   },
+  "notifications16ActionText": {
+    "message": "Try it out here"
+  },
+  "notifications16Description": {
+    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
+  },
+  "notifications16Title": {
+    "message": "Improved token allowance experience"
+  },
+  "notifications17ActionText": {
+    "message": "Show Security & Privacy settings"
+  },
+  "notifications17Description": {
+    "message": "This update provides more options so you can better control your own privacy. We've added more transparency about how data is collected and clearer options for sharing it. Change your preferences or delete extension usage data via Security & Privacy settings."
+  },
+  "notifications17Title": {
+    "message": "Security & Privacy Settings"
+  },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
@@ -2517,11 +2616,84 @@
   "on": {
     "message": "On"
   },
+  "onboardingAdvancedPrivacyIPFSDescription": {
+    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
+  },
+  "onboardingAdvancedPrivacyIPFSInvalid": {
+    "message": "Please enter a valid URL"
+  },
+  "onboardingAdvancedPrivacyIPFSTitle": {
+    "message": "Add custom IPFS Gateway"
+  },
+  "onboardingAdvancedPrivacyIPFSValid": {
+    "message": "IPFS gateway URL is valid"
+  },
+  "onboardingAdvancedPrivacyNetworkButton": {
+    "message": "Add custom network"
+  },
+  "onboardingAdvancedPrivacyNetworkDescription": {
+    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data."
+  },
+  "onboardingAdvancedPrivacyNetworkTitle": {
+    "message": "Choose your network"
+  },
   "onboardingCreateWallet": {
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
     "message": "Import an existing wallet"
+  },
+  "onboardingMetametricsAgree": {
+    "message": "I agree"
+  },
+  "onboardingMetametricsAllowOptOut": {
+    "message": "Always allow you to opt-out via Settings"
+  },
+  "onboardingMetametricsDataTerms": {
+    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679."
+  },
+  "onboardingMetametricsDescription": {
+    "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
+  },
+  "onboardingMetametricsDescription2": {
+    "message": "MetaMask will..."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "No thanks"
+  },
+  "onboardingMetametricsInfuraTerms": {
+    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+  },
+  "onboardingMetametricsInfuraTermsPolicy": {
+    "message": "Privacy Policy here"
+  },
+  "onboardingMetametricsInfuraTermsPolicyLink": {
+    "message": "here"
+  },
+  "onboardingMetametricsModalTitle": {
+    "message": "Add custom network"
+  },
+  "onboardingMetametricsNeverCollect": {
+    "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectIP": {
+    "message": "$1 collect your full IP address*",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasis": {
+    "message": "Never"
+  },
+  "onboardingMetametricsNeverSellData": {
+    "message": "$1 sell data.  Ever!",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsSendAnonymize": {
+    "message": "Send anonymized click and pageview events"
+  },
+  "onboardingMetametricsTitle": {
+    "message": "Help us improve MetaMask"
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
@@ -2598,6 +2770,10 @@
   },
   "osTheme": {
     "message": "System"
+  },
+  "otherSnaps": {
+    "message": "other snaps",
+    "description": "Used in the 'permission_rpc' message."
   },
   "padlock": {
     "message": "Padlock"
@@ -2678,9 +2854,21 @@
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_dialog": {
+    "message": "Display dialog windows in MetaMask.",
+    "description": "The description for the `snap_dialog` permission"
+  },
   "permission_ethereumAccounts": {
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
+  },
+  "permission_ethereumProvider": {
+    "message": "Access the Ethereum provider.",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "Derive arbitrary keys unique to this snap.",
+    "description": "The description for the `snap_getEntropy` permission"
   },
   "permission_longRunning": {
     "message": "Run indefinitely.",
@@ -2702,9 +2890,17 @@
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_rpc": {
+    "message": "Allow $1 to communicate directly with this snap.",
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "See the origins of websites that suggest transactions",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Unknown permission: $1",
@@ -2754,6 +2950,9 @@
   },
   "priorityFeeProperCase": {
     "message": "Priority Fee"
+  },
+  "privacy": {
+    "message": "Privacy"
   },
   "privacyMsg": {
     "message": "Privacy policy"
@@ -2839,6 +3038,12 @@
   },
   "rejectAll": {
     "message": "Reject all"
+  },
+  "rejectRequestsDescription": {
+    "message": "You are about to batch reject $1 requests."
+  },
+  "rejectRequestsN": {
+    "message": "Reject $1 requests"
   },
   "rejectTxsDescription": {
     "message": "You are about to batch reject $1 transactions."
@@ -3015,6 +3220,9 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
+  "security": {
+    "message": "Security"
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -3135,9 +3343,6 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Set advanced privacy settings"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },
@@ -3190,7 +3395,8 @@
     "message": "Show incoming transactions"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Select this to use Etherscan to show incoming transactions in the transactions list"
+    "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Show permissions"
@@ -3213,14 +3419,17 @@
   "sign": {
     "message": "Sign"
   },
-  "signNotice": {
-    "message": "Signing this message can be dangerous. This signature could potentially perform any operation on your account's behalf, including granting complete control of your account and all of its assets to the requesting site. Only sign this message if you know what you're doing or completely trust the requesting site."
-  },
   "signatureRequest": {
     "message": "Signature request"
   },
   "signatureRequest1": {
     "message": "Message"
+  },
+  "signatureRequestGuidance": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site."
+  },
+  "signatureRequestWarning": {
+    "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
   },
   "signed": {
     "message": "Signed"
@@ -3996,6 +4205,9 @@
   "tokenList": {
     "message": "Token lists:"
   },
+  "tokenNftAutoDetection": {
+    "message": "Token and NFT autodetection"
+  },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
   },
@@ -4111,11 +4323,20 @@
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
+  "transactionSecurityCheck": {
+    "message": "Transaction security check"
+  },
+  "transactionSecurityCheckDescription": {
+    "message": "Turn this on to enable a third party (OpenSea) to review all your transactions and signature requests and warn you about known malicious requests."
+  },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."
+  },
+  "transactions": {
+    "message": "Transactions"
   },
   "transfer": {
     "message": "Transfer"
@@ -4232,10 +4453,25 @@
     "message": "Autodetect NFTs"
   },
   "useCollectibleDetectionDescription": {
-    "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
+    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to their servers. Leave this feature off if you don't want the app to pull data from those services."
+  },
+  "useCollectibleDetectionDescriptionLine2": {
+    "message": "Additionally, be aware that:"
+  },
+  "useCollectibleDetectionDescriptionLine3": {
+    "message": "NFT metadata may contain links to scams or phishing sites."
+  },
+  "useCollectibleDetectionDescriptionLine4": {
+    "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
   },
   "useDefault": {
     "message": "Use default"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Batch account balance requests"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"
@@ -4353,6 +4589,10 @@
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
+  "websites": {
+    "message": "websites",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "welcome": {
     "message": "Welcome to MetaMask"
   },
@@ -4410,6 +4650,12 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Your funds may be at risk"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "Your NFT may be at risk"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private Secret Recovery Phrase"

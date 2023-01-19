@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Onayla"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Gelecekte sahip olabileceğiniz her şey dahil olmak üzere şuna erişim izni veriyorsunuz: $1. Diğer uçtaki taraf siz bu onayı geri çekene kadar dilediği zaman size sormadan cüzdanınızdan NFT transfer edebilir. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "bu sözleşmedeki tüm NFT'ler"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Dikkatli bir şekilde devam edin."
-  },
   "confirmPassword": {
     "message": "Şifreyi onayla"
   },
@@ -1207,14 +1197,8 @@
     "message": "Bitiş noktası farklı bir zincir kimliğine ulaştı: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Gelişmiş token algılama"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys token API, çeşitli üçüncü taraf token listelerinden token listesi toplar. Açıldığında, tokenler Ethereum ana ağı, Binance, Polygon ve Avalanche üzerinde otomatik olarak algılanır ve aratılabilir. Kapatıldığında otomatik algılama ve arama sadece Ethereum ana ağı üzerinde yapılabilir."
   },
   "ensIllegalCharacter": {
     "message": "ENS için Uygun Olmayan Karakter."
@@ -1747,12 +1731,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Giriş geçersiz! Gizli Kurtarma İfadesi büyük/küçük harf duyarlıdır."
   },
-  "ipfsGateway": {
-    "message": "IPFS Ağ Geçidi"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENS içerik çözünürlüğünde kullanmak için IPFS CID ağ geçidi URL adresini girin."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons ve Blockies, bir bakışta bir hesabı tanımlamana yardımcı olan iki farklı benzersiz simge stilidir."
   },
@@ -1970,18 +1948,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Dilediğiniz zaman Ayarlar kısmında vazgeçebilmenize olanak tanır"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Dilediğiniz zaman Ayarlar kısmında vazgeçebilirsiniz"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Hiçbir zaman",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Hiçbir zaman anahtarları, adresleri, işlemleri, bakiyeleri, doğrulama değerlerini veya kişisel bilgileri toplamaz"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 IP adresinizin tamamını almaz",
@@ -1990,12 +1962,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 anahtarları, adresleri, işlemleri, bakiyeleri, doğrulama değerlerini veya kişisel bilgileri toplamaz",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Hiçbir zaman IP adresinizin tamamını almaz"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Hiçbir zaman kâr elde etmek için verilerinizi satmaz. Asla!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 kâr elde etmek için verilerinizi satmaz. Asla!",
@@ -2009,12 +1975,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask, kullanıcılarımızın uzantıyı nasıl kullandıklarını daha iyi anlamak amacıyla kullanım verilerini toplamak istiyor. Bu veriler ürünümüzün ve Ethereum eko-sisteminin kullanılabilirliği ve kullanıcı deneyimini geliştirmek için sürekli olarak kullanılacaktır."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Ürünümüzün kullanılabilirliğini geliştirmek için temel kullanım verilerini toplamak istiyoruz. Bu ölçümler..."
-  },
-  "metametricsTitle": {
-    "message": "MetaMask'i geliştirmek için 6 milyondan fazla kullanıcıya katılın"
   },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
@@ -3065,9 +3025,6 @@
   "sepolia": {
     "message": "Sepolia test ağı"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Gelişmiş gizlilik ayarlarını yapın"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."
   },
@@ -3116,7 +3073,8 @@
     "message": "Gelen İşlemleri Göster"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin"
+    "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "İzinleri göster"
@@ -3138,9 +3096,6 @@
   },
   "sign": {
     "message": "İmza"
-  },
-  "signNotice": {
-    "message": "Bu mesajı imzalamak tehlikeli olabilir. Bu imza, hesabınızın tüm kontrolünü ve tüm varlıklarını talepte bulunan siteye vermek de dahil olmak üzere hesabınızın adına potansiyel olarak herhangi bir işlem gerçekleştirebilir. Sadece ne yaptığınızı biliyorsanız veya talepte bulunan siteye tamamen güveniyorsanız bu mesajı imzalayın."
   },
   "signatureRequest": {
     "message": "İmza Talebi"

@@ -805,9 +805,6 @@
   "sign": {
     "message": "Tandatangan"
   },
-  "signNotice": {
-    "message": "Menandatangani mesej ini boleh menyebabkan kesan sampingan yang berbahaya. Hanya tandatangan mesej daripada tapak yang anda percayai sepenuhnya dengan seluruh akaun anda. Kaedah berbahaya ini akan dibuang dalam versi akan datang."
-  },
   "signatureRequest": {
     "message": "Permintaan Tandatangan"
   },

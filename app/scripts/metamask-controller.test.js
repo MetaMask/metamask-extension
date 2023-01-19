@@ -10,11 +10,9 @@ import browser from 'webextension-polyfill';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
-import {
-  KEYRING_TYPES,
-  DEVICE_NAMES,
-} from '../../shared/constants/hardware-wallets';
-import { addHexPrefix } from './lib/util';
+import { KEYRING_TYPES } from '../../shared/constants/keyrings';
+import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
+import { addHexPrefix, deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -104,11 +102,14 @@ const CUSTOM_RPC_CHAIN_ID = '0x539';
 
 describe('MetaMaskController', function () {
   let metamaskController;
+
   const sandbox = sinon.createSandbox();
   const noop = () => undefined;
 
   before(async function () {
+    globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
+    sinon.spy(MetaMaskController.prototype, 'resetStates');
   });
 
   beforeEach(function () {
@@ -162,6 +163,18 @@ describe('MetaMaskController', function () {
     await ganacheServer.quit();
   });
 
+  describe('should reset states on first time profile load', function () {
+    it('should reset state', function () {
+      assert(metamaskController.resetStates.calledOnce);
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
+
+    it('should not reset states if already set', function () {
+      // global.isFirstTime should also remain false
+      assert.equal(globalThis.isFirstTimeProfileLoaded, false);
+    });
+  });
+
   describe('#getAccounts', function () {
     it('returns first address when dapp calls web3.eth.getAccounts', async function () {
       const password = 'a-fake-password';
@@ -192,7 +205,7 @@ describe('MetaMaskController', function () {
     it('adds private key to keyrings in KeyringController', async function () {
       const simpleKeyrings =
         metamaskController.keyringController.getKeyringsByType(
-          'Simple Key Pair',
+          KEYRING_TYPES.IMPORTED,
         );
       const privKeyBuffer = simpleKeyrings[0].wallets[0].privateKey;
       const pubKeyBuffer = simpleKeyrings[0].wallets[0].publicKey;
@@ -1225,11 +1238,3 @@ describe('MetaMaskController', function () {
     });
   });
 });
-
-function deferredPromise() {
-  let resolve;
-  const promise = new Promise((_resolve) => {
-    resolve = _resolve;
-  });
-  return { promise, resolve };
-}

@@ -598,16 +598,6 @@
   "confirm": {
     "message": "Bestätigen"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "Sie gewähren den Zugriff auf $1, auch auf solche, die Sie in Zukunft besitzen könnten. Die Gegenseite kann jederzeit NFTs aus Ihrer Brieftasche übertragen, ohne Sie zu fragen, bis Sie diese Genehmigung widerrufen. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "alle NFTs in diesem Contract"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "Seien Sie vorsichtig."
-  },
   "confirmPassword": {
     "message": "Passwort bestätigen"
   },
@@ -1207,14 +1197,8 @@
     "message": "Die von Ihnen eingegebene RPC-URL hat eine andere Chain-ID ($1) zurückgegeben. Bitte aktualisieren Sie die Chain-ID, damit sie mit der RPC-URL des Netzwerks übereinstimmt, das Sie hinzufügen möchten.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Erweiterte Token-Erkennung"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Erweiterte Token-Erkennung ist derzeit über $1 verfügbar. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "Die Token-API von ConsenSys aggregiert eine Liste von Token aus verschiedenen Tokenlisten von Drittanbietern. Wenn diese Option aktiviert ist, werden die Token automatisch erkannt und es kann im Ethereum-Mainnet sowie in Binance, Polygon und Avalanche danach gesucht werden. Ist sie deaktiviert, können die automatische Token-Erkennung und -Suche nur im Ethereum-Mainnet verwendet werden."
   },
   "ensIllegalCharacter": {
     "message": "Unzulässiges Zeichen für ENS."
@@ -1747,12 +1731,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Ungültige Eingabe! Die geheime Wiederherstellungsphrase berücksichtigt Groß- und Kleinschreibung."
   },
-  "ipfsGateway": {
-    "message": "IPFS-Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Geben Sie die URL des IPFS CID Gateways ein, das für die Auflösung der ENS Inhalte verwendet werden soll."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons und Blockies sind zwei verschiedene Arten von einzigartigen Symbolen, mit denen Sie ein Konto auf einen Blick erkennen können."
   },
@@ -1853,7 +1831,7 @@
     "message": "Richtungspfeil"
   },
   "lightTheme": {
-    "message": "Leicht"
+    "message": "Hell"
   },
   "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
@@ -1970,18 +1948,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Erlaubt Ihnen immer die Abmeldung über Einstellungen"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Sie können sich immer über die Einstellungen abmelden"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Nie",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask wird.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Erfassen Sie niemals Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 Erfassen Sie Ihre vollständige IP-Adresse",
@@ -1990,12 +1962,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$ erfassen Sie Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Erfassen Sie nie Ihre vollständige IP-Adresse"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Verkaufen Sie niemals Daten mit Gewinnabsicht. Niemals!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 Daten für Gewinn verkaufen. Niemals!",
@@ -2009,12 +1975,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask möchte Nutzungsdaten sammeln, um besser zu verstehen, wie unsere Nutzer mit der Erweiterung umgehen. Diese Daten werden verwendet, um die Benutzerfreundlichkeit und das Benutzererlebnis unseres Produkts und des Ethereum-Ökosystems kontinuierlich zu verbessern."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Wir würden gerne grundlegende Nutzungsdaten sammeln, um die Benutzerfreundlichkeit unseres Produkts zu verbessern.  Diese Metriken werden..."
-  },
-  "metametricsTitle": {
-    "message": "6M+ Benutzern beitreten um MetaMask zu verbessern"
   },
   "mismatchedChainLinkText": {
     "message": "die Netzwerkdetails überprüfen",
@@ -3065,9 +3025,6 @@
   "sepolia": {
     "message": "Sepolia-Testnetzwerk"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Erweiterte Privatsphäre-Einstellungen festlegen"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask nutzt diese vertrauenswürdigen Dienstleistungen von Drittanbietern, um die Benutzerfreundlichkeit und Sicherheit der Produkte zu verbessern."
   },
@@ -3116,7 +3073,8 @@
     "message": "Eingehende Transaktionen anzeigen"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Aktivieren Sie dies, um Etherscan zu aktivieren und eingehende Transaktionen in der Transaktionsliste anzuzeigen"
+    "message": "Aktivieren Sie dies, um Etherscan zu aktivieren und eingehende Transaktionen in der Transaktionsliste anzuzeigen",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Berechtigungen anzeigen"
@@ -3138,9 +3096,6 @@
   },
   "sign": {
     "message": "Unterschreiben"
-  },
-  "signNotice": {
-    "message": "Das Unterschreiben dieser Nachricht kann gefährliche Nebeneffekte haben. Bitte nur Nachrichten von Webseiten unterschreiben denen du deinen vollständigen Account anvertrauen würdest. Diese gefährliche Variante wird in zukünftigen Versionen entfernt werden."
   },
   "signatureRequest": {
     "message": "Unterschriftsanfrage"

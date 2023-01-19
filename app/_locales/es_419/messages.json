@@ -1373,12 +1373,6 @@
   "invalidSeedPhrase": {
     "message": "Frase secreta de recuperación no válida"
   },
-  "ipfsGateway": {
-    "message": "Puerta de enlace de IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Escriba la dirección URL de la puerta de enlace de IPFS CID para usar la resolución de contenido de ENS."
-  },
   "jsDeliver": {
     "message": "jsDeliver"
   },
@@ -1562,18 +1556,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Permitirle siempre excluirse a través de Configuración"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Siempre podrá excluirse a través de la Configuración"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Nunca",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask..."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Nunca recopilará claves, direcciones, transacciones, saldos, hashes o cualquier información personal"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 recopilará su dirección IP completa",
@@ -1582,12 +1570,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 recopilará claves, direcciones, transacciones, saldos, hashes o cualquier otra información personal",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Nunca recolectará su dirección IP completa"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "No venderá jamás datos con fines de lucro. ¡Nunca!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 venderá datos con fines de lucro. ¡Jamás!",
@@ -1601,12 +1583,6 @@
   },
   "metametricsOptInDescription": {
     "message": "A MetaMask le gustaría recopilar datos de uso para entender mejor cómo interactúan los usuarios con la extensión. Estos datos se usarán para mejorar de manera continua la usabilidad y la experiencia de usuario de nuestro producto y del ecosistema de Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Nos gustaría recopilar datos básicos de uso para mejorar la usabilidad de nuestro producto.  Estos indicadores..."
-  },
-  "metametricsTitle": {
-    "message": "Únase a más de 6 millones de usuarios para mejorar MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "verifique los detalles de la red",
@@ -1952,11 +1928,11 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onboardingShowIncomingTransactionsDescription": {
-    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver 2$.",
+    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver @2.",
     "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
-    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver 2$.",
+    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onlyAddTrustedNetworks": {
@@ -2358,9 +2334,6 @@
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Configuración avanzada de privacidad"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utiliza estos servicios de terceros de confianza para mejorar la usabilidad y la seguridad de los productos."
   },
@@ -2395,7 +2368,8 @@
     "message": "Mostrar transacciones entrantes"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones"
+    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Mostrar permisos"
@@ -2417,9 +2391,6 @@
   },
   "sign": {
     "message": "Firmar"
-  },
-  "signNotice": {
-    "message": "Firmar este mensaje puede ser peligroso. Esta firma podría realizar potencialmente cualquier operación en nombre de su cuenta, incluida la concesión del control total de tu cuenta y de todos sus activos al sitio solicitante. Solo firme este mensaje si sabe lo que está haciendo o confía plenamente en el sitio solicitante."
   },
   "signatureRequest": {
     "message": "Solicitud de firma"

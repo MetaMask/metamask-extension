@@ -14,26 +14,33 @@ Good typography improves readability, legibility and hierarchy of information.
 
 ## Props
 
+The `Text` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
 <ArgsTable of={Text} />
 
 ### Variant
 
 Use the `variant` prop and the `TEXT` object from `./ui/helpers/constants/design-system.js` to change the font size of the component.
 
+Optional: `TEXT_VARIANTS` from ./text object can also be used.
+
 <Canvas>
   <Story id="ui-components-component-library-text-text-stories-js--variant" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 import { TEXT } from '../../../helpers/constants/design-system';
 
 <Text variant={TEXT.DISPLAY_MD}>display-md</Text>
 <Text variant={TEXT.HEADING_LG}>heading-lg</Text>
 <Text variant={TEXT.HEADING_MD}>heading-md</Text>
 <Text variant={TEXT.HEADING_SM}>heading-sm</Text>
+<Text variant={TEXT.BODY_LG_MEDIUM}>body-lg-medium</Text>
 <Text variant={TEXT.BODY_MD}>body-md</Text>
+<Text variant={TEXT.BODY_MD_BOLD}>body-md-bold</Text>
 <Text variant={TEXT.BODY_SM}>body-sm</Text>
+<Text variant={TEXT.BODY_SM_BOLD}>body-sm-bold</Text>
 <Text variant={TEXT.BODY_XS}>body-xs</Text>
 <Text variant={TEXT.INHERIT}>inherit</Text>
 ```
@@ -47,7 +54,7 @@ Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 import { COLORS } from '../../../helpers/constants/design-system';
 
 <Text color={COLORS.TEXT_DEFAULT}>
@@ -104,7 +111,7 @@ Use the `fontWeight` prop and the `FONT_WEIGHT` object from `./ui/helpers/consta
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 import { FONT_WEIGHT } from '../../../helpers/constants/design-system';
 
 <Text fontWeight={FONT_WEIGHT.NORMAL}>
@@ -130,7 +137,7 @@ Use the `fontStyle` prop and the `FONT_STYLE` object from `./ui/helpers/constant
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 import { FONT_STYLE } from '../../../helpers/constants/design-system';
 
 <Text fontStyle={FONT_STYLE.NORMAL}>
@@ -150,7 +157,7 @@ Use the `textTransform` prop and the `TEXT_TRANSFORM` object from `./ui/helpers/
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 import { TEXT_TRANSFORM } from '../../../helpers/constants/design-system';
 
 <Text textAlign={TEXT_TRANSFORM.UPPERCASE}>
@@ -173,7 +180,7 @@ Use the `textAlign` prop and the `TEXT_ALIGN` object from `./ui/helpers/constant
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 
 <Text textAlign={TEXT_ALIGN.LEFT}>
@@ -202,7 +209,7 @@ Use the `overflowWrap` prop and the `OVERFLOW_WRAP` object from `./ui/helpers/co
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
 
 <div
@@ -230,7 +237,7 @@ Use the boolean `ellipsis` prop to change the if the `Text` component to have an
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 
 <div
   style={{
@@ -253,7 +260,7 @@ Use the `as` prop to change the root html element of the `Text` component
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/component-library/text';
+import { Text } from '../../ui/components/component-library';
 
 <Text as="dd">dd</Text>
 <Text as="div">div</Text>

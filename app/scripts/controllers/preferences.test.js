@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import { ControllerMessenger } from '@metamask/controllers';
+import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import PreferencesController from './preferences';
@@ -287,6 +287,28 @@ describe('preferences controller', function () {
       );
     });
   });
+
+  describe('setUseMultiAccountBalanceChecker', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useMultiAccountBalanceChecker, true);
+    });
+
+    it('should set the setUseMultiAccountBalanceChecker property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        true,
+      );
+
+      preferencesController.setUseMultiAccountBalanceChecker(false);
+
+      assert.equal(
+        preferencesController.store.getState().useMultiAccountBalanceChecker,
+        false,
+      );
+    });
+  });
+
   describe('setUseTokenDetection', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();
@@ -306,21 +328,21 @@ describe('preferences controller', function () {
     });
   });
 
-  describe('setUseCollectibleDetection', function () {
+  describe('setUseNftDetection', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.useCollectibleDetection, false);
+      assert.equal(state.useNftDetection, false);
     });
 
-    it('should set the useCollectibleDetection property in state', function () {
+    it('should set the useNftDetection property in state', function () {
       assert.equal(
-        preferencesController.store.getState().useCollectibleDetection,
+        preferencesController.store.getState().useNftDetection,
         false,
       );
       preferencesController.setOpenSeaEnabled(true);
-      preferencesController.setUseCollectibleDetection(true);
+      preferencesController.setUseNftDetection(true);
       assert.equal(
-        preferencesController.store.getState().useCollectibleDetection,
+        preferencesController.store.getState().useNftDetection,
         true,
       );
     });
@@ -377,6 +399,25 @@ describe('preferences controller', function () {
       assert.equal(state.theme, 'light');
       preferencesController.setTheme('dark');
       assert.equal(preferencesController.store.getState().theme, 'dark');
+    });
+  });
+
+  describe('setUseCurrencyRateCheck', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useCurrencyRateCheck, true);
+    });
+
+    it('should set the useCurrencyRateCheck property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        true,
+      );
+      preferencesController.setUseCurrencyRateCheck(false);
+      assert.equal(
+        preferencesController.store.getState().useCurrencyRateCheck,
+        false,
+      );
     });
   });
 });

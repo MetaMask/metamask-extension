@@ -1,4 +1,7 @@
 {
+  "ENS": {
+    "resolution": ""
+  },
   "appState": {
     "networkDropdownOpen": false,
     "gasIsLoading": false,
@@ -19,6 +22,8 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
+    "ipfsGateway": "",
+    "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
@@ -247,6 +252,7 @@
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
+    "useCurrencyRateCheck": true,
     "advancedGasFee": {
       "maxBaseFee": "75",
       "priorityFee": "2"

@@ -598,16 +598,6 @@
   "confirm": {
     "message": "확인"
   },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "향후 소유할 수 있는 모든 $1에 대한 액세스를 허용하는 것입니다. 이 허용을 취소하지 않는 한, 상대방이 언제든지 허락 없이 지갑에서 NFT를 전송할 수 있습니다. $2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "이 계약의 모든 NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "주의하여 진행하세요."
-  },
   "confirmPassword": {
     "message": "비밀번호 확인"
   },
@@ -1207,14 +1197,8 @@
     "message": "엔드포인트에서 다른 체인 ID를 반환했습니다. $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "향상된 토큰 감지"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "$1. $2에서 향상된 토큰 감지를 사용할 수 있습니다."
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys 토큰 API는 다양한 타사 토큰 목록을 활용해 토큰 목록을 집계합니다. 이 기능이 켜져 있으면 이더리움 메인넷, Binance, 폴리곤 및 아발란체에서 토큰이 자동으로 감지되며 검색이 가능합니다. 이 기능을 끄면 이더리움 메인넷에서만 자동 탐지 및 검색이 가능합니다."
   },
   "ensIllegalCharacter": {
     "message": "ENS에 맞지 않는 문자입니다."
@@ -1747,12 +1731,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "입력 오류: 비밀 복구 구문은 대소문자를 구분해야 합니다."
   },
-  "ipfsGateway": {
-    "message": "IPFS 게이트웨이"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENS 콘텐츠 해결에 사용할 IPFS CID 게이트웨이의 URL을 입력하세요."
-  },
   "jazzAndBlockies": {
     "message": "Jazzicons와 Blockies는 계정을 한눈에 식별할 수 있게 도와주는 두 가지 고유한 아이콘 스타일입니다."
   },
@@ -1970,18 +1948,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "절대로",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask에서는.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다."
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "전체 IP 주소를 절대 수집하지 않습니다.",
@@ -1990,12 +1962,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다.",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "전체 IP 주소를 절대 수집하지 않습니다."
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "절대로 수익을 위해 데이터를 판매하지 않습니다!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 수익을 위해 데이터를 판매하지 않습니다!",
@@ -2009,12 +1975,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMask는 사용자가 확장 프로그램과 상호작용하는 방식을 자세히 이해하기 위해 사용 데이터를 수집하고자 합니다. 수집한 데이터는 당사의 제품과 이더리움 에코시스템의 사용 편의성 및 사용자 경험을 지속적으로 개선하는 데 활용됩니다."
-  },
-  "metametricsOptInDescription2": {
-    "message": "당사 제품의 가용성 향상을 위해 기본적인 사용 데이터를 수집하고자 합니다. 이 측정항목은..."
-  },
-  "metametricsTitle": {
-    "message": "6백만 명 이상의 사용자와 함께 MetaMask 기능 향상에 동참하세요."
   },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
@@ -3065,9 +3025,6 @@
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "개인정보 설정 고급 지정"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
   },
@@ -3116,7 +3073,8 @@
     "message": "수신 거래 표시"
   },
   "showIncomingTransactionsDescription": {
-    "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다."
+    "message": "이 항목을 선택하면 Etherscan을 사용해 거래 목록에 수신 거래를 표시할 수 있습니다.",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "권한 표시"
@@ -3138,9 +3096,6 @@
   },
   "sign": {
     "message": "서명"
-  },
-  "signNotice": {
-    "message": "본 메시지에 서명하는 행위는 위험의 가능성을 내포하고 있습니다. 본 서명을 이용하여 사이트에 요청하면 귀하의 계정 및 모든 자산에 대해 완전한 권한을 부여함은 물론 귀하의 계정과 관련된 실질적 모든 작업을 수행할 가능성이 있기 때문입니다. 완전히 신뢰할 수 있는 사이트에서 확실한 작업을 수행할 경우에만 본 메시지에 서명하십시오."
   },
   "signatureRequest": {
     "message": "서명 요청"

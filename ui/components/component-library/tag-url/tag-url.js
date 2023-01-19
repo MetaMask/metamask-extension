@@ -38,7 +38,7 @@ export const TagUrl = ({
       paddingRight={4}
       gap={2}
       borderRadius={BORDER_RADIUS.PILL}
-      display={DISPLAY.INLINE_FLEX}
+      display={DISPLAY.FLEX}
       {...props}
     >
       <AvatarFavicon imageSource={src} {...avatarFaviconProps} />

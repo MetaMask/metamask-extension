@@ -3,12 +3,11 @@
  * keyring types. Both simple and HD are treated as default but we do special
  * case accounts managed by a hardware wallet.
  */
-export const KEYRING_TYPES = {
+export const HARDWARE_KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
   LATTICE: 'Lattice Hardware',
   QR: 'QR Hardware Wallet Device',
-  IMPORTED: 'Simple Key Pair',
 };
 
 export const DEVICE_NAMES = {

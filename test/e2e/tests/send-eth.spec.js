@@ -37,8 +37,8 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         const errorAmount = await driver.findElement('.send-v2__error-amount');
         assert.equal(
           await errorAmount.getText(),
-          'Insufficient funds.',
-          'send screen should render an insufficient fund error message',
+          'Insufficient funds for gas',
+          'send screen should render an insufficient fund for gas error message',
         );
 
         await inputAmount.press(driver.Key.BACK_SPACE);
