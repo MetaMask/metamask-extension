@@ -71,7 +71,7 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
 import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { TransactionStatus } from '../../shared/constants/transaction';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
@@ -586,9 +586,12 @@ export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
   const isCustomNetwork = getIsCustomNetwork(state);
   const conversionRate = getConversionRate(state);
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   const { showFiatInTestnets } = getPreferences(state);
   return Boolean(
-    (isMainNet || isCustomNetwork || showFiatInTestnets) && conversionRate,
+    (isMainNet || isCustomNetwork || showFiatInTestnets) &&
+      useCurrencyRateCheck &&
+      conversionRate,
   );
 }
 
@@ -866,7 +869,7 @@ export const getTransaction = createDeepEqualSelector(
 export const getFullTxData = createDeepEqualSelector(
   getTxData,
   (state, transactionId, status) => {
-    if (status === TRANSACTION_STATUSES.UNAPPROVED) {
+    if (status === TransactionStatus.unapproved) {
       return getUnapprovedTransaction(state, transactionId);
     }
     return getTransaction(state, transactionId);
@@ -1387,4 +1390,14 @@ export function getShouldShowSeedPhraseReminder(state) {
 
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
+}
+
+/**
+ * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseCurrencyRateCheck(state) {
+  return Boolean(state.metamask.useCurrencyRateCheck);
 }

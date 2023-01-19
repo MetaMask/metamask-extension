@@ -3,7 +3,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { TransactionStatus } from '../../shared/constants/transaction';
 import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import * as actions from './actions';
@@ -819,7 +819,7 @@ describe('Actions', () => {
 
     const txData = {
       id: '1',
-      status: TRANSACTION_STATUSES.UNAPPROVED,
+      status: TransactionStatus.unapproved,
       metamaskNetworkId: currentNetworkId,
       txParams,
     };
@@ -1259,7 +1259,7 @@ describe('Actions', () => {
 
       const exportAccountStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(null, testPrivKey));
+        .callsFake((_, _2, cb) => cb(null, testPrivKey));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
@@ -1318,7 +1318,7 @@ describe('Actions', () => {
 
       const exportAccountStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
+        .callsFake((_, _2, cb) => cb(new Error('error')));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,

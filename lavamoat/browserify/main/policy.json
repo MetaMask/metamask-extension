@@ -501,6 +501,7 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.info": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
@@ -508,10 +509,10 @@
       "packages": {
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/assets-controllers>@metamask/contract-metadata": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
+        "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "browserify>events": true,
@@ -937,16 +938,11 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
-        "@metamask/phishing-controller>@metamask/base-controller": true,
         "@metamask/phishing-controller>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/phishing-controller>eth-phishing-detect": {
@@ -2170,12 +2166,10 @@
     },
     "eth-json-rpc-filters": {
       "globals": {
-        "console.error": true,
-        "results": "write"
+        "console.error": true
       },
       "packages": {
         "eth-json-rpc-filters>async-mutex": true,
-        "eth-json-rpc-filters>eth-json-rpc-middleware": true,
         "eth-query": true,
         "json-rpc-engine": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true,
@@ -2188,11 +2182,6 @@
       },
       "packages": {
         "enzyme>cheerio>tslib": true
-      }
-    },
-    "eth-json-rpc-filters>eth-json-rpc-middleware": {
-      "packages": {
-        "eth-json-rpc-filters>eth-json-rpc-middleware>json-rpc-engine": true
       }
     },
     "eth-json-rpc-middleware": {
@@ -4143,17 +4132,6 @@
         "enzyme>function.prototype.name>functions-have-names": true,
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true
-      }
-    },
-    "textarea-caret": {
-      "globals": {
-        "document.body.appendChild": true,
-        "document.body.removeChild": true,
-        "document.createElement": true,
-        "document.querySelector": true,
-        "getCaretCoordinates": "write",
-        "getComputedStyle": true,
-        "mozInnerScreenX": true
       }
     },
     "uuid": {

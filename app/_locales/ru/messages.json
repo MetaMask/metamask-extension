@@ -1264,14 +1264,8 @@
     "message": "Конечная точка вернула другой идентификатор цепочки: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Улучшенное обнаружение токена"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Улучшенное обнаружение токенов в настоящее время доступно на $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "API токенов ConsenSys объединяет список токенов из различных сторонних списков токенов. При включении токены будут автоматически обнаруживаться и станут доступны для поиска в основной сети Ethereum, Binance, Polygon и Avalanche. При выключении автоматическое обнаружение и поиск могут выполняться только в основной сети Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Недопустимый символ для ENS."

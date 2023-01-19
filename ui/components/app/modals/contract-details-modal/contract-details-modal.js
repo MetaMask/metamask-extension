@@ -25,7 +25,7 @@ import {
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
-import { ERC1155, ERC721 } from '../../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
 
 export default function ContractDetailsModal({
@@ -50,8 +50,8 @@ export default function ContractDetailsModal({
     data: getAddressBookEntry(state, toAddress),
   }));
   const nft =
-    assetStandard === ERC721 ||
-    assetStandard === ERC1155 ||
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155 ||
     // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenName and tokenId we assume its an NFT
     (assetName && tokenId) ||
     (tokenName && tokenId);

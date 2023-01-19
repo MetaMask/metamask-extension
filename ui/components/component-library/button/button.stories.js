@@ -64,7 +64,7 @@ export default {
     href: {
       control: 'text',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -167,7 +167,7 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <Button {...args}>Href Example</Button>;
+export const Href = (args) => <Button {...args}>Anchor Element</Button>;
 
 Href.args = {
   href: '/metamask',

@@ -1,8 +1,8 @@
 import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import TransactionStatus from '.';
+import TransactionStatusLabel from '.';
 
-describe('TransactionStatus Component', () => {
+describe('TransactionStatusLabel Component', () => {
   it('should render CONFIRMED properly', () => {
     const confirmedProps = {
       status: 'confirmed',
@@ -10,7 +10,7 @@ describe('TransactionStatus Component', () => {
     };
 
     const { container } = renderWithProvider(
-      <TransactionStatus {...confirmedProps} />,
+      <TransactionStatusLabel {...confirmedProps} />,
     );
 
     expect(container).toMatchSnapshot();
@@ -23,7 +23,9 @@ describe('TransactionStatus Component', () => {
       error: { message: 'test-title' },
     };
 
-    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+    const { container } = renderWithProvider(
+      <TransactionStatusLabel {...props} />,
+    );
 
     expect(container).toMatchSnapshot();
   });
@@ -35,7 +37,9 @@ describe('TransactionStatus Component', () => {
       isEarliestNonce: true,
     };
 
-    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+    const { container } = renderWithProvider(
+      <TransactionStatusLabel {...props} />,
+    );
 
     expect(container).toMatchSnapshot();
   });
@@ -45,7 +49,9 @@ describe('TransactionStatus Component', () => {
       status: 'queued',
     };
 
-    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+    const { container } = renderWithProvider(
+      <TransactionStatusLabel {...props} />,
+    );
 
     expect(container).toMatchSnapshot();
   });
@@ -55,7 +61,9 @@ describe('TransactionStatus Component', () => {
       status: 'unapproved',
     };
 
-    const { container } = renderWithProvider(<TransactionStatus {...props} />);
+    const { container } = renderWithProvider(
+      <TransactionStatusLabel {...props} />,
+    );
 
     expect(container).toMatchSnapshot();
   });
