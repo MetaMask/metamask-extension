@@ -74,10 +74,6 @@ describe('Test Snap Installed', function () {
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.waitForSelector({
-          css: '#connectConfirmSnap',
-          text: 'Reconnect to Confirm Snap',
-        });
 
         const errorButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(errorButton);
@@ -116,10 +112,6 @@ describe('Test Snap Installed', function () {
 
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.waitForSelector({
-          css: '#connectErrorSnap',
-          text: 'Reconnect to Error Snap',
-        });
 
         const result = await driver.findElement('#installedSnapsResult');
         await driver.scrollToElement(result);

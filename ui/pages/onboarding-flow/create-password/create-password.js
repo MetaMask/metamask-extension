@@ -189,7 +189,6 @@ export default function CreatePassword({
           <FormField
             dataTestId="create-password-new"
             autoFocus
-            error={passwordError}
             passwordStrength={passwordStrength}
             passwordStrengthText={passwordStrengthText}
             onChange={handlePasswordChange}

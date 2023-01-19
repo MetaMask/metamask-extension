@@ -1913,6 +1913,7 @@
       },
       "packages": {
         "chokidar>braces": true,
+        "chokidar>fsevents": true,
         "chokidar>glob-parent": true,
         "chokidar>is-binary-path": true,
         "chokidar>normalize-path": true,
@@ -1938,6 +1939,13 @@
       "packages": {
         "chokidar>braces>fill-range>to-regex-range>is-number": true
       }
+    },
+    "chokidar>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
     },
     "chokidar>glob-parent": {
       "builtin": {
@@ -4290,6 +4298,7 @@
         "gulp-watch>chokidar>anymatch": true,
         "gulp-watch>chokidar>async-each": true,
         "gulp-watch>chokidar>braces": true,
+        "gulp-watch>chokidar>fsevents": true,
         "gulp-watch>chokidar>is-binary-path": true,
         "gulp-watch>chokidar>readdirp": true,
         "gulp-watch>chokidar>upath": true,
@@ -4662,6 +4671,142 @@
         "enzyme>rst-selector-parser>nearley>randexp>ret": true
       }
     },
+    "gulp-watch>chokidar>fsevents": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.stat": true,
+        "path.join": true,
+        "util.inherits": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.assert": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.renameSync": true,
+        "path.dirname": true,
+        "path.existsSync": true,
+        "path.join": true,
+        "path.resolve": true,
+        "url.parse": true,
+        "url.resolve": true,
+        "util.inherits": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.log": true,
+        "process.arch": true,
+        "process.cwd": true,
+        "process.env": true,
+        "process.platform": true,
+        "process.version.substr": true,
+        "process.versions": true
+      },
+      "packages": {
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>detect-libc": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>semver": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>detect-libc": {
+      "builtin": {
+        "child_process.spawnSync": true,
+        "fs.readdirSync": true,
+        "os.platform": true
+      },
+      "globals": {
+        "process.env": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt": {
+      "builtin": {
+        "path": true,
+        "stream.Stream": true,
+        "url": true
+      },
+      "globals": {
+        "console": true,
+        "process.argv": true,
+        "process.env.DEBUG_NOPT": true,
+        "process.env.NOPT_DEBUG": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>nopt>abbrev": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv": {
+      "builtin": {
+        "child_process.exec": true,
+        "path": true
+      },
+      "globals": {
+        "process.env.COMPUTERNAME": true,
+        "process.env.ComSpec": true,
+        "process.env.EDITOR": true,
+        "process.env.HOSTNAME": true,
+        "process.env.PATH": true,
+        "process.env.PROMPT": true,
+        "process.env.PS1": true,
+        "process.env.Path": true,
+        "process.env.SHELL": true,
+        "process.env.USER": true,
+        "process.env.USERDOMAIN": true,
+        "process.env.USERNAME": true,
+        "process.env.VISUAL": true,
+        "process.env.path": true,
+        "process.nextTick": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": {
+      "globals": {
+        "process.env.SystemRoot": true,
+        "process.env.TEMP": true,
+        "process.env.TMP": true,
+        "process.env.TMPDIR": true,
+        "process.env.windir": true,
+        "process.platform": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": {
+      "builtin": {
+        "assert": true,
+        "fs": true,
+        "path.join": true
+      },
+      "globals": {
+        "process.platform": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "nyc>glob": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>semver": {
+      "globals": {
+        "console": true,
+        "process": true
+      }
+    },
     "gulp-watch>chokidar>is-binary-path": {
       "builtin": {
         "path.extname": true
@@ -4695,15 +4840,15 @@
         "process.platform": true
       },
       "packages": {
+        "@babel/register>clone-deep>kind-of": true,
         "gulp-watch>chokidar>braces": true,
+        "gulp-watch>chokidar>braces>array-unique": true,
         "gulp-watch>chokidar>braces>snapdragon": true,
         "gulp-watch>chokidar>braces>to-regex": true,
-        "gulp-watch>chokidar>readdirp>micromatch>arr-diff": true,
-        "gulp-watch>chokidar>readdirp>micromatch>array-unique": true,
         "gulp-watch>chokidar>readdirp>micromatch>define-property": true,
-        "gulp-watch>chokidar>readdirp>micromatch>extend-shallow": true,
         "gulp-watch>chokidar>readdirp>micromatch>extglob": true,
-        "gulp-watch>chokidar>readdirp>micromatch>kind-of": true,
+        "gulp-zip>plugin-error>arr-diff": true,
+        "gulp-zip>plugin-error>extend-shallow": true,
         "gulp>gulp-cli>liftoff>fined>object.pick": true,
         "gulp>gulp-cli>matchdep>micromatch>fragment-cache": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch": true,
@@ -4716,22 +4861,11 @@
         "gulp>gulp-cli>matchdep>micromatch>define-property>is-descriptor": true
       }
     },
-    "gulp-watch>chokidar>readdirp>micromatch>extend-shallow": {
-      "packages": {
-        "gulp-watch>chokidar>readdirp>micromatch>extend-shallow>is-extendable": true,
-        "gulp-zip>plugin-error>extend-shallow>assign-symbols": true
-      }
-    },
-    "gulp-watch>chokidar>readdirp>micromatch>extend-shallow>is-extendable": {
-      "packages": {
-        "@babel/register>clone-deep>is-plain-object": true
-      }
-    },
     "gulp-watch>chokidar>readdirp>micromatch>extglob": {
       "packages": {
+        "gulp-watch>chokidar>braces>array-unique": true,
         "gulp-watch>chokidar>braces>snapdragon": true,
         "gulp-watch>chokidar>braces>to-regex": true,
-        "gulp-watch>chokidar>readdirp>micromatch>array-unique": true,
         "gulp-watch>chokidar>readdirp>micromatch>extglob>define-property": true,
         "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets": true,
         "gulp-watch>chokidar>readdirp>micromatch>extglob>extend-shallow": true,
@@ -4792,22 +4926,32 @@
     },
     "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-accessor-descriptor": {
       "packages": {
-        "gulp-watch>anymatch>micromatch>kind-of": true
+        "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-accessor-descriptor>kind-of": true
+      }
+    },
+    "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-accessor-descriptor>kind-of": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor": {
       "packages": {
-        "gulp-watch>anymatch>micromatch>kind-of": true
+        "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor>kind-of": true
+      }
+    },
+    "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor>kind-of": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>extend-shallow": {
       "packages": {
-        "gulp-watch>chokidar>readdirp>micromatch>extglob>expand-brackets>extend-shallow>is-extendable": true
+        "gulp-watch>chokidar>braces>extend-shallow>is-extendable": true
       }
     },
     "gulp-watch>chokidar>readdirp>micromatch>extglob>extend-shallow": {
       "packages": {
-        "gulp-watch>chokidar>readdirp>micromatch>extglob>extend-shallow>is-extendable": true
+        "gulp-watch>chokidar>braces>extend-shallow>is-extendable": true
       }
     },
     "gulp-watch>chokidar>upath": {
@@ -5069,15 +5213,15 @@
       },
       "packages": {
         "@babel/register>clone-deep>kind-of": true,
+        "gulp-watch>chokidar>braces>array-unique": true,
         "gulp-watch>chokidar>braces>snapdragon": true,
         "gulp-watch>chokidar>braces>to-regex": true,
         "gulp-zip>plugin-error>arr-diff": true,
+        "gulp-zip>plugin-error>extend-shallow": true,
         "gulp>glob-watcher>anymatch>micromatch>define-property": true,
-        "gulp>glob-watcher>anymatch>micromatch>extend-shallow": true,
         "gulp>glob-watcher>anymatch>micromatch>extglob": true,
         "gulp>glob-watcher>chokidar>braces": true,
         "gulp>gulp-cli>liftoff>fined>object.pick": true,
-        "gulp>gulp-cli>matchdep>micromatch>array-unique": true,
         "gulp>gulp-cli>matchdep>micromatch>fragment-cache": true,
         "gulp>gulp-cli>matchdep>micromatch>nanomatch": true,
         "gulp>gulp-cli>matchdep>micromatch>regex-not": true
@@ -5089,25 +5233,14 @@
         "gulp>gulp-cli>matchdep>micromatch>define-property>is-descriptor": true
       }
     },
-    "gulp>glob-watcher>anymatch>micromatch>extend-shallow": {
-      "packages": {
-        "gulp-zip>plugin-error>extend-shallow>assign-symbols": true,
-        "gulp>glob-watcher>anymatch>micromatch>extend-shallow>is-extendable": true
-      }
-    },
-    "gulp>glob-watcher>anymatch>micromatch>extend-shallow>is-extendable": {
-      "packages": {
-        "@babel/register>clone-deep>is-plain-object": true
-      }
-    },
     "gulp>glob-watcher>anymatch>micromatch>extglob": {
       "packages": {
-        "gulp-watch>chokidar>braces>extend-shallow": true,
+        "gulp-watch>chokidar>braces>array-unique": true,
         "gulp-watch>chokidar>braces>snapdragon": true,
         "gulp-watch>chokidar>braces>to-regex": true,
         "gulp>glob-watcher>anymatch>micromatch>extglob>define-property": true,
         "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets": true,
-        "gulp>gulp-cli>matchdep>micromatch>array-unique": true,
+        "gulp>glob-watcher>anymatch>micromatch>extglob>extend-shallow": true,
         "gulp>gulp-cli>matchdep>micromatch>fragment-cache": true,
         "gulp>gulp-cli>matchdep>micromatch>regex-not": true
       }
@@ -5122,11 +5255,11 @@
         "__filename": true
       },
       "packages": {
-        "gulp-watch>chokidar>braces>extend-shallow": true,
         "gulp-watch>chokidar>braces>snapdragon": true,
         "gulp-watch>chokidar>braces>to-regex": true,
         "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>debug": true,
         "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property": true,
+        "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>extend-shallow": true,
         "gulp>gulp-cli>matchdep>micromatch>extglob>expand-brackets>posix-character-classes": true,
         "gulp>gulp-cli>matchdep>micromatch>regex-not": true
       }
@@ -5183,28 +5316,30 @@
         "browserify>insert-module-globals>is-buffer": true
       }
     },
+    "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>extend-shallow": {
+      "packages": {
+        "gulp-watch>chokidar>braces>extend-shallow>is-extendable": true
+      }
+    },
+    "gulp>glob-watcher>anymatch>micromatch>extglob>extend-shallow": {
+      "packages": {
+        "gulp-watch>chokidar>braces>extend-shallow>is-extendable": true
+      }
+    },
     "gulp>glob-watcher>anymatch>normalize-path": {
       "packages": {
         "vinyl>remove-trailing-separator": true
       }
     },
     "gulp>glob-watcher>async-done": {
-      "builtin": {
-        "domain.create": true
-      },
       "globals": {
         "process.nextTick": true
       },
       "packages": {
         "end-of-stream": true,
-        "gulp>glob-watcher>async-done>process-nextick-args": true,
         "gulp>glob-watcher>async-done>stream-exhaust": true,
-        "pump>once": true
-      }
-    },
-    "gulp>glob-watcher>async-done>process-nextick-args": {
-      "globals": {
-        "process": true
+        "pump>once": true,
+        "readable-stream>process-nextick-args": true
       }
     },
     "gulp>glob-watcher>async-done>stream-exhaust": {
@@ -5239,14 +5374,15 @@
         "setTimeout": true
       },
       "packages": {
+        "chokidar>normalize-path": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
-        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>chokidar>braces": true,
+        "gulp>glob-watcher>chokidar>fsevents": true,
+        "gulp>glob-watcher>chokidar>glob-parent": true,
         "gulp>glob-watcher>chokidar>is-binary-path": true,
-        "gulp>glob-watcher>chokidar>normalize-path": true,
         "gulp>glob-watcher>chokidar>readdirp": true,
         "gulp>glob-watcher>chokidar>upath": true,
         "pumpify>inherits": true
@@ -5254,16 +5390,21 @@
     },
     "gulp>glob-watcher>chokidar>braces": {
       "packages": {
-        "gulp-watch>chokidar>braces>extend-shallow": true,
+        "gulp-watch>chokidar>braces>array-unique": true,
         "gulp-watch>chokidar>braces>repeat-element": true,
         "gulp-watch>chokidar>braces>snapdragon": true,
         "gulp-watch>chokidar>braces>snapdragon-node": true,
         "gulp-watch>chokidar>braces>split-string": true,
         "gulp-watch>chokidar>braces>to-regex": true,
+        "gulp>glob-watcher>chokidar>braces>extend-shallow": true,
         "gulp>glob-watcher>chokidar>braces>fill-range": true,
         "gulp>gulp-cli>isobject": true,
-        "gulp>gulp-cli>matchdep>micromatch>array-unique": true,
         "gulp>undertaker>arr-flatten": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>braces>extend-shallow": {
+      "packages": {
+        "gulp-watch>chokidar>braces>extend-shallow>is-extendable": true
       }
     },
     "gulp>glob-watcher>chokidar>braces>fill-range": {
@@ -5271,10 +5412,15 @@
         "util.inspect": true
       },
       "packages": {
-        "gulp-watch>chokidar>braces>extend-shallow": true,
+        "gulp>glob-watcher>chokidar>braces>fill-range>extend-shallow": true,
         "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
         "gulp>glob-watcher>chokidar>braces>fill-range>to-regex-range": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>braces>fill-range>extend-shallow": {
+      "packages": {
+        "gulp-watch>chokidar>braces>extend-shallow>is-extendable": true
       }
     },
     "gulp>glob-watcher>chokidar>braces>fill-range>is-number": {
@@ -5291,6 +5437,39 @@
       "packages": {
         "gulp>glob-watcher>chokidar>braces>fill-range>is-number": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>fsevents": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.stat": true,
+        "path.join": true,
+        "util.inherits": true
+      },
+      "globals": {
+        "__dirname": true,
+        "console.assert": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path": true
+      },
+      "packages": {
+        "gulp-watch>glob-parent>path-dirname": true,
+        "gulp>glob-watcher>chokidar>glob-parent>is-glob": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>glob-parent>is-glob": {
+      "packages": {
+        "gulp>glob-watcher>chokidar>glob-parent>is-glob>is-extglob": true
       }
     },
     "gulp>glob-watcher>chokidar>is-binary-path": {

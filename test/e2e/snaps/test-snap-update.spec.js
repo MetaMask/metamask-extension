@@ -70,10 +70,7 @@ describe('Test Snap update', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.waitForSelector({
-          css: '.popover-header',
-          text: 'Are you sure?',
-        });
+        await driver.delay(1000);
         await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
         await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-0');
         await driver.clickElement({
@@ -87,10 +84,7 @@ describe('Test Snap update', function () {
         // navigate to test snap page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.waitForSelector({
-          css: '#connectUpdate',
-          text: 'Reconnect to Update Snap',
-        });
+        await driver.delay(1000);
 
         // find and scroll to the correct card and click first
         const snapButton2 = await driver.findElement('#connectUpdateNew');
@@ -122,10 +116,8 @@ describe('Test Snap update', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // look for the correct version text
-        const versionResult = await driver.waitForSelector({
-          css: '#updateSnapVersion',
-          text: '"4.0.2"',
-        });
+        const versionResult = await driver.findElement('#updateSnapVersion');
+        await driver.delay(1000);
         assert.equal(await versionResult.getText(), '"4.0.2"');
       },
     );

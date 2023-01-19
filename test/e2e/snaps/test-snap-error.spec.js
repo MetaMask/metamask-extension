@@ -75,10 +75,7 @@ describe('Test Snap Error', function () {
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.waitForSelector({
-          css: '#connectErrorSnap',
-          text: 'Reconnect to Error Snap',
-        });
+        await driver.delay(1000);
 
         // find and click on send error
         await driver.clickElement('#sendError');

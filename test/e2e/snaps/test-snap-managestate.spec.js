@@ -83,9 +83,7 @@ describe('Test Snap manageState', function () {
         );
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
-        const sendButton = await driver.findElement('#sendManageState');
-        await driver.scrollToElement(sendButton);
-        await sendButton.click();
+        await driver.clickElement('#sendManageState');
 
         // check the results of the public key test
         await driver.delay(1000);
@@ -105,9 +103,7 @@ describe('Test Snap manageState', function () {
         );
 
         // click clear results
-        const clearButton = await driver.findElement('#clearManageState');
-        await driver.scrollToElement(clearButton);
-        await clearButton.click();
+        await driver.clickElement('#clearManageState');
 
         // check if true
         await driver.delay(1000);
