@@ -115,6 +115,18 @@
   "amount": {
     "message": "數量"
   },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "appDescription": {
     "message": "以太坊瀏覽器擴充插件",
     "description": "The description of the application"
