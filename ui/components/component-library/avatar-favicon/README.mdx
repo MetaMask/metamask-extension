@@ -1,5 +1,7 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
+import { AvatarBase } from '../';
+
 import { AvatarFavicon } from './avatar-favicon';
 
 # AvatarFavicon
@@ -16,29 +18,58 @@ The `AvatarFavicon` accepts all props below as well as all [Box](/docs/ui-compon
 
 <ArgsTable of={AvatarFavicon} />
 
+`AvatarFavicon` accepts all [AvatarBase](/docs/ui-components-component-library-avatar-base-avatar-base-stories-js--default-story#props)
+component props
+
+<ArgsTable of={AvatarBase} />
+
 ### Size
 
 Use the `size` prop to set the size of the `AvatarFavicon`.
 
+Optional: `AVATAR_FAVICON_SIZES` from `./ui/components/component-library` object can be used instead of `SIZES`
+
 Possible sizes include:
 
-- `xs` 16px
-- `sm` 24px
-- `md` 32px
-- `lg` 40px
-- `xl` 48px
+- `SIZES.XS` 16px
+- `SIZES.SM` 24px
+- `SIZES.MD` 32px
+- `SIZES.LG` 40px
+- `SIZES.XL` 48px
 
-Defaults to `md`
+Defaults to `SIZES.MD`
 
 <Canvas>
   <Story id="ui-components-component-library-avatar-favicon-avatar-favicon-stories-js--size" />
 </Canvas>
 
-### Image Source
+```jsx
+import { SIZES } from '../../../helpers/constants/design-system';
+import { AvatarFavicon } from '../ui/component-library';
 
-Use the `imageSource` prop to set the image to be rendered of the `AvatarFavicon`.
+<AvatarFavicon size={SIZES.XS} />
+<AvatarFavicon size={SIZES.SM} />
+<AvatarFavicon size={SIZES.MD} />
+<AvatarFavicon size={SIZES.LG} />
+<AvatarFavicon size={SIZES.XL} />
+```
+
+### Src
+
+Use the `src` prop to set the image to be rendered of the `AvatarFavicon`.
+
+<Canvas>
+  <Story id="ui-components-component-library-avatar-favicon-avatar-favicon-stories-js--src" />
+</Canvas>
+
+```jsx
+import { AvatarFavicon } from '../ui/component-library';
+
+<AvatarFavicon src="https://uniswap.org/favicon.ico" />
+<AvatarFavicon src="https://1inch.exchange/assets/favicon/favicon-32x32.png" />
+```
 
 ### Fallback Icon Props
 
-If there is no `imageSource` then in that case an [icon](/docs/ui-components-component-library-icon-icon-stories-js--default-story) will be used as the fallback display and it can be customised via `fallbackIconProps`.
+If there is no `src` then in that case an [icon](/docs/ui-components-component-library-icon-icon-stories-js--default-story) will be used as the fallback display and it can be customised via `fallbackIconProps`.
 

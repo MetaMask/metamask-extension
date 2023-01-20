@@ -82,9 +82,6 @@
   "advanced": {
     "message": "Advanced"
   },
-  "advancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
   "affirmAgree": {
     "message": "Sang-ayon ako"
   },
@@ -881,12 +878,6 @@
   "invalidSeedPhrase": {
     "message": "Invalid na Secret Recovery Phrase"
   },
-  "ipfsGateway": {
-    "message": "IPFS Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Ilagay ang URL ng IPFS CID gateway para magamit para sa resolusyon ng content ng ENS."
-  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -1071,9 +1062,6 @@
   },
   "newAccount": {
     "message": "Bagong Account"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "May natukoy na bagong address! Mag-click dito para idagdag sa iyong address book."
   },
   "newAccountNumberName": {
     "message": "Account $1",
@@ -1538,7 +1526,8 @@
     "message": "Ipakita ang Mga Papasok na Transaksyon"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon"
+    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
@@ -1552,14 +1541,8 @@
   "sign": {
     "message": "Lumagda"
   },
-  "signNotice": {
-    "message": "Puwedeng may mga \nmapanganib na side effect ang paglagda sa mensaheng ito. Lagdaan lang ang mga mensahe mula sa \nmga site na pinagkakatiwalaan mo para sa buong account mo.\n Aalisin ang mapanganib na paraang ito sa bersyon sa hinaharap. "
-  },
   "signatureRequest": {
     "message": "Request ng Signature"
-  },
-  "signatureRequest1": {
-    "message": "Mensahe"
   },
   "signed": {
     "message": "Nilagdaan"

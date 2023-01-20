@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 
 import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+} from '../../../shared/modules/conversion.utils';
 import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
@@ -17,6 +19,29 @@ import {
   updateTransactionGasFees,
 } from '../../store/actions';
 
+/**
+ * @typedef {object} TransactionFunctionsReturnType
+ * @property {() => void} cancelTransaction - cancel the transaction.
+ * @property {() => void} speedUpTransaction - speed up the transaction.
+ * @property {(string, number, number, number, string) => void} updateTransaction - update the transaction.
+ * @property {(boolean) => void} updateTransactionToTenPercentIncreasedGasFee - update the cancel / speed transaction to
+ * gas fee which is equal to current gas fee +10 percent.
+ * @property {(string) => void} updateTransactionUsingDAPPSuggestedValues - update the transaction to DAPP suggested gas value.
+ * @property {(string) => void} updateTransactionUsingEstimate - update the transaction using the estimate passed.
+ */
+
+/**
+ * @param options
+ * @param options.defaultEstimateToUse
+ * @param options.editGasMode
+ * @param options.estimatedBaseFee
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.maxPriorityFeePerGas
+ * @param options.transaction
+ * @param options.setRetryTxMeta
+ * @returns {TransactionFunctionsReturnType}
+ */
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
   editGasMode,

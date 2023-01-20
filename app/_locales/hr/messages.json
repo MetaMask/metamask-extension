@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Napredno"
   },
-  "advancedOptions": {
-    "message": "Napredne mogućnosti"
-  },
   "amount": {
     "message": "Iznos"
   },
@@ -554,9 +551,6 @@
   "newAccount": {
     "message": "Novi račun"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nova je adresa otkrivena! Ovdje kliknite za njezino dodavanje u vaš imenik."
-  },
   "newAccountNumberName": {
     "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
@@ -817,9 +811,6 @@
   },
   "sign": {
     "message": "Potpis"
-  },
-  "signNotice": {
-    "message": "Potpisivanje ove poruke može\nimati opasne neželjene učinke. Samo potpisujte poruke\ns mrežnih mjesta u koja imate potpuno povjerenje kada je riječ o vašem cijelom računu.\nOvaj se opasni način uklanja u sljedećoj inačici."
   },
   "signatureRequest": {
     "message": "Zahtjev za potpisom"

@@ -14,6 +14,10 @@ executors:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
 
+orbs:
+  gh: circleci/github-cli@2.0
+  codecov: codecov/codecov@3.2.2
+
 workflows:
   test_and_release:
     jobs:
@@ -59,12 +63,9 @@ workflows:
       - prep-build-test-flask:
           requires:
             - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
       - prep-build-storybook:
           requires:
-            - test-storybook
+            - prep-deps
       - prep-build-ts-migration-dashboard:
           requires:
             - prep-deps
@@ -93,9 +94,20 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
-      - test-unit:
+      - test-unit-mocha:
           requires:
             - prep-deps
+      - test-unit-jest-main:
+          requires:
+            - prep-deps
+      - test-unit-jest-development:
+          requires:
+            - prep-deps
+      - upload-and-validate-coverage:
+          requires:
+            - test-unit-jest-main
+            - test-unit-jest-development
+            - test-unit-mocha
       - test-unit-global:
           requires:
             - prep-deps
@@ -127,8 +139,11 @@ workflows:
             - test-lint-shellcheck
             - test-lint-lockfile
             - test-lint-changelog
-            - test-unit
+            - test-unit-jest-main
+            - test-unit-jest-development
             - test-unit-global
+            - test-unit-mocha
+            - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-flask
@@ -208,7 +223,37 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-v1-{{ checksum "yarn.lock" }}
+          keys:
+            # First try to get the specific cache for the checksum of the yarn.lock file.
+            # This cache key lookup will fail if the lock file is modified and a cache
+            # has not yet been persisted for the new checksum.
+            - dependency-cache-v1-{{ checksum "yarn.lock" }}
+            # To prevent having to do a full install of every node_module when
+            # dependencies change, restore from the last known cache of any
+            # branch/checksum, the install step will remove cached items that are no longer
+            # required and add the new dependencies, and the cache will be persisted.
+            - dependency-cache-v1-
+      - gh/install
+      - run:
+          name: Set IS_DRAFT environment variable
+          command: |
+            PR_NUMBER="${CIRCLE_PULL_REQUEST##*/}"
+            if [ -n "$PR_NUMBER" ]
+            then
+              echo "IS_DRAFT=$(gh pr view --json isDraft --jq '.isDraft' "$PR_NUMBER")" >> "$BASH_ENV"
+              source "$BASH_ENV"
+            else
+              echo "Not a PR; skipping"
+            fi
+      - run:
+          name: Setup registry config for using package previews on draft PRs
+          command: |
+            if [[ $IS_DRAFT == 'true' ]]
+            then
+              printf '%s\n\n%s' '@metamask:registry=https://npm.pkg.github.com' "//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGE_READ_TOKEN}" > .npmrc
+            else
+              echo "Not draft; skipping GitHub registry setup"
+            fi
       - run:
           name: Install deps
           command: |
@@ -216,12 +261,7 @@ jobs:
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules/
-            - build-artifacts/yarn-install-har/
-      - run:
-          name: Postinstall
-          command: |
-            yarn setup:postinstall
+            - .yarn/cache
       - persist_to_workspace:
           root: .
           paths:
@@ -283,9 +323,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn build --build-type beta dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type beta dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type beta prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -307,9 +363,25 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: build:dist
-          command: yarn build --build-type flask dist
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type flask dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type flask prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -416,16 +488,6 @@ jobs:
           paths:
             - development/ts-migration-dashboard/build
 
-  test-storybook:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test Storybook
-          command: yarn storybook:test
-
   test-yarn-dedupe:
     executor: node-browsers
     steps:
@@ -434,7 +496,7 @@ jobs:
           at: .
       - run:
           name: Detect yarn lock deduplications
-          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
+          command: yarn dedupe --check
 
   test-lint:
     executor: node-browsers
@@ -563,7 +625,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 || echo "Temporarily suppressing MV3 e2e test failures"
+              yarn test:e2e:chrome --retries 2 --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -777,9 +839,6 @@ jobs:
           path: coverage
           destination: coverage
       - store_artifacts:
-          path: jest-coverage
-          destination: jest-coverage
-      - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
@@ -800,7 +859,7 @@ jobs:
       - run:
           name: Set branch parent commit env var
           command: |
-            echo "export PARENT_COMMIT=$(git rev-parse "$(git rev-list --topo-order --reverse HEAD ^origin/develop | head -1)"^)" >> $BASH_ENV
+            echo "export PARENT_COMMIT=$(git merge-base origin/HEAD HEAD)" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: build:announce
@@ -843,7 +902,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49"
+            - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - checkout
       - attach_workspace:
           at: .
@@ -855,8 +914,8 @@ jobs:
             git config user.email metamaskbot@users.noreply.github.com
             yarn ts-migration:dashboard:deploy
 
-  test-unit:
-    executor: node-browsers
+  test-unit-mocha:
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -864,24 +923,60 @@ jobs:
       - run:
           name: test:coverage:mocha
           command: yarn test:coverage:mocha
-      - run:
-          name: test:coverage:jest
-          command: yarn test:coverage:jest
-      - run:
-          name: Validate coverage thresholds
-          command: |
-            if ! git diff --exit-code jest.config.js development/jest.config.js; then
-              echo "Detected changes in coverage thresholds"
-              exit 1
-            fi
       - persist_to_workspace:
           root: .
           paths:
             - .nyc_output
             - coverage
-            - jest-coverage
+
+  test-unit-jest-development:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: jest development unit tests
+          command: yarn test:coverage:jest:dev
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
       - store_test_results:
           path: test/test-results/junit.xml
+
+  test-unit-jest-main:
+    executor: node-browsers-medium-plus
+    parallelism: 12
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:coverage:jest
+          command: yarn test:coverage:jest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+      - store_test_results:
+          path: test/test-results/junit.xml
+
+  upload-and-validate-coverage:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - codecov/upload
+      - run:
+          name: test:coverage:validate
+          command: yarn test:coverage:validate
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+
   test-unit-global:
     executor: node-browsers
     steps:

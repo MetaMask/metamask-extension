@@ -43,6 +43,14 @@ export default class PersonalMessageManager extends EventEmitter {
       unapprovedPersonalMsgs: {},
       unapprovedPersonalMsgCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedPersonalMsgs: {},
+        unapprovedPersonalMsgCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = metricsEvent;
   }

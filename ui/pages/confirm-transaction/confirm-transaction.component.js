@@ -135,7 +135,7 @@ export default class ConfirmTransaction extends Component {
       !transactionId &&
       !totalUnapprovedCount
     ) {
-      setDefaultHomeActiveTabName('Activity').then(() => {
+      setDefaultHomeActiveTabName('activity').then(() => {
         history.replace(DEFAULT_ROUTE);
       });
     } else if (

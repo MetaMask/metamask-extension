@@ -8,6 +8,7 @@ import {
   ALIGN_ITEMS,
   TEXT,
   COLORS,
+  BORDER_RADIUS,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -66,7 +67,7 @@ export const TextFieldBase = ({
       setFocused(true);
     }
 
-    if (onClick) {
+    if (onClick && !disabled) {
       onClick(event);
     }
   };
@@ -96,7 +97,7 @@ export const TextFieldBase = ({
         'mm-text-field-base',
         `mm-text-field-base--size-${size}`,
         {
-          'mm-text-field-base--focused': focused && !disabled && !readOnly,
+          'mm-text-field-base--focused': focused && !disabled,
           'mm-text-field-base--error': error,
           'mm-text-field-base--disabled': disabled,
           'mm-text-field-base--truncate': truncate,
@@ -107,7 +108,7 @@ export const TextFieldBase = ({
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       alignItems={ALIGN_ITEMS.CENTER}
       borderWidth={1}
-      borderRadius={SIZES.SM}
+      borderRadius={BORDER_RADIUS.SM}
       paddingLeft={leftAccessory ? 4 : 0}
       paddingRight={rightAccessory ? 4 : 0}
       onClick={handleClick}
@@ -155,7 +156,7 @@ TextFieldBase.propTypes = {
   /**
    * Autocomplete allows the browser to predict the value based on earlier typed values
    */
-  autoComplete: PropTypes.string,
+  autoComplete: PropTypes.bool,
   /**
    * If `true`, the input will be focused during the first mount.
    */

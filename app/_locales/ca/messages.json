@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Configuració avançada"
   },
-  "advancedOptions": {
-    "message": "Opcions Avançades"
-  },
   "amount": {
     "message": "Quantitat"
   },
@@ -545,9 +542,6 @@
   "newAccount": {
     "message": "Nou compte"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Nova adreça detectada! Clica aquí per afegir la teva llibreta d'adreces."
-  },
   "newAccountNumberName": {
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
@@ -802,9 +796,6 @@
   },
   "sign": {
     "message": "Signar"
-  },
-  "signNotice": {
-    "message": "Signar aquest missatge pot tenir efectes secundaris perillosos. Signa només els missatges de llocs en els quals confiïs plenament amb la totalitat del teu compte. Aquest mètode perillós serà retirat en versions posteriors."
   },
   "signatureRequest": {
     "message": "Sol·licitud de Signatura"

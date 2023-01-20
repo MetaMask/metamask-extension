@@ -9,4 +9,5 @@ export const TEXT_FIELD_BASE_TYPES = {
   TEXT: 'text',
   NUMBER: 'number',
   PASSWORD: 'password',
+  SEARCH: 'search',
 };

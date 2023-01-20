@@ -113,6 +113,94 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('box--md:margin-left-3');
       expect(getByText('Box content')).toHaveClass('box--lg:margin-left-4');
     });
+    it('should render the Box with the marginInline class', () => {
+      const { getByText } = render(<Box marginInline={1}>Box content</Box>);
+
+      expect(getByText('Box content')).toHaveClass('box--margin-inline-1');
+    });
+    it('should render the Box with the marginInline auto class', () => {
+      const { getByText } = render(<Box marginInline="auto">Box content</Box>);
+
+      expect(getByText('Box content')).toHaveClass('box--margin-inline-auto');
+    });
+    it('should render the Box with the responsive marginInline classes', () => {
+      const { getByText } = render(
+        <Box marginInline={[1, 'auto', 3, 4]}>Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass('box--margin-inline-1');
+      expect(getByText('Box content')).toHaveClass(
+        'box--sm:margin-inline-auto',
+      );
+      expect(getByText('Box content')).toHaveClass('box--md:margin-inline-3');
+      expect(getByText('Box content')).toHaveClass('box--lg:margin-inline-4');
+    });
+    it('should render the Box with the marginInlineStart class', () => {
+      const { getByText } = render(
+        <Box marginInlineStart={1}>Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass(
+        'box--margin-inline-start-1',
+      );
+    });
+    it('should render the Box with the marginInlineStart auto class', () => {
+      const { getByText } = render(
+        <Box marginInlineStart="auto">Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass(
+        'box--margin-inline-start-auto',
+      );
+    });
+    it('should render the Box with the responsive marginInlineStart classes', () => {
+      const { getByText } = render(
+        <Box marginInlineStart={[1, 'auto', 3, 4]}>Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass(
+        'box--margin-inline-start-1',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--sm:margin-inline-start-auto',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--md:margin-inline-start-3',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--lg:margin-inline-start-4',
+      );
+    });
+    it('should render the Box with the marginInlineEnd class', () => {
+      const { getByText } = render(<Box marginInlineEnd={1}>Box content</Box>);
+
+      expect(getByText('Box content')).toHaveClass('box--margin-inline-end-1');
+    });
+    it('should render the Box with the marginInlineEnd auto class', () => {
+      const { getByText } = render(
+        <Box marginInlineEnd="auto">Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass(
+        'box--margin-inline-end-auto',
+      );
+    });
+    it('should render the Box with the responsive marginInlineEnd classes', () => {
+      const { getByText } = render(
+        <Box marginInlineEnd={[1, 'auto', 3, 4]}>Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass('box--margin-inline-end-1');
+      expect(getByText('Box content')).toHaveClass(
+        'box--sm:margin-inline-end-auto',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--md:margin-inline-end-3',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--lg:margin-inline-end-4',
+      );
+    });
   });
 
   describe('padding', () => {
@@ -197,6 +285,50 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('box--sm:padding-left-2');
       expect(getByText('Box content')).toHaveClass('box--md:padding-left-3');
       expect(getByText('Box content')).toHaveClass('box--lg:padding-left-4');
+    });
+    it('should render the Box with the responsive paddingInline classes', () => {
+      const { getByText } = render(
+        <Box paddingInline={[1, 2, 3, 4]}>Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass('box--padding-inline-1');
+      expect(getByText('Box content')).toHaveClass('box--sm:padding-inline-2');
+      expect(getByText('Box content')).toHaveClass('box--md:padding-inline-3');
+      expect(getByText('Box content')).toHaveClass('box--lg:padding-inline-4');
+    });
+    it('should render the Box with the responsive paddingInlineStart classes', () => {
+      const { getByText } = render(
+        <Box paddingInlineStart={[1, 2, 3, 4]}>Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass(
+        'box--padding-inline-start-1',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--sm:padding-inline-start-2',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--md:padding-inline-start-3',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--lg:padding-inline-start-4',
+      );
+    });
+    it('should render the Box with the responsive paddingInlineEnd classes', () => {
+      const { getByText } = render(
+        <Box paddingInlineEnd={[1, 2, 3, 4]}>Box content</Box>,
+      );
+
+      expect(getByText('Box content')).toHaveClass('box--padding-inline-end-1');
+      expect(getByText('Box content')).toHaveClass(
+        'box--sm:padding-inline-end-2',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--md:padding-inline-end-3',
+      );
+      expect(getByText('Box content')).toHaveClass(
+        'box--lg:padding-inline-end-4',
+      );
     });
   });
   describe('border', () => {
@@ -287,6 +419,7 @@ describe('Box', () => {
           <Box borderRadius={BORDER_RADIUS.LG}>border radius lg</Box>
           <Box borderRadius={BORDER_RADIUS.XL}>border radius xl</Box>
           <Box borderRadius={BORDER_RADIUS.PILL}>border radius pill</Box>
+          <Box borderRadius={BORDER_RADIUS.FULL}>border radius full</Box>
           <Box borderRadius={BORDER_RADIUS.NONE}>border radius none</Box>
         </>,
       );
@@ -297,6 +430,7 @@ describe('Box', () => {
       expect(getByText('border radius lg')).toHaveClass('box--rounded-lg');
       expect(getByText('border radius xl')).toHaveClass('box--rounded-xl');
       expect(getByText('border radius pill')).toHaveClass('box--rounded-pill');
+      expect(getByText('border radius full')).toHaveClass('box--rounded-full');
       expect(getByText('border radius none')).toHaveClass('box--rounded-none');
     });
     it('should render the Box with the responsive borderRadius classes', () => {
@@ -317,6 +451,7 @@ describe('Box', () => {
               BORDER_RADIUS.XL,
               BORDER_RADIUS.PILL,
               BORDER_RADIUS.NONE,
+              BORDER_RADIUS.FULL,
             ]}
           >
             Border radius set 2
@@ -340,6 +475,9 @@ describe('Box', () => {
       );
       expect(getByText('Border radius set 2')).toHaveClass(
         'box--md:rounded-none',
+      );
+      expect(getByText('Border radius set 2')).toHaveClass(
+        'box--lg:rounded-full',
       );
     });
   });

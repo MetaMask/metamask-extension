@@ -12,9 +12,10 @@ import {
 } from '../constants/swaps';
 import { SECOND } from '../constants/time';
 import { isValidHexAddress } from '../modules/hexstring-utils';
+import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
+import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
-import { decimalToHex } from './transactions-controller-utils';
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
@@ -184,13 +185,11 @@ export const shouldEnableDirectWrapping = (
   }
   const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
   const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
-  const sourceTokenLowerCase = sourceToken.toLowerCase();
-  const destinationTokenLowerCase = destinationToken.toLowerCase();
   return (
-    (sourceTokenLowerCase === wrappedToken &&
-      destinationTokenLowerCase === nativeToken) ||
-    (sourceTokenLowerCase === nativeToken &&
-      destinationTokenLowerCase === wrappedToken)
+    (isEqualCaseInsensitive(sourceToken, wrappedToken) &&
+      isEqualCaseInsensitive(destinationToken, nativeToken)) ||
+    (isEqualCaseInsensitive(sourceToken, nativeToken) &&
+      isEqualCaseInsensitive(destinationToken, wrappedToken))
   );
 };
 

@@ -74,6 +74,9 @@ describe('Signature Request', () => {
     clearConfirmTransaction: sinon.spy(),
     cancelMessage: sinon.spy(),
     cancel: sinon.stub().resolves(),
+    provider: {
+      type: 'rpc',
+    },
     sign: sinon.stub().resolves(),
     txData: {
       msgParams: {
@@ -88,8 +91,13 @@ describe('Signature Request', () => {
     },
   };
 
+  let rerender;
+
   beforeEach(() => {
-    renderWithProvider(<SignatureRequest.WrappedComponent {...props} />, store);
+    rerender = renderWithProvider(
+      <SignatureRequest.WrappedComponent {...props} />,
+      store,
+    ).rerender;
   });
 
   afterEach(() => {
@@ -110,5 +118,39 @@ describe('Signature Request', () => {
     fireEvent.click(signButton);
 
     expect(props.sign.calledOnce).toStrictEqual(true);
+  });
+
+  it('have user warning', () => {
+    const warningText = screen.getByText(
+      'Only sign this message if you fully understand the content and trust the requesting site.',
+    );
+
+    expect(warningText).toBeInTheDocument();
+  });
+
+  it('shows verify contract details link when verifyingContract is set', () => {
+    const verifyingContractLink = screen.getByTestId('verify-contract-details');
+
+    expect(verifyingContractLink).toBeInTheDocument();
+  });
+
+  it('does not show verify contract details link when verifyingContract is not set', () => {
+    const newData = JSON.parse(props.txData.msgParams.data);
+    delete newData.domain.verifyingContract;
+
+    const newProps = {
+      ...props,
+      txData: {
+        ...props.txData,
+        msgParams: {
+          ...props.txData.msgParams,
+          data: JSON.stringify(newData),
+        },
+      },
+    };
+
+    rerender(<SignatureRequest.WrappedComponent {...newProps} />, store);
+
+    expect(screen.queryByTestId('verify-contract-details')).toBeNull();
   });
 });

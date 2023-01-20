@@ -12,11 +12,15 @@
   width: 100%;
 
   &:hover:not([disabled]) {
-    background-color: var(--color-primary-muted);
+    background-color: var(--color-background-default-hover);
   }
 
   &--selected {
-    background-color: var(--color-background-alternative);
+    background-color: var(--color-primary-muted);
+
+    &:hover:not([disabled]) {
+      background-color: var(--color-primary-muted);
+    }
   }
 
   button.edit-gas-item--disabled[disabled] {

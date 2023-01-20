@@ -8,7 +8,8 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon';
+
+import { Icon, ICON_NAMES } from '..';
 
 import { HelpText } from './help-text';
 

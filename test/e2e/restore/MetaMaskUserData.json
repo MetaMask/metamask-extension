@@ -42,9 +42,11 @@
     },
     "theme": "light",
     "useBlockie": false,
-    "useCollectibleDetection": false,
+    "useNftDetection": false,
     "useNonceField": false,
     "usePhishDetect": true,
-    "useTokenDetection": false
+    "useTokenDetection": false,
+    "useCurrencyRateCheck": true,
+    "useMultiAccountBalanceChecker": true
   }
 }

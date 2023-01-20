@@ -78,7 +78,6 @@ export default {
       control: 'object',
       table: { category: 'button base props' },
     },
-
     loading: {
       control: 'boolean',
       table: { category: 'button base props' },
@@ -130,7 +129,7 @@ export const Size = (args) => (
         Large Button
       </ButtonLink>
     </Box>
-    <Text variant={TEXT.BODY_SM}>
+    <Text variant={TEXT.BODY_MD}>
       <ButtonLink {...args} size={SIZES.AUTO}>
         Button Auto
       </ButtonLink>{' '}
@@ -149,7 +148,7 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <ButtonLink {...args}>Href Example</ButtonLink>;
+export const Href = (args) => <ButtonLink {...args}>Anchor Element</ButtonLink>;
 
 Href.args = {
   href: '/metamask',

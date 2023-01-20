@@ -4,20 +4,15 @@ import PropTypes from 'prop-types';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import {
-  ERC1155,
-  ERC20,
-  ERC721,
-  TRANSACTION_TYPES,
+  TokenStandard,
+  TransactionType,
 } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
-import Dialog from '../../ui/dialog';
 import Button from '../../ui/button';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
-
-import NicknamePopovers from '../modals/nickname-popovers';
 
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
@@ -29,7 +24,8 @@ import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import DepositPopover from '../deposit-popover/deposit-popover';
-import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
+import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
+import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -38,8 +34,8 @@ import {
 
 export default class ConfirmPageContainer extends Component {
   state = {
-    showNicknamePopovers: false,
     setShowDepositPopover: false,
+    collectionBalance: 0,
   };
 
   static contextTypes = {
@@ -68,6 +64,7 @@ export default class ConfirmPageContainer extends Component {
     toMetadataName: PropTypes.string,
     toEns: PropTypes.string,
     toNickname: PropTypes.string,
+    recipientIsOwnedAccount: PropTypes.bool,
     // Content
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
@@ -85,33 +82,36 @@ export default class ConfirmPageContainer extends Component {
     origin: PropTypes.string.isRequired,
     ethGasPriceWarning: PropTypes.string,
     networkIdentifier: PropTypes.string,
-    // Navigation
-    totalTx: PropTypes.number,
-    positionOfCurrentTx: PropTypes.number,
-    nextTxId: PropTypes.string,
-    prevTxId: PropTypes.string,
-    showNavigation: PropTypes.bool,
-    onNextTx: PropTypes.func,
-    firstTx: PropTypes.string,
-    lastTx: PropTypes.string,
-    ofText: PropTypes.string,
-    requestsWaitingText: PropTypes.string,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
+    onSetApprovalForAll: PropTypes.func,
+    showWarningModal: PropTypes.bool,
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
-    contact: PropTypes.object,
-    isOwnedAccount: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
   };
+
+  async componentDidMount() {
+    const { tokenAddress, fromAddress, currentTransaction, assetStandard } =
+      this.props;
+    const isSetApproveForAll =
+      currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
+
+    if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
+      const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+      this.setState({
+        collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+      });
+    }
+  }
 
   render() {
     const {
@@ -123,6 +123,7 @@ export default class ConfirmPageContainer extends Component {
       toMetadataName,
       toEns,
       toNickname,
+      recipientIsOwnedAccount,
       toAddress,
       disabled,
       errorKey,
@@ -140,20 +141,12 @@ export default class ConfirmPageContainer extends Component {
       onCancelAll,
       onCancel,
       onSubmit,
+      onSetApprovalForAll,
+      showWarningModal,
       tokenAddress,
       nonce,
       unapprovedTxCount,
       warning,
-      totalTx,
-      positionOfCurrentTx,
-      nextTxId,
-      prevTxId,
-      showNavigation,
-      onNextTx,
-      firstTx,
-      lastTx,
-      ofText,
-      requestsWaitingText,
       hideSenderToRecipient,
       showAccountInHeader,
       origin,
@@ -161,37 +154,31 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
-      contact = {},
-      isOwnedAccount,
-      supportsEIP1559V2,
+      supportsEIP1559,
       nativeCurrency,
       isBuyableChain,
       networkIdentifier,
-      isApprovalOrRejection,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
       accountBalance,
       assetStandard,
+      isApprovalOrRejection,
     } = this.props;
-
-    const showAddToAddressDialog =
-      !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
     const shouldDisplayWarning =
       contentComponent && disabled && (errorKey || errorMessage);
 
     const hideTitle =
-      (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
-        currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
+      (currentTransaction.type === TransactionType.contractInteraction ||
+        currentTransaction.type === TransactionType.deployContract) &&
       currentTransaction.txParams?.value === '0x0';
 
     const networkName =
       NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
     const isSetApproveForAll =
-      currentTransaction.type ===
-      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+      currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
 
     const { setShowDepositPopover } = this.state;
 
@@ -200,21 +187,10 @@ export default class ConfirmPageContainer extends Component {
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container" data-testid="page-container">
-          <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
-            nextTxId={nextTxId}
-            prevTxId={prevTxId}
-            showNavigation={showNavigation}
-            onNextTx={(txId) => onNextTx(txId)}
-            firstTx={firstTx}
-            lastTx={lastTx}
-            ofText={ofText}
-            requestsWaitingText={requestsWaitingText}
-          />
-          {assetStandard === ERC20 ||
-          assetStandard === ERC721 ||
-          assetStandard === ERC1155 ? (
+          <ConfirmPageContainerNavigation />
+          {assetStandard === TokenStandard.ERC20 ||
+          assetStandard === TokenStandard.ERC721 ||
+          assetStandard === TokenStandard.ERC1155 ? (
             <NetworkAccountBalanceHeader
               accountName={fromName}
               accountBalance={accountBalance}
@@ -239,32 +215,11 @@ export default class ConfirmPageContainer extends Component {
                   recipientAddress={toAddress}
                   recipientEns={toEns}
                   recipientNickname={toNickname}
+                  recipientIsOwnedAccount={recipientIsOwnedAccount}
                 />
               )}
             </ConfirmPageContainerHeader>
           )}
-          <div>
-            {showAddToAddressDialog && (
-              <>
-                <Dialog
-                  type="message"
-                  className="send__dialog"
-                  onClick={() => this.setState({ showNicknamePopovers: true })}
-                >
-                  {t('newAccountDetectedDialogMessage')}
-                </Dialog>
-                {this.state.showNicknamePopovers ? (
-                  <NicknamePopovers
-                    onClose={() =>
-                      this.setState({ showNicknamePopovers: false })
-                    }
-                    address={toAddress}
-                  />
-                ) : null}
-              </>
-            )}
-          </div>
-          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}
@@ -295,8 +250,7 @@ export default class ConfirmPageContainer extends Component {
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
-              supportsEIP1559V2={supportsEIP1559V2}
-              hasTopBorder={showAddToAddressDialog}
+              supportsEIP1559={supportsEIP1559}
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
               networkName={networkName}
@@ -351,33 +305,26 @@ export default class ConfirmPageContainer extends Component {
               <ErrorMessage errorKey={errorKey} />
             </div>
           )}
-          {isSetApproveForAll && isApprovalOrRejection && (
-            <Dialog type="error" className="confirm-page-container__dialog">
-              {/*
-                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
-                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
-              */}
-              {t('confirmPageDialogSetApprovalForAll', [
-                <b
-                  key="confirm-page-container__dialog-placeholder-1"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
-                </b>,
-                <b
-                  key="confirm-page-container__dialog-placeholder-2"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
-                </b>,
-              ])}
-            </Dialog>
+          {showWarningModal && (
+            <SetApproveForAllWarning
+              collectionName={title}
+              senderAddress={fromAddress}
+              name={fromName}
+              isERC721={assetStandard === TokenStandard.ERC721}
+              total={this.state.collectionBalance}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+            />
           )}
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
               cancelText={t('reject')}
-              onSubmit={onSubmit}
+              onSubmit={
+                isSetApproveForAll && isApprovalOrRejection
+                  ? onSetApprovalForAll
+                  : onSubmit
+              }
               submitText={t('confirm')}
               submitButtonType={
                 isSetApproveForAll ? 'danger-primary' : 'primary'
@@ -391,14 +338,14 @@ export default class ConfirmPageContainer extends Component {
               )}
             </PageContainerFooter>
           )}
-          {editingGas && !supportsEIP1559V2 && (
+          {editingGas && !supportsEIP1559 && (
             <EditGasPopover
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               onClose={handleCloseEditGas}
               transaction={currentTransaction}
             />
           )}
-          {supportsEIP1559V2 && (
+          {supportsEIP1559 && (
             <>
               <EditGasFeePopover />
               <AdvancedGasFeePopover />

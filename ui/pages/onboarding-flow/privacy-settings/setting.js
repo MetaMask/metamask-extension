@@ -9,7 +9,13 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 
-export const Setting = ({ value, setValue, title, description }) => {
+export const Setting = ({
+  value,
+  setValue,
+  title,
+  description,
+  showToggle = true,
+}) => {
   return (
     <Box justifyContent={JUSTIFY_CONTENT.CENTER} margin={3}>
       <div className="privacy-settings__setting">
@@ -18,9 +24,11 @@ export const Setting = ({ value, setValue, title, description }) => {
         </Typography>
         <Typography variant={TYPOGRAPHY.H6}>{description}</Typography>
       </div>
-      <div className="privacy-settings__setting__toggle">
-        <ToggleButton value={value} onToggle={(val) => setValue(!val)} />
-      </div>
+      {showToggle ? (
+        <div className="privacy-settings__setting__toggle">
+          <ToggleButton value={value} onToggle={(val) => setValue(!val)} />
+        </div>
+      ) : null}
     </Box>
   );
 };
@@ -30,4 +38,5 @@ Setting.propTypes = {
   setValue: PropTypes.func,
   title: PropTypes.string,
   description: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  showToggle: PropTypes.bool,
 };

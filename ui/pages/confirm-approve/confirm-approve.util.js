@@ -1,8 +1,8 @@
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
-import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { TransactionType } from '../../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
+import { decimalToHex } from '../../../shared/modules/conversion.utils';
 
 export function getCustomTxParamsData(
   data,
@@ -12,7 +12,7 @@ export function getCustomTxParamsData(
 
   if (!tokenData) {
     throw new Error('Invalid data');
-  } else if (tokenData.name !== TRANSACTION_TYPES.TOKEN_METHOD_APPROVE) {
+  } else if (tokenData.name !== TransactionType.tokenMethodApprove) {
     throw new Error(
       `Invalid data; should be 'approve' method, but instead is '${tokenData.name}'`,
     );

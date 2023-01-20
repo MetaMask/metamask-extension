@@ -54,7 +54,7 @@ export default function FormField({
           <Box
             className="form-field__heading-title"
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
+            alignItems={ALIGN_ITEMS.BASELINE}
           >
             {TitleTextCustomComponent ||
               (titleText && (
@@ -89,7 +89,6 @@ export default function FormField({
             <Box
               className="form-field__heading-detail"
               textAlign={TEXT_ALIGN.END}
-              marginBottom={3}
               marginRight={2}
               {...titleDetailWrapperProps}
             >

@@ -8,10 +8,10 @@ import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
 import {
-  DEVICE_NAMES,
-  LEDGER_TRANSPORT_TYPES,
-  AFFILIATE_LINKS,
-  AFFILIATE_TUTORIAL_LINKS,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+  HardwareAffiliateLinks,
+  HardwareAffiliateTutorialLinks,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { EVENT } from '../../../../shared/constants/metametrics';
@@ -25,7 +25,7 @@ export default class SelectHardware extends Component {
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+    ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
   };
 
   state = {
@@ -43,9 +43,11 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === DEVICE_NAMES.TREZOR,
+          selected: this.state.selectedDevice === HardwareDeviceNames.trezor,
         })}
-        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.TREZOR })}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.trezor })
+        }
       >
         <LogoTrezor className="hw-connect__btn__img" ariaLabel="Trezor" />
       </button>
@@ -56,9 +58,11 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === DEVICE_NAMES.LATTICE,
+          selected: this.state.selectedDevice === HardwareDeviceNames.lattice,
         })}
-        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LATTICE })}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.lattice })
+        }
       >
         <LogoLattice className="hw-connect__btn__img" ariaLabel="Lattice" />
       </button>
@@ -69,9 +73,11 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === DEVICE_NAMES.LEDGER,
+          selected: this.state.selectedDevice === HardwareDeviceNames.ledger,
         })}
-        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LEDGER })}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.ledger })
+        }
       >
         <LogoLedger className="hw-connect__btn__img" ariaLabel="Ledger" />
       </button>
@@ -82,9 +88,11 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === DEVICE_NAMES.QR,
+          selected: this.state.selectedDevice === HardwareDeviceNames.qr,
         })}
-        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.QR })}
+        onClick={(_) =>
+          this.setState({ selectedDevice: HardwareDeviceNames.qr })
+        }
       >
         <LogoQRBased className="hw-connect__btn__img" ariaLabel="QRCode" />
       </button>
@@ -164,13 +172,13 @@ export default class SelectHardware extends Component {
 
   renderTutorialsteps() {
     switch (this.state.selectedDevice) {
-      case DEVICE_NAMES.LEDGER:
+      case HardwareDeviceNames.ledger:
         return this.renderLedgerTutorialSteps();
-      case DEVICE_NAMES.TREZOR:
+      case HardwareDeviceNames.trezor:
         return this.renderTrezorTutorialSteps();
-      case DEVICE_NAMES.LATTICE:
+      case HardwareDeviceNames.lattice:
         return this.renderLatticeTutorialSteps();
-      case DEVICE_NAMES.QR:
+      case HardwareDeviceNames.qr:
         return this.renderQRHardwareWalletSteps();
       default:
         return '';
@@ -179,8 +187,9 @@ export default class SelectHardware extends Component {
 
   renderLedgerTutorialSteps() {
     const steps = [];
-    if (this.props.ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE) {
+    if (this.props.ledgerTransportType === LedgerTransportTypes.live) {
       steps.push({
+        renderButtons: false,
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
           <a
@@ -197,6 +206,7 @@ export default class SelectHardware extends Component {
     }
 
     steps.push({
+      renderButtons: true,
       asset: 'plug-in-wallet',
       dimensions: { width: '225px', height: '75px' },
       title: this.context.t('step2LedgerWallet'),
@@ -218,32 +228,39 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
-            <Button
-              className="hw-connect__external-btn-first"
-              type="secondary"
-              onClick={() => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: 'Clicked Ledger Buy Now',
-                });
-                window.open(AFFILIATE_LINKS.LEDGER, '_blank');
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              type="secondary"
-              onClick={() => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: 'Clicked Ledger Tutorial',
-                });
-                window.open(AFFILIATE_TUTORIAL_LINKS.LEDGER, '_blank');
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
+            {step.renderButtons ? (
+              <>
+                <Button
+                  className="hw-connect__external-btn-first"
+                  type="secondary"
+                  onClick={() => {
+                    this.context.trackEvent({
+                      category: EVENT.CATEGORIES.NAVIGATION,
+                      event: 'Clicked Ledger Buy Now',
+                    });
+                    window.open(HardwareAffiliateLinks.ledger, '_blank');
+                  }}
+                >
+                  {this.context.t('buyNow')}
+                </Button>
+                <Button
+                  className="hw-connect__external-btn"
+                  type="secondary"
+                  onClick={() => {
+                    this.context.trackEvent({
+                      category: EVENT.CATEGORIES.NAVIGATION,
+                      event: 'Clicked Ledger Tutorial',
+                    });
+                    window.open(
+                      HardwareAffiliateTutorialLinks.ledger,
+                      '_blank',
+                    );
+                  }}
+                >
+                  {this.context.t('tutorial')}
+                </Button>
+              </>
+            ) : null}
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -292,7 +309,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked GridPlus Buy Now',
                 });
-                window.open(AFFILIATE_LINKS.GRIDPLUS, '_blank');
+                window.open(HardwareAffiliateLinks.gridplus, '_blank');
               }}
             >
               {this.context.t('buyNow')}
@@ -305,7 +322,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked GidPlus Tutorial',
                 });
-                window.open(AFFILIATE_TUTORIAL_LINKS.GRIDPLUS, '_blank');
+                window.open(HardwareAffiliateTutorialLinks.gridplus, '_blank');
               }}
             >
               {this.context.t('tutorial')}
@@ -358,7 +375,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Trezor Buy Now',
                 });
-                window.open(AFFILIATE_LINKS.TREZOR, '_blank');
+                window.open(HardwareAffiliateLinks.trezor, '_blank');
               }}
             >
               {this.context.t('buyNow')}
@@ -371,7 +388,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Trezor Tutorial',
                 });
-                window.open(AFFILIATE_TUTORIAL_LINKS.TREZOR, '_blank');
+                window.open(HardwareAffiliateTutorialLinks.trezor, '_blank');
               }}
             >
               {this.context.t('tutorial')}
@@ -412,7 +429,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Keystone Buy Now',
                 });
-                window.open(AFFILIATE_LINKS.KEYSTONE, '_blank');
+                window.open(HardwareAffiliateLinks.keystone, '_blank');
               }}
             >
               {this.context.t('buyNow')}
@@ -425,7 +442,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Keystone Tutorial',
                 });
-                window.open(AFFILIATE_TUTORIAL_LINKS.KEYSTONE, '_blank');
+                window.open(HardwareAffiliateTutorialLinks.keystone, '_blank');
               }}
             >
               {this.context.t('tutorial')}
@@ -447,7 +464,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked AirGap Vault Buy Now',
                 });
-                window.open(AFFILIATE_LINKS.AIRGAP, '_blank');
+                window.open(HardwareAffiliateLinks.airgap, '_blank');
               }}
             >
               {this.context.t('downloadNow')}
@@ -460,7 +477,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked AirGap Vault Tutorial',
                 });
-                window.open(AFFILIATE_TUTORIAL_LINKS.AIRGAP, '_blank');
+                window.open(HardwareAffiliateTutorialLinks.airgap, '_blank');
               }}
             >
               {this.context.t('tutorial')}
@@ -482,7 +499,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked CoolWallet Buy Now',
                 });
-                window.open(AFFILIATE_LINKS.COOLWALLET, '_blank');
+                window.open(HardwareAffiliateLinks.coolwallet, '_blank');
               }}
             >
               {this.context.t('buyNow')}
@@ -495,7 +512,10 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked CoolWallet Tutorial',
                 });
-                window.open(AFFILIATE_TUTORIAL_LINKS.COOLWALLET, '_blank');
+                window.open(
+                  HardwareAffiliateTutorialLinks.coolwallet,
+                  '_blank',
+                );
               }}
             >
               {this.context.t('tutorial')}
@@ -515,7 +535,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked DCent Buy Now',
                 });
-                window.open(AFFILIATE_LINKS.DCENT, '_blank');
+                window.open(HardwareAffiliateLinks.dcent, '_blank');
               }}
             >
               {this.context.t('buyNow')}
@@ -528,7 +548,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked DCent Tutorial',
                 });
-                window.open(AFFILIATE_TUTORIAL_LINKS.DCENT, '_blank');
+                window.open(HardwareAffiliateTutorialLinks.dcent, '_blank');
               }}
             >
               {this.context.t('tutorial')}
@@ -549,7 +569,7 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
-            <p className="hw-connect__msg">{step.message}</p>
+            <div className="hw-connect__msg">{step.message}</div>
             {step.asset && (
               <img
                 className="hw-connect__step-asset"

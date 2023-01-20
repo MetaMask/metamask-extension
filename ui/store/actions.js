@@ -30,8 +30,8 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
-  DEVICE_NAMES,
-  LEDGER_TRANSPORT_TYPES,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import { EVENT } from '../../shared/constants/metametrics';
@@ -41,11 +41,11 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
-import { decimalToHex } from '../../shared/lib/transactions-controller-utils';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
+import { decimalToHex } from '../../shared/modules/conversion.utils';
 import * as actionConstants from './actionConstants';
 import {
   generateActionId,
@@ -425,12 +425,12 @@ export function connectHardware(deviceName, page, hdPath, t) {
 
     let accounts;
     try {
-      if (deviceName === DEVICE_NAMES.LEDGER) {
+      if (deviceName === HardwareDeviceNames.ledger) {
         await submitRequestToBackground('establishLedgerTransportPreference');
       }
       if (
-        deviceName === DEVICE_NAMES.LEDGER &&
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
+        deviceName === HardwareDeviceNames.ledger &&
+        ledgerTransportType === LedgerTransportTypes.webhid
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
           filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
@@ -451,14 +451,14 @@ export function connectHardware(deviceName, page, hdPath, t) {
     } catch (error) {
       log.error(error);
       if (
-        deviceName === DEVICE_NAMES.LEDGER &&
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        deviceName === HardwareDeviceNames.ledger &&
+        ledgerTransportType === LedgerTransportTypes.webhid &&
         error.message.match('Failed to open the device')
       ) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        if (deviceName !== DEVICE_NAMES.QR) {
+        if (deviceName !== HardwareDeviceNames.qr) {
           dispatch(displayWarning(error.message));
         }
         throw error;
@@ -884,7 +884,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
  *  history of the send flow at time of creation.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
@@ -923,7 +923,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
 export async function addUnapprovedTransaction(txParams, type) {
@@ -1781,7 +1781,7 @@ export async function getBalancesInSingleCall(tokens) {
   return await submitRequestToBackground('getBalancesInSingleCall', [tokens]);
 }
 
-export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
+export function addNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot add collectible without address');
@@ -1793,7 +1793,7 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addCollectible', [address, tokenID]);
+      await submitRequestToBackground('addNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1804,7 +1804,7 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export function addCollectibleVerifyOwnership(
+export function addNftVerifyOwnership(
   address,
   tokenID,
   dontShowLoadingIndicator,
@@ -1820,14 +1820,14 @@ export function addCollectibleVerifyOwnership(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addCollectibleVerifyOwnership', [
+      await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
       ]);
     } catch (error) {
       if (
-        error.message.includes('This collectible is not owned by the user') ||
-        error.message.includes('Unable to verify ownership.')
+        error.message.includes('This NFT is not owned by the user') ||
+        error.message.includes('Unable to verify ownership')
       ) {
         throw error;
       } else {
@@ -1841,11 +1841,7 @@ export function addCollectibleVerifyOwnership(
   };
 }
 
-export function removeAndIgnoreCollectible(
-  address,
-  tokenID,
-  dontShowLoadingIndicator,
-) {
+export function removeAndIgnoreNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot ignore collectible without address');
@@ -1857,10 +1853,7 @@ export function removeAndIgnoreCollectible(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeAndIgnoreCollectible', [
-        address,
-        tokenID,
-      ]);
+      await submitRequestToBackground('removeAndIgnoreNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1871,7 +1864,7 @@ export function removeAndIgnoreCollectible(
   };
 }
 
-export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
+export function removeNft(address, tokenID, dontShowLoadingIndicator) {
   return async (dispatch) => {
     if (!address) {
       throw new Error('MetaMask - Cannot remove collectible without address');
@@ -1883,7 +1876,7 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('removeCollectible', [address, tokenID]);
+      await submitRequestToBackground('removeNft', [address, tokenID]);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -1894,31 +1887,27 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
-  await submitRequestToBackground(
-    'checkAndUpdateAllCollectiblesOwnershipStatus',
-  );
+export async function checkAndUpdateAllNftsOwnershipStatus() {
+  await submitRequestToBackground('checkAndUpdateAllNftsOwnershipStatus');
 }
 
-export async function isCollectibleOwner(
+export async function isNftOwner(
   ownerAddress,
   collectibleAddress,
   collectibleId,
 ) {
-  return await submitRequestToBackground('isCollectibleOwner', [
+  return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
     collectibleAddress,
     collectibleId,
   ]);
 }
 
-export async function checkAndUpdateSingleCollectibleOwnershipStatus(
-  collectible,
-) {
-  await submitRequestToBackground(
-    'checkAndUpdateSingleCollectibleOwnershipStatus',
-    [collectible, false],
-  );
+export async function checkAndUpdateSingleNftOwnershipStatus(collectible) {
+  await submitRequestToBackground('checkAndUpdateSingleNftOwnershipStatus', [
+    collectible,
+    false,
+  ]);
 }
 
 export async function getTokenStandardAndDetails(
@@ -1990,7 +1979,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasSettings, options) {
+export function createCancelTransaction(txId, customGasSettings, options = {}) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -2020,7 +2009,11 @@ export function createCancelTransaction(txId, customGasSettings, options) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasSettings, options) {
+export function createSpeedUpTransaction(
+  txId,
+  customGasSettings,
+  options = {},
+) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
@@ -2392,7 +2385,7 @@ export function exportAccount(password, address) {
         log.debug(`background.exportAccount`);
         callBackgroundMethod(
           'exportAccount',
-          [address],
+          [address, password],
           function (err2, result) {
             dispatch(hideLoadingIndication());
 
@@ -2428,7 +2421,7 @@ export function exportAccounts(password, addresses) {
             new Promise((resolve2, reject2) =>
               callBackgroundMethod(
                 'exportAccount',
-                [address],
+                [address, password],
                 function (err2, result) {
                   if (err2) {
                     log.error(err2);
@@ -2716,6 +2709,19 @@ export function setUsePhishDetect(val) {
   };
 }
 
+export function setUseMultiAccountBalanceChecker(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseMultiAccountBalanceChecker`);
+    callBackgroundMethod('setUseMultiAccountBalanceChecker', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setUseTokenDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2729,11 +2735,24 @@ export function setUseTokenDetection(val) {
   };
 }
 
-export function setUseCollectibleDetection(val) {
+export function setUseNftDetection(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseCollectibleDetection`);
-    callBackgroundMethod('setUseCollectibleDetection', [val], (err) => {
+    log.debug(`background.setUseNftDetection`);
+    callBackgroundMethod('setUseNftDetection', [val], (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setUseCurrencyRateCheck(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseCurrencyRateCheck`);
+    callBackgroundMethod('setUseCurrencyRateCheck', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2755,11 +2774,11 @@ export function setOpenSeaEnabled(val) {
   };
 }
 
-export function detectCollectibles() {
+export function detectNfts() {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.detectCollectibles`);
-    await submitRequestToBackground('detectCollectibles');
+    log.debug(`background.detectNfts`);
+    await submitRequestToBackground('detectNfts');
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -2778,18 +2797,6 @@ export function setAdvancedGasFee(val) {
   };
 }
 
-export function setEIP1559V2Enabled(val) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setEIP1559V2Enabled`);
-    try {
-      await submitRequestToBackground('setEIP1559V2Enabled', [val]);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 export function setTheme(val) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2804,10 +2811,8 @@ export function setTheme(val) {
 
 export function setIpfsGateway(val) {
   return (dispatch) => {
-    dispatch(showLoadingIndication());
     log.debug(`background.setIpfsGateway`);
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
-      dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
       } else {
@@ -3786,14 +3791,14 @@ export function hidePortfolioTooltip() {
   return submitRequestToBackground('setShowPortfolioTooltip', [false]);
 }
 
+export function hideBetaHeader() {
+  return submitRequestToBackground('setShowBetaHeader', [false]);
+}
+
 export function setCollectiblesDetectionNoticeDismissed() {
   return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
     true,
   ]);
-}
-
-export function setEnableEIP1559V2NoticeDismissed() {
-  return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
 }
 
 export function setImprovedTokenAllowanceEnabled(
@@ -3803,6 +3808,20 @@ export function setImprovedTokenAllowanceEnabled(
     try {
       await submitRequestToBackground('setImprovedTokenAllowanceEnabled', [
         improvedTokenAllowanceEnabled,
+      ]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
+export function setTransactionSecurityCheckEnabled(
+  transactionSecurityCheckEnabled,
+) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
+        transactionSecurityCheckEnabled,
       ]);
     } catch (error) {
       log.error(error);

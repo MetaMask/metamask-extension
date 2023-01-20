@@ -1,14 +1,10 @@
-import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { ethers } from 'ethers';
-import log from 'loglevel';
-import {
-  IPFS_DEFAULT_GATEWAY_URL,
-  BUILT_IN_NETWORKS,
-} from '../../../shared/constants/network';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { THEME_TYPE } from '../../../ui/pages/settings/settings-tab/settings-tab.constant';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -35,11 +31,13 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
-      useCollectibleDetection: false,
+      useNftDetection: false,
+      useCurrencyRateCheck: true,
       openSeaEnabled: false,
       advancedGasFee: null,
 
@@ -66,10 +64,11 @@ export default class PreferencesController {
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
-        ? LEDGER_TRANSPORT_TYPES.WEBHID
-        : LEDGER_TRANSPORT_TYPES.U2F,
-      theme: 'light',
+        ? LedgerTransportTypes.webhid
+        : LedgerTransportTypes.u2f,
       improvedTokenAllowanceEnabled: false,
+      transactionSecurityCheckEnabled: false,
+      theme: THEME_TYPE.OS,
       ...opts.initState,
     };
 
@@ -78,7 +77,6 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
-    this.migrateAddressBookState = opts.migrateAddressBookState;
     this.tokenListController = opts.tokenListController;
 
     this._subscribeToInfuraAvailability();
@@ -126,6 +124,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useMultiAccountBalanceChecker` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to turn off/on all security settings
+   */
+  setUseMultiAccountBalanceChecker(val) {
+    this.store.updateState({ useMultiAccountBalanceChecker: val });
+  }
+
+  /**
    * Setter for the `useTokenDetection` property
    *
    * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
@@ -142,12 +149,21 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `useCollectibleDetection` property
+   * Setter for the `useNftDetection` property
    *
-   * @param {boolean} useCollectibleDetection - Whether or not the user prefers to autodetect collectibles.
+   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect collectibles.
    */
-  setUseCollectibleDetection(useCollectibleDetection) {
-    this.store.updateState({ useCollectibleDetection });
+  setUseNftDetection(useNftDetection) {
+    this.store.updateState({ useNftDetection });
+  }
+
+  /**
+   * Setter for the `useCurrencyRateCheck` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to use currency rate check for ETH and tokens.
+   */
+  setUseCurrencyRateCheck(val) {
+    this.store.updateState({ useCurrencyRateCheck: val });
   }
 
   /**
@@ -171,15 +187,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `eip1559V2Enabled` property
-   *
-   * @param {object} val - holds the eip1559V2Enabled that the user set as experimental settings.
-   */
-  setEIP1559V2Enabled(val) {
-    this.store.updateState({ eip1559V2Enabled: val });
-  }
-
-  /**
    * Setter for the `theme` property
    *
    * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
@@ -196,6 +203,17 @@ export default class PreferencesController {
   setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
     this.store.updateState({
       improvedTokenAllowanceEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `transactionSecurityCheckEnabled` property
+   *
+   * @param transactionSecurityCheckEnabled
+   */
+  setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
+    this.store.updateState({
+      transactionSecurityCheckEnabled,
     });
   }
 
@@ -382,82 +400,6 @@ export default class PreferencesController {
   }
 
   /**
-   * updates custom RPC details
-   *
-   * @param {object} newRpcDetails - Options bag.
-   * @param {string} newRpcDetails.rpcUrl - The RPC url to add to frequentRpcList.
-   * @param {string} newRpcDetails.chainId - The chainId of the selected network.
-   * @param {string} [newRpcDetails.ticker] - Optional ticker symbol of the selected network.
-   * @param {string} [newRpcDetails.nickname] - Optional nickname of the selected network.
-   * @param {object} [newRpcDetails.rpcPrefs] - Optional RPC preferences, such as the block explorer URL
-   */
-  async updateRpc(newRpcDetails) {
-    const rpcList = this.getFrequentRpcListDetail();
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === newRpcDetails.rpcUrl;
-    });
-    if (index > -1) {
-      const rpcDetail = rpcList[index];
-      const updatedRpc = { ...rpcDetail, ...newRpcDetails };
-      if (rpcDetail.chainId !== updatedRpc.chainId) {
-        // When the chainId is changed, associated address book entries should
-        // also be migrated. The address book entries are keyed by the `network` state,
-        // which for custom networks is the chainId with a fallback to the networkId
-        // if the chainId is not set.
-
-        let addressBookKey = rpcDetail.chainId;
-        if (!addressBookKey) {
-          // We need to find the networkId to determine what these addresses were keyed by
-          try {
-            addressBookKey = await this.ethersProvider.send('net_version');
-            assert(typeof addressBookKey === 'string');
-          } catch (error) {
-            log.debug(error);
-            log.warn(
-              `Failed to get networkId from ${rpcDetail.rpcUrl}; skipping address book migration`,
-            );
-          }
-        }
-
-        // There is an edge case where two separate RPC endpoints are keyed by the same
-        // value. In this case, the contact book entries are duplicated so that they remain
-        // on both networks, since we don't know which network each contact is intended for.
-
-        let duplicate = false;
-        const builtInProviderNetworkIds = Object.values(BUILT_IN_NETWORKS).map(
-          (ids) => ids.networkId,
-        );
-        const otherRpcEntries = rpcList.filter(
-          (entry) => entry.rpcUrl !== newRpcDetails.rpcUrl,
-        );
-        if (
-          builtInProviderNetworkIds.includes(addressBookKey) ||
-          otherRpcEntries.some((entry) => entry.chainId === addressBookKey)
-        ) {
-          duplicate = true;
-        }
-
-        this.migrateAddressBookState(
-          addressBookKey,
-          updatedRpc.chainId,
-          duplicate,
-        );
-      }
-      rpcList[index] = updatedRpc;
-      this.store.updateState({ frequentRpcListDetail: rpcList });
-    } else {
-      const {
-        rpcUrl,
-        chainId,
-        ticker,
-        nickname,
-        rpcPrefs = {},
-      } = newRpcDetails;
-      this.addToFrequentRpcList(rpcUrl, chainId, ticker, nickname, rpcPrefs);
-    }
-  }
-
-  /**
    * Adds custom RPC url to state.
    *
    * @param {string} rpcUrl - The RPC url to add to frequentRpcList.
@@ -466,7 +408,7 @@ export default class PreferencesController {
    * @param {string} [nickname] - Nickname of the selected network.
    * @param {object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
    */
-  addToFrequentRpcList(
+  upsertToFrequentRpcList(
     rpcUrl,
     chainId,
     ticker = 'ETH',
@@ -479,7 +421,8 @@ export default class PreferencesController {
       return element.rpcUrl === rpcUrl;
     });
     if (index !== -1) {
-      rpcList.splice(index, 1);
+      rpcList.splice(index, 1, { rpcUrl, chainId, ticker, nickname, rpcPrefs });
+      return;
     }
 
     if (!isPrefixedFormattedHexString(chainId)) {

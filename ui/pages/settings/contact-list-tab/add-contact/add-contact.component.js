@@ -5,7 +5,7 @@ import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import { isValidDomainName } from '../../../../helpers/utils/util';
-import EnsInput from '../../../send/send-content/add-recipient/ens-input';
+import DomainInput from '../../../send/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
   isBurnAddress,
@@ -25,9 +25,9 @@ export default class AddContact extends PureComponent {
     qrCodeData:
       PropTypes.object /* eslint-disable-line react/no-unused-prop-types */,
     qrCodeDetected: PropTypes.func,
-    ensResolution: PropTypes.string,
-    ensError: PropTypes.string,
-    resetEnsResolution: PropTypes.func,
+    domainResolution: PropTypes.string,
+    domainError: PropTypes.string,
+    resetDomainResolution: PropTypes.func,
   };
 
   state = {
@@ -45,10 +45,10 @@ export default class AddContact extends PureComponent {
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.qrCodeData) {
       if (nextProps.qrCodeData.type === 'address') {
-        const { ensResolution } = this.props;
+        const { domainResolution } = this.props;
         const scannedAddress =
           nextProps.qrCodeData.values.address.toLowerCase();
-        const currentAddress = ensResolution || this.state.ethAddress;
+        const currentAddress = domainResolution || this.state.ethAddress;
         if (currentAddress.toLowerCase() !== scannedAddress) {
           this.setState({ input: scannedAddress });
           this.validate(scannedAddress);
@@ -79,7 +79,7 @@ export default class AddContact extends PureComponent {
 
   renderInput() {
     return (
-      <EnsInput
+      <DomainInput
         scanQrCode={(_) => {
           this.props.scanQrCode();
         }}
@@ -89,7 +89,7 @@ export default class AddContact extends PureComponent {
           this.validate(text);
         }}
         onReset={() => {
-          this.props.resetEnsResolution();
+          this.props.resetDomainResolution();
           this.setState({ ethAddress: '', input: '' });
         }}
         userInput={this.state.input}
@@ -99,17 +99,18 @@ export default class AddContact extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { history, addToAddressBook, ensError, ensResolution } = this.props;
+    const { history, addToAddressBook, domainError, domainResolution } =
+      this.props;
 
-    const errorToRender = ensError || this.state.error;
+    const errorToRender = domainError || this.state.error;
 
     return (
       <div className="settings-page__content-row address-book__add-contact">
-        {ensResolution && (
+        {domainResolution && (
           <div className="address-book__view-contact__group">
-            <Identicon address={ensResolution} diameter={60} />
+            <Identicon address={domainResolution} diameter={60} />
             <div className="address-book__view-contact__group__value">
-              {ensResolution}
+              {domainResolution}
             </div>
           </div>
         )}
@@ -142,10 +143,14 @@ export default class AddContact extends PureComponent {
         </div>
         <PageContainerFooter
           cancelText={this.context.t('cancel')}
-          disabled={Boolean(this.state.error)}
+          disabled={Boolean(
+            this.state.error ||
+              !this.state.ethAddress ||
+              !this.state.newName.trim(),
+          )}
           onSubmit={async () => {
             await addToAddressBook(
-              ensResolution || this.state.ethAddress,
+              domainResolution || this.state.ethAddress,
               this.state.newName,
             );
             history.push(CONTACT_LIST_ROUTE);

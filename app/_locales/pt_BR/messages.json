@@ -167,9 +167,6 @@
   "advancedGasPriceTitle": {
     "message": "Preço do gás"
   },
-  "advancedOptions": {
-    "message": "Opções avançadas"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
@@ -738,29 +735,8 @@
   "editContact": {
     "message": "Editar contato"
   },
-  "editGasEducationButtonText": {
-    "message": "Como devo escolher?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Essa opção é mais indicada para transações urgentes (como trocas, ou \"swaps\"), pois aumenta a probabilidade de sucesso da transação. Se uma troca leva muito tempo para ser processada, pode falhar e resultar na perda de parte da sua taxa de gás."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Uma taxa de gás mais baixa só deve ser usada quando o tempo de processamento é menos importante. Taxas reduzidas dificultam a previsão de quando (ou se) a sua transação será bem-sucedida."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Uma taxa de gás média é indicada para envios, saques ou outras transações não urgentes. Essa configuração geralmente resulta em uma transação bem-sucedida."
-  },
-  "editGasEducationModalIntro": {
-    "message": "A escolha da taxa de gás ideal depende do tipo de transação e da importância dela para você."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Como escolher?"
-  },
   "editGasFeeModalTitle": {
     "message": "Editar taxa de gás"
-  },
-  "editGasHigh": {
-    "message": "Alta"
   },
   "editGasLimitOutOfBounds": {
     "message": "O limite de gás deve ser de pelo menos $1"
@@ -771,9 +747,6 @@
   },
   "editGasLimitTooltip": {
     "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
-  },
-  "editGasLow": {
-    "message": "Baixa"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "A taxa de base máxima não pode ser inferior à taxa de prioridade"
@@ -793,9 +766,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "A taxa máxima não pode ser inferior à taxa de prioridade máxima"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "A taxa máxima é o maior valor que você pagará (taxa de base + taxa de prioridade)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "A taxa de prioridade máxima deve ser superior a 0 GWEI"
   },
@@ -813,12 +783,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "A taxa de prioridade está baixa para as condições atuais da rede"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "A taxa de prioridade máxima (ou seja, a \"gorjeta dos mineradores\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação. Você geralmente paga a sua configuração máxima"
-  },
-  "editGasMedium": {
-    "message": "Média"
   },
   "editGasPriceTooLow": {
     "message": "O preço do gás deve ser superior a 0"
@@ -838,12 +802,6 @@
   },
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
-  },
-  "editGasTooLowTooltip": {
-    "message": "Sua taxa máxima ou taxa de prioridade máxima pode estar baixa para as condições atuais do mercado. Não sabemos quando (ou se) a sua transação será processada. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Isso reduz a sua taxa máxima, mas se o tráfego da rede aumentar, a sua transação poderá sofrer atrasos ou falhar."
   },
   "editNonceField": {
     "message": "Editar nonce"
@@ -1084,9 +1042,6 @@
   "gasDisplayDappWarning": {
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Nossas estimativas baixas, médias e altas não estão disponíveis."
   },
   "gasLimit": {
     "message": "Limite de gás"
@@ -1357,12 +1312,6 @@
   "invalidSeedPhrase": {
     "message": "Frase de Recuperação Secreta inválida"
   },
-  "ipfsGateway": {
-    "message": "Gateway IPFS"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Informe o URL do gateway de CID do IPFS para usar com resolução de conteúdo de ENS."
-  },
   "jsDeliver": {
     "message": "jsDeliver"
   },
@@ -1546,18 +1495,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Sempre permitirá que você se exclua por meio das Configurações"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "Sempre conseguirá se excluir por meio das Configurações"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "Nunca",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "A MetaMask..."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "Nunca coletarão chaves, endereços, transações, saldos, hashes ou qualquer informação pessoal"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 coletarão seu endereço IP completo",
@@ -1566,12 +1509,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 coletarão chaves, endereços, transações, saldos, hashes ou qualquer outra informação pessoal",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "Nunca coletarão seu endereço IP completo"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "Nunca venderão dados em troca de lucro. Jamais!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 venderão dados em troca de lucro. Jamais!",
@@ -1585,12 +1522,6 @@
   },
   "metametricsOptInDescription": {
     "message": "A MetaMask gostaria de reunir dados de uso para entender melhor como nossos usuários interagem com a extensão. Esses dados serão usados para melhorar continuamente a usabilidade e a experiência do usuário com o nosso produto e o ecossistema do Ethereum."
-  },
-  "metametricsOptInDescription2": {
-    "message": "Gostaríamos de reunir dados básicos de utilização para melhorar a usabilidade do nosso produto. Esses indicadores..."
-  },
-  "metametricsTitle": {
-    "message": "Junte-se a mais de 6 milhões de usuários para melhorar a MetaMask"
   },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",
@@ -1689,9 +1620,6 @@
   },
   "newAccount": {
     "message": "Nova conta"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Novo endereço detectado! Clique aqui para adicionar à sua agenda de endereços."
   },
   "newAccountNumberName": {
     "message": "Conta $1",
@@ -2342,9 +2270,6 @@
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "Definir configurações avançadas de privacidade"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "A MetaMask utiliza esses serviços terceirizados de confiança para aumentar a usabilidade e a segurança dos produtos."
   },
@@ -2379,16 +2304,14 @@
     "message": "Mostrar transações recebidas"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Selecione essa opção para usar o Etherscan e mostrar as transações recebidas na lista de transações"
+    "message": "Selecione essa opção para usar o Etherscan e mostrar as transações recebidas na lista de transações",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Mostrar permissões"
   },
   "showPrivateKeys": {
     "message": "Mostrar chaves privadas"
-  },
-  "showRecommendations": {
-    "message": "Mostrar recomendações"
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
@@ -2402,14 +2325,8 @@
   "sign": {
     "message": "Assinar"
   },
-  "signNotice": {
-    "message": "Assinar essa mensagem pode ser perigoso. Essa assinatura pode potencialmente realizar qualquer operação em seu nome, incluindo a concessão do controle total da sua conta e de todos os seus ativos ao site solicitante. Apenas assine essa mensagem se você sabe o que está fazendo ou se confia plenamente no site solicitante."
-  },
   "signatureRequest": {
     "message": "Solicitação de assinatura"
-  },
-  "signatureRequest1": {
-    "message": "Mensagem"
   },
   "signed": {
     "message": "Assinado"

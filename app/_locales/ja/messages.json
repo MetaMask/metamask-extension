@@ -36,10 +36,10 @@
     "message": "QRコードのスキャン"
   },
   "QRHardwareWalletSteps1Description": {
-    "message": "QRコードを介して通信するエアギャップハードウェアウォレットを接続します。正式にサポートされているエアギャップハードウェアウォレットは、次のとおりです。"
+    "message": "公式QRコードをサポートする以下のパートナーのリストから選択できます。"
   },
   "QRHardwareWalletSteps1Title": {
-    "message": "QRベースのHWウォレット"
+    "message": "QRハードウェアウォレットを接続"
   },
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave (近日追加予定)"
@@ -47,9 +47,18 @@
   "SIWEAddressInvalid": {
     "message": "サインインリクエストのアドレスが、サインインに使用しているアカウントのアドレスと一致していません。"
   },
+  "SIWEDomainInvalidText": {
+    "message": "サインインしようとしているサイトは、リクエストのドメインと一致していません。慎重に進めてください。"
+  },
+  "SIWEDomainInvalidTitle": {
+    "message": "不正なサイトリクエスト。"
+  },
   "SIWEDomainWarningBody": {
     "message": "Web サイト ($1) が正しくないドメインへのサインインを要求しています。フィッシング攻撃の可能性があります。",
     "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningLabel": {
+    "message": "危険"
   },
   "SIWELabelChainID": {
     "message": "チェーン ID:"
@@ -135,6 +144,10 @@
     "message": "このアカウント名は既に存在します",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
+  "accountNameReserved": {
+    "message": "このアカウント名は予約されています",
+    "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
   "accountOptions": {
     "message": "アカウントのオプション"
   },
@@ -174,6 +187,15 @@
   "addContact": {
     "message": "連絡先を追加"
   },
+  "addCustomIPFSGateway": {
+    "message": "カスタム IPFS ゲートウェイを追加"
+  },
+  "addCustomIPFSGatewayDescription": {
+    "message": "IPFS ゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタム IPFS ゲートウェイを追加するか、デフォルトを引き続き使用できます。"
+  },
+  "addCustomNetwork": {
+    "message": "カスタムネットワークを追加"
+  },
   "addCustomToken": {
     "message": "カスタムトークンを追加"
   },
@@ -197,6 +219,28 @@
   },
   "addEthereumChainConfirmationTitle": {
     "message": "このサイトにネットワークの追加を許可しますか？"
+  },
+  "addEthereumChainWarningModalHeader": {
+    "message": "この RPC プロバイダーは、確実に信頼できる場合にのみ追加してください。$1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "悪質なプロバイダーは、ブロックチェーンの状態を偽り、ユーザーのネットワークアクティビティを記録する可能性があります。"
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "プロバイダーは次の権限を有するため、信頼性が重要です:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "アカウントと IP アドレスの把握、およびそれらの関連付け"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "アカウントの残高およびその他オンチェーンステータスの表示"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "トランザクションのブロードキャスト"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "Ethereum Mainnet 用の新しい RPC プロバイダーを追加しようとしています"
   },
   "addFriendsAndAddresses": {
     "message": "信頼できる友達とアドレスを追加する"
@@ -235,6 +279,9 @@
   "advancedBaseGasFeeToolTip": {
     "message": "トランザクションがブロックに含まれた場合、最大基本手数料と実際の基本手数料の差が返金されます。合計金額は、最大基本手数料 (GWEI内) * ガス限度額で計算されます。"
   },
+  "advancedConfiguration": {
+    "message": "詳細設定"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "これらの$1を「高度な設定」のデフォルトとして保存"
   },
@@ -246,9 +293,6 @@
   },
   "advancedGasPriceTitle": {
     "message": "ガス代"
-  },
-  "advancedOptions": {
-    "message": "詳細オプション"
   },
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
@@ -334,6 +378,13 @@
     "message": "$1使用限度額の承認",
     "description": "The token symbol that is being approved"
   },
+  "approveTokenDescription": {
+    "message": "これにより、アクセス許可を取り消すまで、第三者が今後通知なしに次の NFT にアクセスし、転送できるようになります。"
+  },
+  "approveTokenTitle": {
+    "message": "$1 へのアクセスと転送を許可しますか？",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
+  },
   "approved": {
     "message": "承認済み"
   },
@@ -376,6 +427,13 @@
   },
   "authorizedPermissions": {
     "message": "以下の権限を承認しました"
+  },
+  "autoDetectTokens": {
+    "message": "トークンを自動検出"
+  },
+  "autoDetectTokensDescription": {
+    "message": "サードパーティー API を使用して、ウォレットに送られた新しいトークンを検出・表示します。アプリがこれらのサービスからデータを取得しないようにするには、オフにしてください。$1",
+    "description": "$1 is a link to a support article"
   },
   "autoLockTimeLimit": {
     "message": "オートロックタイマー (分)"
@@ -425,12 +483,29 @@
   "beCareful": {
     "message": "ご注意ください"
   },
+  "beta": {
+    "message": "ベータ版"
+  },
+  "betaHeaderText": {
+    "message": "これはベータ版です。バグは報告してください $1",
+    "description": "$1 represents the word 'here' in a hyperlink"
+  },
   "betaMetamaskDescription": {
     "message": "MetaMaskは何百万人もに信頼されている安全なウォレットで、誰もがWeb3の世界にアクセスできるようにしています。"
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "ベータ版の免責事項"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "このバージョンを使うと、リリース前に今後の機能をテストできます。皆様からのご意見は、可能な限り最高のバージョンのMetaMaskを開発するうえで参考にさせていただきます。MetaMaskベータの使用には、標準の$1および弊社の$2が適用されます。ベータ版のため、バグのリスクが高くなる可能性があります。 続行することにより、これらのリスクと、弊社の利用規約およびベータ規約に記載されているリスクを承認し、これらに同意したものとみなされます。",
+    "message": "このバージョンでは、リリース前に今後の機能をテストできます。皆様からのご意見は、可能な限り最高のバージョンのMetaMaskを開発するために参考にさせていただきます。MetaMaskベータの使用には、$1および$2が適用されます。",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "続行することで、これらのリスク、当社の$1、および$2を確認し、これらに同意したものとみなされます。",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "ベータ版規約"
   },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
     "message": "ベータ版の追加規約"
@@ -443,6 +518,15 @@
   },
   "betaPortfolioSite": {
     "message": "ベータポートフォリオサイト"
+  },
+  "betaTerms": {
+    "message": "ベータ版利用規約"
+  },
+  "betaWalletCreationSuccessReminder1": {
+    "message": "MetaMask ベータ版はシークレットリカバリーフレーズを復元できません。"
+  },
+  "betaWalletCreationSuccessReminder2": {
+    "message": "MetaMask ベータ版がユーザーのシークレットリカバリーフレーズを求めることは絶対にありません。"
   },
   "betaWelcome": {
     "message": "MetaMaskベータへようこそ"
@@ -514,6 +598,9 @@
     "message": "Transak は、100 か国以上でクレジット・デビットカード、Apple Pay、MobiKwik、銀行送金 (場所による) に対応しています。$1 は MetaMask アカウントに直接入金されます。",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "buyNow": {
+    "message": "今すぐ購入"
+  },
   "buyWithWyre": {
     "message": "Wyreで$1を購入"
   },
@@ -572,6 +659,13 @@
     "message": "チェーン ID $1 のネットワークは、入力されたものとは異なる通貨記号 ($2) を使用している可能性があります。続行する前に確認してください。",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
+  "chooseYourNetwork": {
+    "message": "ネットワークを選択してください"
+  },
+  "chooseYourNetworkDescription": {
+    "message": "当社では遠隔手続き呼出し (RPC) プロバイダーに Infura を使用して、Ethereum データにできるだけ信頼性の高いプライベートな形でアクセスできるようにしています。独自の RPC をお選びいただくこともできますが、どの RPC もトランザクションを実行するために、ユーザーの IP アドレスと Ethereum ウォレットを取得する点にご注意ください。Infura によるデータの取扱いに関する詳細は、$1 をご覧ください。",
+    "description": "$1 is a link to the privacy policy"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェアウォレットに接続するには、MetaMaskをGoogle Chromeで使用する必要があります。"
   },
@@ -597,16 +691,6 @@
   },
   "confirm": {
     "message": "確認"
-  },
-  "confirmPageDialogSetApprovalForAll": {
-    "message": "今後取得する可能性のあるものも含め、$1 へのアクセスを許可しようとしています。相手はお客様がこの承認を取り消すまで、お客様のウォレットからいつでもお客様の許可なしに NFT を送ることができます。$2",
-    "description": "$1 and $2 are bolded translations 'confirmPageDialogSetApprovalForAllPlaceholder1' and 'confirmPageDialogSetApprovalForAllPlaceholder2'"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder1": {
-    "message": "このコントラクトのすべての NFT"
-  },
-  "confirmPageDialogSetApprovalForAllPlaceholder2": {
-    "message": "慎重に進めてください。"
   },
   "confirmPassword": {
     "message": "パスワードの確認"
@@ -713,6 +797,10 @@
   "contacts": {
     "message": "連絡先"
   },
+  "contentFromSnap": {
+    "message": "$1 のコンテンツ",
+    "description": "$1 represents the name of the snap"
+  },
   "continue": {
     "message": "続行"
   },
@@ -746,6 +834,15 @@
   "contractInteraction": {
     "message": "コントラクトインタラクション"
   },
+  "contractNFT": {
+    "message": "NFT コントラクト"
+  },
+  "contractRequestingAccess": {
+    "message": "コントラクトがアクセスを要求しています"
+  },
+  "contractRequestingSignature": {
+    "message": "コントラクトに署名が必要です"
+  },
   "contractRequestingSpendingCap": {
     "message": "使用上限を求めるコントラクト"
   },
@@ -760,6 +857,9 @@
   },
   "convertTokenToNFTExistDescription": {
     "message": "このアセットは NFT として追加されていることが検出されました。トークンリストから削除しますか？"
+  },
+  "coolWallet": {
+    "message": "CoolWallet"
   },
   "copiedExclamation": {
     "message": "コピーされました！"
@@ -811,6 +911,9 @@
   },
   "currentLanguage": {
     "message": "現在の言語"
+  },
+  "currentRpcUrlDeprecated": {
+    "message": "このネットワークの現在の RPC URL は非推奨となりました。"
   },
   "currentTitle": {
     "message": "現在:"
@@ -884,6 +987,9 @@
   "dataHex": {
     "message": "16進法"
   },
+  "dcent": {
+    "message": "D'Cent"
+  },
   "decimal": {
     "message": "トークンの小数桁数"
   },
@@ -921,6 +1027,9 @@
   },
   "deleteNetworkDescription": {
     "message": "このネットワークを削除しますか?"
+  },
+  "deposit": {
+    "message": "入金"
   },
   "depositCrypto": {
     "message": "$1 を入金",
@@ -987,6 +1096,9 @@
   "downloadGoogleChrome": {
     "message": "Google Chromeをダウンロード"
   },
+  "downloadNow": {
+    "message": "今すぐダウンロード"
+  },
   "downloadSecretBackup": {
     "message": "このシークレットバックアップフレーズをダウンロードして、外部の暗号化されたハードウェアドライブまたはストレージ媒体に安全に保管します。"
   },
@@ -1011,29 +1123,8 @@
   "editContact": {
     "message": "連絡先を編集"
   },
-  "editGasEducationButtonText": {
-    "message": "どのように選択すればいいですか?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "これは、トランザクションが成功する可能性を高めるため、急ぎのトランザクション (スワップなど) に最適です。スワップは処理に時間がかかりすぎると失敗し、ガス代の一部が失われる可能性があります。"
-  },
-  "editGasEducationLowExplanation": {
-    "message": "低いガス代は、処理時間が重要でない場合以外使用しないでください。ガス代を下げると、いつトランザクションが成功するか (または成功するかどうか) が予測しにくくなります。"
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "中程度のガス代は、送金、引き出し、その他急ぎではないトランザクションに適しています。この設定のトランザクションは、ほとんどの場合成功します。"
-  },
-  "editGasEducationModalIntro": {
-    "message": "適切なガス代は、トランザクションのタイプと重要性によって異なります。"
-  },
-  "editGasEducationModalTitle": {
-    "message": "選び方"
-  },
   "editGasFeeModalTitle": {
     "message": "ガス代を編集"
-  },
-  "editGasHigh": {
-    "message": "高"
   },
   "editGasLimitOutOfBounds": {
     "message": "ガスの限度額は$1以上にする必要があります"
@@ -1044,9 +1135,6 @@
   },
   "editGasLimitTooltip": {
     "message": "ガスの限度額は、使用しても構わない最大のガス代です。 ガス代は、「最大優先手数料」と「最大手数料」の乗数です。"
-  },
-  "editGasLow": {
-    "message": "低"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "最大基本手数料を優先手数料よりも低くすることはできません"
@@ -1066,9 +1154,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "最大手数料を優先手数料よりも低くすることはできません"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "最大手数料は、支払う可能性のある最高額です (基本手数料 + 優先手数料)。"
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "最大優先手数料は0GWEIより高くなければなりません"
   },
@@ -1086,12 +1171,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "現在のネットワーク状況に対して優先手数料が低いです"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "最大優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。通常最大設定額が支払われます"
-  },
-  "editGasMedium": {
-    "message": "中"
   },
   "editGasPriceTooLow": {
     "message": "ガス代は0より高くなければなりません"
@@ -1112,12 +1191,6 @@
   "editGasTooLow": {
     "message": "不明な処理時間"
   },
-  "editGasTooLowTooltip": {
-    "message": "現在の市場の状況に対し、最大手数料または最大優先手数料が低い可能性があります。トランザクションがいつ処理されるか (または処理されるかどうか) わかりません。 "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "これにより最大手数料は下がりますが、ネットワークトラフィックが増加するとトランザクションが遅延または失敗する可能性があります。"
-  },
   "editNonceField": {
     "message": "ナンスを編集"
   },
@@ -1132,22 +1205,6 @@
   },
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
-  },
-  "enableEIP1559V2": {
-    "message": "改善されたガス代 UI を有効にする"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "ガス代の見積もりとカスタマイズが新しくなりました。"
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "設定で、改善されたガス代 UI をオンにしてください"
-  },
-  "enableEIP1559V2Description": {
-    "message": "ガス代の見積もりとカスタマイズが新しくなりました。新しいガス代エクスペリエンスを利用するには、オンにしてください。$1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "新しいガス代エクスペリエンス"
   },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
@@ -1207,14 +1264,8 @@
     "message": "エンドポイントが別のチェーン ID を返してきました。$1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "改善されたトークン検出"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "改善されたトークン検出は現在 $1 で利用可能です。$2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys のトークン API は、さまざまなサードパーティトークンリストからトークンを集約し、リスト化します。有効にすると、トークンが自動的に検出され、Ethereum メインネット、Binance、Polygon、Avalanche で検索可能になります。無効にすると、自動検出と検索は Ethereum メインネットでのみ可能になります。"
   },
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"
@@ -1230,6 +1281,9 @@
   },
   "ensUnknownError": {
     "message": "ENSの検索に失敗しました。"
+  },
+  "enterANumber": {
+    "message": "数字を入力してください"
   },
   "enterMaxSpendLimit": {
     "message": "使用限度額の最大値を入力してください"
@@ -1405,9 +1459,6 @@
     "message": "このガス代は$1により提案されています。これを上書きすると、トランザクションに問題が発生する可能性があります。ご質問がございましたら、$1までお問い合わせください。",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasEstimatesUnavailableWarning": {
-    "message": "弊社の低・中・高の見積もりはご利用いただけません。"
-  },
   "gasFee": {
     "message": "ガス代"
   },
@@ -1501,7 +1552,7 @@
     "message": "Etherを取得"
   },
   "getEtherFromFaucet": {
-    "message": "$1のフォーセットからEtherを取得",
+    "message": "$1 ネットワークのフォーセットから Ether を取得",
     "description": "Displays network name for Ether faucet"
   },
   "getStarted": {
@@ -1658,6 +1709,12 @@
     "message": "インポート済み",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "improvedTokenAllowance": {
+    "message": "改善されたトークンの許可設定"
+  },
+  "improvedTokenAllowanceDescription": {
+    "message": "これをオンにすると、DApp が ERC20 の承認を求めた際に、改善されたトークン許可設定が利用できます"
+  },
   "inYourSettings": {
     "message": "設定で"
   },
@@ -1668,6 +1725,16 @@
   "initialTransactionConfirmed": {
     "message": "最初のトランザクションはネットワークによって確認されました。戻るには [OK] をクリックします。"
   },
+  "inputLogicEmptyState": {
+    "message": "現在または今後コントラクトが使用しても構わない額のみを入力してください。使用上限は後でいつでも増額できます。"
+  },
+  "inputLogicEqualOrSmallerNumber": {
+    "message": "これにより、コントラクトが現在の残高から $1 使用できるようになります。",
+    "description": "$1 is the current token balance in the account and the name of the current token"
+  },
+  "inputLogicHigherNumber": {
+    "message": "これにより、上限に達するか使用上限が取り消されるまで、コントラクトがトークン残高全額を使用できるようになります。これを制限したい場合は、使用上限を低めに設定することをお勧めします。"
+  },
   "install": {
     "message": "インストール"
   },
@@ -1677,6 +1744,10 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "アカウントに、$2 ネットワークでのトランザクション手数料の支払いに十分な $1 がありません。$3するか、別のアカウントから入金してください。",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyBuyOrReceive": {
+    "message": "アカウントには $2 ネットワークでトランザクション手数料を支払うのに十分な $1 がありません。$3するか、他のアカウントから$4してください。",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "アカウントに、$2 ネットワークでのトランザクション手数料の支払いに十分な $1 がありません。別のアカウントから $1 を入金してください。",
@@ -1747,12 +1818,6 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "入力値が無効です！秘密のリカバリーフレーズは大文字・小文字が区別されます。"
   },
-  "ipfsGateway": {
-    "message": "IPFSゲートウェイ"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENSコンテンツの解決に使用するIPFS CIDゲートウェイのURLを入力します。"
-  },
   "jazzAndBlockies": {
     "message": "Jazzicon と Blockie は、アカウントを一目で見分けるためのユニークなアイコンであり、2 つの異なるスタイルが特徴です。"
   },
@@ -1789,7 +1854,7 @@
     "message": "詳細"
   },
   "learnMoreAboutGas": {
-    "message": "ガスについて$1しますか?",
+    "message": "ガスに関する$1をご希望ですか？",
     "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
@@ -1970,18 +2035,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "いつでも設定からオプトアウトできるようにします"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "いつでも設定でオプトアウトできます"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "実行しない",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMaskが実行する内容"
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "キー、アドレス、トランザクション、残高、ハッシュなど、いかなる個人情報も収集されることはありません"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1が完全なIPアドレスを収集することはありません",
@@ -1990,12 +2049,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1は、キー、アドレス、トランザクション、残高、ハッシュなど、いかなる個人情報も収集しません",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "完全なIPアドレスは収集されません"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "決して利益目的にデータを販売することはありません!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1が営利目的でデータを販売することは決してありません。",
@@ -2009,12 +2062,6 @@
   },
   "metametricsOptInDescription": {
     "message": "MetaMaskでは、ユーザーによる拡張機能の利用状況についてよりよく理解するため、基本的な使用状況データを収集させていただきたいと考えています。このデータは、当社の製品およびイーサリアムエコシステムの使いやすさとユーザーエクスペリエンスを継続的に改善するために使用されます。"
-  },
-  "metametricsOptInDescription2": {
-    "message": "弊社の製品をより使いやすくするために、基本的な使用データを収集したいと考えています. これらの指標は..."
-  },
-  "metametricsTitle": {
-    "message": "6百万人以上のユーザーと共に、MetaMaskの改善にご協力ください"
   },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
@@ -2100,6 +2147,9 @@
   "networkName": {
     "message": "ネットワーク名"
   },
+  "networkNameArbitrum": {
+    "message": "Arbitrum"
+  },
   "networkNameAvalanche": {
     "message": "Avalanche"
   },
@@ -2115,11 +2165,17 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+  "networkNameOptimism": {
+    "message": "Optimism"
+  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameTestnet": {
     "message": "テストネット"
+  },
+  "networkProvider": {
+    "message": "ネットワークプロバイダー"
   },
   "networkSettingsChainIdDescription": {
     "message": "チェーンIDはトランザクションの署名に使用されます。チェーンIDはネットワークが返すチェーンIDと一致する必要があります。10進数または「0x」が先行する16進数を入力できますが、10進数で表示されます。"
@@ -2155,9 +2211,6 @@
   },
   "newAccount": {
     "message": "新しいアカウント"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "新しいアドレスが検出されました! アドレス帳に追加するにはここをクリックしてください。"
   },
   "newAccountNumberName": {
     "message": "アカウント$1",
@@ -2209,6 +2262,17 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "トークンIDを入力してください"
+  },
+  "nftWarningContent": {
+    "message": "今後取得する可能性のあるものも含め、$1 へのアクセスを許可しようとしています。相手はこの承認が取り消されるまで、お客様のウォレットからいつでも許可なしにこれらの NFT を送ることができます。$2",
+    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
+  },
+  "nftWarningContentBold": {
+    "message": "手持ちのすべての $1 NFT",
+    "description": "$1 is name of the collection"
+  },
+  "nftWarningContentGrey": {
+    "message": "慎重に進めてください。"
   },
   "nfts": {
     "message": "NFT"
@@ -2284,7 +2348,7 @@
     "message": "改善されたトークン検出は、現在 Ethereum Mainnet、Polygon、BSC、Avalanche ネットワークで利用できます。他のネットワークも追加される予定です！"
   },
   "notifications10DescriptionThree": {
-    "message": "トークン検出機能はデフォルトでオンになっていますが、設定で無効にできます。"
+    "message": "トークン検出機能は現在デフォルトでオフになっていますが、設定で有効にできます。"
   },
   "notifications10DescriptionTwo": {
     "message": "トークンの情報は、サードパーティのトークンリストから取得されています。3 つ以上のトークンリストに掲載されているトークンは自動的に検出されます。"
@@ -2333,6 +2397,24 @@
   },
   "notifications15Title": {
     "message": "Ethereum のマージ (Merge) が完了しました！"
+  },
+  "notifications16ActionText": {
+    "message": "こちらでお試しください"
+  },
+  "notifications16Description": {
+    "message": "より多くの情報に基づき決定を下せるよう、トークン許可設定の確認のデザインを変更しました。"
+  },
+  "notifications16Title": {
+    "message": "改善されたトークン許可設定"
+  },
+  "notifications17ActionText": {
+    "message": "セキュリティおよびプライバシー設定を表示"
+  },
+  "notifications17Description": {
+    "message": "このアップデートでは、自らのプライバシーをより適切に管理できるよう、より多くのオプションが提供されています。データの収集方法に関する透明性が高まり、共有オプションがより明確になりました。セキュリティおよびプライバシー設定で設定を変更するか、拡張機能の使用データを削除してください。"
+  },
+  "notifications17Title": {
+    "message": "セキュリティおよびプライバシー設定"
   },
   "notifications1Description": {
     "message": "MetaMask Mobileのユーザーが、モバイルウォレット内でトークンを交換できるようになりました。QRコードをスキャンしてモバイルアプリを取得し、スワップを開始します。",
@@ -2458,11 +2540,84 @@
   "on": {
     "message": "オン"
   },
+  "onboardingAdvancedPrivacyIPFSDescription": {
+    "message": "IPFS ゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタム IPFS ゲートウェイを追加するか、デフォルトを引き続き使用できます。"
+  },
+  "onboardingAdvancedPrivacyIPFSInvalid": {
+    "message": "有効な URL を入力してください"
+  },
+  "onboardingAdvancedPrivacyIPFSTitle": {
+    "message": "カスタム IPFS ゲートウェイを追加"
+  },
+  "onboardingAdvancedPrivacyIPFSValid": {
+    "message": "IPFS ゲートウェイ URL が有効です"
+  },
+  "onboardingAdvancedPrivacyNetworkButton": {
+    "message": "カスタムネットワークを追加"
+  },
+  "onboardingAdvancedPrivacyNetworkDescription": {
+    "message": "当社では遠隔手続き呼出し (RPC) プロバイダーに Infura を使用して、Ethereum データにできるだけ信頼性の高いプライベートな形でアクセスできるようにしています。独自の RPC をお選びいただくこともできますが、どの RPC もトランザクションを実行するために、ユーザーの IP アドレスと Ethereum ウォレットを取得する点にご注意ください。Infura によるデータの取扱いに関する詳細は、$1 をご覧ください。"
+  },
+  "onboardingAdvancedPrivacyNetworkTitle": {
+    "message": "ネットワークを選択してください"
+  },
   "onboardingCreateWallet": {
     "message": "新規ウォレットを作成"
   },
   "onboardingImportWallet": {
     "message": "既存のウォレットをインポート"
+  },
+  "onboardingMetametricsAgree": {
+    "message": "同意します"
+  },
+  "onboardingMetametricsAllowOptOut": {
+    "message": "いつでも設定からオプトアウトできるようにします"
+  },
+  "onboardingMetametricsDataTerms": {
+    "message": "一般データ保護規則 (EU) 2016/679 の目的に従い、このデータは集約され匿名化されます。"
+  },
+  "onboardingMetametricsDescription": {
+    "message": "MetaMask は、ユーザーによる MetaMask の使用状況をより詳細に把握するため、使用データを収集したいと考えています。このデータは、使用状況に基づくサービスの改善を含め、サービスの提供を目的に使用されます。"
+  },
+  "onboardingMetametricsDescription2": {
+    "message": "MetaMask は..."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "結構です"
+  },
+  "onboardingMetametricsInfuraTerms": {
+    "message": "* MetaMask で Infura をデフォルトの RPC プロバイダーとして使用する場合、Infura はトランザクションの送信時にユーザーの IP アドレスおよび Ethereum ウォレットアドレスを収集します。当社がこれらの情報を、システムによりこれら 2 つのデータが関連付けられる形で保管することはありません。データ収集の観点から見た MetaMask と Infura とのやり取りに関する詳細は、当社のアップデート $1 をご覧ください。当社のプライバシー慣行全般に関する詳細は、$2をご覧ください。",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+  },
+  "onboardingMetametricsInfuraTermsPolicy": {
+    "message": "こちらのプライバシーポリシー"
+  },
+  "onboardingMetametricsInfuraTermsPolicyLink": {
+    "message": "こちら"
+  },
+  "onboardingMetametricsModalTitle": {
+    "message": "カスタムネットワークを追加"
+  },
+  "onboardingMetametricsNeverCollect": {
+    "message": "サービスの提供に不要な情報 (キー、アドレス、トランザクションハッシュ、残高) を収集することは、$1",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectIP": {
+    "message": "ユーザーの完全な IP アドレスを収集することは、$1*",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasis": {
+    "message": "一切ありません"
+  },
+  "onboardingMetametricsNeverSellData": {
+    "message": "データを販売することは$1。絶対です！",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsSendAnonymize": {
+    "message": "匿名のクリックおよびページ閲覧イベントを送信"
+  },
+  "onboardingMetametricsTitle": {
+    "message": "MetaMask の改善にご協力ください"
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "フルアクセス"
@@ -2540,6 +2695,10 @@
   "osTheme": {
     "message": "システム"
   },
+  "otherSnaps": {
+    "message": "他のスナップ",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "padlock": {
     "message": "南京錠"
   },
@@ -2611,13 +2770,29 @@
     "message": "$1 スナップに接続します。",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
+  "permission_cronjob": {
+    "message": "定期的なアクションのスケジュール設定と実行。",
+    "description": "The description for the `snap_cronjob` permission"
+  },
   "permission_customConfirmation": {
     "message": "MetaMask に確認を表示します。",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_dialog": {
+    "message": "MetaMask にダイアログウィンドウを表示します。",
+    "description": "The description for the `snap_dialog` permission"
+  },
   "permission_ethereumAccounts": {
     "message": "アドレス、アカウント残高、アクティビティを表示してトランザクションを開始",
     "description": "The description for the `eth_accounts` permission"
+  },
+  "permission_ethereumProvider": {
+    "message": "Ethereum プロバイダーにアクセスします。",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "このスナップに一意の無作為なキーを取得します。",
+    "description": "The description for the `snap_getEntropy` permission"
   },
   "permission_longRunning": {
     "message": "無期限で実行。",
@@ -2639,9 +2814,17 @@
     "message": "通知を表示します。",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_rpc": {
+    "message": "$1によるこのスナップとの直接のやり取りを許可してください。",
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
   "permission_transactionInsight": {
     "message": "トランザクションインサイトを取得して表示します。",
     "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "トランザクションを提案している Web サイトの提供元を確認します",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "不明なパーミッション: $1",
@@ -2691,6 +2874,9 @@
   },
   "priorityFeeProperCase": {
     "message": "優先手数料"
+  },
+  "privacy": {
+    "message": "プライバシー"
   },
   "privacyMsg": {
     "message": "プライバシーポリシー"
@@ -2776,6 +2962,12 @@
   },
   "rejectAll": {
     "message": "すべて拒否"
+  },
+  "rejectRequestsDescription": {
+    "message": "$1 件のリクエストを一括で拒否しようとしています。"
+  },
+  "rejectRequestsN": {
+    "message": "$1 件のリクエストを拒否"
   },
   "rejectTxsDescription": {
     "message": "$1件のトランザクションを一括拒否しようとしています。"
@@ -2883,6 +3075,9 @@
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"
   },
+  "reviewSpendingCap": {
+    "message": "使用上限を確認してください"
+  },
   "revokeAllTokensTitle": {
     "message": "すべての $1 へのアクセス許可を取り消しますか？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -2890,6 +3085,10 @@
   "revokeApproveForAllDescription": {
     "message": "アクセス許可を取り消すと、次の $1 が今後 $2 にアクセスできなくなります",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCap": {
+    "message": "$1 の使用上限を取り消す",
+    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "このコントラクトは、現在または今後のトークンをこれ以上使用できなくなります。"
@@ -2944,6 +3143,9 @@
   },
   "secureWallet": {
     "message": "安全なウォレット"
+  },
+  "security": {
+    "message": "セキュリティ"
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
@@ -3065,9 +3267,6 @@
   "sepolia": {
     "message": "Sepolia テストネットワーク"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "高度なプライバシー設定を設定"
-  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMaskはこれらの信頼できるサードパーティーサービスを使用して、製品の使いやすさと安全性を向上させています。"
   },
@@ -3077,6 +3276,10 @@
   "setApprovalForAllTitle": {
     "message": "使用限度額なしで $1 を承認",
     "description": "The token symbol that is being approved"
+  },
+  "setSpendingCap": {
+    "message": "$1 の使用上限を設定",
+    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "設定"
@@ -3116,16 +3319,14 @@
     "message": "受信トランザクションを表示"
   },
   "showIncomingTransactionsDescription": {
-    "message": "これを選択すると、Etherscanを使用して受信トランザクションがトランザクションリストに表示されます"
+    "message": "これを選択すると、Etherscanを使用して受信トランザクションがトランザクションリストに表示されます",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "表示許可"
   },
   "showPrivateKeys": {
     "message": "秘密鍵を表示"
-  },
-  "showRecommendations": {
-    "message": "推奨を表示"
   },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
@@ -3139,14 +3340,14 @@
   "sign": {
     "message": "署名"
   },
-  "signNotice": {
-    "message": "このメッセージに署名すると、危険な可能性があります。この署名により、要求しているサイトへのアカウントやアカウントのアセットの完全な管理権の付与を含め、アカウントに代わり操作が行われる可能性があります。完全に状況を把握している場合、または要求しているサイトを完全に信頼している場合を除き、このメッセージには署名しないでください。"
-  },
   "signatureRequest": {
     "message": "署名の要求"
   },
-  "signatureRequest1": {
-    "message": "メッセージ"
+  "signatureRequestGuidance": {
+    "message": "このメッセージの内容を完全に理解し、リクエストしているサイトを信頼する場合にのみ署名してください。"
+  },
+  "signatureRequestWarning": {
+    "message": "このメッセージに署名するのは危険な可能性があります。このメッセージの相手に、アカウントと資産の完全なコントロールを許可しようとしている可能性があります。つまり、相手がいつでもアカウントからすべてを引き出せるようになります。慎重に進めてください。$1。"
   },
   "signed": {
     "message": "署名が完了しました"
@@ -3211,6 +3412,10 @@
   "snaps": {
     "message": "スナップ"
   },
+  "snapsInsightError": {
+    "message": "$1 でエラーが発生しました: $2",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
+  },
   "snapsInsightLoading": {
     "message": "トランザクションインサイトを読み込み中..."
   },
@@ -3226,8 +3431,14 @@
   "snapsToggle": {
     "message": "スナップは有効になっている場合にのみ実行されます"
   },
+  "snapsUIError": {
+    "message": "スナップにより指定された UI が無効です。"
+  },
   "someNetworksMayPoseSecurity": {
     "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
+  },
+  "somethingIsWrong": {
+    "message": "エラーが発生しました。ページを再度読み込んでみてください。"
   },
   "somethingWentWrong": {
     "message": "申し訳ありません。問題が発生しました。"
@@ -3271,6 +3482,13 @@
   },
   "spendLimitTooLarge": {
     "message": "使用限度額が大きすぎます"
+  },
+  "spendingCapError": {
+    "message": "エラー: 数字のみを入力してください"
+  },
+  "spendingCapErrorDescription": {
+    "message": "現在または今後 $1 がアクセスしても構わない額のみを入力してください。トークン上限は後でいつでも増額できます。",
+    "description": "$1 is origin of the site requesting the token limit"
   },
   "srpInputNumberOfWords": {
     "message": "$1 語のフレーズがあります",
@@ -3324,10 +3542,10 @@
     "message": "未接続"
   },
   "step1LatticeWallet": {
-    "message": "Lattice1の接続準備ができていることを確認してください"
+    "message": "Lattice1を接続する"
   },
   "step1LatticeWalletMsg": {
-    "message": "セットアップが完了しオンラインになると、MetaMaskをLattice1デバイスに接続できます。デバイスのロックを解除し、デバイスIDを準備してください。ハードウェアウォレットの使用に関する詳細は、$1",
+    "message": "セットアップが完了しオンラインになると、MetaMaskをLattice1デバイスに接続できます。デバイスのロックを解除し、デバイスIDを準備してください。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -3338,17 +3556,17 @@
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
   "step1TrezorWallet": {
-    "message": "Trezorウォレットのプラグイン"
+    "message": "Trezorを接続する"
   },
   "step1TrezorWalletMsg": {
-    "message": "コンピューターにウォレットを直接接続します。ハードウェアウォレットデバイスの使い方の詳細については、$1",
+    "message": "Trezorをコンピューターに直接接続し、ロックを解除します。 必ず正しいパスフレーズを使用してください。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step2LedgerWallet": {
-    "message": "Ledgerウォレットのプラグイン"
+    "message": "Ledgerを接続する"
   },
   "step2LedgerWalletMsg": {
-    "message": "コンピューターにウォレットを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。ハードウェアウォレットデバイスの使い方の詳細については、$1",
+    "message": "コンピューターにLedgerを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillGettingMessage": {
@@ -3908,6 +4126,9 @@
   "tokenList": {
     "message": "トークンリスト:"
   },
+  "tokenNftAutoDetection": {
+    "message": "トークンと NFT の自動検出"
+  },
   "tokenScamSecurityRisk": {
     "message": "トークン関連の詐欺やセキュリティのリスク"
   },
@@ -4023,11 +4244,20 @@
   "transactionResubmitted": {
     "message": "推定のガス代を$2で$1に増加し、トランザクションを再送信しました"
   },
+  "transactionSecurityCheck": {
+    "message": "トランザクションのセキュリティチェック"
+  },
+  "transactionSecurityCheckDescription": {
+    "message": "これをオンにすると、第三者 (OpenSea) がすべてのトランザクションや署名の要求を確認し、既知の悪質な要求に関して警告できるようになります。"
+  },
   "transactionSubmitted": {
     "message": "$1の推定ガス代が$2でトランザクションが送信されました。"
   },
   "transactionUpdated": {
     "message": "トランザクションが$2で更新されました。"
+  },
+  "transactions": {
+    "message": "トランザクション"
   },
   "transfer": {
     "message": "送金"
@@ -4060,6 +4290,9 @@
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
+  },
+  "tutorial": {
+    "message": "チュートリアル"
   },
   "twelveHrTitle": {
     "message": "12時間:"
@@ -4143,6 +4376,24 @@
   "useCollectibleDetectionDescription": {
     "message": "NFTメディアとデータを表示すると、IPアドレスが集中型のサーバーに開示される可能性があります。ウォレット内のNFTの検出には、サードパーティーAPI (OpenSeaなど) が使用されます。これにより、これらのサービスにアカウントのアドレスが公開されます。これらのサービスからデータを取得しない場合は、この機能を無効にしてください。"
   },
+  "useCollectibleDetectionDescriptionLine2": {
+    "message": "また、次の点にも留意してください。"
+  },
+  "useCollectibleDetectionDescriptionLine3": {
+    "message": "NFT のメタデータには、詐欺サイトやフィッシングサイトへのリンクが含まれている可能性があります。"
+  },
+  "useCollectibleDetectionDescriptionLine4": {
+    "message": "誰でもあなたのアカウントに NFT をエアドロップできます。これには不快なコンテンツが含まれている場合があり、ウォレットに自動で表示される可能性があります。"
+  },
+  "useDefault": {
+    "message": "既定値を使用"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "アカウント残高の一括リクエスト"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "当社は残高を素早く表示できるよう、アカウントをまとめて Infura にクエリを送ります。この機能をオフにすると、アクティブなアカウントのみクエリの対象となります。Dapps によっては、ウォレットを接続しないと機能しないものもあります。"
+  },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
   },
@@ -4158,6 +4409,9 @@
   "userName": {
     "message": "ユーザー名"
   },
+  "verifyContractDetails": {
+    "message": "コントラクトの詳細を確認"
+  },
   "verifyThisTokenDecimalOn": {
     "message": "トークンの10進数は$1にあります",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -4170,6 +4424,9 @@
     "message": "このトークンを$1で検証して、取引したいトークンであることを確認してください。",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "view": {
+    "message": "表示"
+  },
   "viewAccount": {
     "message": "アカウントを表示"
   },
@@ -4178,6 +4435,9 @@
   },
   "viewContact": {
     "message": "連絡先を表示"
+  },
+  "viewDetails": {
+    "message": "詳細を表示"
   },
   "viewFullTransactionDetails": {
     "message": "トランザクションの完全な詳細を表示"
@@ -4250,6 +4510,10 @@
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
+  "websites": {
+    "message": "Web サイト",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "welcome": {
     "message": "MetaMaskにようこそ"
   },
@@ -4307,6 +4571,12 @@
   },
   "youSign": {
     "message": "著名しています"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "資金が危険にさらされている可能性があります"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "NFT が危険にさらされている可能性があります"
   },
   "yourPrivateSeedPhrase": {
     "message": "秘密のシークレットリカバリーフレーズ"

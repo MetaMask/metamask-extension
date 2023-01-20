@@ -16,14 +16,14 @@ export default function UpdateSnapPermissionList({
   const ApprovedPermissions = () => {
     return Object.entries(approvedPermissions).map(
       ([permissionName, permissionValue]) => {
-        const { label, rightIcon } = getPermissionDescription(
+        const permissions = getPermissionDescription(
           t,
           permissionName,
           permissionValue,
         );
         const { date } = permissionValue;
         const formattedDate = formatDate(date, 'yyyy-MM-dd');
-        return (
+        return permissions.map(({ label, rightIcon }) => (
           <div className="approved-permission" key={permissionName}>
             <i className="fas fa-check" />
             <div className="permission-description">
@@ -38,7 +38,7 @@ export default function UpdateSnapPermissionList({
             </div>
             {rightIcon && <i className={rightIcon} />}
           </div>
-        );
+        ));
       },
     );
   };
@@ -46,12 +46,12 @@ export default function UpdateSnapPermissionList({
   const RevokedPermissions = () => {
     return Object.entries(revokedPermissions).map(
       ([permissionName, permissionValue]) => {
-        const { label, rightIcon } = getPermissionDescription(
+        const permissions = getPermissionDescription(
           t,
           permissionName,
           permissionValue,
         );
-        return (
+        return permissions.map(({ label, rightIcon }) => (
           <div className="revoked-permission" key={permissionName}>
             <i className="fas fa-x" />
             <div className="permission-description">
@@ -66,7 +66,7 @@ export default function UpdateSnapPermissionList({
             </div>
             {rightIcon && <i className={rightIcon} />}
           </div>
-        );
+        ));
       },
     );
   };
@@ -74,12 +74,12 @@ export default function UpdateSnapPermissionList({
   const NewPermissions = () => {
     return Object.entries(newPermissions).map(
       ([permissionName, permissionValue]) => {
-        const { label, rightIcon } = getPermissionDescription(
+        const permissions = getPermissionDescription(
           t,
           permissionName,
           permissionValue,
         );
-        return (
+        return permissions.map(({ label, rightIcon }) => (
           <div className="new-permission" key={permissionName}>
             <i className="fas fa-arrow-right" />
             <div className="permission-description">
@@ -94,7 +94,7 @@ export default function UpdateSnapPermissionList({
             </div>
             {rightIcon && <i className={rightIcon} />}
           </div>
-        );
+        ));
       },
     );
   };

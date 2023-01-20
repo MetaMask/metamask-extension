@@ -19,8 +19,8 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const allCollectibles = useSelector(getCollectibles);
-  const tokenAddedAsNFT = allCollectibles.find(({ address }) =>
+  const allNfts = useSelector(getCollectibles);
+  const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
   );
 

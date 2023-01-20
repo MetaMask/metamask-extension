@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest/rendering';
+import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
 import TokenOverview from './token-overview';
 
 describe('TokenOverview', () => {
@@ -21,11 +22,11 @@ describe('TokenOverview', () => {
       selectedAddress: '0x1',
       keyrings: [
         {
-          type: 'HD Key Tree',
+          type: HardwareKeyringTypes.hdKeyTree,
           accounts: ['0x1', '0x2'],
         },
         {
-          type: 'Ledger Hardware',
+          type: HardwareKeyringTypes.ledger,
           accounts: [],
         },
       ],
@@ -54,7 +55,7 @@ describe('TokenOverview', () => {
     });
 
     it('should show ConvertTokenToNFT modal when token passed in props is an ERC721', () => {
-      process.env.COLLECTIBLES_V1 = true;
+      process.env.NFTS_V1 = true;
       const token = {
         name: 'test',
         isERC721: true,
@@ -70,7 +71,7 @@ describe('TokenOverview', () => {
         name: 'CONVERT_TOKEN_TO_NFT',
         tokenAddress: '0x01',
       });
-      process.env.COLLECTIBLES_V1 = false;
+      process.env.NFTS_V1 = false;
     });
   });
 });

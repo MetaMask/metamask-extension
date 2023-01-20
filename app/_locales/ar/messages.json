@@ -55,9 +55,6 @@
   "advanced": {
     "message": "إعدادات متقدمة"
   },
-  "advancedOptions": {
-    "message": "خيارات متقدمة"
-  },
   "amount": {
     "message": "المبلغ"
   },
@@ -562,9 +559,6 @@
   "newAccount": {
     "message": "حساب جديد"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "تم اكتشاف عنوان جديد! انقر هنا لإضافته إلى دفتر عناوينك."
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
@@ -825,9 +819,6 @@
   },
   "sign": {
     "message": "توقيع"
-  },
-  "signNotice": {
-    "message": "توقيع هذه الرسالة يمكن أن يكون له\nآثار جانبية خطيرة. قم فقط بتوقيع الرسائل من\nالمواقع التي تثق بها تماماً في التعامل مع حسابك بالكامل.\n  ستتم إزالة هذه الطريقة الخطيرة في إصدار مستقبلي."
   },
   "signatureRequest": {
     "message": "طلب التوقيع"

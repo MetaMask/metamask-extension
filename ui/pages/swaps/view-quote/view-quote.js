@@ -82,11 +82,6 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  decGWEIToHexWEI,
-  addHexes,
-  decWEIToDecETH,
-} from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
@@ -109,13 +104,19 @@ import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-u
 import {
   calcGasTotal,
   calcTokenAmount,
-  decimalToHex,
-  hexWEIToDecGWEI,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
-import { sumHexes } from '../../../helpers/utils/transactions.util';
+import {
+  addHexes,
+  decGWEIToHexWEI,
+  decimalToHex,
+  decWEIToDecETH,
+  hexWEIToDecGWEI,
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -132,6 +133,8 @@ export default function ViewQuote() {
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
   const [multiLayerL1FeeTotal, setMultiLayerL1FeeTotal] = useState(null);
+  const [multiLayerL1ApprovalFeeTotal, setMultiLayerL1ApprovalFeeTotal] =
+    useState(null);
   // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
 
@@ -313,7 +316,7 @@ export default function ViewQuote() {
         smartTransactionsOptInStatus &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
-      multiLayerL1FeeTotal,
+      multiLayerL1ApprovalFeeTotal,
     );
   }, [
     quotes,
@@ -329,7 +332,7 @@ export default function ViewQuote() {
     nativeCurrencySymbol,
     smartTransactionsEnabled,
     smartTransactionsOptInStatus,
-    multiLayerL1FeeTotal,
+    multiLayerL1ApprovalFeeTotal,
   ]);
 
   const renderableDataForUsedQuote = renderablePopoverData.find(
@@ -890,23 +893,42 @@ export default function ViewQuote() {
   ]);
 
   useEffect(() => {
-    if (!isMultiLayerFeeNetwork) {
+    if (!isMultiLayerFeeNetwork || !usedQuote?.multiLayerL1TradeFeeTotal) {
       return;
     }
-    const getEstimatedL1Fee = async () => {
+    const getEstimatedL1Fees = async () => {
       try {
-        const result = await fetchEstimatedL1Fee(global.eth, {
-          txParams: unsignedTransaction,
-          chainId,
-        });
-        setMultiLayerL1FeeTotal(result);
+        let l1ApprovalFeeTotal = '0x0';
+        if (approveTxParams) {
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
+            txParams: {
+              ...approveTxParams,
+              gasPrice: addHexPrefix(approveTxParams.gasPrice),
+              value: '0x0', // For approval txs we need to use "0x0" here.
+            },
+            chainId,
+          });
+          setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
+        }
+        const l1FeeTotal = sumHexes(
+          usedQuote.multiLayerL1TradeFeeTotal,
+          l1ApprovalFeeTotal,
+        );
+        setMultiLayerL1FeeTotal(l1FeeTotal);
       } catch (e) {
         captureException(e);
         setMultiLayerL1FeeTotal(null);
+        setMultiLayerL1ApprovalFeeTotal(null);
       }
     };
-    getEstimatedL1Fee();
-  }, [unsignedTransaction, isMultiLayerFeeNetwork, chainId]);
+    getEstimatedL1Fees();
+  }, [
+    unsignedTransaction,
+    approveTxParams,
+    isMultiLayerFeeNetwork,
+    chainId,
+    usedQuote,
+  ]);
 
   useEffect(() => {
     if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {

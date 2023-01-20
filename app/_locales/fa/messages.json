@@ -47,9 +47,6 @@
   "advanced": {
     "message": "پیشرفته"
   },
-  "advancedOptions": {
-    "message": "گزینه های پیشرفته"
-  },
   "amount": {
     "message": "مبلغ"
   },
@@ -561,11 +558,8 @@
   "newAccount": {
     "message": "حساب جدید"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "آدرس جدید شناسایی شد! اینجا کلیک کنید تا به کتابچه آدرسهای شما اضافه شود."
-  },
   "newAccountNumberName": {
-    "message": "حساب 1$1",
+    "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {
@@ -824,9 +818,6 @@
   },
   "sign": {
     "message": "علامت"
-  },
-  "signNotice": {
-    "message": "علامت کردن این پیام میتواند\nعوارض جانبی داشته باشد. تنها پیام های را که\nاز سایت های که کاملًا اعتماد داشته باشید با حساب خود علامت بزنید.\nاین روش خطرناک در نسخه آینده از بین برده خواهد شد."
   },
   "signatureRequest": {
     "message": "درخواست امضاء"

@@ -12,7 +12,6 @@ import {
   roundExponential,
 } from '../../helpers/utils/confirm-tx.util';
 import { ETH, PRIMARY } from '../../helpers/constants/common';
-import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -21,8 +20,11 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
-import { hexWEIToDecETH } from '../../../shared/lib/transactions-controller-utils';
+import { TokenStandard } from '../../../shared/constants/transaction';
+import {
+  getWeiHexFromDecimalValue,
+  hexWEIToDecETH,
+} from '../../../shared/modules/conversion.utils';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
@@ -49,10 +51,13 @@ export default function ConfirmTokenTransactionBase({
   );
 
   let title, subtitle;
-  if (assetStandard === ERC721 || assetStandard === ERC1155) {
+  if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
     title = assetName;
     subtitle = `#${tokenId}`;
-  } else if (assetStandard === ERC20) {
+  } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
   }
 
