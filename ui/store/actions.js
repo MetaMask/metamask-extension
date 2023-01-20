@@ -30,8 +30,8 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
-  DEVICE_NAMES,
-  LEDGER_TRANSPORT_TYPES,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import { EVENT } from '../../shared/constants/metametrics';
@@ -425,12 +425,12 @@ export function connectHardware(deviceName, page, hdPath, t) {
 
     let accounts;
     try {
-      if (deviceName === DEVICE_NAMES.LEDGER) {
+      if (deviceName === HardwareDeviceNames.ledger) {
         await submitRequestToBackground('establishLedgerTransportPreference');
       }
       if (
-        deviceName === DEVICE_NAMES.LEDGER &&
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
+        deviceName === HardwareDeviceNames.ledger &&
+        ledgerTransportType === LedgerTransportTypes.webhid
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
           filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
@@ -451,14 +451,14 @@ export function connectHardware(deviceName, page, hdPath, t) {
     } catch (error) {
       log.error(error);
       if (
-        deviceName === DEVICE_NAMES.LEDGER &&
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        deviceName === HardwareDeviceNames.ledger &&
+        ledgerTransportType === LedgerTransportTypes.webhid &&
         error.message.match('Failed to open the device')
       ) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        if (deviceName !== DEVICE_NAMES.QR) {
+        if (deviceName !== HardwareDeviceNames.qr) {
           dispatch(displayWarning(error.message));
         }
         throw error;

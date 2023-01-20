@@ -1,6 +1,6 @@
 import {
-  WEBHID_CONNECTED_STATUSES,
-  TRANSPORT_STATES,
+  WebHIDConnectedStatuses,
+  HardwareTransportStates,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
@@ -49,8 +49,8 @@ export default function reduceApp(state = {}, action) {
     gasLoadingAnimationIsShowing: false,
     smartTransactionsError: null,
     smartTransactionsErrorMessageDismissed: false,
-    ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
-    ledgerTransportStatus: TRANSPORT_STATES.NONE,
+    ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
+    ledgerTransportStatus: HardwareTransportStates.none,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
     portfolioTooltipWasShownInThisSession: false,

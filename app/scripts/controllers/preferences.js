@@ -3,7 +3,7 @@ import { normalize as normalizeAddress } from 'eth-sig-util';
 import { ethers } from 'ethers';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { THEME_TYPE } from '../../../ui/pages/settings/settings-tab/settings-tab.constant';
 import { NETWORK_EVENTS } from './network';
 
@@ -64,8 +64,8 @@ export default class PreferencesController {
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
-        ? LEDGER_TRANSPORT_TYPES.WEBHID
-        : LEDGER_TRANSPORT_TYPES.U2F,
+        ? LedgerTransportTypes.webhid
+        : LedgerTransportTypes.u2f,
       improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
       theme: THEME_TYPE.OS,
