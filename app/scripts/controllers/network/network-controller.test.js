@@ -91,7 +91,7 @@ async function withController(...args) {
  * mocks for, mapped to the number of times to expect each request.
  */
 function setupMockRpcBlockResponses({
-  networkType = NETWORK_TYPES.RPC,
+  networkType = NetworkController.defaultProviderConfig.type,
   block = BLOCK,
   requests = { eth_getBlockByNumber: 1, eth_blockNumber: 1 },
 } = {}) {
@@ -182,7 +182,7 @@ describe('NetworkController', () => {
     describe('#setProviderType', () => {
       it('should update provider.type', async () => {
         await withController(async ({ controller }) => {
-          setupMockRpcBlockResponses();
+          setupMockRpcBlockResponses({ networkType: NETWORK_TYPES.RPC });
           setupMockRpcBlockResponses({ networkType: NETWORK_TYPES.MAINNET });
           await controller.initializeProvider();
           controller.setProviderType('mainnet');
@@ -193,7 +193,7 @@ describe('NetworkController', () => {
 
       it('should set the network to loading', async () => {
         await withController(async ({ controller }) => {
-          setupMockRpcBlockResponses();
+          setupMockRpcBlockResponses({ networkType: NETWORK_TYPES.RPC });
           setupMockRpcBlockResponses({ networkType: NETWORK_TYPES.MAINNET });
           await controller.initializeProvider();
 
@@ -239,7 +239,7 @@ describe('NetworkController', () => {
 
       it('should clear stored EIP1559 support when changing networks', async () => {
         await withController(async ({ controller }) => {
-          setupMockRpcBlockResponses();
+          setupMockRpcBlockResponses({ networkType: NETWORK_TYPES.RPC });
           setupMockRpcBlockResponses({
             networkType: NETWORK_TYPES.MAINNET,
             block: PRE_1559_BLOCK,

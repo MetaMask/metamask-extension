@@ -75,6 +75,8 @@ export const NETWORK_EVENTS = {
 };
 
 export default class NetworkController extends EventEmitter {
+  static defaultProviderConfig = defaultProviderConfig;
+
   /**
    * Construct a NetworkController.
    *
