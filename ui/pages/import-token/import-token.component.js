@@ -625,13 +625,13 @@ class ImportToken extends Component {
 
     if (showSearchTab) {
       tabs.push(
-        <Tab name={t('search')} key="search-tab">
+        <Tab name={t('search')} key="search-tab" tabKey="search">
           {this.renderSearchToken()}
         </Tab>,
       );
     }
     tabs.push(
-      <Tab name={t('customToken')} key="custom-tab">
+      <Tab name={t('customToken')} key="custom-tab" tabKey="customToken">
         {this.renderCustomTokenForm()}
       </Tab>,
     );

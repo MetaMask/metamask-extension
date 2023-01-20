@@ -395,9 +395,17 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
         getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
         getBalancesInSingleCall:
           this.assetsContractController.getBalancesInSingleCall.bind(

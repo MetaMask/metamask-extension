@@ -46,6 +46,12 @@ export default class SendAssetRow extends Component {
         }),
       }),
     ),
+    collections: PropTypes.arrayOf(
+      PropTypes.shape({
+        address: PropTypes.string.isRequired,
+        name: PropTypes.string,
+      }),
+    ),
   };
 
   static contextTypes = {
@@ -261,7 +267,9 @@ export default class SendAssetRow extends Component {
   renderCollectible(collectible, insideDropdown = false) {
     const { address, name, image, tokenId } = collectible;
     const { t } = this.context;
-
+    const collectibleCollection = this.props.collections.find(
+      (collection) => collection.address === address,
+    );
     return (
       <div
         key={address}
@@ -272,7 +280,9 @@ export default class SendAssetRow extends Component {
           <Identicon address={address} diameter={36} image={image} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
-          <div className="send-v2__asset-dropdown__symbol">{name}</div>
+          <div className="send-v2__asset-dropdown__symbol">
+            {collectibleCollection.name || name}
+          </div>
           <div className="send-v2__asset-dropdown__name">
             <span className="send-v2__asset-dropdown__name__label">
               {`${t('tokenId')}:`}
