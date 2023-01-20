@@ -6,7 +6,6 @@ import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
@@ -19,6 +18,8 @@ import {
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../shared/constants/common';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -34,7 +35,6 @@ export default class SignatureRequestOriginal extends Component {
     }).isRequired,
     cancel: PropTypes.func.isRequired,
     clearConfirmTransaction: PropTypes.func.isRequired,
-    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     sign: PropTypes.func.isRequired,
@@ -275,7 +275,6 @@ export default class SignatureRequestOriginal extends Component {
   render = () => {
     const {
       messagesCount,
-      conversionRate,
       nativeCurrency,
       fromAccount: { address, balance, name },
     } = this.props;
@@ -285,13 +284,11 @@ export default class SignatureRequestOriginal extends Component {
     const rejectNText = t('rejectRequestsN', [messagesCount]);
     const currentNetwork = this.getNetworkName();
 
-    const balanceInBaseAsset = conversionUtil(balance, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromDenomination: 'WEI',
-      numberOfDecimals: 6,
-      conversionRate,
-    });
+    const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
+      .toDenomination(EtherDenomination.ETH)
+      .toBase(10)
+      .round(6)
+      .toString();
 
     return (
       <div className="request-signature__container">
