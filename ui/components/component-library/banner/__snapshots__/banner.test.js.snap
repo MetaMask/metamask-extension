@@ -3,7 +3,7 @@
 exports[`Banner should render banner element correctly 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner mm-banner--severity-info box--padding-3 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
+    class="box mm-banner-base mm-banner mm-banner--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
     data-testid="banner"
   >
     <div

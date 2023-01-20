@@ -36,6 +36,7 @@ export const BannerBase = ({
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderRadius={SIZES.SM}
       padding={3}
+      paddingLeft={2}
       {...props}
     >
       {startAccessory && <>{startAccessory}</>}
