@@ -2,9 +2,9 @@ import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   conversionUtil,
   conversionGreaterThan,
+  decEthToConvertedCurrency,
 } from '../../shared/modules/conversion.utils';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { decEthToConvertedCurrency as ethTotalToConvertedCurrency } from '../helpers/utils/conversions.util';
 import { formatETHFee } from '../helpers/utils/formatters';
 
 import { getGasPrice } from '../ducks/send';
@@ -193,7 +193,7 @@ export function getRenderableConvertedCurrencyFee(
     toNumericBase: 'hex',
   });
   const fee = basicPriceEstimateToETHTotal(value, gasLimit);
-  const feeInCurrency = ethTotalToConvertedCurrency(
+  const feeInCurrency = decEthToConvertedCurrency(
     fee,
     convertedCurrency,
     conversionRate,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 
 export default {
@@ -14,7 +14,7 @@ export const DefaultStory = () => {
       connectToHardwareWallet={(selectedDevice) =>
         action(`Continue connect to ${selectedDevice}`)()
       }
-      ledgerTransportType={LEDGER_TRANSPORT_TYPES.LIVE}
+      ledgerTransportType={LedgerTransportTypes.live}
     />
   );
 };
@@ -26,7 +26,7 @@ export const BrowserNotSupported = () => {
     <SelectHardware
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
-      ledgerTransportType={LEDGER_TRANSPORT_TYPES.LIVE}
+      ledgerTransportType={LedgerTransportTypes.live}
     />
   );
 };
