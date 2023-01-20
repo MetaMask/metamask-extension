@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { getNetworkSupportsSettingGasFees } from '../../../selectors/selectors';
 import { MIN_GAS_LIMIT_DEC } from '../../../pages/send/send.constants';
 import {
+  decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
