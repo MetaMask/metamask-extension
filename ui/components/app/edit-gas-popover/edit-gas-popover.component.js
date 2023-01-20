@@ -27,8 +27,10 @@ import {
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
-import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
-import { decimalToHex } from '../../../../shared/lib/transactions-controller-utils';
+import {
+  decimalToHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 
 export default function EditGasPopover({
   popoverTitle = '',

@@ -6,8 +6,8 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
-import { sumHexes } from '../../../helpers/utils/transactions.util';
 import {
+  sumHexes,
   toBigNumber,
   toNormalizedDenomination,
 } from '../../../../shared/modules/conversion.utils';

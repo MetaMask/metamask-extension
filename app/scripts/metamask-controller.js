@@ -100,11 +100,9 @@ import { getTokenIdParam } from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import {
-  getTokenValueParam,
-  hexToDecimal,
-} from '../../shared/lib/metamask-controller-utils';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,

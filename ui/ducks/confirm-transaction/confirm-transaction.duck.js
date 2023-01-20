@@ -6,16 +6,17 @@ import {
 import { getNativeCurrency, getTokens } from '../metamask/metamask';
 
 import {
-  getValueFromWeiHex,
   getTransactionFee,
   getHexGasTotal,
   addFiat,
   addEth,
 } from '../../helpers/utils/confirm-tx.util';
 
-import { sumHexes } from '../../helpers/utils/transactions.util';
-
-import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import {
+  conversionUtil,
+  getValueFromWeiHex,
+  sumHexes,
+} from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';

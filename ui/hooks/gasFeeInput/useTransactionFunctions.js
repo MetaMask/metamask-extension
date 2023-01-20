@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
 
 import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
+import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import {
   addTenPercentAndRound,

@@ -16,7 +16,7 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import {
   decimalToHex,
   hexWEIToDecGWEI,
-} from '../../../../../shared/lib/transactions-controller-utils';
+} from '../../../../../shared/modules/conversion.utils';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 export const useGasItemFeeDetails = (priorityLevel) => {

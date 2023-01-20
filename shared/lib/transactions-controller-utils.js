@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '../constants/transaction';
 import {
-  conversionUtil,
   multiplyCurrencies,
   subtractCurrencies,
 } from '../modules/conversion.utils';
@@ -145,28 +144,3 @@ export const TRANSACTION_ENVELOPE_TYPE_NAMES = {
   FEE_MARKET: 'fee-market',
   LEGACY: 'legacy',
 };
-
-export function hexWEIToDecGWEI(decGWEI) {
-  return conversionUtil(decGWEI, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    toDenomination: 'GWEI',
-  });
-}
-
-export function decimalToHex(decimal) {
-  return conversionUtil(decimal, {
-    fromNumericBase: 'dec',
-    toNumericBase: 'hex',
-  });
-}
-
-export function hexWEIToDecETH(hexWEI) {
-  return conversionUtil(hexWEI, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    toDenomination: 'ETH',
-  });
-}

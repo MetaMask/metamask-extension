@@ -6,8 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   conversionGreaterThan,
   conversionUtil,
+  getValueFromWeiHex,
   multiplyCurrencies,
   subtractCurrencies,
+  sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
@@ -89,10 +91,7 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
-import {
-  isSmartContractAddress,
-  sumHexes,
-} from '../../helpers/utils/transactions.util';
+import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import { ETH } from '../../helpers/constants/common';
@@ -104,7 +103,6 @@ import {
 } from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { getValueFromWeiHex } from '../../helpers/utils/confirm-tx.util';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import {

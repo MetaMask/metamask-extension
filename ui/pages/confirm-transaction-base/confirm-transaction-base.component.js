@@ -6,7 +6,6 @@ import { stripHexPrefix } from 'ethereumjs-util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
-import { addHexes } from '../../helpers/utils/conversions.util';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -57,8 +56,6 @@ import {
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
-import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
-import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight';
 import { DropdownTab, Tab } from '../../components/ui/tabs';
@@ -71,6 +68,11 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/network';
 import TransactionAlerts from '../../components/app/transaction-alerts';
+import {
+  addHexes,
+  hexToDecimal,
+  hexWEIToDecGWEI,
+} from '../../../shared/modules/conversion.utils';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
