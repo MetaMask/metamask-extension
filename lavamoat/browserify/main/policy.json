@@ -601,11 +601,22 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-json-rpc-infura>@metamask/utils": true,
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "node-fetch": true
+      }
+    },
+    "@metamask/eth-json-rpc-infura>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-ui>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true
       }
     },
     "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
@@ -953,8 +964,8 @@
     "@metamask/rpc-methods": {
       "packages": {
         "@metamask/rpc-methods>@metamask/key-tree": true,
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "eth-block-tracker>@metamask/utils": true
+        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/snaps-utils>@noble/hashes": true
       }
     },
     "@metamask/rpc-methods>@metamask/browser-passworder": {
@@ -973,12 +984,23 @@
     },
     "@metamask/rpc-methods>@metamask/key-tree": {
       "packages": {
+        "@metamask/rpc-methods>@metamask/key-tree>@metamask/utils": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
         "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
         "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true,
-        "eth-block-tracker>@metamask/utils": true
+        "@metamask/snaps-utils>@scure/base": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/key-tree>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-ui>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
@@ -1001,6 +1023,17 @@
       "packages": {
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-ui>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -2194,8 +2227,8 @@
       },
       "packages": {
         "browserify>browser-resolve": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+        "eth-json-rpc-middleware>@metamask/utils": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -2240,6 +2273,17 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/snaps-ui>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true
       }
     },
     "eth-keyring-controller": {
