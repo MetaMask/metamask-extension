@@ -31,6 +31,7 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      toggleEthSign: false,
       useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
@@ -558,6 +559,16 @@ export default class PreferencesController {
     });
   }
 
+  /**
+   * A setter for the user preference to enable/disable eth_sign method
+   *
+   * @param {bool} toggleEthSign - User preference for eth_sign.
+   */
+  async setToggleEthSign(toggleEthSign) {
+    await this.store.updateState({
+      toggleEthSign
+    });
+  }
   //
   // PRIVATE METHODS
   //

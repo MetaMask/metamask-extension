@@ -56,6 +56,8 @@ export default class AdvancedTab extends PureComponent {
     userHasALedgerAccount: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     restoreUserData: PropTypes.func.isRequired,
+    toggleEthSign: PropTypes.bool.isRequired,
+    setToggleEthSign: PropTypes.func.isRequired,
   };
 
   state = {
@@ -580,6 +582,37 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderToggleEthSignControl() {
+    const { t } = this.context;
+    const { toggleEthSign, setToggleEthSign } =
+      this.props;
+
+    return (
+      <div
+        ref={this.settingsRefs[10]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-toggle-ethsign"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleEthSignField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleEthSignDescriptionField')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={toggleEthSign}
+              onToggle={(value) => setToggleEthSign(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   handleLockChange(time) {
     const { t } = this.context;
     const autoLockTimeLimit = Math.max(Number(time), 0);
@@ -711,6 +744,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderRestoreUserData()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
+        {this.renderToggleEthSignControl()}
       </div>
     );
   }

@@ -11,6 +11,7 @@ import {
   setUseNonceField,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
+  setToggleEthSign,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -27,6 +28,7 @@ export const mapStateToProps = (state) => {
     featureFlags: { sendHexData, advancedInlineGas } = {},
     useNonceField,
     ledgerTransportType,
+    toggleEthSign,
     dismissSeedBackUpReminder,
   } = metamask;
   const {
@@ -47,6 +49,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ledgerTransportType,
     dismissSeedBackUpReminder,
+    toggleEthSign,
     userHasALedgerAccount,
   };
 };
@@ -77,6 +80,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
+    },
+    setToggleEthSign: (enabledOrDisabled) => {
+      return dispatch(setToggleEthSign(enabledOrDisabled));
     },
   };
 };

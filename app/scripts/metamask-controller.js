@@ -1784,6 +1784,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setDismissSeedBackUpReminder.bind(
           preferencesController,
         ),
+      setToggleEthSign:
+        preferencesController.setToggleEthSign.bind(
+          preferencesController,
+        ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
@@ -3001,8 +3005,14 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnsignedMessage(msgParams, req) {
+    const { toggleEthSign } = this.preferencesController.store.getState();
     const data = normalizeMsgData(msgParams.data);
     let promise;
+
+    if(!toggleEthSign) {
+      throw ethErrors.rpc.methodNotFound("eth_sign has been disabled. You must enabled it in the advanced settings");
+    }
+
     // 64 hex + "0x" at the beginning
     // This is needed because Ethereum's EcSign works only on 32 byte numbers
     // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607

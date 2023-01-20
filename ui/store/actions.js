@@ -3229,6 +3229,14 @@ export function setDismissSeedBackUpReminder(value) {
   };
 }
 
+export function setToggleEthSign(value) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setToggleEthSign', [value]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function setConnectedStatusPopoverHasBeenShown() {
   return () => {
     callBackgroundMethod('setConnectedStatusPopoverHasBeenShown', [], (err) => {
