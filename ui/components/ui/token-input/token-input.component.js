@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
-import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util';
 import {
   conversionUtil,
+  getWeiHexFromDecimalValue,
   multiplyCurrencies,
 } from '../../../../shared/modules/conversion.utils';
 

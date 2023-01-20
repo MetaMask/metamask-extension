@@ -5,8 +5,10 @@ import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
 } from '../../../shared/constants/gas';
-import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
-import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
+import {
+  hexWEIToDecGWEI,
+  multiplyCurrencies,
+} from '../../../shared/modules/conversion.utils';
 import {
   bnGreaterThan,
   isNullish,

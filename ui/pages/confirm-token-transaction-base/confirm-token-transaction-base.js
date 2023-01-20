@@ -12,7 +12,6 @@ import {
   roundExponential,
 } from '../../helpers/utils/confirm-tx.util';
 import { ETH, PRIMARY } from '../../helpers/constants/common';
-import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -22,7 +21,10 @@ import {
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../shared/constants/transaction';
-import { hexWEIToDecETH } from '../../../shared/lib/transactions-controller-utils';
+import {
+  getWeiHexFromDecimalValue,
+  hexWEIToDecETH,
+} from '../../../shared/modules/conversion.utils';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
