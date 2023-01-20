@@ -5,24 +5,24 @@ import { FormTextField } from './form-text-field';
 
 # FormTextField
 
-The `FormTextField` is an input component to create forms. It bundles the [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story), [Label](/docs/ui-components-component-library-label-label-stories-js--default-story) and [HelpText](/docs/ui-components-component-library-help-text-help-text-stories-js--default-story) components together.
+The `FormTextField` is an input component to create forms. It bundles the [TextField](/docs/components-componentlibrary-textfield--default-story), [Label](/docs/components-componentlibrary-label--default-story) and [HelpText](/docs/components-componentlibrary-helptext--default-story) components together.
 
 <Canvas>
-  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--default-story" />
+  <Story id="components-componentlibrary-formtextfield--default-story" />
 </Canvas>
 
 ## Props
 
-The `FormTextField` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `FormTextField` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={FormTextField} />
 
-`FormTextField` accepts all [TextField](/docs/ui-components-component-library-text-field-text-field-stories-js--default-story#props)
+`FormTextField` accepts all [TextField](/docs/components-componentlibrary-textfield--default-story#props)
 component props
 
 <ArgsTable of={TextField} />
 
-`FormTextField` accepts all [TextFieldBase](/docs/ui-components-component-library-text-field-base-text-field-base-stories-js--default-story#props)
+`FormTextField` accepts all [TextFieldBase](/docs/components-componentlibrary-textfield--default-story#props)
 component props
 
 <ArgsTable of={TextFieldBase} />
@@ -32,7 +32,7 @@ component props
 Use the `id` prop to set the `id` of the `FormTextField` component. This is required for accessibility when the `label` prop is set. It is also used internally to link the `label` and `input` elements using `htmlFor`, so clicking on the `label` will focus the `input`.
 
 <Canvas>
-  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--id" />
+  <Story id="components-componentlibrary-formtextfield--id" />
 </Canvas>
 
 ```jsx
@@ -46,10 +46,10 @@ import { FormTextField } from '../../component-library';
 
 ### Label
 
-Use the `label` prop to add a label to the `FormTextField` component. Uses the [Label](/docs/ui-components-component-library-label-label-stories-js--default-story) component. Use the `labelProps` prop to pass props to the `Label` component. To use a custom label component see the [Custom Label or HelpText](#custom-label-or-helptext) story example.
+Use the `label` prop to add a label to the `FormTextField` component. Uses the [Label](/docs/components-componentlibrary-label--default-story) component. Use the `labelProps` prop to pass props to the `Label` component. To use a custom label component see the [Custom Label or HelpText](#custom-label-or-helptext) story example.
 
 <Canvas>
-  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--label-story" />
+  <Story id="components-componentlibrary-formtextfield--label-story" />
 </Canvas>
 
 ```jsx
@@ -60,10 +60,10 @@ import { FormTextField } from '../../component-library';
 
 ### HelpText
 
-Use the `helpText` prop to add help text to the `FormTextField` component. Uses the [HelpText](/docs/ui-components-component-library-helpText-helpText-stories-js--default-story) component. Use the `helpTextProps` prop to pass props to the `HelpText` component. To use a custom help text component see the [Custom Label or HelpText](#custom-helpText-or-helptext) story example. When `error` is true the `helpText` will be rendered as an error message.
+Use the `helpText` prop to add help text to the `FormTextField` component. Uses the [HelpText](/docs/components-componentlibrary-helptext--default-story) component. Use the `helpTextProps` prop to pass props to the `HelpText` component. To use a custom help text component see the [Custom Label or HelpText](#custom-helpText-or-helptext) story example. When `error` is true the `helpText` will be rendered as an error message.
 
 <Canvas>
-  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--help-text-story" />
+  <Story id="components-componentlibrary-formtextfield--help-text-story" />
 </Canvas>
 
 ```jsx
@@ -81,7 +81,7 @@ import { FormTextField } from '../../component-library';
 An example of a form using the `FormTextField` component.
 
 <Canvas>
-  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--form-example" />
+  <Story id="components-componentlibrary-formtextfield--form-example" />
 </Canvas>
 
 ```jsx
@@ -250,7 +250,7 @@ return (
 There will be times when you will want to use a custom `Label` or `HelpText`. This can be done by simply not providing `label` or `helpText` props to the `FormTextField` component. You can then use the `Label` and `HelpText` components to create your own custom label or help text.
 
 <Canvas>
-  <Story id="ui-components-component-library-form-text-field-form-text-field-stories-js--custom-label-or-help-text" />
+  <Story id="components-componentlibrary-formtextfield--custom-label-or-help-text" />
 </Canvas>
 
 ```jsx

@@ -3,7 +3,7 @@ import NetworkAccountBalanceHeader from './network-account-balance-header';
 
 export default {
   title: 'Components/App/NetworkAccountBalanceHeader',
-  id: __filename,
+
   argTypes: {
     networkName: {
       control: { type: 'text' },
