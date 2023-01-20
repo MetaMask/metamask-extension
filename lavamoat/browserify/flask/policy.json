@@ -602,7 +602,7 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": true,
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "node-fetch": true
@@ -1048,7 +1048,7 @@
         "@metamask/snaps-ui>superstruct": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@noble/hashes": true,
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/utils": true,
         "eth-rpc-errors": true
       }
     },
@@ -1073,7 +1073,7 @@
         "@metamask/rpc-methods>@metamask/key-tree>@scure/bip39": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
-        "eth-block-tracker>@metamask/utils": true
+        "@metamask/utils": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
@@ -1164,7 +1164,7 @@
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-utils": true,
         "@metamask/subject-metadata-controller": true,
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "pump": true
@@ -1329,7 +1329,7 @@
     "@metamask/snaps-ui": {
       "packages": {
         "@metamask/snaps-ui>superstruct": true,
-        "eth-block-tracker>@metamask/utils": true
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {
@@ -1344,7 +1344,7 @@
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/utils": true,
         "semver": true
       }
     },
@@ -1385,6 +1385,18 @@
     "@metamask/subject-metadata-controller": {
       "packages": {
         "@metamask/base-controller": true
+      }
+    },
+    "@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -2449,21 +2461,10 @@
         "setTimeout": true
       },
       "packages": {
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/utils": true,
         "eth-block-tracker>pify": true,
         "eth-query>json-rpc-random-id": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "eth-block-tracker>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/snaps-ui>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true
       }
     },
     "eth-ens-namehash": {
@@ -2518,8 +2519,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/utils": true,
         "browserify>browser-resolve": true,
-        "eth-block-tracker>@metamask/utils": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
         "eth-json-rpc-middleware>pify": true,
         "eth-rpc-errors": true,
