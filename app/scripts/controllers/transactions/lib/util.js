@@ -1,4 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
+import { ethers } from 'ethers';
+import abi from 'human-standard-token-abi';
 import { addHexPrefix } from '../../../lib/util';
 import {
   TransactionEnvelopeType,
@@ -6,9 +8,6 @@ import {
 } from '../../../../../shared/constants/transaction';
 import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
-
-import { ethers } from 'ethers';
-import abi from 'human-standard-token-abi';
 
 const normalizers = {
   from: addHexPrefix,
@@ -223,7 +222,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
         break;
       case 'data':
         validateInputData(txParams, value);
-      break;
+        break;
       default:
         ensureFieldIsString(txParams, key);
     }
@@ -231,19 +230,22 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
 }
 
 /**
- * 
- * @param {*} txParams 
+ *
+ * @param {*} value
  */
-export function validateInputData(txParams, value) {
-  if(value !== null) {
+export function validateInputData(value) {
+  if (value !== null) {
     // Validate the input data
     const hstInterface = new ethers.utils.Interface(abi);
     try {
       hstInterface.parseTransaction({ data: value });
-    } catch(e) {
+    } catch (e) {
       // Throw an invalidParams error if BUFFER_OVERRUN
-      if(e.message.match(/BUFFER_OVERRUN/)) {
-        throw ethErrors.rpc.invalidParams(`Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.`)
+      /* eslint require-unicode-regexp: off */
+      if (e.message.match(/BUFFER_OVERRUN/)) {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.`,
+        );
       }
     }
   }

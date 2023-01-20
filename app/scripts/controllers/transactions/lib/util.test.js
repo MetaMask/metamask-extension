@@ -30,7 +30,7 @@ describe('txUtils', function () {
       });
     });
 
-    it('throws for data out of bounds buffer overrun', function() {
+    it('throws for data out of bounds buffer overrun', function () {
       const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         to: '0xfbb5595c18ca76bab52d66188e4ca50c7d95f77a',
