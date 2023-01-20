@@ -684,7 +684,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary"
-        data-testid="signature-cancel-button"
+        data-testid="page-container-footer-cancel"
         role="button"
         tabindex="0"
       >
@@ -692,7 +692,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
       </button>
       <button
         class="button btn--rounded btn-primary"
-        data-testid="signature-sign-button"
+        data-testid="page-container-footer-next"
         role="button"
         tabindex="0"
       >
