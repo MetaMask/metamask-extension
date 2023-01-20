@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.24.1]
+- Ensure app name appears for Taiwanese language speakers in the extension stores ([#17304](https://github.com/MetaMask/metamask-extension/pull/17304))
 
 ## [10.24.0]
 ### Added
