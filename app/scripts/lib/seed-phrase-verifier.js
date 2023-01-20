@@ -1,7 +1,7 @@
 import KeyringController from 'eth-keyring-controller';
 import log from 'loglevel';
 
-import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 
 const seedPhraseVerifier = {
   /**
@@ -23,7 +23,7 @@ const seedPhraseVerifier = {
 
     const keyringController = new KeyringController({});
     const Keyring = keyringController.getKeyringClassForType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     const opts = {
       mnemonic: seedPhrase,
