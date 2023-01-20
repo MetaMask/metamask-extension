@@ -51,10 +51,10 @@ import {
   parseSmartTransactionsError,
   stxErrorTypes,
 } from '../../pages/swaps/swaps.util';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import {
   addHexes,
   conversionLessThan,
+  decGWEIToHexWEI,
   decimalToHex,
   getValueFromWeiHex,
   hexWEIToDecGWEI,

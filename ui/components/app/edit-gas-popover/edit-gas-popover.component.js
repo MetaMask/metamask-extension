@@ -10,8 +10,6 @@ import {
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
-
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
@@ -28,6 +26,7 @@ import {
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 import {
+  decGWEIToHexWEI,
   decimalToHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';

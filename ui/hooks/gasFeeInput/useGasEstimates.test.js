@@ -3,8 +3,8 @@ import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../../shared/modules/gas.utils';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,

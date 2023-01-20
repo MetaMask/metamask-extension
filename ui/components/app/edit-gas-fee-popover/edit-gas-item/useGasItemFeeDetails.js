@@ -6,7 +6,6 @@ import {
   PRIORITY_LEVELS,
 } from '../../../../../shared/constants/gas';
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
 import {
   addTenPercentAndRound,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
@@ -14,6 +13,7 @@ import {
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import {
+  decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../../shared/modules/conversion.utils';

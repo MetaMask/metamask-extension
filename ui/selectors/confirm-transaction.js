@@ -13,7 +13,6 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import { TransactionEnvelopeType } from '../../shared/constants/transaction';
-import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
 import {
   GAS_ESTIMATE_TYPES,
   CUSTOM_GAS_ESTIMATE,
@@ -25,6 +24,7 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import {
+  decGWEIToHexWEI,
   getValueFromWeiHex,
   sumHexes,
 } from '../../shared/modules/conversion.utils';

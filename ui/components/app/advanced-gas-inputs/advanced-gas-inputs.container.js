@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 import { getNetworkSupportsSettingGasFees } from '../../../selectors/selectors';
 import { MIN_GAS_LIMIT_DEC } from '../../../pages/send/send.constants';
 import {
