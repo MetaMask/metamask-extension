@@ -31,9 +31,10 @@ describe('Test Snap Installed', function () {
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const confirmButton = await driver.findElement('#connectConfirmSnap');
+        const confirmButton = await driver.findElement('#connectDialogSnap');
         await driver.scrollToElement(confirmButton);
-        await driver.clickElement('#connectConfirmSnap');
+        await driver.delay(1000);
+        await driver.clickElement('#connectDialogSnap');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -117,7 +118,7 @@ describe('Test Snap Installed', function () {
         await driver.delay(1000);
         assert.equal(
           await result.getText(),
-          'npm:@metamask/test-snap-confirm, npm:@metamask/test-snap-error',
+          'npm:@metamask/test-snap-dialog, npm:@metamask/test-snap-error',
         );
       },
     );

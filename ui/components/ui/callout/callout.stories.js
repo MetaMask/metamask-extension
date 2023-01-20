@@ -10,7 +10,7 @@ import Callout from './callout';
 
 export default {
   title: 'Components/UI/Callout',
-  id: __filename,
+
   argTypes: {
     severity: {
       control: {

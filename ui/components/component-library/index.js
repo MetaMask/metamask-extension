@@ -13,12 +13,12 @@ export {
   AVATAR_WITH_BADGE_POSTIONS,
 } from './avatar-with-badge';
 export { AvatarBase } from './avatar-base';
-export { Button } from './button';
-export { ButtonBase } from './button-base';
+export { Button, BUTTON_TYPES, BUTTON_SIZES } from './button';
+export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
 export { ButtonIcon, BUTTON_ICON_SIZES } from './button-icon';
-export { ButtonLink } from './button-link';
-export { ButtonPrimary } from './button-primary';
-export { ButtonSecondary } from './button-secondary';
+export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
+export { ButtonPrimary, BUTTON_PRIMARY_SIZES } from './button-primary';
+export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
 export { FormTextField } from './form-text-field';
 export { HelpText } from './help-text';
 export { Icon, ICON_NAMES, ICON_SIZES } from './icon';

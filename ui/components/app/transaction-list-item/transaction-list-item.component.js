@@ -11,12 +11,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
-import TransactionStatus from '../transaction-status/transaction-status.component';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
-  TRANSACTION_GROUP_CATEGORIES,
-  TRANSACTION_STATUSES,
+  TransactionGroupCategory,
+  TransactionStatus,
 } from '../../../../shared/constants/transaction';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import {
@@ -121,19 +121,18 @@ function TransactionListItemInner({
     senderAddress,
   } = useTransactionDisplayData(transactionGroup);
 
-  const isSignatureReq =
-    category === TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST;
-  const isApproval = category === TRANSACTION_GROUP_CATEGORIES.APPROVAL;
-  const isUnapproved = status === TRANSACTION_STATUSES.UNAPPROVED;
-  const isSwap = category === TRANSACTION_GROUP_CATEGORIES.SWAP;
+  const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
+  const isApproval = category === TransactionGroupCategory.approval;
+  const isUnapproved = status === TransactionStatus.unapproved;
+  const isSwap = category === TransactionGroupCategory.swap;
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
       isPending ||
       [
-        TRANSACTION_STATUSES.FAILED,
-        TRANSACTION_STATUSES.DROPPED,
-        TRANSACTION_STATUSES.REJECTED,
+        TransactionStatus.failed,
+        TransactionStatus.dropped,
+        TransactionStatus.rejected,
       ].includes(displayedStatusKey),
   });
 
@@ -181,7 +180,7 @@ function TransactionListItemInner({
         }
         subtitle={
           <h3>
-            <TransactionStatus
+            <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
               error={err}
@@ -233,13 +232,13 @@ function TransactionListItemInner({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={status === TRANSACTION_STATUSES.FAILED && !isSwap}
+          showRetry={status === TransactionStatus.failed && !isSwap}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
           transactionStatus={() => (
-            <TransactionStatus
+            <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
               error={err}

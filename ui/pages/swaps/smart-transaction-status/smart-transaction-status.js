@@ -49,7 +49,7 @@ import {
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
 import {
@@ -67,7 +67,7 @@ import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
 
-export default function SmartTransactionStatus() {
+export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const t = useContext(I18nContext);
   const history = useHistory();
@@ -106,7 +106,7 @@ export default function SmartTransactionStatus() {
   const USDConversionRate = useSelector(getUSDConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  let smartTransactionStatus = SMART_TRANSACTION_STATUSES.PENDING;
+  let smartTransactionStatus = SmartTransactionStatus.pending;
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
   let cancellationFeeWei;
@@ -116,7 +116,7 @@ export default function SmartTransactionStatus() {
       currentSmartTransactions[currentSmartTransactions.length - 1];
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus =
-      latestSmartTransaction?.status || SMART_TRANSACTION_STATUSES.PENDING;
+      latestSmartTransaction?.status || SmartTransactionStatus.pending;
     cancellationFeeWei =
       latestSmartTransaction?.statusMetadata?.cancellationFeeWei;
   }
@@ -156,10 +156,10 @@ export default function SmartTransactionStatus() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const isSmartTransactionPending =
-    smartTransactionStatus === SMART_TRANSACTION_STATUSES.PENDING;
+    smartTransactionStatus === SmartTransactionStatus.pending;
   const showCloseButtonOnly =
     isSmartTransactionPending ||
-    smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS;
+    smartTransactionStatus === SmartTransactionStatus.success;
   const txHash = latestSmartTransaction?.statusMetadata?.minedHash;
 
   useEffect(() => {
@@ -220,7 +220,7 @@ export default function SmartTransactionStatus() {
       headerText = t('stxPendingPubliclySubmittingSwap');
     }
   }
-  if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
+  if (smartTransactionStatus === SmartTransactionStatus.success) {
     headerText = t('stxSuccess');
     if (
       fetchParamsDestinationTokenInfo.symbol ||
@@ -235,7 +235,7 @@ export default function SmartTransactionStatus() {
   } else if (
     smartTransactionStatus === 'cancelled_user_cancelled' ||
     latestSmartTransaction?.statusMetadata?.minedTx ===
-      SMART_TRANSACTION_STATUSES.CANCELLED
+      SmartTransactionStatus.cancelled
   ) {
     headerText = t('stxUserCancelled');
     description = t('stxUserCancelledDescription');
@@ -473,7 +473,7 @@ export default function SmartTransactionStatus() {
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
         isSmartTransactionPending && <CancelSwap />}
-      {smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS ? (
+      {smartTransactionStatus === SmartTransactionStatus.success ? (
         <CreateNewSwap sensitiveTrackingProperties={sensitiveProperties} />
       ) : null}
       <SwapsFooter

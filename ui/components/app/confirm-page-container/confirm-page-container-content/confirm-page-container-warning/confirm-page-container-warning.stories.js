@@ -3,7 +3,7 @@ import ConfirmPageContainerWarning from '.';
 
 export default {
   title: 'Components/UI/ConfirmPageContainerWarning', // title should follow the folder structure location of the component. Don't use spaces.
-  id: __filename,
+
   argTypes: {
     warning: {
       control: 'text',

@@ -5,13 +5,13 @@ import Tabs from './tabs.component';
 
 export default {
   title: 'Components/UI/Tabs',
-  id: __filename,
+
   argTypes: {
     tabs: {
       control: 'object',
       name: 'Tabs',
     },
-    defaultActiveTabName: {
+    defaultActiveTabKey: {
       control: {
         type: 'text',
       },
@@ -29,7 +29,7 @@ export default {
 
 function renderTab({ name, content }, index) {
   return (
-    <Tab name={name} key={name + index}>
+    <Tab tabKey={name} key={name + index} name={name}>
       {content}
     </Tab>
   );
@@ -38,10 +38,10 @@ function renderTab({ name, content }, index) {
 export const DefaultStory = (args) => {
   return (
     <Tabs
-      defaultActiveTabName={args.defaultActiveTabName}
+      defaultActiveTabKey={args.defaultActiveTabKey}
       onTabClick={args.onTabClick}
     >
-      {args.tabs.map((tabProps, i) => renderTab(tabProps, i))}
+      {args.tabs.map((tabProps, i) => renderTab(tabProps, i, args.t))}
       <DropdownTab
         options={[
           { name: 'Insight Snap', value: 'Insight Snap' },

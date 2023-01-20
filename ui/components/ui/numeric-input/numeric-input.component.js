@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Typography from '../typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
-
-const DECIMAL_REGEX = /\.(\d*)/u;
+import { DECIMAL_REGEX } from '../../../../shared/constants/tokens';
 
 export default function NumericInput({
   detailText = '',

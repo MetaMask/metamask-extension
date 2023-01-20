@@ -6,7 +6,6 @@ import {
   PRIORITY_LEVELS,
 } from '../../../../../shared/constants/gas';
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
 import {
   addTenPercentAndRound,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
@@ -14,9 +13,10 @@ import {
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import {
+  decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
-} from '../../../../../shared/lib/transactions-controller-utils';
+} from '../../../../../shared/modules/conversion.utils';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 export const useGasItemFeeDetails = (priorityLevel) => {
