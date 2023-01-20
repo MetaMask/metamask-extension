@@ -52,11 +52,13 @@ import {
   stxErrorTypes,
 } from '../../pages/swaps/swaps.util';
 import {
-  getValueFromWeiHex,
-  decGWEIToHexWEI,
   addHexes,
-} from '../../helpers/utils/conversions.util';
-import { conversionLessThan } from '../../../shared/modules/conversion.utils';
+  conversionLessThan,
+  decGWEIToHexWEI,
+  decimalToHex,
+  getValueFromWeiHex,
+  hexWEIToDecGWEI,
+} from '../../../shared/modules/conversion.utils';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -88,8 +90,6 @@ import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
   calcGasTotal,
   calcTokenAmount,
-  decimalToHex,
-  hexWEIToDecGWEI,
 } from '../../../shared/lib/transactions-controller-utils';
 
 export const GAS_PRICES_LOADING_STATES = {

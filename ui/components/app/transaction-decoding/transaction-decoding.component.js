@@ -10,7 +10,7 @@ import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { transformTxDecoding } from './transaction-decoding.util';
 import {
   FETCH_PROJECT_INFO_URI,

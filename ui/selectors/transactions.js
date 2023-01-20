@@ -10,7 +10,7 @@ import {
   SmartTransactionStatus,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
-import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,

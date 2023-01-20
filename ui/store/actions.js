@@ -41,11 +41,11 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
-import { decimalToHex } from '../../shared/lib/transactions-controller-utils';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
+import { decimalToHex } from '../../shared/modules/conversion.utils';
 import * as actionConstants from './actionConstants';
 import {
   generateActionId,

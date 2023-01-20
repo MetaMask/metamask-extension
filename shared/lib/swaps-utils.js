@@ -14,8 +14,8 @@ import { SECOND } from '../constants/time';
 import { isValidHexAddress } from '../modules/hexstring-utils';
 import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
+import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
-import { decimalToHex } from './transactions-controller-utils';
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 

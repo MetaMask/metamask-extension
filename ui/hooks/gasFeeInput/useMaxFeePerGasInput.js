@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { checkNetworkAndAccountSupports1559 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
-import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
+import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
 const getMaxFeePerGasFromTransaction = (transaction, gasFeeEstimates) => {

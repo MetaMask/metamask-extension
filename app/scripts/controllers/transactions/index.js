@@ -12,7 +12,6 @@ import { merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
-  bnToHex,
   BnMultiplyByFraction,
   addHexPrefix,
   getChainType,
@@ -33,7 +32,13 @@ import {
   CUSTOM_GAS_ESTIMATE,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import {
+  bnToHex,
+  decGWEIToHexWEI,
+  decimalToHex,
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
@@ -50,10 +55,7 @@ import {
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   calcGasTotal,
-  decimalToHex,
   getSwapsTokensReceivedFromTxMeta,
-  hexWEIToDecETH,
-  hexWEIToDecGWEI,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionStateManager from './tx-state-manager';

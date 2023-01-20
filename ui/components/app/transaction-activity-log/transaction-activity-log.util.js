@@ -1,6 +1,6 @@
 import { TransactionType } from '../../../../shared/constants/transaction';
+import { sumHexes } from '../../../../shared/modules/conversion.utils';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
-import { sumHexes } from '../../../helpers/utils/transactions.util';
 
 import {
   // event constants
