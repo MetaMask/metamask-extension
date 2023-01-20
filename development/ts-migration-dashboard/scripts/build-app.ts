@@ -12,16 +12,19 @@ import gulpDartSass from 'gulp-dart-sass';
 import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'gulp-autoprefixer';
 import fg from 'fast-glob';
-import buildModulePartitions from './build-module-partitions';
+import buildModulePartitions from '../common/build-module-partitions';
+import {
+  PARTITIONS_FILE,
+  writePartitionsFile,
+} from '../common/partitions-file';
+import {
+  PROJECT_DIRECTORY_PATH,
+  COMMON_DIRECTORY_PATH,
+  APP_DIRECTORY_PATH,
+  FINAL_BUILD_DIRECTORY_PATH,
+} from '../common/constants';
 
 const promisifiedPump = pify(pump);
-const projectDirectoryPath = path.resolve(__dirname, '../');
-const sourceDirectoryPath = path.join(projectDirectoryPath, 'src');
-const intermediateDirectoryPath = path.join(
-  projectDirectoryPath,
-  'intermediate',
-);
-const buildDirectoryPath = path.join(projectDirectoryPath, 'build');
 
 main().catch((error) => {
   console.error(error);
@@ -31,21 +34,15 @@ main().catch((error) => {
 /**
  * Compiles a set of files that we want to convert to TypeScript, divided by
  * level in the dependency tree.
- *
- * @param dest - The directory in which to hold the file.
  */
-async function generateIntermediateFiles(dest: string) {
+async function generateIntermediateFiles() {
   const partitions = await buildModulePartitions();
-  const partitionsFile = path.resolve(dest, 'partitions.json');
-  await pify(fs.writeFile)(
-    partitionsFile,
-    JSON.stringify(partitions, null, '  '),
-  );
+  writePartitionsFile(partitions);
 
   console.log(
     `- Wrote intermediate partitions file: ${path.relative(
-      projectDirectoryPath,
-      partitionsFile,
+      PROJECT_DIRECTORY_PATH,
+      PARTITIONS_FILE,
     )}`,
   );
 }
@@ -81,9 +78,9 @@ async function compileScripts(src: string, dest: string) {
 
   console.log(
     `- Compiled scripts: ${path.relative(
-      projectDirectoryPath,
+      PROJECT_DIRECTORY_PATH,
       src,
-    )} -> ${path.relative(projectDirectoryPath, dest)}`,
+    )} -> ${path.relative(PROJECT_DIRECTORY_PATH, dest)}`,
   );
 }
 
@@ -106,9 +103,9 @@ async function compileStylesheets(src: string, dest: string): Promise<void> {
   );
   console.log(
     `- Compiled stylesheets: ${path.relative(
-      projectDirectoryPath,
+      PROJECT_DIRECTORY_PATH,
       src,
-    )} -> ${path.relative(projectDirectoryPath, dest)}`,
+    )} -> ${path.relative(PROJECT_DIRECTORY_PATH, dest)}`,
   );
 }
 
@@ -128,9 +125,9 @@ async function copyStaticFiles(src: string, dest: string): Promise<void> {
       await fs.copy(srcEntry, destEntry);
       console.log(
         `- Copied static files: ${path.relative(
-          projectDirectoryPath,
+          PROJECT_DIRECTORY_PATH,
           srcEntry,
-        )} -> ${path.relative(projectDirectoryPath, destEntry)}`,
+        )} -> ${path.relative(PROJECT_DIRECTORY_PATH, destEntry)}`,
       );
     }),
   );
@@ -160,25 +157,24 @@ async function rebuild({
     console.log('Detected change, rebuilding...');
   }
 
-  await fs.emptyDir(buildDirectoryPath);
+  await fs.emptyDir(FINAL_BUILD_DIRECTORY_PATH);
 
   try {
     if (isInitial) {
-      await fs.emptyDir(intermediateDirectoryPath);
-      await generateIntermediateFiles(intermediateDirectoryPath);
+      await generateIntermediateFiles();
     }
 
     await compileScripts(
-      path.join(sourceDirectoryPath, 'index.tsx'),
-      path.join(buildDirectoryPath, 'index.js'),
+      path.join(APP_DIRECTORY_PATH, 'index.tsx'),
+      path.join(FINAL_BUILD_DIRECTORY_PATH, 'index.js'),
     );
     await compileStylesheets(
-      path.join(sourceDirectoryPath, 'index.scss'),
-      path.join(buildDirectoryPath),
+      path.join(APP_DIRECTORY_PATH, 'index.scss'),
+      FINAL_BUILD_DIRECTORY_PATH,
     );
     await copyStaticFiles(
-      path.join(sourceDirectoryPath, 'public'),
-      path.join(buildDirectoryPath),
+      path.join(APP_DIRECTORY_PATH, 'public'),
+      FINAL_BUILD_DIRECTORY_PATH,
     );
   } catch (error: unknown) {
     console.error(error);
@@ -202,7 +198,7 @@ async function main() {
     .alias('h', 'help')
     .parseSync();
 
-  console.log(`Working directory: ${projectDirectoryPath}`);
+  console.log(`Working directory: ${PROJECT_DIRECTORY_PATH}`);
 
   if (opts.watch) {
     const rebuildIgnoringErrors = () => {
@@ -211,9 +207,15 @@ async function main() {
       });
     };
     chokidar
-      .watch(path.join(sourceDirectoryPath, '**/*.{html,ts,tsx,scss}'), {
-        ignoreInitial: true,
-      })
+      .watch(
+        [
+          path.join(COMMON_DIRECTORY_PATH, '**/*.{html,ts,tsx,scss}'),
+          path.join(APP_DIRECTORY_PATH, '**/*.{html,ts,tsx,scss}'),
+        ],
+        {
+          ignoreInitial: true,
+        },
+      )
       .on('add', rebuildIgnoringErrors)
       .on('change', rebuildIgnoringErrors)
       .on('unlink', rebuildIgnoringErrors)

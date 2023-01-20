@@ -1,21 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { Tooltip as ReactTippy } from 'react-tippy';
-import { ModulePartition } from '../scripts/build-module-partitions';
-
-// The `brfs` transform for browserify calls `fs.readLineSync` and
-// `path.resolve` at build time and inlines file contents into the source code.
-// To accomplish this we have to bring in `fs` and `path` using `require` and
-// not `import`. This is weird in a TypeScript file, and typescript-eslint
-// (rightly) complains about this, but it's actually okay because the above
-// `import` lines will actually get turned into `require`s anyway before passing
-// through the rest of browserify. However, `brfs` should handle this. There is
-// an active bug for this, but there isn't a known workaround yet:
-// <https://github.com/browserify/brfs/issues/39>
-/* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires */
-const fs = require('fs');
-/* eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires */
-const path = require('path');
+import { readPartitionsFile } from '../../common/partitions-file';
 
 type Summary = {
   numConvertedFiles: number;
@@ -27,14 +13,7 @@ function calculatePercentageComplete(summary: Summary) {
 }
 
 export default function App() {
-  const partitions = JSON.parse(
-    fs.readFileSync(
-      path.resolve(__dirname, '../intermediate/partitions.json'),
-      {
-        encoding: 'utf-8',
-      },
-    ),
-  ) as ModulePartition[];
+  const partitions = readPartitionsFile();
 
   const allFiles = partitions.flatMap((partition) => {
     return partition.children;

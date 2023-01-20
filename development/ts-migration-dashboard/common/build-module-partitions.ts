@@ -3,7 +3,7 @@ import path from 'path';
 import fg from 'fast-glob';
 import madge from 'madge';
 import {
-  BASE_DIRECTORY,
+  ROOT_DIRECTORY_PATH,
   ENTRYPOINT_PATTERNS,
   FILES_TO_CONVERT_PATH,
 } from './constants';
@@ -66,7 +66,7 @@ export default async function buildModulePartitions(): Promise<
     await Promise.all(
       ENTRYPOINT_PATTERNS.map((entrypointPattern) => {
         return fg(
-          path.resolve(BASE_DIRECTORY, `${entrypointPattern}.{js,ts,tsx}`),
+          path.resolve(ROOT_DIRECTORY_PATH, `${entrypointPattern}.{js,ts,tsx}`),
         );
       }),
     )
@@ -74,14 +74,14 @@ export default async function buildModulePartitions(): Promise<
 
   const entryFilePaths = filterFilePaths(
     possibleEntryFilePaths.map((possibleEntrypoint) =>
-      path.relative(BASE_DIRECTORY, possibleEntrypoint),
+      path.relative(ROOT_DIRECTORY_PATH, possibleEntrypoint),
     ),
     allowedFilePaths,
   );
 
   const result = await madge(entryFilePaths, {
-    baseDir: BASE_DIRECTORY,
-    tsConfig: path.join(BASE_DIRECTORY, 'tsconfig.json'),
+    baseDir: ROOT_DIRECTORY_PATH,
+    tsConfig: path.join(ROOT_DIRECTORY_PATH, 'tsconfig.json'),
   });
   const dependenciesByFilePath = result.obj();
   const modulesById = buildModulesWithLevels(
