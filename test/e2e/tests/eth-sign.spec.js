@@ -13,8 +13,7 @@ const ganacheOptions = {
 };
 
 describe('Eth sign', function () {
-
-  it('will detect if eth_sign is disabled', async function() {
+  it('will detect if eth_sign is disabled', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -22,7 +21,7 @@ describe('Eth sign', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title        
+        title: this.test.title,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -30,13 +29,15 @@ describe('Eth sign', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement('#ethSign')
+        await driver.clickElement('#ethSign');
 
         const ethSignButton = await driver.findElement('#ethSign');
-        const exceptionString = "ERROR: ETH_SIGN HAS BEEN DISABLED. YOU MUST ENABLE IT IN THE ADVANCED SETTINGS";
+        const exceptionString =
+          'ERROR: ETH_SIGN HAS BEEN DISABLED. YOU MUST ENABLE IT IN THE ADVANCED SETTINGS';
 
         assert.equal(await ethSignButton.getText(), exceptionString);
-      });
+      },
+    );
   });
 
   it('can initiate and confirm a eth sign', async function () {
@@ -51,7 +52,7 @@ describe('Eth sign', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title
+        title: this.test.title,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -60,8 +61,12 @@ describe('Eth sign', function () {
 
         // Enable eth_sign
         const currentUrl = await driver.getCurrentUrl();
-        await driver.openNewPage(currentUrl.replace("home.html#unlock", "home.html#settings/advanced"));
-        await driver.clickElement('[data-testid="advanced-setting-toggle-ethsign"] > div > div > .toggle-button');
+        await driver.openNewPage(
+          currentUrl.replace('home.html#unlock', 'home.html#settings/advanced'),
+        );
+        await driver.clickElement(
+          '[data-testid="advanced-setting-toggle-ethsign"] > div > div > .toggle-button',
+        );
 
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement('#ethSign');

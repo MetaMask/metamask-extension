@@ -568,13 +568,16 @@ export default class PreferencesController {
    * @param {bool} isEnabled - true to enable the rpc method
    */
   async setRpcMethodPreference(methodName, isEnabled) {
-    const currentRpcMethodPreferences = this.store.getState().rpcMethodPreferences;
+    const currentRpcMethodPreferences =
+      this.store.getState().rpcMethodPreferences;
     const updatedRpcMethodPreferences = {
       ...currentRpcMethodPreferences,
       [methodName]: isEnabled,
     };
 
-    this.store.updateState({ rpcMethodPreferences: updatedRpcMethodPreferences });
+    this.store.updateState({
+      rpcMethodPreferences: updatedRpcMethodPreferences,
+    });
   }
 
   getRpcMethodPreferences() {

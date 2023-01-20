@@ -3232,7 +3232,10 @@ export function setDismissSeedBackUpReminder(value) {
 export function setRpcMethodPreference(methodName, value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await submitRequestToBackground('setRpcMethodPreference', [methodName, value]);
+    await submitRequestToBackground('setRpcMethodPreference', [
+      methodName,
+      value,
+    ]);
     dispatch(hideLoadingIndication());
   };
 }

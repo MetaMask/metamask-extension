@@ -12,7 +12,6 @@ import {
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
   setRpcMethodPreference,
-  getRpcMethodPreferences,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -51,7 +50,7 @@ export const mapStateToProps = (state) => {
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
-    rpcMethodPreferences
+    rpcMethodPreferences,
   };
 };
 
@@ -84,7 +83,7 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setRpcMethodPreference: (methodName, isEnabled) => {
       return dispatch(setRpcMethodPreference(methodName, isEnabled));
-    }
+    },
   };
 };
 

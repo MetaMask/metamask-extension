@@ -1784,11 +1784,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setDismissSeedBackUpReminder.bind(
           preferencesController,
         ),
-      setRpcMethodPreference:
-        preferencesController.setRpcMethodPreference.bind(
-          preferencesController,
-        ),
-      getRpcMethodPreferences: 
+      setRpcMethodPreference: preferencesController.setRpcMethodPreference.bind(
+        preferencesController,
+      ),
+      getRpcMethodPreferences:
         preferencesController.getRpcMethodPreferences.bind(
           preferencesController,
         ),
@@ -3009,13 +3008,16 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnsignedMessage(msgParams, req) {
-    const { rpcMethodPreferences } = this.preferencesController.store.getState();
+    const { rpcMethodPreferences } =
+      this.preferencesController.store.getState();
     const { ethSign } = rpcMethodPreferences;
     const data = normalizeMsgData(msgParams.data);
     let promise;
 
-    if(!ethSign) {
-      throw ethErrors.rpc.methodNotFound("eth_sign has been disabled. You must enable it in the advanced settings");
+    if (!ethSign) {
+      throw ethErrors.rpc.methodNotFound(
+        'eth_sign has been disabled. You must enable it in the advanced settings',
+      );
     }
 
     // 64 hex + "0x" at the beginning
