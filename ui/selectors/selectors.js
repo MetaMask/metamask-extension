@@ -70,12 +70,12 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
 import { TransactionStatus } from '../../shared/constants/transaction';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
