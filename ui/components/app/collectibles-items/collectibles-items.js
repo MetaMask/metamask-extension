@@ -25,6 +25,7 @@ import {
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import { updateCollectibleDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
@@ -173,17 +174,10 @@ export default function CollectiblesItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {collectibles.map((collectible, i) => {
-              const {
-                image,
-                address,
-                tokenId,
-                backgroundColor,
-                name,
-                description,
-              } = collectible;
+              const { image, address, tokenId, backgroundColor, name } =
+                collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
-              const collectibleImageAlt =
-                description ?? `${name} Token ID: ${tokenId}`;
+              const collectibleImageAlt = getCollectibleImageAlt(collectible);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
 

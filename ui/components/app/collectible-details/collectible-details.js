@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import {
   getCurrentChainId,
   getIpfsGateway,
@@ -82,7 +83,7 @@ export default function CollectibleDetails({ collectible }) {
     imageOriginal ?? image,
     ipfsGateway,
   );
-  const collectibleImageAlt = description ?? `${name} Token ID: ${tokenId}`;
+  const collectibleImageAlt = getCollectibleImageAlt(collectible);
   const isDataURI = collectibleImageURL.startsWith('data:');
 
   const onRemove = () => {
