@@ -129,9 +129,17 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
               </span>
             );
 
+          case 'bool':
+            return <span className="sol-item">{String(value.asBoolean)}</span>;
+
           case 'bytes':
             return (
               <span className="sol-item solidity-bytes">{value.asHex}</span>
+            );
+
+          case 'string':
+            return (
+              <span className="sol-item solidity-string">{value.asString}</span>
             );
 
           case 'array':
