@@ -1095,10 +1095,10 @@
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
   "toggleEthSignField": {
-    "message": "Toggle eth_sign"
+    "message": "Toggle eth_sign requests"
   },
   "toggleEthSignDescriptionField": {
-    "message": "Turn this on to enable eth_sign requests. This method allows you to sign arbitrary data and does not give much insight into what you are signing."
+    "message": "Turn this on to let dapps request your signature using eth_sign requests. eth_sign is an open-ended signing method that lets you sign an arbitrary hash, making it a dangerous phishing risk. Only sign eth_sign requests if you can read what you are signing and trust the origin of the request."
   },
   "domain": {
     "message": "Domain"
