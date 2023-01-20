@@ -6,7 +6,10 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
-import KeyringController from 'eth-keyring-controller';
+import {
+  KeyringController,
+  keyringBuilderFactory,
+} from '@metamask/eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -56,6 +59,8 @@ import {
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
+
+import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import browser from 'webextension-polyfill';
 import {
@@ -641,15 +646,19 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [];
     if (!isManifestV3) {
-      additionalKeyrings = [
+      const additionalKeyringTypes = [
         TrezorKeyring,
         LedgerBridgeKeyring,
         LatticeKeyring,
         QRHardwareKeyring,
       ];
+      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
+        keyringBuilderFactory(keyringType),
+      );
     }
+
     this.keyringController = new KeyringController({
-      keyringTypes: additionalKeyrings,
+      keyringBuilders: additionalKeyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
@@ -2568,7 +2577,11 @@ export default class MetamaskController extends EventEmitter {
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
-    return keyring.mnemonic;
+
+    const recoveredIndices = Array.from(
+      new Uint16Array(new Uint8Array(keyring.mnemonic).buffer),
+    );
+    return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
   }
 
   //
