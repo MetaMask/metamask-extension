@@ -85,6 +85,8 @@ import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
+  ExcludedSnapPermissions,
+  ExcludedSnapEndowments,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
@@ -780,6 +782,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+      excludedPermissions: {
+        ...ExcludedSnapPermissions,
+        ...ExcludedSnapEndowments,
+      },
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
