@@ -52,7 +52,7 @@ describe('send utils', () => {
   describe('calcGasTotal()', () => {
     it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', () => {
       const result = calcGasTotal(12, 15);
-      expect(result).toStrictEqual('12x15');
+      expect(result).toStrictEqual('17a');
       expect(multiplyCurrencies).toHaveBeenCalledWith(12, 15, {
         multiplicandBase: 16,
         multiplierBase: 16,
