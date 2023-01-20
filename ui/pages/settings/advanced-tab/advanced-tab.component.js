@@ -603,7 +603,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={rpcMethodPreferences.ethSign || false}
+              value={rpcMethodPreferences?.ethSign || false}
               onToggle={(value) => setRpcMethodPreference('ethSign', !value)}
               offLabel={t('off')}
               onLabel={t('on')}
