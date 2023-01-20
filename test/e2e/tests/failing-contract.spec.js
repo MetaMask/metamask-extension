@@ -78,7 +78,7 @@ describe('Failing contract interaction ', function () {
 
         // display the transaction status
         const transactionStatus = await driver.findElement(
-          '.transaction-list-item:nth-of-type(1) .transaction-status',
+          '.transaction-list-item:nth-of-type(1) .transaction-status-label',
         );
         assert.equal(await transactionStatus.getText(), 'Failed');
       },

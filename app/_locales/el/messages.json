@@ -1264,14 +1264,8 @@
     "message": "Το τελικό σημείο επέστρεψε ένα διαφορετικό αναγνωριστικό αλυσίδας: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Βελτιωμένος εντοπισμός για token"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Ο βελτιωμένος εντοπισμός για token είναι επί του παρόντος διαθέσιμος στο $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "Το API token της ConsenSys συγκεντρώνει μια λίστα με token από διάφορες λίστες με token τρίτων. Όταν είναι ενεργοποιημένο, τα token θα εντοπίζονται αυτόματα και θα μπορούν να αναζητηθούν στο κύριο δίκτυο του Ethereum, στο Binance, στο Polygon και στο Avalanche. Όταν είναι απενεργοποιημένο, ο αυτόματος εντοπισμός και η αναζήτηση μπορεί να γίνει μόνο στο κύριο δίκτυο του Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Μη έγκυρος χαρακτήρας για το ENS."

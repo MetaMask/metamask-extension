@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../modal';
-import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../../../shared/constants/transaction';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee';
 
 export default class CancelTransaction extends PureComponent {
@@ -24,7 +24,7 @@ export default class CancelTransaction extends PureComponent {
   componentDidUpdate() {
     const { transactionStatus, showTransactionConfirmedModal } = this.props;
 
-    if (transactionStatus !== TRANSACTION_STATUSES.SUBMITTED) {
+    if (transactionStatus !== TransactionStatus.submitted) {
       showTransactionConfirmedModal();
     }
   }

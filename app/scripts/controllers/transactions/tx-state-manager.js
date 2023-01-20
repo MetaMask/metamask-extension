@@ -3,7 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
@@ -127,7 +127,7 @@ export default class TransactionStateManager extends EventEmitter {
     return {
       id: createId(),
       time: new Date().getTime(),
-      status: TRANSACTION_STATUSES.UNAPPROVED,
+      status: TransactionStatus.unapproved,
       metamaskNetworkId: netId,
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
@@ -153,7 +153,7 @@ export default class TransactionStateManager extends EventEmitter {
     return pickBy(
       this.store.getState().transactions,
       (transaction) =>
-        transaction.status === TRANSACTION_STATUSES.UNAPPROVED &&
+        transaction.status === TransactionStatus.unapproved &&
         transactionMatchesNetwork(transaction, chainId, network),
     );
   }
@@ -167,7 +167,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta[]} the filtered list of transactions
    */
   getApprovedTransactions(address) {
-    const searchCriteria = { status: TRANSACTION_STATUSES.APPROVED };
+    const searchCriteria = { status: TransactionStatus.approved };
     if (address) {
       searchCriteria.from = address;
     }
@@ -183,7 +183,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta[]} the filtered list of transactions
    */
   getPendingTransactions(address) {
-    const searchCriteria = { status: TRANSACTION_STATUSES.SUBMITTED };
+    const searchCriteria = { status: TransactionStatus.submitted };
     if (address) {
       searchCriteria.from = address;
     }
@@ -199,7 +199,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta[]} the filtered list of transactions
    */
   getConfirmedTransactions(address) {
-    const searchCriteria = { status: TRANSACTION_STATUSES.CONFIRMED };
+    const searchCriteria = { status: TransactionStatus.confirmed };
     if (address) {
       searchCriteria.from = address;
     }
@@ -509,7 +509,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusRejected(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.REJECTED);
+    this._setTransactionStatus(txId, TransactionStatus.rejected);
     this._deleteTransaction(txId);
   }
 
@@ -519,7 +519,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusUnapproved(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.UNAPPROVED);
+    this._setTransactionStatus(txId, TransactionStatus.unapproved);
   }
 
   /**
@@ -528,7 +528,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusApproved(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.APPROVED);
+    this._setTransactionStatus(txId, TransactionStatus.approved);
   }
 
   /**
@@ -537,7 +537,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusSigned(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.SIGNED);
+    this._setTransactionStatus(txId, TransactionStatus.signed);
   }
 
   /**
@@ -550,7 +550,7 @@ export default class TransactionStateManager extends EventEmitter {
     const txMeta = this.getTransaction(txId);
     txMeta.submittedTime = new Date().getTime();
     this.updateTransaction(txMeta, 'txStateManager - add submitted time stamp');
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.SUBMITTED);
+    this._setTransactionStatus(txId, TransactionStatus.submitted);
   }
 
   /**
@@ -559,7 +559,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusConfirmed(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.CONFIRMED);
+    this._setTransactionStatus(txId, TransactionStatus.confirmed);
   }
 
   /**
@@ -568,7 +568,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusDropped(txId) {
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.DROPPED);
+    this._setTransactionStatus(txId, TransactionStatus.dropped);
   }
 
   /**
@@ -592,7 +592,7 @@ export default class TransactionStateManager extends EventEmitter {
       'transactions:tx-state-manager#fail - add error',
     );
 
-    this._setTransactionStatus(txId, TRANSACTION_STATUSES.FAILED);
+    this._setTransactionStatus(txId, TransactionStatus.failed);
   }
 
   /**
@@ -626,7 +626,7 @@ export default class TransactionStateManager extends EventEmitter {
     this.store.updateState({
       transactions: omitBy(
         this.store.getState().transactions,
-        (transaction) => transaction.status === TRANSACTION_STATUSES.UNAPPROVED,
+        (transaction) => transaction.status === TransactionStatus.unapproved,
       ),
     });
   }
@@ -683,9 +683,9 @@ export default class TransactionStateManager extends EventEmitter {
       this.emit(`tx:status-update`, txId, status);
       if (
         [
-          TRANSACTION_STATUSES.SUBMITTED,
-          TRANSACTION_STATUSES.REJECTED,
-          TRANSACTION_STATUSES.FAILED,
+          TransactionStatus.submitted,
+          TransactionStatus.rejected,
+          TransactionStatus.failed,
         ].includes(status)
       ) {
         this.emit(`${txMeta.id}:finished`, txMeta);

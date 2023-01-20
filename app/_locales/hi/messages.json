@@ -1264,14 +1264,8 @@
     "message": "समापन बिंदु ने अलग चेन ID लौटाई है: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "उन्नत टोकन डिटेक्शन"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "उन्नत टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys का टोकन एपीआई विभिन्न तृतीय पक्ष टोकन सूचियों से टोकन की एक सूची एकत्र करता है। चालू होने पर, एथेरियम मेननेट, बिनेंस, पॉलीगॉन और एवलांच पर टोकन का स्वचालित रूप से पता लगाया जाएगा और खोजा जा सकेगा। बंद होने पर, स्वचालित पहचान और खोज केवल एथेरियम मेननेट पर ही की जा सकती है।"
   },
   "ensIllegalCharacter": {
     "message": "ENS के लिए गैर-कानूनी कैरेक्टर।"

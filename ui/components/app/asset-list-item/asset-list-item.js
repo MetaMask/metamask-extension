@@ -14,7 +14,7 @@ import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const AssetListItem = ({
@@ -75,7 +75,7 @@ const AssetListItem = ({
           try {
             await dispatch(
               startNewDraftTransaction({
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
                 details: {
                   address: tokenAddress,
                   decimals: tokenDecimals,

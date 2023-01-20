@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import TransactionActivityLogIcon from './transaction-activity-log-icon';
 import { CONFIRMED_STATUS } from './transaction-activity-log.constants';
 

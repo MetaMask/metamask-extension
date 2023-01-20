@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { hexWEIToDecGWEI } from '../../../../shared/lib/transactions-controller-utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import GasTiming from '../../../components/app/gas-timing';
 import InfoTooltip from '../../../components/ui/info-tooltip';
@@ -21,11 +20,7 @@ import {
   FONT_STYLE,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
@@ -38,28 +33,33 @@ import {
   getIsBuyableChain,
   transactionFeeSelector,
   getIsMainnet,
+  getIsTestnet,
   getUseCurrencyRateCheck,
 } from '../../../selectors';
 
-import {
-  hexWEIToDecETH,
-  addHexes,
-} from '../../../helpers/utils/conversions.util';
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
 import { showModal } from '../../../store/actions';
+import {
+  addHexes,
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../../shared/modules/conversion.utils';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
   const [showDepositPopover, setShowDepositPopover] = useState(false);
+
   const currentProvider = useSelector(getProvider);
   const isMainnet = useSelector(getIsMainnet);
+  const isTestnet = useSelector(getIsTestnet);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
+    useSelector(getPreferences);
   const { nativeCurrency, provider, unapprovedTxs } = useSelector(
     (state) => state.metamask,
   );
@@ -96,11 +96,13 @@ export default function GasDisplay({ gasError }) {
 
   let title;
   if (
-    draftTransaction?.asset.details?.standard === ERC721 ||
-    draftTransaction?.asset.details?.standard === ERC1155
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC721 ||
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC1155
   ) {
     title = draftTransaction?.asset.details?.name;
-  } else if (draftTransaction?.asset.details?.standard === ERC20) {
+  } else if (
+    draftTransaction?.asset.details?.standard === TokenStandard.ERC20
+  ) {
     title = `${hexWEIToDecETH(draftTransaction.amount.value)} ${
       draftTransaction?.asset.details?.symbol
     }`;
@@ -111,6 +113,9 @@ export default function GasDisplay({ gasError }) {
   );
 
   const primaryTotalTextOverrideMaxAmount = `${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`;
+
+  const showCurrencyRateCheck =
+    useCurrencyRateCheck && (!isTestnet || showFiatInTestnets);
 
   let detailTotal, maxAmount;
 
@@ -199,7 +204,7 @@ export default function GasDisplay({ gasError }) {
               }
               detailTitleColor={COLORS.TEXT_DEFAULT}
               detailText={
-                useCurrencyRateCheck && (
+                showCurrencyRateCheck && (
                   <Box className="gas-display__currency-container">
                     <LoadingHeartBeat estimateUsed={estimateUsed} />
                     <UserPreferencedCurrencyDisplay
@@ -267,7 +272,7 @@ export default function GasDisplay({ gasError }) {
                 key="total-item"
                 detailTitle={t('total')}
                 detailText={
-                  useCurrencyRateCheck && (
+                  showCurrencyRateCheck && (
                     <Box
                       height={BLOCK_SIZES.MAX}
                       display={DISPLAY.FLEX}

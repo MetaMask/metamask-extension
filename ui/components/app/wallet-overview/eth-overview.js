@@ -33,7 +33,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 import DepositPopover from '../deposit-popover';
 import WalletOverview from './wallet-overview';
 
@@ -140,7 +140,7 @@ const EthOverview = ({ className }) => {
                   },
                 });
                 dispatch(
-                  startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }),
+                  startNewDraftTransaction({ type: AssetType.native }),
                 ).then(() => {
                   history.push(SEND_ROUTE);
                 });

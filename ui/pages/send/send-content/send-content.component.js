@@ -9,7 +9,7 @@ import {
   GAS_PRICE_EXCESSIVE_ERROR_KEY,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
 import GasDisplay from '../gas-display';
 import SendAmountRow from './send-amount-row';
@@ -63,8 +63,8 @@ export default class SendContent extends Component {
     }
     const showHexData =
       this.props.showHexData &&
-      asset.type !== ASSET_TYPES.TOKEN &&
-      asset.type !== ASSET_TYPES.NFT;
+      asset.type !== AssetType.token &&
+      asset.type !== AssetType.NFT;
 
     const showKnownRecipientWarning =
       recipient.warning === 'knownAddressRecipient';

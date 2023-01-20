@@ -15,7 +15,7 @@ import {
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import { TransactionEnvelopeType } from '../../../shared/constants/transaction';
 
 /**
  * @see {@link getEnvironmentType}
@@ -135,16 +135,6 @@ const addHexPrefix = (str) => {
   return `0x${str}`;
 };
 
-/**
- * Converts a BN object to a hex string with a '0x' prefix
- *
- * @param {BN} inputBn - The BN to convert to a hex string
- * @returns {string} A '0x' prefixed hex string
- */
-function bnToHex(inputBn) {
-  return addHexPrefix(inputBn.toString(16));
-}
-
 function getChainType(chainId) {
   if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
@@ -172,7 +162,6 @@ export {
   BnMultiplyByFraction,
   checkForError,
   addHexPrefix,
-  bnToHex,
   getChainType,
   checkAlarmExists,
 };
@@ -291,10 +280,10 @@ export function formatTxMetaForRpcResult(txMeta) {
     formattedTxMeta.gasPrice = maxFeePerGas;
     formattedTxMeta.maxFeePerGas = maxFeePerGas;
     formattedTxMeta.maxPriorityFeePerGas = maxPriorityFeePerGas;
-    formattedTxMeta.type = TRANSACTION_ENVELOPE_TYPES.FEE_MARKET;
+    formattedTxMeta.type = TransactionEnvelopeType.feeMarket;
   } else {
     formattedTxMeta.gasPrice = gasPrice;
-    formattedTxMeta.type = TRANSACTION_ENVELOPE_TYPES.LEGACY;
+    formattedTxMeta.type = TransactionEnvelopeType.legacy;
   }
 
   return formattedTxMeta;

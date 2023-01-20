@@ -1264,14 +1264,8 @@
     "message": "O endpoint retornou um ID diferente da chain: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Detecção aprimorada de tokens"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "A detecção aprimorada de tokens está disponível no momento em $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "A API de tokens da ConsenSys agrega uma lista de tokens a partir de diversas listas de terceiros. Quando ativada, os tokens serão automaticamente detectados (e pesquisáveis) na mainnet do Ethereum, Binance, Polygon e Avalanche. Quando desativada, a detecção automática e pesquisa só poderão ser feitas na mainnet do Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Caractere inválido para ENS."

@@ -1264,14 +1264,8 @@
     "message": "El punto de conexión devolvió un id. de cadena diferente: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Detección mejorada de tokens"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Actualmente, la detección mejorada de token se encuentra disponible en $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "La API de tokens de ConsenSys agrega una lista de tokens de varias listas de tokens de terceros. Cuando está activado, los tokens se detectarán automáticamente y se podrán buscar en la red principal de Ethereum, Binance, Polygon y Avalanche. Cuando está desactivada, la detección y la búsqueda automáticas solo se pueden realizar en la red principal de Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Caracter ilegal para ENS."
@@ -2666,11 +2660,11 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onboardingShowIncomingTransactionsDescription": {
-    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver 2$.",
+    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver $2.",
     "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
-    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver 2$.",
+    "message": "Las alertas de detección de phishing se basan en la comunicación con $1. jsDeliver tendrá acceso a su dirección IP. Ver $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onlyAddTrustedNetworks": {

@@ -8,19 +8,19 @@ import Send from '../../ui/icon/send-icon.component';
 import Sign from '../../ui/icon/sign-icon.component';
 import Swap from '../../ui/icon/swap-icon-for-list.component';
 import {
-  TRANSACTION_GROUP_CATEGORIES,
-  TRANSACTION_GROUP_STATUSES,
-  TRANSACTION_STATUSES,
+  TransactionGroupCategory,
+  TransactionGroupStatus,
+  TransactionStatus,
 } from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
 
 const ICON_MAP = {
-  [TRANSACTION_GROUP_CATEGORIES.APPROVAL]: Approve,
-  [TRANSACTION_GROUP_CATEGORIES.INTERACTION]: Interaction,
-  [TRANSACTION_GROUP_CATEGORIES.RECEIVE]: Receive,
-  [TRANSACTION_GROUP_CATEGORIES.SEND]: Send,
-  [TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST]: Sign,
-  [TRANSACTION_GROUP_CATEGORIES.SWAP]: Swap,
+  [TransactionGroupCategory.approval]: Approve,
+  [TransactionGroupCategory.interaction]: Interaction,
+  [TransactionGroupCategory.receive]: Receive,
+  [TransactionGroupCategory.send]: Send,
+  [TransactionGroupCategory.signatureRequest]: Sign,
+  [TransactionGroupCategory.swap]: Swap,
 };
 
 const FAIL_COLOR = 'var(--color-error-default)';
@@ -28,14 +28,14 @@ const PENDING_COLOR = 'var(--color-icon-default)';
 const OK_COLOR = 'var(--color-primary-default)';
 
 const COLOR_MAP = {
-  [TRANSACTION_GROUP_STATUSES.PENDING]: PENDING_COLOR,
-  [TRANSACTION_GROUP_STATUSES.CANCELLED]: FAIL_COLOR,
-  [TRANSACTION_STATUSES.APPROVED]: PENDING_COLOR,
-  [TRANSACTION_STATUSES.DROPPED]: FAIL_COLOR,
-  [TRANSACTION_STATUSES.FAILED]: FAIL_COLOR,
-  [TRANSACTION_STATUSES.REJECTED]: FAIL_COLOR,
-  [TRANSACTION_STATUSES.SUBMITTED]: PENDING_COLOR,
-  [TRANSACTION_STATUSES.UNAPPROVED]: PENDING_COLOR,
+  [TransactionGroupStatus.pending]: PENDING_COLOR,
+  [TransactionGroupStatus.cancelled]: FAIL_COLOR,
+  [TransactionStatus.approved]: PENDING_COLOR,
+  [TransactionStatus.dropped]: FAIL_COLOR,
+  [TransactionStatus.failed]: FAIL_COLOR,
+  [TransactionStatus.rejected]: FAIL_COLOR,
+  [TransactionStatus.submitted]: PENDING_COLOR,
+  [TransactionStatus.unapproved]: PENDING_COLOR,
 };
 
 export default function TransactionIcon({ status, category }) {
@@ -58,22 +58,22 @@ export default function TransactionIcon({ status, category }) {
 
 TransactionIcon.propTypes = {
   status: PropTypes.oneOf([
-    TRANSACTION_GROUP_STATUSES.CANCELLED,
-    TRANSACTION_GROUP_STATUSES.PENDING,
-    TRANSACTION_STATUSES.APPROVED,
-    TRANSACTION_STATUSES.CONFIRMED,
-    TRANSACTION_STATUSES.DROPPED,
-    TRANSACTION_STATUSES.FAILED,
-    TRANSACTION_STATUSES.REJECTED,
-    TRANSACTION_STATUSES.SUBMITTED,
-    TRANSACTION_STATUSES.UNAPPROVED,
+    TransactionGroupStatus.cancelled,
+    TransactionGroupStatus.pending,
+    TransactionStatus.approved,
+    TransactionStatus.confirmed,
+    TransactionStatus.dropped,
+    TransactionStatus.failed,
+    TransactionStatus.rejected,
+    TransactionStatus.submitted,
+    TransactionStatus.unapproved,
   ]).isRequired,
   category: PropTypes.oneOf([
-    TRANSACTION_GROUP_CATEGORIES.APPROVAL,
-    TRANSACTION_GROUP_CATEGORIES.INTERACTION,
-    TRANSACTION_GROUP_CATEGORIES.RECEIVE,
-    TRANSACTION_GROUP_CATEGORIES.SEND,
-    TRANSACTION_GROUP_CATEGORIES.SIGNATURE_REQUEST,
-    TRANSACTION_GROUP_CATEGORIES.SWAP,
+    TransactionGroupCategory.approval,
+    TransactionGroupCategory.interaction,
+    TransactionGroupCategory.receive,
+    TransactionGroupCategory.send,
+    TransactionGroupCategory.signatureRequest,
+    TransactionGroupCategory.swap,
   ]).isRequired,
 };

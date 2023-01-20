@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -17,7 +17,7 @@ describe('TransactionListItemDetails Component', () => {
   const transaction = {
     history: [],
     id: 1,
-    status: TRANSACTION_STATUSES.CONFIRMED,
+    status: TransactionStatus.confirmed,
     txParams: {
       from: '0x1',
       gas: GAS_LIMITS.SIMPLE,
