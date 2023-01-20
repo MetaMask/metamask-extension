@@ -12,8 +12,8 @@ import {
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
  * specifications.
  */
-export const buildSnapEndowmentSpecifications = () => {
-  return Object.values(endowmentPermissionBuilders).reduce(
+export const buildSnapEndowmentSpecifications = () =>
+  Object.values(endowmentPermissionBuilders).reduce(
     (allSpecifications, { targetKey, specificationBuilder }) => {
       if (!Object.keys(ExcludedSnapEndowments).includes(targetKey)) {
         allSpecifications[targetKey] = specificationBuilder();
@@ -22,14 +22,13 @@ export const buildSnapEndowmentSpecifications = () => {
     },
     {},
   );
-};
 
 /**
  * @param {Record<string, Function>} hooks - The hooks for the Snap
  * restricted method implementations.
  */
-export function buildSnapRestrictedMethodSpecifications(hooks) {
-  return Object.values(restrictedMethodPermissionBuilders).reduce(
+export const buildSnapRestrictedMethodSpecifications = (hooks) =>
+  Object.values(restrictedMethodPermissionBuilders).reduce(
     (specifications, { targetKey, specificationBuilder, methodHooks }) => {
       if (!Object.keys(ExcludedSnapPermissions).includes(targetKey)) {
         specifications[targetKey] = specificationBuilder({
@@ -40,4 +39,3 @@ export function buildSnapRestrictedMethodSpecifications(hooks) {
     },
     {},
   );
-}
