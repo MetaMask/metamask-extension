@@ -87,10 +87,13 @@ async function withController(...args) {
  * @param {object} options - Options.
  * @param {NETWORK_TYPES} options.networkType - The network type to mock.
  * @param {object} options.block - The mock block to return.
+ * @param {Record<string, number>} options.requests - A set of methods to setup
+ * mocks for, mapped to the number of times to expect each request.
  */
 function setupMockRpcBlockResponses({
   networkType = NETWORK_TYPES.RPC,
   block = BLOCK,
+  requests = { eth_getBlockByNumber: 1, eth_blockNumber: 1 },
 } = {}) {
   const rpcUrl =
     networkType === NETWORK_TYPES.RPC
@@ -98,19 +101,27 @@ function setupMockRpcBlockResponses({
       : `https://${networkType}.infura.io/v3/${defaultControllerOptions.infuraProjectId}`;
   const { origin, pathname } = new URL(rpcUrl);
 
-  nock(origin)
-    .persist()
-    .post(
-      pathname,
-      (body) =>
-        body.method === 'eth_getBlockByNumber' &&
-        body.params[0] === block.number,
-    )
-    .reply(200, () => JSON.stringify(constructSuccessfulRpcResponse(block)))
-    .post(pathname, (body) => body.method === 'eth_blockNumber')
-    .reply(200, () =>
-      JSON.stringify(constructSuccessfulRpcResponse(block.number)),
-    );
+  const scope = nock(origin);
+
+  if (requests.eth_getBlockByNumber) {
+    scope
+      .post(
+        pathname,
+        (body) =>
+          body.method === 'eth_getBlockByNumber' &&
+          body.params[0] === block.number,
+      )
+      .times(requests.eth_getBlockByNumber)
+      .reply(200, () => JSON.stringify(constructSuccessfulRpcResponse(block)));
+  }
+  if (requests.eth_blockNumber) {
+    scope
+      .post(pathname, (body) => body.method === 'eth_blockNumber')
+      .times(requests.eth_blockNumber)
+      .reply(200, () =>
+        JSON.stringify(constructSuccessfulRpcResponse(block.number)),
+      );
+  }
 }
 
 describe('NetworkController', () => {
@@ -232,6 +243,10 @@ describe('NetworkController', () => {
           setupMockRpcBlockResponses({
             networkType: NETWORK_TYPES.MAINNET,
             block: PRE_1559_BLOCK,
+            requests: {
+              eth_blockNumber: 2,
+              eth_getBlockByNumber: 1,
+            },
           });
           await controller.initializeProvider();
           await controller.getEIP1559Compatibility();
