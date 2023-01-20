@@ -3425,7 +3425,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.24.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.25.0...HEAD
+[10.25.0]: https://github.com/MetaMask/metamask-extension/compare/v10.24.0...v10.25.0
 [10.24.0]: https://github.com/MetaMask/metamask-extension/compare/v10.23.3...v10.24.0
 [10.23.3]: https://github.com/MetaMask/metamask-extension/compare/v10.23.2...v10.23.3
 [10.23.2]: https://github.com/MetaMask/metamask-extension/compare/v10.23.1...v10.23.2
