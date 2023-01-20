@@ -337,7 +337,7 @@ export default class Home extends PureComponent {
 
         {removeCollectibleMessage === 'success' ? (
           <ActionableMessage
-            type="success"
+            type="danger"
             className="home__new-network-notification"
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
