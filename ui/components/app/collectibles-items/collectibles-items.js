@@ -182,6 +182,8 @@ export default function CollectiblesItems({
                 description,
               } = collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
+              const collectibleImageAlt =
+                description ?? `${name} Token ID: ${tokenId}`;
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
 
@@ -207,7 +209,7 @@ export default function CollectiblesItems({
                         <img
                           className="collectibles-items__item-image"
                           src={collectibleImage}
-                          alt={description}
+                          alt={collectibleImageAlt}
                         />
                       </button>
                     ) : (

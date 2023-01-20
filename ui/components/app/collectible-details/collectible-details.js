@@ -82,6 +82,7 @@ export default function CollectibleDetails({ collectible }) {
     imageOriginal ?? image,
     ipfsGateway,
   );
+  const collectibleImageAlt = description ?? `${name} Token ID: ${tokenId}`;
   const isDataURI = collectibleImageURL.startsWith('data:');
 
   const onRemove = () => {
@@ -178,7 +179,7 @@ export default function CollectibleDetails({ collectible }) {
               <img
                 className="collectible-details__image"
                 src={collectibleImageURL}
-                alt={description}
+                alt={collectibleImageAlt}
               />
             ) : (
               <CollectibleDefaultImage name={name} tokenId={tokenId} />
