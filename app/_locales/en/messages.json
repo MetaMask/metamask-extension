@@ -1094,6 +1094,12 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "toggleEthSignField": {
+    "message": "Toggle eth_sign"
+  },
+  "toggleEthSignDescriptionField": {
+    "message": "Turn this on to enable eth_sign requests. This method allows you to sign arbitrary data and does not give much insight into what you are signing."
+  },
   "domain": {
     "message": "Domain"
   },
