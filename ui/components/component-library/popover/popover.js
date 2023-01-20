@@ -44,7 +44,6 @@ export const Popover = ({ children, className, ...props }) => {
         {children} - This is the popper content
         <Box
           borderColor={COLORS.BORDER_DEFAULT}
-          backgroundColor={COLORS.BACKGROUND_DEFAULT}
           id="arrow"
           ref={setArrowElement}
           style={styles.arrow}
