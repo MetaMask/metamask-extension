@@ -4,8 +4,7 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { Icon, ICON_NAMES } from '..';
-import { Banner } from './banner';
+import { Banner, BANNER_SEVERITIES } from '.';
 
 describe('Banner', () => {
   it('should render banner element correctly', () => {
@@ -31,9 +30,44 @@ describe('Banner', () => {
     expect(getByTestId('banner')).toHaveClass('mm-banner--test');
   });
 
+  it('should render with different severity classnames', () => {
+    const { getByTestId } = render(
+      <>
+        <Banner data-testid="info" title="Info">
+          This is a demo of severity Info.
+        </Banner>
+        <Banner
+          data-testid="warning"
+          severity={BANNER_SEVERITIES.WARNING}
+          title="Warning"
+        >
+          This is a demo of severity Warning.
+        </Banner>
+        <Banner
+          data-testid="danger"
+          severity={BANNER_SEVERITIES.DANGER}
+          title="Danger"
+        >
+          This is a demo of severity Danger.
+        </Banner>
+        <Banner
+          data-testid="success"
+          severity={BANNER_SEVERITIES.SUCCESS}
+          title="Success"
+        >
+          This is a demo of severity Success.
+        </Banner>
+      </>,
+    );
+    expect(getByTestId('info')).toHaveClass('mm-banner--severity-info');
+    expect(getByTestId('warning')).toHaveClass('mm-banner--severity-warning');
+    expect(getByTestId('danger')).toHaveClass('mm-banner--severity-danger');
+    expect(getByTestId('success')).toHaveClass('mm-banner--severity-success');
+  });
+
   it('should render banner title', () => {
     const { getByText } = render(<Banner title="Banner title test" />);
-    expect(getByText('Banner title test')).toHaveClass('mm-banner__title');
+    expect(getByText('Banner title test')).toHaveClass('mm-banner-base__title');
   });
 
   it('should render banner description', () => {
@@ -47,10 +81,8 @@ describe('Banner', () => {
         title="Action prop demo"
         actionButtonLabel="Action"
         actionButtonProps={{
-          icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
-          iconPositionRight: true,
           'data-testid': 'action',
-          className: 'mm-banner__action',
+          className: 'mm-banner-base__action',
         }}
         actionButtonOnClick={() =>
           console.log('ButtonLink actionButtonOnClick demo')
@@ -61,22 +93,7 @@ describe('Banner', () => {
         such as iconName
       </Banner>,
     );
-    expect(getByTestId('action')).toHaveClass('mm-banner__action');
-  });
-
-  it('should render banner startAccessory', () => {
-    const { getByTestId } = render(
-      <Banner
-        startAccessory={
-          <Icon
-            data-testid="start-accessory"
-            name={ICON_NAMES.ADD_SQUARE_FILLED}
-          />
-        }
-      />,
-    );
-
-    expect(getByTestId('start-accessory')).toBeDefined();
+    expect(getByTestId('action')).toHaveClass('mm-banner-base__action');
   });
 
   it('should render and fire onClose event', async () => {

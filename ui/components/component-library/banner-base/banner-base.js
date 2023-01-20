@@ -7,8 +7,10 @@ import { ButtonIcon, ButtonLink, ICON_NAMES, Text } from '..';
 import Box from '../../ui/box';
 
 import {
+  BLOCK_SIZES,
   COLORS,
   DISPLAY,
+  JUSTIFY_CONTENT,
   SIZES,
   TEXT,
 } from '../../../helpers/constants/design-system';
@@ -29,7 +31,7 @@ export const BannerBase = ({
   return (
     <Box
       className={classnames('mm-banner-base', className)}
-      display={DISPLAY.INLINE_FLEX}
+      display={DISPLAY.FLEX}
       gap={2}
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderRadius={SIZES.SM}
@@ -37,44 +39,50 @@ export const BannerBase = ({
       {...props}
     >
       {startAccessory && <>{startAccessory}</>}
-
-      <div>
-        {title && (
-          <Text
-            className="mm-banner-base__title"
-            variant={TEXT.BODY_LG_MEDIUM}
-            as="h5"
-            {...titleProps}
-          >
-            {title}
-          </Text>
+      <Box
+        width={BLOCK_SIZES.FULL}
+        display={DISPLAY.FLEX}
+        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+        gap={2}
+      >
+        <div>
+          {title && (
+            <Text
+              className="mm-banner-base__title"
+              variant={TEXT.BODY_LG_MEDIUM}
+              as="h5"
+              {...titleProps}
+            >
+              {title}
+            </Text>
+          )}
+          {children && typeof children === 'object' ? (
+            children
+          ) : (
+            <Text>{children}</Text>
+          )}
+          {actionButtonLabel && (
+            <ButtonLink
+              // noPadding TODO: Use noPadding option when released
+              size={SIZES.AUTO} // TODO: Remove when noPadding is added
+              onClick={actionButtonOnClick}
+              {...actionButtonProps}
+            >
+              {actionButtonLabel}
+            </ButtonLink>
+          )}
+        </div>
+        {onClose && (
+          <ButtonIcon
+            className="mm-banner-base__close-button"
+            iconName={ICON_NAMES.CLOSE_OUTLINE}
+            size={SIZES.SM}
+            ariaLabel="Close" // TODO: i18n
+            onClick={onClose}
+            {...closeButtonProps}
+          />
         )}
-        {children && typeof children === 'object' ? (
-          children
-        ) : (
-          <Text>{children}</Text>
-        )}
-        {actionButtonLabel && (
-          <ButtonLink
-            // noPadding TODO: Use noPadding option when released
-            size={SIZES.AUTO} // TODO: Remove when noPadding is added
-            onClick={actionButtonOnClick}
-            {...actionButtonProps}
-          >
-            {actionButtonLabel}
-          </ButtonLink>
-        )}
-      </div>
-      {onClose && (
-        <ButtonIcon
-          className="mm-banner-base__close-button"
-          iconName={ICON_NAMES.CLOSE_OUTLINE}
-          size={SIZES.SM}
-          ariaLabel="Close" // TODO: i18n
-          onClick={onClose}
-          {...closeButtonProps}
-        />
-      )}
+      </Box>
     </Box>
   );
 };

@@ -14,7 +14,7 @@ import { BANNER_SEVERITIES } from './banner.constants';
 export const Banner = ({
   children,
   className,
-  severity = SEVERITIES.DANGER,
+  severity = SEVERITIES.INFO,
   ...props
 }) => {
   const severityIcon = () => {
@@ -30,19 +30,20 @@ export const Banner = ({
       case SEVERITIES.WARNING:
         return (
           <Icon
-            name={ICON_NAMES.DANGER_FILLED}
+            name={ICON_NAMES.WARNING_FILLED}
             size={SIZES.LG}
-            color={COLORS.ERROR_DEFAULT}
+            color={COLORS.WARNING_DEFAULT}
           />
         );
       case SEVERITIES.SUCCESS:
         return (
           <Icon
-            name={ICON_NAMES.DANGER_FILLED}
+            name={ICON_NAMES.CHECK_CIRCLE_ON_FILLED}
             size={SIZES.LG}
-            color={COLORS.ERROR_DEFAULT}
+            color={COLORS.SUCCESS_DEFAULT}
           />
         );
+      // Defaults to SEVERITIES.INFO
       default:
         return (
           <Icon
@@ -53,10 +54,33 @@ export const Banner = ({
         );
     }
   };
+
+  const severityBackground = () => {
+    switch (severity) {
+      case SEVERITIES.DANGER:
+        return COLORS.ERROR_MUTED;
+      case SEVERITIES.WARNING:
+        return COLORS.WARNING_MUTED;
+      case SEVERITIES.SUCCESS:
+        return COLORS.SUCCESS_MUTED;
+      // Defaults to SEVERITIES.INFO
+      default:
+        return COLORS.PRIMARY_MUTED;
+    }
+  };
+
   return (
     <BannerBase
       startAccessory={severityIcon()}
-      className={classnames('mm-banner', className)}
+      backgroundColor={severityBackground()}
+      className={classnames(
+        'mm-banner',
+        {
+          [`mm-banner--severity-${severity}`]:
+            Object.values(BANNER_SEVERITIES).includes(severity),
+        },
+        className,
+      )}
       {...props}
     >
       {children}

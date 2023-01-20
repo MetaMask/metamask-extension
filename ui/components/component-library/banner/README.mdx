@@ -7,7 +7,7 @@ import { Banner } from './banner';
 
 The `Banner` is the base component for banners
 
-<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+<Canvas>
   <Story id="ui-components-component-library-banner-banner-stories-js--default-story" />
 </Canvas>
 
@@ -17,11 +17,46 @@ The `Banner` accepts all props below as well as all [Box](/docs/ui-components-ui
 
 <ArgsTable of={Banner} />
 
+### Severity
+
+Use the `severity` prop and the `SEVERITIES` object from `./ui/helpers/constants/design-system.js` to change the context of `Banner`.
+
+Optional: `BANNER_SEVERITIES` from `./banner` object can be used instead of `SEVERITIES`.
+
+Possible options:
+
+- `SEVERITIES.INFO` Default
+- `SEVERITIES.WARNING`
+- `SEVERITIES.DANGER`
+- `SEVERITIES.SUCCESS`
+
+<Canvas>
+  <Story id="ui-components-component-library-banner-banner-stories-js--severity" />
+</Canvas>
+
+```jsx
+import { Banner } from '../../component-library';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
+
+<Banner title="Info">
+  This is a demo of severity Info.
+</Banner>
+<Banner severity={SEVERITIES.WARNING} title="Warning">
+  This is a demo of severity Warning.
+</Banner>
+<Banner severity={SEVERITIES.DANGER} title="Danger">
+  This is a demo of severity Danger.
+</Banner>
+<Banner severity={SEVERITIES.SUCCESS} title="Success">
+  This is a demo of severity Success.
+</Banner>
+```
+
 ### Title
 
 Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
 
-<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+<Canvas>
   <Story id="ui-components-component-library-banner-banner-stories-js--title" />
 </Canvas>
 
@@ -37,7 +72,7 @@ import { Banner } from '../../component-library';
 
 The `children` is the description area of the `Banner` that can be a text or react node. Description shouldn't repeat title and only 1-3 lines.
 
-<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+<Canvas>
   <Story id="ui-components-component-library-banner-banner-stories-js--children" />
 </Canvas>
 
@@ -57,7 +92,7 @@ import { Banner } from '../../component-library';
 
 Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/ui-components-component-library-button-link-button-link-stories-js--default-story) for the action
 
-<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+<Canvas>
   <Story id="ui-components-component-library-banner-banner-stories-js--action-button" />
 </Canvas>
 
@@ -85,7 +120,7 @@ Use the `onClose` prop to pass a function to the close button. The close button 
 
 Additional props can be passed to the close button with `closeButtonProps`
 
-<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+<Canvas>
   <Story id="ui-components-component-library-banner-banner-stories-js--on-close" />
 </Canvas>
 
@@ -97,25 +132,5 @@ import { Banner } from '../../component-library';
   onClose={() => console.log('close button clicked')}
 >
   Click the close button icon to hide this notifcation
-</Banner>;
-```
-
-### Start Accessory
-
-Use the `startAccessory` prop to add components such as icons or fox image to the start (default: left) of the `Banner` content
-
-<Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-banner-stories-js--start-accessory" />
-</Canvas>
-
-```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
-import { Banner, Icon, ICON_NAMES } from '../../component-library';
-
-<Banner
-  title="Start accessory demo"
-  startAccessory={<Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />}
->
-  The info icon on the left is passed through the startAccessory prop
 </Banner>;
 ```
