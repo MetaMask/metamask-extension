@@ -92,17 +92,25 @@ function setupMockRpcBlockResponses({
   networkType = NETWORK_TYPES.RPC,
   block = BLOCK,
 } = {}) {
-  if (networkType === NETWORK_TYPES.RPC) {
-    nock('http://localhost:8545')
-      .persist()
-      .post(/.*/u)
-      .reply(200, () => JSON.stringify(constructSuccessfulRpcResponse(block)));
-  } else {
-    nock(`https://${networkType}.infura.io`)
-      .persist()
-      .post(`/v3/${defaultControllerOptions.infuraProjectId}`)
-      .reply(200, () => JSON.stringify(constructSuccessfulRpcResponse(block)));
-  }
+  const rpcUrl =
+    networkType === NETWORK_TYPES.RPC
+      ? 'http://localhost:8545/'
+      : `https://${networkType}.infura.io/v3/${defaultControllerOptions.infuraProjectId}`;
+  const { origin, pathname } = new URL(rpcUrl);
+
+  nock(origin)
+    .persist()
+    .post(
+      pathname,
+      (body) =>
+        body.method === 'eth_getBlockByNumber' &&
+        body.params[0] === block.number,
+    )
+    .reply(200, () => JSON.stringify(constructSuccessfulRpcResponse(block)))
+    .post(pathname, (body) => body.method === 'eth_blockNumber')
+    .reply(200, () =>
+      JSON.stringify(constructSuccessfulRpcResponse(block.number)),
+    );
 }
 
 describe('NetworkController', () => {
