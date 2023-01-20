@@ -31,7 +31,9 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      toggleEthSign: false,
+      rpcMethodPreferences: {
+        ethSign: false,
+      },
       useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used

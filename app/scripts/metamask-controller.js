@@ -3005,11 +3005,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnsignedMessage(msgParams, req) {
-    const { toggleEthSign } = this.preferencesController.store.getState();
+    const { rpcMethodPreferences } = this.preferencesController.store.getState();
+    const { ethSign } = rpcMethodPreferences;
     const data = normalizeMsgData(msgParams.data);
     let promise;
 
-    if(!toggleEthSign) {
+    if(!ethSign) {
       throw ethErrors.rpc.methodNotFound("eth_sign has been disabled. You must enabled it in the advanced settings");
     }
 
