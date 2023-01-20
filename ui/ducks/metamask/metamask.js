@@ -15,7 +15,7 @@ import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
-import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
@@ -433,7 +433,7 @@ export function getLedgerTransportType(state) {
 export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
-  return keyring?.type === KEYRING_TYPES.LEDGER;
+  return keyring?.type === HardwareKeyringTypes.ledger;
 }
 
 /**
@@ -445,6 +445,6 @@ export function isAddressLedger(state, address) {
  */
 export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
-    return kr.type === KEYRING_TYPES.LEDGER;
+    return kr.type === HardwareKeyringTypes.ledger;
   });
 }
