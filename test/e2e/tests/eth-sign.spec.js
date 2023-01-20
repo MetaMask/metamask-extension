@@ -33,7 +33,7 @@ describe('Eth sign', function () {
         await driver.clickElement('#ethSign')
 
         const ethSignButton = await driver.findElement('#ethSign');
-        const exceptionString = "ERROR: ETH_SIGN HAS BEEN DISABLED. YOU MUST ENABLED IT IN THE ADVANCED SETTINGS";
+        const exceptionString = "ERROR: ETH_SIGN HAS BEEN DISABLED. YOU MUST ENABLE IT IN THE ADVANCED SETTINGS";
 
         assert.equal(await ethSignButton.getText(), exceptionString);
       });

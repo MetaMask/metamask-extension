@@ -562,15 +562,25 @@ export default class PreferencesController {
   }
 
   /**
-   * A setter for the user preference to enable/disable eth_sign method
+   * A setter for the user preference to enable/disable rpc methods
    *
-   * @param {bool} toggleEthSign - User preference for eth_sign.
+   * @param {string} methodName - The RPC method name to change the setting of
+   * @param {bool} isEnabled - true to enable the rpc method
    */
-  async setToggleEthSign(toggleEthSign) {
-    await this.store.updateState({
-      toggleEthSign
-    });
+  async setRpcMethodPreference(methodName, isEnabled) {
+    const currentRpcMethodPreferences = this.store.getState().rpcMethodPreferences;
+    const updatedRpcMethodPreferences = {
+      ...currentRpcMethodPreferences,
+      [methodName]: isEnabled,
+    };
+
+    this.store.updateState({ rpcMethodPreferences: updatedRpcMethodPreferences });
   }
+
+  getRpcMethodPreferences() {
+    return this.store.getState().rpcMethodPreferences;
+  }
+
   //
   // PRIVATE METHODS
   //

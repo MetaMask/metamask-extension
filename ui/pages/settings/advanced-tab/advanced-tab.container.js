@@ -11,7 +11,8 @@ import {
   setUseNonceField,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
-  setToggleEthSign,
+  setRpcMethodPreference,
+  getRpcMethodPreferences,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -26,9 +27,9 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
+    rpcMethodPreferences,
     useNonceField,
     ledgerTransportType,
-    toggleEthSign,
     dismissSeedBackUpReminder,
   } = metamask;
   const {
@@ -49,8 +50,8 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ledgerTransportType,
     dismissSeedBackUpReminder,
-    toggleEthSign,
     userHasALedgerAccount,
+    rpcMethodPreferences
   };
 };
 
@@ -81,9 +82,9 @@ export const mapDispatchToProps = (dispatch) => {
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setToggleEthSign: (enabledOrDisabled) => {
-      return dispatch(setToggleEthSign(enabledOrDisabled));
-    },
+    setRpcMethodPreference: (methodName, isEnabled) => {
+      return dispatch(setRpcMethodPreference(methodName, isEnabled));
+    }
   };
 };
 

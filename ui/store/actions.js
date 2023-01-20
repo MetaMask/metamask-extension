@@ -3229,10 +3229,18 @@ export function setDismissSeedBackUpReminder(value) {
   };
 }
 
-export function setToggleEthSign(value) {
+export function setRpcMethodPreference(methodName, value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await submitRequestToBackground('setToggleEthSign', [value]);
+    await submitRequestToBackground('setRpcMethodPreference', [methodName, value]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function getRpcMethodPreferences() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('getRpcMethodPreferences', []);
     dispatch(hideLoadingIndication());
   };
 }

@@ -1784,8 +1784,12 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setDismissSeedBackUpReminder.bind(
           preferencesController,
         ),
-      setToggleEthSign:
-        preferencesController.setToggleEthSign.bind(
+      setRpcMethodPreference:
+        preferencesController.setRpcMethodPreference.bind(
+          preferencesController,
+        ),
+      getRpcMethodPreferences: 
+        preferencesController.getRpcMethodPreferences.bind(
           preferencesController,
         ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
@@ -3011,7 +3015,7 @@ export default class MetamaskController extends EventEmitter {
     let promise;
 
     if(!ethSign) {
-      throw ethErrors.rpc.methodNotFound("eth_sign has been disabled. You must enabled it in the advanced settings");
+      throw ethErrors.rpc.methodNotFound("eth_sign has been disabled. You must enable it in the advanced settings");
     }
 
     // 64 hex + "0x" at the beginning
