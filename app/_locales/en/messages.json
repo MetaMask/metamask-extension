@@ -1094,12 +1094,6 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
-  "toggleEthSignField": {
-    "message": "Toggle eth_sign requests"
-  },
-  "toggleEthSignDescriptionField": {
-    "message": "Turn this on to let dapps request your signature using eth_sign requests. eth_sign is an open-ended signing method that lets you sign an arbitrary hash, making it a dangerous phishing risk. Only sign eth_sign requests if you can read what you are signing and trust the origin of the request."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -4128,6 +4122,12 @@
   "toAddress": {
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleEthSignDescriptionField": {
+    "message": "Turn this on to let dapps request your signature using eth_sign requests. eth_sign is an open-ended signing method that lets you sign an arbitrary hash, making it a dangerous phishing risk. Only sign eth_sign requests if you can read what you are signing and trust the origin of the request."
+  },
+  "toggleEthSignField": {
+    "message": "Toggle eth_sign requests"
   },
   "toggleTestNetworks": {
     "message": "$1 test networks",
