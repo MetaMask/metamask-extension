@@ -34,6 +34,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
   'endowment:long-running': 'endowment:long-running',
+  'endowment:webhid': 'endowment:webhid',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
