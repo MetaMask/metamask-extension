@@ -35,7 +35,6 @@ import {
 import {
   bnToHex,
   decGWEIToHexWEI,
-  decimalToHex,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -58,6 +57,7 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -1463,7 +1463,7 @@ export default class TransactionController extends EventEmitter {
       ...normalizedTxParams,
       type,
       gasLimit: normalizedTxParams.gas,
-      chainId: addHexPrefix(decimalToHex(chainId)),
+      chainId: new Numeric(chainId, 10).toPrefixedHexString(),
     };
     // sign tx
     const fromAddress = txParams.from;

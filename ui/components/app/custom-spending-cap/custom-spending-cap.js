@@ -24,14 +24,11 @@ import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
-  conversionGreaterThan,
-  conversionLTE,
-} from '../../../../shared/modules/conversion.utils';
-import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
   DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
@@ -58,20 +55,16 @@ export default function CustomSpendingCap({
   };
 
   const decConversionGreaterThan = (tokenValue, tokenBalance) => {
-    return conversionGreaterThan(
-      { value: Number(replaceCommaToDot(tokenValue)), fromNumericBase: 'dec' },
-      { value: Number(tokenBalance), fromNumericBase: 'dec' },
+    return new Numeric(Number(replaceCommaToDot(tokenValue)), 10).greaterThan(
+      Number(tokenBalance),
+      10,
     );
   };
 
   const getInputTextLogic = (inputNumber) => {
     if (
-      conversionLTE(
-        {
-          value: Number(replaceCommaToDot(inputNumber)),
-          fromNumericBase: 'dec',
-        },
-        { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+      new Numeric(Number(replaceCommaToDot(inputNumber)), 10).lessThanOrEqualTo(
+        new Numeric(Number(currentTokenBalance), 10),
       )
     ) {
       return {
