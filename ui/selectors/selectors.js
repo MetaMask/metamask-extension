@@ -1139,6 +1139,10 @@ export function getNewCollectibleAddedMessage(state) {
   return state.appState.newCollectibleAddedMessage;
 }
 
+export function getRemoveCollectibleMessage(state) {
+  return state.appState.removeCollectibleMessage;
+}
+
 /**
  * To retrieve the name of the new Network added using add network form
  *
