@@ -43,12 +43,6 @@ describe('Sentry errors', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
         // Trigger error
-        // await driver.clickElement('[data-testid="eth-overview-send"]');
-        // await driver.fill(
-        //   'input[placeholder="Search, public address (0x), or ENS"]',
-        //   '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-        // );
-        // await driver.fill('input[placeholder="0"]', `-01`);
         driver.executeScript('window.stateHooks.throwTestError()');
         // Wait for Sentry request
         await driver.wait(async () => {
