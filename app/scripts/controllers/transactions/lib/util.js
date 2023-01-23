@@ -221,7 +221,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
         }
         break;
       case 'data':
-        validateInputData(txParams, value);
+        validateInputData(value);
         break;
       default:
         ensureFieldIsString(txParams, key);
