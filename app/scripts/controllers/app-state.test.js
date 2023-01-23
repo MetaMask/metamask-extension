@@ -22,7 +22,9 @@ describe('AppStateController', function () {
         },
       });
       const date = new Date();
+
       appStateController.setOutdatedBrowserWarningLastShown(date);
+
       expect(
         appStateController.store.getState().outdatedBrowserWarningLastShown,
       ).toStrictEqual(date);
