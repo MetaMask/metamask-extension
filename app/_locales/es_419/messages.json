@@ -51,10 +51,6 @@
     "message": "Leí y estoy de acuerdo con $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 puede acceder y gastar hasta este importe máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara..."
   },
@@ -236,9 +232,6 @@
   },
   "approved": {
     "message": "Aprobado"
-  },
-  "approvedAmountWithColon": {
-    "message": "Monto aprobado:"
   },
   "asset": {
     "message": "Activo"

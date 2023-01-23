@@ -110,10 +110,6 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 may access and spend up to this max amount",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 may access and spend this asset",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Approved"
-  },
-  "approvedAmountWithColon": {
-    "message": "Approved amount:"
   },
   "approvedAsset": {
     "message": "Approved asset"
@@ -1722,12 +1715,6 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Improved token allowance experience"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Turn this on to go through the improved token allowance experience whenever a dapp requests an ERC20 approve"
-  },
   "inYourSettings": {
     "message": "in your Settings"
   },
@@ -2419,15 +2406,6 @@
   },
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
-  },
-  "notifications16ActionText": {
-    "message": "Try it out here"
-  },
-  "notifications16Description": {
-    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
-  },
-  "notifications16Title": {
-    "message": "Improved token allowance experience"
   },
   "notifications17ActionText": {
     "message": "Show Security & Privacy settings"

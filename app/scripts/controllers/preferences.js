@@ -65,7 +65,6 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
-      improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
       theme: THEME_TYPE.OS,
       ...opts.initState,
@@ -191,17 +190,6 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `improvedTokenAllowanceEnabled` property
-   *
-   * @param improvedTokenAllowanceEnabled
-   */
-  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
-    this.store.updateState({
-      improvedTokenAllowanceEnabled,
-    });
   }
 
   /**
