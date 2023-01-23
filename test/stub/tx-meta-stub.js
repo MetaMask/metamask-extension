@@ -1,7 +1,7 @@
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../shared/constants/transaction';
 
 export const txMetaStub = {
@@ -12,9 +12,9 @@ export const txMetaStub = {
       id: 405984854664302,
       loadingDefaults: true,
       metamaskNetworkId: '5',
-      status: TRANSACTION_STATUSES.UNAPPROVED,
+      status: TransactionStatus.unapproved,
       time: 1572395156620,
-      type: TRANSACTION_TYPES.SIMPLE_SEND,
+      type: TransactionType.simpleSend,
       txParams: {
         from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         gas: GAS_LIMITS.SIMPLE,
@@ -47,7 +47,7 @@ export const txMetaStub = {
         op: 'replace',
         path: '/status',
         timestamp: 1572395158240,
-        value: TRANSACTION_STATUSES.APPROVED,
+        value: TransactionStatus.approved,
       },
     ],
     [
@@ -113,7 +113,7 @@ export const txMetaStub = {
         op: 'replace',
         path: '/status',
         timestamp: 1572395158281,
-        value: TRANSACTION_STATUSES.SIGNED,
+        value: TransactionStatus.signed,
       },
       {
         op: 'add',
@@ -148,7 +148,7 @@ export const txMetaStub = {
         op: 'replace',
         path: '/status',
         timestamp: 1572395158576,
-        value: TRANSACTION_STATUSES.SUBMITTED,
+        value: TransactionStatus.submitted,
       },
     ],
     [
@@ -192,10 +192,10 @@ export const txMetaStub = {
   rawTx:
     '0xf86204831e848082520894f231d46dd78806e1dd93442cf33c7671f853874880802ca05f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57a00259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
   s: '0x0259b52ee8c58baaa385fb05c3f96116e58de89bcc165cb3bfdfc708672fed8a',
-  status: TRANSACTION_STATUSES.SUBMITTED,
+  status: TransactionStatus.submitted,
   submittedTime: 1572395158570,
   time: 1572395156620,
-  type: TRANSACTION_TYPES.SIMPLE_SEND,
+  type: TransactionType.simpleSend,
   txParams: {
     from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
     gas: GAS_LIMITS.SIMPLE,

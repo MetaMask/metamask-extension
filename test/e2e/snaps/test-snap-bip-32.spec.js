@@ -36,6 +36,7 @@ describe('Test Snap bip-32', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectBip32');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -78,6 +79,9 @@ describe('Test Snap bip-32', function () {
           text: 'Confirm',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // switch back to test-snaps window
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);

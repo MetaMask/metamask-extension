@@ -89,30 +89,6 @@ describe('Confirm Transaction utils', () => {
     });
   });
 
-  describe('getValueFromWeiHex', () => {
-    it('should get the transaction amount in ETH', () => {
-      const ethTransactionAmount = utils.getValueFromWeiHex({
-        value: '0xde0b6b3a7640000',
-        toCurrency: 'ETH',
-        conversionRate: 468.58,
-        numberOfDecimals: 6,
-      });
-
-      expect(ethTransactionAmount).toStrictEqual('1');
-    });
-
-    it('should get the transaction amount in fiat', () => {
-      const fiatTransactionAmount = utils.getValueFromWeiHex({
-        value: '0xde0b6b3a7640000',
-        toCurrency: 'usd',
-        conversionRate: 468.58,
-        numberOfDecimals: 2,
-      });
-
-      expect(fiatTransactionAmount).toStrictEqual('468.58');
-    });
-  });
-
   describe('getTransactionFee', () => {
     it('should get the transaction fee in ETH', () => {
       const ethTransactionFee = utils.getTransactionFee({

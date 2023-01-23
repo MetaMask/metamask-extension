@@ -7,7 +7,7 @@ const [MOCK_PRIMARY_IDENTITY] = Object.values(testData.metamask.identities);
 
 export default {
   title: 'Components/App/SignatureRequest',
-  id: __filename,
+
   component: SignatureRequest,
   parameters: {
     docs: {

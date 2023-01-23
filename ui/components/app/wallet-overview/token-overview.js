@@ -34,7 +34,7 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 import DepositPopover from '../deposit-popover';
 import WalletOverview from './wallet-overview';
 
@@ -146,7 +146,7 @@ const TokenOverview = ({ className, token }) => {
                 try {
                   await dispatch(
                     startNewDraftTransaction({
-                      type: ASSET_TYPES.TOKEN,
+                      type: AssetType.token,
                       details: token,
                     }),
                   );

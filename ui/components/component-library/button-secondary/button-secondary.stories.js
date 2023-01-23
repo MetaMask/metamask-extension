@@ -30,7 +30,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/ButtonSecondary',
-  id: __filename,
+
   component: ButtonSecondary,
   parameters: {
     docs: {
@@ -73,7 +73,6 @@ export default {
       control: 'object',
       table: { category: 'button base props' },
     },
-
     loading: {
       control: 'boolean',
       table: { category: 'button base props' },

@@ -34,6 +34,7 @@ export default function AddNetworkModal() {
       </Box>
       <NetworksForm
         addNewNetwork
+        restrictHeight
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}
