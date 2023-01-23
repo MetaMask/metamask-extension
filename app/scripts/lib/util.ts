@@ -1,6 +1,6 @@
-import browser from 'webextension-polyfill';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
+import { AccessList } from '@ethereumjs/tx';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {
@@ -15,7 +15,10 @@ import {
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { TransactionEnvelopeType } from '../../../shared/constants/transaction';
+import {
+  TransactionEnvelopeType,
+  TransactionMeta,
+} from '../../../shared/constants/transaction';
 
 /**
  * @see {@link getEnvironmentType}
@@ -35,15 +38,15 @@ const getEnvironmentTypeMemo = memoize((url) => {
 /**
  * Returns the window type for the application
  *
- *  - `popup` refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
- *  - `fullscreen` refers to the main browser window
- *  - `notification` refers to the popup that appears in its own window when taking action outside of metamask
- *  - `background` refers to the background page
+ * - `popup` refers to the extension opened through the browser app icon (in top right corner in chrome and firefox)
+ * - `fullscreen` refers to the main browser window
+ * - `notification` refers to the popup that appears in its own window when taking action outside of metamask
+ * - `background` refers to the background page
  *
  * NOTE: This should only be called on internal URLs.
  *
- * @param {string} [url] - the URL of the window
- * @returns {string} the environment ENUM
+ * @param [url] - the URL of the window
+ * @returns the environment ENUM
  */
 const getEnvironmentType = (url = window.location.href) =>
   getEnvironmentTypeMemo(url);
@@ -51,7 +54,7 @@ const getEnvironmentType = (url = window.location.href) =>
 /**
  * Returns the platform (browser) where the extension is running.
  *
- * @returns {string} the platform ENUM
+ * @returns the platform ENUM
  */
 const getPlatform = () => {
   const { navigator } = window;
@@ -72,54 +75,38 @@ const getPlatform = () => {
 /**
  * Converts a hex string to a BN object
  *
- * @param {string} inputHex - A number represented as a hex string
- * @returns {object} A BN object
+ * @param inputHex - A number represented as a hex string
+ * @returns A BN object
  */
-function hexToBn(inputHex) {
+function hexToBn(inputHex: string) {
   return new BN(stripHexPrefix(inputHex), 16);
 }
 
 /**
  * Used to multiply a BN by a fraction
  *
- * @param {BN} targetBN - The number to multiply by a fraction
- * @param {number|string} numerator - The numerator of the fraction multiplier
- * @param {number|string} denominator - The denominator of the fraction multiplier
- * @returns {BN} The product of the multiplication
+ * @param targetBN - The number to multiply by a fraction
+ * @param numerator - The numerator of the fraction multiplier
+ * @param denominator - The denominator of the fraction multiplier
+ * @returns The product of the multiplication
  */
-function BnMultiplyByFraction(targetBN, numerator, denominator) {
+function BnMultiplyByFraction(
+  targetBN: BN,
+  numerator: number,
+  denominator: number,
+) {
   const numBN = new BN(numerator);
   const denomBN = new BN(denominator);
   return targetBN.mul(numBN).div(denomBN);
 }
 
 /**
- * Returns an Error if extension.runtime.lastError is present
- * this is a workaround for the non-standard error object that's used
- *
- * @deprecated use checkForLastError in shared/modules/browser-runtime.utils.js
- * @returns {Error|undefined}
- */
-function checkForError() {
-  const { lastError } = browser.runtime;
-  if (!lastError) {
-    return undefined;
-  }
-  // if it quacks like an Error, its an Error
-  if (lastError.stack && lastError.message) {
-    return lastError;
-  }
-  // repair incomplete error object (eg chromium v77)
-  return new Error(lastError.message);
-}
-
-/**
  * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
  *
- * @param {string} str - The string to prefix.
- * @returns {string} The prefixed string.
+ * @param str - The string to prefix.
+ * @returns The prefixed string.
  */
-const addHexPrefix = (str) => {
+const addHexPrefix = (str: string) => {
   if (typeof str !== 'string' || str.match(/^-?0x/u)) {
     return str;
   }
@@ -135,10 +122,10 @@ const addHexPrefix = (str) => {
   return `0x${str}`;
 };
 
-function getChainType(chainId) {
+function getChainType(chainId: string) {
   if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
-  } else if (TEST_CHAINS.includes(chainId)) {
+  } else if ((TEST_CHAINS as string[]).includes(chainId)) {
     return 'testnet';
   }
   return 'custom';
@@ -147,11 +134,11 @@ function getChainType(chainId) {
 /**
  * Checks if the alarmname exists in the list
  *
- * @param {Array} alarmList
+ * @param alarmList
  * @param alarmName
  * @returns
  */
-function checkAlarmExists(alarmList, alarmName) {
+function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
   return alarmList.some((alarm) => alarm.name === alarmName);
 }
 
@@ -160,7 +147,6 @@ export {
   getEnvironmentType,
   hexToBn,
   BnMultiplyByFraction,
-  checkForError,
   addHexPrefix,
   getChainType,
   checkAlarmExists,
@@ -178,8 +164,8 @@ export const generateRandomId = () => {
   return result;
 };
 
-export const isValidDate = (d) => {
-  return d instanceof Date && !isNaN(d);
+export const isValidDate = (d: Date | number) => {
+  return d instanceof Date;
 };
 
 /**
@@ -194,18 +180,26 @@ export const isValidDate = (d) => {
  * @property {() => void} reject - A function that rejects the Promise.
  */
 
+interface DeferredPromise {
+  promise: Promise<any>;
+  resolve?: () => void;
+  reject?: () => void;
+}
+
 /**
  * Create a defered Promise.
  *
- * @returns {DeferredPromise} A deferred Promise.
+ * @returns A deferred Promise.
  */
-export function deferredPromise() {
-  let resolve;
-  let reject;
-  const promise = new Promise((innerResolve, innerReject) => {
-    resolve = innerResolve;
-    reject = innerReject;
-  });
+export function deferredPromise(): DeferredPromise {
+  let resolve: DeferredPromise['resolve'];
+  let reject: DeferredPromise['reject'];
+  const promise = new Promise<void>(
+    (innerResolve: () => void, innerReject: () => void) => {
+      resolve = innerResolve;
+      reject = innerReject;
+    },
+  );
   return { promise, resolve, reject };
 }
 
@@ -216,15 +210,18 @@ export function deferredPromise() {
  * in as the previous value on the first invocation of the returned method.
  *
  * @template A - The type of the compared value.
- * @param {(prevValue: A, nextValue: A) => void} comparator - A method to compare
+ * @param comparator - A method to compare
  * the previous and next values.
- * @param {A} [initialValue] - The initial value to supply to prevValue
+ * @param [initialValue] - The initial value to supply to prevValue
  * on first call of the method.
  */
-export function previousValueComparator(comparator, initialValue) {
+export function previousValueComparator<A>(
+  comparator: (previous: A, next: A) => boolean,
+  initialValue: A,
+) {
   let first = true;
-  let cache;
-  return (value) => {
+  let cache: A;
+  return (value: A) => {
     try {
       if (first) {
         first = false;
@@ -237,14 +234,37 @@ export function previousValueComparator(comparator, initialValue) {
   };
 }
 
-export function addUrlProtocolPrefix(urlString) {
+export function addUrlProtocolPrefix(urlString: string) {
   if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
     return `https://${urlString}`;
   }
   return urlString;
 }
 
-export function formatTxMetaForRpcResult(txMeta) {
+interface FormattedTransactionMeta {
+  blockHash: string | null;
+  blockNumber: string | null;
+  from: string;
+  to: string;
+  hash: string;
+  nonce: string;
+  input: string;
+  v?: string;
+  r?: string;
+  s?: string;
+  value: string;
+  gas: string;
+  gasPrice?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
+  type: TransactionEnvelopeType;
+  accessList: AccessList | null;
+  transactionIndex: string | null;
+}
+
+export function formatTxMetaForRpcResult(
+  txMeta: TransactionMeta,
+): FormattedTransactionMeta {
   const { r, s, v, hash, txReceipt, txParams } = txMeta;
   const {
     to,
@@ -259,7 +279,7 @@ export function formatTxMetaForRpcResult(txMeta) {
     maxPriorityFeePerGas,
   } = txParams;
 
-  const formattedTxMeta = {
+  const formattedTxMeta: FormattedTransactionMeta = {
     v,
     r,
     s,
@@ -267,23 +287,25 @@ export function formatTxMetaForRpcResult(txMeta) {
     gas,
     from,
     hash,
-    nonce,
+    nonce: `${nonce}`,
     input: data || '0x',
     value: value || '0x0',
     accessList: accessList || null,
     blockHash: txReceipt?.blockHash || null,
     blockNumber: txReceipt?.blockNumber || null,
     transactionIndex: txReceipt?.transactionIndex || null,
+    type:
+      maxFeePerGas && maxPriorityFeePerGas
+        ? TransactionEnvelopeType.feeMarket
+        : TransactionEnvelopeType.legacy,
   };
 
   if (maxFeePerGas && maxPriorityFeePerGas) {
     formattedTxMeta.gasPrice = maxFeePerGas;
     formattedTxMeta.maxFeePerGas = maxFeePerGas;
     formattedTxMeta.maxPriorityFeePerGas = maxPriorityFeePerGas;
-    formattedTxMeta.type = TransactionEnvelopeType.feeMarket;
   } else {
     formattedTxMeta.gasPrice = gasPrice;
-    formattedTxMeta.type = TransactionEnvelopeType.legacy;
   }
 
   return formattedTxMeta;
