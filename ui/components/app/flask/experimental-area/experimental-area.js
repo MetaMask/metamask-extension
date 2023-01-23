@@ -58,8 +58,7 @@ MMMMMMMMMMMMMMMMMm/....../mMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMmmmmmmmmMMMMMMMMMMMMMMMMMM`);
 
 /* eslint-disable no-irregular-whitespace */
-const EXPERIMENTAL_AREA =
-  lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀  
+const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀  
   █▄▄ █▀█ █▄█ ░█░ █ █▄█ █░▀█ ▄  
   
   █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░  
