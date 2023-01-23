@@ -1202,6 +1202,7 @@ export const signAndSendTransactions = (
         delete approveTxParams.gasPrice;
       }
       const approveTxMeta = await addUnapprovedTransaction(
+        undefined,
         { ...approveTxParams, amount: '0x0' },
         TransactionType.swapApproval,
       );
@@ -1222,6 +1223,7 @@ export const signAndSendTransactions = (
     }
 
     const tradeTxMeta = await addUnapprovedTransaction(
+      undefined,
       usedTradeTxParams,
       TransactionType.swap,
     );
