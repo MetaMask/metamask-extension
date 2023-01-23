@@ -60,8 +60,6 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
-import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
 import browser from 'webextension-polyfill';
 import {
   AssetType,
@@ -2583,10 +2581,7 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    const recoveredIndices = Array.from(
-      new Uint16Array(new Uint8Array(keyring.mnemonic).buffer),
-    );
-    return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
+    return keyring.mnemonic;
   }
 
   //
