@@ -35,11 +35,6 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/constants/error-utils.test.js',
-    '<rootDir>/ui/**/*.test.js',
-    '<rootDir>/shared/**/*.test.js',
-    '<rootDir>/app/scripts/lib/**/*.test.js',
-    '<rootDir>/app/scripts/migrations/*.test.js',
-    '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
