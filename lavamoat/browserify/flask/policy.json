@@ -1315,7 +1315,7 @@
       },
       "packages": {
         "@metamask/post-message-stream>readable-stream": true,
-        "eth-block-tracker>@metamask/utils": true
+        "@metamask/utils": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -1405,21 +1405,12 @@
     },
     "@metamask/rpc-methods>@metamask/key-tree": {
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@metamask/scure-bip39": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/scure-bip39": true,
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
         "@metamask/utils": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@metamask/scure-bip39": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
@@ -2894,18 +2885,6 @@
         "eth-block-tracker>pify": true,
         "eth-query>json-rpc-random-id": true,
         "json-rpc-engine>@metamask/safe-event-emitter": true
-      }
-    },
-    "eth-block-tracker>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/snaps-ui>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "eth-ens-namehash": {
