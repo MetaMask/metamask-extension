@@ -17,9 +17,14 @@ export const Popover = ({ children, className, ...props }) => {
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
-  });
+  const { styles, attributes } = usePopper(
+    referenceElement,
+    popperElement,
+    { placement: 'auto' },
+    {
+      modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
+    },
+  );
   return (
     <>
       <button type="button" ref={setReferenceElement}>
