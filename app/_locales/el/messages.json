@@ -110,10 +110,6 @@
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 μπορεί να έχει πρόσβαση και να ξοδέψει μέχρι αυτό το μέγιστο ποσό",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "Το $1 ίσως αποκτήσει πρόσβαση και δαπανήσει αυτό το περιουσιακό στοιχείο",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Εγκρίθηκε"
-  },
-  "approvedAmountWithColon": {
-    "message": "Εγκεκριμένο ποσό:"
   },
   "approvedAsset": {
     "message": "Εγκεκριμένο περιουσιακό στοιχείο"
@@ -1709,12 +1702,6 @@
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Βελτιωμένη εμπειρία χορήγησης tokens"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Ενεργοποιήστε το για να μεταβείτε στη βελτιωμένη εμπειρία χορήγησης tokens κάθε φορά που μια αποκεντρωμένη εφαρμογή ζητά έγκριση ERC20"
-  },
   "inYourSettings": {
     "message": "στις Ρυθμίσεις σας"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Η συγχώνευση στο Ethereum είναι εδώ!"
-  },
-  "notifications16ActionText": {
-    "message": "Δοκιμάστε το εδώ"
-  },
-  "notifications16Description": {
-    "message": "Επανασχεδιάσαμε την επιβεβαίωση χορήγησης tokens για να σας βοηθήσουμε να λάβετε πιο συνειδητές αποφάσεις."
-  },
-  "notifications16Title": {
-    "message": "Βελτιωμένη εμπειρία χορήγησης tokens"
   },
   "notifications17ActionText": {
     "message": "Εμφάνιση ρυθμίσεων Ασφάλειας & Απορρήτου"

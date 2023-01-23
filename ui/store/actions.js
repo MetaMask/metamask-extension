@@ -880,6 +880,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
  * confirmation page. Returns the newly created txMeta in case additional logic
  * should be applied to the transaction after creation.
  *
+ * @param method
  * @param {import('../../shared/constants/transaction').TxParams} txParams -
  *  The transaction parameters
  * @param {import(
@@ -890,6 +891,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
 export function addUnapprovedTransactionAndRouteToConfirmationPage(
+  method,
   txParams,
   type,
   sendFlowHistory,
@@ -900,7 +902,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
       log.debug('background.addUnapprovedTransaction');
       const txMeta = await submitRequestToBackground(
         'addUnapprovedTransaction',
-        [txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
+        [method, txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
         actionId,
       );
       dispatch(showConfTxPage());
@@ -919,6 +921,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  * This method does not show errors or route to a confirmation page and is
  * used primarily for swaps functionality.
  *
+ * @param method
  * @param {import('../../shared/constants/transaction').TxParams} txParams -
  *  The transaction parameters
  * @param {import(
@@ -926,12 +929,12 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  * ).TransactionType} type - The type of the transaction being added.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
-export async function addUnapprovedTransaction(txParams, type) {
+export async function addUnapprovedTransaction(method, txParams, type) {
   log.debug('background.addUnapprovedTransaction');
   const actionId = generateActionId();
   const txMeta = await submitRequestToBackground(
     'addUnapprovedTransaction',
-    [txParams, ORIGIN_METAMASK, type, undefined, actionId],
+    [method, txParams, ORIGIN_METAMASK, type, undefined, actionId],
     actionId,
   );
   return txMeta;
@@ -3204,6 +3207,13 @@ export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
   };
 }
 
+export function setRemoveCollectibleMessage(removeCollectibleMessage) {
+  return {
+    type: actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE,
+    value: removeCollectibleMessage,
+  };
+}
+
 export function setNewTokensImported(newTokensImported) {
   return {
     type: actionConstants.SET_NEW_TOKENS_IMPORTED,
@@ -3276,11 +3286,11 @@ export function loadingMethodDataFinished() {
 }
 
 export function getContractMethodData(data = '') {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
     const fourBytePrefix = prefixedData.slice(0, 10);
     if (fourBytePrefix.length < 10) {
-      return Promise.resolve({});
+      return {};
     }
     const { knownMethodData } = getState().metamask;
     if (
@@ -3288,25 +3298,25 @@ export function getContractMethodData(data = '') {
       knownMethodData[fourBytePrefix] &&
       Object.keys(knownMethodData[fourBytePrefix]).length !== 0
     ) {
-      return Promise.resolve(knownMethodData[fourBytePrefix]);
+      return knownMethodData[fourBytePrefix];
     }
 
     dispatch(loadingMethodDataStarted());
     log.debug(`loadingMethodData`);
 
-    return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
-      dispatch(loadingMethodDataFinished());
-      callBackgroundMethod(
-        'addKnownMethodData',
-        [fourBytePrefix, { name, params }],
-        (err) => {
-          if (err) {
-            dispatch(displayWarning(err.message));
-          }
-        },
-      );
-      return { name, params };
-    });
+    const { name, params } = await getMethodDataAsync(fourBytePrefix);
+
+    dispatch(loadingMethodDataFinished());
+    callBackgroundMethod(
+      'addKnownMethodData',
+      [fourBytePrefix, { name, params }],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err.message));
+        }
+      },
+    );
+    return { name, params };
   };
 }
 
@@ -3799,20 +3809,6 @@ export function setCollectiblesDetectionNoticeDismissed() {
   return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
     true,
   ]);
-}
-
-export function setImprovedTokenAllowanceEnabled(
-  improvedTokenAllowanceEnabled,
-) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setImprovedTokenAllowanceEnabled', [
-        improvedTokenAllowanceEnabled,
-      ]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
 }
 
 export function setTransactionSecurityCheckEnabled(

@@ -9,12 +9,12 @@ import { TextFieldBase } from './text-field-base';
 The `TextFieldBase` is the base component for all text fields. It should not be used directly. It functions as both a uncontrolled and controlled input.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--default-story" />
+  <Story id="components-componentlibrary-textfieldbase--default-story" />
 </Canvas>
 
 ## Props
 
-The `TextFieldBase` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `TextFieldBase` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={TextFieldBase} />
 
@@ -31,7 +31,7 @@ Possible sizes include:
 Defaults to `md`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--size" />
+  <Story id="components-componentlibrary-textfieldbase--size" />
 </Canvas>
 
 ```jsx
@@ -56,7 +56,7 @@ Possible types include:
 Defaults to `text`.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--type" />
+  <Story id="components-componentlibrary-textfieldbase--type" />
 </Canvas>
 
 ```jsx
@@ -72,7 +72,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `truncate` prop to truncate the text of the the `TextFieldBase`. Defaults to `true`.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--truncate" />
+  <Story id="components-componentlibrary-textfieldbase--truncate" />
 </Canvas>
 
 ```jsx
@@ -87,7 +87,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `leftAccessory` and `rightAccessory` props to add components such as icons or buttons to either side of the `TextFieldBase`.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--left-accessory-right-accessory" />
+  <Story id="components-componentlibrary-textfieldbase--left-accessory-right-accessory" />
 </Canvas>
 
 ```jsx
@@ -143,7 +143,7 @@ import { ButtonIcon, Icon, ICON_NAMES, TextFieldBase } from '../../component-lib
 Use the `inputRef` prop to access the ref of the `<input />` html element of `TextFieldBase`. This is useful for focusing the input from a button or other component.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--input-ref" />
+  <Story id="components-componentlibrary-textfieldbase--input-ref" />
 </Canvas>
 
 ```jsx
@@ -172,7 +172,7 @@ const handleOnChange = (e) => {
 
 Use the `InputComponent` prop change the component used for the input element. This is useful for replacing the base input with a custom input while retaining the functionality of the `TextFieldBase`.
 
-Defaults to the [Text](/docs/ui-components-component-library-text-text-stories-js--default-story) component
+Defaults to the [Text](/docs/components-componentlibrary-text--default-story) component
 
 To function fully the custom component should accept the following props:
 
@@ -203,7 +203,7 @@ To function fully the custom component should accept the following props:
 - `type`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--input-component" />
+  <Story id="components-componentlibrary-textfieldbase--input-component" />
 </Canvas>
 
 ```jsx
@@ -228,7 +228,7 @@ const TextFieldCustomInput = (args) => (
 Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--auto-complete" />
+  <Story id="components-componentlibrary-textfieldbase--auto-complete" />
 </Canvas>
 
 ```jsx
@@ -242,7 +242,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `autoFocus` prop to focus the `TextFieldBase` during the first mount
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--auto-focus" />
+  <Story id="components-componentlibrary-textfieldbase--auto-focus" />
 </Canvas>
 
 ```jsx
@@ -256,7 +256,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `defaultValue` prop to set the default value of the `TextFieldBase`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--default-value" />
+  <Story id="components-componentlibrary-textfieldbase--default-value" />
 </Canvas>
 
 ```jsx
@@ -270,7 +270,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `disabled` prop to set the disabled state of the `TextFieldBase`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--disabled" />
+  <Story id="components-componentlibrary-textfieldbase--disabled" />
 </Canvas>
 
 ```jsx
@@ -284,7 +284,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `error` prop to set the error state of the `TextFieldBase`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--error-story" />
+  <Story id="components-componentlibrary-textfieldbase--error-story" />
 </Canvas>
 
 ```jsx
@@ -298,7 +298,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `maxLength` prop to set the maximum allowed input characters for the `TextFieldBase`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--max-length" />
+  <Story id="components-componentlibrary-textfieldbase--max-length" />
 </Canvas>
 
 ```jsx
@@ -312,7 +312,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `readOnly` prop to set the `TextFieldBase` to read only. When `readOnly` is true `TextFieldBase` will not have a focus state.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--read-only" />
+  <Story id="components-componentlibrary-textfieldbase--read-only" />
 </Canvas>
 
 ```jsx
@@ -326,7 +326,7 @@ import { TextFieldBase } from '../../component-library';
 Use the `required` prop to set the `TextFieldBase` to required. Currently there is no visual difference to the `TextFieldBase` when required.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-base-text-field-base-stories-js--required" />
+  <Story id="components-componentlibrary-textfieldbase--required" />
 </Canvas>
 
 ```jsx

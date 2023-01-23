@@ -66,7 +66,6 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
-      improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
       theme: THEME_TYPE.OS,
       ...opts.initState,
@@ -193,17 +192,6 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `improvedTokenAllowanceEnabled` property
-   *
-   * @param improvedTokenAllowanceEnabled
-   */
-  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
-    this.store.updateState({
-      improvedTokenAllowanceEnabled,
-    });
   }
 
   /**
@@ -385,7 +373,7 @@ export default class PreferencesController {
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}
    */
-  setAccountLabel(account, label) {
+  async setAccountLabel(account, label) {
     if (!account) {
       throw new Error(
         `setAccountLabel requires a valid address, got ${String(account)}`,
@@ -396,7 +384,7 @@ export default class PreferencesController {
     identities[address] = identities[address] || {};
     identities[address].name = label;
     this.store.updateState({ identities });
-    return Promise.resolve(label);
+    return label;
   }
 
   /**
@@ -439,7 +427,7 @@ export default class PreferencesController {
    * @param {string} url - The RPC url to remove from frequentRpcList.
    * @returns {Promise<Array>} Promise resolving to updated frequentRpcList.
    */
-  removeFromFrequentRpcList(url) {
+  async removeFromFrequentRpcList(url) {
     const rpcList = this.getFrequentRpcListDetail();
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === url;
@@ -448,7 +436,7 @@ export default class PreferencesController {
       rpcList.splice(index, 1);
     }
     this.store.updateState({ frequentRpcListDetail: rpcList });
-    return Promise.resolve(rpcList);
+    return rpcList;
   }
 
   /**
@@ -467,7 +455,7 @@ export default class PreferencesController {
    * @param {boolean} activated - Indicates whether or not the UI feature should be displayed
    * @returns {Promise<object>} Promises a new object; the updated featureFlags object.
    */
-  setFeatureFlag(feature, activated) {
+  async setFeatureFlag(feature, activated) {
     const currentFeatureFlags = this.store.getState().featureFlags;
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
@@ -476,7 +464,7 @@ export default class PreferencesController {
 
     this.store.updateState({ featureFlags: updatedFeatureFlags });
 
-    return Promise.resolve(updatedFeatureFlags);
+    return updatedFeatureFlags;
   }
 
   /**
@@ -487,7 +475,7 @@ export default class PreferencesController {
    * @param {boolean} value - Indicates whether or not the preference should be enabled or disabled.
    * @returns {Promise<object>} Promises a new object; the updated preferences object.
    */
-  setPreference(preference, value) {
+  async setPreference(preference, value) {
     const currentPreferences = this.getPreferences();
     const updatedPreferences = {
       ...currentPreferences,
@@ -495,7 +483,7 @@ export default class PreferencesController {
     };
 
     this.store.updateState({ preferences: updatedPreferences });
-    return Promise.resolve(updatedPreferences);
+    return updatedPreferences;
   }
 
   /**
@@ -522,9 +510,9 @@ export default class PreferencesController {
    * @param {string} domain - The new IPFS gateway domain
    * @returns {Promise<string>} A promise of the update IPFS gateway domain
    */
-  setIpfsGateway(domain) {
+  async setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
-    return Promise.resolve(domain);
+    return domain;
   }
 
   /**
