@@ -10,7 +10,7 @@ import {
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import OnboardingFlowSwitch from './onboarding-flow-switch';
 
-describe('Name of the group', () => {
+describe('Onboaring Flow Switch Component', () => {
   it('should route to default route when completed onboarding', () => {
     const mockState = {
       metamask: {

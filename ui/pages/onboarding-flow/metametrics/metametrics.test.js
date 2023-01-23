@@ -16,7 +16,7 @@ jest.mock('../../../store/actions.js', () => ({
     .mockReturnValue(jest.fn((val) => Promise.resolve([val]))),
 }));
 
-describe('Name of the group', () => {
+describe('Onboarding Metametrics Component', () => {
   let mockStore;
 
   const mockState = {

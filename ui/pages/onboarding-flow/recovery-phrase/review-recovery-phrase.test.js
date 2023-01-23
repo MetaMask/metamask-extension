@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => ({
 
 const mockStore = configureMockStore()();
 
-describe('Name of the group', () => {
+describe('Review Recovery Phrase Component', () => {
   const TEST_SEED =
     'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 

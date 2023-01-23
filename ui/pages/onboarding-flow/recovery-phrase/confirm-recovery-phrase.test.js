@@ -11,7 +11,7 @@ jest.mock('../../../store/actions.js', () => ({
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-describe('Name of the group', () => {
+describe('Confirm Recovery Phrase Component', () => {
   const TEST_SEED =
     'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
