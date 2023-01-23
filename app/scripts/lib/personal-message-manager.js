@@ -146,6 +146,9 @@ export default class PersonalMessageManager extends EventEmitter {
     }
     msgParams.data = this.normalizeMsgData(msgParams.data);
 
+    // Validate Message Data
+    this.validateMsgData(msgParams.data);
+
     // check for SIWE message
     const siwe = detectSIWE(msgParams);
     msgParams.siwe = siwe;
@@ -356,5 +359,14 @@ export default class PersonalMessageManager extends EventEmitter {
     }
 
     return bufferToHex(Buffer.from(data, 'utf8'));
+  }
+
+  validateMsgData(hex) {
+    const stripped = stripHexPrefix(hex);
+    const buff = Buffer.from(stripped, 'hex');
+    const dataAsUtf8 = buff.length === 32 ? hex : buff.toString('utf8');
+    if (dataAsUtf8.match(/[\u202E]/)) {
+      throw new Error('Bad string')
+    }
   }
 }

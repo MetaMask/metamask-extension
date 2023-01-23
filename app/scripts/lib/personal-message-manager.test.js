@@ -147,4 +147,32 @@ describe('Personal Message Manager', () => {
       expect(output).toStrictEqual('0x12');
     });
   });
+
+  describe('#addUnapprovedMessage', () => {
+    it('adds a new unapproved message to state and returns the message id', () => {
+      const input = 'hello';
+      const testMsgParams = {
+        "origin": "https://example.com",
+        "data": "0x68656c6c6f",
+      };
+      const output = messageManager.addUnapprovedMessage(testMsgParams);
+      const [result] = messageManager.messages;
+
+      expect(result.msgParams).toDeepEqual(testMsgParams);
+      expect(result.status).toStrictEqual('unapproved');
+      expect(result.type).toStrictEqual(MESSAGE_TYPE.PERSONAL_SIGN);
+
+      expect(typeof output).toStrictEqual('Number');
+    });
+
+    it('throws an error if the message data is invalid', () => {
+      const input = 'hello';
+      const testMsgParams = {
+        "origin": "https://example.com",
+        "data": "0x5369676e20696e746f20e280a9204556494c",
+      };
+      // expect to throw
+    });
+
+  });
 });
