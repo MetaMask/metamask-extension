@@ -173,6 +173,7 @@ import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMidd
 import { checkSnapsBlockList } from './flask/snaps-utilities';
 import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
 ///: END:ONLY_INCLUDE_IN
+import { securityProviderCheck } from './lib/security-provider-helpers';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -927,6 +928,7 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getTokenStandardAndDetails.bind(
           this.assetsContractController,
         ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -1024,11 +1026,13 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.personalMessageManager = new PersonalMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1047,6 +1051,7 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
     this.swapsController = new SwapsController({
@@ -4571,4 +4576,31 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  async securityProviderRequest(requestData, methodName) {
+    const { currentLocale, transactionSecurityCheckEnabled } =
+      this.preferencesController.store.getState();
+
+    const chainId = Number(
+      hexToDecimal(this.networkController.getCurrentChainId()),
+    );
+
+    if (transactionSecurityCheckEnabled) {
+      try {
+        const securityProviderResponse = await securityProviderCheck(
+          requestData,
+          methodName,
+          chainId,
+          currentLocale,
+        );
+
+        return securityProviderResponse;
+      } catch (err) {
+        log.error(err.message);
+        throw err;
+      }
+    }
+
+    return null;
+  }
 }
