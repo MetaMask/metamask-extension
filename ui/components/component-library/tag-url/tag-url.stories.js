@@ -10,7 +10,7 @@ import { TagUrl } from './tag-url';
 
 export default {
   title: 'Components/ComponentLibrary/TagUrl',
-  id: __filename,
+
   component: TagUrl,
   parameters: {
     docs: {

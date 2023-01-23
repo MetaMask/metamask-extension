@@ -6,7 +6,7 @@ import UpdateNicknamePopover from '.';
 
 export default {
   title: 'Components/UI/UpdateNicknamePopover',
-  id: __filename,
+
   parameters: {
     docs: {
       page: README,

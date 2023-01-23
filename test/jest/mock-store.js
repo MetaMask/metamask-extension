@@ -1,5 +1,5 @@
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/keyrings';
+import { HardwareKeyringTypes } from '../../shared/constants/hardware-wallets';
 
 const createGetSmartTransactionFeesApiResponse = () => {
   return {
@@ -253,10 +253,13 @@ export const createSwapsMockStore = () => {
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      keyringTypes: [KEYRING_TYPES.IMPORTED, KEYRING_TYPES.HD_KEY_TREE],
+      keyringTypes: [
+        HardwareKeyringTypes.imported,
+        HardwareKeyringTypes.hdKeyTree,
+      ],
       keyrings: [
         {
-          type: KEYRING_TYPES.HD_KEY_TREE,
+          type: HardwareKeyringTypes.hdKeyTree,
           accounts: [
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             'c5b8dbac4c1d3f152cdeb400e2313f309c410acb',
@@ -264,7 +267,7 @@ export const createSwapsMockStore = () => {
           ],
         },
         {
-          type: KEYRING_TYPES.IMPORTED,
+          type: HardwareKeyringTypes.imported,
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],

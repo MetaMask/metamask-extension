@@ -1,5 +1,5 @@
 import * as actionConstants from '../../store/actionConstants';
-import { DEVICE_NAMES } from '../../../shared/constants/hardware-wallets';
+import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import reduceApp from './app';
 
 const actions = actionConstants;
@@ -261,7 +261,7 @@ describe('App State', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
       value: {
-        device: DEVICE_NAMES.LEDGER,
+        device: HardwareDeviceNames.ledger,
         path: "m/44'/60'/0'",
       },
     });

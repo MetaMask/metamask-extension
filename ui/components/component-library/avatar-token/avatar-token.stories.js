@@ -17,7 +17,7 @@ import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
-  id: __filename,
+
   component: AvatarToken,
   parameters: {
     docs: {

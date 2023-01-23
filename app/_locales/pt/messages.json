@@ -110,10 +110,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 pode acessar e gastar até esse valor máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 pode(m) acessar e usar esse ativo",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Aprovado"
-  },
-  "approvedAmountWithColon": {
-    "message": "Valor aprovado:"
   },
   "approvedAsset": {
     "message": "Ativo aprovado"
@@ -1709,12 +1702,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Experiência aprimorada nas permissões de tokens"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Ative para ter a experiência aprimorada nas permissões de tokens sempre que um dapp solicitar uma aprovação de ERC20"
-  },
   "inYourSettings": {
     "message": "em suas Configurações"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "A fusão do Ethereum chegou!"
-  },
-  "notifications16ActionText": {
-    "message": "Teste aqui"
-  },
-  "notifications16Description": {
-    "message": "Reprojetamos nossa confirmação de permissões de token para ajudar você a tomar decisões mais informadas."
-  },
-  "notifications16Title": {
-    "message": "Experiência aprimorada nas permissões de tokens"
   },
   "notifications17ActionText": {
     "message": "Mostrar configurações de segurança e privacidade"

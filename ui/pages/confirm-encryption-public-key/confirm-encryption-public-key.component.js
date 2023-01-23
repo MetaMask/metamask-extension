@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import AccountListItem from '../../components/app/account-list-item';
-import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
+import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { EVENT } from '../../../shared/constants/metametrics';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
@@ -161,48 +161,36 @@ export default class ConfirmEncryptionPublicKey extends Component {
     const { t, trackEvent } = this.context;
 
     return (
-      <div className="request-encryption-public-key__footer">
-        <Button
-          type="secondary"
-          large
-          className="request-encryption-public-key__footer__cancel-button"
-          onClick={async (event) => {
-            await cancelEncryptionPublicKey(txData, event);
-            trackEvent({
-              category: EVENT.CATEGORIES.MESSAGES,
-              event: 'Cancel',
-              properties: {
-                action: 'Encryption public key Request',
-                legacy_event: true,
-              },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
-          }}
-        >
-          {this.context.t('cancel')}
-        </Button>
-        <Button
-          type="primary"
-          large
-          className="request-encryption-public-key__footer__sign-button"
-          onClick={async (event) => {
-            await encryptionPublicKey(txData, event);
-            this.context.trackEvent({
-              category: EVENT.CATEGORIES.MESSAGES,
-              event: 'Confirm',
-              properties: {
-                action: 'Encryption public key Request',
-                legacy_event: true,
-              },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
-          }}
-        >
-          {t('provide')}
-        </Button>
-      </div>
+      <PageContainerFooter
+        cancelText={t('cancel')}
+        submitText={t('provide')}
+        onCancel={async (event) => {
+          await cancelEncryptionPublicKey(txData, event);
+          trackEvent({
+            category: EVENT.CATEGORIES.MESSAGES,
+            event: 'Cancel',
+            properties: {
+              action: 'Encryption public key Request',
+              legacy_event: true,
+            },
+          });
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
+        }}
+        onSubmit={async (event) => {
+          await encryptionPublicKey(txData, event);
+          this.context.trackEvent({
+            category: EVENT.CATEGORIES.MESSAGES,
+            event: 'Confirm',
+            properties: {
+              action: 'Encryption public key Request',
+              legacy_event: true,
+            },
+          });
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
+        }}
+      />
     );
   };
 

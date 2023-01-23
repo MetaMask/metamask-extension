@@ -3,7 +3,7 @@ import HoldToRevealButton from './hold-to-reveal-button';
 
 export default {
   title: 'Components/App/HoldToRevealButton',
-  id: __filename,
+
   argTypes: {
     buttonText: { control: 'text' },
     onLongPressed: { action: 'Revealing the SRP' },

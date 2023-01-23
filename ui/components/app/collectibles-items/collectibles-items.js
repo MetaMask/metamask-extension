@@ -86,14 +86,7 @@ export default function CollectiblesItems({
   const ipfsGateway = useSelector(getIpfsGateway);
   const history = useHistory();
 
-  const renderCollectionImage = (
-    isPreviouslyOwnedCollection,
-    collectionImage,
-    collectionName,
-  ) => {
-    if (isPreviouslyOwnedCollection) {
-      return null;
-    }
+  const renderCollectionImage = (collectionImage, collectionName) => {
     if (collectionImage) {
       return (
         <img
@@ -129,7 +122,6 @@ export default function CollectiblesItems({
     collectionName,
     collectionImage,
     key,
-    isPreviouslyOwnedCollection,
   }) => {
     if (!collectibles.length) {
       return null;
@@ -156,11 +148,7 @@ export default function CollectiblesItems({
               alignItems={ALIGN_ITEMS.CENTER}
               className="collectibles-items__collection-header"
             >
-              {renderCollectionImage(
-                isPreviouslyOwnedCollection,
-                collectionImage,
-                collectionName,
-              )}
+              {renderCollectionImage(collectionImage, collectionName)}
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H5}
@@ -256,6 +244,7 @@ export default function CollectiblesItems({
           {renderCollection({
             collectibles: previouslyOwnedCollection.collectibles,
             collectionName: previouslyOwnedCollection.collectionName,
+            collectionImage: previouslyOwnedCollection.collectibles[0]?.image,
             isPreviouslyOwnedCollection: true,
             key: PREVIOUSLY_OWNED_KEY,
           })}
@@ -285,6 +274,7 @@ CollectiblesItems.propTypes = {
       }),
     ),
     collectionName: PropTypes.string,
+    collectionImage: PropTypes.string,
   }),
   collections: PropTypes.shape({
     collectibles: PropTypes.arrayOf(
