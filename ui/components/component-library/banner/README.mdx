@@ -1,11 +1,10 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 import { Banner } from './banner';
-
-### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
+import { BannerBase } from '..';
 
 # Banner
 
-The `Banner` is the base component for banners
+The `Banner` component is used for inline notifcations and has different colors based on context's severity.
 
 <Canvas>
   <Story id="components-componentlibrary-banner--default-story" />
@@ -16,6 +15,10 @@ The `Banner` is the base component for banners
 The `Banner` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={Banner} />
+
+The `Banner` accepts all `BannerBase` component props below
+
+<ArgsTable of={BannerBase} />
 
 ### Severity
 
