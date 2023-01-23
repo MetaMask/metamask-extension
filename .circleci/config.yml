@@ -491,7 +491,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - development/ts-migration-dashboard/build
+            - development/ts-migration-dashboard/build/final
 
   test-yarn-dedupe:
     executor: node-browsers
