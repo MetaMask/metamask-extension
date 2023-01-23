@@ -10,8 +10,6 @@ import {
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
-
 import Popover from '../../ui/popover';
 import Button from '../../ui/button';
 import EditGasDisplay from '../edit-gas-display';
@@ -27,8 +25,11 @@ import {
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
-import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
-import { decimalToHex } from '../../../../shared/lib/transactions-controller-utils';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 
 export default function EditGasPopover({
   popoverTitle = '',

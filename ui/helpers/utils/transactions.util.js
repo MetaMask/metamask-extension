@@ -8,7 +8,6 @@ import {
   TransactionStatus,
   TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
-import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
@@ -133,18 +132,6 @@ export async function isSmartContractAddress(address) {
     address,
   );
   return isContractAddress;
-}
-
-export function sumHexes(...args) {
-  const total = args.reduce((acc, hexAmount) => {
-    return addCurrencies(acc, hexAmount, {
-      toNumericBase: 'hex',
-      aBase: 16,
-      bBase: 16,
-    });
-  });
-
-  return addHexPrefix(total);
 }
 
 export function isLegacyTransaction(txParams) {

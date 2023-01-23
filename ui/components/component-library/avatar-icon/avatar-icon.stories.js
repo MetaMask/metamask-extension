@@ -34,7 +34,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon',
-  id: __filename,
+
   component: AvatarIcon,
   parameters: {
     docs: {

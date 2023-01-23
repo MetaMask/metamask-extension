@@ -8,7 +8,7 @@ import ConfirmAddSuggestedToken from '.';
 
 export default {
   title: 'Pages/ConfirmAddSuggestedToken',
-  id: __filename,
+
   argTypes: {
     tokens: {
       control: 'array',

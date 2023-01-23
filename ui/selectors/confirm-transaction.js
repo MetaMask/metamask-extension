@@ -2,12 +2,10 @@ import { createSelector } from 'reselect';
 import txHelper from '../helpers/utils/tx-helper';
 import {
   roundExponential,
-  getValueFromWeiHex,
   getTransactionFee,
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
-import { sumHexes } from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
   getGasEstimateType,
@@ -15,7 +13,6 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import { TransactionEnvelopeType } from '../../shared/constants/transaction';
-import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
 import {
   GAS_ESTIMATE_TYPES,
   CUSTOM_GAS_ESTIMATE,
@@ -26,6 +23,11 @@ import {
 } from '../../shared/modules/gas.utils';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
+import {
+  decGWEIToHexWEI,
+  getValueFromWeiHex,
+  sumHexes,
+} from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';

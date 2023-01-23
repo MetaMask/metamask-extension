@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  formatCurrency,
-  getValueFromWeiHex,
-} from '../helpers/utils/confirm-tx.util';
+import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getCurrentCurrency } from '../selectors';
 import {
   getConversionRate,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 
-import { conversionUtil } from '../../shared/modules/conversion.utils';
+import {
+  conversionUtil,
+  getValueFromWeiHex,
+} from '../../shared/modules/conversion.utils';
 import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 
 /**

@@ -110,10 +110,6 @@
     "message": "$1 bölümünü okudum ve kabul ediyorum",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 bu maksimum tutara kadar erişim sağlayabilir ve harcama yapabilir",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 bu varlığa erişebilir ve harcayabilir",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Onaylandı"
-  },
-  "approvedAmountWithColon": {
-    "message": "Onaylanan tutar:"
   },
   "approvedAsset": {
     "message": "Onaylanan varlık"
@@ -1709,12 +1702,6 @@
     "message": "İçe Aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Gelişmiş token hakediş deneyimi"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Merkeziyetsiz bir uygulama ERC20 onayı istediğinde gelişmiş token hakediş deneyimini kullanmak için bunu açın"
-  },
   "inYourSettings": {
     "message": "Ayarlar kısmında"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Birleşmesi başladı!"
-  },
-  "notifications16ActionText": {
-    "message": "Burada dene"
-  },
-  "notifications16Description": {
-    "message": "Token hakediş onayımızı daha bilgiye dayalı kararlar almanıza yardımcı olacak şekilde yeniden tasarladık."
-  },
-  "notifications16Title": {
-    "message": "Gelişmiş token hakedişi deneyimi"
   },
   "notifications17ActionText": {
     "message": "Güvenlik ve Gizlilik ayarlarını göster"

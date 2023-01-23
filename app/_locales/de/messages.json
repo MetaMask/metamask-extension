@@ -110,10 +110,6 @@
     "message": "Ich habe die $1 gelesen und stimme ihnen zu",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 kann bis zu diesem maximalen Betrag abrufen und ausgeben",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 kann auf dieses Asset zugreifen und es ausgeben",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Genehmigt"
-  },
-  "approvedAmountWithColon": {
-    "message": "Genehmigter Betrag:"
   },
   "approvedAsset": {
     "message": "Genehmigtes Asset"
@@ -1709,12 +1702,6 @@
     "message": "Importiert",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Verbesserte Erfahrung mit der Token-Erlaubnis"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Aktivieren Sie diese Option, um die verbesserte Token-Erlaubnis zu erhalten, wenn ein Dapp eine ERC20-Genehmigung anfordert."
-  },
   "inYourSettings": {
     "message": "in Ihren Einstellungen"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Merge ist da!"
-  },
-  "notifications16ActionText": {
-    "message": "Hier ausprobieren"
-  },
-  "notifications16Description": {
-    "message": "Wir haben unsere Token-Bestätigung neu gestaltet, um Ihnen zu helfen, fundiertere Entscheidungen zu treffen."
-  },
-  "notifications16Title": {
-    "message": "Verbesserte Erfahrung mit der Token-Erlaubnis"
   },
   "notifications17ActionText": {
     "message": "Sicherheits- und Datenschutzeinstellungen anzeigen"
