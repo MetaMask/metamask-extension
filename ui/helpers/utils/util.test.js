@@ -196,6 +196,11 @@ describe('util', () => {
   });
 
   describe('#getIsBrowserDeprecated', () => {
+    it('should call Bowser.getParser when no parameter is passed', () => {
+      const spy = jest.spyOn(Bowser, 'getParser');
+      util.getIsBrowserDeprecated();
+      expect(spy).toHaveBeenCalled();
+    });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.2623.112 Safari/537.36',
