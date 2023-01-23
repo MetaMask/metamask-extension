@@ -53,6 +53,7 @@ export default function reduceApp(state = {}, action) {
     ledgerTransportStatus: HardwareTransportStates.none,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
+    removeCollectibleMessage: '',
     portfolioTooltipWasShownInThisSession: false,
     sendInputCurrencySwitched: false,
     newTokensImported: '',
@@ -317,6 +318,12 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         newCollectibleAddedMessage: action.value,
+      };
+
+    case actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE:
+      return {
+        ...appState,
+        removeCollectibleMessage: action.value,
       };
 
     case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:

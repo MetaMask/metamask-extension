@@ -2291,6 +2291,7 @@ export function signTransaction() {
 
       dispatch(
         addUnapprovedTransactionAndRouteToConfirmationPage(
+          undefined,
           txParams,
           transactionType,
           draftTransaction.history,

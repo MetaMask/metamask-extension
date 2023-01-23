@@ -136,6 +136,8 @@ export default class Home extends PureComponent {
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    removeCollectibleMessage: PropTypes.string,
+    setRemoveCollectibleMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -264,6 +266,8 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      removeCollectibleMessage,
+      setRemoveCollectibleMessage,
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
@@ -327,6 +331,29 @@ export default class Home extends PureComponent {
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
                   onClick={() => setNewCollectibleAddedMessage('')}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+
+        {removeCollectibleMessage === 'success' ? (
+          <ActionableMessage
+            type="danger"
+            className="home__new-network-notification"
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {t('removeCollectibleMessage')}
+                </Typography>
+                <button
+                  className="fas fa-times home__new-nft-notification-close"
+                  title={t('close')}
+                  onClick={() => setRemoveCollectibleMessage('')}
                 />
               </Box>
             }
@@ -551,7 +578,6 @@ export default class Home extends PureComponent {
 
   render() {
     const { t } = this.context;
-
     const {
       defaultHomeActiveTabName,
       onTabClick,

@@ -35,7 +35,6 @@ import {
 import {
   bnToHex,
   decGWEIToHexWEI,
-  decimalToHex,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
@@ -58,6 +57,7 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -151,6 +151,7 @@ export default class TransactionController extends EventEmitter {
     this.getDeviceModel = opts.getDeviceModel;
     this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
+    this.securityProviderRequest = opts.securityProviderRequest;
 
     this.memStore = new ObservableStore({});
 
@@ -337,6 +338,7 @@ export default class TransactionController extends EventEmitter {
     );
 
     const initialTxMeta = await this.addUnapprovedTransaction(
+      opts.method,
       txParams,
       opts.origin,
       undefined,
@@ -766,6 +768,7 @@ export default class TransactionController extends EventEmitter {
    * actionId is fix used for making this action idempotent to deal with scenario when
    * action is invoked multiple times with same parameters in MV3 due to service worker re-activation.
    *
+   * @param txMethodType
    * @param txParams
    * @param origin
    * @param transactionType
@@ -774,6 +777,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(
+    txMethodType,
     txParams,
     origin,
     transactionType,
@@ -855,6 +859,15 @@ export default class TransactionController extends EventEmitter {
     txMeta.txParams.value = txMeta.txParams.value
       ? addHexPrefix(txMeta.txParams.value)
       : '0x0';
+
+    if (txMethodType && this.securityProviderRequest) {
+      const securityProviderResponse = await this.securityProviderRequest(
+        txMeta,
+        txMethodType,
+      );
+
+      txMeta.securityProviderResponse = securityProviderResponse;
+    }
 
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
@@ -1450,7 +1463,7 @@ export default class TransactionController extends EventEmitter {
       ...normalizedTxParams,
       type,
       gasLimit: normalizedTxParams.gas,
-      chainId: addHexPrefix(decimalToHex(chainId)),
+      chainId: new Numeric(chainId, 10).toPrefixedHexString(),
     };
     // sign tx
     const fromAddress = txParams.from;

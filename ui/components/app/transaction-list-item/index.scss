@@ -41,6 +41,13 @@
     }
   }
 
+  .list-item__subheading {
+    overflow: hidden;
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   .list-item__subheading > h3 {
     overflow: visible;
     display: flex;
