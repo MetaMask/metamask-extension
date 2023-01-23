@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
-import {
-  conversionUtil,
-  getWeiHexFromDecimalValue,
-  multiplyCurrencies,
-} from '../../../../shared/modules/conversion.utils';
+import { getWeiHexFromDecimalValue } from '../../../../shared/modules/conversion.utils';
 
 import { ETH } from '../../../helpers/constants/common';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted
@@ -69,13 +66,10 @@ export default class TokenInput extends PureComponent {
     const { value: hexValue, token: { decimals, symbol } = {} } = props;
 
     const multiplier = Math.pow(10, Number(decimals || 0));
-    const decimalValueString = conversionUtil(addHexPrefix(hexValue), {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      toCurrency: symbol,
-      conversionRate: multiplier,
-      invertConversionRate: true,
-    });
+    const decimalValueString = new Numeric(addHexPrefix(hexValue), 16)
+      .toBase(10)
+      .applyConversionRate(symbol ? multiplier : 1, true)
+      .toString();
 
     return Number(decimalValueString) ? decimalValueString : '';
   }
@@ -89,12 +83,10 @@ export default class TokenInput extends PureComponent {
       newDecimalValue = new BigNumber(decimalValue, 10).toFixed(decimals);
     }
 
-    const multiplier = Math.pow(10, Number(decimals || 0));
-    const hexValue = multiplyCurrencies(newDecimalValue || 0, multiplier, {
-      multiplicandBase: 10,
-      multiplierBase: 10,
-      toNumericBase: 'hex',
-    });
+    const hexValue = new Numeric(newDecimalValue || 0, 10)
+      .times(Math.pow(10, Number(decimals || 0)), 10)
+      .toBase(16)
+      .toString();
 
     this.setState({ hexValue, decimalValue });
     onChange(hexValue);
