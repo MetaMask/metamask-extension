@@ -15,7 +15,7 @@ import {
   TEXT_ALIGN,
   SIZES,
 } from '../../../helpers/constants/design-system';
-import { conversionGreaterThan } from '../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 export default function ReviewSpendingCap({
   tokenName,
@@ -24,10 +24,10 @@ export default function ReviewSpendingCap({
   onEdit,
 }) {
   const t = useContext(I18nContext);
-  const valueIsGreaterThanBalance = conversionGreaterThan(
-    { value: Number(tokenValue), fromNumericBase: 'dec' },
-    { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
-  );
+  const valueIsGreaterThanBalance = new Numeric(
+    Number(tokenValue),
+    10,
+  ).greaterThan(Number(currentTokenBalance), 10);
 
   return (
     <Box
