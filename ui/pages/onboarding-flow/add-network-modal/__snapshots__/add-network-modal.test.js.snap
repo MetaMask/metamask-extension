@@ -12,7 +12,7 @@ exports[`Add Network Modal should render 1`] = `
     </h4>
   </div>
   <div
-    class="networks-tab__add-network-form"
+    class="networks-tab__add-network-form networks-tab__restrict-height"
   >
     <div
       class="actionable-message actionable-message--warning actionable-message--with-right-button networks-tab__add-network-form__alert actionable-message--with-icon"
@@ -46,7 +46,7 @@ exports[`Add Network Modal should render 1`] = `
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-center"
+              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
             >
               <h6
                 class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
@@ -76,7 +76,7 @@ exports[`Add Network Modal should render 1`] = `
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-center"
+              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
             >
               <h6
                 class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
@@ -106,7 +106,7 @@ exports[`Add Network Modal should render 1`] = `
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-center"
+              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
             >
               <h6
                 class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
@@ -160,7 +160,7 @@ exports[`Add Network Modal should render 1`] = `
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-center"
+              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
             >
               <h6
                 class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
@@ -190,7 +190,7 @@ exports[`Add Network Modal should render 1`] = `
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-center"
+              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
             >
               <h6
                 class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"

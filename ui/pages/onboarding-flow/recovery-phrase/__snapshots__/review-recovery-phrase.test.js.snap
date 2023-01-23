@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Name of the group should match snapshot 1`] = `
+exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 <div>
   <div
     class="recovery-phrase"
@@ -298,7 +298,7 @@ exports[`Name of the group should match snapshot 1`] = `
 </div>
 `;
 
-exports[`Name of the group should match snapshot after reveal recovery button is clicked 1`] = `
+exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
 <div>
   <div
     class="recovery-phrase"
