@@ -18,7 +18,7 @@ const render = () => {
         address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
         addressLabel: 'Account 1',
         lastConnectedDate: 'Feb-22-2022',
-        balance: '8.7a73149c048545a3fe58',
+        balance: '87a73149c048545a3fe58',
         has: () => {
           /**  nothing to do */
         },
@@ -28,7 +28,7 @@ const render = () => {
       address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
       addressLabel: 'Account 2',
       lastConnectedDate: 'Feb-22-2022',
-      balance: '8.7a73149c048545a3fe58',
+      balance: '87a73149c048545a3fe58',
       has: () => {
         /** nothing to do */
       },
