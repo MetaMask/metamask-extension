@@ -146,8 +146,8 @@ ButtonBase.propTypes = {
    * Possible values could be 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
    */
   size: PropTypes.oneOfType([
-    PropTypes.instanceOf(BUTTON_BASE_SIZES),
     PropTypes.string,
+    PropTypes.instanceOf(BUTTON_BASE_SIZES),
   ]),
   /**
    * textProps accepts all the props from Icon
