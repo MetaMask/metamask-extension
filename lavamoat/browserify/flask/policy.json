@@ -2710,12 +2710,8 @@
       "packages": {
         "bn.js": true,
         "browserify>buffer": true,
-<<<<<<< HEAD
         "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
         "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true,
-=======
-        "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": true,
->>>>>>> 48ec5395f (update to metamask/eth-keyring-controller)
         "eth-lattice-keyring>@ethereumjs/util": true,
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
@@ -2723,7 +2719,6 @@
         "eth-sig-util>tweetnacl-util": true
       }
     },
-<<<<<<< HEAD
     "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
@@ -2749,11 +2744,6 @@
     "eth-keyring-controller>@metamask/browser-passworder": {
       "globals": {
         "crypto": true
-=======
-    "eth-json-rpc-middleware>@metamask/eth-sig-util>bn.js": {
-      "packages": {
-        "browserify>browser-resolve": true
->>>>>>> 48ec5395f (update to metamask/eth-keyring-controller)
       }
     },
     "eth-lattice-keyring": {
@@ -3150,10 +3140,7 @@
         "@babel/runtime": true,
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "browserify>events": true,
-<<<<<<< HEAD
         "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
-=======
->>>>>>> 48ec5395f (update to metamask/eth-keyring-controller)
         "eth-trezor-keyring>trezor-connect>cross-fetch": true
       }
     },
