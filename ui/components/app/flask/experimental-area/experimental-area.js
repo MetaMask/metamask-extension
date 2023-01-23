@@ -59,11 +59,14 @@ MMMMMMMMMMMMMMMMMMmmmmmmmmMMMMMMMMMMMMMMMMMM`);
 
 /* eslint-disable no-irregular-whitespace */
 const EXPERIMENTAL_AREA =
-  lineBreaksToBr(`█▄█ █▀█ █░█ ▀ █▀█ █▀▀   █▀▀ █▄░█ ▀█▀ █▀▀ █▀█ █ █▄░█ █▀▀   ▄▀█ █▄░█
-░█░ █▄█ █▄█ ░ █▀▄ ██▄   ██▄ █░▀█ ░█░ ██▄ █▀▄ █ █░▀█ █▄█   █▀█ █░▀█
-
-█▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░   ▄▀█ █▀█ █▀▀ ▄▀█
-██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░ █▀█ █▄▄   █▀█ █▀▄ ██▄ █▀█`);
+  lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀  
+  █▄▄ █▀█ █▄█ ░█░ █ █▄█ █░▀█ ▄  
+  
+  █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░  
+  ██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░ █▀█ █▄▄  
+  
+  █▀ █▀█ █▀▀ ▀█▀ █░█░█ ▄▀█ █▀█ █▀▀
+  ▄█ █▄█ █▀░ ░█░ ▀▄▀▄▀ █▀█ █▀▄ ██▄`);
 /* eslint-enable no-irregular-whitespace */
 
 export default function ExperimentalArea({ redirectTo }) {
