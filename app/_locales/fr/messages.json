@@ -110,10 +110,6 @@
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 peut accéder et dépenser jusqu’à ce montant maximal",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 peut accéder à cet actif et le dépenser",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Approuvé"
-  },
-  "approvedAmountWithColon": {
-    "message": "Montant approuvé :"
   },
   "approvedAsset": {
     "message": "Actif approuvé"
@@ -1709,12 +1702,6 @@
     "message": "Importé",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Amélioration du processus d’approbation des jetons"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Activez cette option si vous voulez lancer le processus amélioré d’approbation des jetons chaque fois qu’une dApp demande l’approbation de jetons ERC20"
-  },
   "inYourSettings": {
     "message": "dans vos paramètres"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "La fusion Ethereum est en marche !"
-  },
-  "notifications16ActionText": {
-    "message": "Essayez-le"
-  },
-  "notifications16Description": {
-    "message": "Nous avons amélioré le processus d’approbation des jetons pour vous aider à prendre des décisions plus éclairées."
-  },
-  "notifications16Title": {
-    "message": "Amélioration du processus d’approbation des jetons"
   },
   "notifications17ActionText": {
     "message": "Afficher les paramètres de sécurité et de confidentialité"

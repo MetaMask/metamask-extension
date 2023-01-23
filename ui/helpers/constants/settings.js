@@ -352,13 +352,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('improvedTokenAllowance'),
-    descriptionMessage: (t) => t('improvedTokenAllowanceDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#improved-token-allowance`,
-    icon: 'fa fa-flask',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('transactionSecurityCheck'),
     descriptionMessage: (t) => t('transactionSecurityCheckDescription'),
     route: `${EXPERIMENTAL_ROUTE}#transaction-security-check`,

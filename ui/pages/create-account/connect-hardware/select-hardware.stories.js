@@ -5,7 +5,6 @@ import SelectHardware from './select-hardware';
 
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
-  id: __filename,
 };
 
 export const DefaultStory = () => {

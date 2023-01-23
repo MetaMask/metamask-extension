@@ -110,10 +110,6 @@
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "Maaaring i-access ng $1 ang max na halagang ito at gumastos hanggang sa max na halagang ito",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 maaaring i-access at gamitin ang asset na ito",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Inaprubahan"
-  },
-  "approvedAmountWithColon": {
-    "message": "Inaprubahang halaga:"
   },
   "approvedAsset": {
     "message": "Aprubadong asset"
@@ -1709,12 +1702,6 @@
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Pinahusay na karanasan sa allowance ng token"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "I-on ito para dumaan sa pinahusay na karanasan sa allowance ng token tuwing humihiling ang isang dapp na aprubahan ng ERC20"
-  },
   "inYourSettings": {
     "message": "sa iyong Mga Setting"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Narito na ang Ethereum Merge!"
-  },
-  "notifications16ActionText": {
-    "message": "Subukan ito dito"
-  },
-  "notifications16Description": {
-    "message": "Muli naming idinisenyo ang aming kumpirmasyon ng allowance ng token upang matulungan kang gumawa ng mas matalinong mga desisyon."
-  },
-  "notifications16Title": {
-    "message": "Pinahusay na karanasan sa allowance ng token"
   },
   "notifications17ActionText": {
     "message": "Ipakita ang mga setting ng Seguridad at Pagkapribado"
