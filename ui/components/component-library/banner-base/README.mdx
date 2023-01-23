@@ -8,12 +8,12 @@ import { BannerBase } from './banner-base';
 The `BannerBase` is the base component for banners
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--default-story" />
+  <Story id="components-componentlibrary-bannerbase--default-story" />
 </Canvas>
 
 ## Props
 
-The `BannerBase` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `BannerBase` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={BannerBase} />
 
@@ -22,7 +22,7 @@ The `BannerBase` accepts all props below as well as all [Box](/docs/ui-component
 Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--title" />
+  <Story id="components-componentlibrary-bannerbase--title" />
 </Canvas>
 
 ```jsx
@@ -38,7 +38,7 @@ import { BannerBase } from '../../component-library';
 The `children` is the description area of the `BannerBase` that can be a text or react node. Description shouldn't repeat title and only 1-3 lines.
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--children" />
+  <Story id="components-componentlibrary-bannerbase--children" />
 </Canvas>
 
 ```jsx
@@ -55,10 +55,10 @@ import { BannerBase } from '../../component-library';
 
 ### Action Button Label, onClick, & Props
 
-Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/ui-components-component-library-button-link-button-link-stories-js--default-story) for the action
+Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/components-componentlibrary-buttonlink--default-story) for the action
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--action-button" />
+  <Story id="components-componentlibrary-bannerbase--action-button" />
 </Canvas>
 
 ```jsx
@@ -86,7 +86,7 @@ Use the `onClose` prop to pass a function to the close button. The close button 
 Additional props can be passed to the close button with `closeButtonProps`
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--on-close" />
+  <Story id="components-componentlibrary-bannerbase--on-close" />
 </Canvas>
 
 ```jsx
@@ -105,7 +105,7 @@ import { BannerBase } from '../../component-library';
 Use the `startAccessory` prop to add components such as icons or fox image to the start (default: left) of the `BannerBase` content
 
 <Canvas style={{ background: 'var(--color-background-alternative)' }}>
-  <Story id="ui-components-component-library-banner-base-banner-base-stories-js--start-accessory" />
+  <Story id="components-componentlibrary-bannerbase--start-accessory" />
 </Canvas>
 
 ```jsx

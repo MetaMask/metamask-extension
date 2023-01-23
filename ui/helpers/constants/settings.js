@@ -178,13 +178,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('enhancedTokenDetection'),
-    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
-    route: `${SECURITY_ROUTE}#token-description`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('chooseYourNetwork'),
     descriptionMessage: (t) => t('chooseYourNetworkDescription'),
     route: `${SECURITY_ROUTE}#-chose-your-network`,
@@ -336,13 +329,6 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-info-circle',
   },
   {
-    tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('enhancedTokenDetection'),
-    descriptionMessage: (t) => t('enhancedTokenDetectionDescription'),
-    route: `${ADVANCED_ROUTE}#token-description`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('enableOpenSeaAPI'),
     descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
@@ -363,13 +349,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('restoreUserDataDescription'),
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('improvedTokenAllowance'),
-    descriptionMessage: (t) => t('improvedTokenAllowanceDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#improved-token-allowance`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('experimental'),

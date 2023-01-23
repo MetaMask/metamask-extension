@@ -24,7 +24,8 @@
 
 import BigNumber from 'bignumber.js';
 
-import { BN } from 'ethereumjs-util';
+import { addHexPrefix, BN } from 'ethereumjs-util';
+import { ETH, WEI } from '../../ui/helpers/constants/common';
 
 import { stripHexPrefix } from './hexstring-utils';
 
@@ -295,6 +296,141 @@ function decGWEIToHexWEI(decGWEI) {
     toNumericBase: 'hex',
     fromDenomination: 'GWEI',
     toDenomination: 'WEI',
+  });
+}
+
+export function subtractHexes(aHexWEI, bHexWEI) {
+  return subtractCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+    numberOfDecimals: 6,
+  });
+}
+
+export function addHexes(aHexWEI, bHexWEI) {
+  return addCurrencies(aHexWEI, bHexWEI, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+    numberOfDecimals: 6,
+  });
+}
+
+export function decWEIToDecETH(hexWEI) {
+  return conversionUtil(hexWEI, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'ETH',
+  });
+}
+
+export function hexWEIToDecETH(hexWEI) {
+  return conversionUtil(hexWEI, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'ETH',
+  });
+}
+
+export function decEthToConvertedCurrency(
+  ethTotal,
+  convertedCurrency,
+  conversionRate,
+) {
+  return conversionUtil(ethTotal, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: convertedCurrency,
+    numberOfDecimals: 2,
+    conversionRate,
+  });
+}
+
+export function getWeiHexFromDecimalValue({
+  value,
+  fromCurrency,
+  conversionRate,
+  fromDenomination,
+  invertConversionRate,
+}) {
+  return conversionUtil(value, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    toCurrency: ETH,
+    fromCurrency,
+    conversionRate,
+    invertConversionRate,
+    fromDenomination,
+    toDenomination: WEI,
+  });
+}
+
+/**
+ * Converts a BN object to a hex string with a '0x' prefix
+ *
+ * @param {BN} inputBn - The BN to convert to a hex string
+ * @returns {string} A '0x' prefixed hex string
+ */
+export function bnToHex(inputBn) {
+  return addHexPrefix(inputBn.toString(16));
+}
+
+export function getValueFromWeiHex({
+  value,
+  fromCurrency = ETH,
+  toCurrency,
+  conversionRate,
+  numberOfDecimals,
+  toDenomination,
+}) {
+  return conversionUtil(value, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency,
+    toCurrency,
+    numberOfDecimals,
+    fromDenomination: WEI,
+    toDenomination,
+    conversionRate,
+  });
+}
+
+export function sumHexes(...args) {
+  const total = args.reduce((acc, hexAmount) => {
+    return addCurrencies(acc, hexAmount, {
+      toNumericBase: 'hex',
+      aBase: 16,
+      bBase: 16,
+    });
+  });
+
+  return addHexPrefix(total);
+}
+
+export function hexWEIToDecGWEI(decGWEI) {
+  return conversionUtil(decGWEI, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'GWEI',
+  });
+}
+
+export function decimalToHex(decimal) {
+  return conversionUtil(decimal, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+  });
+}
+
+export function hexToDecimal(hexValue) {
+  return conversionUtil(hexValue, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
   });
 }
 

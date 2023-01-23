@@ -54,7 +54,7 @@ describe('Eth sign', function () {
         const personalMessage = await personalMessageRow.getText();
         assert.equal(personalMessage, expectedPersonalMessage);
 
-        await driver.clickElement('[data-testid="request-signature__sign"]');
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
         await driver.clickElement(
           '.signature-request-warning__footer__sign-button',
         );

@@ -165,27 +165,6 @@
     color: var(--color-text-alternative);
   }
 
-  &__footer {
-    @include H3;
-
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex: 0 0 auto;
-    border-top: 1px solid var(--color-border-muted);
-    padding: 1.6rem;
-
-    button {
-      width: 165px;
-    }
-
-    &__cancel-button {
-      margin-right: 1.2rem;
-    }
-  }
-
   &__visual {
     display: flex;
     flex-direction: row;

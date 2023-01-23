@@ -3,7 +3,7 @@ import ConfirmationNetworkSwitch from '.';
 
 export default {
   title: 'Pages/Confirmation/Components/ConfirmationNetworkSwitch',
-  id: __filename,
+
   argTypes: {
     newNetwork: {
       controls: 'object',

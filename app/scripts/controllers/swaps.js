@@ -8,6 +8,7 @@ import {
   conversionUtil,
   decGWEIToHexWEI,
   addCurrencies,
+  sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
@@ -25,7 +26,6 @@ import {
 } from '../../../shared/constants/smartTransactions';
 
 import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils';
-import { sumHexes } from '../../../ui/helpers/utils/transactions.util';
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,

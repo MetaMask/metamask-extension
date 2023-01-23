@@ -105,7 +105,7 @@ describe('Signature Request', () => {
   });
 
   it('cancel', () => {
-    const cancelButton = screen.getByTestId('signature-cancel-button');
+    const cancelButton = screen.getByTestId('page-container-footer-cancel');
 
     fireEvent.click(cancelButton);
 
@@ -113,7 +113,7 @@ describe('Signature Request', () => {
   });
 
   it('sign', () => {
-    const signButton = screen.getByTestId('signature-sign-button');
+    const signButton = screen.getByTestId('page-container-footer-next');
 
     fireEvent.click(signButton);
 

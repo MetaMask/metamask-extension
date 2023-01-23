@@ -6,10 +6,6 @@
     "message": "我已閱讀並同意$1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 可能會存取並最多花費以下額度",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessingYourCamera": {
     "message": "正在存取您的攝影鏡頭..."
   },
@@ -118,6 +114,18 @@
   "appDescription": {
     "message": "以太坊瀏覽器擴充插件",
     "description": "The description of the application"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "批准花費上限"

@@ -15,7 +15,7 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarAccount',
-  id: __filename,
+
   component: AvatarAccount,
   parameters: {
     docs: {

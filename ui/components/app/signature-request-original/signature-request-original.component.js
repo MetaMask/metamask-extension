@@ -12,6 +12,7 @@ import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import Typography from '../../ui/typography/typography';
+import { PageContainerFooter } from '../../ui/page-container';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -216,38 +217,25 @@ export default class SignatureRequestOriginal extends Component {
     const { t } = this.context;
 
     return (
-      <div className="request-signature__footer">
-        <Button
-          type="secondary"
-          large
-          className="request-signature__footer__cancel-button"
-          onClick={async (event) => {
-            await cancel(event);
+      <PageContainerFooter
+        cancelText={t('reject')}
+        submitText={t('sign')}
+        onCancel={async (event) => {
+          await cancel(event);
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
+        }}
+        onSubmit={async (event) => {
+          if (type === MESSAGE_TYPE.ETH_SIGN) {
+            this.setState({ showSignatureRequestWarning: true });
+          } else {
+            await sign(event);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
-          }}
-        >
-          {t('reject')}
-        </Button>
-        <Button
-          data-testid="request-signature__sign"
-          type="primary"
-          large
-          className="request-signature__footer__sign-button"
-          disabled={hardwareWalletRequiresConnection}
-          onClick={async (event) => {
-            if (type === MESSAGE_TYPE.ETH_SIGN) {
-              this.setState({ showSignatureRequestWarning: true });
-            } else {
-              await sign(event);
-              clearConfirmTransaction();
-              history.push(mostRecentOverviewPage);
-            }
-          }}
-        >
-          {t('sign')}
-        </Button>
-      </div>
+          }
+        }}
+        disabled={hardwareWalletRequiresConnection}
+      />
     );
   };
 
