@@ -26,11 +26,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 
@@ -342,7 +338,7 @@ export default class ConfirmApproveContent extends Component {
       tokenSymbol,
       tokenBalance,
     } = this.props;
-    if (assetStandard === ERC20) {
+    if (assetStandard === TokenStandard.ERC20) {
       return (
         <div className="confirm-approve-content__full-tx-content">
           <div className="confirm-approve-content__permission">
@@ -373,7 +369,10 @@ export default class ConfirmApproveContent extends Component {
           </div>
         </div>
       );
-    } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+    } else if (
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155
+    ) {
       return (
         <div className="confirm-approve-content__full-tx-content">
           <div className="confirm-approve-content__permission">
@@ -462,13 +461,13 @@ export default class ConfirmApproveContent extends Component {
 
     let titleTokenDescription = t('token');
     if (
-      assetStandard === ERC20 ||
+      assetStandard === TokenStandard.ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
     ) {
       titleTokenDescription = tokenSymbol;
     } else if (
-      assetStandard === ERC721 ||
-      assetStandard === ERC1155 ||
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155 ||
       // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
@@ -556,8 +555,8 @@ export default class ConfirmApproveContent extends Component {
         title = t('revokeAllTokensTitle', [titleTokenDescription]);
       }
     } else if (
-      assetStandard === ERC721 ||
-      assetStandard === ERC1155 ||
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155 ||
       // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
@@ -591,8 +590,8 @@ export default class ConfirmApproveContent extends Component {
       ]);
     } else if (
       isSetApproveForAll ||
-      assetStandard === ERC721 ||
-      assetStandard === ERC1155 ||
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155 ||
       // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
@@ -673,7 +672,7 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__description">
           {this.renderDescription()}
         </div>
-        {assetStandard === ERC20 ||
+        {assetStandard === TokenStandard.ERC20 ||
         (tokenSymbol && !tokenId && !isSetApproveForAll) ? (
           <Box className="confirm-approve-content__address-display-content">
             <Box display={DISPLAY.FLEX}>
@@ -771,7 +770,7 @@ export default class ConfirmApproveContent extends Component {
             )}
           </Box>
         )}
-        {assetStandard === ERC20 ? (
+        {assetStandard === TokenStandard.ERC20 ? (
           <div className="confirm-approve-content__edit-submission-button-container">
             <div
               className="confirm-approve-content__medium-link-text cursor-pointer"

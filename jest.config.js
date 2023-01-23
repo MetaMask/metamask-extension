@@ -42,8 +42,8 @@ module.exports = {
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
-    '<rootDir>/shared/**/*.test.js',
-    '<rootDir>/ui/**/*.test.js',
+    '<rootDir>/shared/**/*.test.(js|ts)',
+    '<rootDir>/ui/**/*.test.(js|ts)',
   ],
   testTimeout: 2500,
   // We have to specify the environment we are running in, which is jsdom. The

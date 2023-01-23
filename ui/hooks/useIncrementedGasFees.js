@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
+import { decGWEIToHexWEI } from '../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
-import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
 import { addTenPercent } from '../helpers/utils/gas';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 

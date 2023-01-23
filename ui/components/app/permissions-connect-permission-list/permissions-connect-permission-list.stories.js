@@ -4,7 +4,7 @@ import PermissionsConnectList from '.';
 
 export default {
   title: 'Components/App/PermissionsConnectList',
-  id: __filename,
+
   component: PermissionsConnectList,
   argTypes: {
     permissions: {

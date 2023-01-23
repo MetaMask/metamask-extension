@@ -30,6 +30,7 @@ import {
   DISPLAY,
   COLORS,
 } from '../../helpers/constants/design-system';
+import { SECOND } from '../../../shared/constants/time';
 
 import {
   ASSET_ROUTE,
@@ -312,6 +313,7 @@ export default class Home extends PureComponent {
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
+            autoHideTime={5 * SECOND}
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
@@ -549,6 +551,7 @@ export default class Home extends PureComponent {
 
   render() {
     const { t } = this.context;
+
     const {
       defaultHomeActiveTabName,
       onTabClick,
@@ -610,7 +613,8 @@ export default class Home extends PureComponent {
               <EthOverview />
             </div>
             <Tabs
-              defaultActiveTabName={defaultHomeActiveTabName}
+              t={this.context.t}
+              defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
               subHeader={
@@ -687,7 +691,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={t('assets')}
+                name={this.context.t('assets')}
+                tabKey="assets"
               >
                 <AssetList
                   onClickAsset={(asset) =>
@@ -700,7 +705,8 @@ export default class Home extends PureComponent {
                   activeClassName="home__tab--active"
                   className="home__tab"
                   data-testid="home__nfts-tab"
-                  name={t('nfts')}
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
                 >
                   <CollectiblesTab
                     onAddNFT={() => {
@@ -713,7 +719,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__activity-tab"
-                name={t('activity')}
+                name={this.context.t('activity')}
+                tabKey="activity"
               >
                 <TransactionList />
               </Tab>

@@ -8,7 +8,7 @@ import SenderToRecipient from '.';
 
 export default {
   title: 'Components/UI/SenderToRecipient',
-  id: __filename,
+
   argTypes: {
     senderName: {
       control: 'text',

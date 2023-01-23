@@ -3,7 +3,7 @@ import ReviewSpendingCap from './review-spending-cap';
 
 export default {
   title: 'Components/UI/ReviewSpendingCap',
-  id: __filename,
+
   argTypes: {
     tokenName: {
       control: { type: 'text' },

@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import TypedMessageManager from './typed-message-manager';
 
 describe('Typed Message Manager', () => {
@@ -92,9 +92,7 @@ describe('Typed Message Manager', () => {
   });
 
   it('adds to unapproved messages and sets status to unapproved', () => {
-    expect(typedMsgs[msgId].status).toStrictEqual(
-      TRANSACTION_STATUSES.UNAPPROVED,
-    );
+    expect(typedMsgs[msgId].status).toStrictEqual(TransactionStatus.unapproved);
   });
 
   it('validates params', async () => {
@@ -111,17 +109,17 @@ describe('Typed Message Manager', () => {
   it('approves messages', async () => {
     const messageMetaMaskId = messages[0].msgParams;
     typedMessageManager.approveMessage(messageMetaMaskId);
-    expect(messages[0].status).toStrictEqual(TRANSACTION_STATUSES.APPROVED);
+    expect(messages[0].status).toStrictEqual(TransactionStatus.approved);
   });
 
   it('sets msg status to signed and adds a raw sig to message details', () => {
     typedMessageManager.setMsgStatusSigned(numberMsgId, 'raw sig');
-    expect(messages[0].status).toStrictEqual(TRANSACTION_STATUSES.SIGNED);
+    expect(messages[0].status).toStrictEqual(TransactionStatus.signed);
     expect(messages[0].rawSig).toStrictEqual('raw sig');
   });
 
   it('rejects message', () => {
     typedMessageManager.rejectMsg(numberMsgId);
-    expect(messages[0].status).toStrictEqual(TRANSACTION_STATUSES.REJECTED);
+    expect(messages[0].status).toStrictEqual(TransactionStatus.rejected);
   });
 });

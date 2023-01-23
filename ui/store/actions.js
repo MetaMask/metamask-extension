@@ -30,8 +30,8 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
-  DEVICE_NAMES,
-  LEDGER_TRANSPORT_TYPES,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import { EVENT } from '../../shared/constants/metametrics';
@@ -41,11 +41,11 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
-import { decimalToHex } from '../../shared/lib/transactions-controller-utils';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
+import { decimalToHex } from '../../shared/modules/conversion.utils';
 import * as actionConstants from './actionConstants';
 import {
   generateActionId,
@@ -425,12 +425,12 @@ export function connectHardware(deviceName, page, hdPath, t) {
 
     let accounts;
     try {
-      if (deviceName === DEVICE_NAMES.LEDGER) {
+      if (deviceName === HardwareDeviceNames.ledger) {
         await submitRequestToBackground('establishLedgerTransportPreference');
       }
       if (
-        deviceName === DEVICE_NAMES.LEDGER &&
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
+        deviceName === HardwareDeviceNames.ledger &&
+        ledgerTransportType === LedgerTransportTypes.webhid
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
           filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
@@ -451,14 +451,14 @@ export function connectHardware(deviceName, page, hdPath, t) {
     } catch (error) {
       log.error(error);
       if (
-        deviceName === DEVICE_NAMES.LEDGER &&
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        deviceName === HardwareDeviceNames.ledger &&
+        ledgerTransportType === LedgerTransportTypes.webhid &&
         error.message.match('Failed to open the device')
       ) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        if (deviceName !== DEVICE_NAMES.QR) {
+        if (deviceName !== HardwareDeviceNames.qr) {
           dispatch(displayWarning(error.message));
         }
         throw error;
@@ -884,7 +884,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
  *  history of the send flow at time of creation.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
@@ -923,7 +923,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
 export async function addUnapprovedTransaction(txParams, type) {
@@ -3276,11 +3276,11 @@ export function loadingMethodDataFinished() {
 }
 
 export function getContractMethodData(data = '') {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
     const fourBytePrefix = prefixedData.slice(0, 10);
     if (fourBytePrefix.length < 10) {
-      return Promise.resolve({});
+      return {};
     }
     const { knownMethodData } = getState().metamask;
     if (
@@ -3288,25 +3288,25 @@ export function getContractMethodData(data = '') {
       knownMethodData[fourBytePrefix] &&
       Object.keys(knownMethodData[fourBytePrefix]).length !== 0
     ) {
-      return Promise.resolve(knownMethodData[fourBytePrefix]);
+      return knownMethodData[fourBytePrefix];
     }
 
     dispatch(loadingMethodDataStarted());
     log.debug(`loadingMethodData`);
 
-    return getMethodDataAsync(fourBytePrefix).then(({ name, params }) => {
-      dispatch(loadingMethodDataFinished());
-      callBackgroundMethod(
-        'addKnownMethodData',
-        [fourBytePrefix, { name, params }],
-        (err) => {
-          if (err) {
-            dispatch(displayWarning(err.message));
-          }
-        },
-      );
-      return { name, params };
-    });
+    const { name, params } = await getMethodDataAsync(fourBytePrefix);
+
+    dispatch(loadingMethodDataFinished());
+    callBackgroundMethod(
+      'addKnownMethodData',
+      [fourBytePrefix, { name, params }],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err.message));
+        }
+      },
+    );
+    return { name, params };
   };
 }
 

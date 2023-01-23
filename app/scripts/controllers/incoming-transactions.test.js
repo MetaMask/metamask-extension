@@ -12,8 +12,8 @@ import {
   NETWORK_IDS,
 } from '../../../shared/constants/network';
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
 import { MILLISECOND } from '../../../shared/constants/time';
 
@@ -313,9 +313,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -330,9 +330,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfakeeip1559',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -616,9 +616,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -759,9 +759,9 @@ describe('IncomingTransactionsController', function () {
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
               chainId: CHAIN_IDS.GOERLI,
-              status: TRANSACTION_STATUSES.CONFIRMED,
+              status: TransactionStatus.confirmed,
               time: 16000000000000000,
-              type: TRANSACTION_TYPES.INCOMING,
+              type: TransactionType.incoming,
               txParams: {
                 from: '0xfake',
                 gas: '0x0',
@@ -1238,7 +1238,7 @@ describe('IncomingTransactionsController', function () {
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
         chainId: CHAIN_IDS.GOERLI,
-        status: TRANSACTION_STATUSES.FAILED,
+        status: TransactionStatus.failed,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1249,7 +1249,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        type: TRANSACTION_TYPES.INCOMING,
+        type: TransactionType.incoming,
       });
     });
 
@@ -1285,7 +1285,7 @@ describe('IncomingTransactionsController', function () {
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
         chainId: CHAIN_IDS.GOERLI,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1296,7 +1296,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        type: TRANSACTION_TYPES.INCOMING,
+        type: TransactionType.incoming,
       });
     });
 
@@ -1333,7 +1333,7 @@ describe('IncomingTransactionsController', function () {
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
         chainId: CHAIN_IDS.GOERLI,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {
           from: '0xa',
@@ -1345,7 +1345,7 @@ describe('IncomingTransactionsController', function () {
           value: '0xf',
         },
         hash: '0xg',
-        type: TRANSACTION_TYPES.INCOMING,
+        type: TransactionType.incoming,
       });
     });
   });

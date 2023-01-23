@@ -164,8 +164,7 @@ export default function CollectiblesItems({
               <Typography
                 color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H5}
-                marginTop={0}
-                marginBottom={2}
+                margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${
                   collectibles.length
@@ -203,18 +202,18 @@ export default function CollectiblesItems({
                     className="collectibles-items__item-wrapper__card"
                   >
                     {collectibleImage ? (
-                      <div
+                      <button
                         className="collectibles-items__item"
                         style={{
                           backgroundColor,
                         }}
+                        onClick={handleImageClick}
                       >
                         <img
-                          onClick={handleImageClick}
                           className="collectibles-items__item-image"
                           src={collectibleImage}
                         />
-                      </div>
+                      </button>
                     ) : (
                       <CollectibleDefaultImage
                         name={name}

@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import {
-  LEDGER_TRANSPORT_TYPES,
+  LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
@@ -49,7 +49,7 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+    ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
     setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
@@ -473,18 +473,18 @@ export default class AdvancedTab extends PureComponent {
     const transportTypeOptions = [
       {
         name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LEDGER_TRANSPORT_TYPES.LIVE,
+        value: LedgerTransportTypes.live,
       },
       {
         name: LEDGER_TRANSPORT_NAMES.U2F,
-        value: LEDGER_TRANSPORT_TYPES.U2F,
+        value: LedgerTransportTypes.u2f,
       },
     ];
 
     if (window.navigator.hid) {
       transportTypeOptions.push({
         name: LEDGER_TRANSPORT_NAMES.WEBHID,
-        value: LEDGER_TRANSPORT_TYPES.WEBHID,
+        value: LedgerTransportTypes.webhid,
       });
     }
 
@@ -520,14 +520,14 @@ export default class AdvancedTab extends PureComponent {
               selectedOption={ledgerTransportType}
               onChange={async (transportType) => {
                 if (
-                  ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE &&
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID
+                  ledgerTransportType === LedgerTransportTypes.live &&
+                  transportType === LedgerTransportTypes.webhid
                 ) {
                   this.setState({ showLedgerTransportWarning: true });
                 }
                 setLedgerTransportPreference(transportType);
                 if (
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+                  transportType === LedgerTransportTypes.webhid &&
                   userHasALedgerAccount
                 ) {
                   await window.navigator.hid.requestDevice({
