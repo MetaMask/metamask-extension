@@ -159,9 +159,6 @@ function wrapAgainstScuttling(content, bag = {}) {
     }
     // setup proxy for the vetted shim to go through
     const proxy = new Proxy(bag, {
-      get: function get(target, prop) {
-        return Reflect.get(target, prop);
-      },
       set: function set(target, prop, value) {
         if (bag.hasOwnProperty(prop) || prop.startsWith('on')) {
           return bag[prop] = global[prop] = value;
