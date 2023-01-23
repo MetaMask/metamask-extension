@@ -34,6 +34,8 @@ ignores:
   - 'lavamoat-viz'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
+  - 'playwright'
+  - 'wait-on'
   # development tool
   - 'improved-yarn-audit'
   - 'nyc'

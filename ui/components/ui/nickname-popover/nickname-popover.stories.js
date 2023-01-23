@@ -4,7 +4,7 @@ import NicknamePopover from '.';
 
 export default {
   title: 'Components/UI/NicknamePopover',
-  id: __filename,
+
   argTypes: {
     address: {
       control: { type: 'text' },

@@ -135,16 +135,6 @@ const addHexPrefix = (str) => {
   return `0x${str}`;
 };
 
-/**
- * Converts a BN object to a hex string with a '0x' prefix
- *
- * @param {BN} inputBn - The BN to convert to a hex string
- * @returns {string} A '0x' prefixed hex string
- */
-function bnToHex(inputBn) {
-  return addHexPrefix(inputBn.toString(16));
-}
-
 function getChainType(chainId) {
   if (chainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
@@ -172,7 +162,6 @@ export {
   BnMultiplyByFraction,
   checkForError,
   addHexPrefix,
-  bnToHex,
   getChainType,
   checkAlarmExists,
 };

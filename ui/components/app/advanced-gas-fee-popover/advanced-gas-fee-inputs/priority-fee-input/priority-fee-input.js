@@ -7,7 +7,6 @@ import {
   PRIORITY_LEVELS,
 } from '../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../helpers/constants/common';
-import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -19,6 +18,7 @@ import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import { decGWEIToHexWEI } from '../../../../../../shared/modules/conversion.utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
   if (value < 0) {

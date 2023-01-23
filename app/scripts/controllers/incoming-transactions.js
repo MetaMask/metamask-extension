@@ -2,7 +2,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import BN from 'bn.js';
 import createId from '../../../shared/modules/random-id';
-import { bnToHex, previousValueComparator } from '../lib/util';
+import { previousValueComparator } from '../lib/util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
@@ -14,6 +14,7 @@ import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
 } from '../../../shared/constants/network';
+import { bnToHex } from '../../../shared/modules/conversion.utils';
 
 const fetchWithTimeout = getFetchWithTimeout();
 

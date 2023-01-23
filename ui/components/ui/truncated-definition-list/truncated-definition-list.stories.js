@@ -3,7 +3,7 @@ import TruncatedDefinitionList from './truncated-definition-list';
 
 export default {
   title: 'Components/UI/TruncatedDefinitionList',
-  id: __filename,
+
   argTypes: {
     title: {
       control: 'text',

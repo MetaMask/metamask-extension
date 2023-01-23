@@ -12,7 +12,6 @@ import { merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
-  bnToHex,
   BnMultiplyByFraction,
   addHexPrefix,
   getChainType,
@@ -33,7 +32,13 @@ import {
   CUSTOM_GAS_ESTIMATE,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import {
+  bnToHex,
+  decGWEIToHexWEI,
+  decimalToHex,
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
@@ -50,10 +55,7 @@ import {
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   calcGasTotal,
-  decimalToHex,
   getSwapsTokensReceivedFromTxMeta,
-  hexWEIToDecETH,
-  hexWEIToDecGWEI,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import TransactionStateManager from './tx-state-manager';
@@ -149,6 +151,7 @@ export default class TransactionController extends EventEmitter {
     this.getDeviceModel = opts.getDeviceModel;
     this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
+    this.securityProviderRequest = opts.securityProviderRequest;
 
     this.memStore = new ObservableStore({});
 
@@ -335,6 +338,7 @@ export default class TransactionController extends EventEmitter {
     );
 
     const initialTxMeta = await this.addUnapprovedTransaction(
+      opts.method,
       txParams,
       opts.origin,
       undefined,
@@ -764,6 +768,7 @@ export default class TransactionController extends EventEmitter {
    * actionId is fix used for making this action idempotent to deal with scenario when
    * action is invoked multiple times with same parameters in MV3 due to service worker re-activation.
    *
+   * @param txMethodType
    * @param txParams
    * @param origin
    * @param transactionType
@@ -772,6 +777,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(
+    txMethodType,
     txParams,
     origin,
     transactionType,
@@ -853,6 +859,15 @@ export default class TransactionController extends EventEmitter {
     txMeta.txParams.value = txMeta.txParams.value
       ? addHexPrefix(txMeta.txParams.value)
       : '0x0';
+
+    if (txMethodType && this.securityProviderRequest) {
+      const securityProviderResponse = await this.securityProviderRequest(
+        txMeta,
+        txMethodType,
+      );
+
+      txMeta.securityProviderResponse = securityProviderResponse;
+    }
 
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
