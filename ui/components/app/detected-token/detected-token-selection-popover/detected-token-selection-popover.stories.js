@@ -10,12 +10,13 @@ const store = configureStore(testData);
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenSelectionPopover',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
-  id: __filename,
+
   argTypes: {
     selectedTokens: { control: 'array' },
     handleTokenSelection: { control: 'func' },
     onImport: { control: 'func' },
     onIgnoreAll: { control: 'func' },
+    sortingBasedOnTokenSelection: { control: 'func' },
   },
   args: {
     tokensListDetected: {
@@ -57,6 +58,7 @@ export default {
         selected: true,
       },
     },
+    sortingBasedOnTokenSelection: () => [],
   },
 };
 

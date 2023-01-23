@@ -6,7 +6,10 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
-import KeyringController from 'eth-keyring-controller';
+import {
+  KeyringController,
+  keyringBuilderFactory,
+} from '@metamask/eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -57,11 +60,13 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+
 import browser from 'webextension-polyfill';
 import {
-  ASSET_TYPES,
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  AssetType,
+  TransactionStatus,
+  TransactionType,
 } from '../../shared/constants/transaction';
 import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
@@ -69,9 +74,11 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
-import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
+import {
+  HardwareDeviceNames,
+  HardwareKeyringTypes,
+} from '../../shared/constants/hardware-wallets';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -100,11 +107,9 @@ import { getTokenIdParam } from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import {
-  getTokenValueParam,
-  hexToDecimal,
-} from '../../shared/lib/metamask-controller-utils';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -266,7 +271,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
             ...networkState,
-            provider: {
+            providerConfig: {
               ...networkState.provider,
               chainId: hexToDecimal(networkState.provider.chainId),
             },
@@ -291,9 +296,16 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -307,7 +319,7 @@ export default class MetamaskController extends EventEmitter {
             const networkState = this.networkController.store.getState();
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -327,9 +339,16 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
         getERC721AssetName:
           this.assetsContractController.getERC721AssetName.bind(
             this.assetsContractController,
@@ -359,7 +378,7 @@ export default class MetamaskController extends EventEmitter {
             properties: {
               token_contract_address: address,
               token_symbol: symbol,
-              asset_type: ASSET_TYPES.NFT,
+              asset_type: AssetType.NFT,
               token_standard: standard,
               source,
             },
@@ -381,9 +400,17 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
         getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
         getBalancesInSingleCall:
           this.assetsContractController.getBalancesInSingleCall.bind(
@@ -479,8 +506,13 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    this.phishingController = new PhishingController();
-    this.phishingController.updatePhishingLists();
+    this.phishingController = new PhishingController(
+      {},
+      initState.PhishingController,
+    );
+
+    this.phishingController.maybeUpdatePhishingLists();
+
     if (process.env.IN_TEST) {
       this.phishingController.setRefreshInterval(5 * SECOND);
     }
@@ -504,7 +536,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.subscribe((networkState) => {
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -512,8 +544,28 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           }),
       },
-      undefined,
+      {
+        disabled:
+          !this.preferencesController.store.getState().useCurrencyRateCheck,
+      },
       initState.TokenRatesController,
+    );
+    this.preferencesController.store.subscribe(
+      previousValueComparator((prevState, currState) => {
+        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
+        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+        if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
+          this.currencyRateController.start();
+          this.tokenRatesController.configure(
+            { disabled: false },
+            false,
+            false,
+          );
+        } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
+          this.currencyRateController.stop();
+          this.tokenRatesController.configure({ disabled: true }, false, false);
+        }
+      }, this.preferencesController.store.getState()),
     );
 
     this.ensController = new EnsController({
@@ -594,15 +646,19 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [];
     if (!isManifestV3) {
-      additionalKeyrings = [
+      const additionalKeyringTypes = [
         TrezorKeyring,
         LedgerBridgeKeyring,
         LatticeKeyring,
         QRHardwareKeyring,
       ];
+      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
+        keyringBuilderFactory(keyringType),
+      );
     }
+
     this.keyringController = new KeyringController({
-      keyringTypes: additionalKeyrings,
+      keyringBuilders: additionalKeyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
@@ -876,8 +932,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
-        status === TRANSACTION_STATUSES.CONFIRMED ||
-        status === TRANSACTION_STATUSES.FAILED
+        status === TransactionStatus.confirmed ||
+        status === TransactionStatus.failed
       ) {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
         const frequentRpcListDetail =
@@ -896,7 +952,7 @@ export default class MetamaskController extends EventEmitter {
         // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
         // in which case we will want to check and update ownership status of the transferred collectible.
         if (
-          txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&
+          txMeta.type === TransactionType.tokenMethodTransferFrom &&
           txMeta.txParams !== undefined
         ) {
           const {
@@ -1093,7 +1149,7 @@ export default class MetamaskController extends EventEmitter {
         this.txController.getTransactions({
           searchCriteria: {
             hash,
-            status: TRANSACTION_STATUSES.SUBMITTED,
+            status: TransactionStatus.submitted,
           },
         })[0],
     });
@@ -1142,6 +1198,7 @@ export default class MetamaskController extends EventEmitter {
       TokensController: this.tokensController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
+      PhishingController: this.phishingController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1245,7 +1302,9 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.incomingTransactionsController.start();
-    this.currencyRateController.start();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.start();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
     }
@@ -1254,7 +1313,9 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.accountTracker.stop();
     this.incomingTransactionsController.stop();
-    this.currencyRateController.stop();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.stop();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
     }
@@ -1593,7 +1654,6 @@ export default class MetamaskController extends EventEmitter {
       detectTokensController,
       ensController,
       gasFeeController,
-      keyringController,
       metaMetricsController,
       networkController,
       announcementController,
@@ -1634,6 +1694,10 @@ export default class MetamaskController extends EventEmitter {
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
         preferencesController,
       ),
+      setUseCurrencyRateCheck:
+        preferencesController.setUseCurrencyRateCheck.bind(
+          preferencesController,
+        ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
@@ -1813,7 +1877,7 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      exportAccount: keyringController.exportAccount.bind(keyringController),
+      exportAccount: this.exportAccount.bind(this),
 
       // txController
       cancelTransaction: txController.cancelTransaction.bind(txController),
@@ -2056,6 +2120,11 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  async exportAccount(address, password) {
+    await this.verifyPassword(password);
+    return this.keyringController.exportAccount(address, password);
+  }
+
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
     const details =
       await this.assetsContractController.getTokenStandardAndDetails(
@@ -2212,7 +2281,7 @@ export default class MetamaskController extends EventEmitter {
       );
 
       const [primaryKeyring] = keyringController.getKeyringsByType(
-        KEYRING_TYPES.HD_KEY_TREE,
+        HardwareKeyringTypes.hdKeyTree,
       );
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
@@ -2339,10 +2408,10 @@ export default class MetamaskController extends EventEmitter {
 
     // Accounts
     const [hdKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.IMPORTED,
+      HardwareKeyringTypes.hdKeyTree,
     );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
@@ -2503,12 +2572,16 @@ export default class MetamaskController extends EventEmitter {
    */
   getPrimaryKeyringMnemonic() {
     const [keyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
-    return keyring.mnemonic;
+
+    const recoveredIndices = Array.from(
+      new Uint16Array(new Uint8Array(keyring.mnemonic).buffer),
+    );
+    return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
   }
 
   //
@@ -2518,16 +2591,16 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
     switch (deviceName) {
-      case DEVICE_NAMES.TREZOR:
+      case HardwareDeviceNames.trezor:
         keyringName = TrezorKeyring.type;
         break;
-      case DEVICE_NAMES.LEDGER:
+      case HardwareDeviceNames.ledger:
         keyringName = LedgerBridgeKeyring.type;
         break;
-      case DEVICE_NAMES.QR:
+      case HardwareDeviceNames.qr:
         keyringName = QRHardwareKeyring.type;
         break;
-      case DEVICE_NAMES.LATTICE:
+      case HardwareDeviceNames.lattice:
         keyringName = LatticeKeyring.type;
         break;
       default:
@@ -2542,10 +2615,10 @@ export default class MetamaskController extends EventEmitter {
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
     }
-    if (deviceName === DEVICE_NAMES.LATTICE) {
+    if (deviceName === HardwareDeviceNames.lattice) {
       keyring.appName = 'MetaMask';
     }
-    if (deviceName === DEVICE_NAMES.TREZOR) {
+    if (deviceName === HardwareDeviceNames.trezor) {
       const model = keyring.getModel();
       this.appStateController.setTrezorModel(model);
     }
@@ -2556,7 +2629,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async attemptLedgerTransportCreation() {
-    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
+    const keyring = await this.getKeyringForDevice(HardwareDeviceNames.ledger);
     return await keyring.attemptMakeApp();
   }
 
@@ -2634,12 +2707,12 @@ export default class MetamaskController extends EventEmitter {
   async getAccountType(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case KEYRING_TYPES.TREZOR:
-      case KEYRING_TYPES.LATTICE:
-      case KEYRING_TYPES.QR:
-      case KEYRING_TYPES.LEDGER:
+      case HardwareKeyringTypes.trezor:
+      case HardwareKeyringTypes.lattice:
+      case HardwareKeyringTypes.qr:
+      case HardwareKeyringTypes.ledger:
         return 'hardware';
-      case KEYRING_TYPES.IMPORTED:
+      case HardwareKeyringTypes.imported:
         return 'imported';
       default:
         return 'MetaMask';
@@ -2657,16 +2730,16 @@ export default class MetamaskController extends EventEmitter {
   async getDeviceModel(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case KEYRING_TYPES.TREZOR:
+      case HardwareKeyringTypes.trezor:
         return keyring.getModel();
-      case KEYRING_TYPES.QR:
+      case HardwareKeyringTypes.qr:
         return keyring.getName();
-      case KEYRING_TYPES.LEDGER:
+      case HardwareKeyringTypes.ledger:
         // TODO: get model after ledger keyring exposes method
-        return DEVICE_NAMES.LEDGER;
-      case KEYRING_TYPES.LATTICE:
+        return HardwareDeviceNames.ledger;
+      case HardwareKeyringTypes.lattice:
         // TODO: get model after lattice keyring exposes method
-        return DEVICE_NAMES.LATTICE;
+        return HardwareDeviceNames.lattice;
       default:
         return 'N/A';
     }
@@ -2709,7 +2782,9 @@ export default class MetamaskController extends EventEmitter {
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
         const label = this.getAccountLabel(
-          deviceName === DEVICE_NAMES.QR ? keyring.getName() : deviceName,
+          deviceName === HardwareDeviceNames.qr
+            ? keyring.getName()
+            : deviceName,
           index,
           hdPathDescription,
         );
@@ -2736,7 +2811,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async addNewAccount(accountCount) {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -2781,7 +2856,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async verifySeedPhrase() {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -2903,7 +2978,7 @@ export default class MetamaskController extends EventEmitter {
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
     const keyring = await this.keyringController.addNewKeyring(
-      KEYRING_TYPES.IMPORTED,
+      HardwareKeyringTypes.imported,
       [privateKey],
     );
     const [firstAccount] = await keyring.getAccounts();
@@ -3186,7 +3261,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case KEYRING_TYPES.LEDGER: {
+      case HardwareKeyringTypes.ledger: {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
@@ -3194,7 +3269,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case KEYRING_TYPES.TREZOR: {
+      case HardwareKeyringTypes.trezor: {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
@@ -3202,7 +3277,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case KEYRING_TYPES.LATTICE: {
+      case HardwareKeyringTypes.lattice: {
         return new Promise((_, reject) => {
           reject(
             new Error('Lattice does not support eth_getEncryptionPublicKey.'),
@@ -3210,7 +3285,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case KEYRING_TYPES.QR: {
+      case HardwareKeyringTypes.qr: {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
         );
@@ -3477,10 +3552,7 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
-      const phishingListsAreOutOfDate = this.phishingController.isOutOfDate();
-      if (phishingListsAreOutOfDate) {
-        this.phishingController.updatePhishingLists();
-      }
+      this.phishingController.maybeUpdatePhishingLists();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
@@ -4340,7 +4412,7 @@ export default class MetamaskController extends EventEmitter {
     const newValue =
       this.preferencesController.setLedgerTransportPreference(transportType);
 
-    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
+    const keyring = await this.getKeyringForDevice(HardwareDeviceNames.ledger);
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod(newValue).catch((e) => {
         // If there was an error updating the transport, we should
@@ -4429,14 +4501,14 @@ export default class MetamaskController extends EventEmitter {
    */
   setLocked() {
     const [trezorKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.TREZOR,
+      HardwareKeyringTypes.trezor,
     );
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
 
     const [ledgerKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.LEDGER,
+      HardwareKeyringTypes.ledger,
     );
     ledgerKeyring?.destroy?.();
 

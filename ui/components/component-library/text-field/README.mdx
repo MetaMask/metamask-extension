@@ -9,16 +9,16 @@ import { TextField } from './text-field';
 The `TextField` component lets users enter and edit text as well as adding a show clear button option. It wraps `TextFieldBase` and functions only as a controlled input.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--default-story" />
+  <Story id="components-componentlibrary-textfield--default-story" />
 </Canvas>
 
 ## Props
 
-The `TextField` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `TextField` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={TextField} />
 
-`TextField` accepts all [TextFieldBase](/docs/ui-components-component-library-text-field-base-text-field-base-stories-js--default-story#props)
+`TextField` accepts all [TextFieldBase](/docs/components-componentlibrary-textfieldbase--default-story#props)
 component props
 
 <ArgsTable of={TextFieldBase} />
@@ -27,12 +27,12 @@ component props
 
 Use the `showClearButton` prop to display a clear button when `TextField` has a value. Use the `clearButtonOnClick` prop to pass an `onClick` event handler to clear the value of the input. Otherwise the clear button will not do anything.
 
-The clear button uses [ButtonIcon](/docs/ui-components-component-library-button-icon-button-icon-stories-js--default-story) and accepts all `ButtonIcon` props.
+The clear button uses [ButtonIcon](/docs/components-componentlibrary-buttonicon--default-story) and accepts all `ButtonIcon` props.
 
 **NOTE: The `showClearButton` only works with a controlled input.**
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--show-clear-button" />
+  <Story id="components-componentlibrary-textfield--show-clear-button" />
 </Canvas>
 
 ```jsx
@@ -62,7 +62,7 @@ const handleOnClear = () => {
 Use the `clearButtonProps` to access other props of the clear button.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-field-text-field-stories-js--clear-button-props" />
+  <Story id="components-componentlibrary-textfield--clear-button-props" />
 </Canvas>
 
 ```jsx

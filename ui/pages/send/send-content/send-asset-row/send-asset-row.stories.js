@@ -11,7 +11,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'Pages/Send/SendContent/SendAssetRow',
-  id: __filename,
+
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
@@ -31,6 +31,7 @@ export const DefaultStory = () => {
       updateSendErrors={() => undefined}
       updateSendAsset={() => undefined}
       updateTokenType={(type) => action(`Selected Token: ${type}`)()}
+      sendAsset={{}}
     />
   );
 };

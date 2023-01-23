@@ -1,6 +1,5 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import {
@@ -8,6 +7,7 @@ import {
   GAS_RECOMMENDATIONS,
 } from '../../../../shared/constants/gas';
 
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import EditGasPopover from '.';
 
 const store = configureStore(testData);
@@ -15,7 +15,7 @@ const store = configureStore(testData);
 export default {
   title: 'Components/App/EditGasPopover',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
-  id: __filename,
+
   argTypes: {
     editGasDisplayProps: {
       control: 'object',
