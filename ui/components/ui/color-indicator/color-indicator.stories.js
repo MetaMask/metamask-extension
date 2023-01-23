@@ -4,36 +4,37 @@ import ColorIndicator from './color-indicator';
 
 export default {
   title: 'Components/UI/ColorIndicator',
-  id: __filename,
+
   argTypes: {
     size: {
       control: {
         type: 'select',
       },
       options: SIZES,
-      defaultValue: SIZES.LG,
     },
     type: {
       control: {
         type: 'select',
       },
       options: ColorIndicator.TYPES,
-      defaultValue: ColorIndicator.TYPES.FILLED,
     },
     color: {
       control: {
         type: 'select',
       },
       options: COLORS,
-      defaultValue: COLORS.PRIMARY_DEFAULT,
     },
     borderColor: {
       control: {
         type: 'select',
       },
       options: { NONE: undefined, ...COLORS },
-      defaultValue: undefined,
     },
+  },
+  args: {
+    size: SIZES.LG,
+    type: ColorIndicator.TYPES.FILLED,
+    color: COLORS.PRIMARY_DEFAULT,
   },
 };
 

@@ -92,10 +92,6 @@
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 può avere accesso e spendere al massimo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 può accedere e spendere questa risorsa",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -232,9 +228,6 @@
   "advancedGasPriceTitle": {
     "message": "Prezzo gas"
   },
-  "advancedOptions": {
-    "message": "Opzioni Avanzate"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "La commissione di priorità avanzata (nota anche come \"suggerimento del minatore\") va direttamente ai minatori e li incentiva a dare la priorità alla tua commissione di transazione."
   },
@@ -318,9 +311,6 @@
   },
   "approved": {
     "message": "Approvato"
-  },
-  "approvedAmountWithColon": {
-    "message": "Importo approvato:"
   },
   "approvedAsset": {
     "message": "Asset approvato"
@@ -948,29 +938,8 @@
   "editContact": {
     "message": "Modifica contatto"
   },
-  "editGasEducationButtonText": {
-    "message": "Come devo scegliere?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Questo è il migliore per le transazioni sensibili al tempo (come gli swap) in quanto aumenta la probabilità di una transazione riuscita. Se uno Swap impiega troppo tempo per l'elaborazione, potrebbe non riuscire e comportare la perdita di parte della tariffa del gas."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Una tariffa gas inferiore dovrebbe essere utilizzata solo quando il tempo di elaborazione è meno importante. Commissioni più basse rendono difficile prevedere quando (o se) la tua transazione avrà esito positivo."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Una commissione gas media va bene per l'invio, il prelievo o altre transazioni non sensibili al fattore tempo. Molto spesso questa impostazione risulterà in una transazione riuscita."
-  },
-  "editGasEducationModalIntro": {
-    "message": "La scelta della giusta commissione per il gas dipende dal tipo di transazione e da quanto è importante per te."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Come scegliere?"
-  },
   "editGasFeeModalTitle": {
     "message": "Modificare la tariffa del gas"
-  },
-  "editGasHigh": {
-    "message": "Alta"
   },
   "editGasLimitOutOfBounds": {
     "message": "Il limite di gas deve essere almeno $1"
@@ -981,9 +950,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Il limite del gas è l'unità massima di gas che sei disposto a utilizzare. Le unità di gas sono un moltiplicatore per “Commissione massima priorità“ e “Commissione massima“."
-  },
-  "editGasLow": {
-    "message": "Bassa"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "La tariffa base massima non può essere inferiore alla tariffa prioritaria"
@@ -1433,9 +1399,6 @@
   },
   "newAccount": {
     "message": "Nuovo Account"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Rilevato un nuovo indirizzo! Clicca qui per aggiungerlo alla tua rubrica."
   },
   "newContact": {
     "message": "Nuovo contatto"

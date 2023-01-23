@@ -828,6 +828,17 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         { extensions },
       ],
+      // Transpile libraries that use ES2020 unsupported by Chrome v78
+      [
+        babelify,
+        {
+          only: [
+            './**/node_modules/@ethereumjs/util',
+            './**/node_modules/superstruct',
+          ],
+          global: true,
+        },
+      ],
       // Inline `fs.readFileSync` files
       brfs,
     ],
@@ -1018,7 +1029,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const iconNames = await generateIconNames();
   return {
     ICON_NAMES: iconNames,
-    COLLECTIBLES_V1: config.COLLECTIBLES_V1 === '1',
+    NFTS_V1: config.NFTS_V1 === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({

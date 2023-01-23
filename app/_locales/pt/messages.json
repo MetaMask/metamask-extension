@@ -36,10 +36,10 @@
     "message": "Escanear código QR"
   },
   "QRHardwareWalletSteps1Description": {
-    "message": "Conecte uma carteira de hardware com lacuna de ar que se comunique através de QR codes. As carteiras de hardware com lacuna de ar aceitas oficialmente incluem:"
+    "message": "Você pode escolher abaixo em uma lista de parceiros oficiais que aceitam QR code."
   },
   "QRHardwareWalletSteps1Title": {
-    "message": "Carteira de hardware baseada em código QR"
+    "message": "Conecte sua carteira de hardware QR"
   },
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave (em breve)"
@@ -47,9 +47,18 @@
   "SIWEAddressInvalid": {
     "message": "O endereço na solicitação de entrada não coincide com o endereço da conta que você está usando para entrar."
   },
+  "SIWEDomainInvalidText": {
+    "message": "O site em que você está tentando fazer login não coincide com o domínio na solicitação. Prossiga com cautela."
+  },
+  "SIWEDomainInvalidTitle": {
+    "message": "Solicitação de site enganosa."
+  },
   "SIWEDomainWarningBody": {
     "message": "O site ($1) está solicitando que você entre no domínio incorreto. Pode-se tratar de um ataque de phishing.",
     "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningLabel": {
+    "message": "Inseguro"
   },
   "SIWELabelChainID": {
     "message": "ID da cadeia:"
@@ -101,10 +110,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 pode acessar e gastar até esse valor máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 pode(m) acessar e usar esse ativo",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -134,6 +139,10 @@
   "accountNameDuplicate": {
     "message": "Esse nome de conta já existe",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
+  "accountNameReserved": {
+    "message": "Esse nome de conta está reservado",
+    "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
   },
   "accountOptions": {
     "message": "Opções da conta"
@@ -174,6 +183,15 @@
   "addContact": {
     "message": "Adicionar contato"
   },
+  "addCustomIPFSGateway": {
+    "message": "Adicionar gateway IPFS personalizado"
+  },
+  "addCustomIPFSGatewayDescription": {
+    "message": "O gateway IPFS possibilita acessar e visualizar dados hospedados por terceiros. Você pode adicionar um gateway IPFS personalizado ou continuar usando o padrão."
+  },
+  "addCustomNetwork": {
+    "message": "Adicionar rede personalizada"
+  },
   "addCustomToken": {
     "message": "Adicionar token personalizado"
   },
@@ -197,6 +215,28 @@
   },
   "addEthereumChainConfirmationTitle": {
     "message": "Permitir que este site adicione uma rede?"
+  },
+  "addEthereumChainWarningModalHeader": {
+    "message": "Adicione esse provedor de RPC apenas se tiver certeza de que é confiável. $1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "Provedores mal-intencionados podem mentir sobre o estado da blockchain e registrar a atividade da sua rede."
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "É importante que o seu provedor seja confiável, pois ele tem poder para:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "Ver suas contas e endereços IP e cruzá-los"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "Mostrar saldos de conta e outros estados na cadeia"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "Transmitir suas transações"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "Você está adicionando um novo provedor RPC para a Mainnet do Ethereum"
   },
   "addFriendsAndAddresses": {
     "message": "Adicionar amigos e endereços confiáveis"
@@ -235,6 +275,9 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Quando a sua transação for incluída no bloco, qualquer diferença entre a sua taxa de base máxima e a taxa de base real será reembolsada. O cálculo do valor total é feito da seguinte forma: taxa de base máxima (em GWEI) * limite de gás."
   },
+  "advancedConfiguration": {
+    "message": "Configurações avançadas"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Salvar estes $1 como meu padrão para \"Avançado\""
   },
@@ -246,9 +289,6 @@
   },
   "advancedGasPriceTitle": {
     "message": "Preço do Gas"
-  },
-  "advancedOptions": {
-    "message": "Opções avançadas"
   },
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
@@ -334,11 +374,15 @@
     "message": "Aprovar limite de gastos de $1",
     "description": "The token symbol that is being approved"
   },
+  "approveTokenDescription": {
+    "message": "Isso permite que terceiros acessem e transfiram os seguintes NFTs sem aviso prévio até que você revogue o acesso."
+  },
+  "approveTokenTitle": {
+    "message": "Permitir acesso e transferência de seu $1?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
+  },
   "approved": {
     "message": "Aprovado"
-  },
-  "approvedAmountWithColon": {
-    "message": "Valor aprovado:"
   },
   "approvedAsset": {
     "message": "Ativo aprovado"
@@ -376,6 +420,13 @@
   },
   "authorizedPermissions": {
     "message": "Você concedeu as seguintes permissões"
+  },
+  "autoDetectTokens": {
+    "message": "Detectar tokens automaticamente"
+  },
+  "autoDetectTokensDescription": {
+    "message": "Usamos APIs de terceiros para detectar e exibir novos tokens enviados à sua carteira. Desative essa opção se não quiser que o app extraia dados desses serviços. $1",
+    "description": "$1 is a link to a support article"
   },
   "autoLockTimeLimit": {
     "message": "Timer com bloqueio automático (minutos)"
@@ -425,24 +476,50 @@
   "beCareful": {
     "message": "Tenha cuidado"
   },
+  "beta": {
+    "message": "Beta"
+  },
+  "betaHeaderText": {
+    "message": "Esta é uma versão beta. Pedimos que relatem os bugs $1",
+    "description": "$1 represents the word 'here' in a hyperlink"
+  },
   "betaMetamaskDescription": {
     "message": "Com a confiança de milhões de usuários, a MetaMask é uma carteira segura que torna o mundo da Web3 acessível a todos."
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "Ressalva sobre a versão Beta"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Use esta versão para testar funcionalidades futuras antes de serem lançadas. Seu uso e feedback nos ajuda a desenvolver a melhor versão possível da MetaMask. O seu uso da MetaMask Beta está sujeito aos nossos $1 padrão, bem como aos nossos $2. Por ser uma versão Beta, pode haver um risco maior de bugs. Ao prosseguir, você aceita e reconhece esses riscos, bem como aqueles encontrados em nossos Termos e Termos da Versão Beta.",
+    "message": "Essa versão permite que você teste futuros recursos antes do lançamento, o que ajuda a tornar a MetaMask ainda melhor. Como em todas as versões beta, pode haver um risco maior de bugs. A MetaMask Beta se sujeita aos nossos $1 bem como aos nossos $2.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "Ao prosseguir, você aceita e reconhece esses riscos, nossos $1 e $2.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "Termos do Beta"
+  },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Termos Suplementares da Versão Beta"
+    "message": "termos suplementares da versão beta"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Termos"
+    "message": "termos padrão"
   },
   "betaMetamaskVersion": {
     "message": "Versão Beta da MetaMask"
   },
   "betaPortfolioSite": {
     "message": "site de portfólio beta"
+  },
+  "betaTerms": {
+    "message": "Termos de uso do Beta"
+  },
+  "betaWalletCreationSuccessReminder1": {
+    "message": "O MetaMask Beta não pode recuperar a sua Frase de Recuperação Secreta."
+  },
+  "betaWalletCreationSuccessReminder2": {
+    "message": "O MetaMask Beta nunca pedirá sua Frase de Recuperação Secreta."
   },
   "betaWelcome": {
     "message": "Bem-vindo à MetaMask Beta"
@@ -514,6 +591,9 @@
     "message": "O Transak aceita cartões de crédito, cartões de débito, Apple Pay, MobiKwik e transferências bancárias (dependendo da localização) em mais de 100 países. $1 deposita diretamente na sua conta da MetaMask.",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "buyNow": {
+    "message": "Comprar agora"
+  },
   "buyWithWyre": {
     "message": "Comprar $1 com o Wyre"
   },
@@ -571,6 +651,13 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "A rede com ID de cadeia $1 pode usar um símbolo de moeda ($2) diferente do que você inseriu. Por favor, verifique antes de continuar.",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+  },
+  "chooseYourNetwork": {
+    "message": "Escolha sua rede"
+  },
+  "chooseYourNetworkDescription": {
+    "message": "Usamos a Infura como nosso provedor de chamadas de procedimento remoto (RPC) para oferecermos o acesso mais confiável e privado possível aos dados do Ethereum. Você pode escolher sua própria RPC, mas lembre-se de que qualquer RPC receberá seu endereço IP e da carteira de Ethereum para realizar transações. Leia nosso $1 para saber mais sobre como a Infura trata os dados.",
+    "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar a MetaMask no Google Chrome para se conectar com a sua carteira de hardware."
@@ -703,6 +790,10 @@
   "contacts": {
     "message": "Contatos"
   },
+  "contentFromSnap": {
+    "message": "Conteúdo de $1",
+    "description": "$1 represents the name of the snap"
+  },
   "continue": {
     "message": "Continuar"
   },
@@ -736,6 +827,15 @@
   "contractInteraction": {
     "message": "Interação com o contrato"
   },
+  "contractNFT": {
+    "message": "Contrato de NFT"
+  },
+  "contractRequestingAccess": {
+    "message": "Contrato solicitando acesso"
+  },
+  "contractRequestingSignature": {
+    "message": "Contrato pendente de assinatura"
+  },
   "contractRequestingSpendingCap": {
     "message": "Contrato solicitando limite de gastos"
   },
@@ -750,6 +850,9 @@
   },
   "convertTokenToNFTExistDescription": {
     "message": "Detectamos que esse ativo foi adicionado como NFT. Deseja removê-lo da sua lista de tokens?"
+  },
+  "coolWallet": {
+    "message": "CoolWallet"
   },
   "copiedExclamation": {
     "message": "Copiado!"
@@ -801,6 +904,9 @@
   },
   "currentLanguage": {
     "message": "Idioma atual"
+  },
+  "currentRpcUrlDeprecated": {
+    "message": "O atual URL da RPC para essa rede foi descontinuado."
   },
   "currentTitle": {
     "message": "Atual:"
@@ -874,6 +980,9 @@
   "dataHex": {
     "message": "Hex"
   },
+  "dcent": {
+    "message": "D'Cent"
+  },
   "decimal": {
     "message": "Decimal do token"
   },
@@ -911,6 +1020,9 @@
   },
   "deleteNetworkDescription": {
     "message": "Quer mesmo excluir essa rede?"
+  },
+  "deposit": {
+    "message": "Depositar"
   },
   "depositCrypto": {
     "message": "Depositar $1",
@@ -977,6 +1089,9 @@
   "downloadGoogleChrome": {
     "message": "Baixar o Google Chrome"
   },
+  "downloadNow": {
+    "message": "Baixar agora"
+  },
   "downloadSecretBackup": {
     "message": "Baixe essa Frase de Recuperação Secreta e mantenha-a guardada em segurança num disco rígido externo ou mídia de armazenamento criptografada."
   },
@@ -1001,29 +1116,8 @@
   "editContact": {
     "message": "Editar contato"
   },
-  "editGasEducationButtonText": {
-    "message": "Como eu escolho?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Essa é a melhor opção para transações suscetíveis ao tempo (como swaps), pois aumenta a probabilidade de sucesso da transação. Se um swap demorar demais para ser processado, ele pode falhar e resultar na perda de parte da taxa de Gas."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Uma taxa de gás mais baixa só deve ser usada quando o tempo de processamento é menos importante. Taxas reduzidas dificultam a previsão de quando (ou se) a sua transação será bem-sucedida."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Uma taxa de Gas média é boa para envios, retiradas e outras transações não suscetíveis ao tempo. Essas condições quase sempre resultarão em uma transação de sucesso."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Selecionar a taxa de Gas correta depende do tipo de transação e do quanto ela é importante para você."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Como escolher?"
-  },
   "editGasFeeModalTitle": {
     "message": "Editar taxa de Gas"
-  },
-  "editGasHigh": {
-    "message": "Alta"
   },
   "editGasLimitOutOfBounds": {
     "message": "O limite de gás deve ser de pelo menos $1"
@@ -1034,9 +1128,6 @@
   },
   "editGasLimitTooltip": {
     "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
-  },
-  "editGasLow": {
-    "message": "Baixa"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "A taxa de base máxima não pode ser inferior à taxa de prioridade"
@@ -1056,9 +1147,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "A taxa máxima não pode ser inferior à taxa de prioridade máxima"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "A taxa máxima é o valor máximo que você pagará (taxa base + taxa de prioridade)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "A taxa de prioridade máxima deve ser superior a 0 GWEI"
   },
@@ -1076,12 +1164,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "A taxa de prioridade está baixa para as condições atuais da rede"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "A taxa máxima de prioridade (também conhecida como \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar sua transação. Na maioria dos casos, você paga o valor máximo definido"
-  },
-  "editGasMedium": {
-    "message": "Média"
   },
   "editGasPriceTooLow": {
     "message": "O preço do gás deve ser superior a 0"
@@ -1102,12 +1184,6 @@
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
   },
-  "editGasTooLowTooltip": {
-    "message": "Sua taxa máxima ou taxa de prioridade máxima pode estar baixa para as condições atuais do mercado. Não sabemos quando (ou se) a sua transação será processada. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Isso reduz sua taxa máxima, mas, se o tráfego na rede aumentar, sua transação pode ser postergada ou falhar."
-  },
   "editNonceField": {
     "message": "Editar nonce"
   },
@@ -1122,22 +1198,6 @@
   },
   "enableAutoDetect": {
     "message": " Ativar detecção automática"
-  },
-  "enableEIP1559V2": {
-    "message": "Ativar UI aprimorada para taxa de gás"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "Atualizamos o funcionamento da estimativa e personalização da taxa de gás."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Ative a UI aprimorada para taxa de gás nas configurações"
-  },
-  "enableEIP1559V2Description": {
-    "message": "Atualizamos o funcionamento da estimativa e personalização de gás. Ative se quiser desfrutar a nova experiência de gás. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "Nova experiência de gás"
   },
   "enableFromSettings": {
     "message": " Habilite-a nas configurações."
@@ -1214,6 +1274,9 @@
   },
   "ensUnknownError": {
     "message": "Falha na busca de ENS."
+  },
+  "enterANumber": {
+    "message": "Insira um número"
   },
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"
@@ -1389,9 +1452,6 @@
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Nossas estimativas baixas, médias e altas não estão disponíveis."
-  },
   "gasFee": {
     "message": "Taxa de gás"
   },
@@ -1485,7 +1545,7 @@
     "message": "Obter Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Obter Ether de um faucet por $1",
+    "message": "Receba Ether de um faucet para a rede $1.",
     "description": "Displays network name for Ether faucet"
   },
   "getStarted": {
@@ -1652,6 +1712,16 @@
   "initialTransactionConfirmed": {
     "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
   },
+  "inputLogicEmptyState": {
+    "message": "Somente insira um número com o qual esteja confortável de o contrato gastar agora ou no futuro. Você pode aumentar o limite de gastos a qualquer momento."
+  },
+  "inputLogicEqualOrSmallerNumber": {
+    "message": "Isso permite que o contrato gaste $1 de seu saldo atual.",
+    "description": "$1 is the current token balance in the account and the name of the current token"
+  },
+  "inputLogicHigherNumber": {
+    "message": "Isso permite que o contrato gaste todo o seu saldo de tokens até atingir o limite ou até você revogar o limite de gastos. Se a intenção não é essa, considere definir um limite de gastos menor."
+  },
   "install": {
     "message": "Instalar"
   },
@@ -1661,6 +1731,10 @@
   "insufficientCurrencyBuyOrDeposit": {
     "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de transação da rede $2. $3 ou deposite de outra conta.",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyBuyOrReceive": {
+    "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de transação na rede $2. $3 ou $4 de outra conta.",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "Você não tem $1 suficiente em sua conta para pagar as taxas de transação na rede $2. Deposite $1 de outra conta.",
@@ -1767,7 +1841,7 @@
     "message": "saiba mais"
   },
   "learnMoreAboutGas": {
-    "message": "Quer $1 sobre o gás?",
+    "message": "Quer $1 sobre gás?",
     "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
@@ -2060,6 +2134,9 @@
   "networkName": {
     "message": "Nome da rede"
   },
+  "networkNameArbitrum": {
+    "message": "Arbitrum"
+  },
   "networkNameAvalanche": {
     "message": "Avalanche"
   },
@@ -2075,11 +2152,17 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+  "networkNameOptimism": {
+    "message": "Optimism"
+  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkProvider": {
+    "message": "Provedor de rede"
   },
   "networkSettingsChainIdDescription": {
     "message": "O ID da cadeia é usado para assinar transações. É preciso ser igual ao ID da cadeia retornado pela rede. Você pode informar um número decimal ou um número hexadecimal com prefixo “0x”, mas exibiremos o número em casas decimais."
@@ -2115,9 +2198,6 @@
   },
   "newAccount": {
     "message": "Nova conta"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Novo endereço detectado! Clique aqui para adicionar à sua agenda de endereços."
   },
   "newAccountNumberName": {
     "message": "Conta $1",
@@ -2169,6 +2249,17 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Insira o ID do token"
+  },
+  "nftWarningContent": {
+    "message": "Você está concedendo acesso a $1, incluindo o que você vier a possuir no futuro. A parte na outra ponta pode transferir esses NFTs da sua carteira a qualquer momento, sem solicitar, até você revogar essa aprovação. $2",
+    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
+  },
+  "nftWarningContentBold": {
+    "message": "todos os seus NFTs $1",
+    "description": "$1 is name of the collection"
+  },
+  "nftWarningContentGrey": {
+    "message": "Prossiga com cautela."
   },
   "nfts": {
     "message": "NFTs"
@@ -2244,7 +2335,7 @@
     "message": "A detecção aperfeiçoada de tokens está atualmente disponível nas redes Ethereum Mainnet, Polygon, BSC e Avalanche. Há outras por vir!"
   },
   "notifications10DescriptionThree": {
-    "message": "O recurso de detecção de tokens está automaticamente ATIVADO, mas você pode desativá-lo nas Configurações."
+    "message": "O recurso de detecção de tokens está automaticamente DESATIVADO. Você pode ativá-lo nas Configurações."
   },
   "notifications10DescriptionTwo": {
     "message": "Nós coletamos tokens em listas de tokens de terceiros. Os tokens presentes em mais de duas listas serão detectados automaticamente."
@@ -2293,6 +2384,15 @@
   },
   "notifications15Title": {
     "message": "A fusão do Ethereum chegou!"
+  },
+  "notifications17ActionText": {
+    "message": "Mostrar configurações de segurança e privacidade"
+  },
+  "notifications17Description": {
+    "message": "Essa atualização oferece mais opções para que você possa controlar sua própria privacidade. Adicionamos mais transparência sobre como os dados são coletados e opções mais claras para compartilhá-los. Mude suas preferências ou exclua os dados de uso da extensão através das configurações de segurança e privacidade."
+  },
+  "notifications17Title": {
+    "message": "Configurações de segurança e privacidade"
   },
   "notifications1Description": {
     "message": "Usuários da MetaMask Mobile agora podem trocar tokens dentro de sua carteira mobile. Leia o QR code para obter o aplicativo para dispositivos móveis e comece a trocar.",
@@ -2418,11 +2518,84 @@
   "on": {
     "message": "Ativado"
   },
+  "onboardingAdvancedPrivacyIPFSDescription": {
+    "message": "O gateway IPFS possibilita acessar e visualizar dados hospedados por terceiros. Você pode adicionar um gateway IPFS personalizado ou continuar usando o padrão."
+  },
+  "onboardingAdvancedPrivacyIPFSInvalid": {
+    "message": "Favor inserir um URL válido"
+  },
+  "onboardingAdvancedPrivacyIPFSTitle": {
+    "message": "Adicionar gateway IPFS personalizado"
+  },
+  "onboardingAdvancedPrivacyIPFSValid": {
+    "message": "O URL do gateway IPFS é válido"
+  },
+  "onboardingAdvancedPrivacyNetworkButton": {
+    "message": "Adicionar rede personalizada"
+  },
+  "onboardingAdvancedPrivacyNetworkDescription": {
+    "message": "Usamos a Infura como nosso provedor de chamadas de procedimento remoto (RPC) para oferecermos o acesso mais confiável e privado possível aos dados do Ethereum. Você pode escolher sua própria RPC, mas lembre-se de que qualquer RPC receberá seu endereço IP e da carteira de Ethereum para realizar transações. Leia nosso $1 para saber mais sobre como a Infura trata os dados."
+  },
+  "onboardingAdvancedPrivacyNetworkTitle": {
+    "message": "Escolha sua rede"
+  },
   "onboardingCreateWallet": {
     "message": "Criar uma nova carteira"
   },
   "onboardingImportWallet": {
     "message": "Importar uma carteira existente"
+  },
+  "onboardingMetametricsAgree": {
+    "message": "Concordo"
+  },
+  "onboardingMetametricsAllowOptOut": {
+    "message": "Permite que você cancele a inscrição a qualquer momento nas configurações"
+  },
+  "onboardingMetametricsDataTerms": {
+    "message": "Esses dados são agregados e, portanto, anônimos para os fins do Regulamento Geral sobre a Proteção de Dados (UE) de 2016/679."
+  },
+  "onboardingMetametricsDescription": {
+    "message": "A MetaMask gostaria de reunir dados de uso para entender melhor como nossos usuários interagem com a MetaMask. Esses dados serão usados para prestar o serviço, o que inclui melhorá-lo com base em seu uso."
+  },
+  "onboardingMetametricsDescription2": {
+    "message": "A MetaMask..."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "Não, obrigado"
+  },
+  "onboardingMetametricsInfuraTerms": {
+    "message": "* Quando usa a Infura como seu provedor RPC padrão na MetaMask, a Infura coleta seu endereço IP e da carteira de Ethereum quando você envia uma transação. Não armazenamos essas informações de forma que permita aos nossos sistemas cruzarem os dois fragmentos de dados. Para obter mais informações sobre como a MetaMask e a Infura interagem da perspectiva da coleta de dados, veja nossa atualização $1. Para obter mais informações sobre nossas práticas de privacidade em geral, veja nossa $2.",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+  },
+  "onboardingMetametricsInfuraTermsPolicy": {
+    "message": "Política de Privacidade aqui"
+  },
+  "onboardingMetametricsInfuraTermsPolicyLink": {
+    "message": "aqui"
+  },
+  "onboardingMetametricsModalTitle": {
+    "message": "Adicionar rede personalizada"
+  },
+  "onboardingMetametricsNeverCollect": {
+    "message": "$1 coletará informações de que não precisamos para prestar o serviço (tais como chaves, endereços, hashes de transações ou saldos)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectIP": {
+    "message": "$1 coletará seu endereço IP completo*",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasis": {
+    "message": "Nunca"
+  },
+  "onboardingMetametricsNeverSellData": {
+    "message": "$1 venderá dados. Jamais!",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsSendAnonymize": {
+    "message": "Enviará eventos de cliques e visualizações de páginas anonimizados"
+  },
+  "onboardingMetametricsTitle": {
+    "message": "Ajude-nos a melhorar a MetaMask"
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Acesso total"
@@ -2500,6 +2673,10 @@
   "osTheme": {
     "message": "Sistema"
   },
+  "otherSnaps": {
+    "message": "outros snaps",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "padlock": {
     "message": "Cadeado"
   },
@@ -2571,13 +2748,29 @@
     "message": "Conecte-se ao snap $1.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
+  "permission_cronjob": {
+    "message": "Agende e execute ações periódicas.",
+    "description": "The description for the `snap_cronjob` permission"
+  },
   "permission_customConfirmation": {
     "message": "Exibir uma confirmação na MetaMask.",
     "description": "The description for the `snap_confirm` permission"
   },
+  "permission_dialog": {
+    "message": "Exibir janelas de diálogo na MetaMask.",
+    "description": "The description for the `snap_dialog` permission"
+  },
   "permission_ethereumAccounts": {
     "message": "Ver endereço, saldo da conta, atividade e iniciar transações",
     "description": "The description for the `eth_accounts` permission"
+  },
+  "permission_ethereumProvider": {
+    "message": "Acesse o provedor do Ethereum.",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "Derive chaves arbitrárias únicas para este snap.",
+    "description": "The description for the `snap_getEntropy` permission"
   },
   "permission_longRunning": {
     "message": "Executar indefinidamente.",
@@ -2599,9 +2792,17 @@
     "message": "Mostrar notificações.",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_rpc": {
+    "message": "Permitir que $1 se comuniquem diretamente com esse snap.",
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
   "permission_transactionInsight": {
     "message": "Busque e exiba insights de transações.",
     "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "Verá as origens dos sites que sugerem transações",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Permissão desconhecida: $1",
@@ -2651,6 +2852,9 @@
   },
   "priorityFeeProperCase": {
     "message": "Taxa de prioridade"
+  },
+  "privacy": {
+    "message": "Privacidade"
   },
   "privacyMsg": {
     "message": "Política de Privacidade"
@@ -2736,6 +2940,12 @@
   },
   "rejectAll": {
     "message": "Rejeitar todas"
+  },
+  "rejectRequestsDescription": {
+    "message": "Você está prestes a rejeitar em lote $1 solicitações."
+  },
+  "rejectRequestsN": {
+    "message": "Rejeitar $1 solicitações"
   },
   "rejectTxsDescription": {
     "message": "Você está prestes a rejeitar $1 transações em massa."
@@ -2843,6 +3053,9 @@
   "revealTheSeedPhrase": {
     "message": "Revelar a frase de recuperação"
   },
+  "reviewSpendingCap": {
+    "message": "Revise seu limite de gastos"
+  },
   "revokeAllTokensTitle": {
     "message": "Revogar permissão de acesso a todos os seus $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -2850,6 +3063,10 @@
   "revokeApproveForAllDescription": {
     "message": "Ao revogar a permissão, o $1 a seguir não terá mais acesso ao seu $2",
     "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCap": {
+    "message": "Revogar limite de gastos de seu $1",
+    "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
     "message": "Este contrato não poderá gastar mais nenhum de seus tokens atuais ou futuros."
@@ -2904,6 +3121,9 @@
   },
   "secureWallet": {
     "message": "Carteira segura"
+  },
+  "security": {
+    "message": "Segurança"
   },
   "securityAndPrivacy": {
     "message": "Segurança e privacidade"
@@ -3035,6 +3255,10 @@
     "message": "Aprovar $1 sem limite de gastos",
     "description": "The token symbol that is being approved"
   },
+  "setSpendingCap": {
+    "message": "Definir um limite de gastos para seu $1",
+    "description": "$1 is a token symbol"
+  },
   "settings": {
     "message": "Definições"
   },
@@ -3082,9 +3306,6 @@
   "showPrivateKeys": {
     "message": "Mostrar Chaves Privadas"
   },
-  "showRecommendations": {
-    "message": "Mostrar recomendações"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
   },
@@ -3100,8 +3321,11 @@
   "signatureRequest": {
     "message": "Pedido de assinatura"
   },
-  "signatureRequest1": {
-    "message": "Mensagem"
+  "signatureRequestGuidance": {
+    "message": "Assine essa mensagem apenas se entende integralmente o conteúdo e confia no site solicitante."
+  },
+  "signatureRequestWarning": {
+    "message": "Assinar essa mensagem pode ser perigoso. Você pode estar dando controle total da sua conta e ativos à pessoa na outra ponta dessa mensagem. Isso significa que ela pode zerar sua conta a qualquer momento. Prossiga com cautela. $1."
   },
   "signed": {
     "message": "Assinado"
@@ -3166,6 +3390,10 @@
   "snaps": {
     "message": "Snaps"
   },
+  "snapsInsightError": {
+    "message": "Ocorreu um erro com $1: $2",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
+  },
   "snapsInsightLoading": {
     "message": "Carregando insight da transação..."
   },
@@ -3181,8 +3409,14 @@
   "snapsToggle": {
     "message": "O snap só será executado se estiver ativado"
   },
+  "snapsUIError": {
+    "message": "A IU especificada pelo snap é inválida."
+  },
   "someNetworksMayPoseSecurity": {
     "message": "Algumas redes podem representar riscos de segurança e/ou privacidade. Tenha os riscos em mente antes de adicionar e usar uma rede."
+  },
+  "somethingIsWrong": {
+    "message": "Algo deu errado. Tente recarregar a página."
   },
   "somethingWentWrong": {
     "message": "Ops! Algo deu errado."
@@ -3226,6 +3460,13 @@
   },
   "spendLimitTooLarge": {
     "message": "O limite de gastos está alto demais"
+  },
+  "spendingCapError": {
+    "message": "Erro: insira somente números"
+  },
+  "spendingCapErrorDescription": {
+    "message": "Somente insira um número com o qual esteja confortável de $1 acessar agora ou no futuro. Você pode aumentar o limite de tokens a qualquer momento.",
+    "description": "$1 is origin of the site requesting the token limit"
   },
   "srpInputNumberOfWords": {
     "message": "Eu tenho uma frase com $1 palavras",
@@ -3279,10 +3520,10 @@
     "message": "Não conectado"
   },
   "step1LatticeWallet": {
-    "message": "Confirme que seu Lattice1 está pronto para se conectar"
+    "message": "Conecte seu Lattice1"
   },
   "step1LatticeWalletMsg": {
-    "message": "Você pode conectar a MetaMask ao seu dispositivo Lattice1 quando ele estiver configurado e online. Desbloqueie seu dispositivo e tenha o ID do seu dispositivo em mãos. Para saber mais sobre como usar carteiras de hardware, $1",
+    "message": "Você pode conectar a MetaMask ao seu dispositivo Lattice1 quando ele estiver configurado e on-line. Desbloqueie seu dispositivo e tenha o ID do seu dispositivo em mãos.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -3293,17 +3534,17 @@
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
   "step1TrezorWallet": {
-    "message": "Conecte a carteira Trezor"
+    "message": "Conecte sua Trezor"
   },
   "step1TrezorWalletMsg": {
-    "message": "Conecte sua carteira diretamente ao seu computador. Para obter mais informações sobre como usar seu dispositivo de carteira de hardware, $1",
+    "message": "Conecte sua Trezor diretamente ao seu computador e a desbloqueie. Certifique-se de usar frase secreta correta.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step2LedgerWallet": {
-    "message": "Conecte a carteira Ledger"
+    "message": "Conecte sua Ledger"
   },
   "step2LedgerWalletMsg": {
-    "message": "Conecte sua carteira diretamente ao seu computador.  Desbloqueie seu Ledger e abra o aplicativo do Ethereum. Para obter mais informações sobre como usar seu dispositivo de carteira de hardware, $1.",
+    "message": "Conecte sua Ledger diretamente ao seu computador, depois a desbloqueie e abra o app do Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillGettingMessage": {
@@ -3863,6 +4104,9 @@
   "tokenList": {
     "message": "Listas de tokens:"
   },
+  "tokenNftAutoDetection": {
+    "message": "Detecção automática de tokens e NFTs"
+  },
   "tokenScamSecurityRisk": {
     "message": "golpes e riscos de segurança envolvendo tokens"
   },
@@ -3978,11 +4222,20 @@
   "transactionResubmitted": {
     "message": "Transação reenviada com taxa de gás aumentada para $1 às $2"
   },
+  "transactionSecurityCheck": {
+    "message": "Verificação de segurança da transação"
+  },
+  "transactionSecurityCheckDescription": {
+    "message": "Ative para permitir que terceiros (OpenSea) revisem todas as suas transações e solicitações de assinatura e alertem sobre solicitações mal-intencionadas conhecidas."
+  },
   "transactionSubmitted": {
     "message": "Transação enviada com taxa de gás estimada de $1 às $2."
   },
   "transactionUpdated": {
     "message": "Transação atualizada às $2."
+  },
+  "transactions": {
+    "message": "Transações"
   },
   "transfer": {
     "message": "Transferir"
@@ -4015,6 +4268,9 @@
   },
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"
+  },
+  "tutorial": {
+    "message": "Tutorial"
   },
   "twelveHrTitle": {
     "message": "12 h:"
@@ -4098,6 +4354,24 @@
   "useCollectibleDetectionDescription": {
     "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
   },
+  "useCollectibleDetectionDescriptionLine2": {
+    "message": "Além disso, esteja ciente de que:"
+  },
+  "useCollectibleDetectionDescriptionLine3": {
+    "message": "Os metadados de NFTs podem conter links para golpes ou sites de phishing."
+  },
+  "useCollectibleDetectionDescriptionLine4": {
+    "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
+  },
+  "useDefault": {
+    "message": "Usar padrão"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Agrupar solicitações de saldo de contas"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Agrupamos as contas e consultamos a Infura para exibir seus saldos de forma responsiva. Se isso for desativado, somente contas ativas serão consultadas. Alguns dapps só funcionam se você conecta a sua carteira."
+  },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
   },
@@ -4113,6 +4387,9 @@
   "userName": {
     "message": "Nome de usuário"
   },
+  "verifyContractDetails": {
+    "message": "Verificar dados do contrato"
+  },
   "verifyThisTokenDecimalOn": {
     "message": "Os decimais do token podem ser encontrados no $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
@@ -4125,6 +4402,9 @@
     "message": "Verifique esse token no $1 e confirme que é o token que você deseja negociar.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "view": {
+    "message": "Ver"
+  },
   "viewAccount": {
     "message": "Ver conta"
   },
@@ -4133,6 +4413,9 @@
   },
   "viewContact": {
     "message": "Ver contato"
+  },
+  "viewDetails": {
+    "message": "Ver detalhes"
   },
   "viewFullTransactionDetails": {
     "message": "Ver detalhes completos da transação"
@@ -4205,6 +4488,10 @@
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
+  "websites": {
+    "message": "sites",
+    "description": "Used in the 'permission_rpc' message."
+  },
   "welcome": {
     "message": "Bem-vindo ao MetaMask"
   },
@@ -4262,6 +4549,12 @@
   },
   "youSign": {
     "message": "Está a assinar"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "Seus fundos podem estar em risco"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "Seu NFT pode estar em risco"
   },
   "yourPrivateSeedPhrase": {
     "message": "Sua Frase de Recuperação Secreta privada"

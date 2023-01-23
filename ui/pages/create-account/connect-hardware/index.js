@@ -13,8 +13,8 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
-  DEVICE_NAMES,
-  LEDGER_TRANSPORT_TYPES,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
@@ -89,9 +89,9 @@ class ConnectHardwareForm extends Component {
 
   async checkIfUnlocked() {
     for (const device of [
-      DEVICE_NAMES.TREZOR,
-      DEVICE_NAMES.LEDGER,
-      DEVICE_NAMES.LATTICE,
+      HardwareDeviceNames.trezor,
+      HardwareDeviceNames.ledger,
+      HardwareDeviceNames.lattice,
     ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
@@ -364,7 +364,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-  ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+  ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
 };
 
 const mapStateToProps = (state) => ({

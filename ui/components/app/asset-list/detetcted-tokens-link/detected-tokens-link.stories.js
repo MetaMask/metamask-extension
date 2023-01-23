@@ -10,7 +10,7 @@ const store = configureStore(testData);
 export default {
   title: 'Components/App/AssetList/DetectedTokensLink',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
-  id: __filename,
+
   argTypes: {
     setShowDetectedTokens: { control: 'func' },
   },

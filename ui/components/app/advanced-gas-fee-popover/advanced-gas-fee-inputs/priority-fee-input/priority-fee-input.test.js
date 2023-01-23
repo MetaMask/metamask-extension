@@ -111,7 +111,7 @@ describe('PriorityfeeInput', () => {
     expect(screen.queryByText('2 - 125 GWEI')).toBeInTheDocument();
   });
 
-  it('should show error if value entered is 0', () => {
+  it('should not show error if value entered is 0', () => {
     render({
       txParams: {
         maxPriorityFeePerGas: '0x174876E800',
@@ -125,6 +125,17 @@ describe('PriorityfeeInput', () => {
     });
     expect(
       screen.queryByText('Priority fee must be greater than 0.'),
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
+  });
+
+  it('should not show the error if priority fee is 0', () => {
+    render({
+      txParams: {
+        maxPriorityFeePerGas: '0x0',
+      },
+    });
+    expect(
+      screen.queryByText('Priority fee must be greater than 0.'),
+    ).not.toBeInTheDocument();
   });
 });

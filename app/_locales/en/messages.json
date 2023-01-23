@@ -110,10 +110,6 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 may access and spend up to this max amount",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 may access and spend this asset",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -143,6 +139,10 @@
   "accountNameDuplicate": {
     "message": "This account name already exists",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
+  "accountNameReserved": {
+    "message": "This account name is reserved",
+    "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
   },
   "accountOptions": {
     "message": "Account options"
@@ -290,9 +290,6 @@
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },
-  "advancedOptions": {
-    "message": "Advanced options"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
@@ -386,9 +383,6 @@
   },
   "approved": {
     "message": "Approved"
-  },
-  "approvedAmountWithColon": {
-    "message": "Approved amount:"
   },
   "approvedAsset": {
     "message": "Approved asset"
@@ -1135,29 +1129,8 @@
   "editContact": {
     "message": "Edit contact"
   },
-  "editGasEducationButtonText": {
-    "message": "How should I choose?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "This is best for time sensitive transactions (like Swaps) as it increases the likelihood of a successful transaction. If a Swap takes too long to process it may fail and result in losing some of your gas fee."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "A lower gas fee should only be used when processing time is less important. Lower fees make it hard predict when (or if) your transaction will be successful."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "A medium gas fee is good for sending, withdrawing or other non-time sensitive transactions. This setting will most often result in a successful transaction."
-  },
-  "editGasEducationModalIntro": {
-    "message": "Selecting the right gas fee depends on the type of transaction and how important it is to you."
-  },
-  "editGasEducationModalTitle": {
-    "message": "How to choose?"
-  },
   "editGasFeeModalTitle": {
     "message": "Edit gas fee"
-  },
-  "editGasHigh": {
-    "message": "High"
   },
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
@@ -1168,9 +1141,6 @@
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
-  },
-  "editGasLow": {
-    "message": "Low"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Max base fee cannot be lower than priority fee"
@@ -1190,9 +1160,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "Max fee cannot be lower than max priority fee"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "The max fee is the most you’ll pay (base fee + priority fee)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Max priority fee must be greater than 0 GWEI"
   },
@@ -1210,12 +1177,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "Priority fee is low for current network conditions"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
-  },
-  "editGasMedium": {
-    "message": "Medium"
   },
   "editGasPriceTooLow": {
     "message": "Gas price must be greater than 0"
@@ -1236,12 +1197,6 @@
   "editGasTooLow": {
     "message": "Unknown processing time"
   },
-  "editGasTooLowTooltip": {
-    "message": "Your max fee or max priority fee may be low for current market conditions. We don't know when (or if) your transaction will be processed. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
-  },
   "editNonceField": {
     "message": "Edit nonce"
   },
@@ -1256,22 +1211,6 @@
   },
   "enableAutoDetect": {
     "message": " Enable autodetect"
-  },
-  "enableEIP1559V2": {
-    "message": "Enable enhanced gas fee UI"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "We've updated how gas fee estimation and customization works."
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "Turn on enhanced gas fee UI in Settings"
-  },
-  "enableEIP1559V2Description": {
-    "message": "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "New gas experience"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1526,9 +1465,6 @@
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Our low, medium and high estimates are not available."
-  },
   "gasFee": {
     "message": "Gas fee"
   },
@@ -1778,12 +1714,6 @@
   "imported": {
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "improvedTokenAllowance": {
-    "message": "Improved token allowance experience"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Turn this on to go through the improved token allowance experience whenever a dapp requests an ERC20 approve"
   },
   "inYourSettings": {
     "message": "in your Settings"
@@ -2168,6 +2098,9 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
+  "moreComingSoon": {
+    "message": "More coming soon..."
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -2285,9 +2218,6 @@
   "newAccount": {
     "message": "New account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "New address detected! Click here to add to your address book."
-  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
@@ -2335,6 +2265,9 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftDisclaimer": {
+    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
@@ -2473,15 +2406,6 @@
   },
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
-  },
-  "notifications16ActionText": {
-    "message": "Try it out here"
-  },
-  "notifications16Description": {
-    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
-  },
-  "notifications16Title": {
-    "message": "Improved token allowance experience"
   },
   "notifications17ActionText": {
     "message": "Show Security & Privacy settings"
@@ -2755,6 +2679,9 @@
   },
   "openInBlockExplorer": {
     "message": "Open in block explorer"
+  },
+  "openSea": {
+    "message": "OpenSea (Beta)"
   },
   "optional": {
     "message": "Optional"
@@ -3069,6 +2996,9 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeCollectibleMessage": {
+    "message": "Collectible was successfully removed!"
+  },
   "removeNFT": {
     "message": "Remove NFT"
   },
@@ -3307,6 +3237,9 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
+  "selectProvider": {
+    "message": "Select providers:"
+  },
   "selectType": {
     "message": "Select Type"
   },
@@ -3404,9 +3337,6 @@
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
-  "showRecommendations": {
-    "message": "Show recommendations"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -3421,9 +3351,6 @@
   },
   "signatureRequest": {
     "message": "Signature request"
-  },
-  "signatureRequest1": {
-    "message": "Message"
   },
   "signatureRequestGuidance": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site."
@@ -3512,6 +3439,9 @@
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
+  },
+  "snapsUIError": {
+    "message": "The UI specified by the snap is invalid."
   },
   "someNetworksMayPoseSecurity": {
     "message": "Some networks may pose security and/or privacy risks. Understand the risks before adding & using a network."
@@ -3890,7 +3820,7 @@
     "message": "MetaMask fee"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into this quote.",
+    "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -4155,6 +4085,9 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thisServiceIsExperimental": {
+    "message": "This service is experimental"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -4324,10 +4257,10 @@
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSecurityCheck": {
-    "message": "Transaction security check"
+    "message": "Enable transaction security providers"
   },
   "transactionSecurityCheckDescription": {
-    "message": "Turn this on to enable a third party (OpenSea) to review all your transactions and signature requests and warn you about known malicious requests."
+    "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."

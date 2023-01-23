@@ -14,7 +14,7 @@ const recipient = metamask.accountArray[0];
 
 export default {
   title: 'Pages/Send/SendContent/AddRecipient',
-  id: __filename,
+
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argTypes: {
     userInput: {
@@ -94,13 +94,11 @@ export const ErrorStory = (args) => {
     </div>
   );
 };
-
-ErrorStory.argTypes = {
-  // domainError must be the key for a translation
-  domainError: { type: 'text', defaultValue: 'loading' },
-};
-
 ErrorStory.storyName = 'Error';
+ErrorStory.args = {
+  // domainError must be the key for a translation
+  domainError: 'loading',
+};
 
 export const WarningStory = (args) => {
   return (
@@ -113,10 +111,8 @@ export const WarningStory = (args) => {
     </div>
   );
 };
-
-WarningStory.argTypes = {
-  // domainWarning must be the key for a translation
-  domainWarning: { type: 'text', defaultValue: 'loading' },
-};
-
 WarningStory.storyName = 'Warning';
+WarningStory.args = {
+  // domainWarning must be the key for a translation
+  domainWarning: 'loading',
+};

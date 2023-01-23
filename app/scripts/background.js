@@ -17,6 +17,9 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  MESSAGE_TYPE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import {
@@ -480,17 +483,16 @@ function setupController(initState, initLangCode) {
 
     let isMetaMaskInternalProcess = false;
     const sourcePlatform = getPlatform();
+    const senderUrl = remotePort.sender?.url
+      ? new URL(remotePort.sender.url)
+      : null;
 
     if (sourcePlatform === PLATFORM_FIREFOX) {
       isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
       isMetaMaskInternalProcess =
-        remotePort.sender.origin === `chrome-extension://${browser.runtime.id}`;
+        senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
     }
-
-    const senderUrl = remotePort.sender?.url
-      ? new URL(remotePort.sender.url)
-      : null;
 
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort);
@@ -721,9 +723,27 @@ function setupController(initState, initLangCode) {
         ),
       );
 
-    // Finally, reject all approvals managed by the ApprovalController
-    controller.approvalController.clear(
-      ethErrors.provider.userRejectedRequest(),
+    // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
+    Object.values(controller.approvalController.state.pendingApprovals).forEach(
+      ({ id, type }) => {
+        switch (type) {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
+          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+            controller.approvalController.accept(id, null);
+            break;
+          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
+          default:
+            controller.approvalController.reject(
+              id,
+              ethErrors.provider.userRejectedRequest(),
+            );
+            break;
+        }
+      },
     );
 
     updateBadge();

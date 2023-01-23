@@ -30,6 +30,7 @@ import {
   DISPLAY,
   COLORS,
 } from '../../helpers/constants/design-system';
+import { SECOND } from '../../../shared/constants/time';
 
 import {
   ASSET_ROUTE,
@@ -135,6 +136,8 @@ export default class Home extends PureComponent {
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    removeCollectibleMessage: PropTypes.string,
+    setRemoveCollectibleMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -263,6 +266,8 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      removeCollectibleMessage,
+      setRemoveCollectibleMessage,
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
@@ -312,6 +317,7 @@ export default class Home extends PureComponent {
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
+            autoHideTime={5 * SECOND}
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
@@ -325,6 +331,29 @@ export default class Home extends PureComponent {
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
                   onClick={() => setNewCollectibleAddedMessage('')}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+
+        {removeCollectibleMessage === 'success' ? (
+          <ActionableMessage
+            type="danger"
+            className="home__new-network-notification"
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {t('removeCollectibleMessage')}
+                </Typography>
+                <button
+                  className="fas fa-times home__new-nft-notification-close"
+                  title={t('close')}
+                  onClick={() => setRemoveCollectibleMessage('')}
                 />
               </Box>
             }
@@ -610,7 +639,8 @@ export default class Home extends PureComponent {
               <EthOverview />
             </div>
             <Tabs
-              defaultActiveTabName={defaultHomeActiveTabName}
+              t={this.context.t}
+              defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
               subHeader={
@@ -619,6 +649,7 @@ export default class Home extends PureComponent {
                   open={
                     !process.env.IN_TEST &&
                     !shouldShowSeedPhraseReminder &&
+                    !showRecoveryPhraseReminder &&
                     showPortfolioTooltip
                   }
                   interactive
@@ -686,7 +717,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={t('assets')}
+                name={this.context.t('assets')}
+                tabKey="assets"
               >
                 <AssetList
                   onClickAsset={(asset) =>
@@ -694,12 +726,13 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              {process.env.COLLECTIBLES_V1 ? (
+              {process.env.NFTS_V1 ? (
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
                   data-testid="home__nfts-tab"
-                  name={t('nfts')}
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
                 >
                   <CollectiblesTab
                     onAddNFT={() => {
@@ -712,7 +745,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__activity-tab"
-                name={t('activity')}
+                name={this.context.t('activity')}
+                tabKey="activity"
               >
                 <TransactionList />
               </Tab>

@@ -4,6 +4,7 @@ import proxyquire from 'proxyquire';
 
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
+import nock from 'nock';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -59,6 +60,21 @@ describe('MetaMaskController', function () {
   });
 
   beforeEach(function () {
+    nock('https://static.metafi.codefi.network')
+      .persist()
+      .get('/api/v1/lists/eth_phishing_detect_config.json')
+      .reply(
+        200,
+        JSON.stringify({
+          version: 2,
+          tolerance: 2,
+          fuzzylist: [],
+          whitelist: [],
+          blacklist: ['127.0.0.1'],
+        }),
+      )
+      .get('/api/v1/lists/phishfort_hotlist.json')
+      .reply(200, JSON.stringify(['127.0.0.1']));
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: {
@@ -82,6 +98,7 @@ describe('MetaMaskController', function () {
 
   afterEach(function () {
     sandbox.restore();
+    nock.cleanAll();
   });
 
   after(async function () {
@@ -227,6 +244,7 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const accounts = await metamaskController.keyringController.getAccounts();
       const txMeta = await metamaskController.getApi().addUnapprovedTransaction(
+        undefined,
         {
           from: accounts[0],
           to: recipientAddress,

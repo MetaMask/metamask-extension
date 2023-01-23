@@ -3,8 +3,8 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
-import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
+import { TransactionStatus } from '../../shared/constants/transaction';
+import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import * as actions from './actions';
 import { _setBackgroundConnection } from './action-queue';
@@ -443,7 +443,10 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.checkHardwareStatus(DEVICE_NAMES.LEDGER, `m/44'/60'/0'/0`),
+        actions.checkHardwareStatus(
+          HardwareDeviceNames.ledger,
+          `m/44'/60'/0'/0`,
+        ),
       );
       expect(checkHardwareStatus.callCount).toStrictEqual(1);
     });
@@ -483,7 +486,7 @@ describe('Actions', () => {
 
       _setBackgroundConnection(background);
 
-      await store.dispatch(actions.forgetDevice(DEVICE_NAMES.LEDGER));
+      await store.dispatch(actions.forgetDevice(HardwareDeviceNames.ledger));
       expect(forgetDevice.callCount).toStrictEqual(1);
     });
 
@@ -525,7 +528,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.connectHardware(DEVICE_NAMES.LEDGER, 0, `m/44'/60'/0'/0`),
+        actions.connectHardware(
+          HardwareDeviceNames.ledger,
+          0,
+          `m/44'/60'/0'/0`,
+        ),
       );
       expect(connectHardware.callCount).toStrictEqual(1);
     });
@@ -551,7 +558,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.connectHardware(DEVICE_NAMES.LEDGER)),
+        store.dispatch(actions.connectHardware(HardwareDeviceNames.ledger)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -575,7 +582,7 @@ describe('Actions', () => {
       await store.dispatch(
         actions.unlockHardwareWalletAccounts(
           [0],
-          DEVICE_NAMES.LEDGER,
+          HardwareDeviceNames.ledger,
           `m/44'/60'/0'/0`,
           '',
         ),
@@ -819,7 +826,7 @@ describe('Actions', () => {
 
     const txData = {
       id: '1',
-      status: TRANSACTION_STATUSES.UNAPPROVED,
+      status: TransactionStatus.unapproved,
       metamaskNetworkId: currentNetworkId,
       txParams,
     };
@@ -1259,7 +1266,7 @@ describe('Actions', () => {
 
       const exportAccountStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(null, testPrivKey));
+        .callsFake((_, _2, cb) => cb(null, testPrivKey));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
@@ -1318,7 +1325,7 @@ describe('Actions', () => {
 
       const exportAccountStub = sinon
         .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
+        .callsFake((_, _2, cb) => cb(new Error('error')));
 
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,

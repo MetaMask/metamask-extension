@@ -36,6 +36,7 @@ describe('Test Snap bip-32', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectBip32');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -71,10 +72,7 @@ describe('Test Snap bip-32', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.waitForSelector({
-          css: '.popover-header',
-          text: 'Are you sure?',
-        });
+        await driver.delay(1000);
         await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
         await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-0');
         await driver.clickElement({
@@ -82,15 +80,15 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
+        // delay for npm installation
+        await driver.delay(2000);
+
         // switch back to test-snaps window
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // scroll to and click get public key
-        await driver.waitForSelector({
-          css: '#connectBip32',
-          text: 'Reconnect to BIP-32 Snap',
-        });
+        await driver.delay(1000);
         const snapButton2 = await driver.findElement('#bip32GetPublic');
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
