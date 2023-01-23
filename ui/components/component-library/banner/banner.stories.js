@@ -31,7 +31,6 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Banner',
-  id: __filename,
   component: Banner,
   parameters: {
     docs: {
