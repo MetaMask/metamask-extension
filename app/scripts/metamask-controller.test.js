@@ -514,7 +514,7 @@ describe('MetaMaskController', function () {
   });
 
   describe('getPrimaryKeyringMnemonic', function () {
-    it('should return a mnemonic as a string', function () {
+    it('should return a mnemonic as a Uint8Array', function () {
       const mockMnemonic =
         'above mercy benefit hospital call oval domain student sphere interest argue shock';
       const mnemonicIndices = mockMnemonic
@@ -534,7 +534,7 @@ describe('MetaMaskController', function () {
 
       const recoveredMnemonic = metamaskController.getPrimaryKeyringMnemonic();
 
-      assert.equal(recoveredMnemonic, mockMnemonic);
+      assert.equal(recoveredMnemonic, uint8ArrayMnemonic);
     });
   });
 
