@@ -110,10 +110,6 @@
     "message": "我已阅读并同意 $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 可以访问并使用此最大金额",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1可以访问并使用此资产",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "已批准"
-  },
-  "approvedAmountWithColon": {
-    "message": "已批准金额："
   },
   "approvedAsset": {
     "message": "已获批准的资产"
@@ -1709,12 +1702,6 @@
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "经过改进的代币津贴体验"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "每当分布式应用请求 ERC20 批准时，打开此项以查看经过改进的代币津贴体验"
-  },
   "inYourSettings": {
     "message": "在设置中"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "以太坊合并来了！"
-  },
-  "notifications16ActionText": {
-    "message": "在此处尝试"
-  },
-  "notifications16Description": {
-    "message": "我们重新设计了代币津贴确认，助您作出更明智的决策。"
-  },
-  "notifications16Title": {
-    "message": "经过改进的代币津贴体验"
   },
   "notifications17ActionText": {
     "message": "显示安全和隐私设置"
