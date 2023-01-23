@@ -872,7 +872,7 @@ jobs:
           path: storybook-build
           destination: storybook
       - store_artifacts:
-          path: development/ts-migration-dashboard/build
+          path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
       - run:
           name: Set branch parent commit env var
