@@ -340,7 +340,6 @@
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
-    "wait-on": "^7.0.1",
     "web3-stream-provider": "^4.0.0",
     "zxcvbn": "^4.4.2"
   },
@@ -516,6 +515,7 @@
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "vinyl-sourcemaps-apply": "^0.2.1",
+    "wait-on": "^7.0.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
     "webpack": "^5.75.0",
