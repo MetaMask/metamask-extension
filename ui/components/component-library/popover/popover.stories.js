@@ -22,7 +22,6 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Popover',
-  id: __filename,
   component: Popover,
   parameters: {
     docs: {
