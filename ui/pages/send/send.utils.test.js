@@ -1,8 +1,6 @@
 import { rawEncode } from 'ethereumjs-abi';
-import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 
 import {
-  multiplyCurrencies,
   addCurrencies,
   conversionGTE,
   conversionUtil,
@@ -49,18 +47,6 @@ jest.mock('ethereumjs-abi', () => ({
 }));
 
 describe('send utils', () => {
-  describe('calcGasTotal()', () => {
-    it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', () => {
-      const result = calcGasTotal(12, 15);
-      expect(result).toStrictEqual('12x15');
-      expect(multiplyCurrencies).toHaveBeenCalledWith(12, 15, {
-        multiplicandBase: 16,
-        multiplierBase: 16,
-        toNumericBase: 'hex',
-      });
-    });
-  });
-
   describe('generateERC20TransferData()', () => {
     it('should return undefined if not passed a send token', () => {
       expect(

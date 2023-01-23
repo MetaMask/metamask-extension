@@ -3,7 +3,7 @@
  * https://github.com/facebook/jest/issues/7780
  */
 import { cloneDeep } from 'lodash';
-import KeyringController from 'eth-keyring-controller';
+import { KeyringController } from '@metamask/eth-keyring-controller';
 import firstTimeState from '../first-time-state';
 import mockEncryptor from '../../../test/lib/mock-encryptor';
 import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
