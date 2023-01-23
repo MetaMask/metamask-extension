@@ -12,10 +12,6 @@
     "message": "لقد قرأت دولار واحد وأوافق عليه",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 يمكن الوصول إلى هذا المبلغ الأقصى وإنفاقه حتى",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
   },

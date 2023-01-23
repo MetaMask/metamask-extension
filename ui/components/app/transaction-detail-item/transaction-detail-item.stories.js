@@ -8,7 +8,7 @@ import TransactionDetailItem from '.';
 
 export default {
   title: 'Components/App/TransactionDetailItem',
-  id: __filename,
+
   component: TransactionDetailItem,
   parameters: {
     docs: {

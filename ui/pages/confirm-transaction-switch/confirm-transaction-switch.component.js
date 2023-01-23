@@ -17,7 +17,7 @@ import {
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
 } from '../../helpers/constants/routes';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { TransactionType } from '../../../shared/constants/transaction';
 
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
@@ -28,35 +28,35 @@ export default class ConfirmTransactionSwitch extends Component {
     const { txData } = this.props;
     const { id, txParams: { data } = {}, type } = txData;
 
-    if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
+    if (type === TransactionType.deployContract) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_DEPLOY_CONTRACT_PATH}`;
       return <Redirect to={{ pathname }} />;
     }
 
-    if (type === TRANSACTION_TYPES.SIMPLE_SEND) {
+    if (type === TransactionType.simpleSend) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`;
       return <Redirect to={{ pathname }} />;
     }
 
     if (data) {
       switch (type) {
-        case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
+        case TransactionType.tokenMethodTransfer: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_TOKEN_PATH}`;
           return <Redirect to={{ pathname }} />;
         }
-        case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
+        case TransactionType.tokenMethodApprove: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_APPROVE_PATH}`;
           return <Redirect to={{ pathname }} />;
         }
-        case TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL: {
+        case TransactionType.tokenMethodSetApprovalForAll: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`;
           return <Redirect to={{ pathname }} />;
         }
-        case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
+        case TransactionType.tokenMethodTransferFrom: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_TRANSFER_FROM_PATH}`;
           return <Redirect to={{ pathname }} />;
         }
-        case TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM: {
+        case TransactionType.tokenMethodSafeTransferFrom: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SAFE_TRANSFER_FROM_PATH}`;
           return <Redirect to={{ pathname }} />;
         }

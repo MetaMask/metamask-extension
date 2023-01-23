@@ -17,7 +17,7 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/HelpText',
-  id: __filename,
+
   component: HelpText,
   parameters: {
     docs: {

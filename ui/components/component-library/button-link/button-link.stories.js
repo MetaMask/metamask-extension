@@ -34,7 +34,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/ButtonLink',
-  id: __filename,
+
   component: ButtonLink,
   parameters: {
     docs: {

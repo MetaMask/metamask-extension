@@ -84,7 +84,7 @@ import {
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { EVENT } from '../../../shared/constants/metametrics';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import ActionableMessage from '../../components/ui/actionable-message';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -192,12 +192,12 @@ export default function Swap() {
       approveTxData,
       chainId,
     );
-  const tradeConfirmed = tradeTxData?.status === TRANSACTION_STATUSES.CONFIRMED;
+  const tradeConfirmed = tradeTxData?.status === TransactionStatus.confirmed;
   const approveError =
-    approveTxData?.status === TRANSACTION_STATUSES.FAILED ||
+    approveTxData?.status === TransactionStatus.failed ||
     approveTxData?.txReceipt?.status === '0x0';
   const tradeError =
-    tradeTxData?.status === TRANSACTION_STATUSES.FAILED ||
+    tradeTxData?.status === TransactionStatus.failed ||
     tradeTxData?.txReceipt?.status === '0x0';
   const conversionError = approveError || tradeError;
 

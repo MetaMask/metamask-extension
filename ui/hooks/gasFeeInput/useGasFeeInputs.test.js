@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import { TransactionEnvelopeType } from '../../../shared/constants/transaction';
 import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
@@ -99,7 +99,7 @@ describe('useGasFeeInputs', () => {
             value: '3782DACE9D90000',
             gasLimit: '0x5028',
             gasPrice: '0x5028',
-            type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+            type: TransactionEnvelopeType.legacy,
           },
         }),
       );

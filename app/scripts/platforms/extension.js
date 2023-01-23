@@ -4,7 +4,7 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 
 export default class ExtensionPlatform {
@@ -116,7 +116,7 @@ export default class ExtensionPlatform {
   showTransactionNotification(txMeta, rpcPrefs) {
     const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
 
-    if (status === TRANSACTION_STATUSES.CONFIRMED) {
+    if (status === TransactionStatus.confirmed) {
       // There was an on-chain failure
       receiptStatus === '0x0'
         ? this._showFailedTransaction(
@@ -124,7 +124,7 @@ export default class ExtensionPlatform {
             'Transaction encountered an error.',
           )
         : this._showConfirmedTransaction(txMeta, rpcPrefs);
-    } else if (status === TRANSACTION_STATUSES.FAILED) {
+    } else if (status === TransactionStatus.failed) {
       this._showFailedTransaction(txMeta);
     }
   }
