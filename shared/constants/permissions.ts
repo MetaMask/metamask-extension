@@ -24,7 +24,15 @@ export const PermissionNamespaces = Object.freeze({
   wallet_snap_: 'wallet_snap_*',
 } as const);
 
-export const EndowmentPermissions = Object.freeze({
+export const StableEndowmentPermissions = Object.freeze({
+  'endowment:network-access': 'endowment:network-access',
+  'endowment:transaction-insight': 'endowment:transaction-insight',
+  'endowment:cronjob': 'endowment:cronjob',
+  'endowment:ethereum-provider': 'endowment:ethereum-provider',
+  'endowment:rpc': 'endowment:rpc',
+} as const);
+
+export const FlaskEndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
   'endowment:long-running': 'endowment:long-running',
   'endowment:transaction-insight': 'endowment:transaction-insight',
@@ -51,6 +59,10 @@ export const ExcludedStableSnapEndowments = {
 export const ExcludedFlaskSnapEndowments = {
   'endowment:keyring': 'This endowment is not available',
 };
+
+export const EndowmentPermissions = isMain
+  ? StableEndowmentPermissions
+  : FlaskEndowmentPermissions;
 
 export const ExcludedSnapPermissions = isMain
   ? ExcludedStableSnapPermissions
