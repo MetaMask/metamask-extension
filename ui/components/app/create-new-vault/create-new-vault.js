@@ -101,6 +101,7 @@ export default function CreateNewVault({
       <SrpInput onChange={setSeedPhrase} srpText={t('secretRecoveryPhrase')} />
       <div className="create-new-vault__create-password">
         <TextField
+          data-testid="create-vault-password"
           id="password"
           label={t('newPassword')}
           type="password"
@@ -112,6 +113,7 @@ export default function CreateNewVault({
           largeLabel
         />
         <TextField
+          data-testid="create-vault-confirm-password"
           id="confirm-password"
           label={t('confirmPassword')}
           type="password"
@@ -140,6 +142,7 @@ export default function CreateNewVault({
         </div>
       ) : null}
       <Button
+        data-testid="create-new-vault-submit-button"
         className="create-new-vault__submit-button"
         type="primary"
         submit
