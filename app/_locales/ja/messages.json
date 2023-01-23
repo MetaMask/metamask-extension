@@ -110,10 +110,6 @@
     "message": "$1を読んで同意しました",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1はアクセスしてこの最大量まで消費できます",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 はこのアセットにアクセスし、使用できます",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "承認済み"
-  },
-  "approvedAmountWithColon": {
-    "message": "承認された金額:"
   },
   "approvedAsset": {
     "message": "承認済みのアセット"
@@ -1709,12 +1702,6 @@
     "message": "インポート済み",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "改善されたトークンの許可設定"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "これをオンにすると、DApp が ERC20 の承認を求めた際に、改善されたトークン許可設定が利用できます"
-  },
   "inYourSettings": {
     "message": "設定で"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum のマージ (Merge) が完了しました！"
-  },
-  "notifications16ActionText": {
-    "message": "こちらでお試しください"
-  },
-  "notifications16Description": {
-    "message": "より多くの情報に基づき決定を下せるよう、トークン許可設定の確認のデザインを変更しました。"
-  },
-  "notifications16Title": {
-    "message": "改善されたトークン許可設定"
   },
   "notifications17ActionText": {
     "message": "セキュリティおよびプライバシー設定を表示"

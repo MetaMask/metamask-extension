@@ -110,10 +110,6 @@
     "message": "$1의 내용을 읽고 이에 동의합니다.",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1의 경우, 이 최대 금액까지 액세스 및 지출할 수 있습니다.",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1(은)는 이 자산에 접근하여 사용할 수 있습니다",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "승인됨"
-  },
-  "approvedAmountWithColon": {
-    "message": "승인 금액:"
   },
   "approvedAsset": {
     "message": "승인된 자산"
@@ -1709,12 +1702,6 @@
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "토큰 허용 기능이 개선되었습니다"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Dapp에서 ERC20 승인을 요청할 때마다 이 기능을 켜시면 토큰 허용 기능을 이용할 수 있습니다"
-  },
   "inYourSettings": {
     "message": "설정에서"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "이더리움 머지가 완료되었습니다!"
-  },
-  "notifications16ActionText": {
-    "message": "여기서 체험하세요"
-  },
-  "notifications16Description": {
-    "message": "토큰 허용 확인 과정을 재설계하여 사용자가 정보에 의한 결정을 할 수 있도록 하였습니다."
-  },
-  "notifications16Title": {
-    "message": "토큰 허용 경험 개선됨"
   },
   "notifications17ActionText": {
     "message": "보안 및 개인정보 설정 표시"

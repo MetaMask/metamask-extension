@@ -1139,6 +1139,10 @@ export function getNewCollectibleAddedMessage(state) {
   return state.appState.newCollectibleAddedMessage;
 }
 
+export function getRemoveCollectibleMessage(state) {
+  return state.appState.removeCollectibleMessage;
+}
+
 /**
  * To retrieve the name of the new Network added using add network form
  *
@@ -1300,16 +1304,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
-}
-
-/**
- * To get the `improvedTokenAllowanceEnabled` value which determines whether we use the improved token allowance
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsImprovedTokenAllowanceEnabled(state) {
-  return state.metamask.improvedTokenAllowanceEnabled;
 }
 
 /**

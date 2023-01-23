@@ -110,10 +110,6 @@
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 इस अधिकतम राशि तक पहुंच सकते हैं और खर्च कर सकते हैं",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 एक्सेस कर सकता है और इस एसेट को खर्च कर सकता है",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "अनुमोदित"
-  },
-  "approvedAmountWithColon": {
-    "message": "स्वीकृत राशि:"
   },
   "approvedAsset": {
     "message": "स्वीकृत एसेट"
@@ -1709,12 +1702,6 @@
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "बेहतर टोकन भत्ता अनुभव"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "जब भी कोई डैप ERC20 स्वीकृति का अनुरोध करता है तो बेहतर टोकन भत्ता अनुभव प्राप्त करने के लिए इसे चालू करें"
-  },
   "inYourSettings": {
     "message": "आपके सेटिंग्स में"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "इथेरियम मर्ज यहाँ है!"
-  },
-  "notifications16ActionText": {
-    "message": "इसे यहां आजमाएं"
-  },
-  "notifications16Description": {
-    "message": "अधिक सूचित निर्णय लेने में आपकी सहायता करने के लिए हमने अपने टोकन भत्ता पुष्टिकरण को फिर से डिजाइन किया।"
-  },
-  "notifications16Title": {
-    "message": "बेहतर टोकन भत्ता अनुभव"
   },
   "notifications17ActionText": {
     "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"

@@ -5,7 +5,7 @@ import RadioGroup from '.';
 
 export default {
   title: 'Components/UI/RadioGroup',
-  id: __filename,
+
   component: RadioGroup,
   parameters: {
     docs: {

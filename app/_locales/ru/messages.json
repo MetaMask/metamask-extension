@@ -110,10 +110,6 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 может получить доступ и потратить до этой максимальной суммы",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 может получить доступ к этому активу и потратить его",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Одобрен"
-  },
-  "approvedAmountWithColon": {
-    "message": "Одобренная сумма:"
   },
   "approvedAsset": {
     "message": "Одобренный актив"
@@ -1709,12 +1702,6 @@
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Улучшенный опыт предоставления токенов"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Включите этот параметр, чтобы воспользоваться улучшенным доступом к токенам всякий раз, когда децентрализованное приложение запрашивает одобрение ERC20."
-  },
   "inYourSettings": {
     "message": "в ваших Настройках"
   },
@@ -2397,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Merge уже досутпно!"
-  },
-  "notifications16ActionText": {
-    "message": "Попробуйте это здесь"
-  },
-  "notifications16Description": {
-    "message": "Мы переработали наше подтверждение допустимых токенов, чтобы помочь вам принимать более обоснованные решения."
-  },
-  "notifications16Title": {
-    "message": "Улучшенный опыт предоставления токенов"
   },
   "notifications17ActionText": {
     "message": "Показать настройки безопасности и конфиденциальности"

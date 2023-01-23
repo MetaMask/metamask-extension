@@ -4,7 +4,6 @@ import MetaMetricsOptIn from './metametrics-opt-in.component';
 
 export default {
   title: 'Pages/FirstTimeFlow/MetametricsOptIn',
-  id: __filename,
 };
 
 export const DefaultStory = () => {

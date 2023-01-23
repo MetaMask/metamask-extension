@@ -24,6 +24,7 @@ import {
   getNewTokensImported,
   getShowPortfolioTooltip,
   getShouldShowSeedPhraseReminder,
+  getRemoveCollectibleMessage,
 } from '../../selectors';
 
 import {
@@ -37,6 +38,7 @@ import {
   setRecoveryPhraseReminderLastShown,
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
+  setRemoveCollectibleMessage,
   setNewTokensImported,
   setRpcTarget,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -145,6 +147,7 @@ const mapStateToProps = (state) => {
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
+    removeCollectibleMessage: getRemoveCollectibleMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
     onboardedInThisUISession: appState.onboardedInThisUISession,
@@ -174,6 +177,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setNewCollectibleAddedMessage: (message) => {
     dispatch(setNewCollectibleAddedMessage(message));
+  },
+  setRemoveCollectibleMessage: (message) => {
+    dispatch(setRemoveCollectibleMessage(message));
   },
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
