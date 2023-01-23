@@ -812,7 +812,7 @@ export default class ConfirmTransactionBase extends Component {
     const { submitting } = this.state;
     const { name } = methodData;
 
-    if (txData.type === TRANSACTION_TYPES.SIMPLE_SEND) {
+    if (txData.type === TransactionType.simpleSend) {
       addToAddressBookIfNew(toAddress, toAccounts);
     }
     if (submitting) {
