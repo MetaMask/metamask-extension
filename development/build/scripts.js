@@ -828,6 +828,17 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         { extensions },
       ],
+      // Transpile libraries that use ES2020 unsupported by Chrome v78
+      [
+        babelify,
+        {
+          only: [
+            './**/node_modules/@ethereumjs/util',
+            './**/node_modules/superstruct',
+          ],
+          global: true,
+        },
+      ],
       // Inline `fs.readFileSync` files
       brfs,
     ],
