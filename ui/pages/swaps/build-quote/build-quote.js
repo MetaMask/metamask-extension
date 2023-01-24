@@ -86,7 +86,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  TOKEN_BUCKET_PRIORITY,
+  TokenBucketPriority,
 } from '../../../../shared/constants/swaps';
 
 import {
@@ -221,13 +221,13 @@ export default function BuildQuote({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
-    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.OWNED,
+    tokenBucketPriority: TokenBucketPriority.owned,
   });
   const tokensToSearchSwapTo = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
-    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.TOP,
+    tokenBucketPriority: TokenBucketPriority.top,
   });
   const selectedToToken =
     tokensToSearchSwapFrom.find(({ address }) =>
