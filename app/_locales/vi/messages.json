@@ -110,10 +110,6 @@
     "message": "Tôi đã đọc và đồng ý với $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 có thể truy cập và chi tiêu đến số tiền tối đa",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 có thể truy cập và chi tiêu tài sản này",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Đã phê duyệt"
-  },
-  "approvedAmountWithColon": {
-    "message": "Số tiền được duyệt:"
   },
   "approvedAsset": {
     "message": "Tài sản được chấp nhận"
@@ -1264,14 +1257,8 @@
     "message": "Điểm cuối đã trả về một mã chuỗi khác: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Phát hiện token nâng cao"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Tính năng phát hiện token nâng cao hiện có sẵn trên $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "API token của ConsenSys sẽ tổng hợp danh sách token từ các danh sách token khác nhau của bên thứ ba. Khi bật, các token sẽ tự động được phát hiện và có thể tìm kiếm được trên mạng chính thức của Ethereum, Binance, Polygon và Avalanche. Khi tắt, tính năng tìm kiếm và tự động phát hiện chỉ có thể được thực hiện trên mạng chính thức của Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Ký tự không hợp lệ đối với ENS."
@@ -1714,12 +1701,6 @@
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "improvedTokenAllowance": {
-    "message": "Trải nghiệm cho phép token được cải thiện"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Bật tính năng này để có trải nghiệm cho phép token được cải thiện mỗi khi có một dapp yêu cầu phê duyệt ERC20"
   },
   "inYourSettings": {
     "message": "trong phần Cài đặt"
@@ -2403,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Hợp nhất Ethereum đã được triển khai!"
-  },
-  "notifications16ActionText": {
-    "message": "Dùng thử tại đây"
-  },
-  "notifications16Description": {
-    "message": "Chúng tôi đã thiết kế lại xác nhận cho phép token để giúp bạn đưa ra quyết định sáng suốt hơn."
-  },
-  "notifications16Title": {
-    "message": "Trải nghiệm cho phép token được cải thiện"
   },
   "notifications17ActionText": {
     "message": "Hiển thị cài đặt Bảo mật và Quyền riêng tư"
@@ -3348,9 +3320,6 @@
   },
   "signatureRequest": {
     "message": "Yêu cầu chữ ký"
-  },
-  "signatureRequest1": {
-    "message": "Thông báo"
   },
   "signatureRequestGuidance": {
     "message": "Chỉ ký vào thông báo này nếu bạn hoàn toàn hiểu nội dung và tin tưởng trang web yêu cầu."

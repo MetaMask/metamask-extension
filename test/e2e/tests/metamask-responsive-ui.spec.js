@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
-const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
@@ -17,127 +16,52 @@ describe('MetaMask Responsive UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        async function clickWordAndWait(word) {
-          await driver.clickElement(
-            `[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`,
-          );
-          await driver.delay(tinyDelayMs);
-        }
+        // welcome
+        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
-        if (process.env.ONBOARDING_V2 === '1') {
-          // welcome
-          await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+        // metrics
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-          // metrics
-          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        // create password
+        await driver.fill(
+          '[data-testid="create-password-new"]',
+          'correct horse battery staple',
+        );
+        await driver.fill(
+          '[data-testid="create-password-confirm"]',
+          'correct horse battery staple',
+        );
+        await driver.clickElement('[data-testid="create-password-terms"]');
+        await driver.clickElement('[data-testid="create-password-wallet"]');
 
-          // create password
-          await driver.fill(
-            '[data-testid="create-password-new"]',
-            'correct horse battery staple',
-          );
-          await driver.fill(
-            '[data-testid="create-password-confirm"]',
-            'correct horse battery staple',
-          );
-          await driver.clickElement('[data-testid="create-password-terms"]');
-          await driver.clickElement('[data-testid="create-password-wallet"]');
+        // secure wallet
+        await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
-          // secure wallet
-          await driver.clickElement(
-            '[data-testid="secure-wallet-recommended"]',
-          );
+        // review
+        await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
+        const chipTwo = await (
+          await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
+        ).getText();
+        const chipThree = await (
+          await driver.findElement('[data-testid="recovery-phrase-chip-3"]')
+        ).getText();
+        const chipSeven = await (
+          await driver.findElement('[data-testid="recovery-phrase-chip-7"]')
+        ).getText();
+        await driver.clickElement('[data-testid="recovery-phrase-next"]');
 
-          // review
-          await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-          const chipTwo = await (
-            await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
-          ).getText();
-          const chipThree = await (
-            await driver.findElement('[data-testid="recovery-phrase-chip-3"]')
-          ).getText();
-          const chipSeven = await (
-            await driver.findElement('[data-testid="recovery-phrase-chip-7"]')
-          ).getText();
-          await driver.clickElement('[data-testid="recovery-phrase-next"]');
+        // confirm
+        await driver.fill('[data-testid="recovery-phrase-input-2"]', chipTwo);
+        await driver.fill('[data-testid="recovery-phrase-input-3"]', chipThree);
+        await driver.fill('[data-testid="recovery-phrase-input-7"]', chipSeven);
+        await driver.clickElement('[data-testid="recovery-phrase-confirm"]');
 
-          // confirm
-          await driver.fill('[data-testid="recovery-phrase-input-2"]', chipTwo);
-          await driver.fill(
-            '[data-testid="recovery-phrase-input-3"]',
-            chipThree,
-          );
-          await driver.fill(
-            '[data-testid="recovery-phrase-input-7"]',
-            chipSeven,
-          );
-          await driver.clickElement('[data-testid="recovery-phrase-confirm"]');
+        // complete
+        await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
-          // complete
-          await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-          // pin extension
-          await driver.clickElement('[data-testid="pin-extension-next"]');
-          await driver.clickElement('[data-testid="pin-extension-done"]');
-        } else {
-          // clicks the continue button on the welcome screen
-          await driver.findElement('.welcome-page__header');
-          await driver.clickElement({
-            text: enLocaleMessages.getStarted.message,
-            tag: 'button',
-          });
-          await driver.delay(tinyDelayMs);
-
-          // clicks the "I agree" option on the metametrics opt-in screen
-          await driver.clickElement('.btn-primary');
-
-          // clicks the "Create New Wallet" option
-          await driver.clickElement({ text: 'Create a wallet', tag: 'button' });
-
-          // accepts a secure password
-          await driver.fill(
-            '.first-time-flow__form #create-password',
-            'correct horse battery staple',
-          );
-          await driver.fill(
-            '.first-time-flow__form #confirm-password',
-            'correct horse battery staple',
-          );
-          await driver.clickElement('.first-time-flow__checkbox');
-          await driver.clickElement('.first-time-flow__form button');
-
-          // renders the Secret Recovery Phrase intro screen
-          await driver.clickElement('.seed-phrase-intro__left button');
-
-          // reveals the Secret Recovery Phrase
-          await driver.clickElement(
-            '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button',
-          );
-          const revealedSeedPhrase = await driver.findElement(
-            '.reveal-seed-phrase__secret-words',
-          );
-          const seedPhrase = await revealedSeedPhrase.getText();
-          assert.equal(seedPhrase.split(' ').length, 12);
-
-          await driver.clickElement({
-            text: enLocaleMessages.next.message,
-            tag: 'button',
-          });
-
-          // can retype the Secret Recovery Phrase
-          const words = seedPhrase.split(' ');
-          for (const word of words) {
-            await clickWordAndWait(word);
-          }
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-          // clicks through the success screen
-          await driver.findElement({ text: 'Congratulations', tag: 'div' });
-          await driver.clickElement({
-            text: enLocaleMessages.endOfFlowMessage10.message,
-            tag: 'button',
-          });
-        }
+        // pin extension
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement('[data-testid="pin-extension-done"]');
 
         // assert balance
         const balance = await driver.findElement(

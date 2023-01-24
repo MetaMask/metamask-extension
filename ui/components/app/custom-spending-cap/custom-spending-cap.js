@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -23,13 +24,11 @@ import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
-  conversionGreaterThan,
-  conversionLTE,
-} from '../../../../shared/modules/conversion.utils';
-import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
-  TOKEN_ALLOWANCE_VALUE_REGEX,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
+  DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
@@ -56,20 +55,16 @@ export default function CustomSpendingCap({
   };
 
   const decConversionGreaterThan = (tokenValue, tokenBalance) => {
-    return conversionGreaterThan(
-      { value: Number(replaceCommaToDot(tokenValue)), fromNumericBase: 'dec' },
-      { value: Number(tokenBalance), fromNumericBase: 'dec' },
+    return new Numeric(Number(replaceCommaToDot(tokenValue)), 10).greaterThan(
+      Number(tokenBalance),
+      10,
     );
   };
 
   const getInputTextLogic = (inputNumber) => {
     if (
-      conversionLTE(
-        {
-          value: Number(replaceCommaToDot(inputNumber)),
-          fromNumericBase: 'dec',
-        },
-        { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+      new Numeric(Number(replaceCommaToDot(inputNumber)), 10).lessThanOrEqualTo(
+        new Numeric(Number(currentTokenBalance), 10),
       )
     ) {
       return {
@@ -105,8 +100,12 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
+    const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
+    if (match?.[1]?.length > decimals) {
+      return;
+    }
 
-    if (valueInput && !TOKEN_ALLOWANCE_VALUE_REGEX.test(valueInput)) {
+    if (valueInput && !NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(valueInput)) {
       spendingCapError = t('spendingCapError');
       setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
       setError(spendingCapError);
@@ -230,7 +229,9 @@ export default function CustomSpendingCap({
               paddingRight={4}
               paddingBottom={2}
               textAlign={TEXT_ALIGN.END}
-              className="custom-spending-cap__max"
+              className={classnames('custom-spending-cap__max', {
+                'custom-spending-cap__max--with-error-message': error,
+              })}
             >
               <ButtonLink
                 size={SIZES.AUTO}
@@ -242,16 +243,21 @@ export default function CustomSpendingCap({
                 {t('max')}
               </ButtonLink>
             </Box>
-            <Typography
-              className="custom-spending-cap__description"
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H7}
-              boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+            <Box
+              className={classnames('custom-spending-cap__description', {
+                'custom-spending-cap__description--with-error-message': error,
+              })}
             >
-              {replaceCommaToDot(value)
-                ? customSpendingCapText
-                : inputLogicEmptyStateText}
-            </Typography>
+              <Typography
+                color={COLORS.TEXT_DEFAULT}
+                variant={TYPOGRAPHY.H7}
+                boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+              >
+                {replaceCommaToDot(value)
+                  ? customSpendingCapText
+                  : inputLogicEmptyStateText}
+              </Typography>
+            </Box>
           </label>
         </Box>
       </Box>

@@ -4,10 +4,8 @@ import PropTypes from 'prop-types';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import {
-  ERC1155,
-  ERC20,
-  ERC721,
-  TRANSACTION_TYPES,
+  TokenStandard,
+  TransactionType,
 } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
@@ -84,17 +82,6 @@ export default class ConfirmPageContainer extends Component {
     origin: PropTypes.string.isRequired,
     ethGasPriceWarning: PropTypes.string,
     networkIdentifier: PropTypes.string,
-    // Navigation
-    totalTx: PropTypes.number,
-    positionOfCurrentTx: PropTypes.number,
-    nextTxId: PropTypes.string,
-    prevTxId: PropTypes.string,
-    showNavigation: PropTypes.bool,
-    onNextTx: PropTypes.func,
-    firstTx: PropTypes.string,
-    lastTx: PropTypes.string,
-    ofText: PropTypes.string,
-    requestsWaitingText: PropTypes.string,
     // Footer
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
@@ -116,10 +103,9 @@ export default class ConfirmPageContainer extends Component {
     const { tokenAddress, fromAddress, currentTransaction, assetStandard } =
       this.props;
     const isSetApproveForAll =
-      currentTransaction.type ===
-      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+      currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
 
-    if (isSetApproveForAll && assetStandard === ERC721) {
+    if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
       const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
       this.setState({
         collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
@@ -161,16 +147,6 @@ export default class ConfirmPageContainer extends Component {
       nonce,
       unapprovedTxCount,
       warning,
-      totalTx,
-      positionOfCurrentTx,
-      nextTxId,
-      prevTxId,
-      showNavigation,
-      onNextTx,
-      firstTx,
-      lastTx,
-      ofText,
-      requestsWaitingText,
       hideSenderToRecipient,
       showAccountInHeader,
       origin,
@@ -194,16 +170,15 @@ export default class ConfirmPageContainer extends Component {
       contentComponent && disabled && (errorKey || errorMessage);
 
     const hideTitle =
-      (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
-        currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
+      (currentTransaction.type === TransactionType.contractInteraction ||
+        currentTransaction.type === TransactionType.deployContract) &&
       currentTransaction.txParams?.value === '0x0';
 
     const networkName =
       NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
     const isSetApproveForAll =
-      currentTransaction.type ===
-      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+      currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
 
     const { setShowDepositPopover } = this.state;
 
@@ -212,21 +187,10 @@ export default class ConfirmPageContainer extends Component {
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container" data-testid="page-container">
-          <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
-            nextTxId={nextTxId}
-            prevTxId={prevTxId}
-            showNavigation={showNavigation}
-            onNextTx={(txId) => onNextTx(txId)}
-            firstTx={firstTx}
-            lastTx={lastTx}
-            ofText={ofText}
-            requestsWaitingText={requestsWaitingText}
-          />
-          {assetStandard === ERC20 ||
-          assetStandard === ERC721 ||
-          assetStandard === ERC1155 ? (
+          <ConfirmPageContainerNavigation />
+          {assetStandard === TokenStandard.ERC20 ||
+          assetStandard === TokenStandard.ERC721 ||
+          assetStandard === TokenStandard.ERC1155 ? (
             <NetworkAccountBalanceHeader
               accountName={fromName}
               accountBalance={accountBalance}
@@ -346,7 +310,7 @@ export default class ConfirmPageContainer extends Component {
               collectionName={title}
               senderAddress={fromAddress}
               name={fromName}
-              isERC721={assetStandard === ERC721}
+              isERC721={assetStandard === TokenStandard.ERC721}
               total={this.state.collectionBalance}
               onSubmit={onSubmit}
               onCancel={onCancel}

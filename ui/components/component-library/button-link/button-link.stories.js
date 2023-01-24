@@ -32,7 +32,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/ButtonLink',
-  id: __filename,
+
   component: ButtonLink,
   parameters: {
     docs: {
@@ -78,7 +78,6 @@ export default {
       control: 'object',
       table: { category: 'button base props' },
     },
-
     loading: {
       control: 'boolean',
       table: { category: 'button base props' },
@@ -149,7 +148,7 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <ButtonLink {...args}>Href Example</ButtonLink>;
+export const Href = (args) => <ButtonLink {...args}>Anchor Element</ButtonLink>;
 
 Href.args = {
   href: '/metamask',

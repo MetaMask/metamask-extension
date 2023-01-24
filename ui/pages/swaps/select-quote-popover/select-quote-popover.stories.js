@@ -8,7 +8,7 @@ import SelectQuotePopover from '.';
 
 export default {
   title: 'Pages/Swaps/SelectQuotePopover',
-  id: __filename,
+
   component: SelectQuotePopover,
   parameters: {
     docs: {

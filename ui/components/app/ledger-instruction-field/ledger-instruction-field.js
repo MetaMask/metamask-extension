@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  LEDGER_TRANSPORT_TYPES,
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
+  HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
-  WEBHID_CONNECTED_STATUSES,
-  TRANSPORT_STATES,
 } from '../../../../shared/constants/hardware-wallets';
 import {
   PLATFORM_FIREFOX,
@@ -68,8 +68,8 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   useEffect(() => {
     const initialConnectedDeviceCheck = async () => {
       if (
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
-        webHidConnectedStatus !== WEBHID_CONNECTED_STATUSES.CONNECTED
+        ledgerTransportType === LedgerTransportTypes.webhid &&
+        webHidConnectedStatus !== WebHIDConnectedStatuses.connected
       ) {
         const devices = await window.navigator.hid.getDevices();
         const webHidIsConnected = devices.some(
@@ -78,37 +78,41 @@ export default function LedgerInstructionField({ showDataInstruction }) {
         dispatch(
           setLedgerWebHidConnectedStatus(
             webHidIsConnected
-              ? WEBHID_CONNECTED_STATUSES.CONNECTED
-              : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
+              ? WebHIDConnectedStatuses.connected
+              : WebHIDConnectedStatuses.notConnected,
           ),
         );
       }
     };
     const determineTransportStatus = async () => {
       if (
-        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
-        webHidConnectedStatus === WEBHID_CONNECTED_STATUSES.CONNECTED &&
-        transportStatus === TRANSPORT_STATES.NONE
+        ledgerTransportType === LedgerTransportTypes.webhid &&
+        webHidConnectedStatus === WebHIDConnectedStatuses.connected &&
+        transportStatus === HardwareTransportStates.none
       ) {
         try {
           const transportedCreated = await attemptLedgerTransportCreation();
           dispatch(
             setLedgerTransportStatus(
               transportedCreated
-                ? TRANSPORT_STATES.VERIFIED
-                : TRANSPORT_STATES.UNKNOWN_FAILURE,
+                ? HardwareTransportStates.verified
+                : HardwareTransportStates.unknownFailure,
             ),
           );
         } catch (e) {
           if (e.message.match('Failed to open the device')) {
             dispatch(
-              setLedgerTransportStatus(TRANSPORT_STATES.DEVICE_OPEN_FAILURE),
+              setLedgerTransportStatus(
+                HardwareTransportStates.deviceOpenFailure,
+              ),
             );
           } else if (e.message.match('the device is already open')) {
-            dispatch(setLedgerTransportStatus(TRANSPORT_STATES.VERIFIED));
+            dispatch(
+              setLedgerTransportStatus(HardwareTransportStates.verified),
+            );
           } else {
             dispatch(
-              setLedgerTransportStatus(TRANSPORT_STATES.UNKNOWN_FAILURE),
+              setLedgerTransportStatus(HardwareTransportStates.unknownFailure),
             );
           }
         }
@@ -120,12 +124,12 @@ export default function LedgerInstructionField({ showDataInstruction }) {
 
   useEffect(() => {
     return () => {
-      dispatch(setLedgerTransportStatus(TRANSPORT_STATES.NONE));
+      dispatch(setLedgerTransportStatus(HardwareTransportStates.none));
     };
   }, [dispatch]);
 
-  const usingLedgerLive = ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE;
-  const usingWebHID = ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID;
+  const usingLedgerLive = ledgerTransportType === LedgerTransportTypes.live;
+  const usingWebHID = ledgerTransportType === LedgerTransportTypes.webhid;
 
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
@@ -165,7 +169,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   {t('ledgerConnectionInstructionCloseOtherApps')}
                 </Button>
               </span>,
-              transportStatus === TRANSPORT_STATES.DEVICE_OPEN_FAILURE,
+              transportStatus === HardwareTransportStates.deviceOpenFailure,
             )}
             {renderInstructionStep(
               <span>
@@ -184,8 +188,8 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                       dispatch(
                         setLedgerWebHidConnectedStatus({
                           webHidConnectedStatus: webHidIsConnected
-                            ? WEBHID_CONNECTED_STATUSES.CONNECTED
-                            : WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
+                            ? WebHIDConnectedStatuses.connected
+                            : WebHIDConnectedStatuses.notConnected,
                         }),
                       );
                     } else {
@@ -199,8 +203,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                 </Button>
               </span>,
               usingWebHID &&
-                webHidConnectedStatus ===
-                  WEBHID_CONNECTED_STATUSES.NOT_CONNECTED,
+                webHidConnectedStatus === WebHIDConnectedStatuses.notConnected,
               COLORS.WARNING_DEFAULT,
             )}
           </div>

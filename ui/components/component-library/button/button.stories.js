@@ -33,7 +33,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Button',
-  id: __filename,
+
   component: Button,
   parameters: {
     docs: {
@@ -64,7 +64,7 @@ export default {
     href: {
       control: 'text',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -167,7 +167,7 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <Button {...args}>Href Example</Button>;
+export const Href = (args) => <Button {...args}>Anchor Element</Button>;
 
 Href.args = {
   href: '/metamask',
@@ -205,8 +205,8 @@ Loading.args = {
   loading: true,
 };
 
-export const Icon = (args) => (
-  <Button {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED}>
-    Button
-  </Button>
-);
+export const IconName = (args) => <Button {...args}>Button</Button>;
+
+IconName.args = {
+  iconName: ICON_NAMES.ADD_SQUARE_FILLED,
+};

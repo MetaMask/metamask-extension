@@ -10,9 +10,9 @@ import {
   PLATFORM_EDGE,
 } from '../../../shared/constants/app';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
-  TRANSACTION_ENVELOPE_TYPES,
+  TransactionStatus,
+  TransactionType,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import {
   deferredPromise,
@@ -223,7 +223,7 @@ describe('app utils', () => {
     it('should correctly format the tx meta object (EIP-1559)', () => {
       const txMeta = {
         id: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         txParams: {
           from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
           to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -232,7 +232,7 @@ describe('app utils', () => {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        type: TransactionType.simpleSend,
         origin: 'other',
         chainId: '0x5',
         time: 1624408066355,
@@ -269,7 +269,7 @@ describe('app utils', () => {
     it('should correctly format the tx meta object (non EIP-1559)', () => {
       const txMeta = {
         id: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         txParams: {
           from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
           to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -277,7 +277,7 @@ describe('app utils', () => {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        type: TransactionType.simpleSend,
         origin: 'other',
         chainId: '0x5',
         time: 1624408066355,
@@ -301,7 +301,7 @@ describe('app utils', () => {
         s: '0x18bfc4eeb7ebcfacc3bd59ea100a6834ea3265e65945dbec69aa2a06564fafff',
         to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         transactionIndex: null,
-        type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        type: TransactionEnvelopeType.legacy,
         v: '0x29',
         value: '0x0',
       };

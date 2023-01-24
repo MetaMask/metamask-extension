@@ -69,9 +69,9 @@ import {
   getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
+  getUseCurrencyRateCheck,
 } from '../../../selectors';
 
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -105,9 +105,12 @@ import {
 } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -154,6 +157,7 @@ export default function BuildQuote({
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
@@ -255,13 +259,13 @@ export default function BuildQuote({
     fromTokenInputValue || 0,
     fromTokenSymbol,
     {
-      showFiat: true,
+      showFiat: useCurrencyRateCheck,
     },
     true,
   );
   const swapFromEthFiatValue = useEthFiatAmount(
     fromTokenInputValue || 0,
-    { showFiat: true },
+    { showFiat: useCurrencyRateCheck },
     true,
   );
   const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)

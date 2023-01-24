@@ -4,7 +4,7 @@ import SnapContentFooter from '.';
 
 export default {
   title: 'Components/App/Flask/SnapContentFooter',
-  id: __filename,
+
   component: SnapContentFooter,
   args: {
     snapName: 'Test Snap',

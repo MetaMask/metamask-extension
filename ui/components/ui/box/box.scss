@@ -230,25 +230,10 @@ $attributesToApplyExtraProperties: margin;
   &--width-full {
     width: 100%;
   }
-  // breakpoint classes
-  @each $breakpoint, $min-width in $screen-sizes-map {
-    @media screen and (min-width: $min-width) {
-      &--#{$breakpoint}\:width-full {
-        width: 100%;
-      }
-    }
-  }
+
 
   &--height-full {
     height: 100%;
-  }
-  // breakpoint classes
-  @each $breakpoint, $min-width in $screen-sizes-map {
-    @media screen and (min-width: $min-width) {
-      &--#{$breakpoint}\:height-full {
-        height: 100%;
-      }
-    }
   }
 
   @each $fraction, $value in design-system.$fractions {
@@ -270,6 +255,24 @@ $attributesToApplyExtraProperties: margin;
         &--#{$breakpoint}\:height-#{$fraction} {
           height: $value;
         }
+      }
+    }
+  }
+
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:width-full {
+        width: 100%;
+      }
+    }
+  }
+
+  // breakpoint classes
+  @each $breakpoint, $min-width in $screen-sizes-map {
+    @media screen and (min-width: $min-width) {
+      &--#{$breakpoint}\:height-full {
+        height: 100%;
       }
     }
   }
