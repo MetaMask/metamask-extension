@@ -29,10 +29,10 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 ```jsx
 import { Icon, ICON_NAMES } from '../../components/component-library';
 
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} />
-<Icon name={ICON_NAMES.BANK_FILLED} />
-<Icon name={ICON_NAMES.CALCULATOR_FILLED} />
-<Icon name={ICON_NAMES.COIN_FILLED} />
+<Icon name={ICON_NAMES.ADD_SQUARE} />
+<Icon name={ICON_NAMES.BANK} />
+<Icon name={ICON_NAMES.CALCULATOR} />
+<Icon name={ICON_NAMES.COIN} />
 // etc...
 ```
 
@@ -42,7 +42,6 @@ Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-s
 
 Possible sizes include:
 
-- `SIZES.XXS` 10px
 - `SIZES.XS` 12px
 - `SIZES.SM` 16px
 - `SIZES.MD` 20px
@@ -58,12 +57,11 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.XXS} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.XS} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.SM} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.MD} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.LG} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} size={SIZES.XL} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.XS} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.SM} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.MD} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.LG} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.XL} />
 <Text as="p" variant={TEXT.BODY_SM}>
     <Icon size={SIZES.AUTO} /> Auto also exists and inherits the
     font-size of the parent element.
@@ -82,21 +80,21 @@ Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design
 import { COLORS } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.INHERIT} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.ICON_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.ICON_ALTERNATIVE} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.ICON_MUTED} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.OVERLAY_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.PRIMARY_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.PRIMARY_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.ERROR_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.ERROR_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.SUCCESS_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.SUCCESS_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.WARNING_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.WARNING_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.INFO_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE_FILLED} color={COLORS.INFO_INVERSE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.INHERIT} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ICON_DEFAULT} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ICON_ALTERNATIVE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ICON_MUTED} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.OVERLAY_INVERSE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.PRIMARY_DEFAULT} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.PRIMARY_INVERSE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ERROR_DEFAULT} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ERROR_INVERSE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.SUCCESS_DEFAULT} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.SUCCESS_INVERSE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.WARNING_DEFAULT} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.WARNING_INVERSE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.INFO_DEFAULT} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.INFO_INVERSE} />
 ```
 
 ### Adding a new icon
@@ -119,7 +117,7 @@ If your svg **does not** contain a single path, you will need to get a designer 
 
 #### Step 2.
 
-Add your optimized svg file to to `app/images/icons` and ensure the icon name starts with `icon-` e.g. `icon-add-square-filled.svg`
+Add your optimized svg file to to `app/images/icons`
 
 #### Step 3.
 
