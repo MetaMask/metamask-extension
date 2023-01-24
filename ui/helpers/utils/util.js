@@ -17,7 +17,6 @@ import {
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { toBigNumber } from '../../../shared/modules/conversion.utils';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
