@@ -2,10 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import {
-  conversionUtil,
-  multiplyCurrencies,
-} from '../../../shared/modules/conversion.utils';
-import {
   getConversionRate,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
@@ -26,6 +22,8 @@ import {
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
 } from '../../ducks/swaps/swaps';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei
@@ -148,30 +146,15 @@ export const generateUseSelectorRouter =
     return undefined;
   };
 
-export function getTotalCostInETH(gwei, gasLimit) {
-  return multiplyCurrencies(gwei, gasLimit, {
-    fromDenomination: 'GWEI',
-    toDenomination: 'ETH',
-    multiplicandBase: 10,
-    multiplierBase: 10,
-  });
-}
-
 export function convertFromHexToFiat(value) {
-  const val = conversionUtil(value, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-  });
+  const val = new Numeric(value, 16).toBase(10).toString();
   return `$${(val * MOCK_ETH_USD_CONVERSION_RATE).toFixed(2)}`;
 }
 
 export function convertFromHexToETH(value) {
-  const val = conversionUtil(value, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-  });
+  const val = new Numeric(value, 16, EtherDenomination.WEI)
+    .toBase(10)
+    .toDenomination(EtherDenomination.ETH);
   return `${val} ETH`;
 }
 

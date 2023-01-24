@@ -1,5 +1,6 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
+import BigNumber from 'bignumber.js';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
@@ -9,11 +10,6 @@ import {
 } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import {
-  conversionUtil,
-  multiplyCurrencies,
-} from '../../../shared/modules/conversion.utils';
-import { ETH, GWEI } from '../../helpers/constants/common';
-import {
   addGasBuffer,
   generateERC20TransferData,
   generateERC721TransferData,
@@ -21,6 +17,7 @@ import {
 } from '../../pages/send/send.utils';
 import { getGasPriceInHexWei } from '../../selectors';
 import { estimateGas } from '../../store/actions';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 export async function estimateGasLimitForSend({
   selectedAddress,
@@ -109,15 +106,10 @@ export async function estimateGasLimitForSend({
   if (!isSimpleSendOnNonStandardNetwork) {
     // If we do not yet have a gasLimit, we must call into our background
     // process to get an estimate for gasLimit based on known parameters.
-
-    paramsForGasEstimate.gas = addHexPrefix(
-      multiplyCurrencies(blockGasLimit, 0.95, {
-        multiplicandBase: 16,
-        multiplierBase: 10,
-        roundDown: '0',
-        toNumericBase: 'hex',
-      }),
-    );
+    paramsForGasEstimate.gas = new Numeric(blockGasLimit, 16)
+      .times(new Numeric(0.95, 10))
+      .round(0, BigNumber.ROUND_DOWN)
+      .toPrefixedHexString();
   }
 
   // The buffer multipler reduces transaction failures by ensuring that the
@@ -268,14 +260,9 @@ export function generateTransactionParams(sendState) {
  * @returns {string}
  */
 export function getRoundedGasPrice(gasPriceEstimate) {
-  const gasPriceInDecGwei = conversionUtil(gasPriceEstimate, {
-    numberOfDecimals: 9,
-    toDenomination: GWEI,
-    fromNumericBase: 'dec',
-    toNumericBase: 'dec',
-    fromCurrency: ETH,
-    fromDenomination: GWEI,
-  });
+  const gasPriceInDecGwei = new Numeric(gasPriceEstimate, 10)
+    .round(9)
+    .toString();
   const gasPriceAsNumber = Number(gasPriceInDecGwei);
   return getGasPriceInHexWei(gasPriceAsNumber);
 }

@@ -278,7 +278,8 @@ export class Numeric {
       this.value = bnToBigNumber(value);
     } else if (
       isNullOrUndefined(value) ||
-      (typeof value === 'number' && isNaN(value))
+      (typeof value === 'number' && isNaN(value)) ||
+      (typeof value === 'string' && value === '')
     ) {
       // There are parts of the codebase that call this method without a value,
       // or with a 'NaN' (which is probably a bug somewhere in our tests?).
