@@ -15,14 +15,20 @@ const RATE_LIMIT_TYPES = {
 };
 
 /**
- * These types correspond to the UI Customization presented to the user. Right
- * now there is only one UI customization option, but more could be added in
- * the future.
+ * These types correspond to the keys in the METAMETRIC_KEY_OPTIONS object
  */
-const UI_CUSTOMIZATION_TYPES = {
-  SIWE: 'sign_in_with_ethereum',
+const METAMETRIC_KEY = {
+  UI_CUSTOMIZATIONS: `ui_customizations`,
 };
 
+/**
+ * This object maps a method name to a METAMETRIC_KEY
+ */
+const METAMETRIC_KEY_OPTIONS = {
+  [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
+    SIWE: 'sign_in_with_ethereum',
+  },
+};
 /**
  * This object maps a method name to a RATE_LIMIT_TYPE. If not in this map the
  * default is 'RATE_LIMITED'
@@ -170,11 +176,13 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
-      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
-        const data = req && req.params && req.params[0];
+      if (process.env.SIWE_V1 && method === MESSAGE_TYPE.PERSONAL_SIGN) {
+        const data = req?.params?.[0];
         const { isSIWEMessage } = detectSIWE({ data });
-        if (process.env.SIWE_V1 && isSIWEMessage) {
-          properties.ui_customizations = [UI_CUSTOMIZATION_TYPES.SIWE];
+        if (isSIWEMessage) {
+          properties.ui_customizations = [
+            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+          ];
         }
       }
 
@@ -210,11 +218,13 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
-      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+      if (process.env.SIWE_V1 && method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const data = req && req.params && req.params[0];
         const { isSIWEMessage } = detectSIWE({ data });
-        if (process.env.SIWE_V1 && isSIWEMessage) {
-          properties.ui_customizations = [UI_CUSTOMIZATION_TYPES.SIWE];
+        if (isSIWEMessage) {
+          properties.ui_customizations = [
+            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+          ];
         }
       }
 
