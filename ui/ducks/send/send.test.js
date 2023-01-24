@@ -93,7 +93,7 @@ jest.mock('lodash', () => ({
 
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
-  addUnapprovedTransaction: jest.fn((_v, _w, _x, _y, _z, cb) => {
+  addUnapprovedTransaction: jest.fn((_u, _v, _w, _x, _y, _z, cb) => {
     cb(null);
   }),
   updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
@@ -2316,13 +2316,13 @@ describe('Send Slice', () => {
 
           expect(
             addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][0].data,
+              .calls[0][1].data,
           ).toStrictEqual(
             '0xa9059cbb0000000000000000000000004f90e18605fd46f9f9fab0e225d88e1acf5f53240000000000000000000000000000000000000000000000000000000000000001',
           );
           expect(
             addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][0].to,
+              .calls[0][1].to,
           ).toStrictEqual('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
         });
       });

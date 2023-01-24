@@ -1,3 +1,5 @@
+import { AccessList } from '@ethereumjs/tx';
+
 export enum TransactionType {
   /**
    * A transaction submitted with the same nonce as a previous transaction, a
@@ -257,11 +259,25 @@ export interface TxParams {
   /** The transaction count for the current account/network */
   nonce: number;
   /** The amount of gwei, in hexadecimal, per unit of gas */
-  gasPrice: string;
+  gasPrice?: string;
   /** The max amount of gwei, in hexadecimal, the user is willing to pay */
   gas: string;
   /** Hexadecimal encoded string representing calls to the EVM's ABI */
   data?: string;
+  /**
+   * EIP-2930 https://eips.ethereum.org/EIPS/eip-2930 added the ability for
+   * transactions to specify which addresses they will interact with and allows
+   * for lower gas fees on specific opcodes. See the EIP for more details.
+   */
+  accessList?: AccessList;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
+}
+
+export interface TxReceipt {
+  blockHash?: string;
+  blockNumber?: string;
+  transactionIndex?: string;
 }
 
 export interface TxError {
@@ -318,6 +334,7 @@ export interface TransactionMeta {
   loadingDefaults: boolean;
   /** The transaction params as passed to the network provider. */
   txParams: TxParams;
+  txReceipt: TxReceipt;
   /** A history of mutations to this TransactionMeta object. */
   history: Record<string, any>[];
   /** A string representing the interface that suggested the transaction. */
@@ -344,6 +361,9 @@ export interface TransactionMeta {
    * on the network.
    */
   hash: string;
+  v?: string;
+  r?: string;
+  s?: string;
   /**
    * The time the transaction was submitted to the network, in Unix epoch time
    * (ms).

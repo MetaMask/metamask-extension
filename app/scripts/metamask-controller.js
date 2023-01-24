@@ -60,8 +60,6 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
-import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
 import browser from 'webextension-polyfill';
 import {
   AssetType,
@@ -169,10 +167,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { checkSnapsBlockList } from './flask/snaps-utilities';
-import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
-///: END:ONLY_INCLUDE_IN
+import { securityProviderCheck } from './lib/security-provider-helpers';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -740,7 +735,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.11.1',
+        'https://metamask.github.io/iframe-execution-environment/0.12.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -775,15 +770,19 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
+    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
+
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
-      checkBlockList: async (snapsToCheck) => {
-        return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
-      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
-      featureFlags: { dappsCanUpdateSnaps: true },
+      featureFlags: {
+        dappsCanUpdateSnaps: true,
+        allowLocalSnaps: isFlask,
+        requireAllowlist: isMain,
+      },
     });
 
     this.notificationController = new NotificationController({
@@ -927,6 +926,7 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getTokenStandardAndDetails.bind(
           this.assetsContractController,
         ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -1024,11 +1024,13 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.personalMessageManager = new PersonalMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1047,6 +1049,7 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
     this.swapsController = new SwapsController({
@@ -1797,10 +1800,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      setImprovedTokenAllowanceEnabled:
-        preferencesController.setImprovedTokenAllowanceEnabled.bind(
-          preferencesController,
-        ),
       setTransactionSecurityCheckEnabled:
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
@@ -2578,10 +2577,7 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    const recoveredIndices = Array.from(
-      new Uint16Array(new Uint8Array(keyring.mnemonic).buffer),
-    );
-    return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
+    return keyring.mnemonic;
   }
 
   //
@@ -4571,4 +4567,31 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  async securityProviderRequest(requestData, methodName) {
+    const { currentLocale, transactionSecurityCheckEnabled } =
+      this.preferencesController.store.getState();
+
+    const chainId = Number(
+      hexToDecimal(this.networkController.getCurrentChainId()),
+    );
+
+    if (transactionSecurityCheckEnabled) {
+      try {
+        const securityProviderResponse = await securityProviderCheck(
+          requestData,
+          methodName,
+          chainId,
+          currentLocale,
+        );
+
+        return securityProviderResponse;
+      } catch (err) {
+        log.error(err.message);
+        throw err;
+      }
+    }
+
+    return null;
+  }
 }

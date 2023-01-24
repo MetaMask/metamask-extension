@@ -29,8 +29,9 @@ export default class MessageManager extends EventEmitter {
    *
    * @param {object} opts - Controller options
    * @param {Function} opts.metricsEvent - A function for emitting a metric event.
+   * @param {Function} opts.securityProviderRequest - A function for verifying a message, whether it is malicious or not.
    */
-  constructor({ metricsEvent }) {
+  constructor({ metricsEvent, securityProviderRequest }) {
     super();
     this.memStore = new ObservableStore({
       unapprovedMsgs: {},
@@ -46,6 +47,7 @@ export default class MessageManager extends EventEmitter {
 
     this.messages = [];
     this.metricsEvent = metricsEvent;
+    this.securityProviderRequest = securityProviderRequest;
   }
 
   /**
@@ -80,7 +82,7 @@ export default class MessageManager extends EventEmitter {
    * @returns {promise} after signature has been
    */
   async addUnapprovedMessageAsync(msgParams, req) {
-    const msgId = this.addUnapprovedMessage(msgParams, req);
+    const msgId = await this.addUnapprovedMessage(msgParams, req);
     return await new Promise((resolve, reject) => {
       // await finished
       this.once(`${msgId}:finished`, (data) => {
@@ -118,7 +120,7 @@ export default class MessageManager extends EventEmitter {
    * @param {object} [req] - The original request object where the origin may be specified
    * @returns {number} The id of the newly created message.
    */
-  addUnapprovedMessage(msgParams, req) {
+  async addUnapprovedMessage(msgParams, req) {
     // add origin from request
     if (req) {
       msgParams.origin = req.origin;
@@ -135,6 +137,13 @@ export default class MessageManager extends EventEmitter {
       type: MESSAGE_TYPE.ETH_SIGN,
     };
     this.addMsg(msgData);
+
+    const securityProviderResponse = await this.securityProviderRequest(
+      msgData,
+      msgData.type,
+    );
+
+    msgData.securityProviderResponse = securityProviderResponse;
 
     // signal update
     this.emit('update');

@@ -47,8 +47,7 @@ export function useCollectiblesCollections() {
           );
           newCollections[collectible.address] = {
             collectionName: collectionContract?.name || collectible.name,
-            collectionImage:
-              collectionContract?.logo || collectible.collectionImage,
+            collectionImage: collectionContract?.logo || collectible.image,
             collectibles: [collectible],
           };
         }
