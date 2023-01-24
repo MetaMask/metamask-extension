@@ -47,18 +47,13 @@ setBackgroundConnection({
   promisifiedBackground: jest.fn(),
 });
 
-jest.mock('ethers', () => {
-  const originalModule = jest.requireActual('ethers');
+jest.mock('@ethersproject/providers', () => {
+  const originalModule = jest.requireActual('@ethersproject/providers');
   return {
     ...originalModule,
-    ethers: {
-      ...originalModule.ethers,
-      providers: {
-        Web3Provider: jest.fn().mockImplementation(() => {
-          return {};
-        }),
-      },
-    },
+    Web3Provider: jest.fn().mockImplementation(() => {
+      return {};
+    }),
   };
 });
 const baseStore = {
