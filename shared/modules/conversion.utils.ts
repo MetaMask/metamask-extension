@@ -60,7 +60,7 @@ export function getWeiHexFromDecimalValue({
   invertConversionRate = false,
 }: {
   value: NumericValue;
-  conversionRate: number;
+  conversionRate?: number;
   fromDenomination?: EtherDenomination;
   fromCurrency?: string;
   invertConversionRate?: boolean;
@@ -131,7 +131,7 @@ export function getValueFromWeiHex({
   value: NumericValue;
   fromCurrency?: EtherDenomination | string;
   toCurrency?: EtherDenomination | string;
-  conversionRate: number;
+  conversionRate?: number;
   numberOfDecimals?: number;
   toDenomination?: EtherDenomination;
 }) {
