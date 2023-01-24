@@ -53,7 +53,6 @@ import {
 } from '../../pages/swaps/swaps.util';
 import {
   addHexes,
-  conversionLessThan,
   decGWEIToHexWEI,
   decimalToHex,
   getValueFromWeiHex,
@@ -91,6 +90,8 @@ import {
   calcGasTotal,
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -289,15 +290,13 @@ export function shouldShowCustomPriceTooLowWarning(state) {
     return false;
   }
 
-  const customPriceRisksSwapFailure = conversionLessThan(
-    {
-      value: customGasPrice,
-      fromNumericBase: 'hex',
-      fromDenomination: 'WEI',
-      toDenomination: 'GWEI',
-    },
-    { value: average, fromNumericBase: 'dec' },
-  );
+  const customPriceRisksSwapFailure = new Numeric(
+    customGasPrice,
+    16,
+    EtherDenomination.WEI,
+  )
+    .toDenomination(EtherDenomination.GWEI)
+    .greaterThan(average, 10);
 
   return customPriceRisksSwapFailure;
 }

@@ -3,10 +3,6 @@ import { useDispatch } from 'react-redux';
 
 import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
 import {
-  decGWEIToHexWEI,
-  decimalToHex,
-} from '../../../shared/modules/conversion.utils';
-import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
 } from '../../helpers/utils/gas';
@@ -18,6 +14,10 @@ import {
   updateSwapsUserFeeLevel,
   updateTransactionGasFees,
 } from '../../store/actions';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+} from '../../../shared/modules/conversion.utils';
 
 /**
  * @typedef {object} TransactionFunctionsReturnType

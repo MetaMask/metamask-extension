@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -2536,7 +2536,7 @@ describe('Send Slice', () => {
                   data: generateERC721TransferData({
                     toAddress: BURN_ADDRESS,
                     fromAddress: '0xAddress',
-                    tokenId: ethers.BigNumber.from(15000).toString(),
+                    tokenId: BigNumber.from(15000).toString(),
                   }),
                   from: '0xAddress',
                   to: '0xCollectibleAddress',

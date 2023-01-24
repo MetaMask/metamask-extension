@@ -2,24 +2,19 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
-  conversionLessThan,
-  conversionGreaterThan,
-  addHexes,
-} from '../../../shared/modules/conversion.utils';
-import {
   checkNetworkAndAccountSupports1559,
   getSelectedAccount,
 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { bnGreaterThan, bnLessThan } from '../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
 const validateGasLimit = (gasLimit, minimumGasLimit) => {
-  const gasLimitTooLow = conversionLessThan(
-    { value: gasLimit, fromNumericBase: 'dec' },
-    { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
+  const gasLimitTooLow = new Numeric(gasLimit, 10).lessThan(
+    new Numeric(minimumGasLimit || GAS_LIMITS.SIMPLE, 16),
   );
 
   if (gasLimitTooLow) {
@@ -139,15 +134,12 @@ const hasBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
   if (minimumCostInHexWei === undefined || ethBalance === undefined) {
     return false;
   }
-  const minimumTxCostInHexWei = addHexes(
-    minimumCostInHexWei,
-    transaction?.txParams?.value || '0x0',
+  const minimumTxCostInHexWei = new Numeric(minimumCostInHexWei, 16).add(
+    new Numeric(transaction?.txParams?.value || '0x0', 16),
   );
+  const ethBalanceInHexWei = new Numeric(ethBalance, 16);
 
-  return conversionGreaterThan(
-    { value: minimumTxCostInHexWei, fromNumericBase: 'hex' },
-    { value: ethBalance, fromNumericBase: 'hex' },
-  );
+  return minimumTxCostInHexWei.greaterThan(ethBalanceInHexWei);
 };
 
 /**
