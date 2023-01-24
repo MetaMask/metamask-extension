@@ -175,7 +175,10 @@ export default function CollectibleDetails({ collectible }) {
             className="collectible-details__card"
           >
             {image ? (
-              <img className="collectible-details__image" src={image} />
+              <img
+                className="collectible-details__image"
+                src={collectibleImageURL}
+              />
             ) : (
               <CollectibleDefaultImage name={name} tokenId={tokenId} />
             )}
