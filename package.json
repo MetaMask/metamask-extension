@@ -213,7 +213,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.12.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.6.1",
-    "@lavamoat/snow": "^1.3.0",
+    "@lavamoat/snow": "^1.4.1",
     "@material-ui/core": "^4.11.0",
     "@metamask/address-book-controller": "^1.0.0",
     "@metamask/announcement-controller": "^1.0.0",
