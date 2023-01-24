@@ -6,21 +6,17 @@ exports[`BannerBase should render bannerbase element correctly 1`] = `
     class="box mm-banner-base box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-background-default box--rounded-sm"
     data-testid="banner-base"
   >
-    <div
-      class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between box--width-full"
-    >
-      <div>
-        <h5
-          class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
-        >
-          Bannerbase test
-        </h5>
-        <p
-          class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
-        >
-          should render bannerbase element correctly
-        </p>
-      </div>
+    <div>
+      <h5
+        class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
+      >
+        Bannerbase test
+      </h5>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      >
+        should render bannerbase element correctly
+      </p>
     </div>
   </div>
 </div>

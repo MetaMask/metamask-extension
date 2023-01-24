@@ -8,23 +8,19 @@ exports[`Banner should render banner element correctly 1`] = `
   >
     <div
       class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-primary-default"
-      style="mask-image: url('./images/icons/icon-info-filled.svg');"
+      style="mask-image: url('./images/icons/info.svg');"
     />
-    <div
-      class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between box--width-full"
-    >
-      <div>
-        <h5
-          class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
-        >
-          Banner test
-        </h5>
-        <p
-          class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
-        >
-          should render banner element correctly
-        </p>
-      </div>
+    <div>
+      <h5
+        class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
+      >
+        Banner test
+      </h5>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      >
+        should render banner element correctly
+      </p>
     </div>
   </div>
 </div>

@@ -20,38 +20,26 @@ export const Banner = ({
   const severityIcon = () => {
     switch (severity) {
       case SEVERITIES.DANGER:
-        return (
-          <Icon
-            name={ICON_NAMES.DANGER_FILLED}
-            size={SIZES.LG}
-            color={COLORS.ERROR_DEFAULT}
-          />
-        );
+        return {
+          name: ICON_NAMES.DANGER,
+          color: COLORS.ERROR_DEFAULT,
+        };
       case SEVERITIES.WARNING:
-        return (
-          <Icon
-            name={ICON_NAMES.WARNING_FILLED}
-            size={SIZES.LG}
-            color={COLORS.WARNING_DEFAULT}
-          />
-        );
+        return {
+          name: ICON_NAMES.WARNING,
+          color: COLORS.WARNING_DEFAULT,
+        };
       case SEVERITIES.SUCCESS:
-        return (
-          <Icon
-            name={ICON_NAMES.CHECK_CIRCLE_ON_FILLED}
-            size={SIZES.LG}
-            color={COLORS.SUCCESS_DEFAULT}
-          />
-        );
+        return {
+          name: ICON_NAMES.CONFIRMATION,
+          color: COLORS.SUCCESS_DEFAULT,
+        };
       // Defaults to SEVERITIES.INFO
       default:
-        return (
-          <Icon
-            name={ICON_NAMES.INFO_FILLED}
-            size={SIZES.LG}
-            color={COLORS.PRIMARY_DEFAULT}
-          />
-        );
+        return {
+          name: ICON_NAMES.INFO,
+          color: COLORS.PRIMARY_DEFAULT,
+        };
     }
   };
 
@@ -71,7 +59,7 @@ export const Banner = ({
 
   return (
     <BannerBase
-      startAccessory={severityIcon()}
+      startAccessory={<Icon size={SIZES.LG} {...severityIcon()} />}
       backgroundColor={severityBackground()}
       className={classnames(
         'mm-banner',
