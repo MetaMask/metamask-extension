@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
-  GAS_RECOMMENDATIONS,
+  GasRecommendations,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
 
@@ -30,7 +30,7 @@ const renderUseMaxFeePerGasInputHook = (props) =>
   renderHook(() =>
     useMaxFeePerGasInput({
       gasLimit: '21000',
-      estimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
+      estimateToUse: GasRecommendations.medium,
       transaction: {
         userFeeLevel: CUSTOM_GAS_ESTIMATE,
         txParams: { maxFeePerGas: '0x5028' },
@@ -63,9 +63,9 @@ describe('useMaxFeePerGasInput', () => {
 
   it('does not returns maxFeePerGas values from transaction if transaction.userFeeLevel is not custom', () => {
     const { result } = renderUseMaxFeePerGasInputHook({
-      estimateToUse: GAS_RECOMMENDATIONS.HIGH,
+      estimateToUse: GasRecommendations.high,
       transaction: {
-        userFeeLevel: GAS_RECOMMENDATIONS.HIGH,
+        userFeeLevel: GasRecommendations.high,
         txParams: { maxFeePerGas: '0x5028' },
       },
     });
