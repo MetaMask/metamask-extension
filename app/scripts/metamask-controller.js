@@ -112,6 +112,9 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { isMain, isFlask } from '../../shared/constants/flask';
+///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -168,7 +171,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-  ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
@@ -776,9 +778,6 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:handleRpcRequest',
       ],
     });
-
-    const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
-    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),

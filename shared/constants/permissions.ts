@@ -1,3 +1,7 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { isMain } from './flask';
+///: END:ONLY_INCLUDE_IN
+
 export const CaveatTypes = Object.freeze({
   restrictReturnedAccounts: 'restrictReturnedAccounts' as const,
 });
@@ -18,13 +22,12 @@ export const RestrictedMethods = Object.freeze({
 } as const);
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
 
 export const PermissionNamespaces = Object.freeze({
   wallet_snap_: 'wallet_snap_*',
 } as const);
 
-export const StableEndowmentPermissions = Object.freeze({
+const StableEndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
   'endowment:transaction-insight': 'endowment:transaction-insight',
   'endowment:cronjob': 'endowment:cronjob',
@@ -32,31 +35,27 @@ export const StableEndowmentPermissions = Object.freeze({
   'endowment:rpc': 'endowment:rpc',
 } as const);
 
-export const FlaskEndowmentPermissions = Object.freeze({
-  'endowment:network-access': 'endowment:network-access',
+const FlaskEndowmentPermissions = Object.freeze({
+  ...StableEndowmentPermissions,
   'endowment:long-running': 'endowment:long-running',
-  'endowment:transaction-insight': 'endowment:transaction-insight',
-  'endowment:cronjob': 'endowment:cronjob',
-  'endowment:ethereum-provider': 'endowment:ethereum-provider',
-  'endowment:rpc': 'endowment:rpc',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
-export const ExcludedFlaskSnapPermissions = {
+const ExcludedFlaskSnapPermissions = {
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
 };
-export const ExcludedStableSnapPermissions = {
+const ExcludedStableSnapPermissions = {
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
 };
-export const ExcludedStableSnapEndowments = {
+const ExcludedStableSnapEndowments = {
   'endowment:keyring': 'This endowment is not available',
   'endowment:long-running':
     'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945. ',
 };
 
-export const ExcludedFlaskSnapEndowments = {
+const ExcludedFlaskSnapEndowments = {
   'endowment:keyring': 'This endowment is not available',
 };
 
