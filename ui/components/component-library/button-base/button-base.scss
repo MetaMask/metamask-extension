@@ -1,11 +1,8 @@
-.mm-button {
+.mm-button-base {
   position: relative;
   height: 40px;
-  padding: 0;
-  border-radius: 999px;
+  padding: 0; // TODO: remove once https://github.com/MetaMask/metamask-extension/pull/17006 is merged
   cursor: pointer;
-  color: var(--color-text-default);
-  background-color: var(--brand-colors-grey-grey100);
   vertical-align: middle;
   user-select: none;
 
@@ -22,7 +19,6 @@
   &__content {
     height: 100%;
   }
-
 
   &--size-sm {
     height: 32px;

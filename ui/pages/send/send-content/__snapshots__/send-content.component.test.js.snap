@@ -237,27 +237,6 @@ exports[`SendContent Component render should match snapshot 1`] = `
                   class="transaction-detail-item__detail-values"
                 >
                   <h6
-                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-                  >
-                    <div
-                      class="box gas-display__currency-container box--flex-direction-row"
-                    >
-                      <div
-                        class="currency-display-component"
-                        title="0.0000315"
-                      >
-                        <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
-                        >
-                          0.0000315
-                        </span>
-                      </div>
-                    </div>
-                  </h6>
-                  <h6
                     class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
                   >
                     <div

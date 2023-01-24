@@ -266,7 +266,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
             ...networkState,
-            provider: {
+            providerConfig: {
               ...networkState.provider,
               chainId: hexToDecimal(networkState.provider.chainId),
             },
@@ -285,16 +285,22 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       tokenListController: this.tokenListController,
       provider: this.provider,
-      migrateAddressBookState: this.migrateAddressBookState.bind(this),
     });
 
     this.tokensController = new TokensController({
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -308,7 +314,7 @@ export default class MetamaskController extends EventEmitter {
             const networkState = this.networkController.store.getState();
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -328,9 +334,16 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) =>
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          }),
         getERC721AssetName:
           this.assetsContractController.getERC721AssetName.bind(
             this.assetsContractController,
@@ -505,7 +518,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.subscribe((networkState) => {
             const modifiedNetworkState = {
               ...networkState,
-              provider: {
+              providerConfig: {
                 ...networkState.provider,
                 chainId: hexToDecimal(networkState.provider.chainId),
               },
@@ -513,8 +526,28 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           }),
       },
-      undefined,
+      {
+        disabled:
+          !this.preferencesController.store.getState().useCurrencyRateCheck,
+      },
       initState.TokenRatesController,
+    );
+    this.preferencesController.store.subscribe(
+      previousValueComparator((prevState, currState) => {
+        const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
+        const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
+        if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
+          this.currencyRateController.start();
+          this.tokenRatesController.configure(
+            { disabled: false },
+            false,
+            false,
+          );
+        } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
+          this.currencyRateController.stop();
+          this.tokenRatesController.configure({ disabled: true }, false, false);
+        }
+      }, this.preferencesController.store.getState()),
     );
 
     this.ensController = new EnsController({
@@ -1012,9 +1045,17 @@ export default class MetamaskController extends EventEmitter {
     });
     this.smartTransactionsController = new SmartTransactionsController(
       {
-        onNetworkStateChange: this.networkController.store.subscribe.bind(
-          this.networkController.store,
-        ),
+        onNetworkStateChange: (cb) => {
+          this.networkController.store.subscribe((networkState) => {
+            const modifiedNetworkState = {
+              ...networkState,
+              providerConfig: {
+                ...networkState.provider,
+              },
+            };
+            return cb(modifiedNetworkState);
+          });
+        },
         getNetwork: this.networkController.getNetworkState.bind(
           this.networkController,
         ),
@@ -1238,7 +1279,9 @@ export default class MetamaskController extends EventEmitter {
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.incomingTransactionsController.start();
-    this.currencyRateController.start();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.start();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
     }
@@ -1247,7 +1290,9 @@ export default class MetamaskController extends EventEmitter {
   stopNetworkRequests() {
     this.accountTracker.stop();
     this.incomingTransactionsController.stop();
-    this.currencyRateController.stop();
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.stop();
+    }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
     }
@@ -1586,7 +1631,6 @@ export default class MetamaskController extends EventEmitter {
       detectTokensController,
       ensController,
       gasFeeController,
-      keyringController,
       metaMetricsController,
       networkController,
       announcementController,
@@ -1627,6 +1671,10 @@ export default class MetamaskController extends EventEmitter {
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
         preferencesController,
       ),
+      setUseCurrencyRateCheck:
+        preferencesController.setUseCurrencyRateCheck.bind(
+          preferencesController,
+        ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
@@ -1806,7 +1854,7 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      exportAccount: keyringController.exportAccount.bind(keyringController),
+      exportAccount: this.exportAccount.bind(this),
 
       // txController
       cancelTransaction: txController.cancelTransaction.bind(txController),
@@ -2049,6 +2097,11 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
+  async exportAccount(address, password) {
+    await this.verifyPassword(password);
+    return this.keyringController.exportAccount(address, password);
+  }
+
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
     const details =
       await this.assetsContractController.getTokenStandardAndDetails(
@@ -2128,7 +2181,7 @@ export default class MetamaskController extends EventEmitter {
   async addCustomNetwork(customRpc, actionId) {
     const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
 
-    this.preferencesController.addToFrequentRpcList(
+    this.preferencesController.upsertToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
@@ -3825,7 +3878,7 @@ export default class MetamaskController extends EventEmitter {
           chainName,
           rpcUrl,
         } = {}) => {
-          await this.preferencesController.addToFrequentRpcList(
+          await this.preferencesController.upsertToFrequentRpcList(
             rpcUrl,
             chainId,
             ticker,
@@ -4202,43 +4255,6 @@ export default class MetamaskController extends EventEmitter {
     return nonceLock.nextNonce;
   }
 
-  /**
-   * Migrate address book state from old to new chainId.
-   *
-   * Address book state is keyed by the `networkStore` state from the network controller. This value is set to the
-   * `networkId` for our built-in Infura networks, but it's set to the `chainId` for custom networks.
-   * When this `chainId` value is changed for custom RPC endpoints, we need to migrate any contacts stored under the
-   * old key to the new key.
-   *
-   * The `duplicate` parameter is used to specify that the contacts under the old key should not be removed. This is
-   * useful in the case where two RPC endpoints shared the same set of contacts, and we're not sure which one each
-   * contact belongs under. Duplicating the contacts under both keys is the only way to ensure they are not lost.
-   *
-   * @param {string} oldChainId - The old chainId
-   * @param {string} newChainId - The new chainId
-   * @param {boolean} [duplicate] - Whether to duplicate the addresses on both chainIds (default: false)
-   */
-  async migrateAddressBookState(oldChainId, newChainId, duplicate = false) {
-    const { addressBook } = this.addressBookController.state;
-
-    if (!addressBook[oldChainId]) {
-      return;
-    }
-
-    for (const address of Object.keys(addressBook[oldChainId])) {
-      const entry = addressBook[oldChainId][address];
-      this.addressBookController.set(
-        address,
-        entry.name,
-        newChainId,
-        entry.memo,
-      );
-      if (!duplicate) {
-        this.addressBookController.delete(oldChainId, address);
-      }
-    }
-  }
-
   //=============================================================================
   // CONFIG
   //=============================================================================
@@ -4270,13 +4286,13 @@ export default class MetamaskController extends EventEmitter {
       nickname,
       rpcPrefs,
     );
-    await this.preferencesController.updateRpc({
+    await this.preferencesController.upsertToFrequentRpcList(
       rpcUrl,
       chainId,
       ticker,
       nickname,
       rpcPrefs,
-    });
+    );
     return rpcUrl;
   }
 
@@ -4319,7 +4335,7 @@ export default class MetamaskController extends EventEmitter {
         nickname,
         rpcPrefs,
       );
-      await this.preferencesController.addToFrequentRpcList(
+      await this.preferencesController.upsertToFrequentRpcList(
         rpcUrl,
         chainId,
         ticker,

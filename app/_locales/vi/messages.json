@@ -3349,9 +3349,6 @@
   "signatureRequest": {
     "message": "Yêu cầu chữ ký"
   },
-  "signatureRequest1": {
-    "message": "Thông báo"
-  },
   "signatureRequestGuidance": {
     "message": "Chỉ ký vào thông báo này nếu bạn hoàn toàn hiểu nội dung và tin tưởng trang web yêu cầu."
   },

@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UnitInput Component rendering should match snapshot of error class when props.error === true 1`] = `
+<div>
+  <div
+    class="unit-input unit-input--error"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`UnitInput Component rendering should match snapshot with a child component 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value=""
+        />
+      </div>
+      <div
+        class="testing"
+      >
+        TESTCOMPONENT
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`UnitInput Component rendering should match snapshot with a suffix 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value=""
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`UnitInput Component rendering should match snapshot without a suffix 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
