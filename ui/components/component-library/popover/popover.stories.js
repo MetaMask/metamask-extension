@@ -1,4 +1,10 @@
 import React from 'react';
+import Box from '../../ui/box/box';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import { Popover } from '.';
 
@@ -62,6 +68,15 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <Popover {...args}>Example</Popover>;
+export const DefaultStory = (args) => (
+  <Box
+    style={{ height: '120vh' }}
+    display={DISPLAY.FLEX}
+    justifyContent={JUSTIFY_CONTENT.CENTER}
+    alignItems={ALIGN_ITEMS.CENTER}
+  >
+    <Popover {...args}>Example</Popover>
+  </Box>
+);
 
 DefaultStory.storyName = 'Default';
