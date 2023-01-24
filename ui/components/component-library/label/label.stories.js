@@ -62,7 +62,7 @@ export const Children = (args) => (
       Text and icon
       <Icon
         color={COLORS.ICON_ALTERNATIVE}
-        name={ICON_NAMES.INFO_FILLED}
+        name={ICON_NAMES.INFO}
         size={SIZES.AUTO}
       />
     </Label>
