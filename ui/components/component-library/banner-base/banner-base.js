@@ -68,7 +68,7 @@ export const BannerBase = ({
       {onClose && (
         <ButtonIcon
           className="mm-banner-base__close-button"
-          iconName={ICON_NAMES.CLOSE_OUTLINE}
+          iconName={ICON_NAMES.CLOSE}
           size={SIZES.SM}
           ariaLabel="Close" // TODO: i18n
           onClick={onClose}
