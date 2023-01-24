@@ -1,7 +1,12 @@
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { detectSIWE } from '../../../shared/modules/siwe';
+import {
+  EVENT,
+  EVENT_NAMES,
+  METAMETRIC_KEY_OPTIONS,
+  METAMETRIC_KEY,
+} from '../../../shared/constants/metametrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -14,21 +19,7 @@ const RATE_LIMIT_TYPES = {
   NON_RATE_LIMITED: 'non_rate_limited',
 };
 
-/**
- * These types correspond to the keys in the METAMETRIC_KEY_OPTIONS object
- */
-const METAMETRIC_KEY = {
-  UI_CUSTOMIZATIONS: `ui_customizations`,
-};
 
-/**
- * This object maps a method name to a METAMETRIC_KEY
- */
-const METAMETRIC_KEY_OPTIONS = {
-  [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
-    SIWE: 'sign_in_with_ethereum',
-  },
-};
 /**
  * This object maps a method name to a RATE_LIMIT_TYPE. If not in this map the
  * default is 'RATE_LIMITED'
