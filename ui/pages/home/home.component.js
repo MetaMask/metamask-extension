@@ -496,14 +496,7 @@ export default class Home extends PureComponent {
         ) : null}
         {showOutdatedBrowserWarning ? (
           <HomeNotification
-            descriptionText={t('outdatedBrowserNotification', [
-              <span
-                key="outdatedBrowserNotificationLink"
-                className="home-notification__text-link"
-              >
-                {t('here')}
-              </span>,
-            ])}
+            descriptionText={t('outdatedBrowserNotification')}
             acceptText={t('gotIt')}
             onAccept={this.onOutdatedBrowserWarningClose}
             key="home-outdatedBrowserNotification"
