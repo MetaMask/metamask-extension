@@ -6,11 +6,9 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import { SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
-import { sumHexes } from '../../../helpers/utils/transactions.util';
-import {
-  toBigNumber,
-  toNormalizedDenomination,
-} from '../../../../shared/modules/conversion.utils';
+import { sumHexes } from '../../../../shared/modules/conversion.utils';
+import { EtherDenomination } from '../../../../shared/constants/common';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 export default function MultilayerFeeMessage({
   transaction,
@@ -26,9 +24,9 @@ export default function MultilayerFeeMessage({
   let layer1TotalBN;
 
   if (fetchedLayer1Total !== null) {
-    layer1TotalBN = toBigNumber.hex(fetchedLayer1Total);
-    layer1Total = `${toNormalizedDenomination
-      .WEI(layer1TotalBN)
+    layer1TotalBN = new Numeric(fetchedLayer1Total, 16, EtherDenomination.WEI);
+    layer1Total = `${layer1TotalBN
+      .toDenomination(EtherDenomination.ETH)
       .toFixed(12)} ${nativeCurrency}`;
   }
 
@@ -39,11 +37,10 @@ export default function MultilayerFeeMessage({
     transaction.txParams.value || '0x0',
   );
 
-  const totalBN = toBigNumber.hex(totalInWeiHex);
-  const totalInEth = `${toNormalizedDenomination
-    .WEI(totalBN)
+  const totalBN = new Numeric(totalInWeiHex, 16, EtherDenomination.WEI);
+  const totalInEth = `${totalBN
+    .toDenomination(EtherDenomination.ETH)
     .toFixed(12)} ${nativeCurrency}`;
-
   useEffect(() => {
     const getEstimatedL1Fee = async () => {
       try {

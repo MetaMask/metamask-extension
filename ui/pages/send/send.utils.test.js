@@ -1,8 +1,6 @@
 import { rawEncode } from 'ethereumjs-abi';
-import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 
 import {
-  multiplyCurrencies,
   addCurrencies,
   conversionGTE,
   conversionUtil,
@@ -12,6 +10,7 @@ import {
   generateERC20TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  ellipsify,
 } from './send.utils';
 
 jest.mock('../../../shared/modules/conversion.utils', () => ({
@@ -48,18 +47,6 @@ jest.mock('ethereumjs-abi', () => ({
 }));
 
 describe('send utils', () => {
-  describe('calcGasTotal()', () => {
-    it('should call multiplyCurrencies with the correct params and return the multiplyCurrencies return', () => {
-      const result = calcGasTotal(12, 15);
-      expect(result).toStrictEqual('12x15');
-      expect(multiplyCurrencies).toHaveBeenCalledWith(12, 15, {
-        multiplicandBase: 16,
-        multiplierBase: 16,
-        toNumericBase: 'hex',
-      });
-    });
-  });
-
   describe('generateERC20TransferData()', () => {
     it('should return undefined if not passed a send token', () => {
       expect(
@@ -152,6 +139,18 @@ describe('send utils', () => {
       );
 
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  describe('ellipsify()', () => {
+    it('should ellipsify a contract address', () => {
+      expect(
+        ellipsify('0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'),
+      ).toStrictEqual('0xCcCC...cccC');
+    });
+
+    it('should return an empty string if the passed text is not defined', () => {
+      expect(ellipsify(undefined)).toStrictEqual('');
     });
   });
 });

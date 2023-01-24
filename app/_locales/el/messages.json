@@ -110,10 +110,6 @@
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 μπορεί να έχει πρόσβαση και να ξοδέψει μέχρι αυτό το μέγιστο ποσό",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "Το $1 ίσως αποκτήσει πρόσβαση και δαπανήσει αυτό το περιουσιακό στοιχείο",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Εγκρίθηκε"
-  },
-  "approvedAmountWithColon": {
-    "message": "Εγκεκριμένο ποσό:"
   },
   "approvedAsset": {
     "message": "Εγκεκριμένο περιουσιακό στοιχείο"
@@ -1264,14 +1257,8 @@
     "message": "Το τελικό σημείο επέστρεψε ένα διαφορετικό αναγνωριστικό αλυσίδας: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Βελτιωμένος εντοπισμός για token"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Ο βελτιωμένος εντοπισμός για token είναι επί του παρόντος διαθέσιμος στο $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "Το API token της ConsenSys συγκεντρώνει μια λίστα με token από διάφορες λίστες με token τρίτων. Όταν είναι ενεργοποιημένο, τα token θα εντοπίζονται αυτόματα και θα μπορούν να αναζητηθούν στο κύριο δίκτυο του Ethereum, στο Binance, στο Polygon και στο Avalanche. Όταν είναι απενεργοποιημένο, ο αυτόματος εντοπισμός και η αναζήτηση μπορεί να γίνει μόνο στο κύριο δίκτυο του Ethereum."
   },
   "ensIllegalCharacter": {
     "message": "Μη έγκυρος χαρακτήρας για το ENS."
@@ -1714,12 +1701,6 @@
   "imported": {
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "improvedTokenAllowance": {
-    "message": "Βελτιωμένη εμπειρία χορήγησης tokens"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Ενεργοποιήστε το για να μεταβείτε στη βελτιωμένη εμπειρία χορήγησης tokens κάθε φορά που μια αποκεντρωμένη εφαρμογή ζητά έγκριση ERC20"
   },
   "inYourSettings": {
     "message": "στις Ρυθμίσεις σας"
@@ -2403,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "Η συγχώνευση στο Ethereum είναι εδώ!"
-  },
-  "notifications16ActionText": {
-    "message": "Δοκιμάστε το εδώ"
-  },
-  "notifications16Description": {
-    "message": "Επανασχεδιάσαμε την επιβεβαίωση χορήγησης tokens για να σας βοηθήσουμε να λάβετε πιο συνειδητές αποφάσεις."
-  },
-  "notifications16Title": {
-    "message": "Βελτιωμένη εμπειρία χορήγησης tokens"
   },
   "notifications17ActionText": {
     "message": "Εμφάνιση ρυθμίσεων Ασφάλειας & Απορρήτου"
@@ -3348,9 +3320,6 @@
   },
   "signatureRequest": {
     "message": "Αίτημα Υπογραφής"
-  },
-  "signatureRequest1": {
-    "message": "Μήνυμα"
   },
   "signatureRequestGuidance": {
     "message": "Υπογράψτε αυτό το μήνυμα μόνο εάν κατανοείτε πλήρως το περιεχόμενο και εμπιστεύεστε τον ιστότοπο που το ζητάει."

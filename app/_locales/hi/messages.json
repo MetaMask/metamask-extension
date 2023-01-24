@@ -110,10 +110,6 @@
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 इस अधिकतम राशि तक पहुंच सकते हैं और खर्च कर सकते हैं",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 एक्सेस कर सकता है और इस एसेट को खर्च कर सकता है",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "अनुमोदित"
-  },
-  "approvedAmountWithColon": {
-    "message": "स्वीकृत राशि:"
   },
   "approvedAsset": {
     "message": "स्वीकृत एसेट"
@@ -1264,14 +1257,8 @@
     "message": "समापन बिंदु ने अलग चेन ID लौटाई है: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "उन्नत टोकन डिटेक्शन"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "उन्नत टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys का टोकन एपीआई विभिन्न तृतीय पक्ष टोकन सूचियों से टोकन की एक सूची एकत्र करता है। चालू होने पर, एथेरियम मेननेट, बिनेंस, पॉलीगॉन और एवलांच पर टोकन का स्वचालित रूप से पता लगाया जाएगा और खोजा जा सकेगा। बंद होने पर, स्वचालित पहचान और खोज केवल एथेरियम मेननेट पर ही की जा सकती है।"
   },
   "ensIllegalCharacter": {
     "message": "ENS के लिए गैर-कानूनी कैरेक्टर।"
@@ -1714,12 +1701,6 @@
   "imported": {
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "improvedTokenAllowance": {
-    "message": "बेहतर टोकन भत्ता अनुभव"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "जब भी कोई डैप ERC20 स्वीकृति का अनुरोध करता है तो बेहतर टोकन भत्ता अनुभव प्राप्त करने के लिए इसे चालू करें"
   },
   "inYourSettings": {
     "message": "आपके सेटिंग्स में"
@@ -2403,15 +2384,6 @@
   },
   "notifications15Title": {
     "message": "इथेरियम मर्ज यहाँ है!"
-  },
-  "notifications16ActionText": {
-    "message": "इसे यहां आजमाएं"
-  },
-  "notifications16Description": {
-    "message": "अधिक सूचित निर्णय लेने में आपकी सहायता करने के लिए हमने अपने टोकन भत्ता पुष्टिकरण को फिर से डिजाइन किया।"
-  },
-  "notifications16Title": {
-    "message": "बेहतर टोकन भत्ता अनुभव"
   },
   "notifications17ActionText": {
     "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
@@ -3348,9 +3320,6 @@
   },
   "signatureRequest": {
     "message": "हस्ताक्षर का अनुरोध"
-  },
-  "signatureRequest1": {
-    "message": "संदेश"
   },
   "signatureRequestGuidance": {
     "message": "यदि आप सामग्री को पूरी तरह से समझते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं तो ही इस संदेश पर हस्ताक्षर करें।"

@@ -828,6 +828,17 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         { extensions },
       ],
+      // Transpile libraries that use ES2020 unsupported by Chrome v78
+      [
+        babelify,
+        {
+          only: [
+            './**/node_modules/@ethereumjs/util',
+            './**/node_modules/superstruct',
+          ],
+          global: true,
+        },
+      ],
       // Inline `fs.readFileSync` files
       brfs,
     ],
@@ -1032,7 +1043,6 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    ONBOARDING_V2: config.ONBOARDING_V2 === '1',
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({ config, testing }),
     PORTFOLIO_URL: config.PORTFOLIO_URL || 'https://portfolio.metamask.io',
     PUBNUB_PUB_KEY: config.PUBNUB_PUB_KEY || '',

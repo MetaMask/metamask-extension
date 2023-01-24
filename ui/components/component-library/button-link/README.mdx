@@ -7,12 +7,12 @@ import { ButtonLink } from './button-link';
 The `ButtonLink` is an extension of `ButtonBase` to support link styles.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-link-button-link-stories-js--default-story" />
+  <Story id="components-componentlibrary-buttonlink--default-story" />
 </Canvas>
 
 ## Props
 
-The `ButtonLink` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) and [ButtonBase](/docs/ui-components-component-library-button-base-button-base-stories-js--default-story#props) component props
+The `ButtonLink` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) and [ButtonBase](/docs/components-componentlibrary-buttonbase--default-story#props) component props
 
 <ArgsTable of={ButtonLink} />
 
@@ -30,12 +30,12 @@ Possible sizes include:
 - `SIZES.LG` 48px
 
 <Canvas>
-  <Story id="ui-components-component-library-button-link-button-link-stories-js--size" />
+  <Story id="components-componentlibrary-buttonlink--size" />
 </Canvas>
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonLink } from '../../ui/components/component-library';
+import { ButtonLink } from '../../component-library';
 
 <ButtonLink size={SIZES.AUTO} />
 <ButtonLink size={SIZES.SM} />
@@ -48,11 +48,11 @@ import { ButtonLink } from '../../ui/components/component-library';
 Use the `danger` boolean prop to change the `ButtonLink` to danger color.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-link-button-link-stories-js--danger" />
+  <Story id="components-componentlibrary-buttonlink--danger" />
 </Canvas>
 
 ```jsx
-import { ButtonLink } from '../../ui/components/component-library';
+import { ButtonLink } from '../../component-library';
 
 <ButtonLink>Normal</ButtonLink>
 <ButtonLink danger>Danger</ButtonLink>
@@ -60,14 +60,14 @@ import { ButtonLink } from '../../ui/components/component-library';
 
 ### Href
 
-When an `href` is passed the tag element will switch to an `anchor`(`a`) tag.
+When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-link-button-link-stories-js--href" />
+  <Story id="components-componentlibrary-buttonlink--href" />
 </Canvas>
 
 ```jsx
-import { ButtonLink } from '../../ui/components/component-library';
+import { ButtonLink } from '../../component-library';
 
-<ButtonLink href="/">Href Example</ButtonLink>;
+<ButtonLink href="/">Anchor Element</ButtonLink>;
 ```

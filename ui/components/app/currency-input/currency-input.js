@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import {
-  getValueFromWeiHex,
-  getWeiHexFromDecimalValue,
-} from '../../../helpers/utils/conversions.util';
 import { ETH } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -14,6 +10,10 @@ import {
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
+import {
+  getValueFromWeiHex,
+  getWeiHexFromDecimalValue,
+} from '../../../../shared/modules/conversion.utils';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted

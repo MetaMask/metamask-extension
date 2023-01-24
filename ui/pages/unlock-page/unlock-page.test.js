@@ -19,6 +19,7 @@ jest.mock('@metamask/logo', () => () => {
     setFollowMouse: jest.fn(),
     stopAnimation: jest.fn(),
     lookAt: jest.fn(),
+    lookAtAndRender: jest.fn(),
   };
 });
 

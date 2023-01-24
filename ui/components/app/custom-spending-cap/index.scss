@@ -6,6 +6,10 @@
   &__max {
     position: relative;
     margin-top: -30px;
+
+    &--with-error-message {
+      margin-top: -66px;
+    }
   }
 
   &__input {
@@ -14,6 +18,10 @@
 
   &__description {
     word-break: break-word;
+
+    &--with-error-message {
+      margin-top: 30px;
+    }
   }
 
   #custom-spending-cap-input-value {

@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import PersonalMessageManager from './personal-message-manager';
 
 describe('Personal Message Manager', () => {
@@ -22,7 +22,7 @@ describe('Personal Message Manager', () => {
     it('adds a Msg returned in getMsgList', () => {
       const Msg = {
         id: 1,
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       };
       messageManager.addMsg(Msg);
@@ -37,7 +37,7 @@ describe('Personal Message Manager', () => {
     it('sets the Msg status to approved', () => {
       const Msg = {
         id: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         metamaskNetworkId: 'unit test',
       };
       messageManager.addMsg(Msg);
@@ -45,7 +45,7 @@ describe('Personal Message Manager', () => {
       const result = messageManager.messages;
       expect(Array.isArray(result)).toStrictEqual(true);
       expect(result).toHaveLength(1);
-      expect(result[0].status).toStrictEqual(TRANSACTION_STATUSES.APPROVED);
+      expect(result[0].status).toStrictEqual(TransactionStatus.approved);
     });
   });
 
@@ -53,7 +53,7 @@ describe('Personal Message Manager', () => {
     it('sets the Msg status to rejected', () => {
       const Msg = {
         id: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         metamaskNetworkId: 'unit test',
       };
       messageManager.addMsg(Msg);
@@ -61,7 +61,7 @@ describe('Personal Message Manager', () => {
       const result = messageManager.messages;
       expect(Array.isArray(result)).toStrictEqual(true);
       expect(result).toHaveLength(1);
-      expect(result[0].status).toStrictEqual(TRANSACTION_STATUSES.REJECTED);
+      expect(result[0].status).toStrictEqual(TransactionStatus.rejected);
     });
   });
 
@@ -69,12 +69,12 @@ describe('Personal Message Manager', () => {
     it('replaces the Msg with the same id', () => {
       messageManager.addMsg({
         id: '1',
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         metamaskNetworkId: 'unit test',
       });
       messageManager.addMsg({
         id: '2',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       });
       messageManager._updateMsg({
@@ -92,17 +92,17 @@ describe('Personal Message Manager', () => {
     it('returns unapproved Msgs in a hash', () => {
       messageManager.addMsg({
         id: '1',
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         metamaskNetworkId: 'unit test',
       });
       messageManager.addMsg({
         id: '2',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       });
       const result = messageManager.getUnapprovedMsgs();
       expect(typeof result).toStrictEqual('object');
-      expect(result['1'].status).toStrictEqual(TRANSACTION_STATUSES.UNAPPROVED);
+      expect(result['1'].status).toStrictEqual(TransactionStatus.unapproved);
       expect(result['2']).toBeUndefined();
     });
   });
@@ -111,19 +111,19 @@ describe('Personal Message Manager', () => {
     it('returns a Msg with the requested id', () => {
       messageManager.addMsg({
         id: '1',
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         metamaskNetworkId: 'unit test',
       });
       messageManager.addMsg({
         id: '2',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       });
       expect(messageManager.getMsg('1').status).toStrictEqual(
-        TRANSACTION_STATUSES.UNAPPROVED,
+        TransactionStatus.unapproved,
       );
       expect(messageManager.getMsg('2').status).toStrictEqual(
-        TRANSACTION_STATUSES.APPROVED,
+        TransactionStatus.approved,
       );
     });
   });
