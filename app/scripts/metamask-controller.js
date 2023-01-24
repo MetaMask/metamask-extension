@@ -171,6 +171,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
+  ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
