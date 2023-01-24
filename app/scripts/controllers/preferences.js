@@ -1,6 +1,5 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { ethers } from 'ethers';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
@@ -72,7 +71,6 @@ export default class PreferencesController {
     };
 
     this.network = opts.network;
-    this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
