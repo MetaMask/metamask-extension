@@ -1,55 +1,8 @@
-/**
- * Currency Conversion Utility
- * This utility function can be used for converting currency related values within metamask.
- * The caller should be able to pass it a value, along with information about the value's
- * numeric base, denomination and currency, and the desired numeric base, denomination and
- * currency. It should return a single value.
- *
- * @param {(number | string | BN)} value - The value to convert.
- * @param {object} [options] - Options to specify details of the conversion
- * @param {string} [options.fromCurrency = EtherDenomination.ETH | 'USD'] - The currency of the passed value
- * @param {string} [options.toCurrency = EtherDenomination.ETH | 'USD'] - The desired currency of the result
- * @param {string} [options.fromNumericBase = 'hex' | 'dec' | 'BN'] - The numeric basic of the passed value.
- * @param {string} [options.toNumericBase = 'hex' | 'dec' | 'BN'] - The desired numeric basic of the result.
- * @param {string} [options.fromDenomination = EtherDenomination.WEI] - The denomination of the passed value
- * @param {string} [options.numberOfDecimals] - The desired number of decimals in the result
- * @param {string} [options.roundDown] - The desired number of decimals to round down to
- * @param {number} [options.conversionRate] - The rate to use to make the fromCurrency -> toCurrency conversion
- * @returns {(number | string | BN)}
- *
- * The utility passes value along with the options as a single object to the `converter` function.
- * `converter` conditional modifies the supplied `value` property, depending
- * on the accompanying options.
- */
-
 import { BigNumber } from 'bignumber.js';
 
 import { addHexPrefix, BN } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
-import { Numeric } from './Numeric';
-
-/**
- * Defines the base type of numeric value
- */
-export type NumericBase = 'hex' | 'dec' | undefined;
-
-/**
- * Defines which type of denomination a value is in
- */
-
-interface ConversionUtilParams {
-  value: string | number | BN | BigNumber;
-  fromNumericBase: NumericBase;
-  fromDenomination?: EtherDenomination;
-  fromCurrency?: string;
-  toNumericBase?: NumericBase;
-  toDenomination?: EtherDenomination;
-  toCurrency?: string;
-  numberOfDecimals?: number;
-  conversionRate?: number | BigNumber;
-  invertConversionRate?: boolean;
-  roundDown?: number;
-}
+import { Numeric, NumericValue } from './Numeric';
 
 export function decGWEIToHexWEI(decGWEI: number) {
   return new Numeric(decGWEI, 10, EtherDenomination.GWEI)
@@ -86,7 +39,7 @@ export function hexWEIToDecETH(hexWEI: string) {
 }
 
 export function decEthToConvertedCurrency(
-  ethTotal: ConversionUtilParams['value'],
+  ethTotal: NumericValue,
   convertedCurrency?: string,
   conversionRate?: number,
 ) {
@@ -105,14 +58,13 @@ export function getWeiHexFromDecimalValue({
   fromDenomination,
   fromCurrency,
   invertConversionRate = false,
-}: Pick<
-  ConversionUtilParams,
-  | 'value'
-  | 'fromCurrency'
-  | 'conversionRate'
-  | 'fromDenomination'
-  | 'invertConversionRate'
->) {
+}: {
+  value: NumericValue;
+  conversionRate: number;
+  fromDenomination?: EtherDenomination;
+  fromCurrency?: string;
+  invertConversionRate?: boolean;
+}) {
   let numeric = new Numeric(value, 10, fromDenomination);
   if (fromCurrency !== EtherDenomination.ETH) {
     numeric = numeric.applyConversionRate(conversionRate, invertConversionRate);
@@ -135,10 +87,12 @@ export function getEthConversionFromWeiHex({
   fromCurrency = EtherDenomination.ETH,
   conversionRate,
   numberOfDecimals = 6,
-}: Pick<
-  ConversionUtilParams,
-  'value' | 'fromCurrency' | 'conversionRate' | 'numberOfDecimals'
->) {
+}: {
+  value: NumericValue;
+  conversionRate?: number;
+  fromCurrency?: EtherDenomination | string;
+  numberOfDecimals?: number;
+}) {
   const denominations = [
     EtherDenomination.ETH,
     EtherDenomination.GWEI,
@@ -173,15 +127,14 @@ export function getValueFromWeiHex({
   conversionRate,
   numberOfDecimals,
   toDenomination = EtherDenomination.ETH,
-}: Pick<
-  ConversionUtilParams,
-  | 'value'
-  | 'fromCurrency'
-  | 'toCurrency'
-  | 'conversionRate'
-  | 'numberOfDecimals'
-  | 'toDenomination'
->) {
+}: {
+  value: NumericValue;
+  fromCurrency?: EtherDenomination | string;
+  toCurrency?: EtherDenomination | string;
+  conversionRate: number;
+  numberOfDecimals?: number;
+  toDenomination?: EtherDenomination;
+}) {
   let numeric = new Numeric(value, 16, EtherDenomination.WEI);
   if (fromCurrency !== toCurrency) {
     numeric = numeric.applyConversionRate(conversionRate);
