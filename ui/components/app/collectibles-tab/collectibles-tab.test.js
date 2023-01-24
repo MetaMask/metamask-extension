@@ -149,7 +149,6 @@ const render = ({
   collectibles = [],
   selectedAddress,
   chainId = '0x1',
-  collectiblesDetectionNoticeDismissed = false,
   useNftDetection,
   onAddNFT = jest.fn(),
 }) => {
@@ -167,7 +166,6 @@ const render = ({
       },
       provider: { chainId },
       selectedAddress,
-      collectiblesDetectionNoticeDismissed,
       useNftDetection,
       collectiblesDropdownState,
     },
@@ -177,13 +175,10 @@ const render = ({
 
 describe('Collectible Items', () => {
   const detectCollectiblesStub = jest.fn();
-  const setCollectiblesDetectionNoticeDismissedStub = jest.fn();
   const getStateStub = jest.fn();
   const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
   const updateCollectibleDropDownStateStub = jest.fn();
   setBackgroundConnection({
-    setCollectiblesDetectionNoticeDismissed:
-      setCollectiblesDetectionNoticeDismissedStub,
     detectNfts: detectCollectiblesStub,
     getState: getStateStub,
     checkAndUpdateAllNftsOwnershipStatus:
@@ -239,23 +234,8 @@ describe('Collectible Items', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        collectiblesDetectionNoticeDismissed: true,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
-    });
-
-    it('should call setCollectibesDetectionNoticeDismissed when users clicks "X"', () => {
-      render({
-        selectedAddress: ACCOUNT_2,
-        collectibles: COLLECTIBLES,
-      });
-      expect(
-        setCollectiblesDetectionNoticeDismissedStub,
-      ).not.toHaveBeenCalled();
-      fireEvent.click(
-        screen.queryByTestId('collectibles-detection-notice-close'),
-      );
-      expect(setCollectiblesDetectionNoticeDismissedStub).toHaveBeenCalled();
     });
   });
 

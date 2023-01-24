@@ -115,7 +115,6 @@ function defaultFixture() {
       },
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDetectionNoticeDismissed: false,
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
@@ -282,7 +281,6 @@ function onboardingFixture() {
     data: {
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDetectionNoticeDismissed: false,
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,

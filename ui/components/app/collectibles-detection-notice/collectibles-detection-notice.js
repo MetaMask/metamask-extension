@@ -13,7 +13,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
-import { setCollectiblesDetectionNoticeDismissed } from '../../../store/actions';
 
 export default function CollectiblesDetectionNotice() {
   const t = useI18nContext();
@@ -22,11 +21,6 @@ export default function CollectiblesDetectionNotice() {
   return (
     <Box className="collectibles-detection-notice">
       <Dialog type="message" className="collectibles-detection-notice__message">
-        <button
-          onClick={() => setCollectiblesDetectionNoticeDismissed()}
-          className="fas fa-times collectibles-detection-notice__message__close-button"
-          data-testid="collectibles-detection-notice-close"
-        />
         <Box display={DISPLAY.FLEX}>
           <Box paddingTop={1}>
             <i
