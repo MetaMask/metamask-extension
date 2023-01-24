@@ -16,10 +16,34 @@ export const CONTRACT_DATA_DISABLED_ERROR = 'contract-data-disabled';
 export const OFFLINE_FOR_MAINTENANCE = 'offline-for-maintenance';
 export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict';
 
-// An address that the metaswap-api recognizes as the default token for the current network, in place of the token address that ERC-20 tokens have
+// An address that the metaswap-api recognizes as the default token for the current network,
+// in place of the token address that ERC-20 tokens have
 const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-export const ETH_SWAPS_TOKEN_OBJECT = {
+interface SwapsTokenObject {
+  /**
+   * The symbol of token object
+   */
+  symbol: string;
+  /**
+   * The name for the network
+   */
+  name: string;
+  /**
+   * An address that the metaswap-api recognizes as the default token
+   */
+  address: string;
+  /**
+   * Number of digits after decimal point
+   */
+  decimals: number;
+  /**
+   * URL for token icon
+   */
+  iconUrl: string;
+}
+
+export const ETH_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.ETH,
   name: 'Ether',
   address: DEFAULT_TOKEN_ADDRESS,
@@ -27,49 +51,53 @@ export const ETH_SWAPS_TOKEN_OBJECT = {
   iconUrl: ETH_TOKEN_IMAGE_URL,
 };
 
-export const BNB_SWAPS_TOKEN_OBJECT = {
+export const BNB_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.BNB,
   name: 'Binance Coin',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: BNB_TOKEN_IMAGE_URL,
-};
+} as const;
 
-export const MATIC_SWAPS_TOKEN_OBJECT = {
+export const MATIC_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.MATIC,
   name: 'Matic',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: MATIC_TOKEN_IMAGE_URL,
-};
+} as const;
 
-export const AVAX_SWAPS_TOKEN_OBJECT = {
+export const AVAX_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.AVALANCHE,
   name: 'Avalanche',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: AVAX_TOKEN_IMAGE_URL,
-};
+} as const;
 
-export const TEST_ETH_SWAPS_TOKEN_OBJECT = {
+export const TEST_ETH_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.TEST_ETH,
   name: 'Test Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
-};
+} as const;
 
-export const GOERLI_SWAPS_TOKEN_OBJECT = {
+export const GOERLI_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   symbol: CURRENCY_SYMBOLS.ETH,
   name: 'Ether',
   address: DEFAULT_TOKEN_ADDRESS,
   decimals: 18,
   iconUrl: TEST_ETH_TOKEN_IMAGE_URL,
-};
+} as const;
 
-export const ARBITRUM_SWAPS_TOKEN_OBJECT = { ...ETH_SWAPS_TOKEN_OBJECT };
+export const ARBITRUM_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  ...ETH_SWAPS_TOKEN_OBJECT,
+} as const;
 
-export const OPTIMISM_SWAPS_TOKEN_OBJECT = { ...ETH_SWAPS_TOKEN_OBJECT };
+export const OPTIMISM_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  ...ETH_SWAPS_TOKEN_OBJECT,
+} as const;
 
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
 export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0';
@@ -124,17 +152,17 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.AVALANCHE,
   CHAIN_IDS.OPTIMISM,
   CHAIN_IDS.ARBITRUM,
-];
+] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
   ...ALLOWED_PROD_SWAPS_CHAIN_IDS,
   CHAIN_IDS.GOERLI,
-];
+] as const;
 
 export const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.GOERLI,
-];
+] as const;
 
 export const SWAPS_CHAINID_CONTRACT_ADDRESS_MAP = {
   [CHAIN_IDS.MAINNET]: MAINNET_CONTRACT_ADDRESS,
@@ -145,7 +173,7 @@ export const SWAPS_CHAINID_CONTRACT_ADDRESS_MAP = {
   [CHAIN_IDS.AVALANCHE]: AVALANCHE_CONTRACT_ADDRESS,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_CONTRACT_ADDRESS,
   [CHAIN_IDS.ARBITRUM]: ARBITRUM_CONTRACT_ADDRESS,
-};
+} as const;
 
 export const SWAPS_WRAPPED_TOKENS_ADDRESSES = {
   [CHAIN_IDS.MAINNET]: WETH_CONTRACT_ADDRESS,
@@ -156,7 +184,7 @@ export const SWAPS_WRAPPED_TOKENS_ADDRESSES = {
   [CHAIN_IDS.AVALANCHE]: WAVAX_CONTRACT_ADDRESS,
   [CHAIN_IDS.OPTIMISM]: WETH_OPTIMISM_CONTRACT_ADDRESS,
   [CHAIN_IDS.ARBITRUM]: WETH_ARBITRUM_CONTRACT_ADDRESS,
-};
+} as const;
 
 export const ALLOWED_CONTRACT_ADDRESSES = {
   [CHAIN_IDS.MAINNET]: [
@@ -191,7 +219,7 @@ export const ALLOWED_CONTRACT_ADDRESSES = {
     SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.ARBITRUM],
     SWAPS_WRAPPED_TOKENS_ADDRESSES[CHAIN_IDS.ARBITRUM],
   ],
-};
+} as const;
 
 export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.MAINNET]: ETH_SWAPS_TOKEN_OBJECT,
@@ -202,7 +230,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.AVALANCHE]: AVAX_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.ARBITRUM]: ARBITRUM_SWAPS_TOKEN_OBJECT,
-};
+} as const;
 
 export const SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = {
   [CHAIN_IDS.BSC]: BSC_DEFAULT_BLOCK_EXPLORER_URL,
@@ -212,7 +240,7 @@ export const SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = {
   [CHAIN_IDS.AVALANCHE]: AVALANCHE_DEFAULT_BLOCK_EXPLORER_URL,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_DEFAULT_BLOCK_EXPLORER_URL,
   [CHAIN_IDS.ARBITRUM]: ARBITRUM_DEFAULT_BLOCK_EXPLORER_URL,
-};
+} as const;
 
 export const ETHEREUM = 'ethereum';
 export const POLYGON = 'polygon';
@@ -224,12 +252,12 @@ export const ARBITRUM = 'arbitrum';
 
 export const SWAPS_CLIENT_ID = 'extension';
 
-export const TOKEN_BUCKET_PRIORITY = {
-  OWNED: 'owned',
-  TOP: 'top',
-};
+export enum TokenBucketPriority {
+  owned = 'owned',
+  top = 'top',
+}
 
-export const SLIPPAGE = {
-  DEFAULT: 2,
-  HIGH: 3,
-};
+export enum Slippage {
+  default = 2,
+  high = 3,
+}

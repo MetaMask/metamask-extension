@@ -1,14 +1,11 @@
 import log from 'loglevel';
-import {
-  conversionUtil,
-  multiplyCurrencies,
-} from '../../../shared/modules/conversion.utils';
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../shared/modules/Numeric';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -189,21 +186,19 @@ export function getTokenFiatAmount(
     return undefined;
   }
 
-  const currentTokenToFiatRate = multiplyCurrencies(
-    contractExchangeRate,
-    conversionRate,
-    {
-      multiplicandBase: 10,
-      multiplierBase: 10,
-    },
-  );
-  const currentTokenInFiat = conversionUtil(tokenAmount, {
-    fromNumericBase: 'dec',
-    fromCurrency: tokenSymbol,
-    toCurrency: currentCurrency.toUpperCase(),
-    numberOfDecimals: 2,
-    conversionRate: currentTokenToFiatRate,
-  });
+  const currentTokenToFiatRate = new Numeric(contractExchangeRate, 10)
+    .times(new Numeric(conversionRate, 10))
+    .toString();
+
+  let currentTokenInFiat = new Numeric(tokenAmount, 10);
+
+  if (tokenSymbol !== currentCurrency.toUpperCase() && currentTokenToFiatRate) {
+    currentTokenInFiat = currentTokenInFiat.applyConversionRate(
+      currentTokenToFiatRate,
+    );
+  }
+
+  currentTokenInFiat = currentTokenInFiat.round(2).toString();
   let result;
   if (hideCurrencySymbol) {
     result = formatCurrency(currentTokenInFiat, currentCurrency);

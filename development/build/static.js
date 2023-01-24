@@ -25,8 +25,7 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
-      // Snow currently only works on Chromium based browsers
-      shouldIncludeSnow && browser === 'chrome',
+      shouldIncludeSnow,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;

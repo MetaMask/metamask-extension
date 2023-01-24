@@ -13,8 +13,8 @@ import {
 } from '../../helpers/utils/confirm-tx.util';
 
 import {
-  conversionUtil,
   getValueFromWeiHex,
+  hexToDecimal,
   sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
@@ -293,10 +293,7 @@ export function setTransactionToConfirm(transactionId) {
       }
 
       if (txParams.nonce) {
-        const nonce = conversionUtil(txParams.nonce, {
-          fromNumericBase: 'hex',
-          toNumericBase: 'dec',
-        });
+        const nonce = hexToDecimal(txParams.nonce);
 
         dispatch(updateNonce(nonce));
       }
