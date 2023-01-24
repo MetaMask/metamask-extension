@@ -2,36 +2,6 @@ import { GAS_LIMITS } from '../../../shared/constants/gas';
 import * as utils from './confirm-tx.util';
 
 describe('Confirm Transaction utils', () => {
-  describe('increaseLastGasPrice', () => {
-    it('should increase the gasPrice by 10%', () => {
-      const increasedGasPrice = utils.increaseLastGasPrice('0xa');
-      expect(increasedGasPrice).toStrictEqual('0xb');
-    });
-
-    it('should prefix the result with 0x', () => {
-      const increasedGasPrice = utils.increaseLastGasPrice('a');
-      expect(increasedGasPrice).toStrictEqual('0xb');
-    });
-  });
-
-  describe('hexGreaterThan', () => {
-    it('should return true if the first value is greater than the second value', () => {
-      expect(utils.hexGreaterThan('0xb', '0xa')).toStrictEqual(true);
-    });
-
-    it('should return false if the first value is less than the second value', () => {
-      expect(utils.hexGreaterThan('0xa', '0xb')).toStrictEqual(false);
-    });
-
-    it('should return false if the first value is equal to the second value', () => {
-      expect(utils.hexGreaterThan('0xa', '0xa')).toStrictEqual(false);
-    });
-
-    it('should correctly compare prefixed and non-prefixed hex values', () => {
-      expect(utils.hexGreaterThan('0xb', 'a')).toStrictEqual(true);
-    });
-  });
-
   describe('getHexGasTotal', () => {
     it('should multiply the hex gasLimit and hex gasPrice values together', () => {
       expect(
