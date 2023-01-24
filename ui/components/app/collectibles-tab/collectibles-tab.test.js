@@ -5,8 +5,8 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
-import CollectiblesTab from '.';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import CollectiblesTab from '.';
 
 const COLLECTIBLES = [
   {
@@ -154,7 +154,7 @@ const render = ({
   useNftDetection,
   onAddNFT = jest.fn(),
 }) => {
-  const chainIdAsDecimal = hexToDecimal(chainId)
+  const chainIdAsDecimal = hexToDecimal(chainId);
   const store = configureStore({
     metamask: {
       allNfts: {
