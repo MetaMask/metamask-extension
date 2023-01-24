@@ -94,7 +94,8 @@ Banner.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * TODO WRITE HERE
+   * Use the `severity` prop and the `SEVERITIES` object from `./ui/helpers/constants/design-system.js` to change the context of `Banner`.
+   * Possible options: `SEVERITIES.INFO`(Default), `SEVERITIES.WARNING`, `SEVERITIES.DANGER`, `SEVERITIES.SUCCESS`
    */
   severity: PropTypes.oneOf(Object.values(BANNER_SEVERITIES)),
   /**
