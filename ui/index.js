@@ -164,6 +164,15 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 }
 
 function setupDebuggingHelpers(store) {
+  /**
+   * The following stateHook is a method intended to throw an error, used in
+   * our E2E test to ensure that errors are attempted to be sent to sentry.
+   */
+  window.stateHooks.throwTestError = async function () {
+    const error = new Error('Test Error');
+    error.name = 'TestError';
+    throw error;
+  };
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
