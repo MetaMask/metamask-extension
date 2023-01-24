@@ -6,7 +6,7 @@ import {
   GAS_ESTIMATE_TYPES,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../../shared/constants/transaction';
+import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../test/jest';
@@ -144,7 +144,7 @@ describe('EditGasFeeButton', () => {
       contextProps: {
         transaction: {
           userFeeLevel: 'low',
-          txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+          txParams: { type: TransactionEnvelopeType.legacy },
         },
       },
     });

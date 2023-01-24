@@ -9,7 +9,7 @@ import { transactionMatchesNetwork } from '../../../../../shared/modules/transac
 import { I18nContext } from '../../../../contexts/i18n';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { hexToDecimal } from '../../../../../shared/lib/metamask-controller-utils';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);

@@ -5,7 +5,6 @@ import NewAccount from './new-account';
 
 export default {
   title: 'Pages/FirstTimeFlow/CreatePassword',
-  id: __filename,
 };
 
 export const ImportWithSeedPhraseComponent = () => {

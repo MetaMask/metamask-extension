@@ -2,18 +2,19 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import BN from 'bn.js';
 import createId from '../../../shared/modules/random-id';
-import { bnToHex, previousValueComparator } from '../lib/util';
+import { previousValueComparator } from '../lib/util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
 } from '../../../shared/constants/network';
+import { bnToHex } from '../../../shared/modules/conversion.utils';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -277,8 +278,8 @@ export default class IncomingTransactionsController {
     const time = parseInt(etherscanTransaction.timeStamp, 10) * 1000;
     const status =
       etherscanTransaction.isError === '0'
-        ? TRANSACTION_STATUSES.CONFIRMED
-        : TRANSACTION_STATUSES.FAILED;
+        ? TransactionStatus.confirmed
+        : TransactionStatus.failed;
     const txParams = {
       from: etherscanTransaction.from,
       gas: bnToHex(new BN(etherscanTransaction.gas)),
@@ -307,7 +308,7 @@ export default class IncomingTransactionsController {
       time,
       txParams,
       hash: etherscanTransaction.hash,
-      type: TRANSACTION_TYPES.INCOMING,
+      type: TransactionType.incoming,
     };
   }
 }

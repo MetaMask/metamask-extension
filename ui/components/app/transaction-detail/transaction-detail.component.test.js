@@ -2,7 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../../shared/constants/transaction';
+import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../test/jest';
@@ -62,7 +62,7 @@ describe('TransactionDetail', () => {
       contextProps: {
         transaction: {
           userFeeLevel: 'low',
-          txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+          txParams: { type: TransactionEnvelopeType.legacy },
         },
       },
     });

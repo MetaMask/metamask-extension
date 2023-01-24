@@ -3,7 +3,7 @@ import AccountOptionsMenu from '.';
 
 export default {
   title: 'Components/App/AccountOptionsMenu',
-  id: __filename,
+
   argTypes: {
     anchorElement: {
       control: 'func',

@@ -10,7 +10,7 @@ const store = configureStore(testData);
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenSelectionPopover',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
-  id: __filename,
+
   argTypes: {
     selectedTokens: { control: 'array' },
     handleTokenSelection: { control: 'func' },
