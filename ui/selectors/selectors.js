@@ -1,5 +1,5 @@
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SubjectType } from '@metamask/controllers';
+import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import {
   createSelector,

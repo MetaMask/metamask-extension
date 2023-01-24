@@ -1,4 +1,4 @@
-import { SubjectType } from '@metamask/controllers';
+import { SubjectType } from '@metamask/subject-metadata-controller';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
