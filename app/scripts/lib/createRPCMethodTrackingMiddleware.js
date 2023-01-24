@@ -19,7 +19,6 @@ const RATE_LIMIT_TYPES = {
   NON_RATE_LIMITED: 'non_rate_limited',
 };
 
-
 /**
  * This object maps a method name to a RATE_LIMIT_TYPE. If not in this map the
  * default is 'RATE_LIMITED'
