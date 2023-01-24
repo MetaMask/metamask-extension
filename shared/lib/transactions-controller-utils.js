@@ -1,9 +1,7 @@
 import BigNumber from 'bignumber.js';
+import { EtherDenomination } from '../constants/common';
 import { TransactionEnvelopeType } from '../constants/transaction';
-import {
-  multiplyCurrencies,
-  subtractCurrencies,
-} from '../modules/conversion.utils';
+import { Numeric } from '../modules/Numeric';
 import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
 
 const TOKEN_TRANSFER_LOG_TOPIC_HASH =
@@ -14,11 +12,7 @@ export const TRANSACTION_NO_CONTRACT_ERROR_KEY = 'transactionErrorNoContract';
 export const TEN_SECONDS_IN_MILLISECONDS = 10_000;
 
 export function calcGasTotal(gasLimit = '0', gasPrice = '0') {
-  return multiplyCurrencies(gasLimit, gasPrice, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  });
+  return new Numeric(gasLimit, 16).times(new Numeric(gasPrice, 16)).toString();
 }
 
 /**
@@ -69,13 +63,16 @@ export function getSwapsTokensReceivedFromTxMeta(
       return txMeta.swapMetaData.token_to_amount;
     }
 
-    let approvalTxGasCost = '0x0';
+    let approvalTxGasCost = new Numeric('0x0', 16);
     if (approvalTxMeta && approvalTxMeta.txReceipt) {
-      approvalTxGasCost = calcGasTotal(
-        approvalTxMeta.txReceipt.gasUsed,
-        networkAndAccountSupports1559
-          ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
-          : approvalTxMeta.txParams.gasPrice,
+      approvalTxGasCost = new Numeric(
+        calcGasTotal(
+          approvalTxMeta.txReceipt.gasUsed,
+          networkAndAccountSupports1559
+            ? approvalTxMeta.txReceipt.effectiveGasPrice // Base fee + priority fee.
+            : approvalTxMeta.txParams.gasPrice,
+        ),
+        16,
       );
     }
 
@@ -85,33 +82,22 @@ export function getSwapsTokensReceivedFromTxMeta(
         ? txReceipt.effectiveGasPrice
         : txMeta.txParams.gasPrice,
     );
-    const totalGasCost = new BigNumber(gasCost, 16)
-      .plus(approvalTxGasCost, 16)
-      .toString(16);
+    const totalGasCost = new Numeric(gasCost, 16).plus(approvalTxGasCost);
 
-    const preTxBalanceLessGasCost = subtractCurrencies(
-      txMeta.preTxBalance,
+    const preTxBalanceLessGasCost = new Numeric(txMeta.preTxBalance, 16).minus(
       totalGasCost,
-      {
-        aBase: 16,
-        bBase: 16,
-        toNumericBase: 'hex',
-      },
     );
 
-    const ethReceived = subtractCurrencies(
+    const ethReceived = new Numeric(
       txMeta.postTxBalance,
-      preTxBalanceLessGasCost,
-      {
-        aBase: 16,
-        bBase: 16,
-        fromDenomination: 'WEI',
-        toDenomination: 'ETH',
-        toNumericBase: 'dec',
-        numberOfDecimals: 6,
-      },
-    );
-    return ethReceived;
+      16,
+      EtherDenomination.WEI,
+    )
+      .subtract(preTxBalanceLessGasCost)
+      .toDenomination(EtherDenomination.ETH)
+      .toBase(10)
+      .round(6);
+    return ethReceived.toString();
   }
   const txReceiptLogs = txReceipt?.logs;
   if (txReceiptLogs && txReceipt?.status !== '0x0') {
