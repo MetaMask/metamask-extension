@@ -21,7 +21,7 @@ import {
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import SignatureRequestNavigation from '../signature-request/signature-request-navigation';
+import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -282,7 +282,7 @@ export default class SignatureRequestOriginal extends Component {
     return (
       <div className="request-signature__container">
         <div className="request-signature__navigation">
-          <SignatureRequestNavigation />
+          <ConfirmPageContainerNavigation />
         </div>
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader

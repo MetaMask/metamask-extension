@@ -28,7 +28,9 @@ describe('Navigate transactions', function () {
 
         // navigate transactions
         await driver.clickElement('[data-testid="next-page"]');
-        let navigationElement = await driver.findElement('.navigation');
+        let navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         let navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('2 of 4'),
@@ -36,7 +38,9 @@ describe('Navigate transactions', function () {
           'changed transaction right',
         );
         await driver.clickElement('[data-testid="next-page"]');
-        navigationElement = await driver.findElement('.navigation');
+        navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('3 of 4'),
@@ -44,7 +48,9 @@ describe('Navigate transactions', function () {
           'changed transaction right',
         );
         await driver.clickElement('[data-testid="next-page"]');
-        navigationElement = await driver.findElement('.navigation');
+        navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('4 of 4'),
@@ -52,7 +58,9 @@ describe('Navigate transactions', function () {
           'changed transaction right',
         );
         await driver.clickElement('[data-testid="first-page"]');
-        navigationElement = await driver.findElement('.navigation');
+        navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('1 of 4'),
@@ -60,7 +68,9 @@ describe('Navigate transactions', function () {
           'navigate to first transaction',
         );
         await driver.clickElement('[data-testid="last-page"]');
-        navigationElement = await driver.findElement('.navigation');
+        navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('4 of 4'),
@@ -68,7 +78,9 @@ describe('Navigate transactions', function () {
           'navigate to last transaction',
         );
         await driver.clickElement('[data-testid="previous-page"]');
-        navigationElement = await driver.findElement('.navigation');
+        navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('3 of 4'),
@@ -76,7 +88,9 @@ describe('Navigate transactions', function () {
           'changed transaction left',
         );
         await driver.clickElement('[data-testid="previous-page"]');
-        navigationElement = await driver.findElement('.navigation');
+        navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('2 of 4'),
@@ -104,7 +118,9 @@ describe('Navigate transactions', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('[data-testid="next-page"]');
-        let navigationElement = await driver.findElement('.navigation');
+        let navigationElement = await driver.findElement(
+          '.confirm-page-container-navigation',
+        );
         let navigationText = await navigationElement.getText();
         assert.equal(
           navigationText.includes('2 of 4'),
@@ -121,7 +137,7 @@ describe('Navigate transactions', function () {
         await driver.switchToWindow(extension);
         navigationElement = await driver.waitForSelector(
           {
-            css: '.navigation',
+            css: '.confirm-page-container-navigation',
             text: '2 of 5',
           },
           { timeout: 10000 },
@@ -154,7 +170,7 @@ describe('Navigate transactions', function () {
         await driver.clickElement({ text: 'Reject', tag: 'button' });
         const navigationElement = await driver.waitForSelector(
           {
-            css: '.navigation',
+            css: '.confirm-page-container-navigation',
             text: '1 of 3',
           },
           { timeout: 10000 },
@@ -187,7 +203,7 @@ describe('Navigate transactions', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         const navigationElement = await driver.waitForSelector(
           {
-            css: '.navigation',
+            css: '.confirm-page-container-navigation',
             text: '1 of 3',
           },
           { timeout: 10000 },

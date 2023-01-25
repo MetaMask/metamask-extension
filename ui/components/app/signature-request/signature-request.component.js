@@ -18,7 +18,7 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import SignatureRequestNavigation from './signature-request-navigation';
+import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -214,7 +214,7 @@ export default class SignatureRequest extends PureComponent {
 
     return (
       <div className="signature-request">
-        <SignatureRequestNavigation />
+        <ConfirmPageContainerNavigation />
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}

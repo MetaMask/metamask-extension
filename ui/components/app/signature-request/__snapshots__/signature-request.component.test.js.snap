@@ -6,16 +6,16 @@ exports[`Signature Request Component render should match snapshot 1`] = `
     class="signature-request"
   >
     <div
-      class="navigation"
+      class="confirm-page-container-navigation"
       style="display: none;"
     >
       <div
-        class="navigation__container"
+        class="confirm-page-container-navigation__container"
         data-testid="navigation-container"
         style="visibility: hidden;"
       >
         <button
-          class="navigation__arrow"
+          class="confirm-page-container-navigation__arrow"
           data-testid="first-page"
         >
           <i
@@ -23,7 +23,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           />
         </button>
         <button
-          class="navigation__arrow"
+          class="confirm-page-container-navigation__arrow"
           data-testid="previous-page"
         >
           <i
@@ -32,10 +32,10 @@ exports[`Signature Request Component render should match snapshot 1`] = `
         </button>
       </div>
       <div
-        class="navigation__textcontainer"
+        class="confirm-page-container-navigation__textcontainer"
       >
         <div
-          class="navigation__navtext"
+          class="confirm-page-container-navigation__navtext"
         >
           0
            
@@ -44,17 +44,17 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           0
         </div>
         <div
-          class="navigation__longtext"
+          class="confirm-page-container-navigation__longtext"
         >
           requests waiting to be acknowledged
         </div>
       </div>
       <div
-        class="navigation__container"
+        class="confirm-page-container-navigation__container"
         style="visibility: hidden;"
       >
         <button
-          class="navigation__arrow"
+          class="confirm-page-container-navigation__arrow"
           data-testid="next-page"
         >
           <i
@@ -62,7 +62,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           />
         </button>
         <button
-          class="navigation__arrow"
+          class="confirm-page-container-navigation__arrow"
           data-testid="last-page"
         >
           <i
