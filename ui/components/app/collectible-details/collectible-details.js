@@ -54,6 +54,7 @@ import {
 } from '../../../../shared/constants/transaction';
 import CollectibleDefaultImage from '../collectible-default-image';
 import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import Tooltip from '../../ui/tooltip';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -419,16 +420,24 @@ export default function CollectibleDetails({ collectible }) {
                   {shortenAddress(address)}
                 </a>
               </Typography>
-              <ButtonIcon
-                ariaLabel="copy"
-                className="collectible-details__contract-copy-button"
-                onClick={() => {
-                  handleAddressCopy(address);
-                }}
-                iconName={
-                  addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+              <Tooltip
+                wrapperClassName="collectible-details__tooltip-wrapper"
+                position="bottom"
+                title={
+                  addressCopied ? t('copiedExclamation') : t('copyToClipboard')
                 }
-              />
+              >
+                <ButtonIcon
+                  ariaLabel="copy"
+                  className="collectible-details__contract-copy-button"
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={
+                    addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                  }
+                />
+              </Tooltip>
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
