@@ -4415,6 +4415,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} transportType - The Ledger transport type.
    */
   async setLedgerTransportPreference(transportType) {
+    if (!this.canUseHardwareWallets()) {
+      return undefined;
+    }
+
     const currentValue =
       this.preferencesController.getLedgerTransportPreference();
     const newValue =
