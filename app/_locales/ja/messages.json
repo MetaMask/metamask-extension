@@ -4081,9 +4081,6 @@
   "tokenList": {
     "message": "トークンリスト:"
   },
-  "tokenNftAutoDetection": {
-    "message": "トークンと NFT の自動検出"
-  },
   "tokenScamSecurityRisk": {
     "message": "トークン関連の詐欺やセキュリティのリスク"
   },

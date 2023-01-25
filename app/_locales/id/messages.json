@@ -4081,9 +4081,6 @@
   "tokenList": {
     "message": "Daftar token:"
   },
-  "tokenNftAutoDetection": {
-    "message": "Deteksi otomatis Token dan NFT"
-  },
   "tokenScamSecurityRisk": {
     "message": "penipuan token dan risiko keamanan"
   },

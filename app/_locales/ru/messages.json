@@ -4081,9 +4081,6 @@
   "tokenList": {
     "message": "Списки токенов:"
   },
-  "tokenNftAutoDetection": {
-    "message": "Автообнаружение токенов и NFT"
-  },
   "tokenScamSecurityRisk": {
     "message": "мошенничество с токенами и угрозы безопасности"
   },

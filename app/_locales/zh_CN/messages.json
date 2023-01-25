@@ -4081,9 +4081,6 @@
   "tokenList": {
     "message": "代币列表："
   },
-  "tokenNftAutoDetection": {
-    "message": "代币和NFT自动检测"
-  },
   "tokenScamSecurityRisk": {
     "message": "代币欺诈和安全风险。"
   },

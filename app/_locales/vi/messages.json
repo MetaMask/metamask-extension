@@ -4081,9 +4081,6 @@
   "tokenList": {
     "message": "Danh sách token:"
   },
-  "tokenNftAutoDetection": {
-    "message": "Tự động phát hiện Token và NFT"
-  },
   "tokenScamSecurityRisk": {
     "message": "rủi ro về bảo mật và lừa đảo token"
   },

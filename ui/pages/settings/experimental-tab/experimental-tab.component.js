@@ -60,10 +60,7 @@ export default class ExperimentalTab extends PureComponent {
 
     return (
       <>
-        <div
-          ref={this.settingsRefs[0]}
-          className="settings-page__content-row--parent"
-        >
+        <div ref={this.settingsRefs[0]} className="settings-page__content-row">
           <div className="settings-page__content-item">
             <span>{t('enableOpenSeaAPI')}</span>
             <div className="settings-page__content-description">
@@ -95,10 +92,7 @@ export default class ExperimentalTab extends PureComponent {
             </div>
           </div>
         </div>
-        <div
-          ref={this.settingsRefs[1]}
-          className="settings-page__content-row--dependent"
-        >
+        <div ref={this.settingsRefs[1]} className="settings-page__content-row">
           <div className="settings-page__content-item">
             <span>{t('useCollectibleDetection')}</span>
             <div className="settings-page__content-description">
