@@ -6,8 +6,9 @@ import Identicon from '../../components/ui/identicon';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { EVENT } from '../../../shared/constants/metametrics';
-import { conversionUtil } from '../../../shared/modules/conversion.utils';
 import SiteOrigin from '../../components/ui/site-origin';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
 
 export default class ConfirmEncryptionPublicKey extends Component {
   static contextTypes = {
@@ -74,13 +75,14 @@ export default class ConfirmEncryptionPublicKey extends Component {
     } = this.props;
     const { t } = this.context;
 
-    const nativeCurrencyBalance = conversionUtil(balance, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromDenomination: 'WEI',
-      numberOfDecimals: 6,
-      conversionRate,
-    });
+    const nativeCurrencyBalance = new Numeric(
+      balance,
+      16,
+      EtherDenomination.WEI,
+    )
+      .applyConversionRate(conversionRate)
+      .round(6)
+      .toBase(10);
 
     return (
       <div className="request-encryption-public-key__balance">

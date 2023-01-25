@@ -12,15 +12,10 @@ const path = require('path');
 const SVG_ICONS_FOLDER = './app/images/icons';
 const ASSET_EXT = '.svg';
 
-const getIconNameKebabCase = (fileName) =>
-  path.basename(fileName, ASSET_EXT).replace('icon-', '');
+const getIconNameKebabCase = (fileName) => path.basename(fileName, ASSET_EXT);
 
 const getIconNameInSnakeCase = (fileName) =>
-  path
-    .basename(fileName, ASSET_EXT)
-    .replace('icon-', '')
-    .replace(/-/gu, '_')
-    .toUpperCase();
+  path.basename(fileName, ASSET_EXT).replace(/-/gu, '_').toUpperCase();
 
 const generateIconNames = () => {
   const iconNames = {};

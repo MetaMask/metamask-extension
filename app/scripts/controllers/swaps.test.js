@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
-import BigNumber from 'bignumber.js';
+import BigNumberjs from 'bignumber.js';
 import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
@@ -373,7 +373,7 @@ describe('SwapsController', function () {
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
-          `0x${new BigNumber(maxGas, 10)
+          `0x${new BigNumberjs(maxGas, 10)
             .minus(estimatedRefund, 10)
             .toString(16)}`,
         );
@@ -667,7 +667,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         const [newQuotes] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -711,7 +711,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         const allowanceStub = sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -734,7 +734,7 @@ describe('SwapsController', function () {
         // Ensure approval is required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(0));
+          .resolves(BigNumber.from(0));
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnStub = sandbox
@@ -759,7 +759,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -777,7 +777,7 @@ describe('SwapsController', function () {
         const bestQuote = {
           ...getMockQuotes()[TEST_AGG_ID_1],
           aggregator: bestAggId,
-          destinationAmount: ethers.BigNumber.from(
+          destinationAmount: BigNumber.from(
             getMockQuotes()[TEST_AGG_ID_1].destinationAmount,
           )
             .add((100e18).toString())
@@ -789,7 +789,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
@@ -806,7 +806,7 @@ describe('SwapsController', function () {
         // Make it so approval is not required
         sandbox
           .stub(swapsController, '_getERC20Allowance')
-          .resolves(ethers.BigNumber.from(1));
+          .resolves(BigNumber.from(1));
 
         swapsController.getTokenRatesState = () => ({
           contractExchangeRates: {},

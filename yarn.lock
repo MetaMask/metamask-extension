@@ -2038,7 +2038,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.7.0":
+"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.6.4, @ethersproject/abi@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/abi@npm:5.7.0"
   dependencies:
@@ -2179,7 +2179,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/hdnode@npm:5.7.0, @ethersproject/hdnode@npm:^5.7.0":
+"@ethersproject/hdnode@npm:5.7.0, @ethersproject/hdnode@npm:^5.6.2, @ethersproject/hdnode@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/hdnode@npm:5.7.0"
   dependencies:
@@ -3347,12 +3347,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@lavamoat/snow@npm:1.3.0"
+"@lavamoat/snow@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@lavamoat/snow@npm:1.4.1"
   dependencies:
     is-cross-origin: ^1.0.1
-  checksum: 580a8378a098936d0d4df31abc1f688c57194225414baea0292ece51efcc0865565af5e974784ee5156291380e86da91996efa00637363ceb76335824122a6f4
+  checksum: d4dcd9907bb4caa7ac7fc130dbe7eff0295a992769136895c222b8e823edb0de44aa822e467670515ef70e85b9e5edb93c4ca9ffc05735ed18528304e478754a
   languageName: node
   linkType: hard
 
@@ -15873,7 +15873,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.0.13, ethers@npm:^5.6.4":
+"ethers@npm:^5.0.13":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
@@ -24085,8 +24085,10 @@ __metadata:
     "@ensdomains/content-hash": ^2.5.6
     "@ethereumjs/common": ^2.3.1
     "@ethereumjs/tx": ^3.2.1
+    "@ethersproject/abi": ^5.6.4
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
+    "@ethersproject/hdnode": ^5.6.2
     "@ethersproject/providers": ^5.7.2
     "@formatjs/intl-relativetimeformat": ^5.2.6
     "@fortawesome/fontawesome-free": ^5.13.0
@@ -24094,7 +24096,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": ^0.6.1
     "@lavamoat/allow-scripts": ^2.0.3
     "@lavamoat/lavapack": ^4.0.0
-    "@lavamoat/snow": ^1.3.0
+    "@lavamoat/snow": ^1.4.1
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0
@@ -24250,7 +24252,6 @@ __metadata:
     ethereumjs-abi: ^0.6.4
     ethereumjs-util: ^7.0.10
     ethereumjs-wallet: ^0.6.4
-    ethers: ^5.6.4
     ethjs: ^0.4.0
     ethjs-contract: ^0.2.3
     ethjs-query: ^0.3.4
