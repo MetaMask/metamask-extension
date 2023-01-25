@@ -208,6 +208,21 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    */
   approveMessage(msgParams) {
+    const msg = this.getMsg(msgParams.metamaskId);
+
+    this.metricsEvent({
+      event: 'Sign Request Approve',
+      category: EVENT.CATEGORIES.TRANSACTIONS,
+      properties: {
+        action: 'Sign Request Approve',
+        type: msg.type,
+        ui_customizations:
+          msg.securityProviderResponse.flagAsDangerous === 1
+            ? ['flagged_as_malicious']
+            : [],
+      },
+    });
+
     this.setMsgStatusApproved(msgParams.metamaskId);
     return this.prepMsgForSigning(msgParams);
   }
@@ -259,8 +274,12 @@ export default class PersonalMessageManager extends EventEmitter {
         event: reason,
         category: EVENT.CATEGORIES.TRANSACTIONS,
         properties: {
-          action: 'Sign Request',
+          action: 'Sign Request Reject',
           type: msg.type,
+          ui_customizations:
+            msg.securityProviderResponse.flagAsDangerous === 1
+              ? ['flagged_as_malicious']
+              : [],
         },
       });
     }

@@ -1740,6 +1740,9 @@ describe('Transaction Controller', function () {
             gas: '0x7b0d',
             gasPrice: '0x77359400',
           },
+          securityProviderResponse: {
+            flagAsDangerous: '0',
+          },
         };
       });
 
@@ -1766,6 +1769,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: [],
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1852,6 +1856,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: [],
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1921,6 +1926,9 @@ describe('Transaction Controller', function () {
             gas: '0x7b0d',
             gasPrice: '0x77359400',
           },
+          securityProviderResponse: {
+            flagAsDangerous: '0',
+          },
         };
       });
 
@@ -1947,6 +1955,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: [],
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2035,6 +2044,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
+            ui_customizations: [],
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2099,6 +2109,9 @@ describe('Transaction Controller', function () {
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
+        securityProviderResponse: {
+          flagAsDangerous: '0',
+        },
       };
 
       const expectedPayload = {
@@ -2122,6 +2135,7 @@ describe('Transaction Controller', function () {
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
+          ui_customizations: [],
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -2167,6 +2181,9 @@ describe('Transaction Controller', function () {
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
+        securityProviderResponse: {
+          flagAsDangerous: '0',
+        },
       };
       const expectedPayload = {
         actionId,
@@ -2190,6 +2207,7 @@ describe('Transaction Controller', function () {
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
+          ui_customizations: [],
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2245,6 +2263,9 @@ describe('Transaction Controller', function () {
           maxFeePerGas: '0x77359400',
           maxPriorityFeePerGas: '0x77359400',
         },
+        securityProviderResponse: {
+          flagAsDangerous: '0',
+        },
       };
       const expectedPayload = {
         actionId,
@@ -2268,6 +2289,7 @@ describe('Transaction Controller', function () {
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
+          ui_customizations: [],
         },
         sensitiveProperties: {
           baz: 3.0,
