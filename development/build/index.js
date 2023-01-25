@@ -74,7 +74,51 @@ async function defineAndRunBuildTasks() {
   } = await parseArgv();
 
   // build lavamoat runtime file
-  await lavapack.buildRuntime({ scuttleGlobalThis: false });
+  await lavapack.buildRuntime({
+    scuttleGlobalThis: true,
+    scuttleGlobalThisExceptions: [
+      // globals used by different mm deps outside of lm compartment
+      'toString',
+      'getComputedStyle',
+      'addEventListener',
+      'removeEventListener',
+      'ShadowRoot',
+      'HTMLElement',
+      'Element',
+      'pageXOffset',
+      'pageYOffset',
+      'visualViewport',
+      'Reflect',
+      'Set',
+      'Object',
+      'navigator',
+      'harden',
+      'console',
+      // globals chrome driver needs to function (test env)
+      /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+      'performance',
+      'parseFloat',
+      'innerWidth',
+      'innerHeight',
+      'Symbol',
+      'Math',
+      'DOMRect',
+      'Number',
+      'Array',
+      'crypto',
+      'Function',
+      'Uint8Array',
+      'String',
+      'Promise',
+      // globals sentry needs to function
+      '__SENTRY__',
+      'appState',
+      'extra',
+      'stateHooks',
+      'sentryHooks',
+      'sentry',
+    ],
+  });
 
   const browserPlatforms = ['firefox', 'chrome'];
 

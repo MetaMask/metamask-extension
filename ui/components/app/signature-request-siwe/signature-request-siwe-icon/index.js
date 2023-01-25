@@ -17,7 +17,7 @@ const SignatureRequestSIWEIcon = () => {
       backgroundColor={COLORS.ERROR_DEFAULT}
       justifyContent={JUSTIFY_CONTENT.CENTER}
     >
-      <Icon name={ICON_NAMES.DANGER_FILLED} color={COLORS.ERROR_INVERSE} />
+      <Icon name={ICON_NAMES.DANGER} color={COLORS.ERROR_INVERSE} />
     </Box>
   );
 };
