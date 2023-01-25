@@ -75,6 +75,8 @@ function urlForStoryFile(filename, artifactBase) {
 }
 
 /**
+ * Get the ID for a story file.
+ *
  * @param {fileName} string - The fileName to get the story id.
  * @returns The id of the story.
  */

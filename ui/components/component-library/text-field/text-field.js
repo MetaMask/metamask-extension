@@ -30,7 +30,7 @@ export const TextField = ({
           <ButtonIcon
             className="mm-text-field__button-clear"
             ariaLabel="Clear" // TODO: i18n
-            iconName={ICON_NAMES.CLOSE_OUTLINE}
+            iconName={ICON_NAMES.CLOSE}
             size={SIZES.SM}
             onClick={clearButtonOnClick}
             {...clearButtonProps}

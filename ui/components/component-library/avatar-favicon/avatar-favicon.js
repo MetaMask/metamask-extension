@@ -40,7 +40,7 @@ export const AvatarFavicon = ({
         />
       ) : (
         <Icon
-          name={ICON_NAMES.GLOBAL_FILLED}
+          name={ICON_NAMES.GLOBAL}
           color={COLORS.ICON_DEFAULT}
           size={size}
           {...fallbackIconProps}
