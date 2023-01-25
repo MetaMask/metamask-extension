@@ -42,10 +42,11 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       dispatch(hideLoadingIndication());
     }
     if (
-      tokenAddress !== prevTokenAddress ||
-      userAddress !== prevUserAddress ||
-      transactionData !== prevTransactionData ||
-      (prevTokenBalance && prevTokenBalance !== tokensWithBalances)
+      transactionData &&
+      (tokenAddress !== prevTokenAddress ||
+        userAddress !== prevUserAddress ||
+        transactionData !== prevTransactionData ||
+        (prevTokenBalance && prevTokenBalance !== tokensWithBalances))
     ) {
       getAndSetAssetDetails();
     }
