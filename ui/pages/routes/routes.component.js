@@ -58,6 +58,7 @@ import {
   CONFIRM_IMPORT_TOKEN_ROUTE,
   ONBOARDING_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
@@ -262,7 +263,7 @@ export default class Routes extends Component {
     const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, {
-        path: INITIALIZE_UNLOCK_ROUTE,
+        path: ONBOARDING_UNLOCK_ROUTE,
         exact: true,
       }),
     );
