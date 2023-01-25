@@ -1199,30 +1199,36 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setRpcTarget', () => {
+  describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setRpcTarget', async () => {
+    it('calls setActiveNetwork', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) => cb());
+      const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setActiveNetwork: setCurrentNetworkStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setRpcTarget('http://localhost:8545'));
-      expect(background.setCustomRpc.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setActiveNetwork('http://localhost:8545'));
+      expect(setCurrentNetworkStub.callCount).toStrictEqual(1);
     });
 
-    it('displays warning when setRpcTarget throws', async () => {
+    it('displays warning when setActiveNetwork throws', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) =>
-        cb(new Error('error')),
-      );
+      const setCurrentNetworkStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setActiveNetwork: setCurrentNetworkStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         {
@@ -1231,7 +1237,79 @@ describe('Actions', () => {
         },
       ];
 
-      await store.dispatch(actions.setRpcTarget());
+      await store.dispatch(actions.setActiveNetwork());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#editAndSetNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls editAndSetNetworkConfiguration', async () => {
+      const store = mockStore();
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration({
+          networkConfigurationId: 'networkConfigurationId',
+          rpcUrl: 'newRpc',
+          chainId: '0x',
+          ticker: 'ETH',
+          nickname: 'nickname',
+          rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+        }),
+      );
+      expect(removeNetworkConfigurationStub.callCount).toStrictEqual(1);
+      expect(upsertNetworkConfigurationStub.callCount).toStrictEqual(1);
+    });
+
+    it('displays warning when removeNetworkConfiguration throws', async () => {
+      const store = mockStore();
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+
+      _setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: 'Had a problem removing network!' },
+      ];
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration({
+          networkConfigurationId: 'networkConfigurationId',
+          rpcUrl: 'newRpc',
+          chainId: '0x',
+          ticker: 'ETH',
+          nickname: 'nickname',
+          rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+        }),
+      );
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
