@@ -864,6 +864,9 @@
   "coolWallet": {
     "message": "CoolWallet"
   },
+  "copied": {
+    "message": "Copied"
+  },
   "copiedExclamation": {
     "message": "Copied. It will be stored for one minute."
   },

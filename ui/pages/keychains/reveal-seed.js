@@ -7,10 +7,17 @@ import { requestRevealSeedWords, showModal } from '../../store/actions';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
-import { TEXT, COLORS } from '../../helpers/constants/design-system';
+import { TEXT, COLORS, SIZES } from '../../helpers/constants/design-system';
 
-import Button from '../../components/ui/button';
-import { Text, Label, Icon } from '../../components/component-library';
+import {
+  Text,
+  Label,
+  Icon,
+  Button,
+  BUTTON_TYPES,
+  BannerBase,
+  ICON_NAMES,
+} from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -86,24 +93,26 @@ const RevealSeedPage = () => {
 
   const renderWarning = () => {
     return (
-      <div className="srp__warning-container">
-        <div className="srp__warning-icon">
-          <Icon name="warning-filled" color={COLORS.ERROR_DEFAULT} />
-        </div>
-        <div className="srp__warning-message">
-          <Text variant={TEXT.BODY_MD}>
-            {t('revealSeedWordsWarning', [
-              <Text
-                key="reveal-seed-words-warning-2"
-                variant={TEXT.BODY_MD_BOLD}
-                as="span"
-              >
-                {t('revealSeedWordsWarning2')}
-              </Text>,
-            ])}
-          </Text>
-        </div>
-      </div>
+      <BannerBase
+        startAccessory={
+          <Icon name={ICON_NAMES.WARNING_FILLED} color={COLORS.ERROR_DEFAULT} />
+        }
+        backgroundColor={COLORS.ERROR_MUTED}
+        marginTop={4}
+        marginBottom={4}
+      >
+        <Text variant={TEXT.BODY_MD}>
+          {t('revealSeedWordsWarning', [
+            <Text
+              key="reveal-seed-words-warning-2"
+              variant={TEXT.BODY_MD_BOLD}
+              as="span"
+            >
+              {t('revealSeedWordsWarning2')}
+            </Text>,
+          ])}
+        </Text>
+      </BannerBase>
     );
   };
 
@@ -183,8 +192,8 @@ const RevealSeedPage = () => {
       <div className="page-container__footer srp__footer">
         <footer>
           <Button
-            type="secondary"
-            large
+            type={BUTTON_TYPES.SECONDARY}
+            size={SIZES.LG}
             className="page-container__footer-button"
             onClick={() => {
               trackEvent({

@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box/box';
+import { Button } from '../../component-library';
 import {
   ALIGN_ITEMS,
   DISPLAY,
@@ -14,7 +14,11 @@ const radius = 14;
 const strokeWidth = 2;
 const radiusWithStroke = radius - strokeWidth / 2;
 
-export default function HoldToRevealButton({ buttonText, onLongPressed }) {
+export default function HoldToRevealButton({
+  buttonText,
+  onLongPressed,
+  ...props
+}) {
   const t = useContext(I18nContext);
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
@@ -169,15 +173,13 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
     <Button
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
-      type="primary"
-      icon={
-        <Box marginRight={2} className="hold-to-reveal-button__icon-container">
-          {renderPreCompleteContent()}
-          {renderPostCompleteContent()}
-        </Box>
-      }
       className="hold-to-reveal-button__button-hold"
+      {...props}
     >
+      <Box className="hold-to-reveal-button__icon-container">
+        {renderPreCompleteContent()}
+        {renderPostCompleteContent()}
+      </Box>
       {buttonText}
     </Button>
   );

@@ -2,7 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { ButtonSecondary } from '../../component-library';
+import Box from '../box';
+import { Button, BUTTON_TYPES, Text, HelpText } from '../../component-library';
+import {
+  ALIGN_ITEMS,
+  BORDER_RADIUS,
+  COLORS,
+  DISPLAY,
+  FLEX_DIRECTION,
+  JUSTIFY_CONTENT,
+  TEXT,
+} from '../../../helpers/constants/design-system';
 
 function ExportTextContainer({ text = '', onClickCopy = null }) {
   const ONE_MINUTE = 1000 * 60;
@@ -11,24 +21,35 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
 
   return (
     <div className="export-text-container">
-      <div className="export-text-container__text-container">
-        <div className="export-text-container__text notranslate">{text}</div>
-      </div>
-      <div className="export-text-container__button">
-        <div
-          className="export-text-container__button export-text-container__button--copy-only"
+      <Box
+        display={DISPLAY.FLEX}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        alignItems={ALIGN_ITEMS.CENTER}
+        borderRadius={BORDER_RADIUS.MD}
+        borderColor={COLORS.BORDER_DEFAULT}
+        padding={4}
+      >
+        <Text variant={TEXT.BODY_LG_MEDIUM} marginBottom={4}>
+          {text}
+        </Text>
+        <Button
           onClick={() => {
             if (onClickCopy) {
               onClickCopy();
             }
             handleCopy(text);
           }}
+          type={BUTTON_TYPES.SECONDARY}
         >
-          <ButtonSecondary className="export-text-container__button">
-            {copied ? t('copiedExclamation') : t('copyToClipboard')}
-          </ButtonSecondary>
-        </div>
-      </div>
+          {copied ? t('copied') : t('copyToClipboard')}
+        </Button>
+      </Box>
+      {copied ? (
+        <HelpText color={COLORS.SUCCESS_DEFAULT}>
+          {t('copiedExclamation')}
+        </HelpText>
+      ) : null}
     </div>
   );
 }
