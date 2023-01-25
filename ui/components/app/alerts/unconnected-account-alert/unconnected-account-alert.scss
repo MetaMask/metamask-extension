@@ -3,7 +3,7 @@
     border-radius: 0;
   }
 
-  &__footer {
+  &__footer.popover-footer {
     flex-direction: column;
 
     > :only-child {
