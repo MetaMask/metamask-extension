@@ -31,8 +31,8 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      rpcMethodPreferences: {
-        ethSign: false,
+      disabledRpcMethodPreferences: {
+        eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
 
@@ -567,21 +567,21 @@ export default class PreferencesController {
    * @param {string} methodName - The RPC method name to change the setting of
    * @param {bool} isEnabled - true to enable the rpc method
    */
-  async setRpcMethodPreference(methodName, isEnabled) {
+  async setDisabledRpcMethodPreference(methodName, isEnabled) {
     const currentRpcMethodPreferences =
-      this.store.getState().rpcMethodPreferences;
+      this.store.getState().disabledRpcMethodPreferences;
     const updatedRpcMethodPreferences = {
       ...currentRpcMethodPreferences,
       [methodName]: isEnabled,
     };
 
     this.store.updateState({
-      rpcMethodPreferences: updatedRpcMethodPreferences,
+      disabledRpcMethodPreferences: updatedRpcMethodPreferences,
     });
   }
 
   getRpcMethodPreferences() {
-    return this.store.getState().rpcMethodPreferences;
+    return this.store.getState().disabledRpcMethodPreferences;
   }
 
   //

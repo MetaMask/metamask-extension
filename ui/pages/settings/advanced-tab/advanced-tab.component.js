@@ -56,9 +56,9 @@ export default class AdvancedTab extends PureComponent {
     userHasALedgerAccount: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     restoreUserData: PropTypes.func.isRequired,
-    setRpcMethodPreference: PropTypes.func.isRequired,
-    rpcMethodPreferences: PropTypes.shape({
-      ethSign: PropTypes.bool.isRequired,
+    setDisabledRpcMethodPreference: PropTypes.func.isRequired,
+    disabledRpcMethodPreferences: PropTypes.shape({
+      eth_sign: PropTypes.bool.isRequired,
     }),
   };
 
@@ -586,7 +586,8 @@ export default class AdvancedTab extends PureComponent {
 
   renderToggleEthSignControl() {
     const { t } = this.context;
-    const { rpcMethodPreferences, setRpcMethodPreference } = this.props;
+    const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
+      this.props;
 
     return (
       <div
@@ -603,8 +604,10 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={rpcMethodPreferences?.ethSign || false}
-              onToggle={(value) => setRpcMethodPreference('ethSign', !value)}
+              value={disabledRpcMethodPreferences?.eth_sign || false}
+              onToggle={(value) =>
+                setDisabledRpcMethodPreference('eth_sign', !value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />

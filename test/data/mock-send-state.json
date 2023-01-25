@@ -45,8 +45,8 @@
   "metamask": {
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
-    "rpcMethodPreferences": {
-      "ethSign": false
+    "disabledRpcMethodPreferences": {
+      "eth_sign": false
     },
     "usePhishDetect": true,
     "participateInMetaMetrics": false,

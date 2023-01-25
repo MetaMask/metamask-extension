@@ -3229,10 +3229,10 @@ export function setDismissSeedBackUpReminder(value) {
   };
 }
 
-export function setRpcMethodPreference(methodName, value) {
+export function setDisabledRpcMethodPreference(methodName, value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await submitRequestToBackground('setRpcMethodPreference', [
+    await submitRequestToBackground('setDisabledRpcMethodPreference', [
       methodName,
       value,
     ]);
