@@ -17,14 +17,14 @@ import {
   FONT_WEIGHT,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
-import { INITIALIZE_BACKUP_SEED_PHRASE_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();
   const history = useHistory();
 
   const handleBackUp = () => {
-    history.push(INITIALIZE_BACKUP_SEED_PHRASE_ROUTE);
+    history.push(ONBOARDING_UNLOCK_ROUTE);
   };
 
   return (
