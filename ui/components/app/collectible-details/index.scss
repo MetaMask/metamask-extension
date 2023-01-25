@@ -11,9 +11,8 @@ $spacer-break-small: 16px;
   }
 
   &__tooltip-wrapper {
-  width: 100%;
-}
-
+    width: 100%;
+  }
 
   &__top-section {
     display: flex;
@@ -30,10 +29,9 @@ $spacer-break-small: 16px;
 
   &__info {
     @include screen-sm-min {
-      max-width:
-        calc(
-          100% - #{$card-width-break-large} - #{$spacer-break-large}
-        );
+      max-width: calc(
+        100% - #{$card-width-break-large} - #{$spacer-break-large}
+      );
       flex: 0 0 calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
     }
   }
