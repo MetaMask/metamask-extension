@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Одобрить"
   },
-  "approveSpendLimit": {
-    "message": "Одобрить предел расходов $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Это позволяет третьей стороне получать доступ и передавать следующие NFT без дополнительного уведомления, пока вы не отзовете ее доступ."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Ускорить эту транзакцию"
-  },
-  "spendLimitAmount": {
-    "message": "Сумма лимита расходов"
   },
   "spendLimitInsufficient": {
     "message": "Недостаточный лимит расходов"

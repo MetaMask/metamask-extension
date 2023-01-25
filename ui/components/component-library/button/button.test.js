@@ -133,7 +133,7 @@ describe('Button', () => {
     const { getByTestId } = render(
       <Button
         data-testid="icon"
-        iconName="add-square-filled"
+        iconName="add-square"
         iconProps={{ 'data-testid': 'base-button-icon' }}
       >
         Button

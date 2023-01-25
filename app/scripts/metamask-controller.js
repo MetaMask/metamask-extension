@@ -342,6 +342,7 @@ export default class MetamaskController extends EventEmitter {
               ...networkState,
               providerConfig: {
                 ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
               },
             };
             return cb(modifiedNetworkState);
@@ -972,8 +973,11 @@ export default class MetamaskController extends EventEmitter {
             getTokenValueParam(transactionData);
           const { allNfts } = this.nftController.state;
 
+          const chainIdAsDecimal = hexToDecimal(chainId);
           // check if its a known collectible
-          const knownCollectible = allNfts?.[userAddress]?.[chainId].find(
+          const knownCollectible = allNfts?.[userAddress]?.[
+            chainIdAsDecimal
+          ]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
@@ -984,7 +988,7 @@ export default class MetamaskController extends EventEmitter {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
               knownCollectible,
               false,
-              { userAddress, chainId },
+              { userAddress, chainId: chainIdAsDecimal },
             );
           }
         }

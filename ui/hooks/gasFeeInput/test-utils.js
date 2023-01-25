@@ -15,7 +15,6 @@ import {
   getCurrentKeyring,
   getTokenExchangeRates,
 } from '../../selectors';
-import { ETH } from '../../helpers/constants/common';
 
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import {
@@ -103,7 +102,7 @@ export const generateUseSelectorRouter =
       return MOCK_ETH_USD_CONVERSION_RATE;
     }
     if (selector === getNativeCurrency) {
-      return ETH;
+      return EtherDenomination.ETH;
     }
     if (selector === getPreferences) {
       return {

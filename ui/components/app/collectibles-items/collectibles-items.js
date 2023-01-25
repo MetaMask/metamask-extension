@@ -25,6 +25,7 @@ import {
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import { updateCollectibleDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
@@ -90,6 +91,7 @@ export default function CollectiblesItems({
     if (collectionImage) {
       return (
         <img
+          alt={collectionName}
           src={collectionImage}
           className="collectibles-items__collection-image"
         />
@@ -175,6 +177,7 @@ export default function CollectiblesItems({
               const { image, address, tokenId, backgroundColor, name } =
                 collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
+              const collectibleImageAlt = getCollectibleImageAlt(collectible);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
 
@@ -200,6 +203,7 @@ export default function CollectiblesItems({
                         <img
                           className="collectibles-items__item-image"
                           src={collectibleImage}
+                          alt={collectibleImageAlt}
                         />
                       </button>
                     ) : (
