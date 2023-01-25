@@ -89,7 +89,7 @@ describe('ButtonPrimary', () => {
   });
   it('should render with icon', () => {
     const { container } = render(
-      <ButtonPrimary data-testid="icon" iconName="add-square-filled" />,
+      <ButtonPrimary data-testid="icon" iconName="add-square" />,
     );
 
     const icons = container.getElementsByClassName('mm-icon').length;

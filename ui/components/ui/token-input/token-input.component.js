@@ -5,10 +5,10 @@ import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
 import { getWeiHexFromDecimalValue } from '../../../../shared/modules/conversion.utils';
 
-import { ETH } from '../../../helpers/constants/common';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../shared/constants/common';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted
@@ -128,15 +128,15 @@ export default class TokenInput extends PureComponent {
       numberOfDecimals = 2;
     } else {
       // Display ETH
-      currency = ETH;
+      currency = EtherDenomination.ETH;
       numberOfDecimals = 6;
     }
 
     const decimalEthValue = decimalValue * tokenExchangeRate || 0;
     const hexWeiValue = getWeiHexFromDecimalValue({
       value: decimalEthValue,
-      fromCurrency: ETH,
-      fromDenomination: ETH,
+      fromCurrency: EtherDenomination.ETH,
+      fromDenomination: EtherDenomination.ETH,
     });
 
     return tokenExchangeRate ? (
