@@ -45,7 +45,7 @@ export const TagUrl = ({
       {showLockIcon && (
         <Icon
           className="mm-tag-url__lock-icon"
-          name={ICON_NAMES.LOCK_FILLED}
+          name={ICON_NAMES.LOCK}
           color={COLORS.ICON_ALTERNATIVE}
           size={SIZES.SM}
           aria-label="https://"

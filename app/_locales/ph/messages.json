@@ -134,10 +134,6 @@
   "approveButtonText": {
     "message": "Aprubahan"
   },
-  "approveSpendLimit": {
-    "message": "Aprubahan ang limitasyon sa paggastos na $1",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "Inaprubahan"
   },
@@ -1554,9 +1550,6 @@
   },
   "speedUpTransaction": {
     "message": "Pabilisin ang transaksyong ito"
-  },
-  "spendLimitAmount": {
-    "message": "Halaga ng limitasyon sa paggastos"
   },
   "spendLimitInsufficient": {
     "message": "Hindi sapat ang limitasyon sa paggastos"

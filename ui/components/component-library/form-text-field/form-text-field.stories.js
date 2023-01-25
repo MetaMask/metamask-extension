@@ -400,11 +400,7 @@ export const FormExample = () => {
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
-      <ButtonSecondary
-        iconName={ICON_NAMES.CLOSE_OUTLINE}
-        onClick={handleClearForm}
-        danger
-      >
+      <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
         Clear form
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
@@ -439,7 +435,7 @@ export const CustomLabelOrHelpText = () => (
           Custom spending cap
         </Label>
         <Icon
-          name={ICON_NAMES.INFO_FILLED}
+          name={ICON_NAMES.INFO}
           size={SIZES.SM}
           marginLeft={1}
           color={COLORS.ICON_ALTERNATIVE}

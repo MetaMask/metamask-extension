@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Phê duyệt"
   },
-  "approveSpendLimit": {
-    "message": "Phê duyệt giới hạn chi tiêu $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Điều này cho phép bên thứ ba được quyền truy cập và chuyển các NFT sau đây mà không cần thông báo thêm cho đến khi bạn thu hồi quyền truy cập của họ."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Tăng tốc giao dịch này"
-  },
-  "spendLimitAmount": {
-    "message": "Khoản tiền giới hạn chi tiêu"
   },
   "spendLimitInsufficient": {
     "message": "Giới hạn chi tiêu không đủ"
