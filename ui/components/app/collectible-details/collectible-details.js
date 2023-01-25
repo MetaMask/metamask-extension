@@ -277,9 +277,7 @@ export default function CollectibleDetails({ collectible }) {
                 handleSourceCopy(collectibleImageURL);
               }}
               iconName={
-                sourceCopied
-                  ? ICON_NAMES.COPY_SUCCESS_FILLED
-                  : ICON_NAMES.COPY_FILLED
+                sourceCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
               }
             />
           </Box>
@@ -334,9 +332,7 @@ export default function CollectibleDetails({ collectible }) {
                   handleAddressCopy(address);
                 }}
                 iconName={
-                  addressCopied
-                    ? ICON_NAMES.COPY_SUCCESS_FILLED
-                    : ICON_NAMES.COPY_FILLED
+                  addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
                 }
               />
             </Box>
