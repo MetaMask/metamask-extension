@@ -90,7 +90,6 @@ import {
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
-import { ETH } from '../../helpers/constants/common';
 import {
   AssetType,
   TokenStandard,
@@ -106,6 +105,7 @@ import {
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -1983,10 +1983,12 @@ export function updateSendAmount(amount) {
     } else {
       const ethValue = getValueFromWeiHex({
         value: amount,
-        toCurrency: ETH,
+        toCurrency: EtherDenomination.ETH,
         numberOfDecimals: 8,
       });
-      logAmount = `${ethValue} ${metamask?.provider?.ticker || ETH}`;
+      logAmount = `${ethValue} ${
+        metamask?.provider?.ticker || EtherDenomination.ETH
+      }`;
     }
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
@@ -2030,7 +2032,7 @@ export function updateSendAsset(
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${AssetType.native} with symbol ${
-            state.metamask.provider?.ticker ?? ETH
+            state.metamask.provider?.ticker ?? EtherDenomination.ETH
           }`,
         ),
       );
