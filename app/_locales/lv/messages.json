@@ -154,9 +154,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "MetaMask ir jāpalaiž pārlūkprogrammā Google Chrome, lai varētu pievienot aparatūras maku."
   },
-  "clickToRevealSeed": {
-    "message": "Klikšķiniet šeit, lai skatītu slepenos vārdus"
-  },
   "close": {
     "message": "Aizvērt"
   },
@@ -166,14 +163,8 @@
   "confirmPassword": {
     "message": "Apstipriniet paroli"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Apstipriniet savu slepeno rezerves frāzi"
-  },
   "confirmed": {
     "message": "Apstiprināts"
-  },
-  "congratulations": {
-    "message": "Apsveicam"
   },
   "connect": {
     "message": "Pievienošana"
@@ -216,9 +207,6 @@
   },
   "create": {
     "message": "Izveidot"
-  },
-  "createAWallet": {
-    "message": "Izveidot maku"
   },
   "createAccount": {
     "message": "Izveidot kontu"
@@ -265,9 +253,6 @@
   "downloadGoogleChrome": {
     "message": "Lejupielādēt ar Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Lejupielādējiet šo slepeno atgūšanas frāzi un glabājiet to drošībā, šifrētā ārējā cietajā diskā vai datu nesējā."
-  },
   "downloadStateLogs": {
     "message": "Lejupielādēt stāvokļa žurnālus"
   },
@@ -279,33 +264,6 @@
   },
   "editContact": {
     "message": "Rediģēt līgumu"
-  },
-  "endOfFlowMessage1": {
-    "message": "Jūs izgājāt pārbaudi — glabājiet atkopšanas frāzi drošībā, tā ir jūsu atbildība!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Pabeigts"
-  },
-  "endOfFlowMessage2": {
-    "message": "Drošas glabāšanas ieteikumi"
-  },
-  "endOfFlowMessage3": {
-    "message": "Saglabājiet rezerves kopiju vairākās vietās."
-  },
-  "endOfFlowMessage4": {
-    "message": "Nekad neizpaudiet šo frāzi citiem cilvēkiem."
-  },
-  "endOfFlowMessage5": {
-    "message": "Uzmanieties no pikšķerēšanas! MetaMask nekad pēkšņi nelūgs norādīt atkopšanas frāzi."
-  },
-  "endOfFlowMessage6": {
-    "message": "Ja nepieciešams atkārtoti dublēt atkopšanas frāzi, varat to atrast, dodoties uz Iestatījumi -> Drošība."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask nevar atjaunot jūsu atkopšanas frāzi. Uzzināt vairāk."
-  },
-  "endOfFlowMessage9": {
-    "message": "Uzzināt vairāk."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Šajā tīklā ENS nosaukums nav atrasts. Pamēģiniet pārslēgties uz galveno Ethereum tīklu."
@@ -381,14 +339,8 @@
     "message": "Vai vēlaties $1 iegūt Ether no krāna?",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Sākt darbu"
-  },
   "goerli": {
     "message": "Goerli testa tīkls"
-  },
-  "happyToSeeYou": {
-    "message": "Priecājamies jūs redzēt!"
   },
   "hardware": {
     "message": "aparatūra"
@@ -427,12 +379,6 @@
   },
   "importAccountMsg": {
     "message": "Importētie konti netiks piesaistīti sākotnēji izveidotā MetaMask konta atkopšanas frāzei. Uzziniet vairāk par importētajiem kontiem"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Importēt kontu ar atkopšanas frāzi"
-  },
-  "importWallet": {
-    "message": "Importēt maku"
   },
   "imported": {
     "message": "Importēts",
@@ -484,9 +430,6 @@
   "ledgerAccountRestriction": {
     "message": "Jums jāizmanto pēdējais konts pirms varat pievienot jaunu."
   },
-  "letsGoSetUp": {
-    "message": "Jā, sāksim iestatīšanu!"
-  },
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
@@ -517,14 +460,8 @@
   "memo": {
     "message": "atgādinājums"
   },
-  "memorizePhrase": {
-    "message": "Iegaumējiet šo frāzi."
-  },
   "message": {
     "message": "Ziņojums"
-  },
-  "metamaskDescription": {
-    "message": "Veido savienojumu ar Ethereum un decentralizēto tīmekli."
   },
   "metamaskVersion": {
     "message": "MetaMask versija"
@@ -567,17 +504,11 @@
   "newPassword": {
     "message": "Jauna parole (vism. 8 rakstzīmes)"
   },
-  "newToMetaMask": {
-    "message": "Nepazīstat MetaMask?"
-  },
   "next": {
     "message": "Nākamais"
   },
   "noAddressForName": {
     "message": "Šim vārdam nav iestatīta adrese."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Nē, man jau ir atkopšanas frāze"
   },
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
@@ -686,9 +617,6 @@
   "rejected": {
     "message": "Noraidīts"
   },
-  "remindMeLater": {
-    "message": "Atgādināt vēlāk"
-  },
   "remove": {
     "message": "Noņemt"
   },
@@ -752,12 +680,6 @@
   "searchTokens": {
     "message": "Meklēt marķierus"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Ar slepeno atgūšanas frāzi ir vieglāk dublēt un atjaunot kontu."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "BRĪDINĀJUMS! Nekādā gadījumā neizpaudiet savu rezerves frāzi. Ikviens, kam pieejama šī frāze, var uz visiem laikiem pārņemt jūsu Ether."
-  },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
@@ -766,9 +688,6 @@
   },
   "selectAnAccount": {
     "message": "Atlasiet kontu"
-  },
-  "selectEachPhrase": {
-    "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."
   },
   "selectHdPath": {
     "message": "Atlasīt HD ceļu"
@@ -842,9 +761,6 @@
   "stateLogsDescription": {
     "message": "Statusa žurnāli ietver publisko kontu adreses un nosūtītos darījumus."
   },
-  "storePhrase": {
-    "message": "Saglabājiet šo frāzi paroļu pārvaldniekā, piemēram, 1Password."
-  },
   "submitted": {
     "message": "Iesniegts"
   },
@@ -886,9 +802,6 @@
   },
   "testFaucet": {
     "message": "Testa krāns"
-  },
-  "thisWillCreate": {
-    "message": "Šādi tiks izveidots jauna maks un atkopšanas frāze"
   },
   "tips": {
     "message": "Dzeramnauda"
@@ -1017,14 +930,8 @@
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"
   },
-  "welcome": {
-    "message": "Laipni lūgti MetaMask"
-  },
   "welcomeBack": {
     "message": "Ar atgriešanos!"
-  },
-  "writePhrase": {
-    "message": "Pierakstiet šo frāzi uz lapiņas, un noglabājiet to drošā vietā! Ja vēlaties stiprināt drošību, pierakstiet to uz vairākām lapiņām un glabājiet tās 2–3 dažādās vietās."
   },
   "yesLetsTry": {
     "message": "Jā, pamēģināsim"
