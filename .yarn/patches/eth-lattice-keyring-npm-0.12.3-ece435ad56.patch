@@ -1,0 +1,21 @@
+diff --git a/index.js b/index.js
+index 806efc9587acf7e91a37e22c6a26c477f2ead538..26ac709b54e3f496402552be92bfc111eb173094 100644
+--- a/index.js
++++ b/index.js
+@@ -45,6 +45,8 @@ class LatticeKeyring extends EventEmitter {
+       this.network = opts.network;
+     if (opts.page)
+       this.page = opts.page;
++    if (opts.unlockedAccount != null)
++      this.unlockedAccount = opts.unlockedAccount;
+     return;
+   }
+ 
+@@ -64,6 +66,7 @@ class LatticeKeyring extends EventEmitter {
+       network: this.network,
+       page: this.page,
+       hdPath: this.hdPath,
++      unlockedAccount: this.unlockedAccount,
+     };
+   }
+ 

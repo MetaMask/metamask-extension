@@ -193,7 +193,8 @@
     "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "eth-trezor-keyring@^0.10.0": "patch:eth-trezor-keyring@npm%3A0.10.0#./.yarn/patches/eth-trezor-keyring-npm-0.10.0-1bf9aa3f4d.patch",
     "eth-keyring-controller@^8.1.0": "patch:eth-keyring-controller@npm%3A8.1.0#./.yarn/patches/eth-keyring-controller-npm-8.1.0-6d30bff8ae.patch",
-    "@metamask/eth-ledger-bridge-keyring@^0.13.0": "patch:@metamask/eth-ledger-bridge-keyring@npm%3A0.13.0#./.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-0.13.0-189684913d.patch"
+    "@metamask/eth-ledger-bridge-keyring@^0.13.0": "patch:@metamask/eth-ledger-bridge-keyring@npm%3A0.13.0#./.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-0.13.0-189684913d.patch",
+    "eth-lattice-keyring@^0.12.3": "patch:eth-lattice-keyring@npm%3A0.12.3#./.yarn/patches/eth-lattice-keyring-npm-0.12.3-ece435ad56.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

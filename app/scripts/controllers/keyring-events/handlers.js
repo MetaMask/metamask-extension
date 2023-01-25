@@ -160,8 +160,45 @@ const METHOD_HANDLERS = {
       },
     },
   },
+  [HARDWARE_KEYRING_TYPES.LATTICE]: {
+    isUnlocked: {
+      skipBackground: true,
+    },
+    unlock: {
+      skipBackground: true,
+    },
+    getFirstPage: {
+      skipBackground: true,
+    },
+    getNextPage: {
+      skipBackground: true,
+    },
+    addAccounts: {
+      skipBackground: true,
+    },
+    getPreviousPage: {
+      skipBackground: true,
+    },
+    signPersonalMessage: {
+      skipBackground: true,
+    },
+    signMessage: {
+      skipBackground: true,
+    },
+    signTransaction: {
+      skipBackground: true,
+      clientArgsHandler: signTransactionClientArgsHandler,
+      clientResHandler: signTransactionClientResHandler,
+    },
+    forgetDevice: {
+      skipBackground: true,
+      backgroundSync: noop,
+      callSettings: {
+        global: true, // send to all listening clients
+      },
+    },
+  },
   [HARDWARE_KEYRING_TYPES.QR]: {},
-  [HARDWARE_KEYRING_TYPES.LATTICE]: {},
 };
 
 const HANDLER_DEFAULTS = {
@@ -178,6 +215,19 @@ const HANDLER_DEFAULTS = {
   clientResHandler: (res) => res,
 };
 
+/**
+ *
+ * @param {string} keyringType
+ * @param {string} method
+ * @returns {{
+ *  callSettings: {global: boolean},
+ *  skipBackground: boolean,
+ *  updateAll: boolean,
+ *  backgroundSync: function(*, *): Promise<void>,
+ *  clientArgsHandler: function(*): *,
+ *  clientResHandler: function(*): *,
+ * }}
+ */
 export const getHardwareMethodHandler = (keyringType, method) => {
   if (!METHOD_HANDLERS[keyringType]) {
     throw new Error(
@@ -185,11 +235,7 @@ export const getHardwareMethodHandler = (keyringType, method) => {
     );
   }
 
-  /**
-   * handler doesn't have to be defined for every method.
-   *
-   * @type {{skipBackground: boolean, global: boolean, clientArgsHandler: (function(*): *), clientResHandler: (function(*): *)} | undefined}
-   */
+  // A handler doesn't have to be defined for every method.
   const handler = METHOD_HANDLERS[keyringType][method];
 
   return {
