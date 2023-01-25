@@ -74,7 +74,7 @@ export default class TransactionBreakdown extends PureComponent {
           )}
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
-          title={isTokenApprove ? t('spendLimitAmount') : t('amount')}
+          title={isTokenApprove ? t('spendingCap') : t('amount')}
         >
           <span className="transaction-breakdown__value transaction-breakdown__value--amount">
             {primaryCurrency}
