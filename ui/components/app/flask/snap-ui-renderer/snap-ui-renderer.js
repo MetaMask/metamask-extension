@@ -9,6 +9,8 @@ import {
   FONT_WEIGHT,
   DISPLAY,
   FLEX_DIRECTION,
+  JUSTIFY_CONTENT,
+  COLORS,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -23,7 +25,8 @@ export const UI_MAPPING = {
     children: props.children.map(mapToTemplate),
     props: {
       display: DISPLAY.FLEX,
-      flexDirection: FLEX_DIRECTION.COLUMN,
+      flexDirection: props.flexDirection || FLEX_DIRECTION.COLUMN,
+      justifyContent: props.justifyContent || JUSTIFY_CONTENT.FLEX_START,
       className: 'snap-ui-renderer__panel',
     },
   }),
@@ -31,13 +34,16 @@ export const UI_MAPPING = {
     element: 'Typography',
     children: props.value,
     props: {
-      variant: TYPOGRAPHY.H3,
-      fontWeight: FONT_WEIGHT.BOLD,
+      variant: props.variant || TYPOGRAPHY.H3,
+      fontWeight: props.fontWeight || FONT_WEIGHT.BOLD,
     },
   }),
   text: (props) => ({
     element: 'SnapUIMarkdown',
     children: props.value,
+    props: {
+      color: props.color || COLORS.TEXT_DEFAULT,
+    },
   }),
   spinner: () => ({
     element: 'Spinner',
