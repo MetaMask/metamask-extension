@@ -398,7 +398,7 @@ export function getEnsResolutionByAddress(state, address) {
   const entry =
     getAddressBookEntry(state, address) ||
     Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, address),
     );
 
   return entry?.name || '';
@@ -407,7 +407,7 @@ export function getEnsResolutionByAddress(state, address) {
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
-    isEqualCaseInsensitive(contact.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(contact.address, address),
   );
   return entry;
 }
@@ -416,14 +416,14 @@ export function getAddressBookEntryOrAccountName(state, address) {
   const entry =
     getAddressBookEntry(state, address) ||
     Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, address),
     );
   return entry && entry.name !== '' ? entry.name : address;
 }
 
 export function getAccountName(identities, address) {
   const entry = Object.values(identities).find((identity) =>
-    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(identity.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -431,7 +431,7 @@ export function getAccountName(identities, address) {
 export function getMetadataContractName(state, address) {
   const tokenList = getTokenList(state);
   const entry = Object.values(tokenList).find((identity) =>
-    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(identity.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -831,7 +831,7 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   (_tokenList, address) => address,
   (tokenList, address) => {
     const entry = Object.values(tokenList).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, address),
     );
     return entry && entry.name !== '' ? entry.name : '';
   },
