@@ -113,7 +113,7 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { isMain, isFlask } from '../../shared/constants/flask';
+import { isMain, isFlask } from '../../shared/constants/environment';
 ///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,

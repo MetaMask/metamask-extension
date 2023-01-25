@@ -1,5 +1,5 @@
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { isMain } from './flask';
+import { isMain } from './environment';
 ///: END:ONLY_INCLUDE_IN
 
 export const CaveatTypes = Object.freeze({
