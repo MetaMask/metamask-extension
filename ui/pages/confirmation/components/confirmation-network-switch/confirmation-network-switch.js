@@ -21,7 +21,7 @@ import {
 
 export default function ConfirmationNetworkSwitch({ newNetwork }) {
   const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
+    chainName: state.metamask.provider.chainName,
     type: state.metamask.provider.type,
     chainId: state.metamask.provider.chainId,
   }));
@@ -41,7 +41,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         {currentNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
             icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[currentNetwork.chainId]}
-            name={currentNetwork.nickname}
+            name={currentNetwork.chainName}
             size={64}
           />
         ) : (
@@ -59,7 +59,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
             justifyContent: JustifyContent.center,
           }}
         >
-          {currentNetwork.nickname || NETWORK_TO_NAME_MAP[currentNetwork.type]}
+          {currentNetwork.chainName || NETWORK_TO_NAME_MAP[currentNetwork.type]}
         </Typography>
       </Box>
       <Box

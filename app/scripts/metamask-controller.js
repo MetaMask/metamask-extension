@@ -3,8 +3,8 @@ import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import { debounce } from 'lodash';
 import { createEngineStream } from 'json-rpc-middleware-stream';
+import { debounce, pickBy } from 'lodash';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import {
   KeyringController,
@@ -895,6 +895,7 @@ export default class MetamaskController extends EventEmitter {
     this.backupController = new BackupController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
+      networkController: this.networkController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -962,14 +963,17 @@ export default class MetamaskController extends EventEmitter {
         status === TransactionStatus.failed
       ) {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
-        const frequentRpcListDetail =
-          this.preferencesController.getFrequentRpcListDetail();
         let rpcPrefs = {};
         if (txMeta.chainId) {
-          const rpcSettings = frequentRpcListDetail.find(
-            (rpc) => txMeta.chainId === rpc.chainId,
-          );
-          rpcPrefs = rpcSettings?.rpcPrefs ?? {};
+          const networkConfigurations =
+            this.networkController.getNetworkConfigurations();
+          let matchingNetworkConfig;
+          for (const networkConfig of Object.values(networkConfigurations)) {
+            if (networkConfig.chainId === txMeta.chainId) {
+              matchingNetworkConfig = networkConfig;
+            }
+          }
+          rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
         }
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
@@ -1817,10 +1821,15 @@ export default class MetamaskController extends EventEmitter {
         networkController.setProviderType.bind(networkController),
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      setCustomRpc: this.setCustomRpc.bind(this),
-      updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
-      delCustomRpc: this.delCustomRpc.bind(this),
-      addCustomNetwork: this.addCustomNetwork.bind(this),
+      removeNetworkConfiguration:
+        networkController.removeNetworkConfiguration.bind(networkController),
+      setNetworkTarget:
+        networkController.setNetworkTarget.bind(networkController),
+      getNetworkConfigurations:
+        networkController.getNetworkConfigurations.bind(networkController),
+      upsertAndSetNetworkConfiguration:
+        this.upsertAndSetNetworkConfiguration.bind(this),
+      upsertNetworkConfiguration: this.upsertNetworkConfiguration.bind(this),
       requestAddNetworkApproval: this.requestAddNetworkApproval.bind(this),
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
@@ -2260,7 +2269,7 @@ export default class MetamaskController extends EventEmitter {
         requestData: {
           chainId: customRpc.chainId,
           blockExplorerUrl: customRpc.rpcPrefs.blockExplorerUrl,
-          chainName: customRpc.nickname,
+          chainName: customRpc.chainName,
           rpcUrl: customRpc.rpcUrl,
           ticker: customRpc.ticker,
           imageUrl: customRpc.rpcPrefs.imageUrl,
@@ -2275,16 +2284,22 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async addCustomNetwork(customRpc, actionId) {
-    const { chainId, chainName, rpcUrl, ticker, blockExplorerUrl } = customRpc;
-
-    this.preferencesController.upsertToFrequentRpcList(
-      rpcUrl,
-      chainId,
-      ticker,
-      chainName,
+  async upsertNetworkConfiguration({
+    chainId,
+    chainName,
+    rpcUrl,
+    ticker,
+    blockExplorerUrl,
+  }) {
+    const networkConfigUUID = this.networkController.upsertNetworkConfiguration(
       {
-        blockExplorerUrl,
+        rpcUrl,
+        chainId,
+        ticker,
+        chainName,
+        rpcPrefs: {
+          blockExplorerUrl,
+        },
       },
     );
 
@@ -2299,8 +2314,9 @@ export default class MetamaskController extends EventEmitter {
         symbol: ticker,
         source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
       },
-      actionId,
     });
+
+    return networkConfigUUID;
   }
 
   /**
@@ -2427,18 +2443,16 @@ export default class MetamaskController extends EventEmitter {
    */
   async fetchInfoToSync() {
     // Preferences
-    const {
-      currentLocale,
-      frequentRpcList,
-      identities,
-      selectedAddress,
-      useTokenDetection,
-    } = this.preferencesController.store.getState();
+    const { currentLocale, identities, selectedAddress, useTokenDetection } =
+      this.preferencesController.store.getState();
 
     const isTokenDetectionInactiveInMainnet =
       !useTokenDetection &&
       this.networkController.store.getState().provider.chainId ===
         CHAIN_IDS.MAINNET;
+
+    const { networkConfigurations } = this.networkController.store.getState();
+
     const { tokenList } = this.tokenListController.state;
     const caseInSensitiveTokenList = isTokenDetectionInactiveInMainnet
       ? STATIC_MAINNET_TOKEN_LIST
@@ -2446,7 +2460,6 @@ export default class MetamaskController extends EventEmitter {
 
     const preferences = {
       currentLocale,
-      frequentRpcList,
       identities,
       selectedAddress,
     };
@@ -2522,6 +2535,7 @@ export default class MetamaskController extends EventEmitter {
       transactions,
       tokens: { allTokens: allERC20Tokens, allIgnoredTokens },
       network: this.networkController.store.getState(),
+      networkConfigurations,
     };
   }
 
@@ -3985,40 +3999,23 @@ export default class MetamaskController extends EventEmitter {
             { origin },
           ),
 
-        // Custom RPC-related
-        addCustomRpc: async ({
-          chainId,
-          blockExplorerUrl,
-          ticker,
-          chainName,
-          rpcUrl,
-        } = {}) => {
-          await this.preferencesController.upsertToFrequentRpcList(
-            rpcUrl,
-            chainId,
-            ticker,
-            chainName,
-            {
-              blockExplorerUrl,
-            },
-          );
-        },
-        findCustomRpcBy: this.findCustomRpcBy.bind(this),
         getCurrentChainId: () =>
           this.networkController.store.getState().provider.chainId,
         getCurrentRpcUrl:
           this.networkController.store.getState().provider.rpcUrl,
+        // network configuration-related
+        upsertNetworkConfiguration: this.upsertNetworkConfiguration.bind(this),
+        setNetworkTarget: this.networkController.setNetworkTarget.bind(
+          this.networkController,
+        ),
+        getNetworkConfigurations:
+          this.networkController.getNetworkConfigurations.bind(
+            this.networkController,
+          ),
+        findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
-        updateRpcTarget: ({ rpcUrl, chainId, ticker, nickname }) => {
-          this.networkController.setRpcTarget(
-            rpcUrl,
-            chainId,
-            ticker,
-            nickname,
-          );
-        },
 
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
@@ -4382,117 +4379,59 @@ export default class MetamaskController extends EventEmitter {
   // Log blocks
 
   /**
-   * A method for selecting a custom URL for an ethereum RPC provider and updating it
+   * Adds a network configuration if the rpcUrl is not already present on an
+   * existing network configuration. Otherwise updates the entry with the matching rpcUrl.
    *
-   * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
-   * @param {string} chainId - The chainId of the selected network.
-   * @param {string} ticker - The ticker symbol of the selected network.
-   * @param {string} [nickname] - Nickname of the selected network.
-   * @param {object} [rpcPrefs] - RPC preferences.
-   * @param {string} [rpcPrefs.blockExplorerUrl] - URL of block explorer for the chain.
-   * @returns {Promise<string>} The RPC Target URL confirmed.
+   * @param config - The network configuration.
+   * @param config.rpcUrl - The network configuration RPC URL.
+   * @param config.chainId - The chain ID of the network, as per EIP-155.
+   * @param config.ticker - Currency ticker.
+   * @param config.chainName - Personalized network name.
+   * @param config.rpcPrefs - Personalized preferences.
+   * @returns uuid for the added or updated network configuration
    */
-  async updateAndSetCustomRpc(
+  async upsertAndSetNetworkConfiguration({
     rpcUrl,
     chainId,
     ticker = 'ETH',
-    nickname,
+    chainName,
     rpcPrefs,
-  ) {
-    this.networkController.setRpcTarget(
+  }) {
+    const uuid = await this.upsertNetworkConfiguration({
       rpcUrl,
       chainId,
       ticker,
-      nickname,
+      chainName,
       rpcPrefs,
-    );
-    await this.preferencesController.upsertToFrequentRpcList(
-      rpcUrl,
-      chainId,
-      ticker,
-      nickname,
-      rpcPrefs,
-    );
-    return rpcUrl;
+    });
+
+    await this.networkController.setNetworkTarget(uuid);
+
+    return uuid;
   }
 
   /**
-   * A method for selecting a custom URL for an ethereum RPC provider.
-   *
-   * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
-   * @param {string} chainId - The chainId of the selected network.
-   * @param {string} ticker - The ticker symbol of the selected network.
-   * @param {string} nickname - Optional nickname of the selected network.
-   * @param rpcPrefs
-   * @returns {Promise<string>} The RPC Target URL confirmed.
-   */
-  async setCustomRpc(
-    rpcUrl,
-    chainId,
-    ticker = 'ETH',
-    nickname = '',
-    rpcPrefs = {},
-  ) {
-    const frequentRpcListDetail =
-      this.preferencesController.getFrequentRpcListDetail();
-    const rpcSettings = frequentRpcListDetail.find(
-      (rpc) => rpcUrl === rpc.rpcUrl,
-    );
-
-    if (rpcSettings) {
-      this.networkController.setRpcTarget(
-        rpcSettings.rpcUrl,
-        rpcSettings.chainId,
-        rpcSettings.ticker,
-        rpcSettings.nickname,
-        rpcPrefs,
-      );
-    } else {
-      this.networkController.setRpcTarget(
-        rpcUrl,
-        chainId,
-        ticker,
-        nickname,
-        rpcPrefs,
-      );
-      await this.preferencesController.upsertToFrequentRpcList(
-        rpcUrl,
-        chainId,
-        ticker,
-        nickname,
-        rpcPrefs,
-      );
-    }
-    return rpcUrl;
-  }
-
-  /**
-   * A method for deleting a selected custom URL.
-   *
-   * @param {string} rpcUrl - A RPC URL to delete.
-   */
-  async delCustomRpc(rpcUrl) {
-    await this.preferencesController.removeFromFrequentRpcList(rpcUrl);
-  }
-
-  /**
-   * Returns the first RPC info object that matches at least one field of the
+   * Returns the first network configuration object that matches at least one field of the
    * provided search criteria. Returns null if no match is found
    *
    * @param {object} rpcInfo - The RPC endpoint properties and values to check.
-   * @returns {object} rpcInfo found in the frequentRpcList
+   * @returns {object} rpcInfo found in the network configurations list
    */
-  findCustomRpcBy(rpcInfo) {
-    const frequentRpcListDetail =
-      this.preferencesController.getFrequentRpcListDetail();
-    for (const existingRpcInfo of frequentRpcListDetail) {
-      for (const key of Object.keys(rpcInfo)) {
-        if (existingRpcInfo[key] === rpcInfo[key]) {
-          return existingRpcInfo;
-        }
-      }
-    }
-    return null;
+  findNetworkConfigurationBy(rpcInfo) {
+    const networkConfigurations =
+      this.networkController.getNetworkConfigurations();
+    return (
+      Object.values(
+        pickBy(networkConfigurations, (config) => {
+          for (const key of Object.keys(rpcInfo)) {
+            if (config[key] === rpcInfo[key]) {
+              return config;
+            }
+          }
+          return undefined;
+        }),
+      )?.[0] || null
+    );
   }
 
   /**

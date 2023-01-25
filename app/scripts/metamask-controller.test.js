@@ -18,35 +18,6 @@ import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
 
-const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-
-const firstTimeState = {
-  config: {},
-  NetworkController: {
-    provider: {
-      type: NETWORK_TYPES.RPC,
-      rpcUrl: 'http://localhost:8545',
-      chainId: '0x539',
-    },
-    networkDetails: {
-      EIPS: {
-        1559: false,
-      },
-    },
-  },
-  NotificationController: {
-    notifications: {
-      [NOTIFICATION_ID]: {
-        id: NOTIFICATION_ID,
-        origin: 'local:http://localhost:8086/',
-        createdDate: 1652967897732,
-        readDate: null,
-        message: 'Hello, http://localhost:8086!',
-      },
-    },
-  },
-};
-
 const ganacheServer = new Ganache();
 
 const browserPolyfillMock = {
@@ -101,6 +72,54 @@ const TEST_SEED_ALT =
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 const CUSTOM_RPC_URL = 'http://localhost:8545';
 const CUSTOM_RPC_CHAIN_ID = '0x539';
+const ALT_MAINNET_RPC_URL = 'https://testrpc.com';
+const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
+
+const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
+const NETWORK_CONFIG_UUID = 'test1';
+const NETWORK_CONFIG_UUID2 = 'test2';
+const firstTimeState = {
+  config: {},
+  NetworkController: {
+    provider: {
+      type: NETWORK_TYPES.RPC,
+      rpcUrl: CUSTOM_RPC_URL,
+      chainId: CUSTOM_RPC_CHAIN_ID,
+    },
+    networkConfigurations: {
+      [NETWORK_CONFIG_UUID]: {
+        rpcUrl: ALT_MAINNET_RPC_URL,
+        type: NETWORK_TYPES.RPC,
+        chainId: '0x1',
+        ticker: 'ETH',
+        chainName: 'alt mainnet',
+      },
+      [NETWORK_CONFIG_UUID2]: {
+        rpcUrl: POLYGON_RPC_URL,
+        type: NETWORK_TYPES.RPC,
+        chainId: '0x89',
+        ticker: 'MATIC',
+        chainName: 'Polygon',
+      },
+    },
+    networkDetails: {
+      EIPS: {
+        1559: false,
+      },
+    },
+  },
+  NotificationController: {
+    notifications: {
+      [NOTIFICATION_ID]: {
+        id: NOTIFICATION_ID,
+        origin: 'local:http://localhost:8086/',
+        createdDate: 1652967897732,
+        readDate: null,
+        message: 'Hello, http://localhost:8086!',
+      },
+    },
+  },
+};
 
 describe('MetaMaskController', function () {
   let metamaskController;
@@ -676,26 +695,6 @@ describe('MetaMaskController', function () {
       assert(
         metamaskController.preferencesController.setAccountLabel.calledOnce,
       );
-    });
-  });
-
-  describe('#setCustomRpc', function () {
-    it('returns custom RPC that when called', async function () {
-      const rpcUrl = await metamaskController.setCustomRpc(
-        CUSTOM_RPC_URL,
-        CUSTOM_RPC_CHAIN_ID,
-      );
-      assert.equal(rpcUrl, CUSTOM_RPC_URL);
-    });
-
-    it('changes the network controller rpc', async function () {
-      await metamaskController.setCustomRpc(
-        CUSTOM_RPC_URL,
-        CUSTOM_RPC_CHAIN_ID,
-      );
-      const networkControllerState =
-        metamaskController.networkController.store.getState();
-      assert.equal(networkControllerState.provider.rpcUrl, CUSTOM_RPC_URL);
     });
   });
 

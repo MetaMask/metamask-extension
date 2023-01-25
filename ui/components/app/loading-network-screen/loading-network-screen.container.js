@@ -9,11 +9,11 @@ const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];
 const mapStateToProps = (state) => {
   const { loadingMessage } = state.appState;
   const { provider } = state.metamask;
-  const { rpcUrl, chainId, ticker, nickname, type } = provider;
+  const { rpcUrl, chainId, ticker, chainName, type } = provider;
 
   const setProviderArgs =
     type === NETWORK_TYPES.RPC
-      ? [rpcUrl, chainId, ticker, nickname]
+      ? [rpcUrl, chainId, ticker, chainName]
       : [provider.type];
 
   const providerChainId = provider?.chainId;

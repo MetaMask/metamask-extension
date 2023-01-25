@@ -92,11 +92,11 @@ export function isNetworkLoading(state) {
 export function getNetworkIdentifier(state) {
   const {
     metamask: {
-      provider: { type, nickname, rpcUrl },
+      provider: { type, chainName, rpcUrl },
     },
   } = state;
 
-  return nickname || rpcUrl || type;
+  return chainName || rpcUrl || type;
 }
 
 export function getMetricsNetworkIdentifier(state) {
@@ -350,7 +350,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 
 export function isBalanceCached(state) {
   const selectedAccountBalance =
-    state.metamask.accounts[getSelectedAddress(state)].balance;
+    state.metamask.accounts[getSelectedAddress(state)]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -651,10 +651,8 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { frequentRpcListDetail, provider } = state.metamask;
-  const selectRpcInfo = frequentRpcListDetail.find(
-    (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  );
+  const { networkConfigurations, provider: { uuid } = {} } = state.metamask;
+  const selectRpcInfo = networkConfigurations[uuid];
   const { rpcPrefs = {} } = selectRpcInfo || {};
   return rpcPrefs;
 }
@@ -1163,19 +1161,19 @@ export function getRemoveNftMessage(state) {
  * @returns string
  */
 export function getNewNetworkAdded(state) {
-  return state.appState.newNetworkAdded;
+  return state.appState.newNetworkAddedName;
 }
 
-export function getNetworksTabSelectedRpcUrl(state) {
-  return state.appState.networksTabSelectedRpcUrl;
+export function getNetworksTabSelectedNetworkUUID(state) {
+  return state.appState.selectedNetworkUUID;
 }
 
 export function getProvider(state) {
   return state.metamask.provider;
 }
 
-export function getFrequentRpcListDetail(state) {
-  return state.metamask.frequentRpcListDetail;
+export function getNetworkConfigurations(state) {
+  return state.metamask.networkConfigurations;
 }
 
 export function getIsOptimism(state) {

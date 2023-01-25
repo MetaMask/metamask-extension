@@ -12,7 +12,7 @@ const store = configureStore(testData);
 const { metamask } = store.getState();
 
 const {
-  frequentRpcListDetail,
+  networkConfigurations,
   identities,
   pendingTokens,
   selectedAddress,
@@ -105,8 +105,8 @@ export default {
     identities,
     showSearchTab: true,
     mostRecentOverviewPage: DEFAULT_ROUTE,
-    chainId: frequentRpcListDetail[0].chainId,
-    rpcPrefs: frequentRpcListDetail[0].rpcPrefs,
+    chainId: networkConfigurations['test-uuid-1'].chainId,
+    rpcPrefs: networkConfigurations['test-uuid-1'].rpcPrefs,
     tokenList,
     useTokenDetection: false,
     selectedAddress,

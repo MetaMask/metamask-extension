@@ -337,7 +337,7 @@ function getValues(pendingApproval, t, actions, history) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        actions.addCustomNetwork(pendingApproval.requestData);
+        actions.upsertNetworkConfiguration(pendingApproval.requestData);
         history.push(DEFAULT_ROUTE);
       }
     },

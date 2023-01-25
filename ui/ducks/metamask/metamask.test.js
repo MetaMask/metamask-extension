@@ -128,6 +128,31 @@ describe('MetaMask Reducers', () => {
     expect(lockMetaMask.isUnlocked).toStrictEqual(false);
   });
 
+  it('sets network target', () => {
+    const state = reduceMetamask(
+      {},
+      {
+        type: actionConstants.UPDATE_NETWORK_TARGET,
+        value: { rpcUrl: 'https://custom.rpc', uuid: 'testUUID' },
+      },
+    );
+
+    expect(state.provider.rpcUrl).toStrictEqual('https://custom.rpc');
+    expect(state.provider.uuid).toStrictEqual('testUUID');
+  });
+
+  it('sets provider type', () => {
+    const state = reduceMetamask(
+      {},
+      {
+        type: actionConstants.SET_PROVIDER_TYPE,
+        value: 'provider type',
+      },
+    );
+
+    expect(state.provider.type).toStrictEqual('provider type');
+  });
+
   it('sets account label', () => {
     const state = reduceMetamask(
       {},

@@ -4,7 +4,6 @@ import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,
 } from '../../../shared/constants/hardware-wallets';
-import { RPCDefinition } from '../../../shared/constants/network';
 import * as actionConstants from '../../store/actionConstants';
 
 interface AppState {
@@ -56,12 +55,13 @@ interface AppState {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
-  newNetworkAdded: string;
   newNftAddedMessage: string;
   removeNftMessage: string;
+  newNetworkAddedName: string;
+  newNetworkAddedUUID: string;
+  selectedNetworkUUID: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
-  newCustomNetworkAdded: RPCDefinition | Record<string, any>;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: number | null;
@@ -117,12 +117,13 @@ const initialState: AppState = {
   smartTransactionsErrorMessageDismissed: false,
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
-  newNetworkAdded: '',
   newNftAddedMessage: '',
   removeNftMessage: '',
+  newNetworkAddedName: '',
+  newNetworkAddedUUID: '',
+  selectedNetworkUUID: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
-  newCustomNetworkAdded: {},
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
@@ -330,18 +331,20 @@ export default function reduceApp(
         isMouseUser: action.payload,
       };
 
-    case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
+    case actionConstants.SET_SELECTED_NETWORK_UUID:
       return {
         ...appState,
-        networksTabSelectedRpcUrl: action.payload,
+        selectedNetworkUUID: action.payload,
       };
 
-    case actionConstants.SET_NEW_NETWORK_ADDED:
+    case actionConstants.SET_NEW_NETWORK_ADDED: {
+      const { uuid, chainName } = action.payload;
       return {
         ...appState,
-        newNetworkAdded: action.payload,
+        newNetworkAddedName: chainName,
+        newNetworkAddedUUID: uuid,
       };
-
+    }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
       return {
         ...appState,
@@ -409,10 +412,10 @@ export default function reduceApp(
         ...appState,
         sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
       };
-    case actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED:
+    case actionConstants.SET_ADDED_NETWORK_UUID:
       return {
         ...appState,
-        newCustomNetworkAdded: action.payload,
+        newNetworkAddedUUID: action.value,
       };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {
@@ -456,13 +459,6 @@ export function setLedgerTransportStatus(
 
 export function toggleCurrencySwitch(): Action {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
-}
-
-export function setNewCustomNetworkAdded(
-  // can pass in a valid network or empty one
-  payload: RPCDefinition | Record<string, never>,
-): PayloadAction<RPCDefinition | Record<string, never>> {
-  return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, payload };
 }
 
 export function setOnBoardedInThisUISession(

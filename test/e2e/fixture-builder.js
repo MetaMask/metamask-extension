@@ -173,11 +173,20 @@ function defaultFixture() {
         network: '1337',
         provider: {
           chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
+          chainName: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           type: 'rpc',
+        },
+        networkConfigurations: {
+          testUUID: {
+            chainId: CHAIN_IDS.LOCALHOST,
+            chainName: 'Localhost 8545',
+            rpcPrefs: {},
+            rpcUrl: 'http://localhost:8545',
+            ticker: 'ETH',
+          },
         },
       },
       OnboardingController: {
@@ -197,15 +206,6 @@ function defaultFixture() {
           showIncomingTransactions: true,
         },
         forgottenPassword: false,
-        frequentRpcListDetail: [
-          {
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-          },
-        ],
         identities: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
             address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
@@ -305,7 +305,16 @@ function onboardingFixture() {
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
           chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
+          chainName: 'Localhost 8545',
+        },
+        networkConfigurations: {
+          testUUID: {
+            chainId: CHAIN_IDS.LOCALHOST,
+            chainName: 'Localhost 8545',
+            rpcPrefs: {},
+            rpcUrl: 'http://localhost:8545',
+            ticker: 'ETH',
+          },
         },
       },
       PreferencesController: {
@@ -316,15 +325,6 @@ function onboardingFixture() {
           showIncomingTransactions: true,
         },
         forgottenPassword: false,
-        frequentRpcListDetail: [
-          {
-            chainId: CHAIN_IDS.LOCALHOST,
-            nickname: 'Localhost 8545',
-            rpcPrefs: {},
-            rpcUrl: 'http://localhost:8545',
-            ticker: 'ETH',
-          },
-        ],
         identities: {},
         infuraBlocked: false,
         ipfsGateway: 'dweb.link',

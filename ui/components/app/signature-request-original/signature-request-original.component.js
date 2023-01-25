@@ -72,7 +72,7 @@ export default class SignatureRequestOriginal extends Component {
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
-        return provider.nickname || t('unknownNetwork');
+        return provider.chainName || t('unknownNetwork');
     }
   }
 

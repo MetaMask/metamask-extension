@@ -14,7 +14,7 @@ const NetworksList = ({
   networkIsSelected,
   networksToRender,
   networkDefaultedToProvider,
-  selectedRpcUrl,
+  selectedNetworkUUID,
 }) => {
   const t = useI18nContext();
   const [searchedNetworks, setSearchedNetworks] = useState([]);
@@ -56,7 +56,7 @@ const NetworksList = ({
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
           networkIsSelected={networkIsSelected}
-          selectedRpcUrl={selectedRpcUrl}
+          selectedNetworkUUID={selectedNetworkUUID}
           setSearchQuery={setSearchQuery}
           setSearchedNetworks={setSearchedNetworks}
         />
@@ -76,7 +76,7 @@ const NetworksList = ({
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
           networkIsSelected={networkIsSelected}
-          selectedRpcUrl={selectedRpcUrl}
+          selectedNetworkUUID={selectedNetworkUUID}
           setSearchQuery={setSearchQuery}
           setSearchedNetworks={setSearchedNetworks}
         />
@@ -89,7 +89,7 @@ NetworksList.propTypes = {
   networkDefaultedToProvider: PropTypes.bool,
   networkIsSelected: PropTypes.bool,
   networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectedRpcUrl: PropTypes.string,
+  selectedNetworkUUID: PropTypes.string,
 };
 
 export default NetworksList;

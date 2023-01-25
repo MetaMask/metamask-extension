@@ -21,6 +21,7 @@ import {
   decGWEIToHexWEI,
   hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 
 const initialState = {
   isInitialized: false,
@@ -28,7 +29,7 @@ const initialState = {
   isAccountMenuOpen: false,
   identities: {},
   unapprovedTxs: {},
-  frequentRpcList: [],
+  networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
   pendingTokens: {},
@@ -79,6 +80,26 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         isUnlocked: false,
+      };
+
+    case actionConstants.UPDATE_NETWORK_TARGET: {
+      const { uuid, rpcUrl } = action.value;
+      return {
+        ...metamaskState,
+        provider: {
+          type: NETWORK_TYPES.RPC,
+          rpcUrl,
+          uuid,
+        },
+      };
+    }
+
+    case actionConstants.SET_PROVIDER_TYPE:
+      return {
+        ...metamaskState,
+        provider: {
+          type: action.value,
+        },
       };
 
     case actionConstants.SET_ACCOUNT_LABEL: {

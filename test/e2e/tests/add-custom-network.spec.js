@@ -147,20 +147,21 @@ describe('Custom network', function () {
       },
     );
   });
+
   it('Add a custom network and then delete that same network', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            frequentRpcListDetail: [
-              {
+          .withNetworkController({
+            networkConfigurations: {
+              testUUID: {
                 rpcUrl: networkURL,
                 chainId: chainID,
+                chainName: networkNAME,
                 ticker: currencySYMBOL,
-                nickname: networkNAME,
                 rpcPrefs: {},
               },
-            ],
+            },
           })
           .build(),
         ganacheOptions,

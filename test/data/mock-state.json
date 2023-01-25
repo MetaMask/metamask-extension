@@ -76,7 +76,14 @@
     "provider": {
       "type": "rpc",
       "chainId": "0x5",
-      "ticker": "ETH"
+      "ticker": "ETH",
+      "uuid": "test-uuid"
+    },
+    "networkConfigurations": {
+      "test-uuid": {
+        "rpcUrl": "https://testrpc.com",
+        "chainId": "0x1"
+      }
     },
     "keyrings": [
       {

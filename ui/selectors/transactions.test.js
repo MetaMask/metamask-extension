@@ -108,7 +108,7 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           provider: {
-            nickname: 'mainnet',
+            chainName: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
           featureFlags: {
@@ -172,7 +172,7 @@ describe('Transaction Selectors', () => {
       const state = {
         metamask: {
           provider: {
-            nickname: 'mainnet',
+            chainName: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
@@ -256,7 +256,7 @@ describe('Transaction Selectors', () => {
     const state = {
       metamask: {
         provider: {
-          nickname: 'mainnet',
+          chainName: 'mainnet',
           chainId: CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',

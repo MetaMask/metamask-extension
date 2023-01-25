@@ -9,17 +9,16 @@
  */
 const initialState = {
   config: {},
-  PreferencesController: {
-    frequentRpcListDetail: [
-      {
+  NetworkController: {
+    networkConfigurations: {
+      uuid: {
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
         ticker: 'ETH',
-        nickname: 'Localhost 8545',
+        chainName: 'Localhost 8545',
         rpcPrefs: {},
       },
-    ],
+    },
   },
 };
-
 export default initialState;

@@ -16,11 +16,11 @@ const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
   implementation: addEthereumChainHandler,
   hookNames: {
-    addCustomRpc: true,
+    upsertNetworkConfiguration: true,
     getCurrentChainId: true,
     getCurrentRpcUrl: true,
-    findCustomRpcBy: true,
-    updateRpcTarget: true,
+    findNetworkConfigurationBy: true,
+    setNetworkTarget: true,
     requestUserApproval: true,
     sendMetrics: true,
   },
@@ -33,11 +33,11 @@ async function addEthereumChainHandler(
   _next,
   end,
   {
-    addCustomRpc,
+    upsertNetworkConfiguration,
     getCurrentChainId,
     getCurrentRpcUrl,
-    findCustomRpcBy,
-    updateRpcTarget,
+    findNetworkConfigurationBy,
+    setNetworkTarget,
     requestUserApproval,
     sendMetrics,
   },
@@ -139,7 +139,7 @@ async function addEthereumChainHandler(
     );
   }
 
-  const existingNetwork = findCustomRpcBy({ chainId: _chainId });
+  const existingNetwork = findNetworkConfigurationBy({ chainId: _chainId });
 
   // if the request is to add a network that is already added and configured
   // with the same RPC gateway we shouldn't try to add it again.
@@ -158,15 +158,16 @@ async function addEthereumChainHandler(
     // If this network is already added with but is not the currently selected network
     // Ask the user to switch the network
     try {
-      await updateRpcTarget(
+      await setNetworkTarget(
         await requestUserApproval({
           origin,
           type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
           requestData: {
             rpcUrl: existingNetwork.rpcUrl,
             chainId: existingNetwork.chainId,
-            nickname: existingNetwork.nickname,
+            chainName: existingNetwork.chainName,
             ticker: existingNetwork.ticker,
+            uuid: existingNetwork.uuid,
           },
         }),
       );
@@ -264,9 +265,9 @@ async function addEthereumChainHandler(
       }),
     );
   }
-
+  let uuid;
   try {
-    await addCustomRpc(
+    uuid = await upsertNetworkConfiguration(
       await requestUserApproval({
         origin,
         type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
@@ -301,15 +302,16 @@ async function addEthereumChainHandler(
 
   // Ask the user to switch the network
   try {
-    await updateRpcTarget(
+    await setNetworkTarget(
       await requestUserApproval({
         origin,
         type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
         requestData: {
           rpcUrl: firstValidRPCUrl,
           chainId: _chainId,
-          nickname: _chainName,
+          chainName: _chainName,
           ticker,
+          uuid,
         },
       }),
     );

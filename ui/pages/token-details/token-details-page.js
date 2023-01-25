@@ -55,11 +55,11 @@ export default function TokenDetailsPage() {
   );
 
   const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
+    chainName: state.metamask.provider.chainName,
     type: state.metamask.provider.type,
   }));
 
-  const { nickname: networkNickname, type: networkType } = currentNetwork;
+  const { chainName, type: networkType } = currentNetwork;
 
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -180,7 +180,7 @@ export default function TokenDetailsPage() {
           color={TextColor.textDefault}
         >
           {networkType === NETWORK_TYPES.RPC
-            ? networkNickname ?? t('privateNetwork')
+            ? chainName ?? t('privateNetwork')
             : t(networkType)}
         </Typography>
         {aggregators && (

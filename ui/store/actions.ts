@@ -65,7 +65,6 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
-import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -2442,28 +2441,31 @@ export function setProviderType(
   };
 }
 
-export function updateAndSetCustomRpc(
-  newRpcUrl: string,
-  chainId: string,
-  ticker: EtherDenomination,
-  nickname: string,
-  rpcPrefs: RPCDefinition['rpcPrefs'],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function upsertAndSetNetworkConfiguration({
+  rpcUrl,
+  chainId,
+  chainName,
+  rpcPrefs,
+  ticker = EtherDenomination.ETH,
+}: {
+  rpcUrl: string;
+  chainId: string;
+  chainName: string;
+  rpcPrefs: RPCDefinition['rpcPrefs'];
+  ticker: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
-      `background.updateAndSetCustomRpc: ${newRpcUrl} ${chainId} ${
-        ticker ?? EtherDenomination.ETH
-      } ${nickname}`,
+      `background.upsertAndSetNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${chainName}`,
     );
 
     try {
-      await submitRequestToBackground('updateAndSetCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
-        rpcPrefs,
-      ]);
+      const uuid: string = await submitRequestToBackground(
+        'upsertAndSetNetworkConfiguration',
+        [{ rpcUrl, chainId, ticker, chainName: chainName || rpcUrl, rpcPrefs }],
+      );
+      dispatch(setNewNetworkAdded({ uuid, chainName }));
+      dispatch(updateNetworkTarget(rpcUrl, uuid));
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -2471,18 +2473,57 @@ export function updateAndSetCustomRpc(
   };
 }
 
-export function editRpc(
-  oldRpcUrl: string,
-  newRpcUrl: string,
-  chainId: string,
-  ticker: EtherDenomination,
-  nickname: string,
-  rpcPrefs: RPCDefinition['rpcPrefs'],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function upsertNetworkConfiguration({
+  rpcUrl,
+  chainId,
+  chainName,
+  rpcPrefs,
+  ticker = EtherDenomination.ETH,
+}: {
+  rpcUrl: string;
+  chainId: string;
+  chainName: string;
+  rpcPrefs: RPCDefinition['rpcPrefs'];
+  ticker: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
+    log.debug(
+      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${chainName}`,
+    );
+
     try {
-      submitRequestToBackground('delCustomRpc', [oldRpcUrl]);
+      const uuid: string = await submitRequestToBackground(
+        'upsertNetworkConfiguration',
+        [{ rpcUrl, chainId, ticker, chainName: chainName || rpcUrl, rpcPrefs }],
+      );
+      dispatch(setNewNetworkAdded({ uuid, chainName }));
+      dispatch(updateNetworkTarget(rpcUrl, uuid));
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem adding network!'));
+    }
+  };
+}
+
+export function editAndSetNetworkConfiguration({
+  uuid,
+  rpcUrl,
+  chainId,
+  chainName,
+  rpcPrefs,
+  ticker = EtherDenomination.ETH,
+}: {
+  uuid: string;
+  rpcUrl: string;
+  chainId: string;
+  chainName: string;
+  rpcPrefs: RPCDefinition['rpcPrefs'];
+  ticker: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    log.debug(`background.removeNetworkConfiguration: ${uuid}`);
+    try {
+      await submitRequestToBackground('removeNetworkConfiguration', [uuid]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem removing network!'));
@@ -2490,13 +2531,17 @@ export function editRpc(
     }
 
     try {
-      await submitRequestToBackground('updateAndSetCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
-        rpcPrefs,
+      await submitRequestToBackground('upsertAndSetNetworkConfiguration', [
+        {
+          rpcUrl,
+          chainId,
+          ticker,
+          chainName: chainName || rpcUrl,
+          rpcPrefs,
+        },
       ]);
+
+      dispatch(updateNetworkTarget(rpcUrl, uuid));
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -2504,24 +2549,13 @@ export function editRpc(
   };
 }
 
-export function setRpcTarget(
-  newRpcUrl: string,
-  chainId: string,
-  ticker?: EtherDenomination,
-  nickname?: string,
+export function setNetworkTarget(
+  uuid: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(
-      `background.setRpcTarget: ${newRpcUrl} ${chainId} ${ticker} ${nickname}`,
-    );
-
+    log.debug(`background.setNetworkTarget: ${uuid}`);
     try {
-      await submitRequestToBackground('setCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
-      ]);
+      await submitRequestToBackground('setNetworkTarget', [uuid]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -2545,13 +2579,13 @@ export function rollbackToPreviousProvider(): ThunkAction<
   };
 }
 
-export function delRpcTarget(
-  oldRpcUrl: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function removeNetworkConfiguration(
+  uuid: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('delCustomRpc', [oldRpcUrl], (err) => {
+    log.debug(`background.removeNetworkConfiguration: ${uuid}`);
+    return new Promise((resolve, reject) => {
+      callBackgroundMethod('removeNetworkConfiguration', [uuid], (err) => {
         if (err) {
           logErrorWithMessage(err);
           dispatch(displayWarning('Had a problem removing network!'));
@@ -3757,21 +3791,32 @@ export function setFirstTimeFlowType(
   };
 }
 
-export function setSelectedSettingsRpcUrl(
-  newRpcUrl: string,
+export function setSelectedNetworkUUID(
+  networkConfigUUID: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_SELECTED_SETTINGS_RPC_URL,
-    payload: newRpcUrl,
+    type: actionConstants.SET_SELECTED_NETWORK_UUID,
+    payload: networkConfigUUID,
   };
 }
 
-export function setNewNetworkAdded(
-  newNetworkAdded: string,
-): PayloadAction<string> {
+export function setNewNetworkAdded({
+  uuid,
+  chainName,
+}: {
+  uuid: string;
+  chainName: string;
+}): PayloadAction<object> {
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
-    payload: newNetworkAdded,
+    payload: { uuid, chainName },
+  };
+}
+
+export function updateNetworkTarget(rpcUrl: string, uuid: string) {
+  return {
+    type: actionConstants.UPDATE_NETWORK_TARGET,
+    value: { rpcUrl, uuid },
   };
 }
 
@@ -4551,33 +4596,17 @@ export function cancelQRHardwareSignRequest(): ThunkAction<
   };
 }
 
-export function addCustomNetwork(
-  customRpc: RPCDefinition,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    try {
-      dispatch(setNewCustomNetworkAdded(customRpc));
-      await submitRequestToBackground('addCustomNetwork', [
-        customRpc,
-        generateActionId(),
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
-  };
-}
-
 export function requestAddNetworkApproval(
   customRpc: RPCDefinition,
   originIsMetaMask: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     try {
-      await submitRequestToBackground('requestAddNetworkApproval', [
-        customRpc,
-        originIsMetaMask,
-      ]);
+      const uuid: string = await submitRequestToBackground(
+        'requestAddNetworkApproval',
+        [customRpc, originIsMetaMask],
+      );
+      dispatch(setNewNetworkAdded({ uuid, chainName: customRpc.chainName }));
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));

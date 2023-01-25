@@ -21,7 +21,7 @@ import Tooltip from '../../ui/tooltip';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import IconBorder from '../../ui/icon-border';
 import {
-  getFrequentRpcListDetail,
+  getNetworkConfigurations,
   getUnapprovedConfirmations,
 } from '../../../selectors';
 
@@ -43,20 +43,20 @@ const AddNetwork = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const frequentRpcList = useSelector(getFrequentRpcListDetail);
+  const networkconfigurations = useSelector(getNetworkConfigurations);
 
-  const frequentRpcListChainIds = Object.values(frequentRpcList).map(
+  const networkConfigurationChainIds = Object.values(networkconfigurations).map(
     (net) => net.chainId,
   );
 
   const infuraRegex = /infura.io/u;
 
   const nets = FEATURED_RPCS.sort((a, b) =>
-    a.nickname > b.nickname ? 1 : -1,
+    a.chainName > b.chainName ? 1 : -1,
   ).slice(0, FEATURED_RPCS.length);
 
   const notFrequentRpcNetworks = nets.filter(
-    (net) => frequentRpcListChainIds.indexOf(net.chainId) === -1,
+    (net) => networkConfigurationChainIds.indexOf(net.chainId) === -1,
   );
   const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const [showPopover, setShowPopover] = useState(false);
@@ -192,7 +192,7 @@ const AddNetwork = () => {
                     <IconBorder size={24}>
                       <IconWithFallback
                         icon={item.rpcPrefs.imageUrl}
-                        name={item.nickname}
+                        name={item.chainName}
                         size={24}
                       />
                     </IconBorder>
@@ -203,7 +203,7 @@ const AddNetwork = () => {
                       color={TextColor.textDefault}
                       fontWeight={FONT_WEIGHT.BOLD}
                     >
-                      {item.nickname}
+                      {item.chainName}
                     </Typography>
                   </Box>
                 </Box>

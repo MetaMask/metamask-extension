@@ -422,7 +422,6 @@ const state = {
         ],
       },
     },
-    frequentRpcList: [],
     addressBook: {
       undefined: {
         0: {
@@ -460,20 +459,28 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5' : {
+      '0x5': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
             decimals: 18,
             symbol: 'LINK',
-            image: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
-            aggregators: ['coinGecko', 'oneInch', 'paraswap', 'zapper', 'zerion'],
+            image:
+              'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+            aggregators: [
+              'coinGecko',
+              'oneInch',
+              'paraswap',
+              'zapper',
+              'zerion',
+            ],
           },
           {
             address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
             decimals: 18,
             symbol: 'COMP',
-            image: 'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
+            image:
+              'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
             aggregators: [
               'bancor',
               'cmc',
@@ -503,8 +510,8 @@ const state = {
               'zerion',
             ],
           },
-        ]
-      }
+        ],
+      },
     },
     detectedTokens: [
       {
@@ -597,14 +604,14 @@ const state = {
     provider: {
       type: 'goerli',
       ticker: 'ETH',
-      nickname: '',
+      chainName: '',
       rpcUrl: '',
       chainId: '0x5',
     },
     previousProviderStore: {
       type: 'goerli',
       ticker: 'ETH',
-      nickname: '',
+      chainName: '',
       rpcUrl: '',
       chainId: '0x5',
     },
@@ -1178,15 +1185,21 @@ const state = {
         ],
       },
     ],
-    frequentRpcListDetail: [
-      {
+    networkConfigurations: {
+      'test-uuid-1': {
+        rpcUrl: 'https://testrpc.com',
+        chainId: '0x1',
+        chainName: 'mainnet',
+        rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+      },
+      'test-uuid-2': {
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
         ticker: 'ETH',
-        nickname: 'Localhost 8545',
+        chainName: 'Localhost 8545',
         rpcPrefs: {},
       },
-    ],
+    },
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [

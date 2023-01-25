@@ -11,7 +11,7 @@ const state = {
   metamask: {
     provider: {
       ticker: 'ETH',
-      nickname: '',
+      chainName: '',
       chainId: '0x1',
       type: 'mainnet',
     },

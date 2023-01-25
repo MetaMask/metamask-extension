@@ -42,7 +42,7 @@ export const DefaultStory = (args) => (
     {...args}
     targetNetwork={{
       type: args.targetNetwork,
-      nickname: args.targetNetwork,
+      chainName: args.targetNetwork,
     }}
   />
 );
@@ -62,7 +62,7 @@ export const TargetNetwork = (args) => {
           key={variant}
           targetNetwork={{
             type: variant,
-            nickname: variant,
+            chainName: variant,
           }}
         />
       ))}
@@ -83,7 +83,7 @@ export const DisplayOnly = (args) => {
           key={variant}
           targetNetwork={{
             type: variant,
-            nickname: variant,
+            chainName: variant,
           }}
           onClick={undefined}
         />

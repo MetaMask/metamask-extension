@@ -211,7 +211,7 @@ const state = {
     },
     provider: {
       type: 'mainnet',
-      nickname: '',
+      chainName: '',
     },
     preferences: {
       showFiatInTestnets: true,

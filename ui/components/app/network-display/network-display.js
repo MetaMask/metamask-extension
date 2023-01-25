@@ -29,13 +29,12 @@ export default function NetworkDisplay({
 }) {
   const networkIsLoading = useSelector(isNetworkLoading);
   const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
+    chainName: state.metamask.provider.chainName,
     type: state.metamask.provider.type,
   }));
   const t = useI18nContext();
 
-  const { nickname: networkNickname, type: networkType } =
-    targetNetwork ?? currentNetwork;
+  const { chainName, type: networkType } = targetNetwork ?? currentNetwork;
 
   return (
     <Chip
@@ -73,7 +72,7 @@ export default function NetworkDisplay({
       }
       label={
         networkType === NETWORK_TYPES.RPC
-          ? networkNickname ?? t('privateNetwork')
+          ? chainName ?? t('privateNetwork')
           : t(networkType)
       }
       className={classnames('network-display', {
@@ -104,7 +103,7 @@ NetworkDisplay.propTypes = {
       ...Object.keys(BUILT_IN_NETWORKS),
       NETWORK_TYPES.RPC,
     ]),
-    nickname: PropTypes.string,
+    chainName: PropTypes.string,
   }),
   /**
    * Whether the NetworkDisplay is disabled

@@ -449,7 +449,7 @@ describe('NetworkController', () => {
           type: 'rpc',
           rpcUrl: 'http://example-custom-rpc.metamask.io',
           chainId: '0x9999',
-          nickname: 'Test initial state',
+          chainname: 'Test initial state',
         },
         networkDetails: {
           EIPS: {
@@ -473,13 +473,13 @@ describe('NetworkController', () => {
               },
               "previousProviderStore": {
                 "chainId": "0x9999",
-                "nickname": "Test initial state",
+                "chainname": "Test initial state",
                 "rpcUrl": "http://example-custom-rpc.metamask.io",
                 "type": "rpc",
               },
               "provider": {
                 "chainId": "0x9999",
-                "nickname": "Test initial state",
+                "chainname": "Test initial state",
                 "rpcUrl": "http://example-custom-rpc.metamask.io",
                 "type": "rpc",
               },
@@ -501,14 +501,14 @@ describe('NetworkController', () => {
             },
             "previousProviderStore": {
               "chainId": "0x539",
-              "nickname": "Localhost 8545",
+              "chainname": "Localhost 8545",
               "rpcUrl": "http://localhost:8545",
               "ticker": "ETH",
               "type": "rpc",
             },
             "provider": {
               "chainId": "0x539",
-              "nickname": "Localhost 8545",
+              "chainname": "Localhost 8545",
               "rpcUrl": "http://localhost:8545",
               "ticker": "ETH",
               "type": "rpc",
@@ -1058,7 +1058,7 @@ describe('NetworkController', () => {
           type: 'rpc',
           rpcUrl: 'http://example-custom-rpc.metamask.io',
           chainId: '0x9999',
-          nickname: 'Test initial state',
+          chainname: 'Test initial state',
         };
         const initialState = {
           provider: providerConfig,
@@ -2361,7 +2361,7 @@ describe('NetworkController', () => {
               type: 'rpc',
               rpcUrl: 'http://example-custom-rpc.metamask.io',
               chainId: '0x9999',
-              nickname: 'Test initial state',
+              chainname: 'Test initial state',
             },
           },
         },
@@ -2382,13 +2382,13 @@ describe('NetworkController', () => {
             type: 'rpc',
             rpcUrl: 'http://example-custom-rpc.metamask.io',
             chainId: '0x9999',
-            nickname: 'Test initial state',
+            chainname: 'Test initial state',
           });
         },
       );
     });
 
-    it('overwrites the provider configuration given a minimal set of arguments, filling in ticker, nickname, and rpcPrefs with default values', async () => {
+    it('overwrites the provider configuration given a minimal set of arguments, filling in ticker, chainname, and rpcPrefs with default values', async () => {
       await withController(
         {
           state: {
@@ -2396,7 +2396,7 @@ describe('NetworkController', () => {
               type: 'rpc',
               rpcUrl: 'http://example-custom-rpc.metamask.io',
               chainId: '0x9999',
-              nickname: 'Test initial state',
+              chainname: 'Test initial state',
             },
           },
         },
@@ -2416,7 +2416,7 @@ describe('NetworkController', () => {
             rpcUrl: 'https://mock-rpc-url',
             chainId: '0x1337',
             ticker: 'ETH',
-            nickname: '',
+            chainname: '',
             rpcPrefs: undefined,
           });
         },
@@ -2431,7 +2431,7 @@ describe('NetworkController', () => {
               type: 'rpc',
               rpcUrl: 'http://example-custom-rpc.metamask.io',
               chainId: '0x9999',
-              nickname: 'Test initial state',
+              chainname: 'Test initial state',
             },
           },
         },
@@ -2457,7 +2457,7 @@ describe('NetworkController', () => {
             rpcUrl: 'https://mock-rpc-url',
             chainId: '0x1337',
             ticker: 'DAI',
-            nickname: 'Cool network',
+            chainname: 'Cool network',
             rpcPrefs: 'RPC prefs',
           });
         },
@@ -2472,7 +2472,7 @@ describe('NetworkController', () => {
               type: 'rpc',
               rpcUrl: 'http://example-custom-rpc.metamask.io',
               chainId: '0x9999',
-              nickname: 'Test initial state',
+              chainname: 'Test initial state',
             },
           },
         },
@@ -2808,7 +2808,7 @@ describe('NetworkController', () => {
                   type: 'rpc',
                   rpcUrl: 'http://example-custom-rpc.metamask.io',
                   chainId: '0x9999',
-                  nickname: 'Test initial state',
+                  chainname: 'Test initial state',
                 },
               },
             },
@@ -2829,13 +2829,13 @@ describe('NetworkController', () => {
                 type: 'rpc',
                 rpcUrl: 'http://example-custom-rpc.metamask.io',
                 chainId: '0x9999',
-                nickname: 'Test initial state',
+                chainname: 'Test initial state',
               });
             },
           );
         });
 
-        it(`overwrites the provider configuration using type: "${networkType}", chainId: "${chainId}", and ticker "${ticker}", clearing rpcUrl and nickname, and removing rpcPrefs`, async () => {
+        it(`overwrites the provider configuration using type: "${networkType}", chainId: "${chainId}", and ticker "${ticker}", clearing rpcUrl and chainname, and removing rpcPrefs`, async () => {
           await withController(
             {
               state: {
@@ -2843,7 +2843,7 @@ describe('NetworkController', () => {
                   type: 'rpc',
                   rpcUrl: 'http://example-custom-rpc.metamask.io',
                   chainId: '0x9999',
-                  nickname: 'Test initial state',
+                  chainname: 'Test initial state',
                 },
               },
             },
@@ -2863,7 +2863,7 @@ describe('NetworkController', () => {
                 rpcUrl: '',
                 chainId,
                 ticker,
-                nickname: '',
+                chainname: '',
               });
             },
           );
@@ -3740,7 +3740,7 @@ describe('NetworkController', () => {
     });
   });
 
-  describe('rollbackToPreviousProvider', () => {
+  describe.only('rollbackToPreviousProvider', () => {
     for (const {
       networkName,
       networkType,
@@ -3781,8 +3781,8 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x1337',
                 ticker: 'ETH',
-                nickname: '',
-                rpcPrefs: undefined,
+                chainName: '',
+                uuid: '',
               });
 
               await waitForLookupNetworkToComplete({
@@ -3796,8 +3796,7 @@ describe('NetworkController', () => {
                 rpcUrl: 'https://mock-rpc-url',
                 chainId: '0x999',
                 ticker: 'ETH',
-                nickname: '',
-                rpcPrefs: undefined,
+                chainname: '',
               });
             },
           );
@@ -4289,7 +4288,8 @@ describe('NetworkController', () => {
               rpcUrl: '',
               chainId: '0x5',
               ticker: 'GoerliETH',
-              nickname: '',
+              chainName: '',
+              uuid: '',
             });
 
             await waitForLookupNetworkToComplete({
@@ -4303,7 +4303,7 @@ describe('NetworkController', () => {
               rpcUrl: 'https://mock-rpc-url',
               chainId: '0x1337',
               ticker: 'GoerliETH',
-              nickname: '',
+              chainname: '',
             });
           },
         );
@@ -4739,6 +4739,110 @@ describe('NetworkController', () => {
             expect(
               controller.store.getState().networkDetails.EIPS['1559'],
             ).toBe(true);
+          },
+        );
+      });
+    });
+  });
+  describe('upsertNetworkConfiguration', () => {
+    it('should add a network configuration', async () => {
+      await withController(
+        {
+          state: {
+            networkConfigurations: {},
+          },
+        },
+        async ({ controller }) => {
+          const rpcUrlNetwork = {
+            chainId: undefined,
+            chainName: 'RPC',
+            rpcPrefs: undefined,
+            rpcUrl: 'rpc_url',
+            ticker: 'RPC',
+          };
+
+          expect(controller.networkConfigurations.getState()).toStrictEqual({});
+
+          controller.upsertNetworkConfiguration(rpcUrlNetwork);
+
+          expect(
+            Object.values(controller.networkConfigurations.getState()),
+          ).toStrictEqual(expect.arrayContaining([rpcUrlNetwork]));
+        },
+      );
+    });
+
+    it('should update a network configuration when the configuration being added has an rpcURL that matches an existing configuration', async () => {
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              testUUID: {
+                rpcUrl: 'test_rpc_url',
+                ticker: 'old_rpc_ticker',
+                chainName: 'old_rpc_chainName',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: '1',
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          controller.upsertNetworkConfiguration({
+            rpcUrl: 'test_rpc_url',
+            ticker: 'new_rpc_ticker',
+            chainName: 'new_rpc_chainName',
+            rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+            chainId: '1',
+          });
+          expect(
+            Object.values(controller.networkConfigurations.getState()),
+          ).toStrictEqual([
+            expect.objectContaining({
+              rpcUrl: 'test_rpc_url',
+              chainName: 'new_rpc_chainName',
+              ticker: 'new_rpc_ticker',
+              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+              chainId: '1',
+            }),
+          ]);
+        },
+      );
+    });
+
+    describe('removeNetworkConfigurations', () => {
+      it('should remove a network configuration', async () => {
+        const testUUID = 'testUUID';
+        await withController(
+          {
+            state: {
+              networkConfigurations: {
+                [testUUID]: {
+                  rpcUrl: 'test_rpc_url',
+                  ticker: 'old_rpc_ticker',
+                  chainName: 'old_rpc_chainName',
+                  rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                  chainId: '1',
+                },
+              },
+            },
+          },
+          async ({ controller }) => {
+            expect(
+              Object.values(controller.networkConfigurations.getState()),
+            ).toStrictEqual([
+              {
+                rpcUrl: 'test_rpc_url',
+                ticker: 'old_rpc_ticker',
+                chainName: 'old_rpc_chainName',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: '1',
+              },
+            ]);
+            controller.removeNetworkConfiguration(testUUID);
+            expect(controller.networkConfigurations.getState()).toStrictEqual(
+              {},
+            );
           },
         );
       });

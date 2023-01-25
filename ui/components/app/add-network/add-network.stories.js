@@ -29,7 +29,7 @@ export default {
     featuredRPCS: [
       {
         chainId: '42161',
-        nickname: 'Arbitrum One',
+        chainName: 'Arbitrum One',
         rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'AETH',
         rpcPrefs: {
@@ -39,7 +39,7 @@ export default {
       },
       {
         chainId: '43114',
-        nickname: 'Avalanche Mainnet C-Chain',
+        chainName: 'Avalanche Mainnet C-Chain',
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
         ticker: 'AVAX',
         rpcPrefs: {
@@ -49,7 +49,7 @@ export default {
       },
       {
         chainId: '56',
-        nickname: 'BNB Smart Chain',
+        chainName: 'BNB Smart Chain',
         rpcUrl: 'https://bsc-dataseed.binance.org/',
         ticker: 'BNB',
         rpcPrefs: {
@@ -59,7 +59,7 @@ export default {
       },
       {
         chainId: '250',
-        nickname: 'Fantom Opera',
+        chainName: 'Fantom Opera',
         rpcUrl: 'https://rpc.ftm.tools/',
         ticker: 'FTM',
         rpcPrefs: {
@@ -69,7 +69,7 @@ export default {
       },
       {
         chainId: '1666600000',
-        nickname: 'Harmony Mainnet Shard 0',
+        chainName: 'Harmony Mainnet Shard 0',
         rpcUrl: 'https://api.harmony.one/',
         ticker: 'ONE',
         rpcPrefs: {
@@ -79,7 +79,7 @@ export default {
       },
       {
         chainId: '10',
-        nickname: 'Optimism',
+        chainName: 'Optimism',
         rpcUrl: 'https://optimism-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'KOR',
         rpcPrefs: {
@@ -89,7 +89,7 @@ export default {
       },
       {
         chainId: '137',
-        nickname: 'Polygon Mainnet',
+        chainName: 'Polygon Mainnet',
         rpcUrl: 'https://polygon-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'MATIC',
         rpcPrefs: {
@@ -99,7 +99,7 @@ export default {
       },
       {
         chainId: '11297108109',
-        nickname: 'Palm',
+        chainName: 'Palm',
         rpcUrl: 'https://palm-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'PALM',
         rpcPrefs: {

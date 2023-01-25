@@ -8,7 +8,7 @@ import {
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
+import { setSelectedNetworkUUID } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
@@ -26,7 +26,7 @@ import { IconColor } from '../../../../helpers/constants/design-system';
 const NetworksListItem = ({
   network,
   networkIsSelected,
-  selectedRpcUrl,
+  selectedNetworkUUID,
   setSearchQuery,
   setSearchedNetworks,
 }) => {
@@ -38,11 +38,13 @@ const NetworksListItem = ({
   const {
     label,
     labelKey,
+    uuid,
     rpcUrl,
     providerType: currentProviderType,
   } = network;
 
-  const listItemNetworkIsSelected = selectedRpcUrl && selectedRpcUrl === rpcUrl;
+  const listItemNetworkIsSelected =
+    selectedNetworkUUID && selectedNetworkUUID === uuid;
   const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
     provider.type !== NETWORK_TYPES.RPC &&
@@ -64,12 +66,12 @@ const NetworksListItem = ({
   return (
     <div
       ref={settingsRefs}
-      key={`settings-network-list-item:${rpcUrl}`}
+      key={`settings-network-list-item:${uuid}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
         setSearchQuery('');
         setSearchedNetworks([]);
-        dispatch(setSelectedSettingsRpcUrl(rpcUrl));
+        dispatch(setSelectedNetworkUUID(uuid));
         if (!isFullScreen) {
           global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
         }
@@ -133,7 +135,7 @@ const NetworksListItem = ({
 NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
-  selectedRpcUrl: PropTypes.string,
+  selectedNetworkUUID: PropTypes.string,
   setSearchQuery: PropTypes.func,
   setSearchedNetworks: PropTypes.func,
 };

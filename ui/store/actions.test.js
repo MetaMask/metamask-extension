@@ -1198,30 +1198,36 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setRpcTarget', () => {
+  describe('#setNetworkTarget', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setRpcTarget', async () => {
+    it('calls setNetworkTarget', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) => cb());
+      const setNetworkTargetStub = sinon.stub().callsFake((_, cb) => cb());
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setNetworkTarget: setNetworkTargetStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setRpcTarget('http://localhost:8545'));
-      expect(background.setCustomRpc.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setNetworkTarget('http://localhost:8545'));
+      expect(setNetworkTargetStub.callCount).toStrictEqual(1);
     });
 
-    it('displays warning when setRpcTarget throws', async () => {
+    it('displays warning when setNetworkTarget throws', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) =>
-        cb(new Error('error')),
-      );
+      const setNetworkTargetStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setNetworkTarget: setNetworkTargetStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         {
@@ -1230,7 +1236,87 @@ describe('Actions', () => {
         },
       ];
 
-      await store.dispatch(actions.setRpcTarget());
+      await store.dispatch(actions.setNetworkTarget());
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#editAndSetNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls editAndSetNetworkConfiguration', async () => {
+      const store = mockStore();
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const upsertAndSetNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertAndSetNetworkConfiguration: upsertAndSetNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration({
+          uuid: 'uuid',
+          rpcUrl: 'newRpc',
+          chainId: '0x',
+          ticker: 'ETH',
+          chainName: 'chainName',
+          rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+        }),
+      );
+      expect(removeNetworkConfigurationStub.callCount).toStrictEqual(1);
+      expect(upsertAndSetNetworkConfigurationStub.callCount).toStrictEqual(1);
+
+      const expectedActions = [
+        {
+          type: 'UPDATE_NETWORK_TARGET',
+          value: { rpcUrl: 'newRpc', uuid: 'uuid' },
+        },
+      ];
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('displays warning when removeNetworkConfiguration throws', async () => {
+      const store = mockStore();
+
+      const upsertAndSetNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertAndSetNetworkConfiguration: upsertAndSetNetworkConfigurationStub,
+      });
+
+      _setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: 'Had a problem removing network!' },
+      ];
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration({
+          uuid: 'uuid',
+          rpcUrl: 'newRpc',
+          chainId: '0x',
+          ticker: 'ETH',
+          chainName: 'chainName',
+          rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+        }),
+      );
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
