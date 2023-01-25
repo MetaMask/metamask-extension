@@ -276,6 +276,7 @@ export default class Home extends PureComponent {
     } = this.props;
 
     const onAutoHide = () => setNewCollectibleAddedMessage('');
+    const autoHideDelay = 5 * SECOND;
 
     return (
       <MultipleNotifications>
@@ -320,7 +321,7 @@ export default class Home extends PureComponent {
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
-            autoHideTime={5 * SECOND}
+            autoHideTime={autoHideDelay}
             onAutoHide={onAutoHide}
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
@@ -345,6 +346,8 @@ export default class Home extends PureComponent {
           <ActionableMessage
             type="danger"
             className="home__new-network-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
