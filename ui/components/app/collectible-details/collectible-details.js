@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import Box from '../../ui/box';
 import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
@@ -16,6 +15,7 @@ import {
   OVERFLOW_WRAP,
   DISPLAY,
   BLOCK_SIZES,
+  ICON_COLORS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -28,7 +28,6 @@ import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedIdentity,
-  getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
@@ -73,7 +72,6 @@ export default function CollectibleDetails({ collectible }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const ipfsGateway = useSelector(getIpfsGateway);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
@@ -396,29 +394,12 @@ export default function CollectibleDetails({ collectible }) {
               className="collectible-details__contract-wrapper"
             >
               <Typography
-                color={COLORS.PRIMARY_DEFAULT}
+                color={COLORS.TEXT_ALTERNATIVE}
                 variant={TYPOGRAPHY.H6}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                boxProps={{
-                  margin: 0,
-                  marginBottom: 4,
-                }}
-                className="collectible-details__contract-link"
+                boxProps={{ margin: 0, marginBottom: 4 }}
               >
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={getTokenTrackerLink(
-                    address,
-                    currentNetwork,
-                    null,
-                    null,
-                    rpcPrefs,
-                  )}
-                  title={address}
-                >
-                  {shortenAddress(address)}
-                </a>
+                {shortenAddress(address)}
               </Typography>
               <Tooltip
                 wrapperClassName="collectible-details__tooltip-wrapper"
@@ -429,6 +410,7 @@ export default function CollectibleDetails({ collectible }) {
               >
                 <ButtonIcon
                   ariaLabel="copy"
+                  color={ICON_COLORS.ICON_ALTERNATIVE}
                   className="collectible-details__contract-copy-button"
                   onClick={() => {
                     handleAddressCopy(address);
