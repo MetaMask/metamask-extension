@@ -131,7 +131,7 @@ describe('Collectibles', function () {
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve Token spend limit');
+        assert.equal(completedTxText, 'Approve token spending cap');
       },
     );
   });

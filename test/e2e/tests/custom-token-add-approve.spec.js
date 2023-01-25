@@ -196,11 +196,11 @@ describe('Create token, approve token and approve token without gas', function (
         const approveTokenTask = await driver.waitForSelector({
           // Selects only the very first transaction list item immediately following the 'Pending' header
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve Token spend limit',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve Token spend limit',
+          'Approve token spending cap',
         );
       },
     );
@@ -339,11 +339,11 @@ describe('Create token, approve token and approve token without gas', function (
         const approveTokenTask = await driver.waitForSelector({
           // Select only the heading of the first entry in the transaction list.
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve Token spend limit',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve Token spend limit',
+          'Approve token spending cap',
         );
       },
     );
@@ -426,11 +426,11 @@ describe('Create token, approve token and approve token without gas', function (
         const approveTokenTask = await driver.waitForSelector({
           // Select only the heading of the first entry in the transaction list.
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve Token spend limit',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve Token spend limit',
+          'Approve token spending cap',
         );
       },
     );
@@ -490,11 +490,11 @@ describe('Create token, approve token and approve token without gas', function (
         // check transaction in Activity tab
         const approveTokenTask = await driver.waitForSelector({
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve Token spend limit',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve Token spend limit',
+          'Approve token spending cap',
         );
       },
     );

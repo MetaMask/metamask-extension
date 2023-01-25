@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Aprubahan"
   },
-  "approveSpendLimit": {
-    "message": "Aprubahan ang limitasyon sa paggastos na $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Nagbibigay-daan ito sa third party na i-access at ilipat ang mga sumusunod na NFT nang walang karagdagang abiso hanggang sa bawiin mo ang pag-access nito."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Pabilisin ang transaksyong ito"
-  },
-  "spendLimitAmount": {
-    "message": "Halaga ng limitasyon sa paggastos"
   },
   "spendLimitInsufficient": {
     "message": "Hindi sapat ang limitasyon sa paggastos"
