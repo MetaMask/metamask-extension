@@ -3,7 +3,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
-  addCustomNetwork,
+  upsertNetworkConfiguration,
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
@@ -110,7 +110,8 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
-    addCustomNetwork: (...args) => dispatch(addCustomNetwork(...args)),
+    upsertNetworkConfiguration: (...args) =>
+      dispatch(upsertNetworkConfiguration(...args)),
   };
 }
 

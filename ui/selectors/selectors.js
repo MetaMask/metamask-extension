@@ -348,7 +348,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 
 export function isBalanceCached(state) {
   const selectedAccountBalance =
-    state.metamask.accounts[getSelectedAddress(state)].balance;
+    state.metamask.accounts[getSelectedAddress(state)]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -649,11 +649,7 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { frequentRpcListDetail, provider } = state.metamask;
-  const selectRpcInfo = frequentRpcListDetail.find(
-    (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  );
-  const { rpcPrefs = {} } = selectRpcInfo || {};
+  const { provider: { rpcPrefs = {} } = {} } = state.metamask;
   return rpcPrefs;
 }
 
@@ -1109,19 +1105,19 @@ export function getRemoveNftMessage(state) {
  * @returns string
  */
 export function getNewNetworkAdded(state) {
-  return state.appState.newNetworkAdded;
+  return state.appState.newNetworkAddedName;
 }
 
-export function getNetworksTabSelectedRpcUrl(state) {
-  return state.appState.networksTabSelectedRpcUrl;
+export function getNetworksTabSelectedNetworkConfigurationId(state) {
+  return state.appState.selectedNetworkConfigurationId;
 }
 
 export function getProvider(state) {
   return state.metamask.provider;
 }
 
-export function getFrequentRpcListDetail(state) {
-  return state.metamask.frequentRpcListDetail;
+export function getNetworkConfigurations(state) {
+  return state.metamask.networkConfigurations;
 }
 
 export function getIsOptimism(state) {

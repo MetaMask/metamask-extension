@@ -222,24 +222,32 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#addCustomNetwork', function () {
+  describe('#upsertNetworkConfiguration', function () {
     const customRpc = {
       chainId: '0x1',
-      chainName: 'DUMMY_CHAIN_NAME',
-      rpcUrl: 'DUMMY_RPCURL',
+      nickname: 'DUMMY_CHAIN_NAME',
+      rpcUrl: 'https://test-rpc-url',
       ticker: 'DUMMY_TICKER',
-      blockExplorerUrl: 'DUMMY_EXPLORER',
+      rpcPrefs: {
+        blockExplorerUrl: 'DUMMY_EXPLORER',
+      },
     };
     it('two successive calls with custom RPC details give same result', async function () {
-      await metamaskController.addCustomNetwork(customRpc);
-      const rpcList1Length =
-        metamaskController.preferencesController.store.getState()
-          .frequentRpcListDetail.length;
-      await metamaskController.addCustomNetwork(customRpc);
-      const rpcList2Length =
-        metamaskController.preferencesController.store.getState()
-          .frequentRpcListDetail.length;
-      assert.equal(rpcList1Length, rpcList2Length);
+      await metamaskController.upsertNetworkConfiguration(customRpc);
+      const networkConfigurationsList1Length = Object.values(
+        metamaskController.networkController.store.getState()
+          .networkConfigurations,
+      ).length;
+      await metamaskController.upsertNetworkConfiguration(customRpc);
+      const networkConfigurationsList2Length = Object.values(
+        metamaskController.networkController.store.getState()
+          .networkConfigurations,
+      ).length;
+      assert.equal(networkConfigurationsList1Length, 1);
+      assert.equal(
+        networkConfigurationsList1Length,
+        networkConfigurationsList2Length,
+      );
     });
   });
 
