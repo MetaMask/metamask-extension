@@ -1,3 +1,4 @@
+
 .mm-popover {
   // TODO
 }
@@ -28,7 +29,7 @@
 
 #tooltip[data-popper-placement^='top'] > #arrow {
   bottom: -6px;
-  background: pink;
+  transform: rotate(180deg);
 }
 
 #tooltip[data-popper-placement^='bottom'] > #arrow {
@@ -37,8 +38,10 @@
 
 #tooltip[data-popper-placement^='left'] > #arrow {
   right: -6px;
+  transform: rotate(90deg);
 }
 
 #tooltip[data-popper-placement^='right'] > #arrow {
   left: -6px;
+  transform: rotate(-90deg);
 }

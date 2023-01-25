@@ -70,7 +70,7 @@ export default {
 
 export const DefaultStory = (args) => (
   <Box
-    style={{ height: '120vh' }}
+    style={{ height: '200vh', width: '200vw' }}
     display={DISPLAY.FLEX}
     justifyContent={JUSTIFY_CONTENT.CENTER}
     alignItems={ALIGN_ITEMS.CENTER}

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Box from '../../ui/box';
+import { Button } from '../button';
 
 import {
   ALIGN_ITEMS,
@@ -27,9 +28,9 @@ export const Popover = ({ children, className, ...props }) => {
   );
   return (
     <>
-      <button type="button" ref={setReferenceElement}>
-        Popper Trigger
-      </button>
+      <div style={{ backgroundColor: 'red' }} ref={setReferenceElement}>
+        <Button ref={setReferenceElement}>Popper Trigger</Button>
+      </div>
 
       <Box
         className={classnames('mm-popover', className)}
