@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "承認"
   },
-  "approveSpendLimit": {
-    "message": "$1使用限度額の承認",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "これにより、アクセス許可を取り消すまで、第三者が今後通知なしに次の NFT にアクセスし、転送できるようになります。"
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "このトランザクションをスピードアップ"
-  },
-  "spendLimitAmount": {
-    "message": "使用限度額"
   },
   "spendLimitInsufficient": {
     "message": "使用限度額が十分ではありません"

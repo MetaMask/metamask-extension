@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Setujui"
   },
-  "approveSpendLimit": {
-    "message": "Setujui batas penggunaan $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Hal ini memungkinkan pihak ketiga untuk mengakses dan mentransfer NFT berikut tanpa pemberitahuan lebih lanjut sampai Anda mencabut aksesnya."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Percepat transaksi ini"
-  },
-  "spendLimitAmount": {
-    "message": "Jumlah batas penggunaan"
   },
   "spendLimitInsufficient": {
     "message": "Batas penggunaan tidak mencukupi"

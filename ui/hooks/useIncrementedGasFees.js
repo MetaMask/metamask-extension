@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import { decGWEIToHexWEI } from '../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
-import { addTenPercent } from '../helpers/utils/gas';
+import { addTenPercentAndRound } from '../helpers/utils/gas';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 
 /**
@@ -15,7 +15,7 @@ import { useGasFeeEstimates } from './useGasFeeEstimates';
  * @returns {string} hexWei value of the higher of the two inputs.
  */
 function getHighestIncrementedFee(originalFee, currentEstimate) {
-  const buffedOriginalHexWei = addTenPercent(originalFee);
+  const buffedOriginalHexWei = addTenPercentAndRound(originalFee);
   const currentEstimateHexWei = decGWEIToHexWEI(currentEstimate);
 
   return new BigNumber(buffedOriginalHexWei, 16).greaterThan(

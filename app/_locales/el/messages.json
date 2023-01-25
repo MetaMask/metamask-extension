@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Έγκριση"
   },
-  "approveSpendLimit": {
-    "message": "Έγκριση ορίου δαπανών $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Αυτό επιτρέπει σε τρίτα μέρη να έχουν πρόσβαση και να μεταφέρουν τα ακόλουθα NFT χωρίς περαιτέρω ειδοποίηση μέχρι να ανακαλέσετε την πρόσβασή τους."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Επιτάχυνση αυτής της συναλλαγής"
-  },
-  "spendLimitAmount": {
-    "message": "Ποσό ορίου δαπανών"
   },
   "spendLimitInsufficient": {
     "message": "Ανεπαρκές όριο δαπανών"

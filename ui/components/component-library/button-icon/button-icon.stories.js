@@ -94,7 +94,7 @@ export default {
 export const DefaultStory = (args) => <ButtonIcon {...args} />;
 
 DefaultStory.args = {
-  iconName: ICON_NAMES.CLOSE_OUTLINE,
+  iconName: ICON_NAMES.CLOSE,
   ariaLabel: 'Close',
 };
 
@@ -103,7 +103,7 @@ DefaultStory.storyName = 'Default';
 export const IconName = (args) => <ButtonIcon {...args} />;
 
 IconName.args = {
-  iconName: ICON_NAMES.CLOSE_OUTLINE,
+  iconName: ICON_NAMES.CLOSE,
   ariaLabel: 'Close',
 };
 
@@ -117,14 +117,14 @@ export const Size = (args) => (
     <ButtonIcon
       {...args}
       size={SIZES.SM}
-      iconName={ICON_NAMES.CLOSE_OUTLINE}
+      iconName={ICON_NAMES.CLOSE}
       ariaLabel="Close"
     />
     <ButtonIcon
       {...args}
       size={SIZES.LG}
       color={COLORS.PRIMARY}
-      iconName={ICON_NAMES.CLOSE_OUTLINE}
+      iconName={ICON_NAMES.CLOSE}
       ariaLabel="Close"
     />
   </Box>
@@ -134,7 +134,7 @@ export const AriaLabel = (args) => (
   <>
     <ButtonIcon
       as="button"
-      iconName={ICON_NAMES.CLOSE_OUTLINE}
+      iconName={ICON_NAMES.CLOSE}
       ariaLabel="Close"
       {...args}
     />
@@ -152,11 +152,7 @@ export const AriaLabel = (args) => (
 
 export const As = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW} gap={2}>
-    <ButtonIcon
-      {...args}
-      iconName={ICON_NAMES.CLOSE_OUTLINE}
-      ariaLabel="close"
-    />
+    <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE} ariaLabel="close" />
     <ButtonIcon
       as="a"
       href="#"
@@ -179,7 +175,7 @@ Href.args = {
 };
 
 export const Color = (args) => (
-  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="close" />
+  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE} ariaLabel="close" />
 );
 
 Color.args = {
@@ -187,7 +183,7 @@ Color.args = {
 };
 
 export const Disabled = (args) => (
-  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="close" />
+  <ButtonIcon {...args} iconName={ICON_NAMES.CLOSE} ariaLabel="close" />
 );
 
 Disabled.args = {

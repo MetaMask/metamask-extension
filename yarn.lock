@@ -3347,12 +3347,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@lavamoat/snow@npm:1.3.0"
+"@lavamoat/snow@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@lavamoat/snow@npm:1.4.1"
   dependencies:
     is-cross-origin: ^1.0.1
-  checksum: 580a8378a098936d0d4df31abc1f688c57194225414baea0292ece51efcc0865565af5e974784ee5156291380e86da91996efa00637363ceb76335824122a6f4
+  checksum: d4dcd9907bb4caa7ac7fc130dbe7eff0295a992769136895c222b8e823edb0de44aa822e467670515ef70e85b9e5edb93c4ca9ffc05735ed18528304e478754a
   languageName: node
   linkType: hard
 
@@ -24096,7 +24096,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": ^0.6.1
     "@lavamoat/allow-scripts": ^2.0.3
     "@lavamoat/lavapack": ^4.0.0
-    "@lavamoat/snow": ^1.3.0
+    "@lavamoat/snow": ^1.4.1
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0

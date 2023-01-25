@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "批准"
   },
-  "approveSpendLimit": {
-    "message": "批准 $1 消费限额",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "这允许第三方访问和转移以下 NFT，而无需另行通知，直到您撤销其访问权限。"
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "加速该交易"
-  },
-  "spendLimitAmount": {
-    "message": "消费限额"
   },
   "spendLimitInsufficient": {
     "message": "消费限额不足"

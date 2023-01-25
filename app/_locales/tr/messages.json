@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Onayla"
   },
-  "approveSpendLimit": {
-    "message": "$1 harcama limitini onayla",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Üçüncü bir tarafın, siz bu erişimi iptal edene kadar başka bildirim yapılmaksızın aşağıdaki NFT'lere erişim sağlamasına ve onları transfer edebilmesine izin verir."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Bu işlemi hızlandır"
-  },
-  "spendLimitAmount": {
-    "message": "Harcama limiti tutarı"
   },
   "spendLimitInsufficient": {
     "message": "Harcama limiti yetersiz"

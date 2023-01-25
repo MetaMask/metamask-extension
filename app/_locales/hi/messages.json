@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },
-  "approveSpendLimit": {
-    "message": "$1 खर्च सीमा अनुमोदित करें",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "यह किसी तीसरे पक्ष को बिना किसी नोटिस के निम्नलिखित NFTs को ऐक्सेस करने और स्थानांतरित करने की अनुमति देता है जब तक कि आप इसकी ऐक्सेस को रद्द नहीं कर देते।"
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "इस लेनदेन को गति दें"
-  },
-  "spendLimitAmount": {
-    "message": "खर्च सीमा राशि"
   },
   "spendLimitInsufficient": {
     "message": "खर्च सीमा अपर्याप्त है"

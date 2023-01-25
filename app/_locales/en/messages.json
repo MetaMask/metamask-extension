@@ -370,8 +370,8 @@
   "approveButtonText": {
     "message": "Approve"
   },
-  "approveSpendLimit": {
-    "message": "Approve $1 spend limit",
+  "approveSpendingCap": {
+    "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
   },
   "approveTokenDescription": {
@@ -3473,9 +3473,6 @@
   "speedUpTransaction": {
     "message": "Speed up this transaction"
   },
-  "spendLimitAmount": {
-    "message": "Spend limit amount"
-  },
   "spendLimitInsufficient": {
     "message": "Spend limit insufficient"
   },
@@ -3491,6 +3488,9 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "spendingCap": {
+    "message": "Spending cap"
   },
   "spendingCapError": {
     "message": "Error: Enter numbers only"

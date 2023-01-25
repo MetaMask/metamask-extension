@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Genehmigen"
   },
-  "approveSpendLimit": {
-    "message": "$1 Ausgabelimit genehmigen",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Dies gestattet es Dritten, ohne weitere Benachrichtigung auf die folgenden NFTs zuzugreifen und diese zu übertragen, bis Sie dieses Zugriffsrecht widerrufen."
   },
@@ -3441,9 +3437,6 @@
   },
   "speedUpTransaction": {
     "message": "Diese Transaktion beschleunigen"
-  },
-  "spendLimitAmount": {
-    "message": "Ausgabelimitbetrag"
   },
   "spendLimitInsufficient": {
     "message": "Ausgabelimit unzureichend"
