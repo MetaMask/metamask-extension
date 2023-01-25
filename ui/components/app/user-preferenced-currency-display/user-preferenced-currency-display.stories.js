@@ -1,6 +1,7 @@
 import React from 'react';
-import { PRIMARY, SECONDARY, ETH } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
+import { EtherDenomination } from '../../../../shared/constants/common';
 import UserPreferencedCurrencyDisplay from '.';
 
 export default {
@@ -52,7 +53,7 @@ export default {
     },
   },
   args: {
-    type: ETH,
+    type: EtherDenomination.ETH,
   },
 };
 

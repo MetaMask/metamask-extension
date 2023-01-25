@@ -205,8 +205,8 @@ Loading.args = {
   loading: true,
 };
 
-export const IconName = (args) => <Button {...args}>Button</Button>;
-
-IconName.args = {
-  iconName: ICON_NAMES.ADD_SQUARE_FILLED,
-};
+export const Icon = (args) => (
+  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
+    Button
+  </Button>
+);

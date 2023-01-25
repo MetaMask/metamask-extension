@@ -92,7 +92,7 @@ DefaultStory.args = {
   title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
-  startAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
+  startAccessory: <Icon name={ICON_NAMES.INFO} size={SIZES.LG} />,
 };
 
 DefaultStory.storyName = 'Default';
@@ -165,5 +165,5 @@ StartAccessory.args = {
   title: 'Start accessory demo',
   children:
     'The info icon on the left is passed through the startAccessory prop',
-  startAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
+  startAccessory: <Icon name={ICON_NAMES.INFO} size={SIZES.LG} />,
 };

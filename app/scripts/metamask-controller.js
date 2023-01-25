@@ -46,7 +46,10 @@ import {
   PermissionController,
   PermissionsRequestNotFoundError,
 } from '@metamask/permission-controller';
-import { SubjectMetadataController } from '@metamask/subject-metadata-controller';
+import {
+  SubjectMetadataController,
+  SubjectType,
+} from '@metamask/subject-metadata-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
@@ -59,8 +62,6 @@ import {
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
-
-import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import browser from 'webextension-polyfill';
 import {
@@ -99,7 +100,6 @@ import {
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  SUBJECT_TYPES,
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
@@ -169,10 +169,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { checkSnapsBlockList } from './flask/snaps-utilities';
-import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
-///: END:ONLY_INCLUDE_IN
 import { securityProviderCheck } from './lib/security-provider-helpers';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -346,6 +342,7 @@ export default class MetamaskController extends EventEmitter {
               ...networkState,
               providerConfig: {
                 ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
               },
             };
             return cb(modifiedNetworkState);
@@ -741,7 +738,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.11.1',
+        'https://metamask.github.io/iframe-execution-environment/0.12.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -776,15 +773,19 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
+    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
+
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
-      checkBlockList: async (snapsToCheck) => {
-        return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
-      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
-      featureFlags: { dappsCanUpdateSnaps: true },
+      featureFlags: {
+        dappsCanUpdateSnaps: true,
+        allowLocalSnaps: isFlask,
+        requireAllowlist: isMain,
+      },
     });
 
     this.notificationController = new NotificationController({
@@ -972,8 +973,11 @@ export default class MetamaskController extends EventEmitter {
             getTokenValueParam(transactionData);
           const { allNfts } = this.nftController.state;
 
+          const chainIdAsDecimal = hexToDecimal(chainId);
           // check if its a known collectible
-          const knownCollectible = allNfts?.[userAddress]?.[chainId].find(
+          const knownCollectible = allNfts?.[userAddress]?.[
+            chainIdAsDecimal
+          ]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
@@ -984,7 +988,7 @@ export default class MetamaskController extends EventEmitter {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
               knownCollectible,
               false,
-              { userAddress, chainId },
+              { userAddress, chainId: chainIdAsDecimal },
             );
           }
         }
@@ -1496,7 +1500,7 @@ export default class MetamaskController extends EventEmitter {
           version,
         } = snap;
         this.subjectMetadataController.addSubjectMetadata({
-          subjectType: SUBJECT_TYPES.SNAP,
+          subjectType: SubjectType.Snap,
           name: proposedName,
           origin: snap.id,
           version,
@@ -2579,10 +2583,7 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    const recoveredIndices = Array.from(
-      new Uint16Array(new Uint8Array(keyring.mnemonic).buffer),
-    );
-    return recoveredIndices.map((i) => englishWordlist[i]).join(' ');
+    return keyring.mnemonic;
   }
 
   //
@@ -3546,9 +3547,9 @@ export default class MetamaskController extends EventEmitter {
     if (subjectType) {
       _subjectType = subjectType;
     } else if (sender.id && sender.id !== this.extension.runtime.id) {
-      _subjectType = SUBJECT_TYPES.EXTENSION;
+      _subjectType = SubjectType.Extension;
     } else {
-      _subjectType = SUBJECT_TYPES.WEBSITE;
+      _subjectType = SubjectType.Website;
     }
 
     if (sender.url) {
@@ -3600,7 +3601,7 @@ export default class MetamaskController extends EventEmitter {
     this.setupProviderConnection(
       mux.createStream('provider'),
       sender,
-      SUBJECT_TYPES.INTERNAL,
+      SubjectType.Internal,
     );
   }
 
@@ -3716,15 +3717,15 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide over.
    * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
-   * @param {string} subjectType - The type of the sender, i.e. subject.
+   * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
   setupProviderConnection(outStream, sender, subjectType) {
     let origin;
-    if (subjectType === SUBJECT_TYPES.INTERNAL) {
+    if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
     }
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    else if (subjectType === SUBJECT_TYPES.SNAP) {
+    else if (subjectType === SubjectType.Snap) {
       origin = sender.snapId;
     }
     ///: END:ONLY_INCLUDE_IN
@@ -3736,7 +3737,7 @@ export default class MetamaskController extends EventEmitter {
       this.subjectMetadataController.addSubjectMetadata({
         origin,
         extensionId: sender.id,
-        subjectType: SUBJECT_TYPES.EXTENSION,
+        subjectType: SubjectType.Extension,
       });
     }
 
@@ -3782,7 +3783,7 @@ export default class MetamaskController extends EventEmitter {
     this.setupUntrustedCommunication({
       connectionStream,
       sender: { snapId },
-      subjectType: SUBJECT_TYPES.SNAP,
+      subjectType: SubjectType.Snap,
     });
   }
   ///: END:ONLY_INCLUDE_IN
@@ -3839,7 +3840,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // onboarding
-    if (subjectType === SUBJECT_TYPES.WEBSITE) {
+    if (subjectType === SubjectType.Website) {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
@@ -3947,7 +3948,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
-      createSnapMethodMiddleware(subjectType === SUBJECT_TYPES.SNAP, {
+      createSnapMethodMiddleware(subjectType === SubjectType.Snap, {
         getAppKey: this.getAppKeyForSubject.bind(this, origin),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
@@ -3980,7 +3981,7 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
-    if (subjectType !== SUBJECT_TYPES.INTERNAL) {
+    if (subjectType !== SubjectType.Internal) {
       // permissions
       engine.push(
         this.permissionController.createPermissionMiddleware({
