@@ -36,8 +36,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     totalUnapprovedCount: totalUnconfirmed,
     sendTo,
-    unapprovedTxs,
-    id,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     paramsTransactionId: id && String(id),
     transactionId: transactionId && String(transactionId),
