@@ -11,7 +11,6 @@ import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
-import CopyIcon from '../../../components/ui/icon/copy-icon.component';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -20,13 +19,13 @@ import {
   COLORS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
+import { ICON_NAMES, ButtonIcon } from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -210,25 +209,17 @@ export default class ConfirmApproveContent extends Component {
             {displayedAddress}
           </div>
           <div className="confirm-approve-content__medium-text">
-            <Button
-              type="link"
-              className="confirm-approve-content__copy-address"
-              onClick={() => {
-                this.setState({ copied: true });
-                this.copyTimeout = setTimeout(
-                  () => this.setState({ copied: false }),
-                  SECOND * 3,
-                );
-                copyToClipboard(toAddress);
-              }}
+            <ButtonIcon
+              ariaLabel="copy"
+              onClick={() => copyToClipboard(toAddress)}
+              color={COLORS.ICON_DEFAULT}
+              iconName={ICON_NAMES.COPY}
               title={
                 this.state.copied
                   ? t('copiedExclamation')
                   : t('copyToClipboard')
               }
-            >
-              <CopyIcon size={14} color="var(--color-icon-default)" />
-            </Button>
+            />
           </div>
         </div>
       </div>

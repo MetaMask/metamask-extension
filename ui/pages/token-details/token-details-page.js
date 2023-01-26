@@ -13,7 +13,6 @@ import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
-import CopyIcon from '../../components/ui/icon/copy-icon.component';
 import Box from '../../components/ui/box';
 import Typography from '../../components/ui/typography';
 import {
@@ -25,6 +24,11 @@ import {
   OVERFLOW_WRAP,
 } from '../../helpers/constants/design-system';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  ButtonIcon,
+  ICON_SIZES,
+  ICON_NAMES,
+} from '../../components/component-library';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();
@@ -132,15 +136,12 @@ export default function TokenDetailsPage() {
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
             containerClassName="token-details__copy-icon"
           >
-            <Button
-              type="link"
-              className="token-details__copyIcon"
-              onClick={() => {
-                handleCopy(token.address);
-              }}
-            >
-              <CopyIcon size={11} color="var(--color-primary-default)" />
-            </Button>
+            <ButtonIcon
+              name={ICON_NAMES.COPY}
+              onClick={() => handleCopy(token.address)}
+              color={COLORS.PRIMARY_DEFAULT}
+              size={ICON_SIZES.SM}
+            />
           </Tooltip>
         </Box>
         <Typography

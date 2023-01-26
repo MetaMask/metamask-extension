@@ -8,10 +8,10 @@ import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
-import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getTokenList, getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { ButtonIcon, ICON_SIZES } from '../../component-library';
 
 const NicknamePopover = ({
   address,
@@ -62,15 +62,11 @@ const NicknamePopover = ({
             position="bottom"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
-            <button
-              type="link"
-              onClick={() => {
-                handleCopy(address);
-              }}
-              title=""
-            >
-              <CopyIcon size={11} color="var(--color-icon-default)" />
-            </button>
+            <ButtonIcon
+              iconName="copy"
+              size={ICON_SIZES.SM}
+              onClick={() => handleCopy(address)}
+            />
           </Tooltip>
         </div>
 
