@@ -830,8 +830,9 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
+    const checksumHexAddress = toChecksumHexAddress(address);
     const entry = Object.values(tokenList).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, checksumHexAddress),
     );
     return entry && entry.name !== '' ? entry.name : '';
   },
