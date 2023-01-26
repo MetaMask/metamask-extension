@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SubjectType } from '@metamask/subject-metadata-controller';
+///: END:ONLY_INCLUDE_IN
 import {
   createSelector,
   createSelectorCreator,
@@ -28,13 +31,7 @@ import {
   LedgerTransportTypes,
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
-
-import {
-  MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SUBJECT_TYPES,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../shared/constants/app';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -632,7 +629,7 @@ export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  if (metadata?.subjectType === SUBJECT_TYPES.SNAP) {
+  if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
       ...remainingMetadata,
@@ -833,8 +830,9 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
+    const checksumHexAddress = toChecksumHexAddress(address);
     const entry = Object.values(tokenList).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, checksumHexAddress),
     );
     return entry && entry.name !== '' ? entry.name : '';
   },

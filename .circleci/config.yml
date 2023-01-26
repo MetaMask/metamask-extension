@@ -524,7 +524,7 @@ jobs:
           at: .
       - run:
           name: Install Playwright browsers
-          command: yarn dlx playwright install
+          command: yarn exec playwright install
       - run:
           name: Test Storybook
           command: yarn test-storybook:ci

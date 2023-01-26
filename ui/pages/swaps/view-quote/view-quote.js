@@ -48,10 +48,10 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
-  getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -195,17 +195,10 @@ export default function ViewQuote() {
     getCurrentSmartTransactionsError,
   );
   const smartTransactionsError = useSelector(getSmartTransactionsError);
-  const currentSmartTransactionsErrorMessageDismissed = useSelector(
-    getCurrentSmartTransactionsErrorMessageDismissed,
-  );
-  const currentSmartTransactionsEnabled =
-    smartTransactionsEnabled &&
-    !(
-      currentSmartTransactionsError &&
-      (currentSmartTransactionsError !== 'not_enough_funds' ||
-        currentSmartTransactionsErrorMessageDismissed)
-    );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
 

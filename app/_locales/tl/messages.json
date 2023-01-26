@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Aprubahan"
   },
-  "approveSpendLimit": {
-    "message": "Aprubahan ang limitasyon sa paggastos na $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Nagbibigay-daan ito sa third party na i-access at ilipat ang mga sumusunod na NFT nang walang karagdagang abiso hanggang sa bawiin mo ang pag-access nito."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Pabilisin ang transaksyong ito"
   },
-  "spendLimitAmount": {
-    "message": "Halaga ng limitasyon sa paggastos"
-  },
   "spendLimitInsufficient": {
     "message": "Hindi sapat ang limitasyon sa paggastos"
   },
@@ -3596,12 +3589,6 @@
     "message": "Ang biglaang pagbabago sa merkado ay maaaring maging sanhi ng pagkabigo. Kung magpatuloy ang problema, makipag-ugnyan sa $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Pansamantalang hindi available ang mga Smart Transaction dahil mayroon kang nakabinbin na transaksyon."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Maaari mo parin papalitan ang iyong mga token kahit na hindi available ang mga Smart Transaction."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Pribadong isinusumite ang iyong Swap..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "Gayahin ang mga transaksyon bago isumite upang bumaba ang gastos sa transaksyon at mabawasan ang mga pagkabigo."
   },
-  "stxTryRegular": {
-    "message": "Subukan ang regular na pagpapalit."
-  },
   "stxTryingToCancel": {
     "message": "Sinusubukang kanselahin ang iyong transaksyon..."
-  },
-  "stxUnavailable": {
-    "message": "Hindi pinapagana ang mga Smart Transaction"
   },
   "stxUnknown": {
     "message": "Hindi alam ang lagay"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Kailangan mo ng $1 pa $2 para makumpleto ang pag-swap na ito",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Kailangan mo pa ng $1 para makumpleto ang pagpapalit na ito gamit ang mga smart transaction.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Pinakamaganda ng $1 na quote.",

@@ -17,7 +17,6 @@ import {
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCollectiblesDetectionNoticeDismissed } from '../../../ducks/metamask/metamask';
 import { getIsMainnet, getUseNftDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -30,9 +29,6 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 export default function CollectiblesTab({ onAddNFT }) {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const collectibleDetectionNoticeDismissed = useSelector(
-    getCollectiblesDetectionNoticeDismissed,
-  );
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -65,9 +61,7 @@ export default function CollectiblesTab({ onAddNFT }) {
         />
       ) : (
         <>
-          {isMainnet &&
-          !useNftDetection &&
-          !collectibleDetectionNoticeDismissed ? (
+          {isMainnet && !useNftDetection ? (
             <CollectiblesDetectionNotice />
           ) : null}
           <Box padding={12}>

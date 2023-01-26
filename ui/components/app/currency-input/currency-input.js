@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import { ETH } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getConversionRate,
@@ -14,6 +13,7 @@ import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
 } from '../../../../shared/modules/conversion.utils';
+import { EtherDenomination } from '../../../../shared/constants/common';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -39,7 +39,7 @@ export default function CurrencyInput({
   const conversionRate = useSelector(getConversionRate);
   const showFiat = useSelector(getShouldShowFiat);
   const hideSecondary = !showFiat;
-  const primarySuffix = preferredCurrency || ETH;
+  const primarySuffix = preferredCurrency || EtherDenomination.ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
 
   const [isSwapped, setSwapped] = useState(false);
@@ -57,7 +57,7 @@ export default function CurrencyInput({
         })
       : getValueFromWeiHex({
           value: hexValue,
-          toCurrency: ETH,
+          toCurrency: EtherDenomination.ETH,
           numberOfDecimals: 8,
         });
 
@@ -82,8 +82,8 @@ export default function CurrencyInput({
         })
       : getWeiHexFromDecimalValue({
           value: newDecimalValue,
-          fromCurrency: ETH,
-          fromDenomination: ETH,
+          fromCurrency: EtherDenomination.ETH,
+          fromDenomination: EtherDenomination.ETH,
           conversionRate,
         });
 
@@ -116,7 +116,7 @@ export default function CurrencyInput({
 
     if (shouldUseFiat) {
       // Display ETH
-      currency = preferredCurrency || ETH;
+      currency = preferredCurrency || EtherDenomination.ETH;
       numberOfDecimals = 8;
     } else {
       // Display Fiat

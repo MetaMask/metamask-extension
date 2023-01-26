@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Έγκριση"
   },
-  "approveSpendLimit": {
-    "message": "Έγκριση ορίου δαπανών $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Αυτό επιτρέπει σε τρίτα μέρη να έχουν πρόσβαση και να μεταφέρουν τα ακόλουθα NFT χωρίς περαιτέρω ειδοποίηση μέχρι να ανακαλέσετε την πρόσβασή τους."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Επιτάχυνση αυτής της συναλλαγής"
   },
-  "spendLimitAmount": {
-    "message": "Ποσό ορίου δαπανών"
-  },
   "spendLimitInsufficient": {
     "message": "Ανεπαρκές όριο δαπανών"
   },
@@ -3596,12 +3589,6 @@
     "message": "Οι ξαφνικές μεταβολές της αγοράς ενδέχεται να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με το $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Οι Έξυπνες Συναλλαγές είναι προσωρινά μη διαθέσιμες, επειδή έχετε μια συναλλαγή που εκκρεμεί."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Μπορείτε να ανταλλάξετε ακόμα τα token σας, ακόμα και αν οι Έξυπνες Συναλλαγές δεν είναι διαθέσιμες."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ιδιωτική υποβολή της Ανταλλαγής σας..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "Προσομοίωση συναλλαγών πριν από την υποβολή για μείωση του κόστους συναλλαγής και των αποτυχιών."
   },
-  "stxTryRegular": {
-    "message": "Δοκιμάστε μια κανονική ανταλλαγή."
-  },
   "stxTryingToCancel": {
     "message": "Γίνεται προσπάθεια ακύρωσης της συναλλαγής σας..."
-  },
-  "stxUnavailable": {
-    "message": "Οι Έξυπνες Συναλλαγές είναι απενεργοποιημένες"
   },
   "stxUnknown": {
     "message": "Άγνωστη κατάσταση"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Χρειάζεστε $1 περισσότερα $2 για να ολοκληρώσετε αυτήν την ανταλλαγή",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Χρειάζεστε περισσότερα $1 για να ολοκληρώσετε αυτήν την ανταλλαγή χρησιμοποιώντας τη λειτουργία των έξυπνων συναλλαγών.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Το καλύτερο από $1 προσφορές.",

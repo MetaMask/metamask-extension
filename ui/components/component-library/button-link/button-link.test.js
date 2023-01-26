@@ -82,7 +82,7 @@ describe('ButtonLink', () => {
   });
   it('should render with icon', () => {
     const { container } = render(
-      <ButtonLink data-testid="icon" iconName="add-square-filled" />,
+      <ButtonLink data-testid="icon" iconName="add-square" />,
     );
 
     const icons = container.getElementsByClassName('mm-icon').length;

@@ -99,7 +99,7 @@ import { ButtonIcon, Icon, ICON_NAMES, TextFieldBase } from '../../component-lib
   leftAccessory={
     <Icon
       color={COLORS.ICON_ALTERNATIVE}
-      name={ICON_NAMES.SEARCH_FILLED}
+      name={ICON_NAMES.SEARCH}
     />
   }
 />
@@ -108,7 +108,7 @@ import { ButtonIcon, Icon, ICON_NAMES, TextFieldBase } from '../../component-lib
   placeholder="Public address (0x), or ENS"
   rightAccessory={
     <ButtonIcon
-      iconName={ICON_NAMES.SCAN_BARCODE_FILLED}
+      iconName={ICON_NAMES.SCAN_BARCODE}
       ariaLabel="Scan QR code"
       iconProps={{ color: COLORS.PRIMARY_DEFAULT }}
     />
@@ -130,7 +130,7 @@ import { ButtonIcon, Icon, ICON_NAMES, TextFieldBase } from '../../component-lib
   rightAccessory={
     isAddressValid && (
       <Icon
-        name={ICON_NAMES.CHECK_OUTLINE}
+        name={ICON_NAMES.CHECK}
         color={COLORS.SUCCESS_DEFAULT}
       />
     )
@@ -217,7 +217,7 @@ const TextFieldCustomInput = (args) => (
     size={SIZES.LG}
     InputComponent={CustomInputComponent}
     leftAccessory={
-      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET_FILLED} />
+      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET} />
     }
   />
 );

@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Aprovar"
   },
-  "approveSpendLimit": {
-    "message": "Aprovar limite de gastos de $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Isso permite que terceiros acessem e transfiram os seguintes NFTs sem aviso prévio até que você revogue o acesso."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Acelerar essa transação"
   },
-  "spendLimitAmount": {
-    "message": "Valor do limite de gastos"
-  },
   "spendLimitInsufficient": {
     "message": "Limite de gastos insuficiente"
   },
@@ -3596,12 +3589,6 @@
     "message": "Mudanças repentinas no mercado podem causar falhas. Se o problema persistir, entre em contato com $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "As Transações Inteligentes estão temporariamente indisponíveis porque você tem uma transação pendente."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Você ainda pode fazer swap com seus tokens mesmo quando as Transações Inteligentes estiverem indisponíveis."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Enviando seu swap de forma privada..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "Simule as transações antes de finalizar para diminuir os custos de transação e reduzir a possibilidade de falhas."
   },
-  "stxTryRegular": {
-    "message": "Tente fazer uma swap comum."
-  },
   "stxTryingToCancel": {
     "message": "Tentando cancelar sua transação..."
-  },
-  "stxUnavailable": {
-    "message": "As Transações Inteligentes estão desativadas"
   },
   "stxUnknown": {
     "message": "Status desconhecido"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Você precisa de mais $1 $2 para concluir essa troca",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Você precisa de mais $1 para completar esse swap usando transações inteligentes.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Melhores cotações de $1.",

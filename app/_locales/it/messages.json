@@ -305,10 +305,6 @@
   "approveButtonText": {
     "message": "Approva"
   },
-  "approveSpendLimit": {
-    "message": "Approva limite di spesa per $1",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "Approvato"
   },
@@ -1752,9 +1748,6 @@
   },
   "speedUpTransaction": {
     "message": "Accelera questa transazione"
-  },
-  "spendLimitAmount": {
-    "message": "Limite di spesa"
   },
   "spendLimitInsufficient": {
     "message": "Limite di spesa insufficiente"

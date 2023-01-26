@@ -358,15 +358,6 @@ describe('Ducks - Swaps', () => {
     });
   });
 
-  describe('getCurrentSmartTransactionsErrorMessageDismissed', () => {
-    it('returns currentSmartTransactionsErrorMessageDismissed', () => {
-      const state = createSwapsMockStore();
-      expect(
-        swaps.getCurrentSmartTransactionsErrorMessageDismissed(state),
-      ).toBe(state.swaps.currentSmartTransactionsErrorMessageDismissed);
-    });
-  });
-
   describe('shouldShowCustomPriceTooLowWarning', () => {
     it('returns false for showCustomPriceTooLowWarning', () => {
       const state = createSwapsMockStore();
@@ -771,21 +762,6 @@ describe('Ducks - Swaps', () => {
         const actions = store.getActions();
         expect(actions).toHaveLength(1);
         expect(actions[0].type).toBe('swaps/clearSwapsState');
-      });
-    });
-
-    describe('dismissCurrentSmartTransactionsErrorMessage', () => {
-      it('calls the "swaps/dismissCurrentSmartTransactionsErrorMessage" action', () => {
-        const state = store.getState().swaps;
-        store.dispatch(swaps.dismissCurrentSmartTransactionsErrorMessage());
-        const actions = store.getActions();
-        expect(actions[0].type).toBe(
-          'swaps/dismissCurrentSmartTransactionsErrorMessage',
-        );
-        const newState = swapsReducer(state, actions[0]);
-        expect(newState.currentSmartTransactionsErrorMessageDismissed).toBe(
-          true,
-        );
       });
     });
 

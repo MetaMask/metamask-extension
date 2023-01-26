@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Одобрить"
   },
-  "approveSpendLimit": {
-    "message": "Одобрить предел расходов $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Это позволяет третьей стороне получать доступ и передавать следующие NFT без дополнительного уведомления, пока вы не отзовете ее доступ."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Ускорить эту транзакцию"
   },
-  "spendLimitAmount": {
-    "message": "Сумма лимита расходов"
-  },
   "spendLimitInsufficient": {
     "message": "Недостаточный лимит расходов"
   },
@@ -3596,12 +3589,6 @@
     "message": "Внезапные изменения на рынке могут привести к отказам. Если проблема не устранена, обратитесь по адресу $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Смарт-транзакции временно недоступны, так как у вас есть ожидающая транзакция."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Вы по-прежнему можете обменивать свои токены, даже если смарт-транзакции недоступны."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Приватная отправка вашей операции обмена..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "Моделируйте транзакции перед отправкой, чтобы снизить транзакционные издержки и сократить число отказов."
   },
-  "stxTryRegular": {
-    "message": "Попробуйте обычный обмен."
-  },
   "stxTryingToCancel": {
     "message": "Попытка отменить транзакцию..."
-  },
-  "stxUnavailable": {
-    "message": "Смарт-транзакции отключены"
   },
   "stxUnknown": {
     "message": "Статус неизвестен"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Вам нужно еще $1 $2 для завершения этого обмена",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Вам нужно больше $1, чтобы завершить этот обмен с использованием смарт-транзакций.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Лучшие котировки $1.",
