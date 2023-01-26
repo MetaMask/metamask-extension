@@ -266,10 +266,6 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDetectionNoticeDismissed(state) {
-  return state.metamask.collectiblesDetectionNoticeDismissed;
-}
-
 export function getCollectiblesDropdownState(state) {
   return state.metamask.collectiblesDropdownState;
 }
