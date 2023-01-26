@@ -28,6 +28,7 @@ const props = {
   useNonceField: true,
   nextNonce: 1,
   customNonceValue: '2',
+  txData: { simulationFails: null },
   showCustomizeNonceModal: jest.fn(),
   chainId: '1337',
   rpcPrefs: {},
