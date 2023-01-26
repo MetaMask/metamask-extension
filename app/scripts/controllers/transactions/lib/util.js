@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { ethers } from 'ethers';
+import { Interface } from '@ethersproject/abi';
 import abi from 'human-standard-token-abi';
 import { addHexPrefix } from '../../../lib/util';
 import {
@@ -237,7 +237,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
 export function validateInputData(value) {
   if (value !== null) {
     // Validate the input data
-    const hstInterface = new ethers.utils.Interface(abi);
+    const hstInterface = new Interface(abi);
     try {
       hstInterface.parseTransaction({ data: value });
     } catch (e) {
