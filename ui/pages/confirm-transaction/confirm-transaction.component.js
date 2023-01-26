@@ -29,10 +29,6 @@ import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {
-  static contextTypes = {
-    metricsEvent: PropTypes.func,
-  };
-
   static propTypes = {
     history: PropTypes.object.isRequired,
     totalUnapprovedCount: PropTypes.number.isRequired,
