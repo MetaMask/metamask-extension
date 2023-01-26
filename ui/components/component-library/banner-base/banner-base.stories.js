@@ -126,7 +126,7 @@ ActionButton.args = {
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
-    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+    iconName: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
     iconPositionRight: true,
   },
   children:
