@@ -71,7 +71,6 @@ describe('Eth sign', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement('#ethSign');
 
-        await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',

@@ -78,7 +78,7 @@ export default class PreferencesController {
     this.network = opts.network;
     this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
-    this.store.setMaxListeners(12);
+    this.store.setMaxListeners(13);
     this.openPopup = opts.openPopup;
     this.tokenListController = opts.tokenListController;
 
