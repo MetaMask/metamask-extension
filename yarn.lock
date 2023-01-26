@@ -2038,7 +2038,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.6.4, @ethersproject/abi@npm:^5.7.0":
+"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.5.0, @ethersproject/abi@npm:^5.6.4, @ethersproject/abi@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/abi@npm:5.7.0"
   dependencies:
@@ -4327,9 +4327,9 @@ __metadata:
   linkType: hard
 
 "@noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@noble/secp256k1@npm:1.7.0"
-  checksum: 540a2b8e527ee1e5522af1c430e54945ad373883cac983b115136cd0950efa1f2c473ee6a36d8e69b6809b3ee586276de62f5fa705c77a9425721e81bada8116
+  version: 1.7.1
+  resolution: "@noble/secp256k1@npm:1.7.1"
+  checksum: d2301f1f7690368d8409a3152450458f27e54df47e3f917292de3de82c298770890c2de7c967d237eff9c95b70af485389a9695f73eb05a43e2bd562d18b18cb
   languageName: node
   linkType: hard
 
@@ -18331,11 +18331,12 @@ __metadata:
   linkType: hard
 
 "gridplus-sdk@npm:^2.2.9":
-  version: 2.2.9
-  resolution: "gridplus-sdk@npm:2.2.9"
+  version: 2.4.3
+  resolution: "gridplus-sdk@npm:2.4.3"
   dependencies:
     "@ethereumjs/common": 2.4.0
     "@ethereumjs/tx": 3.3.0
+    "@ethersproject/abi": ^5.5.0
     aes-js: ^3.1.1
     bech32: ^2.0.0
     bignumber.js: ^9.0.1
@@ -18350,7 +18351,8 @@ __metadata:
     js-sha3: ^0.8.0
     rlp: ^3.0.0
     secp256k1: 4.0.2
-  checksum: f406aed86508ca8762201b7b638de900efa9c7de2b1f0407de8c06f348517b809d45f6c8c891dd743a26bc99832b6f8c399a91424db1f72909bbd5c08b2dbf96
+    uuid: ^9.0.0
+  checksum: 07cd99cdf9056168c5b703f56c6be69e771348a48af234c895e6acca68b29acb227c4b1a9f7ff53e45f676a08aca60c06bffd23dab408a7f6356b368c173abd2
   languageName: node
   linkType: hard
 
@@ -34219,6 +34221,15 @@ __metadata:
   bin:
     uuid: dist/bin/uuid
   checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
   languageName: node
   linkType: hard
 

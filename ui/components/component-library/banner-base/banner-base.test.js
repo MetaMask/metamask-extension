@@ -72,10 +72,7 @@ describe('BannerBase', () => {
     const { getByTestId } = render(
       <BannerBase
         startAccessory={
-          <Icon
-            data-testid="start-accessory"
-            name={ICON_NAMES.ADD_SQUARE_FILLED}
-          />
+          <Icon data-testid="start-accessory" name={ICON_NAMES.ADD_SQUARE} />
         }
       />,
     );

@@ -3,7 +3,7 @@
 exports[`BannerBase should render bannerbase element correctly 1`] = `
 <div>
   <div
-    class="box mm-banner-base box--padding-3 box--display-inline-flex box--gap-2 box--flex-direction-row box--background-color-background-default box--rounded-sm"
+    class="box mm-banner-base box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-background-default box--rounded-sm"
     data-testid="banner-base"
   >
     <div>

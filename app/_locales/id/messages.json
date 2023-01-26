@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Setujui"
   },
-  "approveSpendLimit": {
-    "message": "Setujui batas penggunaan $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Hal ini memungkinkan pihak ketiga untuk mengakses dan mentransfer NFT berikut tanpa pemberitahuan lebih lanjut sampai Anda mencabut aksesnya."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Percepat transaksi ini"
   },
-  "spendLimitAmount": {
-    "message": "Jumlah batas penggunaan"
-  },
   "spendLimitInsufficient": {
     "message": "Batas penggunaan tidak mencukupi"
   },
@@ -3596,12 +3589,6 @@
     "message": "Perubahan pasar yang terjadi secara tiba-tiba dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Transaksi Pintar tidak tersedia untuk sementara waktu karena Anda memiliki transaksi yang tertunda."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Anda masih bisa menukar token meskipun Transaksi Pintar tidak tersedia."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Kirimkan Swap Anda secara pribadi..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "Simulasikan transaksi sebelum dikirim untuk mengurangi biaya transaksi dan mengurangi kegagalan."
   },
-  "stxTryRegular": {
-    "message": "Coba pertukaran biasa."
-  },
   "stxTryingToCancel": {
     "message": "Mencoba membatalkan transaksi Anda..."
-  },
-  "stxUnavailable": {
-    "message": "Transaksi Pintar dinonaktifkan"
   },
   "stxUnknown": {
     "message": "Status tidak diketahui"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Anda memerlukan $1 $2 lagi untuk menyelesaikan swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Anda memerlukan lebih banyak $1 untuk menyelesaikan pertukaran ini menggunakan transaksi pintar.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Kuotasi terbaik dari $1.",

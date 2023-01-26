@@ -100,7 +100,7 @@ export default function SignatureRequestSIWE({
           iconFillColor="var(--color-warning-default)"
           useIcon
           withRightButton
-          icon={<Icon name="danger-filled" color={COLORS.WARNING_DEFAULT} />}
+          icon={<Icon name="danger" color={COLORS.WARNING_DEFAULT} />}
         />
       )}
       {!isSIWEDomainValid && (
@@ -121,7 +121,7 @@ export default function SignatureRequestSIWE({
           iconFillColor="var(--color-error-default)"
           useIcon
           withRightButton
-          icon={<Icon name="danger-filled" color={COLORS.ERROR_DEFAULT} />}
+          icon={<Icon name="danger" color={COLORS.ERROR_DEFAULT} />}
         />
       )}
       <PageContainerFooter

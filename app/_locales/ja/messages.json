@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "承認"
   },
-  "approveSpendLimit": {
-    "message": "$1使用限度額の承認",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "これにより、アクセス許可を取り消すまで、第三者が今後通知なしに次の NFT にアクセスし、転送できるようになります。"
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "このトランザクションをスピードアップ"
   },
-  "spendLimitAmount": {
-    "message": "使用限度額"
-  },
   "spendLimitInsufficient": {
     "message": "使用限度額が十分ではありません"
   },
@@ -3596,12 +3589,6 @@
     "message": "突然の市場変動が失敗の原因になります。問題が解決されないようでしたら、$1 にお問い合わせください。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "保留中のトランザクションがあるため、スマートトランザクションは一時的に利用できません。"
-  },
-  "stxFallbackUnavailable": {
-    "message": "スマートトランザクションが利用できなくても、トークンのスワップは可能です。"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "スワップを非公開で送信中..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "送信前にトランザクションのシミュレーションを行い、トランザクションのコストと失敗率を減らします。"
   },
-  "stxTryRegular": {
-    "message": "通常のスワップをお試しください。"
-  },
   "stxTryingToCancel": {
     "message": "トランザクションのキャンセルを試みています..."
-  },
-  "stxUnavailable": {
-    "message": "スマートトランザクションが無効になっています"
   },
   "stxUnknown": {
     "message": "ステータス不明"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "このスワップを完了させるには、さらに$1の$2が必要です。",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "スマートトランザクションを使用してこのスワップを完了させるには、もっと $1 が必要です。",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "最善の$1の見積もり。",
