@@ -99,8 +99,8 @@
     flex-direction: row;
 
     @include screen-sm-min {
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 12px;
+      padding-bottom: 12px;
       height: 66px;
     }
   }

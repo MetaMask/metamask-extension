@@ -36,7 +36,7 @@
   }
 
   &__swap-to-content {
-    padding: 20px 16px;
+    padding: 28px 16px 36px 16px;
     border-radius: 0 0 6px 6px;
     box-shadow: none;
     border: 1px solid var(--color-border-default);
@@ -144,7 +144,11 @@
 
   .dropdown-search-list {
     background-color: #F2F4F6;
-    border-radius: 100px;    
+    border-radius: 100px;   
+    
+    &__select-default {
+      color: var(--color-text-default);
+    }
   }
 
   .dropdown-input-pair {

@@ -15,6 +15,7 @@ export default function ExchangeRateDisplay({
   arrowColor = 'var(--color-primary-default)',
   boldSymbols = true,
   className,
+  onQuotesClick,
 }) {
   const [showPrimaryToSecondary, setShowPrimaryToSecondary] = useState(true);
   const [rotating, setRotating] = useState(false);
@@ -62,7 +63,10 @@ export default function ExchangeRateDisplay({
   }
 
   return (
-    <div className={classnames('exchange-rate-display', className)}>
+    <div
+      className={classnames('exchange-rate-display', className)}
+      onClick={onQuotesClick}
+    >
       <span>1</span>
       <span
         className={classnames({ 'exchange-rate-display__bold': boldSymbols })}

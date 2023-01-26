@@ -13,6 +13,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
+import IconCaretDown from '../../../components/ui/icon/icon-caret-down';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
 import {
@@ -210,7 +211,7 @@ export default function DropdownSearchList({
               </div>
             </div>
           </div>
-          <i className="fa fa-caret-down fa-lg dropdown-search-list__caret" />
+          <IconCaretDown size={16} className="dropdown-search-list__caret" />
         </div>
       )}
       {isOpen && (
