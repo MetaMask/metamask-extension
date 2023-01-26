@@ -4,5 +4,4 @@ export const BUTTON_BASE_SIZES = {
   SM: SIZES.SM,
   MD: SIZES.MD,
   LG: SIZES.LG,
-  AUTO: SIZES.AUTO,
 };

@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonLink } from './button-link';
+import { BUTTON_LINK_SIZES } from './button-link.constants';
 
 describe('ButtonLink', () => {
   it('should render button element correctly', () => {
@@ -42,7 +43,6 @@ describe('ButtonLink', () => {
         <ButtonLink size={SIZES.SM} data-testid={SIZES.SM} />
         <ButtonLink size={SIZES.MD} data-testid={SIZES.MD} />
         <ButtonLink size={SIZES.LG} data-testid={SIZES.LG} />
-        <ButtonLink size={SIZES.AUTO} data-testid={SIZES.AUTO} />
       </>,
     );
 
@@ -55,9 +55,14 @@ describe('ButtonLink', () => {
     expect(getByTestId(SIZES.LG)).toHaveClass(
       `mm-button-base--size-${SIZES.LG}`,
     );
-    expect(getByTestId(SIZES.AUTO)).toHaveClass(
-      `mm-button-base--size-${SIZES.AUTO}`,
+  });
+
+  it('should render ButtonLink inherit size', () => {
+    const { getByTestId } = render(
+      <ButtonLink size={BUTTON_LINK_SIZES.INHERIT} data-testid="inherit" />,
     );
+    // Different size classname compared to SIZES.SM, SIZES.MD, SIZES.LG
+    expect(getByTestId('inherit')).toHaveClass(`mm-button-link--size-inherit`);
   });
 
   it('should render as danger', () => {

@@ -75,11 +75,11 @@ describe('Button', () => {
     const { getByTestId } = render(
       <>
         <Button
-          size={BUTTON_SIZES.AUTO}
+          size={BUTTON_SIZES.INHERIT}
           type={BUTTON_TYPES.LINK}
-          data-testid={BUTTON_SIZES.AUTO}
+          data-testid={BUTTON_SIZES.INHERIT}
         >
-          Button {BUTTON_SIZES.AUTO}
+          Button {BUTTON_SIZES.INHERIT}
         </Button>
         <Button size={BUTTON_SIZES.SM} data-testid={BUTTON_SIZES.SM}>
           Button {BUTTON_SIZES.SM}
@@ -92,8 +92,8 @@ describe('Button', () => {
         </Button>
       </>,
     );
-    expect(getByTestId(BUTTON_SIZES.AUTO)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SIZES.AUTO}`,
+    expect(getByTestId(BUTTON_SIZES.INHERIT)).toHaveClass(
+      `mm-button-link--size-${BUTTON_SIZES.INHERIT}`,
     );
     expect(getByTestId(BUTTON_SIZES.SM)).toHaveClass(
       `mm-button-base--size-${BUTTON_SIZES.SM}`,
