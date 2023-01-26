@@ -25,7 +25,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
         >
           {onViewOnOpensea ? (
             <MenuItem
-              iconClassName="fas fa-qrcode"
+              iconName="export"
               data-testid="collectible-options__view-on-opensea"
               onClick={() => {
                 setCollectibleOptionsOpen(false);
