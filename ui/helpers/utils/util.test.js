@@ -229,6 +229,41 @@ describe('util', () => {
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
+    it('should return false when given a modern opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 OPR/68.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 OPR/58.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 Edg/81.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 Edge/71.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given an unknown browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/609.4 (KHTML, like Gecko) NF/6.0.2.21.3 NintendoBrowser/5.1.0.22474',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
   });
 
   describe('normalizing values', function () {
