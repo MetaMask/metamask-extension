@@ -683,7 +683,7 @@ jobs:
 
   test-e2e-chrome-nft:
     executor: node-browsers
-    parallelism: 8
+    parallelism: 1
     steps:
       - checkout
       - run:
@@ -711,7 +711,7 @@ jobs:
 
   test-e2e-firefox-nft:
     executor: node-browsers
-    parallelism: 8
+    parallelism: 1
     steps:
       - checkout
       - run:
