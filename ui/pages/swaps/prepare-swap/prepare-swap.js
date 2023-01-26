@@ -76,7 +76,10 @@ import {
   getHardwareWalletType,
 } from '../../../selectors';
 
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -90,7 +93,7 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
-  TOKEN_BUCKET_PRIORITY,
+  TokenBucketPriority,
 } from '../../../../shared/constants/swaps';
 
 import {
@@ -106,7 +109,6 @@ import {
   fetchTokenBalance,
 } from '../swaps.util';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import Mascot from '../../../components/ui/mascot';
@@ -225,13 +227,13 @@ export default function PrepareSwap({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
-    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.OWNED,
+    tokenBucketPriority: TokenBucketPriority.owned,
   });
   const tokensToSearchSwapTo = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
-    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.TOP,
+    tokenBucketPriority: TokenBucketPriority.top,
   });
   const selectedToToken =
     tokensToSearchSwapFrom.find(({ address }) =>
