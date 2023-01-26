@@ -333,7 +333,7 @@ export function getURL(url) {
 export function getIsBrowserDeprecated(
   browser = bowser.getParser(window.navigator.userAgent),
 ) {
-  return browser.satisfies(OUTDATED_BROWSER_VERSIONS);
+  return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
 }
 
 export function getURLHost(url) {
