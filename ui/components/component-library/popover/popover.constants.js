@@ -1,5 +1,7 @@
 export const POPOVER_POSITIONS = {
   AUTO: 'auto',
+  AUTO_START: 'auto-start',
+  AUTO_END: 'auto-end',
   TOP: 'top',
   TOP_START: 'top-start',
   TOP_END: 'top-end',

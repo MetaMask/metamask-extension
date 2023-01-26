@@ -18,18 +18,22 @@ export const Popover = ({ children, className, ...props }) => {
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
-  const { styles, attributes } = usePopper(
-    referenceElement,
-    popperElement,
-    { placement: 'auto' },
-    {
-      modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
-    },
-  );
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: 'auto',
+    modifiers: [
+      { name: 'arrow', options: { element: arrowElement } },
+      {
+        name: 'offset',
+        options: {
+          offset: [30, 15],
+        },
+      },
+    ],
+  });
   return (
     <>
       <div style={{ backgroundColor: 'red' }} ref={setReferenceElement}>
-        <Button ref={setReferenceElement}>Popper Trigger</Button>
+        <Button>Popper Trigger</Button>
       </div>
 
       <Box
@@ -53,6 +57,7 @@ export const Popover = ({ children, className, ...props }) => {
           id="arrow"
           ref={setArrowElement}
           style={styles.arrow}
+          {...attributes.arrow}
         />
       </Box>
     </>
