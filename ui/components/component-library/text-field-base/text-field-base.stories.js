@@ -243,10 +243,7 @@ export const LeftAccessoryRightAccessory = (args) => {
         name="search"
         onChange={handleOnChange}
         leftAccessory={
-          <Icon
-            color={COLORS.ICON_ALTERNATIVE}
-            name={ICON_NAMES.SEARCH_FILLED}
-          />
+          <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.SEARCH} />
         }
       />
       <TextFieldBase
@@ -257,7 +254,7 @@ export const LeftAccessoryRightAccessory = (args) => {
         onChange={handleOnChange}
         rightAccessory={
           <ButtonIcon
-            iconName={ICON_NAMES.SCAN_BARCODE_FILLED}
+            iconName={ICON_NAMES.SCAN_BARCODE}
             ariaLabel="Scan QR code"
             iconProps={{ color: COLORS.PRIMARY_DEFAULT }}
           />
@@ -317,10 +314,7 @@ export const LeftAccessoryRightAccessory = (args) => {
         }
         rightAccessory={
           value.accountAddress.length === 42 && (
-            <Icon
-              name={ICON_NAMES.CHECK_OUTLINE}
-              color={COLORS.SUCCESS_DEFAULT}
-            />
+            <Icon name={ICON_NAMES.CHECK} color={COLORS.SUCCESS_DEFAULT} />
           )
         }
       />
@@ -470,7 +464,7 @@ export const InputComponent = (args) => (
     size={SIZES.LG}
     InputComponent={CustomInputComponent}
     leftAccessory={
-      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET_FILLED} />
+      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET} />
     }
   />
 );

@@ -3805,26 +3805,6 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
-export function setCollectiblesDetectionNoticeDismissed() {
-  return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
-    true,
-  ]);
-}
-
-export function setImprovedTokenAllowanceEnabled(
-  improvedTokenAllowanceEnabled,
-) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setImprovedTokenAllowanceEnabled', [
-        improvedTokenAllowanceEnabled,
-      ]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
-}
-
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled,
 ) {

@@ -84,8 +84,8 @@ export const ButtonBase = ({
       </Text>
       {loading && (
         <Icon
-          className="mm-button-base__icon-loading"
-          name={ICON_NAMES.LOADING_FILLED}
+          className="mm-button__icon-loading"
+          name={ICON_NAMES.LOADING}
           size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.MD}
         />
       )}

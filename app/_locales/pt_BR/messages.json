@@ -51,10 +51,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 pode acessar e gastar até esse valor máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessingYourCamera": {
     "message": "Acessando sua câmera..."
   },
@@ -230,15 +226,8 @@
   "approveButtonText": {
     "message": "Aprovar"
   },
-  "approveSpendLimit": {
-    "message": "Aprovar limite de gastos de $1",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "Aprovado"
-  },
-  "approvedAmountWithColon": {
-    "message": "Valor aprovado:"
   },
   "asset": {
     "message": "Ativo"
@@ -2366,9 +2355,6 @@
   },
   "speedUpTransaction": {
     "message": "Acelerar essa transação"
-  },
-  "spendLimitAmount": {
-    "message": "Valor do limite de gastos"
   },
   "spendLimitInsufficient": {
     "message": "Limite de gastos insuficiente"

@@ -1,6 +1,5 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { ethers } from 'ethers';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
@@ -66,14 +65,12 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
-      improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
       theme: THEME_TYPE.OS,
       ...opts.initState,
     };
 
     this.network = opts.network;
-    this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
@@ -193,17 +190,6 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `improvedTokenAllowanceEnabled` property
-   *
-   * @param improvedTokenAllowanceEnabled
-   */
-  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
-    this.store.updateState({
-      improvedTokenAllowanceEnabled,
-    });
   }
 
   /**

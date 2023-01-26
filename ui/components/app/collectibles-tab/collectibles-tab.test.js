@@ -5,6 +5,7 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import CollectiblesTab from '.';
 
 const COLLECTIBLES = [
@@ -149,25 +150,24 @@ const render = ({
   collectibles = [],
   selectedAddress,
   chainId = '0x1',
-  collectiblesDetectionNoticeDismissed = false,
   useNftDetection,
   onAddNFT = jest.fn(),
 }) => {
+  const chainIdAsDecimal = hexToDecimal(chainId);
   const store = configureStore({
     metamask: {
       allNfts: {
         [ACCOUNT_1]: {
-          [chainId]: collectibles,
+          [chainIdAsDecimal]: collectibles,
         },
       },
       allNftContracts: {
         [ACCOUNT_1]: {
-          [chainId]: collectibleContracts,
+          [chainIdAsDecimal]: collectibleContracts,
         },
       },
       provider: { chainId },
       selectedAddress,
-      collectiblesDetectionNoticeDismissed,
       useNftDetection,
       collectiblesDropdownState,
     },
@@ -177,13 +177,10 @@ const render = ({
 
 describe('Collectible Items', () => {
   const detectCollectiblesStub = jest.fn();
-  const setCollectiblesDetectionNoticeDismissedStub = jest.fn();
   const getStateStub = jest.fn();
   const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
   const updateCollectibleDropDownStateStub = jest.fn();
   setBackgroundConnection({
-    setCollectiblesDetectionNoticeDismissed:
-      setCollectiblesDetectionNoticeDismissedStub,
     detectNfts: detectCollectiblesStub,
     getState: getStateStub,
     checkAndUpdateAllNftsOwnershipStatus:
@@ -239,23 +236,8 @@ describe('Collectible Items', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        collectiblesDetectionNoticeDismissed: true,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
-    });
-
-    it('should call setCollectibesDetectionNoticeDismissed when users clicks "X"', () => {
-      render({
-        selectedAddress: ACCOUNT_2,
-        collectibles: COLLECTIBLES,
-      });
-      expect(
-        setCollectiblesDetectionNoticeDismissedStub,
-      ).not.toHaveBeenCalled();
-      fireEvent.click(
-        screen.queryByTestId('collectibles-detection-notice-close'),
-      );
-      expect(setCollectiblesDetectionNoticeDismissedStub).toHaveBeenCalled();
     });
   });
 

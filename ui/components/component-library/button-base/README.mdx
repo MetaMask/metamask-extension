@@ -37,7 +37,7 @@ Possible sizes include:
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase size={SIZES.AUTO} />
 <ButtonBase size={SIZES.SM} />
@@ -55,7 +55,7 @@ Use boolean `block` prop to quickly enable a full width block button
 
 ```jsx
 import { DISPLAY } from '../../../helpers/constants/design-system';
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase>Default Button</ButtonBase>
 <ButtonBase block>Block Button</ButtonBase>
@@ -77,7 +77,7 @@ Button `as` options:
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 
 <ButtonBase as="button">Button Element</ButtonBase>
@@ -95,7 +95,7 @@ When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase href="/metamask">Anchor Element</ButtonBase>;
 ```
@@ -109,7 +109,7 @@ Use the boolean `disabled` prop to disable button
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase disabled>Disabled Button</ButtonBase>;
 ```
@@ -123,7 +123,7 @@ Use the boolean `loading` prop to set loading spinner
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase loading>Loading Button</ButtonBase>;
 ```
@@ -137,8 +137,8 @@ Use the `iconName` prop and the `ICON_NAMES` object from `./ui/components/compon
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 import { ICON_NAMES } from '../icon';
 
-<ButtonBase iconName={ICON_NAMES.ADD_SQUARE_FILLED}>Button</ButtonBase>;
+<ButtonBase icon={ICON_NAMES.ADD_SQUARE}>Button</ButtonBase>;
 ```
