@@ -221,12 +221,8 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
         }
         break;
       case 'data':
-        try {
-          ensureFieldIsString(txParams, 'data');
-          validateInputData(value);
-        } catch (e) {
-          throw ethErrors.rpc.invalidParams(e);
-        }
+        validateInputData(value);
+        ensureFieldIsString(txParams, 'data');
         break;
       default:
         ensureFieldIsString(txParams, key);
