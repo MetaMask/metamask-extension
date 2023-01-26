@@ -4,6 +4,7 @@ export const BUTTON_SIZES = {
   SM: SIZES.SM,
   MD: SIZES.MD,
   LG: SIZES.LG,
+  INHERIT: SIZES.INHERIT,
   AUTO: SIZES.AUTO,
 };
 

@@ -146,12 +146,15 @@ export const Size = (args) => (
       <Button {...args} size={SIZES.LG}>
         Large Button
       </Button>
+      <Button {...args} type={BUTTON_TYPES.LINK}>
+        Auto ButtonLink
+      </Button>
     </Box>
     <Text variant={TEXT.BODY_SM}>
-      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.AUTO}>
-        Button Auto
+      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.INHERIT}>
+        Button Inherit
       </Button>{' '}
-      inherits the font-size of the parent element. Auto size only used for
+      inherits the font-size of the parent element. Inherit size only used for
       ButtonLink.
     </Text>
   </>

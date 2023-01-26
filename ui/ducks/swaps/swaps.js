@@ -125,7 +125,6 @@ const initialState = {
     fallBackPrice: null,
   },
   currentSmartTransactionsError: '',
-  currentSmartTransactionsErrorMessageDismissed: false,
   swapsSTXLoading: false,
 };
 
@@ -212,9 +211,6 @@ const slice = createSlice({
         : stxErrorTypes.UNAVAILABLE;
       state.currentSmartTransactionsError = errorType;
     },
-    dismissCurrentSmartTransactionsErrorMessage: (state) => {
-      state.currentSmartTransactionsErrorMessageDismissed = true;
-    },
     setSwapsSTXSubmitLoading: (state, action) => {
       state.swapsSTXLoading = action.payload || false;
     },
@@ -277,9 +273,6 @@ export const getSwapsFallbackGasPrice = (state) =>
 
 export const getCurrentSmartTransactionsError = (state) =>
   state.swaps.currentSmartTransactionsError;
-
-export const getCurrentSmartTransactionsErrorMessageDismissed = (state) =>
-  state.swaps.currentSmartTransactionsErrorMessageDismissed;
 
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
@@ -490,13 +483,11 @@ const {
   retrievedFallbackSwapsGasPrice,
   swapCustomGasModalClosed,
   setCurrentSmartTransactionsError,
-  dismissCurrentSmartTransactionsErrorMessage,
   setSwapsSTXSubmitLoading,
 } = actions;
 
 export {
   clearSwapsState,
-  dismissCurrentSmartTransactionsErrorMessage,
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,

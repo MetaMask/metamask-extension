@@ -47,7 +47,7 @@ Possible sizes include:
 - `SIZES.MD` 20px
 - `SIZES.LG` 24px
 - `SIZES.XL` 32px
-- `SIZES.AUTO` inherits the font-size from parent element. This is useful for inline icons in text.
+- `SIZES.INHERIT` inherits the font-size from parent element. This is useful for inline icons in text.
 
 <Canvas>
   <Story id="components-componentlibrary-icon--size" />
@@ -63,7 +63,7 @@ import { Icon, ICON_NAMES } from '../../components/component-library';
 <Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.LG} />
 <Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.XL} />
 <Text as="p" variant={TEXT.BODY_SM}>
-    <Icon size={SIZES.AUTO} /> Auto also exists and inherits the
+    <Icon size={SIZES.INHERIT} />  inherits the
     font-size of the parent element.
 </Text>
 ```
