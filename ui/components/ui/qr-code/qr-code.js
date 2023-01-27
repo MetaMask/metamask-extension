@@ -69,7 +69,7 @@ function QrCodeView(props) {
         >
           <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
           <Icon
-            name={ICON_NAMES.COPY}
+            name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
             size={ICON_SIZES.SM}
             marginInlineStart={3}
           />
