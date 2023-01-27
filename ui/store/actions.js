@@ -3285,14 +3285,10 @@ export function setRecoveryPhraseReminderLastShown(lastShown) {
 
 export function setOutdatedBrowserWarningLastShown(lastShown) {
   return async (dispatch) => {
-    try {
-      await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
-        lastShown,
-      ]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      dispatch(displayWarning(error.message));
-    }
+    await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
+      lastShown,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
