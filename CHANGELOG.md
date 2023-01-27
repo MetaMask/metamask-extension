@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.24.2]
-### Uncategorized
-- Use network provider state, instead of CurrencyRateController state, to select 'nativeCurrency' ([#17450](https://github.com/MetaMask/metamask-extension/pull/17450))
+### Fixed
+- Fix incorrect network information after switching networks when "Show balance and token price checker" is toggled off ([#17450](https://github.com/MetaMask/metamask-extension/pull/17450))
 
 ## [10.24.1]
 ### Added
