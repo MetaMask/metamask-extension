@@ -47,7 +47,8 @@
         padding: 0 32px 16px 16px;
         position: fixed;
         bottom: 80px;
-        z-index: 1;
+        // Set z-index above ".send-v2__hex-data__input". This should be a temp fix. TODO: Refactor z-indexes
+        z-index: 1026;
       }
     }
   }
