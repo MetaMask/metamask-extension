@@ -9,6 +9,8 @@ import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
 
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_DEPLOY_CONTRACT_PATH,
@@ -80,7 +82,7 @@ const ConfirmTransaction = (props) => {
     if (!totalUnapprovedCount && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
-      if (origin !== 'metamask') {
+      if (origin !== ORIGIN_METAMASK) {
         getContractMethodData(data);
       }
 
