@@ -317,8 +317,8 @@ describe('MetaMask Reducers', () => {
       it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
         expect(
           getNativeCurrency({
-            useCurrencyRateCheck: false,
             ...mockState,
+            useCurrencyRateCheck: false,
           }),
         ).toStrictEqual('TestETH');
       });
