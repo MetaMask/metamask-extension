@@ -26,6 +26,7 @@ import {
   getShowPortfolioTooltip,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
+  getShouldShowNewNetworkInfo,
 } from '../../selectors';
 
 import {
@@ -65,9 +66,10 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { CONNECTED_ROUTE } from '../../helpers/constants/routes';
 import Home from './home.component';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   const { metamask, appState } = state;
   const {
     suggestedAssets,
@@ -78,8 +80,10 @@ const mapStateToProps = (state) => {
     swapsState,
     firstTimeFlowType,
     completedOnboarding,
+    isAccountMenuOpen,
   } = metamask;
   const { forgottenPassword } = metamask;
+  const { modal, networkDropdownOpen } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
@@ -112,6 +116,9 @@ const mapStateToProps = (state) => {
   const isSigningQRHardwareTransaction =
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
+
+  const isConnectedSitesShown = ownProps.location.pathname === CONNECTED_ROUTE;
+  const isAccountDetailsShown = modal.open;
 
   return {
     forgottenPassword,
@@ -156,6 +163,11 @@ const mapStateToProps = (state) => {
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
     onboardedInThisUISession: appState.onboardedInThisUISession,
+    shouldShowNewNetworkInfo: getShouldShowNewNetworkInfo(state),
+    isConnectedSitesShown,
+    isAccountDetailsShown,
+    isAccountMenuOpen,
+    networkDropdownOpen,
   };
 };
 

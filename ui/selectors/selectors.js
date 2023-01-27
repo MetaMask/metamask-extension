@@ -1401,6 +1401,22 @@ export function getShouldShowSeedPhraseReminder(state) {
   );
 }
 
+export function getShouldShowNewNetworkInfo(state) {
+  const { isUnlocked, provider, completedOnboarding } = state.metamask;
+  const { chainId } = provider;
+  const isTestNet = TEST_CHAINS.includes(chainId);
+
+  return (
+    isUnlocked &&
+    chainId &&
+    !isTestNet &&
+    !getIsNetworkUsed(state) &&
+    !isCurrentProviderCustom(state) &&
+    completedOnboarding &&
+    getAllAccountsOnNetworkAreEmpty(state)
+  );
+}
+
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }

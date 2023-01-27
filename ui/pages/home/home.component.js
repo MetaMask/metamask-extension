@@ -109,6 +109,7 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
+    shouldShowNewNetworkInfo: PropTypes.bool.isRequired,
     showPortfolioTooltip: PropTypes.bool.isRequired,
     hidePortfolioTooltip: PropTypes.func.isRequired,
     portfolioTooltipWasShownInThisSession: PropTypes.bool.isRequired,
@@ -150,6 +151,10 @@ export default class Home extends PureComponent {
     clearNewCustomNetworkAdded: PropTypes.func,
     setRpcTarget: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
+    isConnectedSitesShown: PropTypes.bool,
+    isAccountDetailsShown: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
+    networkDropdownOpen: PropTypes.bool,
   };
 
   state = {
@@ -626,8 +631,13 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       completedOnboarding,
       shouldShowSeedPhraseReminder,
+      shouldShowNewNetworkInfo,
       onboardedInThisUISession,
       newCustomNetworkAdded,
+      isConnectedSitesShown,
+      isAccountDetailsShown,
+      isAccountMenuOpen,
+      networkDropdownOpen,
     } = this.props;
 
     if (forgottenPassword) {
@@ -644,6 +654,19 @@ export default class Home extends PureComponent {
       !showPortfolioTooltip &&
       !portfolioTooltipWasShownInThisSession &&
       Object.keys(newCustomNetworkAdded).length === 0;
+
+    const shouldShowPortfolioToolTip =
+      !process.env.IN_TEST &&
+      !shouldShowSeedPhraseReminder &&
+      !showRecoveryPhraseReminder &&
+      !shouldShowNewNetworkInfo &&
+      !isConnectedSitesShown &&
+      !isAccountDetailsShown &&
+      !isAccountMenuOpen &&
+      !networkDropdownOpen &&
+      Object.keys(newCustomNetworkAdded).length === 0 &&
+      showPortfolioTooltip;
+
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -676,12 +699,7 @@ export default class Home extends PureComponent {
               subHeader={
                 <Tooltip
                   position="bottom"
-                  open={
-                    !process.env.IN_TEST &&
-                    !shouldShowSeedPhraseReminder &&
-                    !showRecoveryPhraseReminder &&
-                    showPortfolioTooltip
-                  }
+                  open={shouldShowPortfolioToolTip}
                   interactive
                   theme="home__subheader-link--tooltip"
                   html={
