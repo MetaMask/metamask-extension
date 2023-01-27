@@ -57,8 +57,7 @@ export const BannerBase = ({
         )}
         {actionButtonLabel && (
           <ButtonLink
-            // noPadding TODO: Use noPadding option when released
-            size={SIZES.AUTO} // TODO: Remove when noPadding is added
+            size={SIZES.AUTO}
             onClick={actionButtonOnClick}
             {...actionButtonProps}
           >

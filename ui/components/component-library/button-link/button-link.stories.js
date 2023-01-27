@@ -1,6 +1,8 @@
 import React from 'react';
 import {
   ALIGN_ITEMS,
+  BORDER_STYLE,
+  COLORS,
   DISPLAY,
   SIZES,
   TEXT,
@@ -65,7 +67,7 @@ export default {
     href: {
       control: 'text',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
@@ -118,28 +120,49 @@ DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
   <>
-    <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+    <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START} gap={4}>
+      <ButtonLink {...args} size={SIZES.AUTO}>
+        Auto (default)
+      </ButtonLink>
       <ButtonLink {...args} size={SIZES.SM}>
-        Small Button
+        Small
       </ButtonLink>
       <ButtonLink {...args} size={SIZES.MD}>
-        Medium (Default) Button
+        Medium
       </ButtonLink>
       <ButtonLink {...args} size={SIZES.LG}>
-        Large Button
+        Large
       </ButtonLink>
     </Box>
+    <Text variant={TEXT.BODY_LG_MEDIUM}>
+      Inherits the font-size of the parent element.{' '}
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Learn more
+      </ButtonLink>
+    </Text>
     <Text variant={TEXT.BODY_MD}>
-      <ButtonLink {...args} size={SIZES.AUTO}>
-        Button Auto
-      </ButtonLink>{' '}
-      inherits the font-size of the parent element.
+      Inherits the font-size of the parent element.{' '}
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Learn more
+      </ButtonLink>
+    </Text>
+    <Text variant={TEXT.BODY_SM}>
+      Inherits the font-size of the parent element.{' '}
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Learn more
+      </ButtonLink>
+    </Text>
+    <Text variant={TEXT.BODY_XS}>
+      Inherits the font-size of the parent element.{' '}
+      <ButtonLink {...args} size={SIZES.INHERIT}>
+        Learn more
+      </ButtonLink>
     </Text>
   </>
 );
 
 export const Danger = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+  <Box display={DISPLAY.FLEX} gap={4}>
     <ButtonLink {...args}>Normal</ButtonLink>
     {/* Test Anchor tag to match exactly as button */}
     <ButtonLink as="a" {...args} href="#" danger>
@@ -148,8 +171,62 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <ButtonLink {...args}>Anchor Element</ButtonLink>;
+export const Href = (args) => <ButtonLink {...args}>Href example</ButtonLink>;
 
 Href.args = {
   href: '/metamask',
+};
+
+export const HitArea = (args) => (
+  <>
+    <Text marginBottom={4}>Default</Text>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.FLEX_START}
+      gap={4}
+      marginBottom={4}
+    >
+      <ButtonLink {...args} size={SIZES.AUTO}>
+        Auto (default)
+      </ButtonLink>
+      <ButtonLink {...args} size={SIZES.SM}>
+        Small
+      </ButtonLink>
+      <ButtonLink {...args} size={SIZES.MD}>
+        Medium
+      </ButtonLink>
+      <ButtonLink {...args} size={SIZES.LG}>
+        Large
+      </ButtonLink>
+    </Box>
+    <Text marginBottom={4}>Add paddingLeft and paddingRight props</Text>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={ALIGN_ITEMS.FLEX_START}
+      gap={4}
+      marginBottom={4}
+    >
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.AUTO}>
+        Auto (default)
+      </ButtonLink>
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.SM}>
+        Small
+      </ButtonLink>
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.MD}>
+        Medium
+      </ButtonLink>
+      <ButtonLink {...args} paddingLeft={4} paddingRight={4} size={SIZES.LG}>
+        Large
+      </ButtonLink>
+    </Box>
+    <Text marginBottom={4}>Add block prop</Text>
+    <ButtonLink {...args} size={SIZES.LG} block>
+      Large block
+    </ButtonLink>
+  </>
+);
+
+HitArea.args = {
+  borderColor: COLORS.ERROR_DEFAULT,
+  borderStyle: BORDER_STYLE.DASHED,
 };
