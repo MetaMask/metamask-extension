@@ -31,6 +31,7 @@ export default function ActionableMessage({
   roundedButtons,
   dataTestId,
   autoHideTime = 0,
+  onAutoHide,
 }) {
   const [shouldDisplay, setShouldDisplay] = useState(true);
   useEffect(
@@ -40,6 +41,7 @@ export default function ActionableMessage({
       }
 
       const timeout = setTimeout(() => {
+        onAutoHide?.();
         setShouldDisplay(false);
       }, autoHideTime);
 
@@ -190,4 +192,8 @@ ActionableMessage.propTypes = {
    * Whether the actionable message should auto-hide itself after a given amount of time
    */
   autoHideTime: PropTypes.number,
+  /**
+   * Callback when autoHide time expires
+   */
+  onAutoHide: PropTypes.func,
 };
