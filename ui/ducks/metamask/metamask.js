@@ -307,7 +307,7 @@ export function getConversionRate(state) {
 }
 
 export function getNativeCurrency(state) {
-  return state.metamask.nativeCurrency;
+  return state.metamask.provider.ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
