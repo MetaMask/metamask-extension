@@ -122,10 +122,15 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         );
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
-
         // waits for deployed contract and calls failing contract method
         await driver.findClickableElement('#deployButton');
-        await driver.clickElement('#sendFailingButton');
+
+        await driver.fill('#toInput', contractAddress);
+        await driver.fill('#amountInput', '0');
+        await driver.fill('#gasInput', '100');
+
+        await driver.clickElement('#submitForm');
+
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
