@@ -3,19 +3,20 @@
   // TODO
 }
 
-#arrow,
-#arrow::before {
+.arrow,
+.arrow::before {
   position: absolute;
   width: 8px;
   height: 8px;
   background: inherit;
 }
 
-#arrow {
+.arrow {
   visibility: hidden;
 }
 
-#arrow::before {
+.arrow::before {
+  display: block;
   background-color: inherit;
   border: 1px solid;
   border-left-color: inherit;
@@ -27,21 +28,33 @@
   transform: rotate(45deg);
 }
 
-#tooltip[data-popper-placement^='top'] > #arrow {
+.tooltip[data-popper-placement^='top'] > .arrow {
   bottom: -6px;
-  transform: rotate(180deg);
+
+  &::before {
+    transform: rotate(180deg);
+    background-color: green;
+  }
 }
 
-#tooltip[data-popper-placement^='bottom'] > #arrow {
+.tooltip[data-popper-placement^='bottom'] > .arrow {
   top: -6px;
 }
 
-#tooltip[data-popper-placement^='left'] > #arrow {
-  right: -6px;
-  transform: rotate(90deg);
+.tooltip[data-popper-placement^='left'] > .arrow {
+  right: -2px;
+
+  &::before {
+    transform: rotate(135deg);
+    // background-color: yellow;
+  }
 }
 
-#tooltip[data-popper-placement^='right'] > #arrow {
+.tooltip[data-popper-placement^='right'] > .arrow {
   left: -6px;
-  transform: rotate(-90deg);
+
+  &::before {
+    transform: rotate(-90deg);
+    background-color: red;
+  }
 }

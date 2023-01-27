@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState, forwardRef } from 'react';
 import { usePopper } from 'react-popper';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -8,13 +8,15 @@ import { Button } from '../button';
 
 import {
   ALIGN_ITEMS,
+  BACKGROUND_COLORS,
   BORDER_RADIUS,
   COLORS,
   DISPLAY,
   JUSTIFY_CONTENT,
+  SIZES,
 } from '../../../helpers/constants/design-system';
 
-export const Popover = ({ children, className, ...props }) => {
+export const Popover = forwardRef((props, ref) => {
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
@@ -25,7 +27,7 @@ export const Popover = ({ children, className, ...props }) => {
       {
         name: 'offset',
         options: {
-          offset: [30, 15],
+          offset: [0, 8],
         },
       },
     ],
@@ -33,11 +35,11 @@ export const Popover = ({ children, className, ...props }) => {
   return (
     <>
       <div style={{ backgroundColor: 'red' }} ref={setReferenceElement}>
-        <Button>Popper Trigger</Button>
+        <Button size={SIZES.LG}>Popper Trigger</Button>
       </div>
 
       <Box
-        className={classnames('mm-popover', className)}
+        className={classnames('mm-popover tooltip', className)}
         display={DISPLAY.INLINE_FLEX}
         justifyContent={JUSTIFY_CONTENT.CENTER}
         alignItems={ALIGN_ITEMS.CENTER}
@@ -46,7 +48,7 @@ export const Popover = ({ children, className, ...props }) => {
         borderRadius={BORDER_RADIUS.XL}
         padding={4}
         {...props}
-        id="tooltip"
+        // ref={ref}
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}
@@ -54,7 +56,7 @@ export const Popover = ({ children, className, ...props }) => {
         {children} - This is the popper content
         <Box
           borderColor={COLORS.BORDER_DEFAULT}
-          id="arrow"
+          className={classnames('arrow')}
           ref={setArrowElement}
           style={styles.arrow}
           {...attributes.arrow}
@@ -62,7 +64,7 @@ export const Popover = ({ children, className, ...props }) => {
       </Box>
     </>
   );
-};
+});
 
 Popover.propTypes = {
   /**
