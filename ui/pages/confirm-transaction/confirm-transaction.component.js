@@ -36,6 +36,7 @@ import {
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
+  getContractMethodData,
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
@@ -44,7 +45,7 @@ import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 import ConfTx from './conf-tx';
 
 const ConfirmTransaction = (props) => {
-  const { getContractMethodData, setDefaultHomeActiveTabName } = props;
+  const { setDefaultHomeActiveTabName } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -109,7 +110,7 @@ const ConfirmTransaction = (props) => {
       history.replace(mostRecentOverviewPage);
     } else {
       if (origin !== ORIGIN_METAMASK) {
-        getContractMethodData(data);
+        dispatch(getContractMethodData(data));
       }
 
       const txId = transactionId || paramsTransactionId;
@@ -136,7 +137,7 @@ const ConfirmTransaction = (props) => {
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
       if (origin !== 'metamask') {
-        getContractMethodData(data);
+        dispatch(getContractMethodData(data));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapprovedCount) {
       setDefaultHomeActiveTabName('activity').then(() => {
@@ -152,7 +153,6 @@ const ConfirmTransaction = (props) => {
   }, [
     dispatch,
     transaction,
-    getContractMethodData,
     paramsTransactionId,
     transactionId,
     history,
@@ -213,7 +213,6 @@ const ConfirmTransaction = (props) => {
 };
 
 ConfirmTransaction.propTypes = {
-  getContractMethodData: PropTypes.func,
   setDefaultHomeActiveTabName: PropTypes.func,
 };
 
