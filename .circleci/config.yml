@@ -60,6 +60,9 @@ workflows:
       - prep-build-test-mv3:
           requires:
             - prep-deps
+      - prep-build-test-nft:
+          requires:
+            - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
@@ -94,6 +97,12 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
+      - test-e2e-chrome-nft:
+          requires:
+            - prep-build-test-nft
+      - test-e2e-firefox-nft:
+          requires:
+            - prep-build-test-nft
       - test-unit-mocha:
           requires:
             - prep-deps
@@ -177,6 +186,7 @@ workflows:
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
+            - prep-build-test-nft
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
@@ -444,6 +454,27 @@ jobs:
             - dist-test-mv3
             - builds-test-mv3
 
+  prep-build-test-nft:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension with nft's enabled for testing
+          command: yarn build:test:nft
+      - run:
+          name: Move test build to 'dist-test-nft' to avoid conflict with production build
+          command: mv ./dist ./dist-test-nft
+      - run:
+          name: Move test zips to 'builds-test-nft' to avoid conflict with production build
+          command: mv ./builds ./builds-test-nft
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-nft
+            - builds-test-nft
+
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
@@ -650,6 +681,62 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
+  test-e2e-chrome-nft:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-nft ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-nft ./builds
+      - run:
+          name: test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:nft --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-firefox-nft:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-nft ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-nft ./builds
+      - run:
+          name: test:e2e:firefox
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox:nft --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+          
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 2
