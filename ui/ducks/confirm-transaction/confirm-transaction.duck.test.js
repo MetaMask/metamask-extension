@@ -291,7 +291,7 @@ describe('Confirm Transaction Duck', () => {
           conversionRate: 468.58,
           currentCurrency: 'usd',
           provider: {
-            ticker: 'ETH'
+            ticker: 'ETH',
           },
         },
         confirmTransaction: {
