@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.24.2]
+### Uncategorized
+- Use network provider state, instead of CurrencyRateController state, to select 'nativeCurrency' ([#17450](https://github.com/MetaMask/metamask-extension/pull/17450))
+
 ## [10.24.1]
 ### Added
 - Ensure app name appears for Taiwanese language speakers in the extension stores ([#17304](https://github.com/MetaMask/metamask-extension/pull/17304))
@@ -3427,7 +3431,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.24.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.24.2...HEAD
+[10.24.2]: https://github.com/MetaMask/metamask-extension/compare/v10.24.1...v10.24.2
 [10.24.1]: https://github.com/MetaMask/metamask-extension/compare/v10.24.0...v10.24.1
 [10.24.0]: https://github.com/MetaMask/metamask-extension/compare/v10.23.3...v10.24.0
 [10.23.3]: https://github.com/MetaMask/metamask-extension/compare/v10.23.2...v10.23.3
