@@ -40,11 +40,12 @@ describe('MetaMask Reducers', () => {
         currentBlockGasLimit: '0x4c1878',
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
+        useCurrencyRateCheck: true,
         network: '5',
         provider: {
           type: 'testnet',
           chainId: '0x5',
-          ticker: 'ETH',
+          ticker: 'TestETH',
         },
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -309,8 +310,17 @@ describe('MetaMask Reducers', () => {
     });
 
     describe('getNativeCurrency()', () => {
-      it('should return the ticker symbol of the selected network', () => {
+      it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
         expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+      });
+
+      it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
+        expect(
+          getNativeCurrency({
+            useCurrencyRateCheck: false,
+            ...mockState,
+          }),
+        ).toStrictEqual('TestETH');
       });
     });
 
