@@ -5,6 +5,7 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
+import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -193,32 +194,18 @@ const ConfirmAddSuggestedToken = () => {
           </div>
         </div>
       </div>
-      <div className="page-container__footer">
-        <footer>
-          <Button
-            type="secondary"
-            large
-            className="page-container__footer-button"
-            onClick={async () => {
-              await Promise.all(
-                suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
-              );
-              history.push(mostRecentOverviewPage);
-            }}
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            disabled={suggestedAssets.length === 0}
-            onClick={handleAddTokensClick}
-          >
-            {t('addToken')}
-          </Button>
-        </footer>
-      </div>
+      <PageContainerFooter
+        cancelText={t('cancel')}
+        submitText={t('addToken')}
+        onCancel={async () => {
+          await Promise.all(
+            suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
+          );
+          history.push(mostRecentOverviewPage);
+        }}
+        onSubmit={handleAddTokensClick}
+        disabled={suggestedAssets.length === 0}
+      />
     </div>
   );
 };

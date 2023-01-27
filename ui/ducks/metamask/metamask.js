@@ -10,14 +10,18 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
-import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import {
+  decGWEIToHexWEI,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -263,10 +267,6 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDetectionNoticeDismissed(state) {
-  return state.metamask.collectiblesDetectionNoticeDismissed;
-}
-
 export function getCollectiblesDropdownState(state) {
   return state.metamask.collectiblesDropdownState;
 }
@@ -280,7 +280,9 @@ export const getCollectibles = (state) => {
     },
   } = state;
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
@@ -292,7 +294,9 @@ export const getCollectibleContracts = (state) => {
     },
   } = state;
 
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export function getBlockGasLimit(state) {
@@ -304,7 +308,10 @@ export function getConversionRate(state) {
 }
 
 export function getNativeCurrency(state) {
-  return state.metamask.nativeCurrency;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
+  return useCurrencyRateCheck
+    ? state.metamask.nativeCurrency
+    : state.metamask.provider.ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -433,7 +440,7 @@ export function getLedgerTransportType(state) {
 export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
-  return keyring?.type === KEYRING_TYPES.LEDGER;
+  return keyring?.type === HardwareKeyringTypes.ledger;
 }
 
 /**
@@ -445,6 +452,6 @@ export function isAddressLedger(state, address) {
  */
 export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
-    return kr.type === KEYRING_TYPES.LEDGER;
+    return kr.type === HardwareKeyringTypes.ledger;
   });
 }

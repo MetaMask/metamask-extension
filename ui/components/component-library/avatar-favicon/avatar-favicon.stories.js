@@ -13,7 +13,7 @@ import { AvatarFavicon, AVATAR_FAVICON_SIZES } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarFavicon',
-  id: __filename,
+
   component: AvatarFavicon,
   parameters: {
     docs: {

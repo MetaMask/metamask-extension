@@ -36,8 +36,8 @@ import {
   infuraProjectId,
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
-import { decimalToHex } from '../../../../../shared/lib/transactions-controller-utils';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display

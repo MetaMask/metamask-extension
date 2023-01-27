@@ -8,7 +8,6 @@ import ConfirmAddToken from '.';
 
 export default {
   title: 'Pages/ConfirmImportToken',
-  id: __filename,
 
   argTypes: {
     pendingTokens: {

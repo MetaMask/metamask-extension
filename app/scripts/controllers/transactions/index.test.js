@@ -96,6 +96,7 @@ describe('Transaction Controller', function () {
       getEIP1559GasFeeEstimates: () => undefined,
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
+      securityProviderRequest: () => undefined,
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -362,7 +363,7 @@ describe('Transaction Controller', function () {
     });
 
     it('should add an unapproved transaction and return a valid txMeta', async function () {
-      const txMeta = await txController.addUnapprovedTransaction({
+      const txMeta = await txController.addUnapprovedTransaction(undefined, {
         from: selectedAddress,
         to: recipientAddress,
       });
@@ -386,6 +387,7 @@ describe('Transaction Controller', function () {
 
     it('should add only 1 unapproved transaction when called twice with same actionId', async function () {
       await txController.addUnapprovedTransaction(
+        undefined,
         {
           from: selectedAddress,
           to: recipientAddress,
@@ -398,6 +400,7 @@ describe('Transaction Controller', function () {
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;
       await txController.addUnapprovedTransaction(
+        undefined,
         {
           from: selectedAddress,
           to: recipientAddress,
@@ -414,6 +417,7 @@ describe('Transaction Controller', function () {
 
     it('should add multiple transactions when called with different actionId', async function () {
       await txController.addUnapprovedTransaction(
+        undefined,
         {
           from: selectedAddress,
           to: recipientAddress,
@@ -426,6 +430,7 @@ describe('Transaction Controller', function () {
       const transactionCount1 =
         txController.txStateManager.getTransactions().length;
       await txController.addUnapprovedTransaction(
+        undefined,
         {
           from: selectedAddress,
           to: recipientAddress,
@@ -447,7 +452,7 @@ describe('Transaction Controller', function () {
         done();
       });
       txController
-        .addUnapprovedTransaction({
+        .addUnapprovedTransaction(undefined, {
           from: selectedAddress,
           to: recipientAddress,
         })
@@ -466,7 +471,7 @@ describe('Transaction Controller', function () {
       networkStore.putState('loading');
       await assert.rejects(
         () =>
-          txController.addUnapprovedTransaction({
+          txController.addUnapprovedTransaction(undefined, {
             from: selectedAddress,
             to: '0x0d1d4e623D10F9FBA5Db95830F7d3839406C6AF2',
           }),
@@ -510,7 +515,7 @@ describe('Transaction Controller', function () {
     });
 
     it('should add an cancel transaction and return a valid txMeta', async function () {
-      const txMeta = await txController.addUnapprovedTransaction({
+      const txMeta = await txController.addUnapprovedTransaction(undefined, {
         from: selectedAddress,
         to: recipientAddress,
       });
@@ -528,7 +533,7 @@ describe('Transaction Controller', function () {
     });
 
     it('should add only 1 cancel transaction when called twice with same actionId', async function () {
-      const txMeta = await txController.addUnapprovedTransaction({
+      const txMeta = await txController.addUnapprovedTransaction(undefined, {
         from: selectedAddress,
         to: recipientAddress,
       });
@@ -551,7 +556,7 @@ describe('Transaction Controller', function () {
     });
 
     it('should add multiple transactions when called with different actionId', async function () {
-      const txMeta = await txController.addUnapprovedTransaction({
+      const txMeta = await txController.addUnapprovedTransaction(undefined, {
         from: selectedAddress,
         to: recipientAddress,
       });
@@ -1279,7 +1284,7 @@ describe('Transaction Controller', function () {
     });
 
     it('should add only 1 speedup transaction when called twice with same actionId', async function () {
-      const txMeta = await txController.addUnapprovedTransaction({
+      const txMeta = await txController.addUnapprovedTransaction(undefined, {
         from: selectedAddress,
         to: recipientAddress,
       });
@@ -1302,7 +1307,7 @@ describe('Transaction Controller', function () {
     });
 
     it('should add multiple transactions when called with different actionId', async function () {
-      const txMeta = await txController.addUnapprovedTransaction({
+      const txMeta = await txController.addUnapprovedTransaction(undefined, {
         from: selectedAddress,
         to: recipientAddress,
       });
@@ -1322,6 +1327,47 @@ describe('Transaction Controller', function () {
       const transactionCount2 =
         txController.txStateManager.getTransactions().length;
       assert.equal(transactionCount1 + 1, transactionCount2);
+    });
+
+    it('should add multiple transactions when called with different actionId and txMethodType defined', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        'eth_sendTransaction',
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+      );
+      await txController.approveTransaction(txMeta.id);
+      await txController.createSpeedUpTransaction(
+        txMeta.id,
+        {},
+        { actionId: 12345 },
+      );
+      const transactionCount1 =
+        txController.txStateManager.getTransactions().length;
+      await txController.createSpeedUpTransaction(
+        txMeta.id,
+        {},
+        { actionId: 11111 },
+      );
+      const transactionCount2 =
+        txController.txStateManager.getTransactions().length;
+      assert.equal(transactionCount1 + 1, transactionCount2);
+    });
+
+    it('should call securityProviderRequest and have flagAsDangerous inside txMeta', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        'eth_sendTransaction',
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+      );
+
+      assert.ok(
+        'securityProviderResponse' in txMeta,
+        'should have a securityProviderResponse',
+      );
     });
   });
 

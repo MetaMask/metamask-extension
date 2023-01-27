@@ -25,7 +25,6 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/BannerBase',
-  id: __filename,
   component: BannerBase,
   parameters: {
     docs: {
@@ -93,7 +92,7 @@ DefaultStory.args = {
   title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
-  startAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
+  startAccessory: <Icon name={ICON_NAMES.INFO} size={SIZES.LG} />,
 };
 
 DefaultStory.storyName = 'Default';
@@ -127,7 +126,7 @@ ActionButton.args = {
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
-    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+    iconName: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
     iconPositionRight: true,
   },
   children:
@@ -166,5 +165,5 @@ StartAccessory.args = {
   title: 'Start accessory demo',
   children:
     'The info icon on the left is passed through the startAccessory prop',
-  startAccessory: <Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />,
+  startAccessory: <Icon name={ICON_NAMES.INFO} size={SIZES.LG} />,
 };

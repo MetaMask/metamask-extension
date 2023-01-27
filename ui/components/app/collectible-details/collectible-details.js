@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import {
   getCurrentChainId,
   getIpfsGateway,
@@ -32,6 +33,7 @@ import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
+  setRemoveCollectibleMessage,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -81,10 +83,12 @@ export default function CollectibleDetails({ collectible }) {
     imageOriginal ?? image,
     ipfsGateway,
   );
+  const collectibleImageAlt = getCollectibleImageAlt(collectible);
   const isDataURI = collectibleImageURL.startsWith('data:');
 
   const onRemove = () => {
     dispatch(removeAndIgnoreNft(address, tokenId));
+    dispatch(setRemoveCollectibleMessage('success'));
     history.push(DEFAULT_ROUTE);
   };
 
@@ -173,7 +177,11 @@ export default function CollectibleDetails({ collectible }) {
             className="collectible-details__card"
           >
             {image ? (
-              <img className="collectible-details__image" src={image} />
+              <img
+                className="collectible-details__image"
+                src={collectibleImageURL}
+                alt={collectibleImageAlt}
+              />
             ) : (
               <CollectibleDefaultImage name={name} tokenId={tokenId} />
             )}
@@ -269,9 +277,7 @@ export default function CollectibleDetails({ collectible }) {
                 handleSourceCopy(collectibleImageURL);
               }}
               iconName={
-                sourceCopied
-                  ? ICON_NAMES.COPY_SUCCESS_FILLED
-                  : ICON_NAMES.COPY_FILLED
+                sourceCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
               }
             />
           </Box>
@@ -326,9 +332,7 @@ export default function CollectibleDetails({ collectible }) {
                   handleAddressCopy(address);
                 }}
                 iconName={
-                  addressCopied
-                    ? ICON_NAMES.COPY_SUCCESS_FILLED
-                    : ICON_NAMES.COPY_FILLED
+                  addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
                 }
               />
             </Box>

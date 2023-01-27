@@ -30,6 +30,7 @@ import {
   DISPLAY,
   COLORS,
 } from '../../helpers/constants/design-system';
+import { SECOND } from '../../../shared/constants/time';
 
 import {
   ASSET_ROUTE,
@@ -135,6 +136,8 @@ export default class Home extends PureComponent {
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    removeCollectibleMessage: PropTypes.string,
+    setRemoveCollectibleMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -263,12 +266,18 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      removeCollectibleMessage,
+      setRemoveCollectibleMessage,
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
       clearNewCustomNetworkAdded,
       setRpcTarget,
     } = this.props;
+
+    const onAutoHide = () => setNewCollectibleAddedMessage('');
+    const autoHideDelay = 5 * SECOND;
+
     return (
       <MultipleNotifications>
         {
@@ -312,6 +321,8 @@ export default class Home extends PureComponent {
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
@@ -324,7 +335,32 @@ export default class Home extends PureComponent {
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
-                  onClick={() => setNewCollectibleAddedMessage('')}
+                  onClick={onAutoHide}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+
+        {removeCollectibleMessage === 'success' ? (
+          <ActionableMessage
+            type="danger"
+            className="home__new-network-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {t('removeCollectibleMessage')}
+                </Typography>
+                <button
+                  className="fas fa-times home__new-nft-notification-close"
+                  title={t('close')}
+                  onClick={() => setRemoveCollectibleMessage('')}
                 />
               </Box>
             }
@@ -549,7 +585,6 @@ export default class Home extends PureComponent {
 
   render() {
     const { t } = this.context;
-
     const {
       defaultHomeActiveTabName,
       onTabClick,

@@ -4,7 +4,7 @@ import ConfirmApproveContent from '.';
 
 export default {
   title: 'Pages/ConfirmApprove/ConfirmApproveContent',
-  id: __filename,
+
   component: ConfirmApproveContent,
   argTypes: {
     decimals: {

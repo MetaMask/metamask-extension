@@ -48,10 +48,10 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
-  getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -82,11 +82,6 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  decGWEIToHexWEI,
-  addHexes,
-  decWEIToDecETH,
-} from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
@@ -109,14 +104,19 @@ import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-u
 import {
   calcGasTotal,
   calcTokenAmount,
-  decimalToHex,
-  hexWEIToDecGWEI,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
-import { sumHexes } from '../../../helpers/utils/transactions.util';
+import {
+  addHexes,
+  decGWEIToHexWEI,
+  decimalToHex,
+  decWEIToDecETH,
+  hexWEIToDecGWEI,
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -195,17 +195,10 @@ export default function ViewQuote() {
     getCurrentSmartTransactionsError,
   );
   const smartTransactionsError = useSelector(getSmartTransactionsError);
-  const currentSmartTransactionsErrorMessageDismissed = useSelector(
-    getCurrentSmartTransactionsErrorMessageDismissed,
-  );
-  const currentSmartTransactionsEnabled =
-    smartTransactionsEnabled &&
-    !(
-      currentSmartTransactionsError &&
-      (currentSmartTransactionsError !== 'not_enough_funds' ||
-        currentSmartTransactionsErrorMessageDismissed)
-    );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
 

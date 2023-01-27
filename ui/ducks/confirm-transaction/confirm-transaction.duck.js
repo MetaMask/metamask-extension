@@ -6,16 +6,17 @@ import {
 import { getNativeCurrency, getTokens } from '../metamask/metamask';
 
 import {
-  getValueFromWeiHex,
   getTransactionFee,
   getHexGasTotal,
   addFiat,
   addEth,
 } from '../../helpers/utils/confirm-tx.util';
 
-import { sumHexes } from '../../helpers/utils/transactions.util';
-
-import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+  sumHexes,
+} from '../../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from '../../selectors/custom-gas';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
@@ -292,10 +293,7 @@ export function setTransactionToConfirm(transactionId) {
       }
 
       if (txParams.nonce) {
-        const nonce = conversionUtil(txParams.nonce, {
-          fromNumericBase: 'hex',
-          toNumericBase: 'dec',
-        });
+        const nonce = hexToDecimal(txParams.nonce);
 
         dispatch(updateNonce(nonce));
       }
