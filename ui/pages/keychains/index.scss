@@ -130,22 +130,6 @@
     font-size: inherit;
   }
 
-  &__warning-container {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    // height: 90px;
-    margin: 24px 0 24px 0;
-    padding: 8px 12px 8px 12px;
-    border-radius: 4px;
-    border-left: 4px solid var(--color-error-default);
-    background: var(--color-error-muted);
-  }
-
-  &__warning-icon {
-    margin-right: 8px;
-  }
-
   &__footer {
     margin: auto 0 0 0;
     border: 0;

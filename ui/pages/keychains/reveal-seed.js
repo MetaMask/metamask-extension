@@ -7,10 +7,19 @@ import { requestRevealSeedWords, showModal } from '../../store/actions';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
-import { TEXT, COLORS } from '../../helpers/constants/design-system';
+import {
+  TEXT,
+  COLORS,
+  SEVERITIES,
+} from '../../helpers/constants/design-system';
 
-import Button from '../../components/ui/button';
-import { Text, Label, Icon } from '../../components/component-library';
+import {
+  Text,
+  Label,
+  Icon,
+  Banner,
+  Button,
+} from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -86,24 +95,19 @@ const RevealSeedPage = () => {
 
   const renderWarning = () => {
     return (
-      <div className="srp__warning-container">
-        <div className="srp__warning-icon">
-          <Icon name="warning-filled" color={COLORS.ERROR_DEFAULT} />
-        </div>
-        <div className="srp__warning-message">
-          <Text variant={TEXT.BODY_MD}>
-            {t('revealSeedWordsWarning', [
-              <Text
-                key="reveal-seed-words-warning-2"
-                variant={TEXT.BODY_MD_BOLD}
-                as="span"
-              >
-                {t('revealSeedWordsWarning2')}
-              </Text>,
-            ])}
-          </Text>
-        </div>
-      </div>
+      <Banner severity={SEVERITIES.DANGER} marginTop={6} marginBottom={12}>
+        <Text variant={TEXT.BODY_MD}>
+          {t('revealSeedWordsWarning', [
+            <Text
+              key="reveal-seed-words-warning-2"
+              variant={TEXT.BODY_MD_BOLD}
+              as="span"
+            >
+              {t('revealSeedWordsWarning2')}
+            </Text>,
+          ])}
+        </Text>
+      </Banner>
     );
   };
 
