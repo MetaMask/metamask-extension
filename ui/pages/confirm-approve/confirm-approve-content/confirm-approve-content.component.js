@@ -213,7 +213,9 @@ export default class ConfirmApproveContent extends Component {
               ariaLabel="copy"
               onClick={() => copyToClipboard(toAddress)}
               color={COLORS.ICON_DEFAULT}
-              iconName={ICON_NAMES.COPY}
+              iconName={
+                this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+              }
               title={
                 this.state.copied
                   ? t('copiedExclamation')
