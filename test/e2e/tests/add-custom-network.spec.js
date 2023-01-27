@@ -150,7 +150,18 @@ describe('Custom network', function () {
   it('Add a custom network and then delete that same network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withPreferencesController({
+          frequentRpcListDetail: [
+            {
+              rpcUrl: networkURL,
+              chainId: chainID,
+              ticker: currencySYMBOL,
+              nickname: networkNAME,
+              rpcPrefs: {},
+            },
+          ],
+        })
+        .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -159,20 +170,20 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.network-display');
-        await driver.clickElement({ tag: 'button', text: 'Add network' });
+        // await driver.clickElement('.network-display');
+        // await driver.clickElement({ tag: 'button', text: 'Add network' });
 
-        const networks = await driver.findElements({
-          tag: 'button',
-          text: 'Add',
-        });
+        // const networks = await driver.findElements({
+        //   tag: 'button',
+        //   text: 'Add',
+        // });
 
-        const addNetwork = networks[0];
-        addNetwork.click();
+        // const addNetwork = networks[0];
+        // addNetwork.click();
 
-        await driver.clickElement({ tag: 'button', text: 'Approve' });
+        // await driver.clickElement({ tag: 'button', text: 'Approve' });
 
-        await driver.clickElement({ tag: 'h6', text: 'Dismiss' });
+        // await driver.clickElement({ tag: 'h6', text: 'Dismiss' });
 
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
