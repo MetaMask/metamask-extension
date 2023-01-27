@@ -3290,8 +3290,7 @@ export function setOutdatedBrowserWarningLastShown(lastShown) {
         lastShown,
       ]);
       await forceUpdateMetamaskState(dispatch);
-    }
-    catch (error) {
+    } catch (error) {
       dispatch(displayWarning(error.message));
     }
   };
