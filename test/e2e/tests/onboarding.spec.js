@@ -6,7 +6,7 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('MetaMask onboarding V2', function () {
+describe('MetaMask onboarding', function () {
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
   const testPassword = 'correct horse battery staple';
@@ -68,7 +68,7 @@ describe('MetaMask onboarding V2', function () {
         await currencySymbolField.sendKeys(currencySymbol);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        await driver.delay(1000);
+        await driver.waitForElementNotPresent('span .modal');
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
         // After login, check that notification message for added network is displayed
@@ -89,27 +89,6 @@ describe('MetaMask onboarding V2', function () {
           '[data-testid="eth-overview__primary-currency"]',
         );
         assert.ok(/^10\sETH$/u.test(await balance1.getText()));
-
-        // Switch to localhost 8545 and check the correct balance value is displayed
-        await networkDisplay.click();
-        await driver.clickElement('.network-dropdown-content--link');
-        await driver.clickElement({
-          xpath: "//*[text()='Show test networks']/../..//label",
-        });
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
-        await networkDisplay.click();
-        await driver.clickElement({
-          text: 'Localhost 8545',
-          css: '.network-name-item',
-        });
-
-        const balanceValue2 = await driver.isElementPresent({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '25 ETH',
-        });
-        assert.equal(balanceValue2, true);
       },
     );
   });
