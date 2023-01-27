@@ -29,11 +29,12 @@ export const BannerBase = ({
   return (
     <Box
       className={classnames('mm-banner-base', className)}
-      display={DISPLAY.INLINE_FLEX}
+      display={DISPLAY.FLEX}
       gap={2}
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderRadius={SIZES.SM}
       padding={3}
+      paddingLeft={2}
       {...props}
     >
       {startAccessory && <>{startAccessory}</>}
@@ -56,8 +57,7 @@ export const BannerBase = ({
         )}
         {actionButtonLabel && (
           <ButtonLink
-            // noPadding TODO: Use noPadding option when released
-            size={SIZES.AUTO} // TODO: Remove when noPadding is added
+            size={SIZES.AUTO}
             onClick={actionButtonOnClick}
             {...actionButtonProps}
           >
@@ -68,6 +68,7 @@ export const BannerBase = ({
       {onClose && (
         <ButtonIcon
           className="mm-banner-base__close-button"
+          marginLeft="auto"
           iconName={ICON_NAMES.CLOSE}
           size={SIZES.SM}
           ariaLabel="Close" // TODO: i18n
