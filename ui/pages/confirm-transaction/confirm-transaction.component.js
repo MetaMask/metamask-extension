@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
+
 import Loading from '../../components/ui/loading-screen';
-import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
-import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
+import ConfirmSendEther from '../confirm-send-ether';
+import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
@@ -18,14 +19,14 @@ import {
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getSendTo } from '../../ducks/send';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
-  SIGNATURE_REQUEST_PATH,
+  CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
-  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   DEFAULT_ROUTE,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  SIGNATURE_REQUEST_PATH,
 } from '../../helpers/constants/routes';
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
@@ -60,6 +61,7 @@ const ConfirmTransaction = () => {
   );
 
   const totalUnapproved = unconfirmedTransactions.length || 0;
+
   const transaction = useMemo(() => {
     return totalUnapproved
       ? unapprovedTxs[paramsTransactionId] || unconfirmedTransactions[0]
@@ -74,6 +76,9 @@ const ConfirmTransaction = () => {
   const { id, type } = transaction;
   const transactionId = id && String(id);
   const isValidERC20TokenMethod = isTokenMethodAction(type);
+  const validTransactionId =
+    transactionId &&
+    (!paramsTransactionId || paramsTransactionId === transactionId);
 
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
@@ -88,9 +93,9 @@ const ConfirmTransaction = () => {
   }, [pollingToken]);
 
   useEffect(() => {
-    setIsMounted(true);
-
     const { txParams: { data } = {}, origin } = transaction;
+
+    setIsMounted(true);
 
     getGasFeeEstimatesAndStartPolling().then((_pollingToken) => {
       if (isMounted) {
@@ -150,23 +155,20 @@ const ConfirmTransaction = () => {
     }
   }, [
     dispatch,
-    transaction,
-    paramsTransactionId,
-    transactionId,
     history,
     mostRecentOverviewPage,
+    paramsTransactionId,
     prevParamsTransactionId,
     prevTransactionId,
     totalUnapproved,
+    transaction,
+    transactionId,
   ]);
-
-  const validTransactionId =
-    transactionId &&
-    (!paramsTransactionId || paramsTransactionId === transactionId);
 
   if (isValidERC20TokenMethod && validTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
+
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
