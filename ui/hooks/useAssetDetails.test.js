@@ -11,7 +11,7 @@ const renderUseAssetDetails = ({
   tokenAddress,
   userAddress,
   transactionData,
-  isTokenCategory
+  isTokenCategory,
 }) => {
   const mockState = {
     metamask: {
@@ -29,7 +29,13 @@ const renderUseAssetDetails = ({
   );
 
   return renderHook(
-    () => useAssetDetails(tokenAddress, userAddress, transactionData, isTokenCategory),
+    () =>
+      useAssetDetails(
+        tokenAddress,
+        userAddress,
+        transactionData,
+        isTokenCategory,
+      ),
     { wrapper },
   );
 };
@@ -90,7 +96,7 @@ describe('useAssetDetails', () => {
       tokenAddress,
       userAddress,
       transactionData,
-      isTokenCategory: true
+      isTokenCategory: true,
     });
 
     await waitForNextUpdate();
@@ -135,7 +141,7 @@ describe('useAssetDetails', () => {
     const { result, waitForNextUpdate } = renderUseAssetDetails({
       tokenAddress,
       transactionData,
-      isTokenCategory: true
+      isTokenCategory: true,
     });
 
     await waitForNextUpdate();
@@ -178,7 +184,7 @@ describe('useAssetDetails', () => {
     const { result, waitForNextUpdate } = renderUseAssetDetails({
       tokenAddress,
       transactionData,
-      isTokenCategory: true
+      isTokenCategory: true,
     });
 
     await waitForNextUpdate();

@@ -66,6 +66,7 @@ export function useAssetDetails(
     collectibles,
     tokensWithBalances,
     prevTokenBalance,
+    isTokenCategory,
   ]);
 
   if (currentAsset) {
