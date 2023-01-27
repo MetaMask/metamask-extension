@@ -28,7 +28,6 @@ import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
 import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import ConfTx from '../confirm-transaction/conf-tx';
 import AppHeader from '../../components/app/app-header';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -63,7 +62,6 @@ import {
   ONBOARDING_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
   TOKEN_DETAILS,
-  SIGNATURE_REQUEST_PATH,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
@@ -201,11 +199,6 @@ export default class Routes extends Component {
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
           ///: END:ONLY_INCLUDE_IN
         }
-        <Authenticated
-          exact
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
-          component={ConfTx}
-        />
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
@@ -408,7 +401,7 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder &&
       !portfolioTooltipIsBeingShown;
-    console.log('-------------------------', this.props.location);
+
     return (
       <div
         className={classnames('app', {
