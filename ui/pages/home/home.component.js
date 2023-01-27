@@ -28,13 +28,12 @@ import {
   FONT_WEIGHT,
   DISPLAY,
   COLORS,
+  BLOCK_SIZES,
+  SIZES,
+  TEXT,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../components/component-library';
+import { ButtonLink, ICON_NAMES } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -690,8 +689,9 @@ export default class Home extends PureComponent {
                     </div>
                   }
                 >
-                  <div
+                  <ButtonLink
                     className="home__subheader-link"
+                    data-testid="home__portfolio-site"
                     onClick={async () => {
                       const portfolioUrl = process.env.PORTFOLIO_URL;
                       global.platform.openTab({
@@ -712,15 +712,13 @@ export default class Home extends PureComponent {
                         },
                       );
                     }}
+                    iconName={ICON_NAMES.DIAGRAM}
+                    width={BLOCK_SIZES.FULL}
+                    size={SIZES.MD}
+                    textProps={{ variant: TEXT.BODY_SM }}
                   >
-                    <Icon name={ICON_NAMES.DIAGRAM} size={ICON_SIZES.SM} />
-                    <div
-                      className="home__subheader-link--text"
-                      data-testid="home__portfolio-site"
-                    >
-                      {t('portfolioSite')}
-                    </div>
-                  </div>
+                    {t('portfolioSite')}
+                  </ButtonLink>
                 </Tooltip>
               }
             >
