@@ -546,14 +546,6 @@ export function getTotalUnapprovedSignatureRequestCount(state) {
   );
 }
 
-export const getMetamaskStateValueSelector = (prop) => (state) => {
-  return state.metamask[prop];
-};
-
-export const getAppStateValueSelector = (prop) => (state) => {
-  return state.appState[prop];
-};
-
 export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;

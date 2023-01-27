@@ -10,16 +10,7 @@ import SignatureRequestSIWE from '../../components/app/signature-request-siwe';
 import SignatureRequestOriginal from '../../components/app/signature-request-original';
 import Loading from '../../components/ui/loading-screen';
 import { useRouting } from '../../hooks/useRouting';
-import {
-  getAppStateValueSelector,
-  getCurrentChainId,
-  getCurrentCurrency,
-  getCurrentNetworkTransactionList,
-  getMetaMaskIdentities,
-  getMetamaskStateValueSelector,
-  getTotalUnapprovedSignatureRequestCount,
-  getUnapprovedTransactions,
-} from '../../selectors';
+import { getTotalUnapprovedSignatureRequestCount } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
@@ -59,30 +50,24 @@ const stopPropagation = (event) => {
 
 const ConfirmTxScreen = ({ match }) => {
   const dispatch = useDispatch();
-  const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const { navigateToMostRecentOverviewPage } = useRouting();
   const unapprovedMessagesTotal = useSelector(
     getTotalUnapprovedSignatureRequestCount,
   );
-  const unapprovedMsgs = useSelector(
-    getMetamaskStateValueSelector('unapprovedMsgs'),
-  );
-  const unapprovedPersonalMsgs = useSelector(
-    getMetamaskStateValueSelector('unapprovedPersonalMsgs'),
-  );
-  const unapprovedTypedMessages = useSelector(
-    getMetamaskStateValueSelector('unapprovedTypedMessages'),
-  );
-  const index = useSelector(getAppStateValueSelector('txId'));
-  const network = useSelector(getMetamaskStateValueSelector('network'));
-  const chainId = useSelector(getCurrentChainId);
-  const identities = useSelector(getMetaMaskIdentities);
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const blockGasLimit = useSelector(
-    getMetamaskStateValueSelector('currentBlockGasLimit'),
-  );
   const sendTo = useSelector(getSendTo);
-  const currentNetworkTxList = useSelector(getCurrentNetworkTransactionList);
+  const {
+    unapprovedTxs,
+    identities,
+    currentNetworkTxList,
+    currentCurrency,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTypedMessages,
+    network,
+    blockGasLimit,
+    provider: { chainId },
+  } = useSelector((state) => state.metamask);
+  const { txId: index } = useSelector((state) => state.appState);
   const [prevValue, setPrevValues] = useState();
 
   useEffect(() => {
