@@ -318,7 +318,10 @@ describe('MetaMask Reducers', () => {
         expect(
           getNativeCurrency({
             ...mockState,
-            useCurrencyRateCheck: false,
+            metamask: {
+              ...mockState.metamask,
+              useCurrencyRateCheck: false,
+            },
           }),
         ).toStrictEqual('TestETH');
       });
