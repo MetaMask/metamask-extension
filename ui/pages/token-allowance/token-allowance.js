@@ -34,6 +34,7 @@ import {
   getCustomTokenAmount,
   getUnapprovedTxCount,
   getUnapprovedTransactions,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -108,6 +109,7 @@ export default function TokenAllowance({
   const customTokenAmount = useSelector(getCustomTokenAmount);
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -435,6 +437,7 @@ export default function TokenAllowance({
             hexTransactionTotal={hexTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             currentCurrency={currentCurrency}
+            useCurrencyRateCheck={useCurrencyRateCheck}
           />
         </Box>
       )}
@@ -482,6 +485,7 @@ export default function TokenAllowance({
               renderSimulationFailureWarning={renderSimulationFailureWarning}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
+              useCurrencyRateCheck={useCurrencyRateCheck}
             />
           </Box>
         </Box>
