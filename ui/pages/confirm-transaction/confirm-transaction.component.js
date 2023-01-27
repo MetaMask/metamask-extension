@@ -59,14 +59,14 @@ const ConfirmTransaction = () => {
     unconfirmedTransactionsListSelector,
   );
 
-  const totalUnapprovedCount = unconfirmedTransactions.length || 0;
+  const totalUnapproved = unconfirmedTransactions.length || 0;
   const transaction = useMemo(() => {
-    return totalUnapprovedCount
+    return totalUnapproved
       ? unapprovedTxs[paramsTransactionId] || unconfirmedTransactions[0]
       : {};
   }, [
     paramsTransactionId,
-    totalUnapprovedCount,
+    totalUnapproved,
     unapprovedTxs,
     unconfirmedTransactions,
   ]);
@@ -104,7 +104,7 @@ const ConfirmTransaction = () => {
 
     window.addEventListener('beforeunload', _beforeUnload);
 
-    if (!totalUnapprovedCount && !sendTo) {
+    if (!totalUnapproved && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
       if (origin !== ORIGIN_METAMASK) {
@@ -137,7 +137,7 @@ const ConfirmTransaction = () => {
       if (origin !== ORIGIN_METAMASK) {
         dispatch(getContractMethodData(data));
       }
-    } else if (prevTransactionId && !transactionId && !totalUnapprovedCount) {
+    } else if (prevTransactionId && !transactionId && !totalUnapproved) {
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
         history.replace(DEFAULT_ROUTE);
       });
@@ -157,7 +157,7 @@ const ConfirmTransaction = () => {
     mostRecentOverviewPage,
     prevParamsTransactionId,
     prevTransactionId,
-    totalUnapprovedCount,
+    totalUnapproved,
   ]);
 
   const validTransactionId =
