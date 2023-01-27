@@ -485,8 +485,6 @@ export default class MetaMetricsController {
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    */
   trackEvent(payload, options) {
-    // validation is not caught and handled
-    this.validatePayload(payload);
     this.submitEvent(payload, options).catch((err) =>
       this._captureException(err),
     );

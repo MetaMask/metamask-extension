@@ -70,9 +70,11 @@ if (isManifestV3) {
   };
 
   const keepAliveInterval = setInterval(() => {
+    // browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
     browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
     if (extensionPort !== null && extensionPort !== undefined) {
+      // extensionPort.postMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
       extensionPort.postMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
       if (extensionPort.onMessage.hasListener(ackKeepAliveListener) === false) {
@@ -238,6 +240,7 @@ async function start() {
 
       // message below will try to activate service worker
       // in MV3 is likely that reason of stream closing is service worker going in-active
+      // browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
       browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
 
       extensionPort = browser.runtime.connect({ name: windowType });

@@ -853,6 +853,7 @@ export default class MetamaskController extends EventEmitter {
       network: this.networkController,
       keyringMemStore: this.keyringController.memStore,
       tokenList: this.tokenListController,
+      // HERE PEDRO 3
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),

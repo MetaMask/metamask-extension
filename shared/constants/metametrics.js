@@ -438,6 +438,10 @@ export const EVENT = {
       DAPP: 'dapp',
       USER: 'user',
     },
+    SERVICE_WORKERS: {
+      PROCESSING_ACTION_QUEUE: 'processing_action_queue',
+      RESTART: 'restart',
+    },
   },
   LOCATION: {
     TOKEN_DETAILS: 'token_details',

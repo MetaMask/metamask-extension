@@ -32,6 +32,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+// import { trackMetaMetricsEvent } from '../../ui/store/actions';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -508,6 +509,8 @@ function setupController(initState, initLangCode) {
             remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
           }
         });
+
+        // measureServiceWorkerInactiveTime(controller.appStateController);
       }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
@@ -839,3 +842,22 @@ function setupSentryGetStateGlobal(store) {
     };
   };
 }
+
+// HERE PEDRO 2
+// function measureServiceWorkerInactiveTime(appStateController) {
+//   const { serviceWorkerLastAlive } = appStateController.getState();
+
+//   if (serviceWorkerLastAlive) {
+//     const nowUnixTimestamp = Date.now();
+//     const serviceWorkerInactiveTime = nowUnixTimestamp - serviceWorkerLastAlive;
+
+//     const metametricsPayload = {
+//       category: EVENT.SOURCE.SERVICE_WORKERS.RESTART,
+//       event: 'Registering inactive time after service worker restart',
+//       // TODO: Should I use `sensitiveProperties` instead here?
+//       properties: { serviceWorkerInactiveTime },
+//     };
+//     console.log({ metametricsPayload });
+//     trackMetaMetricsEvent(metametricsPayload);
+//   }
+// }

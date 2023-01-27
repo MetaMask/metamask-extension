@@ -1,5 +1,8 @@
 import pify from 'pify';
+import { EVENT } from '../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { trackMetaMetricsEvent } from '../actions';
+
 // // A simplified pify maybe?
 // function pify(apiObject) {
 //   return Object.keys(apiObject).reduce((promisifiedAPI, key) => {
@@ -71,6 +74,9 @@ const executeActionOrAddToRetryQueue = (item: BackgroundAction): void => {
   if (actionRetryQueue.some((act) => act.actionId === item.actionId)) {
     return;
   }
+
+  console.log('executeActionOrAddToRetryQueue');
+  console.log({ item });
 
   if (background?.connectionStream.readable) {
     executeAction({
@@ -187,6 +193,20 @@ async function processActionRetryQueue() {
   }
   processingQueue = true;
   try {
+    // HERE PEDRO 1
+    console.log({ actionRetryQueue });
+
+    const metametricsPayload = {
+      category: EVENT.SOURCE.SERVICE_WORKERS.PROCESSING_ACTION_QUEUE,
+      event: 'Starting to process the action queue on service worker restart',
+      // TODO: Should I use `sensitiveProperties` instead here?
+      properties: {
+        // actions: actionRetryQueue.map((action) => action.name)
+      },
+    };
+    console.log({ metametricsPayload });
+    trackMetaMetricsEvent(metametricsPayload);
+
     while (
       background?.connectionStream.readable &&
       actionRetryQueue.length > 0
@@ -225,6 +245,7 @@ export async function _setBackgroundConnection(
       );
     }
     // Process all actions collected while connection stream was not available.
+
     processActionRetryQueue();
   }
 }

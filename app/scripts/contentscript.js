@@ -139,10 +139,12 @@ const runWorkerKeepAliveInterval = () => {
 
   clearInterval(keepAliveInterval);
 
+  // sendMessageWorkerKeepAlive();
   sendMessageWorkerKeepAlive();
 
   keepAliveInterval = setInterval(() => {
     if (browser.runtime.id) {
+      // sendMessageWorkerKeepAlive();
       sendMessageWorkerKeepAlive();
     }
   }, WORKER_KEEP_ALIVE_INTERVAL);

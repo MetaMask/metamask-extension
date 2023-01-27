@@ -46,6 +46,7 @@ export const checkForMultipleVersionsRunning = async () => {
   for (const id of buildIds) {
     if (id !== thisBuild) {
       try {
+        // TODO: HERE
         await browser.runtime.sendMessage(id, MESSAGE_TEXT);
       } catch (error) {
         // Should do nothing if receiving end was not reached (no other instances running)
