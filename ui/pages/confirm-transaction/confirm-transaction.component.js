@@ -56,22 +56,15 @@ const ConfirmTransaction = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const unconfirmedTransactions = useSelector(
-    unconfirmedTransactionsListSelector,
-  );
+  const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
 
-  const totalUnapproved = unconfirmedTransactions.length || 0;
+  const totalUnapproved = unconfirmedTxs.length || 0;
 
   const transaction = useMemo(() => {
     return totalUnapproved
-      ? unapprovedTxs[paramsTransactionId] || unconfirmedTransactions[0]
+      ? unapprovedTxs[paramsTransactionId] || unconfirmedTxs[0]
       : {};
-  }, [
-    paramsTransactionId,
-    totalUnapproved,
-    unapprovedTxs,
-    unconfirmedTransactions,
-  ]);
+  }, [paramsTransactionId, totalUnapproved, unapprovedTxs, unconfirmedTxs]);
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
