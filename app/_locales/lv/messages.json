@@ -635,12 +635,6 @@
   "reset": {
     "message": "Atiestatīt"
   },
-  "resetAccount": {
-    "message": "Atiestatīt kontu"
-  },
-  "resetAccountDescription": {
-    "message": "Konta atiestatīšana izdzēsīs darījumu vēsturi."
-  },
   "restore": {
     "message": "Atjaunot"
   },

@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "Đặt lại"
   },
-  "resetAccount": {
-    "message": "Đặt lại tài khoản"
-  },
-  "resetAccountDescription": {
-    "message": "Nếu đặt lại tài khoản của bạn, toàn bộ lịch sử giao dịch sẽ bị xóa. Việc này sẽ không làm thay đổi số dư trong tài khoản của bạn hoặc yêu cầu bạn phải nhập lại Cụm mật khẩu khôi phục bí mật."
-  },
   "resetWallet": {
     "message": "Đặt lại ví"
   },

@@ -71,9 +71,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('resetAccount'),
-    descriptionMessage: (t) => t('resetAccountDescription'),
-    route: `${ADVANCED_ROUTE}#reset-account`,
+    sectionMessage: (t) => t('clearActivity'),
+    descriptionMessage: (t) => t('clearActivityDescription'),
+    route: `${ADVANCED_ROUTE}#clear-activity`,
     icon: 'fas fa-sliders-h',
   },
   {

@@ -43,15 +43,18 @@ describe('Reset account', function () {
           { timeout: 10000 },
         );
 
-        // Reset account
+        // Clear activity and nonce data
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({
           css: '.tab-bar__tab__content__title',
           text: 'Advanced',
         });
-        await driver.clickElement({ text: 'Reset account', tag: 'button' });
-        await driver.clickElement({ text: 'Reset', tag: 'button' });
+        await driver.clickElement({
+          text: 'Clear activity tab data',
+          tag: 'button',
+        });
+        await driver.clickElement({ text: 'Clear', tag: 'button' });
         await driver.navigate();
 
         // Check send transaction history is cleared and receive transaction history is kept

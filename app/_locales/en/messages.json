@@ -636,6 +636,18 @@
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
+  "clear": {
+    "message": "Clear"
+  },
+  "clearActivity": {
+    "message": "Clear activity and nonce data"
+  },
+  "clearActivityButton": {
+    "message": "Clear activity tab data"
+  },
+  "clearActivityDescription": {
+    "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -2935,12 +2947,6 @@
   },
   "reset": {
     "message": "Reset"
-  },
-  "resetAccount": {
-    "message": "Reset account"
-  },
-  "resetAccountDescription": {
-    "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
   },
   "resetWallet": {
     "message": "Reset wallet"
