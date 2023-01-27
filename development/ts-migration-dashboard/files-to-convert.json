@@ -902,7 +902,6 @@
   "ui/components/ui/icon/info-icon-inverted.component.js",
   "ui/components/ui/icon/info-icon.component.js",
   "ui/components/ui/icon/interaction-icon.component.js",
-  "ui/components/ui/icon/overview-buy-icon.component.js",
   "ui/components/ui/icon/overview-send-icon.component.js",
   "ui/components/ui/icon/preloader/index.js",
   "ui/components/ui/icon/preloader/preloader-icon.component.js",

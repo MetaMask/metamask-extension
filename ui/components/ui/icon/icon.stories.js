@@ -12,7 +12,6 @@ import Box from '../box';
 import README from './README.mdx';
 
 import Approve from './approve-icon.component';
-import BuyIcon from './overview-buy-icon.component';
 import CopyIcon from './copy-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
@@ -162,7 +161,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<InfoIconInverted {...args} />} />
         <IconItem Component={<SunCheck {...args} />} />
         <IconItem Component={<SunCheck {...args} reverseColors />} />
-        <IconItem Component={<BuyIcon {...args} />} />
         <IconItem Component={<SwapIcon {...args} />} />
         <IconItem Component={<SwapIconComponent {...args} />} />
         <IconItem Component={<CopyIcon {...args} />} />
@@ -286,14 +284,6 @@ SunCheckStory.argTypes = {
   },
 };
 SunCheckStory.storyName = 'SunCheck';
-
-export const BuyIconStory = (args) => <BuyIcon {...args} />;
-BuyIconStory.args = {
-  width: '17',
-  height: '21',
-  fill: 'var(--color-primary-default)',
-};
-BuyIconStory.storyName = 'BuyIcon';
 
 export const SwapIconStory = (args) => <SwapIcon {...args} />;
 SwapIconStory.args = {
