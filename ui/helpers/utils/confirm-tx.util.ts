@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import { unconfirmedTransactionsCountSelector } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { TransactionMeta } from 'shared/constants/transaction';
+import { TransactionMeta } from '../../../shared/constants/transaction';
 
 export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }) {
   return new Numeric(gasLimit, 16)
