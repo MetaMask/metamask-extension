@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import { AMOUNT_MODES, SEND_STATUSES } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/jest';
-import { GAS_ESTIMATE_TYPES } from '../../../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../../../shared/constants/gas';
 import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -21,7 +21,7 @@ describe('AmountMaxButton Component', () => {
         <AmountMaxButton />,
         configureMockStore(middleware)({
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             networkDetails: {
               EIPS: {},
             },
@@ -35,7 +35,7 @@ describe('AmountMaxButton Component', () => {
     it('should dispatch action to set mode to MAX', () => {
       const store = configureMockStore(middleware)({
         metamask: {
-          gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+          gasEstimateType: GasEstimateTypes.ethGasPrice,
           networkDetails: {
             EIPS: {},
           },
@@ -58,7 +58,7 @@ describe('AmountMaxButton Component', () => {
     it('should dispatch action to set amount mode to INPUT', () => {
       const store = configureMockStore(middleware)({
         metamask: {
-          gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+          gasEstimateType: GasEstimateTypes.ethGasPrice,
           networkDetails: {
             EIPS: {},
           },

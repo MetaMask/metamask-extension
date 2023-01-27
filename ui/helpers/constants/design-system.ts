@@ -54,6 +54,7 @@ export const COLORS = {
   GOERLI_INVERSE: 'goerli-inverse',
   SEPOLIA_INVERSE: 'sepolia-inverse',
 };
+
 export const BACKGROUND_COLORS = pick(COLORS, [
   'BACKGROUND_DEFAULT',
   'BACKGROUND_ALTERNATIVE',

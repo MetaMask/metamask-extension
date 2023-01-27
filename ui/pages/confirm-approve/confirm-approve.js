@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
+import { EditGasModes } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
@@ -195,7 +195,7 @@ export default function ConfirmApprove({
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
               onClose={closeCustomizeGasPopover}
-              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              mode={EditGasModes.modifyInPlace}
               transaction={transaction}
             />
           )}
@@ -282,7 +282,7 @@ export default function ConfirmApprove({
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
                 onClose={closeCustomizeGasPopover}
-                mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+                mode={EditGasModes.modifyInPlace}
                 transaction={transaction}
               />
             )}
