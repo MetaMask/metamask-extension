@@ -134,7 +134,7 @@ const ConfirmTransaction = () => {
     ) {
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
-      if (origin !== 'metamask') {
+      if (origin !== ORIGIN_METAMASK) {
         dispatch(getContractMethodData(data));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapprovedCount) {
