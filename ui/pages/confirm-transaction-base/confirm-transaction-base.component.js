@@ -626,9 +626,7 @@ export default class ConfirmTransactionBase extends Component {
               : () => this.handleEditGas()
           }
           rows={[
-            renderSimulationFailureWarning &&
-              !this.supportsEIP1559 &&
-              simulationFailureWarning(),
+            renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
               renderGasDetailsItem(),
