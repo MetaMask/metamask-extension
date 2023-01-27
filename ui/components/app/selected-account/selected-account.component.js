@@ -66,7 +66,11 @@ class SelectedAccount extends Component {
               {shortenAddress(checksummedAddress)}
               <div className="selected-account__copy">
                 <Icon
-                  name={this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                  name={
+                    this.state.copied
+                      ? ICON_NAMES.COPY_SUCCESS
+                      : ICON_NAMES.COPY
+                  }
                   size={ICON_SIZES.SM}
                   color={COLORS.ICON_ALTERNATIVE}
                 />

@@ -21,7 +21,10 @@ const CopyRawData = ({ data }) => {
           className="copy-raw-data__button"
         >
           <div className="copy-raw-data__icon">
-            <Icon name={ICON_NAMES.COPY} color={COLORS.ICON_DEFAULT} />
+            <Icon
+              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+              color={COLORS.ICON_DEFAULT}
+            />
           </div>
           <div className="copy-raw-data__label">
             {t('copyRawTransactionData')}
