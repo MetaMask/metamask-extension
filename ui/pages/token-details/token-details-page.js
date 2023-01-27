@@ -137,7 +137,7 @@ export default function TokenDetailsPage() {
             containerClassName="token-details__copy-icon"
           >
             <ButtonIcon
-              name={ICON_NAMES.COPY}
+              name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
               onClick={() => handleCopy(token.address)}
               color={COLORS.PRIMARY_DEFAULT}
               size={ICON_SIZES.SM}
