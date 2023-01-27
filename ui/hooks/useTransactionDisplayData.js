@@ -125,15 +125,16 @@ export function useTransactionDisplayData(transactionGroup) {
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
 
+  // This value is used to determine whether we should look inside txParams.data
+  // to pull out and render token related information
+  const isTokenCategory = TOKEN_CATEGORY_HASH[type];
   const { tokenSymbol, decimals, toAddress } = useAssetDetails(
     recipientAddress,
     senderAddress,
     initialTransaction?.txParams?.data,
+    isTokenCategory,
   );
   const customToken = { address: toAddress, symbol: tokenSymbol, decimals };
-  // This value is used to determine whether we should look inside txParams.data
-  // to pull out and render token related information
-  const isTokenCategory = TOKEN_CATEGORY_HASH[type];
 
   // these values are always instantiated because they are either
   // used by or returned from hooks. Hooks must be called at the top level,
