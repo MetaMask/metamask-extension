@@ -8,7 +8,12 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { usePrevious } from './usePrevious';
 import { useTokenTracker } from './useTokenTracker';
 
-export function useAssetDetails(tokenAddress, userAddress, transactionData) {
+export function useAssetDetails(
+  tokenAddress,
+  userAddress,
+  transactionData,
+  isTokenCategory = false,
+) {
   const dispatch = useDispatch();
   // state selectors
   const collectibles = useSelector(getCollectibles);
@@ -42,7 +47,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       dispatch(hideLoadingIndication());
     }
     if (
-      transactionData &&
+      isTokenCategory &&
       (tokenAddress !== prevTokenAddress ||
         userAddress !== prevUserAddress ||
         transactionData !== prevTransactionData ||
