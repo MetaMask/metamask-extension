@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 import Loading from '../../components/ui/loading-screen';
@@ -12,6 +12,10 @@ import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
+import {
+  clearConfirmTransaction,
+  setTransactionToConfirm,
+} from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getSendTo } from '../../ducks/send';
 import {
@@ -40,13 +44,9 @@ import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 import ConfTx from './conf-tx';
 
 const ConfirmTransaction = (props) => {
-  const {
-    setTransactionToConfirm,
-    clearConfirmTransaction,
-    getContractMethodData,
-    setDefaultHomeActiveTabName,
-  } = props;
+  const { getContractMethodData, setDefaultHomeActiveTabName } = props;
 
+  const dispatch = useDispatch();
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
 
@@ -114,7 +114,7 @@ const ConfirmTransaction = (props) => {
 
       const txId = transactionId || paramsTransactionId;
       if (txId) {
-        setTransactionToConfirm(txId);
+        dispatch(setTransactionToConfirm(txId));
       }
     }
 
@@ -133,8 +133,8 @@ const ConfirmTransaction = (props) => {
       transactionId &&
       prevParamsTransactionId !== paramsTransactionId
     ) {
-      clearConfirmTransaction();
-      setTransactionToConfirm(paramsTransactionId);
+      dispatch(clearConfirmTransaction());
+      dispatch(setTransactionToConfirm(paramsTransactionId));
       if (origin !== 'metamask') {
         getContractMethodData(data);
       }
@@ -150,9 +150,8 @@ const ConfirmTransaction = (props) => {
       history.replace(mostRecentOverviewPage);
     }
   }, [
-    setTransactionToConfirm,
+    dispatch,
     transaction,
-    clearConfirmTransaction,
     getContractMethodData,
     paramsTransactionId,
     transactionId,
@@ -214,8 +213,6 @@ const ConfirmTransaction = (props) => {
 };
 
 ConfirmTransaction.propTypes = {
-  setTransactionToConfirm: PropTypes.func,
-  clearConfirmTransaction: PropTypes.func,
   getContractMethodData: PropTypes.func,
   setDefaultHomeActiveTabName: PropTypes.func,
 };
