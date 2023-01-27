@@ -23,7 +23,6 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
-import IconChart from '../../components/ui/icon/icon-chart';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -31,6 +30,11 @@ import {
   COLORS,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -709,7 +713,7 @@ export default class Home extends PureComponent {
                       );
                     }}
                   >
-                    <IconChart />
+                    <Icon name={ICON_NAMES.DIAGRAM} size={ICON_SIZES.SM} />
                     <div
                       className="home__subheader-link--text"
                       data-testid="home__portfolio-site"
