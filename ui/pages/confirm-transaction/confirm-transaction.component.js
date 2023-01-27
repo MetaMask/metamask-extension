@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 import Loading from '../../components/ui/loading-screen';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
@@ -11,6 +12,8 @@ import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getSendTo } from '../../ducks/send';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_DEPLOY_CONTRACT_PATH,
@@ -21,7 +24,12 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
+import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
+import {
+  getUnapprovedTransactions,
+  unconfirmedTransactionsListSelector,
+} from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -33,22 +41,40 @@ import ConfTx from './conf-tx';
 
 const ConfirmTransaction = (props) => {
   const {
-    history,
-    totalUnapprovedCount = 0,
-    sendTo,
     setTransactionToConfirm,
     clearConfirmTransaction,
-    mostRecentOverviewPage,
-    transaction = {},
     getContractMethodData,
-    transactionId,
-    paramsTransactionId,
-    isTokenMethodAction,
     setDefaultHomeActiveTabName,
   } = props;
 
+  const history = useHistory();
+  const { id: paramsTransactionId } = useParams();
+
   const [isMounted, setIsMounted] = useState(false);
   const [pollingToken, setPollingToken] = useState();
+
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const sendTo = useSelector(getSendTo);
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  const unconfirmedTransactions = useSelector(
+    unconfirmedTransactionsListSelector,
+  );
+
+  const totalUnapprovedCount = unconfirmedTransactions.length || 0;
+  const transaction = useMemo(() => {
+    return totalUnapprovedCount
+      ? unapprovedTxs[paramsTransactionId] || unconfirmedTransactions[0]
+      : {};
+  }, [
+    paramsTransactionId,
+    totalUnapprovedCount,
+    unapprovedTxs,
+    unconfirmedTransactions,
+  ]);
+
+  const { id, type } = transaction;
+  const transactionId = id && String(id);
+  const isValidERC20TokenMethod = isTokenMethodAction(type);
 
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
@@ -142,7 +168,7 @@ const ConfirmTransaction = (props) => {
     transactionId &&
     (!paramsTransactionId || paramsTransactionId === transactionId);
 
-  if (isTokenMethodAction && validTransactionId) {
+  if (isValidERC20TokenMethod && validTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
@@ -188,17 +214,9 @@ const ConfirmTransaction = (props) => {
 };
 
 ConfirmTransaction.propTypes = {
-  history: PropTypes.object.isRequired,
-  totalUnapprovedCount: PropTypes.number.isRequired,
-  sendTo: PropTypes.string,
   setTransactionToConfirm: PropTypes.func,
   clearConfirmTransaction: PropTypes.func,
-  mostRecentOverviewPage: PropTypes.string.isRequired,
-  transaction: PropTypes.object,
   getContractMethodData: PropTypes.func,
-  transactionId: PropTypes.string,
-  paramsTransactionId: PropTypes.string,
-  isTokenMethodAction: PropTypes.bool,
   setDefaultHomeActiveTabName: PropTypes.func,
 };
 
