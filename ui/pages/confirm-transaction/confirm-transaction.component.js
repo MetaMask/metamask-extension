@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 import Loading from '../../components/ui/loading-screen';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
@@ -40,13 +39,12 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 import ConfTx from './conf-tx';
 
-const ConfirmTransaction = (props) => {
-  const { setDefaultHomeActiveTabName } = props;
-
+const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: paramsTransactionId } = useParams();
@@ -140,7 +138,7 @@ const ConfirmTransaction = (props) => {
         dispatch(getContractMethodData(data));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapprovedCount) {
-      setDefaultHomeActiveTabName('activity').then(() => {
+      dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
         history.replace(DEFAULT_ROUTE);
       });
     } else if (
@@ -160,7 +158,6 @@ const ConfirmTransaction = (props) => {
     prevParamsTransactionId,
     prevTransactionId,
     totalUnapprovedCount,
-    setDefaultHomeActiveTabName,
   ]);
 
   const validTransactionId =
@@ -210,10 +207,6 @@ const ConfirmTransaction = (props) => {
   ) : (
     <Loading />
   );
-};
-
-ConfirmTransaction.propTypes = {
-  setDefaultHomeActiveTabName: PropTypes.func,
 };
 
 export default ConfirmTransaction;
