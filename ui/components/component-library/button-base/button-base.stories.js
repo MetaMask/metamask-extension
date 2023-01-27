@@ -4,11 +4,9 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   SIZES,
-  TEXT,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
-import { Text } from '../text';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
@@ -57,7 +55,7 @@ export default {
     disabled: {
       control: 'boolean',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -116,12 +114,6 @@ export const Size = (args) => (
         Button LG
       </ButtonBase>
     </Box>
-    <Text variant={TEXT.BODY_SM}>
-      <ButtonBase {...args} size={SIZES.AUTO}>
-        Button Auto
-      </ButtonBase>{' '}
-      inherits the font-size of the parent element.
-    </Text>
   </>
 );
 
@@ -167,8 +159,8 @@ Loading.args = {
   loading: true,
 };
 
-export const IconName = (args) => (
-  <ButtonBase {...args} iconName={ICON_NAMES.ADD_SQUARE_FILLED}>
+export const Icon = (args) => (
+  <ButtonBase {...args} icon={ICON_NAMES.ADD_SQUARE}>
     Button
   </ButtonBase>
 );

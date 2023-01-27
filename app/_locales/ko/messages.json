@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "승인"
   },
-  "approveSpendLimit": {
-    "message": "$1 지출 한도 승인",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "이렇게 하면 사용자가 액세스를 취소할 때까지 제삼자가 가 통지 없이 다음과 같은 NFT에 액세스하고 이를 전송할 수 있습니다."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "이 거래 가속화"
   },
-  "spendLimitAmount": {
-    "message": "지출 한도 금액"
-  },
   "spendLimitInsufficient": {
     "message": "지출 한도 부족"
   },
@@ -3596,12 +3589,6 @@
     "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 $1(으)로 문의하세요.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "대기 중인 거래가 있어 스마트 거래를 잠시 사용할 수 없습니다."
-  },
-  "stxFallbackUnavailable": {
-    "message": "스마트 거래를 사용할 수 없을 때도 토큰 스왑은 가능합니다."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "스왑을 비공개로 제출하는 중..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "제출하기 전에 거래를 시뮬레이션하면 거래 비용을 줄이고 실패율을 낮출 수 있습니다."
   },
-  "stxTryRegular": {
-    "message": "일반 스왑을 시도하세요."
-  },
   "stxTryingToCancel": {
     "message": "거래를 취소하려고 합니다..."
-  },
-  "stxUnavailable": {
-    "message": "스마트 거래가 비활성화되었습니다."
   },
   "stxUnknown": {
     "message": "알 수 없는 상태"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "이 스왑을 완료하려면 $1개의 추가 $2이(가) 필요합니다.",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "스마트 거래로 이 스왑을 완료하려면 $1(이)가 더 많이 필요합니다.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "$1의 최고 견적",

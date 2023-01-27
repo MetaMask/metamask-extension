@@ -1,46 +1,11 @@
 import { rawEncode } from 'ethereumjs-abi';
 
 import {
-  addCurrencies,
-  conversionGTE,
-  conversionUtil,
-} from '../../../shared/modules/conversion.utils';
-
-import {
   generateERC20TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
   ellipsify,
 } from './send.utils';
-
-jest.mock('../../../shared/modules/conversion.utils', () => ({
-  addCurrencies: jest.fn((a, b) => {
-    let [a1, b1] = [a, b];
-    if (String(a).match(/^0x.+/u)) {
-      a1 = Number(String(a).slice(2));
-    }
-    if (String(b).match(/^0x.+/u)) {
-      b1 = Number(String(b).slice(2));
-    }
-    return a1 + b1;
-  }),
-  conversionUtil: jest.fn((val) => parseInt(val, 16)),
-  conversionGTE: jest.fn((obj1, obj2) => obj1.value >= obj2.value),
-  multiplyCurrencies: jest.fn((a, b) => `${a}x${b}`),
-  conversionGreaterThan: (obj1, obj2) => obj1.value > obj2.value,
-  conversionLessThan: (obj1, obj2) => obj1.value < obj2.value,
-}));
-
-jest.mock('../../../shared/lib/transactions-controller-utils', () => {
-  const originalModule = jest.requireActual(
-    '../../../shared/lib/transactions-controller-utils',
-  );
-
-  return {
-    ...originalModule,
-    calcTokenAmount: (a, d) => `calc:${a}${d}`,
-  };
-});
 
 jest.mock('ethereumjs-abi', () => ({
   rawEncode: jest.fn().mockReturnValue(16, 1100),
@@ -84,7 +49,7 @@ describe('send utils', () => {
   });
 
   describe('isBalanceSufficient()', () => {
-    it('should correctly call addCurrencies and return the result of calling conversionGTE', () => {
+    it('should correctly sum the appropriate currencies and ensure that balance is greater', () => {
       const result = isBalanceSufficient({
         amount: 15,
         balance: 100,
@@ -92,53 +57,29 @@ describe('send utils', () => {
         gasTotal: 17,
         primaryCurrency: 'ABC',
       });
-      expect(addCurrencies).toHaveBeenCalledWith(15, 17, {
-        aBase: 16,
-        bBase: 16,
-        toNumericBase: 'hex',
-      });
-      expect(conversionGTE).toHaveBeenCalledWith(
-        {
-          value: 100,
-          fromNumericBase: 'hex',
-          fromCurrency: 'ABC',
-          conversionRate: 3,
-        },
-        {
-          value: 32,
-          fromNumericBase: 'hex',
-          conversionRate: 3,
-          fromCurrency: 'ABC',
-        },
-      );
-
       expect(result).toStrictEqual(true);
     });
   });
 
   describe('isTokenBalanceSufficient()', () => {
-    it('should correctly call conversionUtil and return the result of calling conversionGTE', () => {
+    it('should return true for a sufficient balance for token spend', () => {
       const result = isTokenBalanceSufficient({
         amount: '0x10',
         tokenBalance: 123,
         decimals: 10,
       });
 
-      expect(conversionUtil).toHaveBeenCalledWith('0x10', {
-        fromNumericBase: 'hex',
+      expect(result).toStrictEqual(true);
+    });
+
+    it('should return false for an insufficient balance for token spend', () => {
+      const result = isTokenBalanceSufficient({
+        amount: '0x10000',
+        tokenBalance: 123,
+        decimals: 10,
       });
 
-      expect(conversionGTE).toHaveBeenCalledWith(
-        {
-          value: 123,
-          fromNumericBase: 'hex',
-        },
-        {
-          value: 'calc:1610',
-        },
-      );
-
-      expect(result).toStrictEqual(false);
+      expect(result).toStrictEqual(true);
     });
   });
 

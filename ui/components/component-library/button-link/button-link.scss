@@ -35,4 +35,19 @@
   &--type-danger#{&}--disabled:hover {
     opacity: 0.3;
   }
+
+  &--size-auto {
+    height: auto;
+  }
+
+  &--size-inherit {
+    height: auto;
+    background-color: transparent;
+    vertical-align: top;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+  }
 }

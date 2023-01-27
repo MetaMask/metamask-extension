@@ -3805,12 +3805,6 @@ export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
 
-export function setCollectiblesDetectionNoticeDismissed() {
-  return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
-    true,
-  ]);
-}
-
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled,
 ) {

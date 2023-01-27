@@ -17,7 +17,10 @@ import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
+import {
+  decGWEIToHexWEI,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -263,10 +266,6 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDetectionNoticeDismissed(state) {
-  return state.metamask.collectiblesDetectionNoticeDismissed;
-}
-
 export function getCollectiblesDropdownState(state) {
   return state.metamask.collectiblesDropdownState;
 }
@@ -280,7 +279,9 @@ export const getCollectibles = (state) => {
     },
   } = state;
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
@@ -292,7 +293,9 @@ export const getCollectibleContracts = (state) => {
     },
   } = state;
 
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export function getBlockGasLimit(state) {

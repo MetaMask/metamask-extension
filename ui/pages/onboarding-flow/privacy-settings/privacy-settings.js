@@ -225,7 +225,7 @@ export default function PrivacySettings() {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                       }}
-                      icon={<Icon name="add-outline" marginRight={2} />}
+                      icon={<Icon name="add" marginRight={2} />}
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
                     </Button>

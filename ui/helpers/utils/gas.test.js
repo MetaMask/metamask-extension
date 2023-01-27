@@ -1,7 +1,6 @@
 import { PRIORITY_LEVELS } from '../../../shared/constants/gas';
 
 import {
-  addTenPercent,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
   formatGasFeeOrFeeRange,
 } from './gas';
@@ -35,17 +34,6 @@ describe('Gas utils', () => {
         suggestedMaxFeePerGas: '1',
       });
       expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('addTenPercent', () => {
-    it('should add 10% to hex value passed', () => {
-      const result = addTenPercent('0x59682f00');
-      expect(result).toStrictEqual('0x62590080');
-    });
-    it('should return undefined if undefined value is passed', () => {
-      const result = addTenPercent(undefined);
-      expect(result).toBeUndefined();
     });
   });
 

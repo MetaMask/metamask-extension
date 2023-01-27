@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "批准"
   },
-  "approveSpendLimit": {
-    "message": "批准 $1 消费限额",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "这允许第三方访问和转移以下 NFT，而无需另行通知，直到您撤销其访问权限。"
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "加速该交易"
   },
-  "spendLimitAmount": {
-    "message": "消费限额"
-  },
   "spendLimitInsufficient": {
     "message": "消费限额不足"
   },
@@ -3596,12 +3589,6 @@
     "message": "突然的市场变化可能导致失败。如果问题仍然存在，请联系$1。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "智能交易暂时不可用，因为您有一笔待处理的交易。"
-  },
-  "stxFallbackUnavailable": {
-    "message": "即使智能交易不可用，您仍然可以交换代币。"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "正在秘密提交您的Swap..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "在提交前模拟交易，以降低交易成本并减少失败。"
   },
-  "stxTryRegular": {
-    "message": "尝试定期交换。"
-  },
   "stxTryingToCancel": {
     "message": "正在尝试取消您的交易......"
-  },
-  "stxUnavailable": {
-    "message": "智能交易被禁用"
   },
   "stxUnknown": {
     "message": "状态未知"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "您还需要 $1 的 $2 来完成这笔交换",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "您还需要更多$1才能使用智能交易完成此交换。",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "$1 报价中最棒的。",

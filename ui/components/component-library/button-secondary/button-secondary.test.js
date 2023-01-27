@@ -93,7 +93,7 @@ describe('ButtonSecondary', () => {
   });
   it('should render with icon', () => {
     const { container } = render(
-      <ButtonSecondary data-testid="icon" iconName="add-square-filled" />,
+      <ButtonSecondary data-testid="icon" iconName="add-square" />,
     );
 
     const icons = container.getElementsByClassName('mm-icon').length;
