@@ -3571,6 +3571,13 @@ export default class MetamaskController extends EventEmitter {
           hostname,
           phishingTestResponse,
         );
+        this.metaMetricsController.trackEvent({
+          event: EVENT_NAMES.PHISHING_PAGE_DISPLAYED,
+          category: EVENT.CATEGORIES.PHISHING,
+          properties: {
+            url: hostname,
+          },
+        });
         return;
       }
     }
