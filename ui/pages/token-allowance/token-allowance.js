@@ -449,6 +449,7 @@ export default function TokenAllowance({
               noBorder
               supportsEIP1559={supportsEIP1559}
               isSetApproveForAll={isSetApproveForAll}
+              fullTxData={fullTxData}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
             />
