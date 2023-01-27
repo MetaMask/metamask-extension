@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },
-  "approveSpendLimit": {
-    "message": "$1 खर्च सीमा अनुमोदित करें",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "यह किसी तीसरे पक्ष को बिना किसी नोटिस के निम्नलिखित NFTs को ऐक्सेस करने और स्थानांतरित करने की अनुमति देता है जब तक कि आप इसकी ऐक्सेस को रद्द नहीं कर देते।"
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "इस लेनदेन को गति दें"
   },
-  "spendLimitAmount": {
-    "message": "खर्च सीमा राशि"
-  },
   "spendLimitInsufficient": {
     "message": "खर्च सीमा अपर्याप्त है"
   },
@@ -3596,12 +3589,6 @@
     "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से संपर्क करें।",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "स्मार्ट लेनदेन अस्थायी रूप से अनुपलब्ध हैं क्योंकि आपके पास एक लंबित लेनदेन है।"
-  },
-  "stxFallbackUnavailable": {
-    "message": "स्मार्ट लेनदेन अनुपलब्ध होने पर भी आप अपने टोकनों को स्वैप कर सकते हैं।"
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "आपका स्वैप निजी रूप से सबमिट किया जा रहा है..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "लेनदेन की लागतें घटाने और विफलताओं को कम करने के लिए सबमिट करने से पहले लेनदेन को सिम्युलेट करें।"
   },
-  "stxTryRegular": {
-    "message": "नियमित स्वैप का प्रयास करें।"
-  },
   "stxTryingToCancel": {
     "message": "अपके लेनदेन को रद्द करने का प्रयास कर रहा है..."
-  },
-  "stxUnavailable": {
-    "message": "स्मार्ट लेनदेन अक्षम किए गए हैं"
   },
   "stxUnknown": {
     "message": "स्टेटस अज्ञात"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "इस स्वैप को पूरा करने के लिए आपको अधिक $1 और $2 की आवश्यकता होगी",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "आपको और $1 चाहिए होगा ताकि इस स्वैप को स्मार्ट लेनदेन का इस्तेमाल करते हुए पूरा कर सके।",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "$1 उद्धरणों में से सर्वश्रेष्ठ।",

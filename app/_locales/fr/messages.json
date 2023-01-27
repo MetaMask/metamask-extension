@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Approuver"
   },
-  "approveSpendLimit": {
-    "message": "Approuver la limite de dépenses de $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT suivants."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Accélérez cette transaction"
   },
-  "spendLimitAmount": {
-    "message": "Montant limite de dépenses"
-  },
   "spendLimitInsufficient": {
     "message": "Limite de dépenses insuffisante"
   },
@@ -3596,12 +3589,6 @@
     "message": "Les fluctuations soudaines du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Les transactions intelligentes sont temporairement indisponibles parce que vous avez une transaction en attente."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Vous pouvez toujours faire un swap de tokens, même si les transactions intelligentes ne sont pas disponibles."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Soumission privée de votre Swap..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "Simulez les transactions avant de les soumettre pour réduire les coûts et les échecs de transaction."
   },
-  "stxTryRegular": {
-    "message": "Essayez un swap normal."
-  },
   "stxTryingToCancel": {
     "message": "Tentative d’annulation de votre transaction..."
-  },
-  "stxUnavailable": {
-    "message": "Transactions intelligentes désactivées"
   },
   "stxUnknown": {
     "message": "État inconnu"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Vous avez besoin de $1 $2 de plus pour effectuer ce swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Vous avez besoin de plus de $1 pour effectuer cet échange en utilisant des transactions intelligentes.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Meilleures cotations de $1.",

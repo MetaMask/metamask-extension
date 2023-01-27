@@ -370,10 +370,6 @@
   "approveButtonText": {
     "message": "Onayla"
   },
-  "approveSpendLimit": {
-    "message": "$1 harcama limitini onayla",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Üçüncü bir tarafın, siz bu erişimi iptal edene kadar başka bildirim yapılmaksızın aşağıdaki NFT'lere erişim sağlamasına ve onları transfer edebilmesine izin verir."
   },
@@ -3442,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Bu işlemi hızlandır"
   },
-  "spendLimitAmount": {
-    "message": "Harcama limiti tutarı"
-  },
   "spendLimitInsufficient": {
     "message": "Harcama limiti yetersiz"
   },
@@ -3596,12 +3589,6 @@
     "message": "Ani piyasa değişiklikleri başarısızlıklara neden olabilir. Sorun devam ederse lütfen $1 ile iletişime geç.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Bekleyen bir işlemin olduğundan Akıllı İşlemler geçici olarak kullanılamıyor."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Akıllı İşlemler kullanılamazken bile token'larını değiştirebilirsin."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Swap işlemin özel olarak gönderiliyor..."
   },
@@ -3625,14 +3612,8 @@
   "stxTooltip": {
     "message": "İşlem maliyetlerini azaltmak ve arızaları azaltmak için göndermeden önce işlemleri simüle et."
   },
-  "stxTryRegular": {
-    "message": "Normal bir takas dene."
-  },
   "stxTryingToCancel": {
     "message": "İşlemin iptal edilmeye çalışılıyor..."
-  },
-  "stxUnavailable": {
-    "message": "Akıllı İşlemler devre dışı bırakıldı"
   },
   "stxUnknown": {
     "message": "Durum bilinmiyor"
@@ -3684,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Bu takası tamamlamak için $1 tane daha $2 gerekli",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Akıllı işlemleri kullanarak bu takası tamamlamak için daha fazla $1 lazım.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "En iyi $1 teklifleri.",
