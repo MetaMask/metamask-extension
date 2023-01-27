@@ -71,7 +71,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
           </span>
         )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
-        <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+        <Icon name={ICON_NAMES.ARROW_RIGHT} />
       </button>
       {estimateUsed === 'custom' && (
         <button onClick={openAdvancedGasFeeModal}>{t('edit')}</button>

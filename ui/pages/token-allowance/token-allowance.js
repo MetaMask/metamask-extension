@@ -428,9 +428,9 @@ export default function TokenAllowance({
             {t('viewDetails')}
           </Typography>
           {showFullTxDetails ? (
-            <i className="fa fa-sm fa-angle-up" />
+            <Icon name={ICON_NAMES.ARROW_UP} />
           ) : (
-            <i className="fa fa-sm fa-angle-down" />
+            <Icon name={ICON_NAMES.ARROW_DOWN} />
           )}
         </Button>
       </Box>

@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
   return (
     <button className="asset-breadcrumb" onClick={onBack}>
-      <i
-        className="fas fa-chevron-left asset-breadcrumb__chevron"
-        data-testid="asset__back"
-      />
+      <Icon name={ICON_NAMES.ARROW_LEFT} />
       <span>{accountName}</span>
       &nbsp;/&nbsp;
       <span className="asset-breadcrumb__asset">{assetName}</span>

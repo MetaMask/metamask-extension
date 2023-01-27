@@ -193,7 +193,7 @@ export default function SortList({
               onMouseEnter={() => setRowNowHover(true)}
               onMouseLeave={() => setRowNowHover(false)}
             >
-              <i className="fa fa-angle-up" />
+              <Icon name={ICON_NAMES.ARROW_UP} />
             </div>
           </div>
         ),

@@ -72,7 +72,7 @@ const ConfirmPageContainerNavigation = () => {
           data-testid="previous-page"
           onClick={() => onNextTx(prevTxId)}
         >
-          <i className="fa fa-angle-left fa-2x" />
+          <Icon name={ICON_NAMES.ARROW_LEFT} />
         </button>
       </div>
       <div className="confirm-page-container-navigation__textcontainer">
@@ -94,7 +94,7 @@ const ConfirmPageContainerNavigation = () => {
           data-testid="next-page"
           onClick={() => onNextTx(nextTxId)}
         >
-          <i className="fa fa-angle-right fa-2x" />
+          <Icon name={ICON_NAMES.ARROW_RIGHT} />
         </button>
         <button
           className="confirm-page-container-navigation__arrow"

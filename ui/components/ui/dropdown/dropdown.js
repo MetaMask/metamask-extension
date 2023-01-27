@@ -41,7 +41,7 @@ const Dropdown = ({
           );
         })}
       </select>
-      <IconCaretDown size={16} className="dropdown__icon-caret-down" />
+      <Icon name={ICON_NAMES.ARROW_DOWN} size={16} />
     </div>
   );
 };

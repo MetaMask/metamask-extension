@@ -54,7 +54,7 @@ export default function ConfirmPageContainerHeader({
               visibility: showEdit ? 'initial' : 'hidden',
             }}
           >
-            <IconCaretLeft />
+            <Icon name={ICON_NAMES.ARROW_LEFT} />
             <span
               data-testid="confirm-page-back-edit-button"
               className="confirm-page-container-header__back-button"

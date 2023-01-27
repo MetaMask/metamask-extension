@@ -283,7 +283,7 @@ export default function ConfirmationPage({
                 setCurrentPendingConfirmation(currentPendingConfirmation - 1)
               }
             >
-              <i className="fas fa-chevron-left" />
+              <Icon name={ICON_NAMES.ARROW_LEFT} />
             </button>
           )}
           <button
@@ -295,7 +295,7 @@ export default function ConfirmationPage({
               setCurrentPendingConfirmation(currentPendingConfirmation + 1)
             }
           >
-            <i className="fas fa-chevron-right" />
+            <Icon name={ICON_NAMES.ARROW_RIGHT} />
           </button>
         </div>
       )}

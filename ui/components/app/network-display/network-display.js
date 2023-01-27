@@ -65,7 +65,7 @@ export default function NetworkDisplay({
       }
       rightIcon={
         onClick ? (
-          <IconCaretDown size={16} className="network-display__icon" />
+          <Icon name={ICON_NAMES.ARROW_DOWN} />
         ) : null
       }
       label={

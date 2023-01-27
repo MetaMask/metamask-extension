@@ -177,7 +177,7 @@ export default class AdvancedGasInputs extends Component {
                 !disabled && onChange({ target: { value: value + 1 } })
               }
             >
-              <i className="fa fa-sm fa-angle-up" />
+              <Icon name={ICON_NAMES.ARROW_UP} />
             </div>
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
@@ -186,7 +186,7 @@ export default class AdvancedGasInputs extends Component {
                 onChange({ target: { value: Math.max(value - 1, 0) } })
               }
             >
-              <i className="fa fa-sm fa-angle-down" />
+              <Icon name={ICON_NAMES.ARROW_DOWN} />
             </div>
           </div>
           {errorComponent || customMessageComponent}

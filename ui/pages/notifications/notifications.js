@@ -85,8 +85,7 @@ export default function Notifications() {
     <div className="main-container notifications">
       <div className="notifications__header">
         <div className="notifications__header__title-container">
-          <IconCaretLeft
-            className="notifications__header__title-container__back-button"
+        <Icon name={ICON_NAMES.ARROW_LEFT}
             color="var(--color-text-default)"
             size={23}
             onClick={() => history.push(DEFAULT_ROUTE)}

@@ -67,11 +67,8 @@ const Popover = ({
         >
           <h2 title="popover">
             {onBack ? (
-              <button
-                className="fas fa-chevron-left popover-header__button"
-                title={t('back')}
-                onClick={onBack}
-              />
+              <Icon name={ICON_NAMES.ARROW_LEFT} title={t('back')}
+              onClick={onBack}/>
             ) : null}
             {title}
           </h2>

@@ -52,16 +52,12 @@ exports[`SendGasRow Component render should match snapshot 1`] = `
               <div
                 class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               >
-                <i
-                  class="fa fa-sm fa-angle-up"
-                />
+                <Icon name={ICON_NAMES.ARROW_UP} />
               </div>
               <div
                 class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               >
-                <i
-                  class="fa fa-sm fa-angle-down"
-                />
+                <Icon name={ICON_NAMES.ARROW_DOWN} />
               </div>
             </div>
           </div>
@@ -104,16 +100,12 @@ exports[`SendGasRow Component render should match snapshot 1`] = `
               <div
                 class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               >
-                <i
-                  class="fa fa-sm fa-angle-up"
-                />
+                <Icon name={ICON_NAMES.ARROW_UP} />
               </div>
               <div
                 class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               >
-                <i
-                  class="fa fa-sm fa-angle-down"
-                />
+                <Icon name={ICON_NAMES.ARROW_DOWN} />
               </div>
             </div>
           </div>

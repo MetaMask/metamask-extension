@@ -24,7 +24,7 @@ export default function AccountModalContainer(props, context) {
         </div>
         {showBackButton && (
           <div className="account-modal__back" onClick={backButtonAction}>
-            <i className="fa fa-angle-left fa-lg" />
+            <Icon name={ICON_NAMES.ARROW_LEFT} />
             <span className="account-modal__back-text">
               {context.t('back')}
             </span>

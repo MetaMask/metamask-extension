@@ -117,8 +117,7 @@ class SettingsPage extends PureComponent {
         <div className="settings-page__header">
           <div className="settings-page__header__title-container">
             {currentPath !== SETTINGS_ROUTE && (
-              <IconCaretLeft
-                className="settings-page__back-button"
+              <Icon name={ICON_NAMES.ARROW_LEFT}
                 color="var(--color-icon-default)"
                 size={32}
                 onClick={() => history.push(backRoute)}

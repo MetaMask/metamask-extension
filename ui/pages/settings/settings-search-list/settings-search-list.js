@@ -40,10 +40,7 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                 >
                   {tabMessage(t)}
                 </span>
-                <IconCaretRight
-                  size={16}
-                  className="settings-page__header__search__list__item__caret"
-                />
+                <Icon name={ICON_NAMES.ARROW_RIGHT} size={16}/>
                 <span
                   id={`menu-section_${route}`}
                   className={classnames(

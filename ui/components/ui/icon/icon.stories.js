@@ -120,10 +120,10 @@ export const DefaultStory = (args) => (
           gridTemplateColumns: 'repeat(auto-fill, 176px)',
         }}
       >
-        <IconItem Component={<IconCaretLeft {...args} />} />
-        <IconItem Component={<IconCaretRight {...args} />} />
-        <IconItem Component={<IconCaretDown {...args} />} />
-        <IconItem Component={<IconCaretUp {...args} />} />
+        <IconItem Component={<Icon name={ICON_NAMES.ARROW_LEFT} {...args} />} />
+        <IconItem Component={<Icon name={ICON_NAMES.ARROW_RIGHT} {...args} />} />
+        <IconItem Component={<Icon name={ICON_NAMES.ARROW_DOWN} {...args} />} />
+        <IconItem Component={<Icon name={ICON_NAMES.ARROW_UP} {...args} />} />
         <IconItem Component={<IconCheck {...args} />} />
         <IconItem Component={<IconPlus {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
@@ -186,9 +186,9 @@ DefaultStory.args = {
 
 export const Size = (args) => (
   <div>
-    <IconCaretLeft size={16 || args.size} />
-    <IconCaretLeft size={24 || args.size} />
-    <IconCaretLeft size={32 || args.size} />
+    <Icon name={ICON_NAMES.ARROW_LEFT} size={16 || args.size} />
+    <Icon name={ICON_NAMES.ARROW_LEFT} size={24 || args.size} />
+    <Icon name={ICON_NAMES.ARROW_LEFT} size={32 || args.size} />
   </div>
 );
 
@@ -199,12 +199,12 @@ Size.args = {
 export const Color = (args) => (
   <>
     {Object.values(validColors).map((color) => (
-      <IconCaretLeft {...args} color={args.color || color} key={color} />
+      <Icon name={ICON_NAMES.ARROW_LEFT} {...args} color={args.color || color} key={color} />
     ))}
   </>
 );
 
-export const AriaLabel = (args) => <IconCaretLeft {...args} />;
+export const AriaLabel = (args) => <Icon name={ICON_NAMES.ARROW_LEFT} {...args} />;
 
 AriaLabel.args = {
   ariaLabel: 'back',

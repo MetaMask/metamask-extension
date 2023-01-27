@@ -138,7 +138,7 @@ const AssetListItem = ({
       rightContent={
         !isERC721 && (
           <>
-            <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+            <Icon name={ICON_NAMES.ARROW_RIGHT} />
             {sendTokenButton}
           </>
         )

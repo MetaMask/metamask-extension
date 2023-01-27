@@ -9,9 +9,7 @@ exports[`SlippageButtons renders the component with initial props 1`] = `
   >
     Advanced options
   </div>
-  <i
-    class="fa fa-angle-up"
-  />
+  <Icon name={ICON_NAMES.ARROW_UP} />
 </button>
 `;
 
@@ -56,9 +54,7 @@ exports[`SlippageButtons renders the component with the smart transaction opt-in
   >
     Advanced options
   </div>
-  <i
-    class="fa fa-angle-up"
-  />
+  <Icon name={ICON_NAMES.ARROW_UP} />
 </button>
 `;
 

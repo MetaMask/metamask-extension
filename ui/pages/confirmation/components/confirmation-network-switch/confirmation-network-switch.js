@@ -68,7 +68,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         alignItems={ALIGN_ITEMS.CENTER}
         justifyContent={JUSTIFY_CONTENT.CENTER}
       >
-        <i className="fa fa-angle-right fa-lg confirmation-network-switch__check" />
+        <Icon name={ICON_NAMES.ARROW_RIGHT} />
         <div className="confirmation-network-switch__dashed-line" />
       </Box>
       <Box

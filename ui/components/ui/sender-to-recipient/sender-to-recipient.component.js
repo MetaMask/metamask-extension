@@ -199,7 +199,7 @@ function Arrow({ variant }) {
     </div>
   ) : (
     <div className="sender-to-recipient__arrow-container">
-      <IconCaretRight />
+      <Icon name={ICON_NAMES.ARROW_RIGHT} />
     </div>
   );
 }

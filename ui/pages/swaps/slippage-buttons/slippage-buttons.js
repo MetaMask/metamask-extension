@@ -96,9 +96,9 @@ export default function SlippageButtons({
           {t('swapsAdvancedOptions')}
         </div>
         {open ? (
-          <i className="fa fa-angle-up" />
+          <Icon name={ICON_NAMES.ARROW_UP} />
         ) : (
-          <i className="fa fa-angle-down" />
+          <Icon name={ICON_NAMES.ARROW_DOWN} />
         )}
       </button>
       <div className="slippage-buttons__content">
