@@ -6,35 +6,35 @@ This document details the plan to refactor and cleanup Signature Request pages i
 
 1. Simple ETH Signature
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/eth_sign.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/eth_sign.png" width="150"/>
 
 1. Personal Signature
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/personal_sign.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/personal_sign.png" width="150"/>
 
 1. Typed Data - V1
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/v1.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/v1.png" width="150"/>
 
 1. Typed Data - V3
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/v3.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/v3.png" width="150"/>
 
 1. Typed Data - V4
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/v4.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/v4.png" width="150"/>
 
 1. SIWE Signature
 
-   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/siwe.png" width="150"/>
+   <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/siwe.png" width="150"/>
 
 ## The current flow of control for Signature Request looks like:
 
-![Signature Request Flow -  Current](https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/signature_request_old.png)
+![Signature Request Flow -  Current](https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/signature_request_old.png)
 
 ## The proposed flow of control:
 
-![Signature Request Flow -  Proposed](https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/signature_request_proposed.png)
+![Signature Request Flow -  Proposed](https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/signature_request_proposed.png)
 
 ## Proposed Refactoring:
 
@@ -114,12 +114,12 @@ There are many areas in above flow where the code can be improved upon to cleanu
    - Move this [metrics event](https://github.com/MetaMask/metamask-extension/blob/71a0bc8b3ff94478e61294c815770e6bc12a72f5/ui/app/components/app/signature-request-original/signature-request-original.component.js#L47) to pages/confirm-signature-request as it is applicable to all the signature requests types.
    - Header or we can say upper half of the page of all signature request pages (except SIWE) are very similar, this can be extracted into a reusable component used across both signature-request-original and signature-request:
 
-     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/header.png" width="150"/>
+     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/header.png" width="150"/>
 
    - [LedgerInstructions](https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/signature-request-original/signature-request-original.component.js#L308) can also be moved to the header.
    - Create a reuable footer component and use it across all confirmation pages. [#17237](https://github.com/MetaMask/metamask-extension/issues/17237)
 
-     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/sig_req_doc/refactoring/signature-request/footer.png" width="150"/>
+     <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/refactoring/signature-request/footer.png" width="150"/>
 
    - Create a reuable component for Cancel All requests for use across signature request pages [Code](https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/signature-request-original/signature-request-original.component.js#L322).
    - Extract [getNetrowkName](https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/signature-request-original/signature-request-original.component.js#L56) into a reuable hook / utility method.
