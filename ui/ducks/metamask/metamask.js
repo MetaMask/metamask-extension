@@ -10,6 +10,7 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -308,7 +309,10 @@ export function getConversionRate(state) {
 }
 
 export function getNativeCurrency(state) {
-  return state.metamask.nativeCurrency;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
+  return useCurrencyRateCheck
+    ? state.metamask.nativeCurrency
+    : state.metamask.provider.ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
