@@ -15396,15 +15396,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "eth-block-tracker@npm:6.0.0"
+"eth-block-tracker@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "eth-block-tracker@npm:6.1.0"
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/utils": ^3.0.1
     json-rpc-random-id: ^1.0.1
     pify: ^3.0.0
-  checksum: ad1199b822a9a3ff2673ecc92ca7cda0a37828e5bfd1927fd917a8085a99904fc29d3ef2392068bcfb14e47589df097940ef28f3e9025d1681e56a89b07e284e
+  checksum: 33ee6375a26822649d1e9ac24a3c39d70338eb505715f72b9102fb82e40d7a48902b4a7dd4a33bb4f121b79707c5ab045777507a2881cfcdb385c8ccbb3ac2a0
   languageName: node
   linkType: hard
 
@@ -24240,7 +24240,7 @@ __metadata:
     eslint-plugin-react: ^7.23.1
     eslint-plugin-react-hooks: ^4.2.0
     eslint-plugin-storybook: ^0.6.4
-    eth-block-tracker: ^6.0.0
+    eth-block-tracker: ^6.1.0
     eth-ens-namehash: ^2.0.8
     eth-json-rpc-filters: ^5.1.0
     eth-json-rpc-middleware: ^9.0.1
