@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
   "scripts": {
-    "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
+    "start": "yarn build:dev dev --apply-lavamoat=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
     "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
     "dist": "yarn build dist",
@@ -216,7 +216,6 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.12.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.6.1",
-    "@lavamoat/snow": "^1.4.1",
     "@material-ui/core": "^4.11.0",
     "@metamask/address-book-controller": "^1.0.0",
     "@metamask/announcement-controller": "^1.0.0",

@@ -4,7 +4,6 @@ ignores:
   # webapp deps
   #
 
-  - '@lavamoat/snow'
   - '@lavamoat/allow-scripts'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'

@@ -3347,15 +3347,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "@lavamoat/snow@npm:1.4.1"
-  dependencies:
-    is-cross-origin: ^1.0.1
-  checksum: d4dcd9907bb4caa7ac7fc130dbe7eff0295a992769136895c222b8e823edb0de44aa822e467670515ef70e85b9e5edb93c4ca9ffc05735ed18528304e478754a
-  languageName: node
-  linkType: hard
-
 "@material-ui/core@npm:^4.11.0":
   version: 4.11.0
   resolution: "@material-ui/core@npm:4.11.0"
@@ -19900,15 +19891,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-cross-origin@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "is-cross-origin@npm:1.0.1"
-  dependencies:
-    is-window: ^1.0.2
-  checksum: 396efb188e986ed640b48e5ac19b3edb09ad9a95426b6e1cec18c087d97834e22baf2d1fa354eb87da4816dfa517ccd35d6788bb82ea37eba2e686b1b96ebf8f
-  languageName: node
-  linkType: hard
-
 "is-data-descriptor@npm:^0.1.4":
   version: 0.1.4
   resolution: "is-data-descriptor@npm:0.1.4"
@@ -24098,7 +24080,6 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": ^0.6.1
     "@lavamoat/allow-scripts": ^2.0.3
     "@lavamoat/lavapack": ^5.0.0
-    "@lavamoat/snow": ^1.4.1
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0

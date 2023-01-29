@@ -16,7 +16,6 @@ module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
   shouldIncludeLockdown = true,
-  shouldIncludeSnow = true,
   buildType,
 }) {
   const copyTargetsProds = {};
@@ -25,7 +24,6 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
-      shouldIncludeSnow,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -114,7 +112,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(shouldIncludeLockdown) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -159,16 +157,6 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     {
       src: getPathInsideNodeModules('globalthis', 'dist/browser.js'),
       dest: `globalthis.js`,
-    },
-    {
-      src: shouldIncludeSnow
-        ? `./node_modules/@lavamoat/snow/snow.prod.js`
-        : EMPTY_JS_FILE,
-      dest: `snow.js`,
-    },
-    {
-      src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
-      dest: `use-snow.js`,
     },
     {
       src: shouldIncludeLockdown
