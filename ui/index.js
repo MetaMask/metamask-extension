@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
 import { getEnvironmentType } from '../app/scripts/lib/util';
-import { ALERT_TYPES } from '../shared/constants/alerts';
+import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
@@ -114,7 +114,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
-      draftInitialState[ALERT_TYPES.unconnectedAccount] = {
+      draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,
       };
       actions.setUnconnectedAccountAlertShown(origin);
@@ -164,6 +164,15 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 }
 
 function setupDebuggingHelpers(store) {
+  /**
+   * The following stateHook is a method intended to throw an error, used in
+   * our E2E test to ensure that errors are attempted to be sent to sentry.
+   */
+  window.stateHooks.throwTestError = async function () {
+    const error = new Error('Test Error');
+    error.name = 'TestError';
+    throw error;
+  };
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();

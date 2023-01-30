@@ -680,24 +680,26 @@ exports[`Signature Request Component render should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="signature-request-footer"
+      class="page-container__footer"
     >
-      <button
-        class="button btn--rounded btn-secondary"
-        data-testid="signature-cancel-button"
-        role="button"
-        tabindex="0"
-      >
-        Reject
-      </button>
-      <button
-        class="button btn--rounded btn-primary"
-        data-testid="signature-sign-button"
-        role="button"
-        tabindex="0"
-      >
-        Sign
-      </button>
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button"
+          data-testid="page-container-footer-cancel"
+          role="button"
+          tabindex="0"
+        >
+          Reject
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+          role="button"
+          tabindex="0"
+        >
+          Sign
+        </button>
+      </footer>
     </div>
   </div>
 </div>

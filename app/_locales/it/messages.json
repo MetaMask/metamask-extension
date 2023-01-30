@@ -92,10 +92,6 @@
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 può avere accesso e spendere al massimo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 può accedere e spendere questa risorsa",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -309,15 +305,8 @@
   "approveButtonText": {
     "message": "Approva"
   },
-  "approveSpendLimit": {
-    "message": "Approva limite di spesa per $1",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "Approvato"
-  },
-  "approvedAmountWithColon": {
-    "message": "Importo approvato:"
   },
   "approvedAsset": {
     "message": "Asset approvato"
@@ -1759,9 +1748,6 @@
   },
   "speedUpTransaction": {
     "message": "Accelera questa transazione"
-  },
-  "spendLimitAmount": {
-    "message": "Limite di spesa"
   },
   "spendLimitInsufficient": {
     "message": "Limite di spesa insufficiente"

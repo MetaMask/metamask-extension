@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { PRIMARY, SECONDARY, ETH } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../ui/currency-display';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
+import { EtherDenomination } from '../../../../shared/constants/common';
 
 export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
@@ -24,7 +25,7 @@ export default function UserPreferencedCurrencyDisplay({
   });
   const prefixComponent = useMemo(() => {
     return (
-      currency === ETH &&
+      currency === EtherDenomination.ETH &&
       showEthLogo && (
         <i
           className="fab fa-ethereum"

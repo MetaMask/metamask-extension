@@ -483,17 +483,16 @@ function setupController(initState, initLangCode) {
 
     let isMetaMaskInternalProcess = false;
     const sourcePlatform = getPlatform();
+    const senderUrl = remotePort.sender?.url
+      ? new URL(remotePort.sender.url)
+      : null;
 
     if (sourcePlatform === PLATFORM_FIREFOX) {
       isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
       isMetaMaskInternalProcess =
-        remotePort.sender.origin === `chrome-extension://${browser.runtime.id}`;
+        senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
     }
-
-    const senderUrl = remotePort.sender?.url
-      ? new URL(remotePort.sender.url)
-      : null;
 
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort);

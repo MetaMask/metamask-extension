@@ -110,10 +110,6 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 может получить доступ и потратить до этой максимальной суммы",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 может получить доступ к этому активу и потратить его",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -374,10 +370,6 @@
   "approveButtonText": {
     "message": "Одобрить"
   },
-  "approveSpendLimit": {
-    "message": "Одобрить предел расходов $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Это позволяет третьей стороне получать доступ и передавать следующие NFT без дополнительного уведомления, пока вы не отзовете ее доступ."
   },
@@ -387,9 +379,6 @@
   },
   "approved": {
     "message": "Одобрен"
-  },
-  "approvedAmountWithColon": {
-    "message": "Одобренная сумма:"
   },
   "approvedAsset": {
     "message": "Одобренный актив"
@@ -1709,12 +1698,6 @@
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Улучшенный опыт предоставления токенов"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Включите этот параметр, чтобы воспользоваться улучшенным доступом к токенам всякий раз, когда децентрализованное приложение запрашивает одобрение ERC20."
-  },
   "inYourSettings": {
     "message": "в ваших Настройках"
   },
@@ -2397,15 +2380,6 @@
   },
   "notifications15Title": {
     "message": "Ethereum Merge уже досутпно!"
-  },
-  "notifications16ActionText": {
-    "message": "Попробуйте это здесь"
-  },
-  "notifications16Description": {
-    "message": "Мы переработали наше подтверждение допустимых токенов, чтобы помочь вам принимать более обоснованные решения."
-  },
-  "notifications16Title": {
-    "message": "Улучшенный опыт предоставления токенов"
   },
   "notifications17ActionText": {
     "message": "Показать настройки безопасности и конфиденциальности"
@@ -3464,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "Ускорить эту транзакцию"
   },
-  "spendLimitAmount": {
-    "message": "Сумма лимита расходов"
-  },
   "spendLimitInsufficient": {
     "message": "Недостаточный лимит расходов"
   },
@@ -3618,12 +3589,6 @@
     "message": "Внезапные изменения на рынке могут привести к отказам. Если проблема не устранена, обратитесь по адресу $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Смарт-транзакции временно недоступны, так как у вас есть ожидающая транзакция."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Вы по-прежнему можете обменивать свои токены, даже если смарт-транзакции недоступны."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Приватная отправка вашей операции обмена..."
   },
@@ -3647,14 +3612,8 @@
   "stxTooltip": {
     "message": "Моделируйте транзакции перед отправкой, чтобы снизить транзакционные издержки и сократить число отказов."
   },
-  "stxTryRegular": {
-    "message": "Попробуйте обычный обмен."
-  },
   "stxTryingToCancel": {
     "message": "Попытка отменить транзакцию..."
-  },
-  "stxUnavailable": {
-    "message": "Смарт-транзакции отключены"
   },
   "stxUnknown": {
     "message": "Статус неизвестен"
@@ -3706,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Вам нужно еще $1 $2 для завершения этого обмена",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Вам нужно больше $1, чтобы завершить этот обмен с использованием смарт-транзакций.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Лучшие котировки $1.",

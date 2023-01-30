@@ -1,4 +1,4 @@
-import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import migration66 from './066';
 
 describe('migration #66', () => {
@@ -29,7 +29,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
+    ).toStrictEqual(LedgerTransportTypes.u2f);
   });
 
   it('should set ledgerTransportType to `u2f` if no useLedgerLive property exists and webhid is not available', async () => {
@@ -43,7 +43,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
+    ).toStrictEqual(LedgerTransportTypes.u2f);
   });
 
   it('should set ledgerTransportType to `u2f` if useLedgerLive is false and webhid is not available', async () => {
@@ -59,7 +59,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.U2F);
+    ).toStrictEqual(LedgerTransportTypes.u2f);
   });
 
   it('should set ledgerTransportType to `webhid` if useLedgerLive is false and webhid is available', async () => {
@@ -77,7 +77,7 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.WEBHID);
+    ).toStrictEqual(LedgerTransportTypes.webhid);
   });
 
   it('should set ledgerTransportType to `ledgerLive` if useLedgerLive is true', async () => {
@@ -111,6 +111,6 @@ describe('migration #66', () => {
     const newStorage = await migration66.migrate(oldStorage);
     expect(
       newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual(LEDGER_TRANSPORT_TYPES.LIVE);
+    ).toStrictEqual(LedgerTransportTypes.live);
   });
 });

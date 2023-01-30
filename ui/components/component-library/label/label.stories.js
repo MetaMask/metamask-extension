@@ -17,7 +17,7 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/Label',
-  id: __filename,
+
   component: Label,
   parameters: {
     docs: {
@@ -62,8 +62,8 @@ export const Children = (args) => (
       Text and icon
       <Icon
         color={COLORS.ICON_ALTERNATIVE}
-        name={ICON_NAMES.INFO_FILLED}
-        size={SIZES.AUTO}
+        name={ICON_NAMES.INFO}
+        size={SIZES.INHERIT}
       />
     </Label>
     <Label

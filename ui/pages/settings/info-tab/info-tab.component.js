@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../../../components/ui/button';
-import { Tag } from '../../../components/component-library/tag';
+import { Tag } from '../../../components/component-library';
 
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';

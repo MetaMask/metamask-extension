@@ -19,10 +19,16 @@ import {
   getTokenStandardAndDetails,
   ignoreTokens,
   setNewCollectibleAddedMessage,
+  updateCollectibleDropDownState,
 } from '../../store/actions';
 import FormField from '../../components/ui/form-field';
-import { getIsMainnet, getUseNftDetection } from '../../selectors';
-import { getCollectiblesDetectionNoticeDismissed } from '../../ducks/metamask/metamask';
+import {
+  getCurrentChainId,
+  getIsMainnet,
+  getSelectedAddress,
+  getUseNftDetection,
+} from '../../selectors';
+import { getCollectiblesDropdownState } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -34,15 +40,15 @@ export default function AddCollectible() {
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const collectibleDetectionNoticeDismissed = useSelector(
-    getCollectiblesDetectionNoticeDismissed,
-  );
+  const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
+  const selectedAddress = useSelector(getSelectedAddress);
+  const chainId = useSelector(getCurrentChainId);
   const addressEnteredOnImportTokensPage =
     history?.location?.state?.addressEnteredOnImportTokensPage;
   const contractAddressToConvertFromTokenToCollectible =
     history?.location?.state?.tokenAddress;
 
-  const [address, setAddress] = useState(
+  const [collectibleAddress, setCollectibleAddress] = useState(
     addressEnteredOnImportTokensPage ??
       contractAddressToConvertFromTokenToCollectible ??
       '',
@@ -54,7 +60,19 @@ export default function AddCollectible() {
 
   const handleAddCollectible = async () => {
     try {
-      await dispatch(addNftVerifyOwnership(address, tokenId));
+      await dispatch(addNftVerifyOwnership(collectibleAddress, tokenId));
+      const newCollectibleDropdownState = {
+        ...collectiblesDropdownState,
+        [selectedAddress]: {
+          ...collectiblesDropdownState?.[selectedAddress],
+          [chainId]: {
+            ...collectiblesDropdownState?.[selectedAddress]?.[chainId],
+            [collectibleAddress]: true,
+          },
+        },
+      };
+
+      dispatch(updateCollectibleDropDownState(newCollectibleDropdownState));
     } catch (error) {
       const { message } = error;
       dispatch(setNewCollectibleAddedMessage(message));
@@ -72,7 +90,7 @@ export default function AddCollectible() {
     dispatch(setNewCollectibleAddedMessage('success'));
 
     const tokenDetails = await getTokenStandardAndDetails(
-      address,
+      collectibleAddress,
       null,
       tokenId.toString(),
     );
@@ -81,7 +99,7 @@ export default function AddCollectible() {
       event: EVENT_NAMES.TOKEN_ADDED,
       category: 'Wallet',
       sensitiveProperties: {
-        token_contract_address: address,
+        token_contract_address: collectibleAddress,
         token_symbol: tokenDetails?.symbol,
         tokenId: tokenId.toString(),
         asset_type: AssetType.NFT,
@@ -95,11 +113,13 @@ export default function AddCollectible() {
 
   const validateAndSetAddress = (val) => {
     setDisabled(!isValidHexAddress(val) || !tokenId);
-    setAddress(val);
+    setCollectibleAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!isValidHexAddress(address) || !val || isNaN(Number(val)));
+    setDisabled(
+      !isValidHexAddress(collectibleAddress) || !val || isNaN(Number(val)),
+    );
     setTokenId(val);
   };
 
@@ -119,9 +139,7 @@ export default function AddCollectible() {
       disabled={disabled}
       contentComponent={
         <Box>
-          {isMainnet &&
-          !useNftDetection &&
-          !collectibleDetectionNoticeDismissed ? (
+          {isMainnet && !useNftDetection ? (
             <CollectiblesDetectionNotice />
           ) : null}
           {collectibleAddFailed && (
@@ -154,7 +172,7 @@ export default function AddCollectible() {
               dataTestId="address"
               titleText={t('address')}
               placeholder="0x..."
-              value={address}
+              value={collectibleAddress}
               onChange={(val) => {
                 validateAndSetAddress(val);
                 setCollectibleAddFailed(false);

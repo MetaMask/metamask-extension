@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { hexWEIToDecGWEI } from '../../../../shared/lib/transactions-controller-utils';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import GasTiming from '../../../components/app/gas-timing';
 import InfoTooltip from '../../../components/ui/info-tooltip';
@@ -38,13 +37,14 @@ import {
   getUseCurrencyRateCheck,
 } from '../../../selectors';
 
-import {
-  hexWEIToDecETH,
-  addHexes,
-} from '../../../helpers/utils/conversions.util';
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
 import { showModal } from '../../../store/actions';
+import {
+  addHexes,
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../../shared/modules/conversion.utils';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
@@ -60,9 +60,8 @@ export default function GasDisplay({ gasError }) {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
-  const { nativeCurrency, provider, unapprovedTxs } = useSelector(
-    (state) => state.metamask,
-  );
+  const { provider, unapprovedTxs } = useSelector((state) => state.metamask);
+  const nativeCurrency = provider.ticker;
   const { chainId } = provider;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =

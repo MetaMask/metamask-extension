@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
+import { EditGasModes } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
@@ -27,7 +27,6 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
-  getIsImprovedTokenAllowanceEnabled,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
@@ -87,10 +86,6 @@ export default function ConfirmApprove({
 
   const supportsEIP1559 = networkAndAccountSupports1559;
 
-  const improvedTokenAllowanceEnabled = useSelector(
-    getIsImprovedTokenAllowanceEnabled,
-  );
-
   const previousTokenAmount = useRef(tokenAmount);
   const {
     approveTransaction,
@@ -142,9 +137,7 @@ export default function ConfirmApprove({
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
   let tokensText;
-  if (assetStandard === TokenStandard.ERC20) {
-    tokensText = `${Number(tokenAmount)} ${tokenSymbol}`;
-  } else if (
+  if (
     assetStandard === TokenStandard.ERC721 ||
     assetStandard === TokenStandard.ERC1155
   ) {
@@ -171,7 +164,7 @@ export default function ConfirmApprove({
   if (assetStandard === undefined) {
     return <ConfirmContractInteraction />;
   }
-  if (improvedTokenAllowanceEnabled && assetStandard === TokenStandard.ERC20) {
+  if (assetStandard === TokenStandard.ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -202,7 +195,7 @@ export default function ConfirmApprove({
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
               onClose={closeCustomizeGasPopover}
-              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              mode={EditGasModes.modifyInPlace}
               transaction={transaction}
             />
           )}
@@ -234,46 +227,15 @@ export default function ConfirmApprove({
               userAddress={userAddress}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}
-              decimals={decimals}
               siteImage={siteImage}
-              setCustomAmount={setCustomPermissionAmount}
-              customTokenAmount={String(customPermissionAmount)}
-              tokenAmount={tokenAmount}
               origin={formattedOrigin}
               tokenSymbol={tokenSymbol}
               tokenImage={tokenImage}
-              tokenBalance={tokenBalance}
               tokenId={tokenId}
               assetName={assetName}
               assetStandard={assetStandard}
               tokenAddress={tokenAddress}
               showCustomizeGasModal={approveTransaction}
-              showEditApprovalPermissionModal={({
-                /* eslint-disable no-shadow */
-                customTokenAmount,
-                decimals,
-                origin,
-                setCustomAmount,
-                tokenAmount,
-                tokenBalance,
-                tokenSymbol,
-                /* eslint-enable no-shadow */
-              }) =>
-                dispatch(
-                  showModal({
-                    name: 'EDIT_APPROVAL_PERMISSION',
-                    customTokenAmount,
-                    decimals,
-                    origin,
-                    setCustomAmount,
-                    tokenAmount,
-                    tokenBalance,
-                    tokenSymbol,
-                    tokenId,
-                    assetStandard,
-                  }),
-                )
-              }
               data={customData || transactionData}
               toAddress={toAddress}
               currentCurrency={currentCurrency}
@@ -320,7 +282,7 @@ export default function ConfirmApprove({
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
                 onClose={closeCustomizeGasPopover}
-                mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+                mode={EditGasModes.modifyInPlace}
                 transaction={transaction}
               />
             )}

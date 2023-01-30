@@ -11,7 +11,7 @@ import {
   JUSTIFY_CONTENT,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 
 export default function ViewQuotePriceDifference(props) {
   const {
@@ -36,7 +36,7 @@ export default function ViewQuotePriceDifference(props) {
     // A calculation error signals we cannot determine dollar value
     priceDifferenceTitle = t('swapPriceUnavailableTitle');
     priceDifferenceMessage = t('swapPriceUnavailableDescription');
-    priceDifferenceClass = GAS_RECOMMENDATIONS.HIGH;
+    priceDifferenceClass = GasRecommendations.high;
     priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
