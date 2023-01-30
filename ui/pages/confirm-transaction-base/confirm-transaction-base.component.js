@@ -60,7 +60,9 @@ import {
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
 import TransactionAlerts from '../../components/app/transaction-alerts';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import TransactionInsights from '../../components/app/transaction-insights';
+///: END:ONLY_INCLUDE_IN
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
