@@ -16,6 +16,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -62,6 +65,9 @@ describe('TokenInput Component', () => {
       const mockStore = {
         metamask: {
           currentCurrency: 'usd',
+          provider: {
+            ticker: 'ETH',
+          },
           conversionRate: 231.06,
         },
       };
@@ -106,6 +112,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -152,6 +161,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -200,6 +212,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -262,6 +277,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -315,6 +333,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -370,6 +391,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -425,6 +449,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
@@ -472,6 +499,9 @@ describe('TokenInput Component', () => {
         metamask: {
           currentCurrency: 'usd',
           conversionRate: 231.06,
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
       const store = configureMockStore()(mockStore);
