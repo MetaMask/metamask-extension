@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
+import { KeyringTypes } from '../../../../shared/constants/keyring';
 import TokenOverview from './token-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -42,11 +42,11 @@ describe('TokenOverview', () => {
       selectedAddress: '0x1',
       keyrings: [
         {
-          type: HardwareKeyringTypes.hdKeyTree,
+          type: KeyringTypes.hdKeyTree,
           accounts: ['0x1', '0x2'],
         },
         {
-          type: HardwareKeyringTypes.ledger,
+          type: KeyringTypes.ledger,
           accounts: [],
         },
       ],

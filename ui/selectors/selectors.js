@@ -26,11 +26,11 @@ import {
   NETWORK_TYPES,
 } from '../../shared/constants/network';
 import {
-  HardwareKeyringTypes,
   WebHIDConnectedStatuses,
   LedgerTransportTypes,
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
+import { KeyringTypes } from '../../shared/constants/keyring';
 import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
@@ -127,7 +127,7 @@ export function hasUnsignedQRHardwareTransaction(state) {
   }
   const { from } = txParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringTypes.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -145,7 +145,7 @@ export function hasUnsignedQRHardwareMessage(state) {
   }
   const { from } = msgParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringTypes.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -232,11 +232,11 @@ export function getAccountType(state) {
   const type = currentKeyring && currentKeyring.type;
 
   switch (type) {
-    case HardwareKeyringTypes.trezor:
-    case HardwareKeyringTypes.ledger:
-    case HardwareKeyringTypes.lattice:
+    case KeyringTypes.trezor:
+    case KeyringTypes.ledger:
+    case KeyringTypes.lattice:
       return 'hardware';
-    case HardwareKeyringTypes.imported:
+    case KeyringTypes.imported:
       return 'imported';
     default:
       return 'default';
@@ -934,8 +934,7 @@ export const getUnreadNotificationsCount = createSelector(
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger =
-    currentKeyring?.type === HardwareKeyringTypes.ledger;
+  const currentKeyringIsLedger = currentKeyring?.type === KeyringTypes.ledger;
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;

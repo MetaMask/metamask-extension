@@ -1,15 +1,11 @@
 /**
- * Accounts can be instantiated from simple, HD or the multiple hardware wallet
- * keyring types. Both simple and HD are treated as default but we do special
- * case accounts managed by a hardware wallet.
+ * Hardware wallets supported by MetaMask.
  */
 export enum HardwareKeyringTypes {
   ledger = 'Ledger Hardware',
   trezor = 'Trezor Hardware',
   lattice = 'Lattice Hardware',
   qr = 'QR Hardware Wallet Device',
-  hdKeyTree = 'HD Key Tree',
-  imported = 'Simple Key Pair',
 }
 
 export enum HardwareKeyringNames {

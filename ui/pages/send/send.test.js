@@ -10,7 +10,7 @@ import {
   setBackgroundConnection,
 } from '../../../test/jest';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringTypes } from '../../../shared/constants/keyring';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
 
@@ -81,7 +81,7 @@ const baseStore = {
     selectedAddress: '0x0',
     keyrings: [
       {
-        type: HardwareKeyringTypes.hdKeyTree,
+        type: KeyringTypes.hdKeyTree,
         accounts: ['0x0'],
       },
     ],
