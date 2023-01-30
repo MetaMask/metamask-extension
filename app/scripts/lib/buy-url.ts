@@ -1,5 +1,6 @@
 import log from 'loglevel';
 
+import { isNullOrUndefined } from '@metamask/utils';
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import {
   BUYABLE_CHAINS_MAP,
@@ -29,7 +30,7 @@ const fetchWithTimeout = getFetchWithTimeout();
 const createWyrePurchaseUrl = async (
   walletAddress: string,
   chainId: keyof typeof BUYABLE_CHAINS_MAP,
-  symbol: CurrencySymbol,
+  symbol?: CurrencySymbol,
 ): Promise<any> => {
   const { wyre = {} as WyreChainSettings } = BUYABLE_CHAINS_MAP[chainId];
   const { srn, currencyCode } = wyre;
@@ -72,7 +73,7 @@ const createWyrePurchaseUrl = async (
 const createTransakUrl = (
   walletAddress: string,
   chainId: keyof typeof BUYABLE_CHAINS_MAP,
-  symbol: CurrencySymbol,
+  symbol?: CurrencySymbol,
 ): string => {
   const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
 
@@ -98,15 +99,16 @@ const createTransakUrl = (
 const createMoonPayUrl = async (
   walletAddress: string,
   chainId: keyof typeof BUYABLE_CHAINS_MAP,
-  symbol: CurrencySymbol,
+  symbol?: CurrencySymbol,
 ): Promise<string> => {
   const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} as any } =
     BUYABLE_CHAINS_MAP[chainId];
   const moonPayQueryParams = new URLSearchParams({
     apiKey: MOONPAY_API_KEY,
     walletAddress,
-    defaultCurrencyCode:
-      formatMoonpaySymbol(symbol, chainId) || defaultCurrencyCode,
+    defaultCurrencyCode: symbol
+      ? formatMoonpaySymbol(symbol, chainId)
+      : defaultCurrencyCode,
     showOnlyCurrencies,
   });
   const queryParams = new URLSearchParams({
@@ -144,7 +146,7 @@ const createMoonPayUrl = async (
 const createCoinbasePayUrl = (
   walletAddress: string,
   chainId: keyof typeof BUYABLE_CHAINS_MAP,
-  symbol: CurrencySymbol,
+  symbol?: CurrencySymbol,
 ): string => {
   // since coinbasePayCurrencies is going to be extended to include all tokens supported
   // we now default to nativeCurrency instead of the 2 previous tokens + eth that we had before
@@ -161,6 +163,13 @@ const createCoinbasePayUrl = (
   });
   return `https://pay.coinbase.com/buy?${queryParams}`;
 };
+
+const SERVICES_THAT_REQUIRE_ADDRESS_AND_CHAIN_ID = [
+  'wyre',
+  'coinbase',
+  'moonpay',
+  'transak',
+];
 
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
@@ -179,26 +188,39 @@ export default async function getBuyUrl({
   service,
   symbol,
 }: {
-  chainId: keyof typeof BUYABLE_CHAINS_MAP;
-  address: string;
-  service: string;
-  symbol: CurrencySymbol;
+  chainId?: keyof typeof BUYABLE_CHAINS_MAP;
+  address?: string;
+  service?: string;
+  symbol?: CurrencySymbol;
 }): Promise<string> {
   // default service by network if not specified
-  if (!service) {
+  if (!service && chainId) {
     // eslint-disable-next-line no-param-reassign
     service = getDefaultServiceForChain(chainId);
+  } else {
+    throw new Error(
+      'chainId is required for getBuyUrl if service is not supplied',
+    );
+  }
+
+  if (
+    SERVICES_THAT_REQUIRE_ADDRESS_AND_CHAIN_ID.includes(service) &&
+    (isNullOrUndefined(chainId) || isNullOrUndefined(address))
+  ) {
+    throw new Error(
+      `The address and chainId props are required for getBuyUrl for ${service}`,
+    );
   }
 
   switch (service) {
     case 'wyre':
-      return await createWyrePurchaseUrl(address, chainId, symbol);
+      return await createWyrePurchaseUrl(address as string, chainId, symbol);
     case 'transak':
-      return createTransakUrl(address, chainId, symbol);
+      return createTransakUrl(address as string, chainId, symbol);
     case 'moonpay':
-      return createMoonPayUrl(address, chainId, symbol);
+      return createMoonPayUrl(address as string, chainId, symbol);
     case 'coinbase':
-      return createCoinbasePayUrl(address, chainId, symbol);
+      return createCoinbasePayUrl(address as string, chainId, symbol);
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'goerli-faucet':

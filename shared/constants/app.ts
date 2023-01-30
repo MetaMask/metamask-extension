@@ -82,6 +82,7 @@ export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
+  [ENVIRONMENT_TYPE_BACKGROUND]: 'none',
 } as const;
 
 export const ORIGIN_METAMASK = 'metamask';
