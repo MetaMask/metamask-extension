@@ -115,7 +115,7 @@ describe('Test Snap TxInsights', function () {
         });
 
         // check that txinsightstest tab contains the right info
-        await driver.delay(1000);
+        await driver.delay(2000);
         const txInsightsResult = await driver.findElement(
           '.snap-ui-renderer__content',
         );
