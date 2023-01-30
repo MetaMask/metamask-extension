@@ -28,7 +28,11 @@ const TransactionInsights = ({ txData }) => {
     }
   }, [insightSnaps, selectedInsightSnapId, setSelectedInsightSnapId]);
 
-  if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
+  if (
+    !isAllowedTransactionTypes(txData.type) ||
+    !insightSnaps.length ||
+    !selectedInsightSnapId
+  ) {
     return null;
   }
 
