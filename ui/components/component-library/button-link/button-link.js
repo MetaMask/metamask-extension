@@ -25,7 +25,6 @@ export const ButtonLink = ({
       backgroundColor={COLORS.TRANSPARENT}
       color={danger ? COLORS.ERROR_DEFAULT : COLORS.PRIMARY_DEFAULT}
       borderRadius={null}
-      {...props}
       textProps={{
         variant:
           size === BUTTON_LINK_SIZES.INHERIT ? TEXT.INHERIT : TEXT.BODY_MD,
@@ -36,6 +35,7 @@ export const ButtonLink = ({
       iconLoadingProps={{
         size: size === BUTTON_LINK_SIZES.INHERIT ? SIZES.INHERIT : SIZES.MD,
       }}
+      {...props}
     />
   );
 };
