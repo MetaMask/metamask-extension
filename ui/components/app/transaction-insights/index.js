@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
@@ -77,6 +78,10 @@ const TransactionInsights = ({ txData }) => {
       />
     </DropdownTab>
   );
+};
+
+TransactionInsights.propTypes = {
+  txData: PropTypes.object,
 };
 
 export default TransactionInsights;
