@@ -101,7 +101,7 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
@@ -115,6 +115,7 @@ import {
   FONT_WEIGHT,
   ALIGN_ITEMS,
   FLEX_DIRECTION,
+  FONT_STYLE,
 } from '../../../helpers/constants/design-system';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
@@ -153,8 +154,8 @@ export default function ViewQuote({ setReceiveToAmount }) {
   const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
     useState(false);
   const priceDifferenceRiskyBuckets = [
-    GAS_RECOMMENDATIONS.HIGH,
-    GAS_RECOMMENDATIONS.MEDIUM,
+    GasRecommendations.high,
+    GasRecommendations.medium,
   ];
 
   const routeState = useSelector(getBackgroundSwapRouteState);
@@ -218,8 +219,8 @@ export default function ViewQuote({ setReceiveToAmount }) {
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs(GAS_RECOMMENDATIONS.HIGH, {
-      userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
+    gasFeeInputs = useGasFeeInputs(GasRecommendations.high, {
+      userFeeLevel: swapsUserFeeLevel || GasRecommendations.high,
     });
   }
 
@@ -737,8 +738,8 @@ export default function ViewQuote({ setReceiveToAmount }) {
   useEffect(() => {
     if (
       acknowledgedPriceDifference &&
-      lastPriceDifferenceBucket === GAS_RECOMMENDATIONS.MEDIUM &&
-      priceSlippageBucket === GAS_RECOMMENDATIONS.HIGH
+      lastPriceDifferenceBucket === GasRecommendations.medium &&
+      priceSlippageBucket === GasRecommendations.high
     ) {
       setAcknowledgedPriceDifference(false);
     }
@@ -1034,7 +1035,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
         </div>
 
         <Box
-          marginTop={2}
+          marginTop={1}
           marginBottom={0}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
@@ -1046,7 +1047,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
             alignItems={ALIGN_ITEMS.CENTER}
           >
             <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
-              Quote rate
+              {t('quoteRate')}
             </Typography>
             <ExchangeRateDisplay
               primaryTokenValue={calcTokenValue(
@@ -1076,22 +1077,54 @@ export default function ViewQuote({ setReceiveToAmount }) {
             alignItems={ALIGN_ITEMS.STRETCH}
           >
             <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
-              Gas fee
+              {t('transactionDetailGasHeading')}
             </Typography>
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
-              {feeInFiat}
-            </Typography>
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.FLEX_END}
+              alignItems={ALIGN_ITEMS.FLEX_END}
+            >
+              <Typography
+                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TYPOGRAPHY.H6}
+              >
+                {feeInEth}
+              </Typography>
+              <Typography
+                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TYPOGRAPHY.H6}
+                fontWeight={FONT_WEIGHT.BOLD}
+                marginLeft={1}
+              >
+                {` ${feeInFiat}`}
+              </Typography>
+            </Box>
           </Box>
+          {(maxFeeInFiat || maxFeeInEth) && (
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.FLEX_END}
+            >
+              <Typography
+                fontStyle={FONT_STYLE.ITALIC}
+                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TYPOGRAPHY.H7}
+              >
+                {t('maxFee')}
+                {`: ${maxFeeInFiat || maxFeeInEth}`}
+              </Typography>
+            </Box>
+          )}
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             alignItems={ALIGN_ITEMS.STRETCH}
           >
             <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
-              MetaMask fee
+              {t('swapMetaMaskFee')}
             </Typography>
             <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
-              0.875%
+              {t('percentage', [metaMaskFee])}
             </Typography>
           </Box>
         </Box>

@@ -2852,6 +2852,9 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
+  "percentage": {
+    "message": "$1%"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -3103,6 +3106,9 @@
   },
   "queued": {
     "message": "Queued"
+  },
+  "quoteRate": {
+    "message": "Quote rate"
   },
   "reAddAccounts": {
     "message": "re-add any other accounts"
@@ -4224,6 +4230,9 @@
   },
   "swapsViewInActivity": {
     "message": "View in activity"
+  },
+  "switch": {
+    "message": "Switch"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "This will switch the selected network within MetaMask to a previously added network:"
