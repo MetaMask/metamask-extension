@@ -1563,6 +1563,22 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapRemoved`,
+      (truncatedSnap) => {
+        const notificationIds = Object.values(
+          this.notificationController.state.notifications,
+        ).reduce((idList, notification) => {
+          if (notification.origin === truncatedSnap.id) {
+            idList.push(notification.id);
+          }
+          return idList;
+        }, []);
+
+        this.dismissNotifications(notificationIds);
+      },
+    );
+
     ///: END:ONLY_INCLUDE_IN
   }
 
