@@ -7,7 +7,7 @@ import {
   decimalToHex,
   getValueFromWeiHex,
 } from '../../../shared/modules/conversion.utils';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -626,11 +626,11 @@ export const initializeSendState = createAsyncThunk(
       // Because we are only interested in getting a gasLimit estimation we only
       // need to worry about gasPrice. So we use maxFeePerGas as gasPrice if we
       // have a fee market estimation.
-      if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      if (gasEstimateType === GasEstimateTypes.legacy) {
         gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
         gasPrice = getRoundedGasPrice(gasFeeEstimates.gasPrice);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+      } else if (gasEstimateType === GasEstimateTypes.feeMarket) {
         gasPrice = getGasPriceInHexWei(
           gasFeeEstimates.medium.suggestedMaxFeePerGas,
         );
@@ -644,7 +644,7 @@ export const initializeSendState = createAsyncThunk(
     // Set a basic gasLimit in the event that other estimation fails
     let { gasLimit } = draftTransaction.gas;
     if (
-      gasEstimateType !== GAS_ESTIMATE_TYPES.NONE &&
+      gasEstimateType !== GasEstimateTypes.none &&
       sendState.stage !== SEND_STAGES.EDIT &&
       draftTransaction.recipient.address
     ) {
@@ -973,7 +973,7 @@ const slice = createSlice({
       const { gasFeeEstimates, gasEstimateType } = action.payload;
       let gasPriceEstimate = '0x0';
       switch (gasEstimateType) {
-        case GAS_ESTIMATE_TYPES.FEE_MARKET:
+        case GasEstimateTypes.feeMarket:
           slice.caseReducers.updateGasFees(state, {
             payload: {
               transactionType: TransactionEnvelopeType.feeMarket,
@@ -986,7 +986,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.LEGACY:
+        case GasEstimateTypes.legacy:
           gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.medium);
           slice.caseReducers.updateGasFees(state, {
             payload: {
@@ -996,7 +996,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+        case GasEstimateTypes.ethGasPrice:
           gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.gasPrice);
           slice.caseReducers.updateGasFees(state, {
             payload: {
@@ -1006,7 +1006,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.NONE:
+        case GasEstimateTypes.none:
         default:
           break;
       }
@@ -2502,7 +2502,7 @@ export function getGasInputMode(state) {
   // mainnet or IN_TEST.
   if (
     (isMainnet || process.env.IN_TEST) &&
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE
+    gasEstimateType === GasEstimateTypes.ethGasPrice
   ) {
     return GAS_INPUT_MODES.INLINE;
   }

@@ -16,7 +16,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
@@ -682,7 +682,7 @@ export default class SwapsController {
 
     let usedGasPrice = '0x0';
 
-    if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+    if (gasEstimateType === GasEstimateTypes.feeMarket) {
       const {
         high: { suggestedMaxPriorityFeePerGas },
         estimatedBaseFee,
@@ -704,9 +704,9 @@ export default class SwapsController {
         .add(estimatedBaseFeeNumeric)
         .round(6)
         .toString();
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+    } else if (gasEstimateType === GasEstimateTypes.legacy) {
       usedGasPrice = customGasPrice || decGWEIToHexWEI(gasFeeEstimates.high);
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+    } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
       usedGasPrice =
         customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
     }

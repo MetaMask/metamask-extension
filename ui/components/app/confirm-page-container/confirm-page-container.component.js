@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import {
   TokenStandard,
@@ -289,7 +289,7 @@ const ConfirmPageContainer = (props) => {
         )}
         {editingGas && !supportsEIP1559 && (
           <EditGasPopover
-            mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+            mode={EditGasModes.modifyInPlace}
             onClose={handleCloseEditGas}
             transaction={currentTransaction}
           />
