@@ -16,6 +16,7 @@ const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.tokenMethodTransfer;
 
 const useTransactionInsights = ({ txData }) => {
+  console.log('into useTransactionInsights');
   const insightSnaps = useSelector(getInsightSnaps);
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -27,11 +28,7 @@ const useTransactionInsights = ({ txData }) => {
     }
   }, [insightSnaps, selectedInsightSnapId, setSelectedInsightSnapId]);
 
-  if (
-    !isAllowedTransactionTypes(txData.type) ||
-    !insightSnaps.length ||
-    !selectedInsightSnapId
-  ) {
+  if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
     return null;
   }
 

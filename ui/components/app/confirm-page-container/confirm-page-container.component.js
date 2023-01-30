@@ -336,9 +336,6 @@ ConfirmPageContainer.propTypes = {
   dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  insightComponent: PropTypes.node,
-  ///: END:ONLY_INCLUDE_IN
   tokenAddress: PropTypes.string,
   nonce: PropTypes.string,
   warning: PropTypes.string,
@@ -359,6 +356,7 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  txData: PropTypes.object,
 };
 
 export default ConfirmPageContainer;

@@ -1,21 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import { renderHook } from '@testing-library/react-hooks';
+import { render } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
-
-import TransactionInsights from '.';
-
-const middleware = [thunk];
-
-setBackgroundConnection({
-  getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
-  promisifiedBackground: jest.fn(),
-  tryReverseResolveAddress: jest.fn(),
-  getNextNonce: jest.fn(),
-});
+import useTransactionInsights from '.';
 
 const txData = {
   id: 1,
@@ -80,21 +69,26 @@ const storeTwoSnaps = {
   },
 };
 
+const renderTransactionInsightHook = (store) => {
+  const wrapper = ({ children }) => (
+    <Provider store={configureMockStore()(store)}>{children}</Provider>
+  );
+
+  return renderHook(() => useTransactionInsights({ txData }), { wrapper });
+};
+
 describe('Transaction Insight', () => {
   it('should match snapshot for one snap', () => {
-    const store = configureMockStore(middleware)(storeOneSnap);
-    const { container } = renderWithProvider(
-      <TransactionInsights txData={txData} />,
-      store,
-    );
+    const { result } = renderTransactionInsightHook(storeOneSnap);
+    const InsightComponent = result.current;
+    const { container } = render(InsightComponent);
     expect(container).toMatchSnapshot();
   });
+
   it('should match snapshot for two snaps', () => {
-    const store = configureMockStore(middleware)(storeTwoSnaps);
-    const { container } = renderWithProvider(
-      <TransactionInsights txData={txData} />,
-      store,
-    );
+    const { result } = renderTransactionInsightHook(storeTwoSnaps);
+    const InsightComponent = result.current;
+    const { container } = render(InsightComponent);
     expect(container).toMatchSnapshot();
   });
 });
