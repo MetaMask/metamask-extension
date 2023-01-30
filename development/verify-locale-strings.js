@@ -180,6 +180,7 @@ async function verifyEnglishLocale() {
   const javascriptFiles = await glob(
     [
       'ui/**/*.js',
+      'ui/**/*.ts',
       'shared/**/*.js',
       'shared/**/*.ts',
       'app/scripts/constants/**/*.js',
