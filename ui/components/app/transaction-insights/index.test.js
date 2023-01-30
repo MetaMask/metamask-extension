@@ -4,11 +4,6 @@ import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../../test/jest';
-import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { domainInitialState } from '../../../ducks/domains';
 
 import TransactionInsights from '.';
 
