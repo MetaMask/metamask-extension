@@ -3,8 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
+import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { getInsightSnaps } from '../../../selectors';
+import { DropdownTab, Tab } from '../../ui/tabs';
 import { SnapInsight } from '../confirm-page-container';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -16,7 +19,9 @@ const isAllowedTransactionTypes = (transactionType) =>
 
 const TransactionInsights = ({ txData }) => {
   const insightSnaps = useSelector(getInsightSnaps);
-  const [selectedInsightSnapId, setSelectedInsightSnapId] = useState();
+  const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
+    insightSnaps[0]?.id,
+  );
 
   useEffect(() => {
     if (insightSnaps.length && !selectedInsightSnapId) {
