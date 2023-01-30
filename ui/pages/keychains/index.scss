@@ -131,13 +131,16 @@
   }
 
   &__footer {
-    margin: auto 0 0 0;
     border: 0;
+    flex-direction: row;
   }
 
   &__footer-revealed {
-    margin: auto 16px 16px 16px;
     border: 0;
+  }
+
+  &__footer-button {
+    flex: 1;
   }
 }
 

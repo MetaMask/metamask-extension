@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../ui/box/box';
+import { Button } from '../../component-library';
+import Box from '../../ui/box';
 import {
   ALIGN_ITEMS,
   DISPLAY,
@@ -169,15 +169,12 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
     <Button
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
-      type="primary"
-      icon={
-        <Box marginRight={2} className="hold-to-reveal-button__icon-container">
-          {renderPreCompleteContent()}
-          {renderPostCompleteContent()}
-        </Box>
-      }
       className="hold-to-reveal-button__button-hold"
     >
+      <Box className="hold-to-reveal-button__icon-container">
+        {renderPreCompleteContent()}
+        {renderPostCompleteContent()}
+      </Box>
       {buttonText}
     </Button>
   );
