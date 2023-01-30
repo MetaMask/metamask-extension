@@ -1,5 +1,3 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -82,5 +80,3 @@ const TransactionInsights = ({ txData }) => {
 };
 
 export default TransactionInsights;
-
-///: END:ONLY_INCLUDE_IN
