@@ -1,6 +1,5 @@
 import pify from 'pify';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
-
 // // A simplified pify maybe?
 // function pify(apiObject) {
 //   return Object.keys(apiObject).reduce((promisifiedAPI, key) => {
@@ -24,10 +23,25 @@ import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 //   }, {});
 // }
 
-let background = null;
-let promisifiedBackground = null;
+let background:
+  | ({
+      connectionStream: { readable: boolean };
+      DisconnectError: typeof Error;
+    } & Record<string, (...args: any[]) => any>)
+  | null = null;
+let promisifiedBackground: Record<
+  string,
+  (...args: any[]) => Promise<any>
+> | null = null;
 
-const actionRetryQueue = [];
+interface BackgroundAction {
+  actionId: number;
+  request: { method: string; args: any };
+  resolve: (result: any) => any;
+  reject: (err: Error) => void;
+}
+
+const actionRetryQueue: BackgroundAction[] = [];
 
 export const generateActionId = () => Date.now() + Math.random();
 
@@ -43,9 +57,9 @@ function failQueue() {
  * Drops the entire actions queue. Rejects all actions in the queue unless silently==true
  * Does not affect the single action that is currently being processed.
  *
- * @param {boolean} [silently]
+ * @param [silently]
  */
-export function dropQueue(silently) {
+export function dropQueue(silently: boolean) {
   if (!silently) {
     failQueue();
   }
@@ -53,12 +67,12 @@ export function dropQueue(silently) {
 }
 
 // add action to queue
-const executeActionOrAddToRetryQueue = (item) => {
+const executeActionOrAddToRetryQueue = (item: BackgroundAction) => {
   if (actionRetryQueue.some((act) => act.actionId === item.actionId)) {
     return;
   }
 
-  if (background.connectionStream.readable) {
+  if (background?.connectionStream.readable) {
     executeAction({
       action: item,
       disconnectSideeffect: () => actionRetryQueue.push(item),
@@ -72,76 +86,86 @@ const executeActionOrAddToRetryQueue = (item) => {
  * Promise-style call to background method
  * In MV2: invokes promisifiedBackground method directly.
  * In MV3: action is added to retry queue, along with resolve handler to be executed on completion,
- *  the queue is then immediately processed if background connection is available.
- *  On completion (successful or error) the action is removed from the retry queue.
+ * the queue is then immediately processed if background connection is available.
+ * On completion (successful or error) the action is removed from the retry queue.
  *
- * @param {string} method - name of the background method
- * @param {Array} [args] - arguments to that method, if any
- * @param {any} [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue waiting for a retry.
- * @returns {Promise}
+ * @param method - name of the background method
+ * @param [args] - arguments to that method, if any
+ * @param [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue waiting for a retry.
+ * @returns
  */
-export function submitRequestToBackground(
-  method,
-  args = [],
+export function submitRequestToBackground<R>(
+  method: string,
+  args?: any[],
   actionId = generateActionId(), // current date is not guaranteed to be unique
-) {
+): Promise<R> {
   if (isManifestV3) {
-    return new Promise((resolve, reject) => {
+    return new Promise<R>((resolve, reject) => {
       executeActionOrAddToRetryQueue({
         actionId,
-        request: { method, args },
+        request: { method, args: args ?? [] },
         resolve,
         reject,
       });
     });
   }
-  return promisifiedBackground[method](...args);
+  return promisifiedBackground?.[method](
+    ...(args ?? []),
+  ) as unknown as Promise<R>;
 }
+
+type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
 
 /**
  * [Deprecated] Callback-style call to background method
  * In MV2: invokes promisifiedBackground method directly.
  * In MV3: action is added to retry queue, along with resolve handler to be executed on completion,
- *  the queue is then immediately processed if background connection is available.
- *  On completion (successful or error) the action is removed from the retry queue.
+ * the queue is then immediately processed if background connection is available.
+ * On completion (successful or error) the action is removed from the retry queue.
  *
  * @deprecated Use async `submitRequestToBackground` function instead.
- * @param {string} method - name of the background method
- * @param {Array} [args] - arguments to that method, if any
+ * @param method - name of the background method
+ * @param [args] - arguments to that method, if any
  * @param callback - Node style (error, result) callback for finishing the operation
- * @param {any} [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue.
+ * @param [actionId] - if an action with the === same id is submitted, it'll be ignored if already in queue.
  */
-export const callBackgroundMethod = (
-  method,
-  args = [],
-  callback,
+export const callBackgroundMethod = <R>(
+  method: string,
+  args: any[],
+  callback: CallbackMethod<R>,
   actionId = generateActionId(), // current date is not guaranteed to be unique
 ) => {
   if (isManifestV3) {
-    const resolve = (value) => callback(null, value);
-    const reject = (err) => callback(err);
+    const resolve = (value: R) => callback(undefined, value);
+    const reject = (err: unknown) => callback(err, undefined);
     executeActionOrAddToRetryQueue({
       actionId,
-      request: { method, args },
+      request: { method, args: args ?? [] },
       resolve,
       reject,
     });
   } else {
-    background[method](...args, callback);
+    background?.[method](...args, callback);
   }
 };
 
-async function executeAction({ action, disconnectSideeffect }) {
+async function executeAction({
+  action,
+  disconnectSideeffect,
+}: {
+  action: BackgroundAction;
+  disconnectSideeffect: (action: BackgroundAction) => void;
+}) {
   const {
     request: { method, args },
     resolve,
     reject,
   } = action;
   try {
-    resolve(await promisifiedBackground[method](...args));
-  } catch (err) {
+    resolve(await promisifiedBackground?.[method](...args));
+  } catch (err: any) {
     if (
-      background.DisconnectError && // necessary to not break compatibility with background stubs or non-default implementations
+      background?.DisconnectError && // necessary to not break compatibility with background stubs or non-default implementations
       err instanceof background.DisconnectError
     ) {
       disconnectSideeffect(action);
@@ -164,15 +188,16 @@ async function processActionRetryQueue() {
   processingQueue = true;
   try {
     while (
-      background.connectionStream.readable &&
+      background?.connectionStream.readable &&
       actionRetryQueue.length > 0
     ) {
       // If background disconnects and fails the action, the next one will not be taken off the queue.
       // Retrying an action that failed because of connection loss while it was processing is not supported.
       const item = actionRetryQueue.shift();
       await executeAction({
-        action: item,
-        disconnectSideeffect: () => actionRetryQueue.unshift(item),
+        action: item as BackgroundAction,
+        disconnectSideeffect: () =>
+          actionRetryQueue.unshift(item as BackgroundAction),
       });
     }
   } catch (e) {
@@ -186,11 +211,13 @@ async function processActionRetryQueue() {
  * Sets/replaces the background connection reference
  * Under MV3 it also triggers queue processing if the new background is connected
  *
- * @param {*} backgroundConnection
+ * @param backgroundConnection
  */
-export async function _setBackgroundConnection(backgroundConnection) {
+export async function _setBackgroundConnection(
+  backgroundConnection: typeof background,
+) {
   background = backgroundConnection;
-  promisifiedBackground = pify(background);
+  promisifiedBackground = pify(background as Record<string, any>);
   if (isManifestV3) {
     if (processingQueue) {
       console.warn(
