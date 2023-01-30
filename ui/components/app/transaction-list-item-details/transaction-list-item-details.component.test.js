@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import TransactionListItemDetails from '.';
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: () => jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(),
   addPollingTokenToAppState: jest.fn(),

@@ -60,7 +60,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
         {
@@ -85,7 +85,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_FAILED', value: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -129,7 +129,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -155,8 +155,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -201,8 +201,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -274,8 +274,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -302,7 +302,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'SHOW_ACCOUNTS_PAGE' },
       ];
@@ -322,9 +322,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await expect(store.dispatch(actions.resetAccount())).rejects.toThrow(
@@ -370,9 +370,9 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'SHOW_LOADING_INDICATION',
-          value: 'This may take a while, please be patient.',
+          payload: 'This may take a while, please be patient.',
         },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -412,8 +412,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -460,8 +460,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -497,8 +497,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -550,9 +550,9 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'SHOW_LOADING_INDICATION',
-          value: 'Looking for your Ledger...',
+          payload: 'Looking for your Ledger...',
         },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -599,8 +599,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -634,8 +634,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -676,8 +676,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -722,8 +722,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -801,8 +801,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -875,7 +875,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'UPDATE_TRANSACTION_PARAMS',
           id: '1',
@@ -888,7 +888,6 @@ describe('Actions', () => {
           },
         },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'TRANSACTION_ERROR', message: 'error' },
         { type: 'GO_HOME' },
       ];
 
@@ -926,8 +925,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'LOCK_METAMASK' },
       ];
@@ -976,8 +975,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1009,7 +1008,7 @@ describe('Actions', () => {
       expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
     });
 
-    it('displays warning if setSelectedAddress throws', async () => {
+    it('displays warning if setSelectedAccount throws', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
@@ -1026,8 +1025,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1086,7 +1085,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -1140,8 +1139,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -1189,7 +1188,10 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'Had a problem changing networks!',
+        },
       ];
 
       await store.dispatch(actions.setProviderType());
@@ -1223,7 +1225,10 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'Had a problem changing networks!',
+        },
       ];
 
       await store.dispatch(actions.setRpcTarget());
@@ -1275,11 +1280,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         {
           type: 'SHOW_PRIVATE_KEY',
-          value: testPrivKey,
+          payload: testPrivKey,
         },
       ];
 
@@ -1305,9 +1310,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'Incorrect Password.' },
+        { type: 'DISPLAY_WARNING', payload: 'Incorrect Password.' },
       ];
 
       await expect(
@@ -1334,11 +1339,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         {
           type: 'DISPLAY_WARNING',
-          value: 'Had a problem exporting the account.',
+          payload: 'Had a problem exporting the account.',
         },
       ];
 
@@ -1387,9 +1392,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await expect(
@@ -1437,9 +1442,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await expect(store.dispatch(actions.setFeatureFlag())).rejects.toThrow(
@@ -1481,8 +1486,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1517,9 +1522,9 @@ describe('Actions', () => {
       _setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await store.dispatch(actions.setUseBlockie());
@@ -1554,9 +1559,9 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       store.dispatch(actions.setUsePhishDetect());
@@ -1595,9 +1600,9 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       store.dispatch(actions.setUseMultiAccountBalanceChecker());
@@ -1624,10 +1629,10 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'SET_CURRENT_LOCALE',
-          value: { locale: 'test', messages: enLocale },
+          payload: { locale: 'test', messages: enLocale },
         },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
@@ -1647,8 +1652,8 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1726,7 +1731,7 @@ describe('Actions', () => {
 
       expect(resultantActions[0]).toStrictEqual({
         type: 'DISPLAY_WARNING',
-        value: warningText,
+        payload: warningText,
       });
     });
   });
@@ -1819,12 +1824,13 @@ describe('Actions', () => {
 
       await store.dispatch(actions.cancelMsgs(msgsList));
       const resultantActions = store.getActions();
+      console.log(resultantActions);
       const expectedActions = resultantActions.filter(
         (action) => action.type === 'COMPLETED_TX',
       );
 
-      expect(expectedActions[0].value.id).toStrictEqual(msgsList[0]);
-      expect(expectedActions[1].value.id).toStrictEqual(msgsList[1]);
+      expect(expectedActions[0].value.id).toStrictEqual(msgsList[0].id);
+      expect(expectedActions[1].value.id).toStrictEqual(msgsList[1].id);
     });
   });
 });

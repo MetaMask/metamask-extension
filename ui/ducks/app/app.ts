@@ -159,7 +159,7 @@ export default function reduceApp(
       return {
         ...appState,
         alertOpen: true,
-        alertMessage: action.value,
+        alertMessage: action.payload,
       };
 
     case actionConstants.ALERT_CLOSE:
@@ -276,14 +276,6 @@ export default function reduceApp(
         shouldClose: true,
         warning: null,
         txId: null,
-        accountDetail: {
-          subview: 'transactions',
-        },
-      };
-
-    case actionConstants.TRANSACTION_ERROR:
-      return {
-        ...appState,
       };
 
     case actionConstants.UNLOCK_FAILED:
@@ -299,7 +291,7 @@ export default function reduceApp(
       };
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
-      const { device, path } = action.value;
+      const { device, path } = action.payload;
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
 
@@ -313,7 +305,7 @@ export default function reduceApp(
       return {
         ...appState,
         isLoading: true,
-        loadingMessage: action.value,
+        loadingMessage: action.payload,
       };
 
     case actionConstants.HIDE_LOADING:
@@ -325,7 +317,7 @@ export default function reduceApp(
     case actionConstants.DISPLAY_WARNING:
       return {
         ...appState,
-        warning: action.value,
+        warning: action.payload,
         isLoading: false,
       };
 
@@ -339,46 +331,44 @@ export default function reduceApp(
       return {
         ...appState,
         accountDetail: {
-          subview: 'export',
-          accountExport: 'completed',
-          privateKey: action.value,
+          privateKey: action.payload,
         },
       };
 
     case actionConstants.SET_MOUSE_USER_STATE:
       return {
         ...appState,
-        isMouseUser: action.value,
+        isMouseUser: action.payload,
       };
 
     case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
       return {
         ...appState,
-        networksTabSelectedRpcUrl: action.value,
+        networksTabSelectedRpcUrl: action.payload,
       };
 
     case actionConstants.SET_NEW_NETWORK_ADDED:
       return {
         ...appState,
-        newNetworkAdded: action.value,
+        newNetworkAdded: action.payload,
       };
 
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
       return {
         ...appState,
-        newTokensImported: action.value,
+        newTokensImported: action.payload,
       };
 
     case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
       return {
         ...appState,
-        newCollectibleAddedMessage: action.value,
+        newCollectibleAddedMessage: action.payload,
       };
 
     case actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE:
       return {
         ...appState,
-        removeCollectibleMessage: action.value,
+        removeCollectibleMessage: action.payload,
       };
 
     case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:
@@ -396,7 +386,7 @@ export default function reduceApp(
     case actionConstants.SET_OPEN_METAMASK_TAB_IDS:
       return {
         ...appState,
-        openMetaMaskTabs: action.value,
+        openMetaMaskTabs: action.payload,
       };
 
     case actionConstants.SET_CURRENT_WINDOW_TAB:
