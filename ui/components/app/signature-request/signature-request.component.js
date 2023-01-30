@@ -18,7 +18,7 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { ConfirmPageContainerNavigation } from '../confirm-page-container';
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
