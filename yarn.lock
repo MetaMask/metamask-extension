@@ -7223,6 +7223,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/loglevel@npm:^1.6.3":
+  version: 1.6.3
+  resolution: "@types/loglevel@npm:1.6.3"
+  dependencies:
+    loglevel: "*"
+  checksum: 4b0c92c4dbe76817578afb79bb0b2cf93b4fcbf411df019fe82e4f81dce9d81f36c6098ebb82f0e67041c1357dd066da0d2bce60a46873854abeda24645669ab
+  languageName: node
+  linkType: hard
+
 "@types/long@npm:^4.0.1":
   version: 4.0.1
   resolution: "@types/long@npm:4.0.1"
@@ -23360,7 +23369,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loglevel@npm:^1.8.1":
+"loglevel@npm:*, loglevel@npm:^1.8.1":
   version: 1.8.1
   resolution: "loglevel@npm:1.8.1"
   checksum: a1a62db40291aaeaef2f612334c49e531bff71cc1d01a2acab689ab80d59e092f852ab164a5aedc1a752fdc46b7b162cb097d8a9eb2cf0b299511106c29af61d
@@ -24183,6 +24192,7 @@ __metadata:
     "@types/gulp-autoprefixer": ^0.0.33
     "@types/gulp-dart-sass": ^1.0.1
     "@types/gulp-sourcemaps": ^0.0.35
+    "@types/loglevel": ^1.6.3
     "@types/madge": ^5.0.0
     "@types/node": ^17.0.21
     "@types/pify": ^5.0.1
