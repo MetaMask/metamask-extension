@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
-import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
-import { TransactionType } from '../../../../shared/constants/transaction';
-import { getInsightSnaps } from '../../../selectors';
-import { DropdownTab, Tab } from '../../ui/tabs';
-import { SnapInsight } from '../confirm-page-container';
+import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../shared/constants/network';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { TransactionType } from '../../../shared/constants/transaction';
+import { getInsightSnaps } from '../../selectors';
+import { DropdownTab, Tab } from '../../components/ui/tabs';
+import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight';
 
 const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.contractInteraction ||
@@ -16,7 +15,7 @@ const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.tokenMethodTransferFrom ||
   transactionType === TransactionType.tokenMethodTransfer;
 
-const TransactionInsights = ({ txData }) => {
+const useTransactionInsights = ({ txData }) => {
   const insightSnaps = useSelector(getInsightSnaps);
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -84,8 +83,4 @@ const TransactionInsights = ({ txData }) => {
   );
 };
 
-TransactionInsights.propTypes = {
-  txData: PropTypes.object,
-};
-
-export default TransactionInsights;
+export default useTransactionInsights;

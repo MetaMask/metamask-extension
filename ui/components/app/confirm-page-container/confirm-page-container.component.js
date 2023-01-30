@@ -28,6 +28,7 @@ import DepositPopover from '../deposit-popover/deposit-popover';
 import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import useTransactionInsights from '../../../hooks/useTransactionInsights';
 import {
   getAccountName,
   getAddressBookEntry,
@@ -83,11 +84,9 @@ const ConfirmPageContainer = (props) => {
     currentTransaction,
     supportsEIP1559,
     nativeCurrency,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    insightComponent,
-    ///: END:ONLY_INCLUDE_IN
     assetStandard,
     isApprovalOrRejection,
+    txData,
   } = props;
 
   const t = useI18nContext();
@@ -126,6 +125,12 @@ const ConfirmPageContainer = (props) => {
     const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const insightComponent = useTransactionInsights({
+    txData,
+  });
+  ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
     if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
