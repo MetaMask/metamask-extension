@@ -64,7 +64,7 @@ describe('Collectibles', function () {
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Send Token');
+        assert.equal(completedTxText, 'Send TDC');
       },
     );
   });
