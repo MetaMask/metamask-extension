@@ -12,7 +12,7 @@ import {
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import {
   AssetType,
@@ -1267,7 +1267,7 @@ describe('Send Slice', () => {
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
         getState = jest.fn().mockReturnValue({
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             networkDetails: {
               EIPS: {
@@ -1365,7 +1365,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'GAS_FEE_ESTIMATES_UPDATED',
           payload: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasEstimateType: GasEstimateTypes.legacy,
             gasFeeEstimates: {
               medium: '1',
             },
@@ -2372,7 +2372,7 @@ describe('Send Slice', () => {
       it('should set up the appropriate state for editing a native asset transaction', async () => {
         const editTransactionState = {
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             provider: {
               chainId: CHAIN_IDS.GOERLI,
@@ -2952,7 +2952,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),
@@ -2966,7 +2966,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
@@ -67,7 +67,7 @@ const AdvancedGasFeeDefaults = () => {
     }
   };
 
-  if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+  if (editGasMode === EditGasModes.swaps) {
     return null;
   }
 

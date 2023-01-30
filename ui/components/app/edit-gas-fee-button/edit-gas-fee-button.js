@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
-} from '../../../../shared/constants/gas';
+import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -38,12 +35,12 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   let icon = estimateUsed;
   let title = estimateUsed;
   if (
-    estimateUsed === PRIORITY_LEVELS.HIGH &&
-    editGasMode === EDIT_GAS_MODES.SWAPS
+    estimateUsed === PriorityLevels.high &&
+    editGasMode === EditGasModes.swaps
   ) {
     icon = 'swapSuggested';
     title = 'swapSuggested';
-  } else if (estimateUsed === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
+  } else if (estimateUsed === PriorityLevels.tenPercentIncreased) {
     icon = undefined;
     title = 'tenPercentIncreased';
   }
