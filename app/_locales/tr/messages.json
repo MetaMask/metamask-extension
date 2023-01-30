@@ -3058,7 +3058,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "İzni geri çektiğinizde aşağıdaki $1 artık $2 alanınıza erişim sağlayamayacak",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "$1 için harcama üst limitini iptal et",
