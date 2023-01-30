@@ -164,7 +164,7 @@ export default class DomainInput extends Component {
                 iconName={
                   userInput ? ICON_NAMES.CLOSE : ICON_NAMES.SCAN_BARCODE
                 }
-                title={t(userInput ? 'close' : 'scanQrCode')}
+                ariaLabel={t(userInput ? 'close' : 'scanQrCode')}
                 color={userInput ? COLORS.ICON_DEFAULT : COLORS.PRIMARY_DEFAULT}
               />
             </>
