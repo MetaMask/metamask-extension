@@ -11,14 +11,18 @@ import {
   TEXT,
   COLORS,
   SEVERITIES,
+  SIZES,
 } from '../../helpers/constants/design-system';
 
+import Box from '../../components/ui/box';
 import {
   Text,
   Label,
-  Icon,
   Banner,
   Button,
+  ButtonPrimary,
+  ButtonSecondary,
+  ButtonLink,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -143,6 +147,7 @@ const RevealSeedPage = () => {
             name={t('revealSeedWordsText')}
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
+            tabKey="text-seed"
           >
             <div className="reveal-seed__text-container">
               <Label variant={TEXT.BODY_MD_BOLD}>
@@ -167,12 +172,13 @@ const RevealSeedPage = () => {
             name={t('revealSeedWordsQR')}
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
+            tabKey="qr-seed"
           >
             <div className="reveal-seed__qr-container">
               <div
                 className="qr-code__wrapper"
                 dangerouslySetInnerHTML={{
-                  __html: renderQR().createTableTag(7),
+                  __html: renderQR().createTableTag(6),
                 }}
               />
             </div>
@@ -184,62 +190,63 @@ const RevealSeedPage = () => {
 
   const renderPasswordPromptFooter = () => {
     return (
-      <div className="page-container__footer srp__footer">
-        <footer>
-          <Button
-            type="secondary"
-            large
-            className="page-container__footer-button"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.KEY_EXPORT_CANCELED,
-                properties: {
-                  key_type: EVENT.KEY_TYPES.SRP,
-                },
-              });
-              history.push(mostRecentOverviewPage);
-            }}
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            type="primary"
-            large
-            className="page-container__footer-button"
-            onClick={(event) => {
-              trackEvent({
-                category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
-                properties: {
-                  key_type: EVENT.KEY_TYPES.SRP,
-                },
-              });
-              handleSubmit(event);
-            }}
-            disabled={password === ''}
-          >
-            {t('next')}
-          </Button>
-        </footer>
-      </div>
+      <Box
+        className="page-container__footer srp__footer"
+        marginTop="auto"
+        padding={4}
+      >
+        <ButtonSecondary
+          size={SIZES.LG}
+          className="page-container__footer-button srp__footer-button"
+          onClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.KEYS,
+              event: EVENT_NAMES.KEY_EXPORT_CANCELED,
+              properties: {
+                key_type: EVENT.KEY_TYPES.SRP,
+              },
+            });
+            history.push(mostRecentOverviewPage);
+          }}
+        >
+          {t('cancel')}
+        </ButtonSecondary>
+        <ButtonPrimary
+          size={SIZES.LG}
+          className="page-container__footer-button srp__footer-button"
+          onClick={(event) => {
+            trackEvent({
+              category: EVENT.CATEGORIES.KEYS,
+              event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
+              properties: {
+                key_type: EVENT.KEY_TYPES.SRP,
+              },
+            });
+            handleSubmit(event);
+          }}
+          disabled={password === ''}
+        >
+          {t('next')}
+        </ButtonPrimary>
+      </Box>
     );
   };
 
   const renderRevealSeedFooter = () => {
     return (
-      <div className="page-container__footer srp__footer-revealed">
-        <Button
-          type="secondary"
-          large
-          className="page-container__footer-button"
+      <Box
+        className="page-container__footer srp__footer"
+        marginTop="auto"
+        padding={4}
+      >
+        <ButtonSecondary
+          size={SIZES.LG}
+          className="page-container__footer-button srp__footer-button"
           onClick={() => history.push(mostRecentOverviewPage)}
         >
-          <Text variant={TEXT.BODY_MD} color={COLORS.PRIMARY_DEFAULT}>
-            {t('close')}
-          </Text>
-        </Button>
-      </div>
+          {t('close')}
+        </ButtonSecondary>
+      </Box>
     );
   };
 
@@ -264,12 +271,15 @@ const RevealSeedPage = () => {
         <Text variant={TEXT.BODY_MD}>
           {t('revealSeedWordsDescription1', [
             <Button
-              key="srp-learn-more-non-custodial"
+              key="srp-learn-srp"
               type="link"
-              href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
+              size="inherit"
+              as="a"
+              block={false}
+              href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
               target="_blank"
+              variant={TEXT.BODY_MD}
               rel="noopener noreferrer"
-              className="srp__inline-link"
             >
               {t('revealSeedWordsSRPName')}
             </Button>,
@@ -288,10 +298,13 @@ const RevealSeedPage = () => {
             <Button
               key="srp-learn-more-non-custodial"
               type="link"
+              size="inherit"
+              as="a"
+              block={false}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"
+              variant={TEXT.BODY_MD}
               rel="noopener noreferrer"
-              className="srp__inline-link"
             >
               {t('revealSeedWordsNonCustodialWallet')}
             </Button>,
