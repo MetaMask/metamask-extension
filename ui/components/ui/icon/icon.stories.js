@@ -22,7 +22,6 @@ import SendIcon from './send-icon.component';
 import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
-import SwapIcon from './overview-send-icon.component';
 import SwapIconComponent from './swap-icon.component';
 import IconCaretLeft from './icon-caret-left';
 import IconCaretRight from './icon-caret-right';
@@ -283,7 +282,7 @@ SunCheckStory.argTypes = {
     control: 'boolean',
   },
 };
-SunCheckStory.storyName = 'SunCheck';
+SunCheckStory.storyName = 'SunCheck'; 
 
 export const SwapIconStory = (args) => <SwapIcon {...args} />;
 SwapIconStory.args = {
