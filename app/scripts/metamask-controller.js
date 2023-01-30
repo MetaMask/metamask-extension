@@ -135,6 +135,7 @@ import IncomingTransactionsController from './controllers/incoming-transactions'
 import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
+import PlumeSignatureManager from './lib/plume-signature-manager';
 import PersonalMessageManager from './lib/personal-message-manager';
 import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
@@ -1023,6 +1024,11 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
     });
+    this.plumeSignatureManager = new PlumeSignatureManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
     this.typedMessageManager = new TypedMessageManager({
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
@@ -1126,6 +1132,7 @@ export default class MetamaskController extends EventEmitter {
       processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
+      processGetPlumeSignature: this.newRequestGetPlumeSignature.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
@@ -3132,6 +3139,50 @@ export default class MetamaskController extends EventEmitter {
   cancelPersonalMessage(msgId) {
     const messageManager = this.personalMessageManager;
     messageManager.rejectMsg(msgId);
+    return this.getState();
+  }
+
+  // eth_getPlumeSignature methods
+
+  /**
+   *
+   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
+   * @param {object} req - (optional) the original request, containing the origin
+   * Passed back to the requesting Dapp.
+   */
+  async newRequestGetPlumeSignature(msgParams, req) {
+    const promise = this.plumeSignatureManager.addUnapprovedMessageAsync(
+      msgParams,
+      req,
+    );
+    this.sendUpdate();
+    this.opts.showUserConfirmation();
+    return promise;
+  }
+
+  /**
+   * Signifies a user's approval to receiving plume in queue.
+   * Triggers receiving, and the callback function from newUnsignedPlumeMessage.
+   *
+   * @param {object} msgParams - The params of the message to receive & return to the Dapp.
+   * @returns {Promise<object>} A full state update.
+   */
+  async getPlumeSignature(msgParams) {
+    log.info('MetaMaskController - plumeMessage');
+    const msgId = msgParams.metamaskId;
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for decryption
+    try {
+      const params = await this.plumeSignatureManager.approveMessage(msgParams);
+      // TODO / FIXME: Import and use zk-nullifier library
+      const mockPlume = `mockPlume-${params.data}`;
+
+      // tells the listener that the message has been decrypted and can be returned to the dapp
+      this.plumeSignatureManager.setMsgStatusReceived(msgId, mockPlume);
+    } catch (error) {
+      log.info('MetaMaskController - eth_getPlumeSignature failed.', error);
+      this.plumeSignatureManager.errorMessage(msgId, error);
+    }
     return this.getState();
   }
 

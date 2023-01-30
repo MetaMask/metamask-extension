@@ -608,6 +608,10 @@ function setupController(initState, initLangCode) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
+  controller.plumeSignatureManager.on(
+    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
   controller.typedMessageManager.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -649,6 +653,7 @@ function setupController(initState, initLangCode) {
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const { unapprovedEncryptionPublicKeyMsgCount } =
       controller.encryptionPublicKeyManager;
+    const { unapprovedPlumeMsgCount } = controller.plumeSignatureManager;
     const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
@@ -660,6 +665,7 @@ function setupController(initState, initLangCode) {
       unapprovedPersonalMsgCount +
       unapprovedDecryptMsgCount +
       unapprovedEncryptionPublicKeyMsgCount +
+      unapprovedPlumeMsgCount +
       unapprovedTypedMessagesCount +
       pendingApprovalCount +
       waitingForUnlockCount
@@ -719,6 +725,14 @@ function setupController(initState, initLangCode) {
       .filter((msg) => msg.status === 'unapproved')
       .forEach((tx) =>
         controller.encryptionPublicKeyManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE,
+        ),
+      );
+    controller.plumeSignatureManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.plumeSignatureManager.rejectMsg(
           tx.id,
           REJECT_NOTFICIATION_CLOSE,
         ),
