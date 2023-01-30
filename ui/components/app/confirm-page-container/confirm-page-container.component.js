@@ -360,7 +360,9 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   txData: PropTypes.object,
+  ///: END:ONLY_INCLUDE_IN(flask)
 };
 
 export default ConfirmPageContainer;
