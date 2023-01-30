@@ -1,41 +1,18 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
 import thunk from 'redux-thunk';
-import ConfirmTransactionBase from './confirm-transaction-base.container';
+
+import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
-import { domainInitialState } from '../../ducks/domains';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { domainInitialState } from '../../ducks/domains';
+
+import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 const middleware = [thunk];
-
-jest.mock('../../ducks/send/send', () => {
-  const original = jest.requireActual('../../ducks/send/send');
-  return {
-    ...original,
-    // We don't really need to start a draft transaction, and the mock store
-    // does not update as a result of action calls so instead we just ensure
-    // that the action WOULD be called.
-    startNewDraftTransaction: jest.fn(() => ({
-      type: 'TEST_START_NEW_DRAFT',
-      payload: null,
-    })),
-  };
-});
-
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useLocation: jest.fn(() => ({ search: '' })),
-    useHistory: () => ({
-      push: jest.fn(),
-    }),
-  };
-});
 
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
@@ -45,22 +22,13 @@ setBackgroundConnection({
   getNextNonce: jest.fn(),
 });
 
-jest.mock('@ethersproject/providers', () => {
-  const originalModule = jest.requireActual('@ethersproject/providers');
-  return {
-    ...originalModule,
-    Web3Provider: jest.fn().mockImplementation(() => {
-      return {};
-    }),
-  };
-});
 const baseStore = {
   send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
   DNS: domainInitialState,
   gas: {
     customData: { limit: null, price: null },
   },
-  history: { mostRecentOverviewPage: 'activity' },
+  history: { mostRecentOverviewPage: '/' },
   metamask: {
     unapprovedTxs: {
       1: {
@@ -116,24 +84,7 @@ const baseStore = {
     },
     identities: { '0x0': { address: '0x0' } },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
-    tokenList: {
-      '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
-        name: 'BitBase',
-        symbol: 'BTBS',
-        decimals: 18,
-        address: '0x32E6C34Cd57087aBBD59B5A4AECC4cB495924356',
-        iconUrl: 'BTBS.svg',
-        occurrences: null,
-      },
-      '0x3fa400483487a489ec9b1db29c4129063eec4654': {
-        name: 'Cryptokek.com',
-        symbol: 'KEK',
-        decimals: 18,
-        address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
-        iconUrl: 'cryptokek.svg',
-        occurrences: null,
-      },
-    },
+    tokenList: {},
     ensResolutionsByAddress: {},
     snaps: {},
   },
@@ -189,15 +140,12 @@ const baseStore = {
 };
 
 describe('Confirm Transaction Base', () => {
-  describe('render', () => {
-    it('should match snapshot', () => {
-      const store = configureMockStore(middleware)(baseStore);
-
-      const { container } = renderWithProvider(
-        <ConfirmTransactionBase actionKey="confirm" />,
-        store,
-      );
-      expect(container).toMatchSnapshot();
-    });
+  const store = configureMockStore(middleware)(baseStore);
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
   });
 });
