@@ -36,6 +36,22 @@ const TransactionInsights = ({ txData }) => {
   const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
   const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
 
+  if (insightSnaps.length === 1) {
+    return (
+      <Tab
+        className="confirm-page-container-content__tab"
+        name={selectedSnap.manifest.proposedName}
+      >
+        <SnapInsight
+          transaction={txParams}
+          origin={origin}
+          chainId={caip2ChainId}
+          selectedSnap={selectedSnap}
+        />
+      </Tab>
+    );
+  }
+
   const dropdownOptions = insightSnaps?.map(
     ({ id, manifest: { proposedName } }) => ({
       value: id,
@@ -43,7 +59,7 @@ const TransactionInsights = ({ txData }) => {
     }),
   );
 
-  return insightSnaps.length > 1 ? (
+  return (
     <DropdownTab
       className="confirm-page-container-content__tab"
       options={dropdownOptions}
@@ -57,18 +73,6 @@ const TransactionInsights = ({ txData }) => {
         selectedSnap={selectedSnap}
       />
     </DropdownTab>
-  ) : (
-    <Tab
-      className="confirm-page-container-content__tab"
-      name={selectedSnap.manifest.proposedName}
-    >
-      <SnapInsight
-        transaction={txParams}
-        origin={origin}
-        chainId={caip2ChainId}
-        selectedSnap={selectedSnap}
-      />
-    </Tab>
   );
 };
 
