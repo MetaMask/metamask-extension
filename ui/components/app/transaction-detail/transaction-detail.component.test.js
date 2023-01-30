@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -31,7 +31,7 @@ const render = ({ componentProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
-      gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
+      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
     },
   });
 
