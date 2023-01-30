@@ -86,11 +86,11 @@ const ConfirmPageContainer = (props) => {
     currentTransaction,
     supportsEIP1559,
     nativeCurrency,
-    assetStandard,
-    isApprovalOrRejection,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     txData,
     ///: END:ONLY_INCLUDE_IN(flask)
+    assetStandard,
+    isApprovalOrRejection,
   } = props;
 
   const t = useI18nContext();
@@ -131,6 +131,8 @@ const ConfirmPageContainer = (props) => {
   }, [fromAddress, tokenAddress]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  // As confirm-transction-base is converted to functional component
+  // this code can bemoved to it.
   const insightComponent = useTransactionInsights({
     txData,
   });
@@ -340,6 +342,9 @@ ConfirmPageContainer.propTypes = {
   dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  txData: PropTypes.object,
+  ///: END:ONLY_INCLUDE_IN(flask)
   tokenAddress: PropTypes.string,
   nonce: PropTypes.string,
   warning: PropTypes.string,
@@ -360,9 +365,6 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  txData: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN(flask)
 };
 
 export default ConfirmPageContainer;

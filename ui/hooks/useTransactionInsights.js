@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../shared/constants/network';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import { TransactionType } from '../../../shared/constants/transaction';
-import { getInsightSnaps } from '../../selectors';
-import { DropdownTab, Tab } from '../../components/ui/tabs';
-import { SnapInsight } from '../../components/app/confirm-page-container/flask/snap-insight';
+import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../shared/constants/network';
+import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
+import { TransactionType } from '../../shared/constants/transaction';
+import { getInsightSnaps } from '../selectors';
+import { DropdownTab, Tab } from '../components/ui/tabs';
+import { SnapInsight } from '../components/app/confirm-page-container/flask/snap-insight';
 
 const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.contractInteraction ||
@@ -15,6 +15,9 @@ const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.tokenMethodTransferFrom ||
   transactionType === TransactionType.tokenMethodTransfer;
 
+// A hook was needed to return JSX here as the way Tabs work JSX has to be included in
+// https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
+// Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
   const insightSnaps = useSelector(getInsightSnaps);
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
