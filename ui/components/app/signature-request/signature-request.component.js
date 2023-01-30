@@ -308,6 +308,7 @@ export default class SignatureRequest extends PureComponent {
           <Button
             type="link"
             className="signature-request__reject-all-button"
+            data-testid="signature-request-reject-all"
             onClick={(e) => {
               e.preventDefault();
               this.handleCancelAll();
