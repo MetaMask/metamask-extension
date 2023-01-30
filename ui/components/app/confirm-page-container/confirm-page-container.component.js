@@ -28,7 +28,9 @@ import DepositPopover from '../deposit-popover/deposit-popover';
 import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
+///: END:ONLY_INCLUDE_IN(flask)
 import {
   getAccountName,
   getAddressBookEntry,
@@ -86,7 +88,9 @@ const ConfirmPageContainer = (props) => {
     nativeCurrency,
     assetStandard,
     isApprovalOrRejection,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     txData,
+    ///: END:ONLY_INCLUDE_IN(flask)
   } = props;
 
   const t = useI18nContext();

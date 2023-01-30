@@ -16,7 +16,6 @@ const isAllowedTransactionTypes = (transactionType) =>
   transactionType === TransactionType.tokenMethodTransfer;
 
 const useTransactionInsights = ({ txData }) => {
-  console.log('into useTransactionInsights');
   const insightSnaps = useSelector(getInsightSnaps);
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
