@@ -82,6 +82,7 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -130,9 +131,13 @@ import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import ExchangeRateDisplay from '../exchange-rate-display';
+import InfoTooltip from '../../../components/ui/info-tooltip';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
+
+const GAS_FEES_LEARN_MORE_URL =
+  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export default function ViewQuote({ setReceiveToAmount }) {
   const history = useHistory();
@@ -214,6 +219,30 @@ export default function ViewQuote({ setReceiveToAmount }) {
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
+
+  /* istanbul ignore next */
+  const getTranslatedNetworkName = () => {
+    switch (chainId) {
+      case CHAIN_IDS.MAINNET:
+        return t('networkNameEthereum');
+      case CHAIN_IDS.BSC:
+        return t('networkNameBSC');
+      case CHAIN_IDS.POLYGON:
+        return t('networkNamePolygon');
+      case CHAIN_IDS.LOCALHOST:
+        return t('networkNameTestnet');
+      case CHAIN_IDS.GOERLI:
+        return t('networkNameGoerli');
+      case CHAIN_IDS.AVALANCHE:
+        return t('networkNameAvalanche');
+      case CHAIN_IDS.OPTIMISM:
+        return t('networkNameOptimism');
+      case CHAIN_IDS.ARBITRUM:
+        return t('networkNameArbitrum');
+      default:
+        throw new Error('This network is not supported for token swaps');
+    }
+  };
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
@@ -1076,9 +1105,51 @@ export default function ViewQuote({ setReceiveToAmount }) {
             justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             alignItems={ALIGN_ITEMS.STRETCH}
           >
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
-              {t('transactionDetailGasHeading')}
-            </Typography>
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.CENTER}
+              alignItems={ALIGN_ITEMS.CENTER}
+            >
+              <Typography
+                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TYPOGRAPHY.H6}
+                marginRight={1}
+              >
+                {t('transactionDetailGasHeading')}
+              </Typography>
+              <InfoTooltip
+                position="top"
+                contentText={
+                  <>
+                    <p className="fee-card__info-tooltip-paragraph">
+                      {t('swapGasFeesSummary', [getTranslatedNetworkName()])}
+                    </p>
+                    <p className="fee-card__info-tooltip-paragraph">
+                      {t('swapGasFeesDetails')}
+                    </p>
+                    <p className="fee-card__info-tooltip-paragraph">
+                      <a
+                        className="fee-card__link"
+                        onClick={() => {
+                          /* istanbul ignore next */
+                          trackEvent({
+                            event: 'Clicked "Gas Fees: Learn More" Link',
+                            category: EVENT.CATEGORIES.SWAPS,
+                          });
+                          global.platform.openTab({
+                            url: GAS_FEES_LEARN_MORE_URL,
+                          });
+                        }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('swapGasFeesLearnMore')}
+                      </a>
+                    </p>
+                  </>
+                }
+              />
+            </Box>
             <Box
               display={DISPLAY.FLEX}
               justifyContent={JUSTIFY_CONTENT.FLEX_END}
