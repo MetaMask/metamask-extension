@@ -4081,9 +4081,6 @@
   "tokenList": {
     "message": "토큰 목록:"
   },
-  "tokenNftAutoDetection": {
-    "message": "토큰 및 NFT 자동 감지"
-  },
   "tokenScamSecurityRisk": {
     "message": "토큰 사기 및 보안 위험"
   },

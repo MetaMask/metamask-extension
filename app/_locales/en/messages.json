@@ -4101,6 +4101,9 @@
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
+  "tokenAutoDetection": {
+    "message": "Token autodetection"
+  },
   "tokenContractAddress": {
     "message": "Token contract address"
   },
@@ -4121,9 +4124,6 @@
   },
   "tokenList": {
     "message": "Token lists:"
-  },
-  "tokenNftAutoDetection": {
-    "message": "Token and NFT autodetection"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
