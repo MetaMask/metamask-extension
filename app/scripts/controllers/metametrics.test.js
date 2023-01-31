@@ -132,8 +132,7 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getCurrentChainId:
-      networkController.getCurrentChainId.bind(networkController),
+    getCurrentChainId: () => networkController.providerStore.getState().chainId,
     onNetworkDidChange: networkController.on.bind(
       networkController,
       NETWORK_EVENTS.NETWORK_DID_CHANGE,
