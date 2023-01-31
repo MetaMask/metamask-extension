@@ -20,7 +20,7 @@ export const SWAPS_FETCH_ORDER_CONFLICT = 'swaps-fetch-order-conflict';
 // in place of the token address that ERC-20 tokens have
 const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-interface SwapsTokenObject {
+export interface SwapsTokenObject {
   /**
    * The symbol of token object
    */
