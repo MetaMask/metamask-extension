@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.24.1",
+  "version": "10.24.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -92,6 +92,7 @@
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
+    "cookiejar": "^2.1.4",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",
     "pubnub/superagent-proxy": "^3.0.0",
@@ -110,7 +111,6 @@
     "eslint-import-resolver-typescript@^2.5.0": "patch:eslint-import-resolver-typescript@npm%3A2.5.0#./.yarn/patches/eslint-import-resolver-typescript-npm-2.5.0-3b8adf0d03.patch",
     "colors@1.4.0": "patch:colors@npm%3A1.4.0#./.yarn/patches/colors-npm-1.4.0-7e2cf12234.patch",
     "colors@0.5.x": "patch:colors@npm%3A1.4.0#./.yarn/patches/colors-npm-1.4.0-7e2cf12234.patch",
-    "cookiejar": "^2.1.4",
     "borc@^2.1.2": "patch:borc@npm%3A2.1.2#./.yarn/patches/borc-npm-2.1.2-8ffcc2dd81.patch",
     "borc@^2.1.0": "patch:borc@npm%3A2.1.2#./.yarn/patches/borc-npm-2.1.2-8ffcc2dd81.patch",
     "convert-source-map@^1.7.0": "patch:convert-source-map@npm%3A1.1.3#./.yarn/patches/convert-source-map-npm-1.1.3-7f1bfeabd4.patch",
