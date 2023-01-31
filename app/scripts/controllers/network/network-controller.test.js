@@ -998,9 +998,11 @@ describe('NetworkController', () => {
                             await withoutCallingLookupNetwork({
                               controller,
                               operation: () => {
-                                controller.setRpcTarget(
-                                  'http://some-rpc-url',
-                                  '0x1337',
+                                controller.setProviderType(
+                                  INFURA_NETWORKS.filter(
+                                    (network) =>
+                                      network.networkType !== networkType,
+                                  )[0],
                                 );
                               },
                             });
@@ -1029,7 +1031,7 @@ describe('NetworkController', () => {
                   controller,
                   eventName: 'infuraIsUnblocked',
                   operation: async () => {
-                    await controller.initializeProvider();
+                    await controller.lookupNetwork();
                   },
                 });
 
