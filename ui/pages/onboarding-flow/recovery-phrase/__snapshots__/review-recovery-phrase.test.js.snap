@@ -599,20 +599,10 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
             <span
               class="button__icon"
             >
-              <svg
-                fill="none"
-                height="20"
-                viewBox="0 0 11 11"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  clip-rule="evenodd"
-                  d="M0 0H1H9V1H1V9H0V0ZM2 2H11V11H2V2ZM3 3H10V10H3V3Z"
-                  fill="var(--color-primary-default)"
-                  fill-rule="evenodd"
-                />
-              </svg>
+              <div
+                class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-primary-default"
+                style="mask-image: url('./images/icons/copy.svg');"
+              />
             </span>
             Copy to clipboard
           </a>
