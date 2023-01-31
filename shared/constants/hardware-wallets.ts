@@ -1,3 +1,8 @@
+import TrezorKeyring from 'eth-trezor-keyring';
+import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import LatticeKeyring from 'eth-lattice-keyring';
+// import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring/dist/MetaMaskKeyring';
+
 /**
  * Accounts can be instantiated from simple, HD or the multiple hardware wallet
  * keyring types. Both simple and HD are treated as default but we do special
@@ -69,3 +74,14 @@ export enum WebHIDConnectedStatuses {
 }
 
 export const LEDGER_USB_VENDOR_ID = '0x2c97';
+
+export const HARDWARE_KEYRINGS = [
+  TrezorKeyring,
+  LedgerBridgeKeyring,
+  LatticeKeyring,
+  // QRHardwareKeyring,
+];
+
+export const HARDWARE_KEYRING_INIT_OPTS = {
+  delayInit: true,
+};
