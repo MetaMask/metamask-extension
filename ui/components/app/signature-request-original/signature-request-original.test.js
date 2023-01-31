@@ -81,7 +81,7 @@ describe('SignatureRequestOriginal', () => {
 
   it('should render warning for eth sign when sign button clicked', () => {
     render();
-    const signButton = screen.getByTestId('request-signature__sign');
+    const signButton = screen.getByTestId('page-container-footer-next');
 
     fireEvent.click(signButton);
     expect(screen.getByText('Your funds may be at risk')).toBeInTheDocument();

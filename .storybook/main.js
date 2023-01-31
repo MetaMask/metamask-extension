@@ -9,6 +9,7 @@ module.exports = {
   core: {
     builder: 'webpack5',
   },
+  features: { buildStoriesJson: true },
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.mdx',

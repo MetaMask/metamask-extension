@@ -12,7 +12,7 @@ import SignatureRequestOriginal from '../../components/app/signature-request-ori
 import Loading from '../../components/ui/loading-screen';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 
 function mapStateToProps(state) {
@@ -237,7 +237,7 @@ class ConfirmTxScreen extends Component {
 
     const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network, chainId);
 
-    if (prevTx && prevTx.status === TRANSACTION_STATUSES.DROPPED) {
+    if (prevTx && prevTx.status === TransactionStatus.dropped) {
       this.props.dispatch(
         actions.showModal({
           name: 'TRANSACTION_CONFIRMED',

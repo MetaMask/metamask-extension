@@ -8,7 +8,7 @@ import Dropdown from '../../../components/ui/dropdown';
 
 import { getURLHostName } from '../../../helpers/utils/util';
 
-import { DEVICE_NAMES } from '../../../../shared/constants/hardware-wallets';
+import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../../shared/constants/metametrics';
 
 class AccountList extends Component {
@@ -65,9 +65,9 @@ class AccountList extends Component {
   renderHeader() {
     const { device } = this.props;
     const shouldShowHDPaths = [
-      DEVICE_NAMES.LEDGER,
-      DEVICE_NAMES.LATTICE,
-      DEVICE_NAMES.TREZOR,
+      HardwareDeviceNames.ledger,
+      HardwareDeviceNames.lattice,
+      HardwareDeviceNames.trezor,
     ].includes(device.toLowerCase());
     return (
       <div className="hw-connect">

@@ -106,11 +106,6 @@ function defaultFixture() {
             id: 15,
             isShown: false,
           },
-          16: {
-            date: null,
-            id: 16,
-            isShown: true,
-          },
           17: {
             date: null,
             id: 17,
@@ -120,7 +115,6 @@ function defaultFixture() {
       },
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDetectionNoticeDismissed: false,
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
@@ -239,6 +233,7 @@ function defaultFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
+        useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {
@@ -286,7 +281,6 @@ function onboardingFixture() {
     data: {
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDetectionNoticeDismissed: false,
         collectiblesDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
@@ -352,6 +346,7 @@ function onboardingFixture() {
         useNonceField: false,
         usePhishDetect: true,
         useTokenDetection: false,
+        useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
       },
       SmartTransactionsController: {

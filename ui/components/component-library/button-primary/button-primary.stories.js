@@ -30,7 +30,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/ButtonPrimary',
-  id: __filename,
+
   component: ButtonPrimary,
   parameters: {
     docs: {
@@ -60,7 +60,7 @@ export default {
       control: 'boolean',
       table: { category: 'button base props' },
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
@@ -73,7 +73,6 @@ export default {
       control: 'object',
       table: { category: 'button base props' },
     },
-
     loading: {
       control: 'boolean',
       table: { category: 'button base props' },

@@ -20,7 +20,7 @@ import { getSendHexDataFeatureFlagState } from '../../ducks/metamask/metamask';
 import { showQrScanner } from '../../store/actions';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { EVENT } from '../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 import SendHeader from './send-header';
 import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
@@ -64,7 +64,7 @@ export default function SendTransactionScreen() {
       startedNewDraftTransaction.current === false
     ) {
       startedNewDraftTransaction.current = true;
-      dispatch(startNewDraftTransaction({ type: ASSET_TYPES.NATIVE }));
+      dispatch(startNewDraftTransaction({ type: AssetType.native }));
     }
   }, [draftTransactionExists, dispatch]);
 

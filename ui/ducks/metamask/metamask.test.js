@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
@@ -40,10 +40,12 @@ describe('MetaMask Reducers', () => {
         currentBlockGasLimit: '0x4c1878',
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
+        useCurrencyRateCheck: true,
         network: '5',
         provider: {
           type: 'testnet',
           chainId: '0x5',
+          ticker: 'TestETH',
         },
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -84,7 +86,7 @@ describe('MetaMask Reducers', () => {
           4768706228115573: {
             id: 4768706228115573,
             time: 1487363153561,
-            status: TRANSACTION_STATUSES.UNAPPROVED,
+            status: TransactionStatus.unapproved,
             gasMultiplier: 1,
             metamaskNetworkId: '5',
             txParams: {
@@ -308,8 +310,20 @@ describe('MetaMask Reducers', () => {
     });
 
     describe('getNativeCurrency()', () => {
-      it('should return the ticker symbol of the selected network', () => {
+      it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
         expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+      });
+
+      it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
+        expect(
+          getNativeCurrency({
+            ...mockState,
+            metamask: {
+              ...mockState.metamask,
+              useCurrencyRateCheck: false,
+            },
+          }),
+        ).toStrictEqual('TestETH');
       });
     });
 
@@ -364,7 +378,7 @@ describe('MetaMask Reducers', () => {
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           gasMultiplier: 1,
           metamaskNetworkId: '5',
           txParams: {

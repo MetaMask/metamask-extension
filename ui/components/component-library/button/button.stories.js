@@ -33,7 +33,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Button',
-  id: __filename,
+
   component: Button,
   parameters: {
     docs: {
@@ -146,12 +146,15 @@ export const Size = (args) => (
       <Button {...args} size={SIZES.LG}>
         Large Button
       </Button>
+      <Button {...args} type={BUTTON_TYPES.LINK}>
+        Auto ButtonLink
+      </Button>
     </Box>
     <Text variant={TEXT.BODY_SM}>
-      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.AUTO}>
-        Button Auto
+      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.INHERIT}>
+        Button Inherit
       </Button>{' '}
-      inherits the font-size of the parent element. Auto size only used for
+      inherits the font-size of the parent element. Inherit size only used for
       ButtonLink.
     </Text>
   </>
@@ -205,8 +208,8 @@ Loading.args = {
   loading: true,
 };
 
-export const IconName = (args) => <Button {...args}>Button</Button>;
-
-IconName.args = {
-  iconName: ICON_NAMES.ADD_SQUARE_FILLED,
-};
+export const Icon = (args) => (
+  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
+    Button
+  </Button>
+);

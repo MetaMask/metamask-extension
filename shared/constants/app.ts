@@ -78,20 +78,6 @@ export const EXTENSION_MESSAGES = {
   READY: 'METAMASK_EXTENSION_READY',
 } as const;
 
-/**
- * The different kinds of subjects that MetaMask may interact with, including
- * third parties and itself (e.g. when the background communicated with the UI).
- */
-export const SUBJECT_TYPES = {
-  EXTENSION: 'extension',
-  INTERNAL: 'internal',
-  UNKNOWN: 'unknown',
-  WEBSITE: 'website',
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP: 'snap',
-  ///: END:ONLY_INCLUDE_IN
-} as const;
-
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',

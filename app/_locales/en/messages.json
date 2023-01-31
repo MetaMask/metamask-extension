@@ -110,10 +110,6 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 may access and spend up to this max amount",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 may access and spend this asset",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -374,8 +370,8 @@
   "approveButtonText": {
     "message": "Approve"
   },
-  "approveSpendLimit": {
-    "message": "Approve $1 spend limit",
+  "approveSpendingCap": {
+    "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
   },
   "approveTokenDescription": {
@@ -387,9 +383,6 @@
   },
   "approved": {
     "message": "Approved"
-  },
-  "approvedAmountWithColon": {
-    "message": "Approved amount:"
   },
   "approvedAsset": {
     "message": "Approved asset"
@@ -432,7 +425,7 @@
     "message": "Autodetect tokens"
   },
   "autoDetectTokensDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services. $1",
+    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. $1",
     "description": "$1 is a link to a support article"
   },
   "autoLockTimeLimit": {
@@ -682,6 +675,9 @@
   "close": {
     "message": "Close"
   },
+  "coingecko": {
+    "message": "CoinGecko"
+  },
   "collectibleAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
   },
@@ -894,8 +890,18 @@
   "createPassword": {
     "message": "Create password"
   },
+  "cryptoCompare": {
+    "message": "CryptoCompare"
+  },
   "currencyConversion": {
     "message": "Currency conversion"
+  },
+  "currencyRateCheckToggle": {
+    "message": "Show balance and token price checker"
+  },
+  "currencyRateCheckToggleDescription": {
+    "message": "We use $1 and $2 APIs to display your balance and token price. $3",
+    "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
     "message": "Currency symbol"
@@ -1264,14 +1270,8 @@
     "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "enhancedTokenDetection": {
-    "message": "Enhanced token detection"
-  },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
-  },
-  "enhancedTokenDetectionDescription": {
-    "message": "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet."
   },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
@@ -1715,12 +1715,6 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "improvedTokenAllowance": {
-    "message": "Improved token allowance experience"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Turn this on to go through the improved token allowance experience whenever a dapp requests an ERC20 approve"
-  },
   "inYourSettings": {
     "message": "in your Settings"
   },
@@ -2069,6 +2063,9 @@
   "metametricsOptInDescription": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
+  "metrics": {
+    "message": "Metrics"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2269,6 +2266,9 @@
   "nft": {
     "message": "NFT"
   },
+  "nftDisclaimer": {
+    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
+  },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
@@ -2406,15 +2406,6 @@
   },
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
-  },
-  "notifications16ActionText": {
-    "message": "Try it out here"
-  },
-  "notifications16Description": {
-    "message": "We redesigned our token allowance confirmation to help you make more informed decisions."
-  },
-  "notifications16Title": {
-    "message": "Improved token allowance experience"
   },
   "notifications17ActionText": {
     "message": "Show Security & Privacy settings"
@@ -3005,6 +2996,9 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeCollectibleMessage": {
+    "message": "Collectible was successfully removed!"
+  },
   "removeNFT": {
     "message": "Remove NFT"
   },
@@ -3091,12 +3085,12 @@
     "message": "Review your spending cap"
   },
   "revokeAllTokensTitle": {
-    "message": "Revoke permission to access all of your $1?",
+    "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
   "revokeApproveForAllDescription": {
-    "message": "By revoking permission, the following $1 will no longer be able to access your $2",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "message": "This revokes the permission for a third party to access and transfer all of your $1 without further notice.",
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -3479,9 +3473,6 @@
   "speedUpTransaction": {
     "message": "Speed up this transaction"
   },
-  "spendLimitAmount": {
-    "message": "Spend limit amount"
-  },
   "spendLimitInsufficient": {
     "message": "Spend limit insufficient"
   },
@@ -3497,6 +3488,9 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "spendingCap": {
+    "message": "Spending cap"
   },
   "spendingCapError": {
     "message": "Error: Enter numbers only"
@@ -3633,12 +3627,6 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Smart Transactions are temporarily unavailable because you have a pending transaction."
-  },
-  "stxFallbackUnavailable": {
-    "message": "You can still swap your tokens even while Smart Transactions are unavailable."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
   },
@@ -3662,14 +3650,8 @@
   "stxTooltip": {
     "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
   },
-  "stxTryRegular": {
-    "message": "Try a regular swap."
-  },
   "stxTryingToCancel": {
     "message": "Trying to cancel your transaction..."
-  },
-  "stxUnavailable": {
-    "message": "Smart Transactions are disabled"
   },
   "stxUnknown": {
     "message": "Status unknown"
@@ -3721,10 +3703,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "You need more $1 to complete this swap using smart transactions.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Best of $1 quotes.",
@@ -3826,7 +3804,7 @@
     "message": "MetaMask fee"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into this quote.",
+    "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {

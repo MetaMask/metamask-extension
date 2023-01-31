@@ -1,6 +1,6 @@
 {
-  "ENS": {
-    "resolution": ""
+  "DNS": {
+    "resolution": null
   },
   "appState": {
     "networkDropdownOpen": false,
@@ -74,7 +74,8 @@
     "network": "5",
     "provider": {
       "type": "rpc",
-      "chainId": "0x5"
+      "chainId": "0x5",
+      "ticker": "ETH"
     },
     "keyrings": [
       {
@@ -252,6 +253,7 @@
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
+    "useCurrencyRateCheck": true,
     "advancedGasFee": {
       "maxBaseFee": "75",
       "priorityFee": "2"

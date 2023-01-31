@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { getInitLedgerTransportType } from '../../../shared/lib/preferences-utils';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
 const version = 66;
 
@@ -27,7 +27,7 @@ function transformState(state) {
     PreferencesController: {
       ...state?.PreferencesController,
       ledgerTransportType: useLedgerLive
-        ? LEDGER_TRANSPORT_TYPES.LIVE
+        ? LedgerTransportTypes.live
         : defaultTransportType,
     },
   };

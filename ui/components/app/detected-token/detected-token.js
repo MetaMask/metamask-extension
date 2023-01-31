@@ -12,8 +12,8 @@ import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
+  AssetType,
+  TokenStandard,
 } from '../../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedTokenSelectionPopover from './detected-token-selection-popover/detected-token-selection-popover';
@@ -65,8 +65,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_contract_address: importedToken.address,
           token_decimal_precision: importedToken.decimals,
           source: EVENT.SOURCE.TOKEN.DETECTED,
-          token_standard: TOKEN_STANDARDS.ERC20,
-          asset_type: ASSET_TYPES.TOKEN,
+          token_standard: TokenStandard.ERC20,
+          asset_type: AssetType.token,
         },
       });
     });
@@ -91,8 +91,8 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
       sensitiveProperties: {
         tokens: tokensDetailsList,
         location: EVENT.LOCATION.TOKEN_DETECTION,
-        token_standard: TOKEN_STANDARDS.ERC20,
-        asset_type: ASSET_TYPES.TOKEN,
+        token_standard: TokenStandard.ERC20,
+        asset_type: AssetType.token,
       },
     });
     const deSelectedTokensAddresses = deSelectedTokens.map(
