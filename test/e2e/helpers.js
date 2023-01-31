@@ -65,13 +65,14 @@ async function withFixtures(options, testSuite) {
     }
 
     if (ganacheOptions?.concurrent) {
-      const { port, chainId } = ganacheOptions.concurrent;
+      const { port, chainId, ganacheOptions2 } = ganacheOptions.concurrent;
       secondaryGanacheServer = new Ganache();
       await secondaryGanacheServer.start({
         blockTime: 2,
         chain: { chainId },
         port,
         vmErrorsOnRPCResponse: false,
+        ...ganacheOptions2,
       });
     }
     await fixtureServer.start();
@@ -240,11 +241,7 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const completeImportSRPOnboardingFlow = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
+const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -263,6 +260,14 @@ const completeImportSRPOnboardingFlow = async (
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+};
+
+const completeImportSRPOnboardingFlow = async (
+  driver,
+  seedPhrase,
+  password,
+) => {
+  await importSRPOnboardingFlow(driver, seedPhrase, password);
 
   // complete
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
@@ -315,6 +320,7 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
+  importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   createDownloadFolder,

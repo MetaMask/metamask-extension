@@ -173,6 +173,7 @@ const mapDispatchToProps = (dispatch) => ({
   setRecoveryPhraseReminderLastShown: (lastShown) =>
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
   setNewNetworkAdded: (newNetwork) => {
+    console.log({ newNetwork });
     dispatch(setNewNetworkAdded(newNetwork));
   },
   setNewCollectibleAddedMessage: (message) => {
