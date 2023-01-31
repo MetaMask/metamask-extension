@@ -290,6 +290,9 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
+          provider: {
+            ticker: 'ETH',
+          },
         },
         confirmTransaction: {
           ethTransactionAmount: '1',

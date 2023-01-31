@@ -67,9 +67,8 @@ export default function GasDisplay({ gasError }) {
   );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const { nativeCurrency, provider, unapprovedTxs } = useSelector(
-    (state) => state.metamask,
-  );
+  const { provider, unapprovedTxs } = useSelector((state) => state.metamask);
+  const nativeCurrency = provider.ticker;
   const { confirmTransaction } = useSelector((state) => state);
   const { txData } = confirmTransaction;
   const { txParams = {} } = txData;

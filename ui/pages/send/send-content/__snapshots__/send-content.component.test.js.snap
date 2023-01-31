@@ -31,10 +31,8 @@ exports[`SendContent Component render should match snapshot 1`] = `
                 <div
                   class="send-v2__asset-dropdown__asset-icon"
                 >
-                  <img
-                    alt=""
-                    class="identicon"
-                    src="./images/eth_logo.svg"
+                  <div
+                    class="identicon__image-border"
                     style="height: 36px; width: 36px; border-radius: 18px;"
                   />
                 </div>
@@ -43,9 +41,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                 >
                   <div
                     class="send-v2__asset-dropdown__symbol"
-                  >
-                    ETH
-                  </div>
+                  />
                   <div
                     class="send-v2__asset-dropdown__name"
                   >
