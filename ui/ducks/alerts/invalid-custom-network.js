@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import { AlertTypes } from '../../../shared/constants/alerts';
 import { ALERT_STATE } from './enums';
 
 // Constants
 
-const name = ALERT_TYPES.invalidCustomNetwork;
+const name = AlertTypes.invalidCustomNetwork;
 
 const initialState = {
   state: ALERT_STATE.CLOSED,

@@ -2,9 +2,9 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import {
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
-  PRIORITY_LEVELS,
+  EditGasModes,
+  GasEstimateTypes,
+  PriorityLevels,
 } from '../../../../shared/constants/gas';
 import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 
@@ -35,7 +35,7 @@ const render = ({ componentProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
-      gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
+      gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
     },
   });
 
@@ -77,7 +77,7 @@ describe('EditGasFeeButton', () => {
     render({
       contextProps: {
         transaction: {
-          userFeeLevel: PRIORITY_LEVELS.DAPP_SUGGESTED,
+          userFeeLevel: PriorityLevels.dAppSuggested,
           dappSuggestedGasFees: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
           txParams: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
         },
@@ -92,7 +92,7 @@ describe('EditGasFeeButton', () => {
     render({
       contextProps: {
         transaction: { userFeeLevel: 'high' },
-        editGasMode: EDIT_GAS_MODES.SWAPS,
+        editGasMode: EditGasModes.swaps,
       },
     });
     expect(screen.queryByText('🔄')).toBeInTheDocument();

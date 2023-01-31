@@ -143,12 +143,13 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-export const getBaseApi = function (type, chainId = CHAIN_IDS.MAINNET) {
-  // eslint-disable-next-line no-param-reassign
-  chainId = TEST_CHAIN_IDS.includes(chainId) ? CHAIN_IDS.MAINNET : chainId;
-  const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
+export const getBaseApi = function (type, chainId) {
+  const _chainId = TEST_CHAIN_IDS.includes(chainId)
+    ? CHAIN_IDS.MAINNET
+    : chainId;
+  const baseUrl = getBaseUrlForNewSwapsApi(type, _chainId);
   if (!baseUrl) {
-    throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
+    throw new Error(`Swaps API calls are disabled for chainId: ${_chainId}`);
   }
   switch (type) {
     case 'trade':

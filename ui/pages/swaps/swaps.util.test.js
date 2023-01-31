@@ -267,8 +267,8 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          MOCKS.createFeatureFlagsResponse(),
           CHAIN_IDS.LOCALHOST,
+          MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -279,8 +279,8 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          MOCKS.createFeatureFlagsResponse(),
           CHAIN_IDS.GOERLI,
+          MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -291,8 +291,8 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          MOCKS.createFeatureFlagsResponse(),
           CHAIN_IDS.SEPOLIA,
+          MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -303,8 +303,8 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          MOCKS.createFeatureFlagsResponse(),
           CHAIN_IDS.MAINNET,
+          MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
     });
@@ -316,7 +316,7 @@ describe('Swaps Util', () => {
       const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
       swapsFeatureFlags[ETHEREUM].extensionActive = false;
       expect(
-        getSwapsLivenessForNetwork(swapsFeatureFlags, CHAIN_IDS.MAINNET),
+        getSwapsLivenessForNetwork(CHAIN_IDS.MAINNET, swapsFeatureFlags),
       ).toMatchObject(expectedSwapsLiveness);
     });
   });

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import {
   getGasEstimateType,
   getIsGasEstimatesLoading,
@@ -21,7 +21,7 @@ export const useCustomTimeEstimate = ({
 
   const returnNoEstimates =
     isGasEstimatesLoading ||
-    gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET ||
+    gasEstimateType !== GasEstimateTypes.feeMarket ||
     !maxPriorityFeePerGas;
 
   // If the user has chosen a value lower than the low gas fee estimate,
@@ -35,7 +35,7 @@ export const useCustomTimeEstimate = ({
   useEffect(() => {
     if (
       isGasEstimatesLoading ||
-      gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET ||
+      gasEstimateType !== GasEstimateTypes.feeMarket ||
       !maxPriorityFeePerGas
     ) {
       return;

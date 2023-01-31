@@ -7,6 +7,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { ICON_NAMES } from '../../../components/component-library';
 
 const AssetOptions = ({
   onRemove,
@@ -47,7 +48,7 @@ const AssetOptions = ({
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem
-            iconClassName="fas fa-qrcode"
+            iconName={ICON_NAMES.SCAN_BARCODE}
             data-testid="asset-options__account-details"
             onClick={() => {
               setAssetOptionsOpen(false);
@@ -57,7 +58,7 @@ const AssetOptions = ({
             {t('accountDetails')}
           </MenuItem>
           <MenuItem
-            iconClassName="fas fa-external-link-alt asset-options__icon"
+            iconName={ICON_NAMES.EXPORT}
             data-testid="asset-options__etherscan"
             onClick={
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
@@ -74,7 +75,7 @@ const AssetOptions = ({
           </MenuItem>
           {isNativeAsset ? null : (
             <MenuItem
-              iconClassName="fas fa-trash-alt asset-options__icon"
+              iconName={ICON_NAMES.TRASH}
               data-testid="asset-options__hide"
               onClick={() => {
                 setAssetOptionsOpen(false);
@@ -86,7 +87,7 @@ const AssetOptions = ({
           )}
           {isNativeAsset ? null : (
             <MenuItem
-              iconClassName="fas fa-info-circle asset-options__icon"
+              iconName={ICON_NAMES.INFO}
               data-testid="asset-options__token-details"
               onClick={() => {
                 setAssetOptionsOpen(false);

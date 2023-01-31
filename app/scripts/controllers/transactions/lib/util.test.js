@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '../../../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../../../shared/modules/hexstring-utils';
-import { GAS_RECOMMENDATIONS } from '../../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../../shared/constants/gas';
 import * as txUtils from './util';
 
 describe('txUtils', function () {
@@ -324,8 +324,8 @@ describe('txUtils', function () {
         gasPrice: '1',
         maxFeePerGas: '1',
         maxPriorityFeePerGas: '1',
-        estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
-        estimateUsed: GAS_RECOMMENDATIONS.HIGH,
+        estimateSuggested: GasRecommendations.medium,
+        estimateUsed: GasRecommendations.high,
         type: '1',
       };
 
@@ -383,12 +383,12 @@ describe('txUtils', function () {
 
       assert.equal(
         normalizedTxParams.estimateSuggested,
-        GAS_RECOMMENDATIONS.MEDIUM,
+        GasRecommendations.medium,
         'estimateSuggested should be the string originally provided',
       );
       assert.equal(
         normalizedTxParams.estimateUsed,
-        GAS_RECOMMENDATIONS.HIGH,
+        GasRecommendations.high,
         'estimateSuggested should be the string originally provided',
       );
     });

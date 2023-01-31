@@ -31,7 +31,7 @@ export const SnapDelineator = ({ snapName, children }) => {
         paddingTop={1}
         paddingBottom={1}
       >
-        <Icon name="snaps-filled" color={COLORS.INFO_DEFAULT} size={SIZES.SM} />
+        <Icon name="snaps" color={COLORS.INFO_DEFAULT} size={SIZES.SM} />
         <Text
           variant={TEXT.BODY_SM}
           color={COLORS.INFO_DEFAULT}

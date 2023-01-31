@@ -49,7 +49,7 @@ import {
   isContractAddressValid,
   getSwapsLivenessForNetwork,
   parseSmartTransactionsError,
-  stxErrorTypes,
+  StxErrorTypes,
 } from '../../pages/swaps/swaps.util';
 import {
   addHexes,
@@ -125,7 +125,6 @@ const initialState = {
     fallBackPrice: null,
   },
   currentSmartTransactionsError: '',
-  currentSmartTransactionsErrorMessageDismissed: false,
   swapsSTXLoading: false,
 };
 
@@ -207,13 +206,10 @@ const slice = createSlice({
       state.customGas.fallBackPrice = action.payload;
     },
     setCurrentSmartTransactionsError: (state, action) => {
-      const errorType = Object.values(stxErrorTypes).includes(action.payload)
+      const errorType = Object.values(StxErrorTypes).includes(action.payload)
         ? action.payload
-        : stxErrorTypes.UNAVAILABLE;
+        : StxErrorTypes.UNAVAILABLE;
       state.currentSmartTransactionsError = errorType;
-    },
-    dismissCurrentSmartTransactionsErrorMessage: (state) => {
-      state.currentSmartTransactionsErrorMessageDismissed = true;
     },
     setSwapsSTXSubmitLoading: (state, action) => {
       state.swapsSTXLoading = action.payload || false;
@@ -277,9 +273,6 @@ export const getSwapsFallbackGasPrice = (state) =>
 
 export const getCurrentSmartTransactionsError = (state) =>
   state.swaps.currentSmartTransactionsError;
-
-export const getCurrentSmartTransactionsErrorMessageDismissed = (state) =>
-  state.swaps.currentSmartTransactionsErrorMessageDismissed;
 
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
@@ -490,13 +483,11 @@ const {
   retrievedFallbackSwapsGasPrice,
   swapCustomGasModalClosed,
   setCurrentSmartTransactionsError,
-  dismissCurrentSmartTransactionsErrorMessage,
   setSwapsSTXSubmitLoading,
 } = actions;
 
 export {
   clearSwapsState,
-  dismissCurrentSmartTransactionsErrorMessage,
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
@@ -563,7 +554,7 @@ const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
   for (const transaction of transactions) {
     if (IN_PROGRESS_TRANSACTION_STATUSES.includes(transaction.status)) {
       dispatch(
-        setCurrentSmartTransactionsError(stxErrorTypes.REGULAR_TX_IN_PROGRESS),
+        setCurrentSmartTransactionsError(StxErrorTypes.REGULAR_TX_IN_PROGRESS),
       );
       break;
     }
@@ -590,8 +581,8 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
         disableStxIfRegularTxInProgress(dispatch, transactions);
       }
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        swapsFeatureFlags,
         chainId,
+        swapsFeatureFlags,
       );
     } catch (error) {
       log.error(
@@ -630,8 +621,8 @@ export const fetchQuotesAndSetQuoteState = (
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        swapsFeatureFlags,
         chainId,
+        swapsFeatureFlags,
       );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
@@ -948,7 +939,7 @@ export const signAndSendSwapsSmartTransaction = ({
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
         dispatch(setSwapsSTXSubmitLoading(false));
-        dispatch(setCurrentSmartTransactionsError(stxErrorTypes.UNAVAILABLE));
+        dispatch(setCurrentSmartTransactionsError(StxErrorTypes.UNAVAILABLE));
         return;
       }
       if (approveTxParams) {
@@ -1029,8 +1020,8 @@ export const signAndSendTransactions = (
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        swapsFeatureFlags,
         chainId,
+        swapsFeatureFlags,
       );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
@@ -1338,7 +1329,7 @@ export function fetchSwapsSmartTransactionFees({
         const errorObj = parseSmartTransactionsError(e.message);
         if (
           fallbackOnNotEnoughFunds ||
-          errorObj?.error !== stxErrorTypes.NOT_ENOUGH_FUNDS
+          errorObj?.error !== StxErrorTypes.NOT_ENOUGH_FUNDS
         ) {
           dispatch(setCurrentSmartTransactionsError(errorObj?.error));
         }

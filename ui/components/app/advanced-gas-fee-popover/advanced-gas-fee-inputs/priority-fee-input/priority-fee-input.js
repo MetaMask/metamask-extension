@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
+  EditGasModes,
+  PriorityLevels,
 } from '../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../helpers/constants/common';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
@@ -59,9 +59,9 @@ const PriorityFeeInput = () => {
 
   const [priorityFee, setPriorityFee] = useState(() => {
     if (
-      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      estimateUsed !== PriorityLevels.custom &&
       advancedGasFeeValues?.priorityFee &&
-      editGasMode !== EDIT_GAS_MODES.SWAPS
+      editGasMode !== EditGasModes.swaps
     ) {
       return advancedGasFeeValues.priorityFee;
     }

@@ -15,6 +15,7 @@ module.exports = {
     'development/ts-migration-dashboard/build/**',
     'dist/**/*',
     'node_modules/**/*',
+    'storybook-build/**/*',
     'jest-coverage/**/*',
     'coverage/**/*',
   ],

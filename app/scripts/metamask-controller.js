@@ -342,6 +342,7 @@ export default class MetamaskController extends EventEmitter {
               ...networkState,
               providerConfig: {
                 ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
               },
             };
             return cb(modifiedNetworkState);
@@ -641,8 +642,9 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    let additionalKeyrings = [];
-    if (!isManifestV3) {
+    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
+
+    if (this.canUseHardwareWallets()) {
       const additionalKeyringTypes = [
         TrezorKeyring,
         LedgerBridgeKeyring,
@@ -660,6 +662,7 @@ export default class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
     });
+
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
@@ -972,8 +975,11 @@ export default class MetamaskController extends EventEmitter {
             getTokenValueParam(transactionData);
           const { allNfts } = this.nftController.state;
 
+          const chainIdAsDecimal = hexToDecimal(chainId);
           // check if its a known collectible
-          const knownCollectible = allNfts?.[userAddress]?.[chainId].find(
+          const knownCollectible = allNfts?.[userAddress]?.[
+            chainIdAsDecimal
+          ]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
@@ -984,7 +990,7 @@ export default class MetamaskController extends EventEmitter {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
               knownCollectible,
               false,
-              { userAddress, chainId },
+              { userAddress, chainId: chainIdAsDecimal },
             );
           }
         }
@@ -1326,6 +1332,10 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  canUseHardwareWallets() {
+    return !isManifestV3 || process.env.CONF?.HARDWARE_WALLETS_MV3;
+  }
+
   resetStates(resetMethods) {
     resetMethods.forEach((resetMethod) => {
       try {
@@ -1550,6 +1560,22 @@ export default class MetamaskController extends EventEmitter {
             new Error('Snap was terminated.'),
           );
         }
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapRemoved`,
+      (truncatedSnap) => {
+        const notificationIds = Object.values(
+          this.notificationController.state.notifications,
+        ).reduce((idList, notification) => {
+          if (notification.origin === truncatedSnap.id) {
+            idList.push(notification.id);
+          }
+          return idList;
+        }, []);
+
+        this.dismissNotifications(notificationIds);
       },
     );
 
@@ -1860,10 +1886,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowPortfolioTooltip.bind(appStateController),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
-      setCollectiblesDetectionNoticeDismissed:
-        appStateController.setCollectiblesDetectionNoticeDismissed.bind(
-          appStateController,
-        ),
       updateCollectibleDropDownState:
         appStateController.updateCollectibleDropDownState.bind(
           appStateController,
@@ -2588,6 +2610,12 @@ export default class MetamaskController extends EventEmitter {
 
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
+    if (
+      deviceName !== HardwareDeviceNames.QR &&
+      !this.canUseHardwareWallets()
+    ) {
+      throw new Error('Hardware wallets are not supported on this version.');
+    }
     switch (deviceName) {
       case HardwareDeviceNames.trezor:
         keyringName = TrezorKeyring.type;
@@ -4405,6 +4433,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} transportType - The Ledger transport type.
    */
   async setLedgerTransportPreference(transportType) {
+    if (!this.canUseHardwareWallets()) {
+      return undefined;
+    }
+
     const currentValue =
       this.preferencesController.getLedgerTransportPreference();
     const newValue =

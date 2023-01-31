@@ -3,15 +3,15 @@ import { transactionMatchesNetwork } from '../../../shared/modules/transaction.u
 import { valuesFor } from './util';
 
 export default function txHelper(
-  unapprovedTxs,
-  unapprovedMsgs,
-  personalMsgs,
-  decryptMsgs,
-  encryptionPublicKeyMsgs,
-  typedMessages,
-  network,
-  chainId,
-) {
+  unapprovedTxs: Record<string, any> | null,
+  unapprovedMsgs: Record<string, any> | null,
+  personalMsgs: Record<string, any> | null,
+  decryptMsgs: Record<string, any> | null,
+  encryptionPublicKeyMsgs: Record<string, any> | null,
+  typedMessages: Record<string, any> | null,
+  network: string,
+  chainId: string,
+): Record<string, any> {
   log.debug('tx-helper called with params:');
   log.debug({
     unapprovedTxs,
