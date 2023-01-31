@@ -3,7 +3,10 @@ import {
   CHAIN_IDS,
 } from '../../../shared/constants/network';
 
-export const formatMoonpaySymbol = (symbol, chainId = CHAIN_IDS.MAINNET) => {
+export const formatMoonpaySymbol = (
+  symbol: string | null,
+  chainId: keyof typeof BUYABLE_CHAINS_MAP,
+): string | null => {
   if (!symbol) {
     return symbol;
   }

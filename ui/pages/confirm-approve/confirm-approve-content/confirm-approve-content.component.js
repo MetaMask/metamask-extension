@@ -465,7 +465,6 @@ export default class ConfirmApproveContent extends Component {
 
     if (isSetApproveForAll && isApprovalOrRejection === false) {
       description = t('revokeApproveForAllDescription', [
-        grantee,
         this.getTitleTokenDescription(),
       ]);
     } else if (

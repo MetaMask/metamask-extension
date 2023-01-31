@@ -3058,7 +3058,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "Al revocar permisos, el/la siguiente $1 no tendrá más acceso a su $2",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Revocar un límite de gasto para su $1",

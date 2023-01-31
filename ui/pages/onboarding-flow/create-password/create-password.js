@@ -133,7 +133,7 @@ export default function CreatePassword({
   };
 
   const handleCreate = async (event) => {
-    event.preventDefault();
+    event?.preventDefault();
 
     if (!isValid) {
       return;
