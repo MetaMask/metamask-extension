@@ -7,12 +7,7 @@ import { requestRevealSeedWords, showModal } from '../../store/actions';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
-import {
-  TEXT,
-  COLORS,
-  SEVERITIES,
-  SIZES,
-} from '../../helpers/constants/design-system';
+import { TEXT, SEVERITIES, SIZES } from '../../helpers/constants/design-system';
 
 import Box from '../../components/ui/box';
 import {
@@ -22,7 +17,6 @@ import {
   Button,
   ButtonPrimary,
   ButtonSecondary,
-  ButtonLink,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
