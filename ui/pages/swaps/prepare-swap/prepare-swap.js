@@ -112,6 +112,7 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import Mascot from '../../../components/ui/mascot';
+import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
 
 const fuseSearchKeys = [
@@ -842,11 +843,17 @@ export default function PrepareSwap({
             >
               {`${t('swapFetchingQuotes')}... `}
             </Typography>
-            <Mascot
-              animationEventEmitter={animationEventEmitter.current}
-              width="42"
-              height="42"
-            />
+            <div className="mascot-background-animation__animation">
+              <MascotBackgroundAnimation />
+              <div className="mascot-background-animation__mascot-container">
+                <Mascot
+                  animationEventEmitter={animationEventEmitter.current}
+                  width="42"
+                  height="42"
+                  followMouse={false}
+                />
+              </div>
+            </div>
           </Box>
         )}
         {areQuotesPresent && (
