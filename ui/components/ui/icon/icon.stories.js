@@ -12,7 +12,6 @@ import Box from '../box';
 import README from './README.mdx';
 
 import Approve from './approve-icon.component';
-import CopyIcon from './copy-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
 import Interaction from './interaction-icon.component';
@@ -159,7 +158,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<InfoIconInverted {...args} />} />
         <IconItem Component={<SunCheck {...args} />} />
         <IconItem Component={<SunCheck {...args} reverseColors />} />
-        <IconItem Component={<CopyIcon {...args} />} />
         <IconItem Component={<Preloader {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
         <IconItem Component={<IconEyeSlash {...args} />} />
@@ -280,13 +278,6 @@ SunCheckStory.argTypes = {
   },
 };
 SunCheckStory.storyName = 'SunCheck';
-
-export const CopyIconStory = (args) => <CopyIcon {...args} />;
-CopyIconStory.args = {
-  size: 40,
-  color: 'var(--color-icon-default)',
-};
-CopyIconStory.storyName = 'CopyIcon';
 
 export const PreloaderStory = (args) => <Preloader {...args} />;
 PreloaderStory.args = {
