@@ -3058,7 +3058,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "Με την ανάκληση της άδειας, το ακόλουθο $1 δεν θα έχει πλέον πρόσβαση στο $2 σας",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Ανάκληση του ανώτατου ορίου δαπανών για το $1",

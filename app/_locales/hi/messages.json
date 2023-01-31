@@ -3058,7 +3058,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "अनुमति निरस्त करने से, निम्नलिखित $1 अब आपके $2 को एक्सेस नहीं कर सकेगा",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "अपने $1 के लिए खर्च की सीमा को हटा दें",
