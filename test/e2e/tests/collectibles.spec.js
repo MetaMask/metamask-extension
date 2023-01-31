@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  regularDelayMs,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -60,6 +64,7 @@ describe('Collectibles', function () {
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
+        await driver.delay(regularDelayMs);
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
@@ -127,6 +132,7 @@ describe('Collectibles', function () {
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
+        await driver.delay(regularDelayMs);
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
@@ -196,6 +202,7 @@ describe('Collectibles', function () {
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
+        await driver.delay(regularDelayMs);
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
@@ -268,6 +275,7 @@ describe('Collectibles', function () {
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
+        await driver.delay(regularDelayMs);
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
