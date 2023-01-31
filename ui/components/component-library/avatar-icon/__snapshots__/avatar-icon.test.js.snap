@@ -8,7 +8,7 @@ exports[`AvatarIcon should render correctly 1`] = `
   >
     <div
       class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
-      style="mask-image: url('./images/icons/icon-swap-horizontal-outline.svg');"
+      style="mask-image: url('./images/icons/swap-horizontal.svg');"
     />
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import {
-  GAS_RECOMMENDATIONS,
+  GasRecommendations,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
 import {
@@ -29,7 +29,7 @@ const renderUseMaxPriorityFeePerGasInputHook = (props) => {
   return renderHook(() =>
     useMaxPriorityFeePerGasInput({
       gasLimit: '21000',
-      estimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
+      estimateToUse: GasRecommendations.medium,
       transaction: {
         userFeeLevel: CUSTOM_GAS_ESTIMATE,
         txParams: { maxPriorityFeePerGas: '0x5028' },
@@ -63,9 +63,9 @@ describe('useMaxPriorityFeePerGasInput', () => {
 
   it('does not returns maxPriorityFeePerGas values from transaction if transaction.userFeeLevel is not custom', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
-      estimateToUse: GAS_RECOMMENDATIONS.HIGH,
+      estimateToUse: GasRecommendations.high,
       transaction: {
-        userFeeLevel: GAS_RECOMMENDATIONS.HIGH,
+        userFeeLevel: GasRecommendations.high,
         txParams: { maxPriorityFeePerGas: '0x5028' },
       },
     });

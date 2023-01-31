@@ -3,12 +3,17 @@ import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
 import Identicon from '../../../../components/ui/identicon';
-import Copy from '../../../../components/ui/icon/copy-icon.component';
 import Button from '../../../../components/ui/button/button.component';
+import {
+  ButtonIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../../components/component-library';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { COLORS } from '../../../../helpers/constants/design-system';
 
 function quadSplit(address) {
   return `0x${address
@@ -62,14 +67,16 @@ function ViewContact({
               position="bottom"
               title={copied ? t('copiedExclamation') : t('copyToClipboard')}
             >
-              <button
+              <ButtonIcon
+                ariaLabel="copy"
                 className="address-book__view-contact__group__static-address--copy-icon"
                 onClick={() => {
                   handleCopy(checkSummedAddress);
                 }}
-              >
-                <Copy size={20} color="var(--color-primary-default)" />
-              </button>
+                iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                size={ICON_SIZES.LG}
+                color={COLORS.PRIMARY_DEFAULT}
+              />
             </Tooltip>
           </div>
         </div>

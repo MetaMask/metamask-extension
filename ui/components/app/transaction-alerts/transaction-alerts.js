@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import { PRIORITY_LEVELS } from '../../../../shared/constants/gas';
-import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
+import { PriorityLevels } from '../../../../shared/constants/gas';
+import { submittedPendingTransactionsSelector } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
@@ -73,7 +73,7 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
-      {estimateUsed === PRIORITY_LEVELS.LOW && (
+      {estimateUsed === PriorityLevels.low && (
         <ActionableMessage
           dataTestId="low-gas-fee-alert"
           message={

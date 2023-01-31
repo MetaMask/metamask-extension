@@ -229,11 +229,7 @@ return (
         <ButtonPrimary type="submit">Submit</ButtonPrimary>
       </Box>
     </Box>
-    <ButtonSecondary
-      iconName={ICON_NAMES.CLOSE_OUTLINE}
-      onClick={handleClearForm}
-      danger
-    >
+    <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
       Clear form
     </ButtonSecondary>
     {submitted === FORM_STATE.SUCCESS && (
@@ -294,18 +290,18 @@ import {
       Custom spending cap
     </Label>
     <Icon
-      name={ICON_NAMES.INFO_FILLED}
+      name={ICON_NAMES.INFO}
       size={SIZES.SM}
       marginLeft={1}
       color={COLORS.ICON_ALTERNATIVE}
     />
   </Box>
-  <ButtonLink size={SIZES.AUTO}>Use default</ButtonLink>
+  <ButtonLink>Use default</ButtonLink>
 </Box>
 <FormTextField
   id="custom-spending-cap"
   placeholder="Enter a number"
-  rightAccessory={<ButtonLink size={SIZES.AUTO}>Max</ButtonLink>}
+  rightAccessory={<ButtonLink>Max</ButtonLink>}
   marginBottom={4}
   type={TEXT_FIELD_TYPES.NUMBER}
 />
@@ -318,6 +314,7 @@ import {
   display={DISPLAY.FLEX}
   alignItems={ALIGN_ITEMS.FLEX_START}
   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+  marginTop={1}
 >
   {/**
     * If you need a custom help text
@@ -325,11 +322,11 @@ import {
     * import the HelpText component separately and handle the error
     * logic yourself
     */}
-  <HelpText htmlFor="chainId" required paddingRight={2} marginTop={1}>
+  <HelpText htmlFor="chainId" required marginRight={2}>
     Only enter a number that you're comfortable with the contract accessing
     now or in the future. You can always increase the token limit later.
   </HelpText>
-  <ButtonLink size={SIZES.AUTO} marginLeft="auto" marginTop={1}>
+  <ButtonLink marginLeft="auto">
     Max
   </ButtonLink>
 </Box>

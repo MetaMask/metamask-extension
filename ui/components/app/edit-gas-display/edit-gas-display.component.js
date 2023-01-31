@@ -2,7 +2,7 @@ import React, { useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import BigNumber from 'bignumber.js';
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -23,7 +23,7 @@ import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { I18nContext } from '../../../contexts/i18n';
 
 export default function EditGasDisplay({
-  mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
+  mode = EditGasModes.modifyInPlace,
   estimatedMinimumNative,
   transaction,
   gasPrice,
@@ -95,7 +95,7 @@ export default function EditGasDisplay({
             />
           </div>
         )}
-        {mode === EDIT_GAS_MODES.SPEED_UP && (
+        {mode === EditGasModes.speedUp && (
           <div className="edit-gas-display__top-tooltip">
             <Typography
               color={COLORS.TEXT_DEFAULT}
@@ -143,7 +143,7 @@ export default function EditGasDisplay({
 }
 
 EditGasDisplay.propTypes = {
-  mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
+  mode: PropTypes.oneOf(Object.values(EditGasModes)),
   estimatedMinimumNative: PropTypes.string,
   gasPrice: PropTypes.string,
   setGasPrice: PropTypes.func,

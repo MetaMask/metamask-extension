@@ -2,14 +2,16 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  getCurrentChainId,
-  getUnapprovedTransactions,
+  unconfirmedTransactionsHashSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
 } from '../../../../selectors';
-import { transactionMatchesNetwork } from '../../../../../shared/modules/transaction.utils';
 import { I18nContext } from '../../../../contexts/i18n';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  SIGNATURE_REQUEST_PATH,
+} from '../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);
@@ -17,17 +19,26 @@ const ConfirmPageContainerNavigation = () => {
   const history = useHistory();
   const { id } = useParams();
 
-  const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const currentChainId = useSelector(getCurrentChainId);
-  const network = hexToDecimal(currentChainId);
+  const unapprovedDecryptMsgs = useSelector(unapprovedDecryptMsgsSelector);
+  const unapprovedEncryptionPublicKeyMsgs = useSelector(
+    unapprovedEncryptionPublicKeyMsgsSelector,
+  );
+  const uncofirmedTransactions = useSelector(
+    unconfirmedTransactionsHashSelector,
+  );
 
-  const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], currentChainId, network),
-    )
-    .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
+  const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs);
+  const enumUnapprovedEncryptMsgsKey = Object.keys(
+    unapprovedEncryptionPublicKeyMsgs,
+  );
+  const enumDecryptAndEncryptMsgs = [
+    ...enumUnapprovedDecryptMsgsKey,
+    ...enumUnapprovedEncryptMsgsKey,
+  ];
 
-  const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs);
+  const enumUnapprovedTxs = Object.keys(uncofirmedTransactions).filter(
+    (key) => enumDecryptAndEncryptMsgs.includes(key) === false,
+  );
 
   const currentPosition = enumUnapprovedTxs.indexOf(id);
 
@@ -42,7 +53,11 @@ const ConfirmPageContainerNavigation = () => {
   const onNextTx = (txId) => {
     if (txId) {
       dispatch(clearConfirmTransaction());
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`);
+      history.push(
+        uncofirmedTransactions[txId]?.msgParams
+          ? `${CONFIRM_TRANSACTION_ROUTE}/${txId}${SIGNATURE_REQUEST_PATH}`
+          : `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
+      );
     }
   };
 

@@ -50,6 +50,10 @@ async function main() {
             description: `run mv3 specific e2e tests`,
             type: 'boolean',
           })
+          .option('nft', {
+            description: `run nft specific e2e tests`,
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -59,12 +63,15 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3 } = argv;
+  const { browser, debug, retries, snaps, mv3, nft } = argv;
 
   let testPaths;
 
   if (snaps) {
     const testDir = path.join(__dirname, 'snaps');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (nft) {
+    const testDir = path.join(__dirname, 'nft');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');

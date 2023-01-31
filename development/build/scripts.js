@@ -38,6 +38,7 @@ const {
   isTestBuild,
   getEnvironment,
   logError,
+  wrapAgainstScuttling,
 } = require('./utils');
 
 const {
@@ -49,6 +50,42 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
+
+// map dist files to bag of needed native APIs against LM scuttling
+const scuttlingConfig = {
+  'sentry-install.js': {
+    // globals sentry need to function
+    window: '',
+    navigator: '',
+    location: '',
+    Uint16Array: '',
+    fetch: '',
+    String: '',
+    Math: '',
+    Object: '',
+    Symbol: '',
+    Function: '',
+    Array: '',
+    Boolean: '',
+    Number: '',
+    Request: '',
+    Date: '',
+    document: '',
+    JSON: '',
+    encodeURIComponent: '',
+    crypto: '',
+    // {clear/set}Timeout are "this sensitive"
+    clearTimeout: 'window',
+    setTimeout: 'window',
+    // sentry special props
+    __SENTRY__: '',
+    sentryHooks: '',
+    sentry: '',
+    appState: '',
+    extra: '',
+    stateHooks: '',
+  },
+};
 
 /**
  * Get the appropriate Infura project ID.
@@ -320,6 +357,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
+      applyLavaMoat,
     });
   }
 
@@ -343,6 +381,7 @@ function createScriptTasks({
       policyOnly,
       shouldLintFenceFiles,
       version,
+      applyLavaMoat,
     });
   }
 
@@ -370,6 +409,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         version,
+        applyLavaMoat,
       }),
       createNormalBundle({
         buildTarget,
@@ -382,6 +422,7 @@ function createScriptTasks({
         policyOnly,
         shouldLintFenceFiles,
         version,
+        applyLavaMoat,
       }),
     );
   }
@@ -456,6 +497,7 @@ async function createManifestV3AppInitializationBundle({
     policyOnly,
     shouldLintFenceFiles,
     version,
+    applyLavaMoat,
   })();
 
   // Code below is used to set statsMode to true when testing in MV3
@@ -721,6 +763,7 @@ function createFactoredBuild({
  * @param {boolean} options.shouldLintFenceFiles - Whether files with code
  * fences should be linted after fences have been removed.
  * @param {string} options.version - The current version of the extension.
+ * @param {boolean} options.applyLavaMoat - Whether to apply LavaMoat or not
  * @returns {Function} A function that creates the bundle.
  */
 function createNormalBundle({
@@ -735,6 +778,7 @@ function createNormalBundle({
   policyOnly,
   shouldLintFenceFiles,
   version,
+  applyLavaMoat,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -763,6 +807,7 @@ function createNormalBundle({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      applyLavaMoat,
     });
 
     // set bundle entries
@@ -812,6 +857,7 @@ function setupBundlerDefaults(
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
+    applyLavaMoat,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
@@ -878,6 +924,9 @@ function setupBundlerDefaults(
 
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
+
+    // Setup wrapping of code against scuttling (before sourcemaps generation)
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
   }
 }
 
@@ -931,6 +980,27 @@ function setupMinification(buildConfiguration) {
   });
 }
 
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
+  const { events } = buildConfiguration;
+  events.on('configurePipeline', ({ pipeline }) => {
+    pipeline.get('scuttle').push(
+      through.obj(
+        callbackify(async (file, _enc) => {
+          const configForFile = scuttlingConfig[file.relative];
+          if (applyLavaMoat && configForFile) {
+            const wrapped = wrapAgainstScuttling(
+              file.contents.toString(),
+              configForFile,
+            );
+            file.contents = Buffer.from(wrapped, 'utf8');
+          }
+          return file;
+        }),
+      ),
+    );
+  });
+}
+
 function setupSourcemaps(buildConfiguration, { buildTarget }) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
@@ -975,6 +1045,8 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
       'groups',
       [],
       'vinyl',
+      [],
+      'scuttle',
       [],
       'sourcemaps:init',
       [],

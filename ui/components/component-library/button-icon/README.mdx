@@ -29,7 +29,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 import { ButtonIcon } from '../ui/component-library';
 import { ICON_NAMES } from '../icon';
 
-<ButtonIcon iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close" />;
+<ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel="Close" />;
 ```
 
 ### Size
@@ -52,8 +52,8 @@ Possible sizes include:
 import { SIZES } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon size={SIZES.SM} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
-<ButtonIcon size={SIZES.LG} iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon size={SIZES.SM} iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
+<ButtonIcon size={SIZES.LG} iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
 ```
 
 ### Aria Label
@@ -68,7 +68,7 @@ Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibil
 import { ButtonIcon } from '../ui/component-library';
 
 
-<ButtonIcon as="button" iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon as="button" iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
 <ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
 ```
 
@@ -89,7 +89,7 @@ Button `as` options:
 import { ButtonIcon } from '../ui/component-library';
 
 
-<ButtonIcon as="button" iconName={ICON_NAMES.CLOSE_OUTLINE} ariaLabel="Close"/>
+<ButtonIcon as="button" iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
 <ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={ICON_NAMES.EXPORT} color={COLORS.PRIMARY_DEFAULT} ariaLabel="Visit MetaMask.io"/>
 ```
 
@@ -142,5 +142,5 @@ Use the boolean `disabled` prop to disable button
 ```jsx
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon iconName={ICON_NAMES.CLOSE_OUTLINE} disabled ariaLabel="Close" />;
+<ButtonIcon iconName={ICON_NAMES.CLOSE} disabled ariaLabel="Close" />;
 ```

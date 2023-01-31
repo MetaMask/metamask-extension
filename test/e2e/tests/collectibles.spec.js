@@ -131,7 +131,7 @@ describe('Collectibles', function () {
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve Token spend limit');
+        assert.equal(completedTxText, 'Approve token spending cap');
       },
     );
   });
@@ -252,7 +252,7 @@ describe('Collectibles', function () {
         );
         assert.equal(
           await title.getText(),
-          'Revoke permission to access all of your TestDappCollectibles?',
+          'Revoke permission to access and transfer all of your TestDappCollectibles?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: false');
