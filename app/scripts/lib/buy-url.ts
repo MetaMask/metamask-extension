@@ -164,13 +164,6 @@ const createCoinbasePayUrl = (
   return `https://pay.coinbase.com/buy?${queryParams}`;
 };
 
-const SERVICES_THAT_REQUIRE_ADDRESS_AND_CHAIN_ID = [
-  'wyre',
-  'coinbase',
-  'moonpay',
-  'transak',
-];
-
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
@@ -188,39 +181,41 @@ export default async function getBuyUrl({
   service,
   symbol,
 }: {
-  chainId?: keyof typeof BUYABLE_CHAINS_MAP;
+  chainId: keyof typeof BUYABLE_CHAINS_MAP;
   address?: string;
   service?: string;
   symbol?: CurrencySymbol;
 }): Promise<string> {
+  let serviceToUse = service;
   // default service by network if not specified
-  if (!service && chainId) {
+  if (isNullOrUndefined(service)) {
     // eslint-disable-next-line no-param-reassign
-    service = getDefaultServiceForChain(chainId);
-  } else {
-    throw new Error(
-      'chainId is required for getBuyUrl if service is not supplied',
-    );
+    serviceToUse = getDefaultServiceForChain(chainId);
   }
 
-  if (
-    SERVICES_THAT_REQUIRE_ADDRESS_AND_CHAIN_ID.includes(service) &&
-    (isNullOrUndefined(chainId) || isNullOrUndefined(address))
-  ) {
-    throw new Error(
-      `The address and chainId props are required for getBuyUrl for ${service}`,
-    );
-  }
-
-  switch (service) {
+  switch (serviceToUse) {
     case 'wyre':
-      return await createWyrePurchaseUrl(address as string, chainId, symbol);
+      if (address) {
+        return await createWyrePurchaseUrl(address as string, chainId, symbol);
+      }
+      throw new Error('Address is required when requesting url for Wyre');
     case 'transak':
-      return createTransakUrl(address as string, chainId, symbol);
+      if (address) {
+        return createTransakUrl(address as string, chainId, symbol);
+      }
+      throw new Error('Address is required when requesting url for Transak');
     case 'moonpay':
-      return createMoonPayUrl(address as string, chainId, symbol);
+      if (address) {
+        return createMoonPayUrl(address as string, chainId, symbol);
+      }
+      throw new Error('Address is required when requesting url for Moonpay');
     case 'coinbase':
-      return createCoinbasePayUrl(address as string, chainId, symbol);
+      if (address) {
+        return createCoinbasePayUrl(address as string, chainId, symbol);
+      }
+      throw new Error(
+        'Address is required when requesting url for Coinbase Pay',
+      );
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'goerli-faucet':
