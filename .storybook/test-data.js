@@ -240,23 +240,6 @@ const state = {
       },
     },
     gasFeeEstimates: '0x5208',
-    swapsState: {
-      quotes: {},
-      fetchParams: null,
-      tokens: null,
-      tradeTxId: null,
-      approveTxId: null,
-      quotesLastFetched: null,
-      customMaxGas: '',
-      customGasPrice: null,
-      selectedAggId: null,
-      customApproveTxData: '',
-      errorKey: '',
-      topAggId: null,
-      routeState: '',
-      swapsFeatureIsLive: false,
-      swapsQuoteRefreshTime: 60000,
-    },
     snapStates: {},
     snaps: {
       'local:http://localhost:8080/': {
