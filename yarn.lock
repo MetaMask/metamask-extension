@@ -15522,7 +15522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-lattice-keyring@npm:^0.12.3":
+"eth-lattice-keyring@npm:0.12.3":
   version: 0.12.3
   resolution: "eth-lattice-keyring@npm:0.12.3"
   dependencies:
@@ -15533,6 +15533,20 @@ __metadata:
     gridplus-sdk: ^2.2.9
     rlp: ^3.0.0
   checksum: a477240eea9927c85cc5d485b9f640a00a172f395b00591843120fb0f4bc7d62221d0dc27f237c7e0c2c741e8198d3f49428dbc2be5b4afcf112e1038192e733
+  languageName: node
+  linkType: hard
+
+"eth-lattice-keyring@patch:eth-lattice-keyring@npm%3A0.12.3#./.yarn/patches/eth-lattice-keyring-npm-0.12.3-ece435ad56.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.12.3
+  resolution: "eth-lattice-keyring@patch:eth-lattice-keyring@npm%3A0.12.3#./.yarn/patches/eth-lattice-keyring-npm-0.12.3-ece435ad56.patch::version=0.12.3&hash=a75b84&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ethereumjs/tx": 3.3.0
+    "@ethereumjs/util": ^8.0.0
+    "@noble/secp256k1": ^1.7.0
+    bn.js: ^5.2.0
+    gridplus-sdk: ^2.2.9
+    rlp: ^3.0.0
+  checksum: be4a5363c13d4254abcc5e2eee0d582eb1d8a01b68f225ba19e273862a89dd4fe7ffd6d25fa54e9a2cef677bdf42d5e14adc8361ddca790b86e9bee0a0c0e454
   languageName: node
   linkType: hard
 
