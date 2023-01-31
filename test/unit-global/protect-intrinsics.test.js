@@ -1,4 +1,4 @@
-import 'ses/dist/lockdown';
+import 'ses';
 import '../../app/scripts/lockdown-run';
 import '../../app/scripts/lockdown-more';
 import {
