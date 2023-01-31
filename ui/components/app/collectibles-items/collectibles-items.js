@@ -92,7 +92,7 @@ export default function CollectiblesItems({
       return (
         <img
           alt={collectionName}
-          src={collectionImage}
+          src={getAssetImageURL(collectionImage, ipfsGateway)}
           className="collectibles-items__collection-image"
         />
       );

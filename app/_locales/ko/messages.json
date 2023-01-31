@@ -3058,7 +3058,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "권한을 철회하면 다음 $1(이)가 더 이상 $2에 액세스할 수 없습니다.",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "$1에 대한 지출 한도 취소",

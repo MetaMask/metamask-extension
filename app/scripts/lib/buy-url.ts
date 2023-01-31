@@ -4,6 +4,9 @@ import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import {
   BUYABLE_CHAINS_MAP,
   CHAIN_IDS,
+  WyreChainSettings,
+  CurrencySymbol,
+  ChainId,
 } from '../../../shared/constants/network';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import {
@@ -18,13 +21,17 @@ const fetchWithTimeout = getFetchWithTimeout();
 /**
  * Create a Wyre purchase URL.
  *
- * @param {string} walletAddress - Ethereum destination address
- * @param {string} chainId - Current chain ID
- * @param {string|undefined} symbol - Token symbol to buy
+ * @param walletAddress - Ethereum destination address
+ * @param chainId - Current chain ID
+ * @param symbol - Token symbol to buy
  * @returns String
  */
-const createWyrePurchaseUrl = async (walletAddress, chainId, symbol) => {
-  const { wyre = {} } = BUYABLE_CHAINS_MAP[chainId];
+const createWyrePurchaseUrl = async (
+  walletAddress: string,
+  chainId: keyof typeof BUYABLE_CHAINS_MAP,
+  symbol: CurrencySymbol,
+): Promise<any> => {
+  const { wyre = {} as WyreChainSettings } = BUYABLE_CHAINS_MAP[chainId];
   const { srn, currencyCode } = wyre;
 
   const networkId = parseInt(chainId, 16);
@@ -57,12 +64,16 @@ const createWyrePurchaseUrl = async (walletAddress, chainId, symbol) => {
  * Create a Transak Checkout URL.
  * API docs here: https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238
  *
- * @param {string} walletAddress - Ethereum destination address
- * @param {string} chainId - Current chain ID
- * @param {string|undefined} symbol - Token symbol to buy
+ * @param walletAddress - Ethereum destination address
+ * @param chainId - Current chain ID
+ * @param symbol - Token symbol to buy
  * @returns String
  */
-const createTransakUrl = (walletAddress, chainId, symbol) => {
+const createTransakUrl = (
+  walletAddress: string,
+  chainId: keyof typeof BUYABLE_CHAINS_MAP,
+  symbol: CurrencySymbol,
+): string => {
   const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
 
   const queryParams = new URLSearchParams({
@@ -79,13 +90,17 @@ const createTransakUrl = (walletAddress, chainId, symbol) => {
 /**
  * Create a MoonPay Checkout URL.
  *
- * @param {string} walletAddress - Destination address
- * @param {string} chainId - Current chain ID
- * @param {string|undefined} symbol - Token symbol to buy
+ * @param walletAddress - Destination address
+ * @param chainId - Current chain ID
+ * @param symbol - Token symbol to buy
  * @returns String
  */
-const createMoonPayUrl = async (walletAddress, chainId, symbol) => {
-  const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} } =
+const createMoonPayUrl = async (
+  walletAddress: string,
+  chainId: keyof typeof BUYABLE_CHAINS_MAP,
+  symbol: CurrencySymbol,
+): Promise<string> => {
+  const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} as any } =
     BUYABLE_CHAINS_MAP[chainId];
   const moonPayQueryParams = new URLSearchParams({
     apiKey: MOONPAY_API_KEY,
@@ -121,12 +136,16 @@ const createMoonPayUrl = async (walletAddress, chainId, symbol) => {
 /**
  * Create a Coinbase Pay Checkout URL.
  *
- * @param {string} walletAddress - Ethereum destination address
- * @param {string} chainId - Current chain ID
- * @param {string|undefined} symbol - Token symbol to buy
+ * @param walletAddress - Ethereum destination address
+ * @param chainId - Current chain ID
+ * @param symbol - Token symbol to buy
  * @returns String
  */
-const createCoinbasePayUrl = (walletAddress, chainId, symbol) => {
+const createCoinbasePayUrl = (
+  walletAddress: string,
+  chainId: keyof typeof BUYABLE_CHAINS_MAP,
+  symbol: CurrencySymbol,
+): string => {
   // since coinbasePayCurrencies is going to be extended to include all tokens supported
   // we now default to nativeCurrency instead of the 2 previous tokens + eth that we had before
   const { nativeCurrency } = BUYABLE_CHAINS_MAP[chainId];
@@ -146,15 +165,25 @@ const createCoinbasePayUrl = (walletAddress, chainId, symbol) => {
 /**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
- * @param {object} opts - Options required to determine the correct url
- * @param {string} opts.chainId - The chainId for which to return a url
- * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
+ * @param opts - Options required to determine the correct url
+ * @param opts.chainId - The chainId for which to return a url
+ * @param opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
  * @param opts.service
- * @param {string|undefined} opts.symbol - The symbol of the token to buy. Only relevant if buying a token.
- * @returns {string|undefined} The url at which the user can access ETH, while in the given chain. If the passed
+ * @param opts.symbol - The symbol of the token to buy. Only relevant if buying a token.
+ * @returns The url at which the user can access ETH, while in the given chain. If the passed
  * chainId does not match any of the specified cases, or if no chainId is given, returns undefined.
  */
-export default async function getBuyUrl({ chainId, address, service, symbol }) {
+export default async function getBuyUrl({
+  chainId,
+  address,
+  service,
+  symbol,
+}: {
+  chainId: keyof typeof BUYABLE_CHAINS_MAP;
+  address: string;
+  service: string;
+  symbol: CurrencySymbol;
+}): Promise<string> {
   // default service by network if not specified
   if (!service) {
     // eslint-disable-next-line no-param-reassign
@@ -183,7 +212,7 @@ export default async function getBuyUrl({ chainId, address, service, symbol }) {
   }
 }
 
-function getDefaultServiceForChain(chainId) {
+function getDefaultServiceForChain(chainId: ChainId): string {
   switch (chainId) {
     case CHAIN_IDS.MAINNET:
       return 'wyre';
