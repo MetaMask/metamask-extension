@@ -58,7 +58,7 @@ ButtonLink.propTypes = {
    */
   size: PropTypes.oneOf(Object.values(BUTTON_LINK_SIZES)),
   /**
-   * textProps accepts all the props from Icon
+   * textProps accepts all the props from Text component
    */
   textProps: PropTypes.shape(Text.PropTypes),
   /**
