@@ -3221,18 +3221,6 @@ export function setOutdatedBrowserWarningLastShown(lastShown) {
   };
 }
 
-export function loadingMethodDataStarted() {
-  return {
-    type: actionConstants.LOADING_METHOD_DATA_STARTED,
-  };
-}
-
-export function loadingMethodDataFinished() {
-  return {
-    type: actionConstants.LOADING_METHOD_DATA_FINISHED,
-  };
-}
-
 export function getContractMethodData(data = '') {
   return async (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
@@ -3249,12 +3237,10 @@ export function getContractMethodData(data = '') {
       return knownMethodData[fourBytePrefix];
     }
 
-    dispatch(loadingMethodDataStarted());
     log.debug(`loadingMethodData`);
 
     const { name, params } = await getMethodDataAsync(fourBytePrefix);
 
-    dispatch(loadingMethodDataFinished());
     callBackgroundMethod(
       'addKnownMethodData',
       [fourBytePrefix, { name, params }],

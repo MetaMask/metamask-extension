@@ -986,12 +986,12 @@ describe('Actions', () => {
     });
   });
 
-  describe('#showAccountDetail', () => {
+  describe('#setSelectedAccount', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('#showAccountDetail', async () => {
+    it('#setSelectedAccount', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
@@ -1005,7 +1005,7 @@ describe('Actions', () => {
 
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.showAccountDetail());
+      await store.dispatch(actions.setSelectedAccount());
       expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
     });
 
@@ -1031,7 +1031,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.showAccountDetail());
+      await store.dispatch(actions.setSelectedAccount());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1520,7 +1520,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'SET_USE_BLOCKIE', value: undefined },
       ];
 
       await store.dispatch(actions.setUseBlockie());
