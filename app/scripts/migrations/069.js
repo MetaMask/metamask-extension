@@ -1,5 +1,5 @@
+import { SubjectType } from '@metamask/subject-metadata-controller';
 import { cloneDeep } from 'lodash';
-import { SUBJECT_TYPES } from '../../../shared/constants/app';
 
 const version = 69;
 
@@ -32,8 +32,8 @@ function transformState(state) {
         !Array.isArray(metadata)
       ) {
         metadata.subjectType = metadata.extensionId
-          ? SUBJECT_TYPES.EXTENSION
-          : SUBJECT_TYPES.WEBSITE;
+          ? SubjectType.Extension
+          : SubjectType.Website;
       }
     });
   }

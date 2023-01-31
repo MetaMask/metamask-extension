@@ -68,7 +68,7 @@ import { BannerBase, ICON_NAMES } from '../../component-library';
   title="Action prop demo"
   actionButtonLabel="Action"
   actionButtonProps={{
-    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
+    iconName: ICON_NAMES.ARROW_2_RIGHT,
     iconPositionRight: true,
   }}
   actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
@@ -114,7 +114,7 @@ import { BannerBase, Icon, ICON_NAMES } from '../../component-library';
 
 <BannerBase
   title="Start accessory demo"
-  startAccessory={<Icon name={ICON_NAMES.INFO_FILLED} size={SIZES.LG} />}
+  startAccessory={<Icon name={ICON_NAMES.INFO} size={SIZES.LG} />}
 >
   The info icon on the left is passed through the startAccessory prop
 </BannerBase>;

@@ -12,7 +12,8 @@ import EthQuery from 'eth-query';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import pify from 'pify';
-import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import {
   CHAIN_IDS,
@@ -82,8 +83,6 @@ export default class AccountTracker {
     this.preferencesController = opts.preferencesController;
     this.onboardingController = opts.onboardingController;
 
-    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
-
     this.onboardingController.store.subscribe(
       previousValueComparator(async (prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
@@ -109,6 +108,7 @@ export default class AccountTracker {
         }
       }, this.onboardingController.store.getState()),
     );
+    this.ethersProvider = new Web3Provider(this._provider);
   }
 
   start() {
@@ -391,9 +391,9 @@ export default class AccountTracker {
         newAccounts[address] = { address, balance: null };
       }
     });
-    this.ethersProvider = new ethers.providers.Web3Provider(this._provider);
+    this.ethersProvider = new Web3Provider(this._provider);
 
-    const ethContract = await new ethers.Contract(
+    const ethContract = await new Contract(
       deployedContractAddress,
       SINGLE_CALL_BALANCES_ABI,
       this.ethersProvider,

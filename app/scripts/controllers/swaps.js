@@ -1,4 +1,5 @@
-import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
@@ -15,7 +16,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
@@ -134,12 +135,12 @@ export default class SwapsController {
 
     this.indexOfNewestCallInFlight = 0;
 
-    this.ethersProvider = new ethers.providers.Web3Provider(provider);
+    this.ethersProvider = new Web3Provider(provider);
     this._currentNetwork = networkController.store.getState().network;
     networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, (network) => {
       if (network !== 'loading' && network !== this._currentNetwork) {
         this._currentNetwork = network;
-        this.ethersProvider = new ethers.providers.Web3Provider(provider);
+        this.ethersProvider = new Web3Provider(provider);
       }
     });
   }
@@ -681,7 +682,7 @@ export default class SwapsController {
 
     let usedGasPrice = '0x0';
 
-    if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+    if (gasEstimateType === GasEstimateTypes.feeMarket) {
       const {
         high: { suggestedMaxPriorityFeePerGas },
         estimatedBaseFee,
@@ -703,9 +704,9 @@ export default class SwapsController {
         .add(estimatedBaseFeeNumeric)
         .round(6)
         .toString();
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+    } else if (gasEstimateType === GasEstimateTypes.legacy) {
       usedGasPrice = customGasPrice || decGWEIToHexWEI(gasFeeEstimates.high);
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+    } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
       usedGasPrice =
         customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
     }
@@ -891,11 +892,7 @@ export default class SwapsController {
   }
 
   async _getERC20Allowance(contractAddress, walletAddress, chainId) {
-    const contract = new ethers.Contract(
-      contractAddress,
-      abi,
-      this.ethersProvider,
-    );
+    const contract = new Contract(contractAddress, abi, this.ethersProvider);
     return await contract.allowance(
       walletAddress,
       SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],

@@ -4,8 +4,8 @@ import { renderHook } from '@testing-library/react-hooks';
 
 import {
   CUSTOM_GAS_ESTIMATE,
-  EDIT_GAS_MODES,
-  GAS_RECOMMENDATIONS,
+  EditGasModes,
+  GasRecommendations,
 } from '../../../shared/constants/gas';
 import mockState from '../../../test/data/mock-state.json';
 import * as Actions from '../../store/actions';
@@ -31,8 +31,8 @@ const renderUseTransactionFunctions = (props) => {
   return renderHook(
     () =>
       useTransactionFunctions({
-        defaultEstimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
-        editGasMode: EDIT_GAS_MODES.MODIFY_IN_PLACE,
+        defaultEstimateToUse: GasRecommendations.medium,
+        editGasMode: EditGasModes.modifyInPlace,
         estimatedBaseFee: '0x59682f10',
         gasFeeEstimates: FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates,
         gasLimit: '21000',
@@ -96,9 +96,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
       .mockImplementation(() => ({ type: '' }));
 
     const { result } = renderUseTransactionFunctions();
-    await result.current.updateTransactionUsingEstimate(
-      GAS_RECOMMENDATIONS.LOW,
-    );
+    await result.current.updateTransactionUsingEstimate(GasRecommendations.low);
     expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
     expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
       estimateSuggested: 'medium',

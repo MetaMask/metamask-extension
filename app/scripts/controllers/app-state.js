@@ -33,7 +33,6 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
-      collectiblesDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showPortfolioTooltip: true,
       showBetaHeader: isBeta(),
@@ -301,19 +300,6 @@ export default class AppStateController extends EventEmitter {
    */
   setTrezorModel(trezorModel) {
     this.store.updateState({ trezorModel });
-  }
-
-  /**
-   * A setter for the `collectiblesDetectionNoticeDismissed` property
-   *
-   * @param collectiblesDetectionNoticeDismissed
-   */
-  setCollectiblesDetectionNoticeDismissed(
-    collectiblesDetectionNoticeDismissed,
-  ) {
-    this.store.updateState({
-      collectiblesDetectionNoticeDismissed,
-    });
   }
 
   /**

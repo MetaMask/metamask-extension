@@ -74,6 +74,12 @@ describe('SignatureRequestOriginal', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should render navigation', () => {
+    render();
+    const navigationContainer = screen.queryByTestId('navigation-container');
+    expect(navigationContainer).toBeInTheDocument();
+  });
+
   it('should render eth sign screen', () => {
     render();
     expect(screen.getByText('Signature request')).toBeInTheDocument();

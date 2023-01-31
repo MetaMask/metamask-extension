@@ -5,6 +5,7 @@ builds/**
 test-*/**
 coverage/
 jest-coverage/
+storybook-build/
 app/vendor/**
 .nyc_output/**
 .vscode/**
