@@ -38,7 +38,7 @@ const TextArea = ({
       borderColor={COLORS.BORDER_DEFAULT}
       borderRadius={SIZES.SM}
       borderStyle={BORDER_STYLE.SOLID}
-      padding={[4, 4]}
+      padding={4}
       width={BLOCK_SIZES.FULL}
       {...boxProps}
     >

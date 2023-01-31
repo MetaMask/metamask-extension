@@ -2,13 +2,13 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 
 /**
- * @typedef {Object} InitState
+ * @typedef {object} InitState
  * @property {boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
  * @property {boolean} completedOnboarding Indicates whether the user has completed the onboarding flow
  */
 
 /**
- * @typedef {Object} OnboardingOptions
+ * @typedef {object} OnboardingOptions
  * @property {InitState} initState The initial controller state
  */
 
@@ -46,11 +46,11 @@ export default class OnboardingController {
   //  * Sets the completedOnboarding state to true, indicating that the user has completed the
   //  * onboarding process.
   //  */
-  completeOnboarding() {
+  async completeOnboarding() {
     this.store.updateState({
       completedOnboarding: true,
     });
-    return Promise.resolve(true);
+    return true;
   }
 
   /**

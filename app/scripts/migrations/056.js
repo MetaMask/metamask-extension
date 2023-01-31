@@ -30,11 +30,10 @@ export default {
           PreferencesController.accountTokens[account],
         );
         chains.forEach((chain) => {
-          PreferencesController.accountTokens[account][
-            chain
-          ] = PreferencesController.accountTokens[account][chain].filter(
-            ({ address }) => address,
-          );
+          PreferencesController.accountTokens[account][chain] =
+            PreferencesController.accountTokens[account][chain].filter(
+              ({ address }) => address,
+            );
         });
       });
     }

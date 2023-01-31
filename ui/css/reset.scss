@@ -1,6 +1,8 @@
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
+
+   ⚠️ This file has been updated from the original copy. ⚠️
 */
 
 html,
@@ -42,7 +44,6 @@ sub,
 sup,
 tt,
 var,
-b,
 u,
 i,
 center,
@@ -89,6 +90,18 @@ video {
   border: 0;
   font-size: 100%;
   font-weight: inherit;
+  font-style: inherit;
+  font-variant: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: baseline;
+}
+
+b {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
   font-style: inherit;
   font-variant: inherit;
   font-size: inherit;

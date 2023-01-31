@@ -1,18 +1,21 @@
 import { isHexString } from 'ethereumjs-util';
-import { ethers } from 'ethers';
+import { Interface } from '@ethersproject/abi';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
-import { TOKEN_STANDARDS } from '../../ui/helpers/constants/common';
-import { ASSET_TYPES, TRANSACTION_TYPES } from '../constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+  TransactionType,
+} from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
 /**
- * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
+ * @typedef { 'transfer' | 'approve' | 'setapprovalforall' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
  */
 
 /**
- * @typedef {Object} InferTransactionTypeResult
+ * @typedef {object} InferTransactionTypeResult
  * @property {InferrableTransactionTypes} type - The type of transaction
  * @property {string} getCodeResponse - The contract code, in hex format if
  *  it exists. '0x0' or '0x' are also indicators of non-existent contract
@@ -32,9 +35,9 @@ import { isEqualCaseInsensitive } from './string-utils';
  * representation of the function.
  */
 
-const erc20Interface = new ethers.utils.Interface(abiERC20);
-const erc721Interface = new ethers.utils.Interface(abiERC721);
-const erc1155Interface = new ethers.utils.Interface(abiERC1155);
+const erc20Interface = new Interface(abiERC20);
+const erc721Interface = new Interface(abiERC721);
+const erc1155Interface = new Interface(abiERC1155);
 
 export function transactionMatchesNetwork(transaction, chainId, networkId) {
   if (typeof transaction.chainId !== 'undefined') {
@@ -129,13 +132,26 @@ export function parseStandardTokenTransactionData(data) {
 }
 
 /**
+ * Determines the contractCode of the transaction by analyzing the txParams.
+ *
+ * @param {object} txParams - Parameters for the transaction
+ * @param {EthQuery} query - EthQuery instance
+ * @returns {InferTransactionTypeResult}
+ */
+export async function determineTransactionContractCode(txParams, query) {
+  const { to } = txParams;
+  const { contractCode } = await readAddressAsContract(query, to);
+  return contractCode;
+}
+
+/**
  * Determines the type of the transaction by analyzing the txParams.
  * This method will return one of the types defined in shared/constants/transactions
  * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
  * represent specific events that we control from the extension and are added manually
  * at transaction creation.
  *
- * @param {Object} txParams - Parameters for the transaction
+ * @param {object} txParams - Parameters for the transaction
  * @param {EthQuery} query - EthQuery instance
  * @returns {InferTransactionTypeResult}
  */
@@ -148,43 +164,45 @@ export async function determineTransactionType(txParams, query) {
     log.debug('Failed to parse transaction data.', error, data);
   }
 
-  const tokenMethodName = [
-    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
-  ].find((methodName) => isEqualCaseInsensitive(methodName, name));
-
   let result;
-  if (data && tokenMethodName) {
-    result = tokenMethodName;
-  } else if (data && !to) {
-    result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
-  }
-
   let contractCode;
 
-  if (!result) {
-    const {
-      contractCode: resultCode,
-      isContractAddress,
-    } = await readAddressAsContract(query, to);
+  if (data && !to) {
+    result = TransactionType.deployContract;
+  } else {
+    const { contractCode: resultCode, isContractAddress } =
+      await readAddressAsContract(query, to);
 
     contractCode = resultCode;
-    result = isContractAddress
-      ? TRANSACTION_TYPES.CONTRACT_INTERACTION
-      : TRANSACTION_TYPES.SIMPLE_SEND;
+
+    if (isContractAddress) {
+      const tokenMethodName = [
+        TransactionType.tokenMethodApprove,
+        TransactionType.tokenMethodSetApprovalForAll,
+        TransactionType.tokenMethodTransfer,
+        TransactionType.tokenMethodTransferFrom,
+        TransactionType.tokenMethodSafeTransferFrom,
+      ].find((methodName) => isEqualCaseInsensitive(methodName, name));
+
+      result =
+        data && tokenMethodName
+          ? tokenMethodName
+          : TransactionType.contractInteraction;
+    } else {
+      result = TransactionType.simpleSend;
+    }
   }
 
   return { type: result, getCodeResponse: contractCode };
 }
 
 const INFERRABLE_TRANSACTION_TYPES = [
-  TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-  TRANSACTION_TYPES.CONTRACT_INTERACTION,
-  TRANSACTION_TYPES.SIMPLE_SEND,
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodSetApprovalForAll,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.contractInteraction,
+  TransactionType.simpleSend,
 ];
 
 /**
@@ -219,9 +237,10 @@ export async function determineTransactionAssetType(
   // the token contract standards, we can use the getTokenStandardAndDetails
   // method to get the asset type.
   const isTokenMethod = [
-    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+    TransactionType.tokenMethodApprove,
+    TransactionType.tokenMethodSetApprovalForAll,
+    TransactionType.tokenMethodTransfer,
+    TransactionType.tokenMethodTransferFrom,
   ].find((methodName) => methodName === inferrableType);
 
   if (
@@ -229,7 +248,7 @@ export async function determineTransactionAssetType(
     // We can also check any contract interaction type to see if the to address
     // is a token contract. If it isn't, then the method will throw and we can
     // fall through to the other checks.
-    inferrableType === TRANSACTION_TYPES.CONTRACT_INTERACTION
+    inferrableType === TransactionType.contractInteraction
   ) {
     try {
       // We don't need a balance check, so the second parameter to
@@ -238,9 +257,9 @@ export async function determineTransactionAssetType(
       if (details.standard) {
         return {
           assetType:
-            details.standard === TOKEN_STANDARDS.ERC20
-              ? ASSET_TYPES.TOKEN
-              : ASSET_TYPES.COLLECTIBLE,
+            details.standard === TokenStandard.ERC20
+              ? AssetType.token
+              : AssetType.NFT,
           tokenStandard: details.standard,
         };
       }
@@ -253,11 +272,11 @@ export async function determineTransactionAssetType(
   // If the transaction is interacting with a contract but isn't a token method
   // we use the 'UNKNOWN' value to show that it isn't a transaction sending any
   // particular asset.
-  if (inferrableType === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+  if (inferrableType === TransactionType.contractInteraction) {
     return {
-      assetType: ASSET_TYPES.UNKNOWN,
-      tokenStandard: TOKEN_STANDARDS.NONE,
+      assetType: AssetType.unknown,
+      tokenStandard: TokenStandard.none,
     };
   }
-  return { assetType: ASSET_TYPES.NATIVE, tokenStandard: TOKEN_STANDARDS.NONE };
+  return { assetType: AssetType.native, tokenStandard: TokenStandard.none };
 }

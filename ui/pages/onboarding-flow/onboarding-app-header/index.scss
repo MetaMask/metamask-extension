@@ -8,12 +8,12 @@
   width: 100%;
   flex: 0 0 auto;
 
-  @media screen and (max-width: $break-small) {
+  @include screen-sm-max {
     padding: 16px;
     z-index: $mobile-header-z-index;
   }
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     height: 75px;
     justify-content: center;
   }
@@ -22,13 +22,13 @@
     &--icon {
       height: 32px;
 
-      @media screen and (min-width: $break-large) {
+      @include screen-sm-min {
         display: none;
       }
     }
 
     &--horizontal {
-      @media screen and (max-width: $break-small) {
+      @include screen-sm-max {
         display: none;
       }
     }
@@ -40,19 +40,19 @@
     width: 100%;
     justify-content: space-between;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       height: 100%;
     }
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       width: 85vw;
     }
 
-    @media screen and (min-width: 769px) {
+    @include screen-md-min {
       width: 90vw;
     }
 
-    @media screen and (min-width: 1281px) {
+    @include screen-lg-min {
       width: 62vw;
     }
   }

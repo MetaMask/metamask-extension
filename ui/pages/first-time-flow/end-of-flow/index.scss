@@ -6,7 +6,7 @@
     width: 742px;
     margin-top: 3%;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
     }
   }
@@ -30,7 +30,7 @@
     margin-top: 2px;
     margin-bottom: 2px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       @include H6;
 
       margin-bottom: 16px;

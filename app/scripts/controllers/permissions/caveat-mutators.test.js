@@ -1,12 +1,11 @@
-import { CaveatMutatorOperation } from '@metamask/controllers';
+import { CaveatMutatorOperation } from '@metamask/permission-controller';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 import { CaveatMutatorFactories } from './caveat-mutators';
 
 describe('caveat mutators', () => {
   describe('restrictReturnedAccounts', () => {
-    const { removeAccount } = CaveatMutatorFactories[
-      CaveatTypes.restrictReturnedAccounts
-    ];
+    const { removeAccount } =
+      CaveatMutatorFactories[CaveatTypes.restrictReturnedAccounts];
 
     describe('removeAccount', () => {
       it('returns the no-op operation if the target account is not permitted', () => {

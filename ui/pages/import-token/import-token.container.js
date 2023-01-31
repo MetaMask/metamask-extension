@@ -10,7 +10,10 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsTokenDetectionSupported,
   getTokenDetectionSupportNetworkByChainId,
-  getIsMainnet,
+  getIsTokenDetectionInactiveOnMainnet,
+  getIsDynamicTokenListAvailable,
+  getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getTokenList,
 } from '../../selectors/selectors';
 import ImportToken from './import-token.component';
 
@@ -22,16 +25,15 @@ const mapStateToProps = (state) => {
       pendingTokens,
       provider: { chainId },
       useTokenDetection,
-      tokenList,
       selectedAddress,
     },
   } = state;
 
-  const tokenDetectionV2Supported =
-    process.env.TOKEN_DETECTION_V2 && getIsTokenDetectionSupported(state);
+  const isTokenDetectionInactiveOnMainnet =
+    getIsTokenDetectionInactiveOnMainnet(state);
   const showSearchTab =
-    getIsMainnet(state) ||
-    tokenDetectionV2Supported ||
+    getIsTokenDetectionSupported(state) ||
+    isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
 
   return {
@@ -42,11 +44,13 @@ const mapStateToProps = (state) => {
     showSearchTab,
     chainId,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
-    tokenList,
+    tokenList: getTokenList(state),
     useTokenDetection,
     selectedAddress,
-    isTokenDetectionSupported: getIsTokenDetectionSupported(state),
+    isDynamicTokenListAvailable: getIsDynamicTokenListAvailable(state),
     networkName: getTokenDetectionSupportNetworkByChainId(state),
+    tokenDetectionInactiveOnNonMainnetSupportedNetwork:
+      getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state),
   };
 };
 const mapDispatchToProps = (dispatch) => {

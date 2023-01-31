@@ -54,7 +54,3 @@ export function setCustomGasLimit(newLimit) {
     value: newLimit,
   };
 }
-
-export function resetCustomData() {
-  return { type: RESET_CUSTOM_DATA };
-}

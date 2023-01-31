@@ -1,15 +1,21 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { until, error: webdriverError, By, Key } = require('selenium-webdriver');
+const {
+  By,
+  Condition,
+  error: webdriverError,
+  Key,
+  until,
+} = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
- * @param {Object} element - Selenium Element
+ * @param {object} element - Selenium Element
  * @param driver
- * @returns {Object} modified Selenium Element
+ * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
@@ -33,6 +39,14 @@ function wrapElementWithAPI(element, driver) {
   return element;
 }
 
+until.elementIsNotPresent = function elementIsNotPresent(locator) {
+  return new Condition(`Element not present`, function (driver) {
+    return driver.findElements(By.css(locator)).then(function (elements) {
+      return elements.length === 0;
+    });
+  });
+};
+
 /**
  * For Selenium WebDriver API documentation, see:
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
@@ -49,6 +63,7 @@ class Driver {
     this.browser = browser;
     this.extensionUrl = extensionUrl;
     this.timeout = timeout;
+    this.exceptions = [];
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -161,6 +176,18 @@ class Driver {
     return wrapElementWithAPI(element, this);
   }
 
+  async waitForNonEmptyElement(element) {
+    await this.driver.wait(async () => {
+      const elemText = await element.getText();
+      const empty = elemText === '';
+      return !empty;
+    }, this.timeout);
+  }
+
+  async waitForElementNotPresent(element) {
+    return await this.driver.wait(until.elementIsNotPresent(element));
+  }
+
   async quit() {
     await this.driver.quit();
   }
@@ -254,9 +281,18 @@ class Driver {
     assert.ok(!dataTab, 'Found element that should not be present');
   }
 
-  async isElementPresent(element) {
+  async isElementPresent(rawLocator) {
     try {
-      await this.findElement(element);
+      await this.findElement(rawLocator);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async isElementPresentAndVisible(rawLocator) {
+    try {
+      await this.findVisibleElement(rawLocator);
       return true;
     } catch (err) {
       return false;
@@ -266,27 +302,31 @@ class Driver {
   /**
    * Paste a string into a field.
    *
-   * @param {string} element - The element locator.
+   * @param {string} rawLocator - The element locator.
    * @param {string} contentToPaste - The content to paste.
    */
-  async pasteIntoField(element, contentToPaste) {
+  async pasteIntoField(rawLocator, contentToPaste) {
     // Throw if double-quote is present in content to paste
     // so that we don't have to worry about escaping double-quotes
     if (contentToPaste.includes('"')) {
       throw new Error('Cannot paste content with double-quote');
     }
     // Click to focus the field
-    await this.clickElement(element);
+    await this.clickElement(rawLocator);
     await this.executeScript(
       `navigator.clipboard.writeText("${contentToPaste}")`,
     );
-    await this.fill(element, Key.chord(this.Key.MODIFIER, 'v'));
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
   // Navigation
 
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  }
+
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
   }
 
   // Metrics
@@ -355,6 +395,11 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
+  // Close Alert Popup
+  async closeAlertPopup() {
+    return await this.driver.switchTo().alert().accept();
+  }
+
   /**
    * Closes all windows except those in the given list of exceptions
    *
@@ -382,6 +427,10 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
+    const isPageError = await this.isElementPresent('.error-page__details');
+    if (isPageError) {
+      await this.clickElement('.error-page__details');
+    }
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
       encoding: 'base64',
@@ -389,12 +438,37 @@ class Driver {
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
-      () => window.getCleanAppState && window.getCleanAppState(),
+      () =>
+        window.stateHooks?.getCleanAppState &&
+        window.stateHooks.getCleanAppState(),
     );
     await fs.writeFile(
       `${filepathBase}-state.json`,
       JSON.stringify(uiState, null, 2),
     );
+  }
+
+  async checkBrowserForLavamoatLogs() {
+    const browserLogs = (
+      await fs.readFile(
+        `${process.cwd()}/test-artifacts/chrome/chrome_debug.log`,
+      )
+    )
+      .toString('utf-8')
+      .split(/\r?\n/u);
+
+    await fs.writeFile('/tmp/all_logs.json', JSON.stringify(browserLogs));
+
+    return browserLogs;
+  }
+
+  async checkBrowserForExceptions() {
+    const { exceptions } = this;
+    const cdpConnection = await this.driver.createCDPConnection('page');
+    await this.driver.onLogException(cdpConnection, function (exception) {
+      const { description } = exception.exceptionDetails.exception;
+      exceptions.push(description);
+    });
   }
 
   async checkBrowserForConsoleErrors() {

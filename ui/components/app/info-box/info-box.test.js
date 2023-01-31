@@ -1,35 +1,26 @@
 import React from 'react';
-import sinon from 'sinon';
-import { shallow } from 'enzyme';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import InfoBox from './info-box.component';
 
 describe('InfoBox', () => {
-  let wrapper;
-
   const props = {
     title: 'Title',
     description: 'Description',
-    onClose: sinon.spy(),
+    onClose: jest.fn(),
   };
 
-  beforeEach(() => {
-    wrapper = shallow(<InfoBox {...props} />);
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(<InfoBox {...props} />);
+    expect(container).toMatchSnapshot();
   });
 
-  it('renders title from props', () => {
-    const title = wrapper.find('.info-box__title');
-    expect(title.text()).toStrictEqual(props.title);
-  });
+  it('should call handleClose on info close element', () => {
+    const { queryByTestId } = renderWithProvider(<InfoBox {...props} />);
+    const infoBoxClose = queryByTestId('info-box-close');
 
-  it('renders description from props', () => {
-    const description = wrapper.find('.info-box__description');
-    expect(description.text()).toStrictEqual(props.description);
-  });
-
-  it('closes info box', () => {
-    const close = wrapper.find('.info-box__close');
-    close.simulate('click');
-    expect(props.onClose.calledOnce).toStrictEqual(true);
+    fireEvent.click(infoBoxClose);
+    expect(props.onClose).toHaveBeenCalled();
   });
 });

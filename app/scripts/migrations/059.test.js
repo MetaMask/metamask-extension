@@ -1,23 +1,18 @@
 import { cloneDeep } from 'lodash';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  GOERLI_CHAIN_ID,
-} from '../../../shared/constants/network';
-import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
 import migration59 from './059';
 
-const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TRANSACTION_TYPES.SIMPLE_SEND
+const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TransactionType.simpleSend
 
 const ERRONEOUS_TRANSACTION_STATE = {
   0: {
-    type: TRANSACTION_TYPES.CANCEL,
+    type: TransactionType.cancel,
     id: 0,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x0',
     },
@@ -25,7 +20,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   1: {
     type: SENT_ETHER,
     id: 1,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x1',
     },
@@ -33,7 +28,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   2: {
     type: SENT_ETHER,
     id: 2,
-    chainId: KOVAN_CHAIN_ID,
+    chainId: '0x2a',
     txParams: {
       nonce: '0x2',
     },
@@ -41,7 +36,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   3: {
     type: SENT_ETHER,
     id: 3,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x3',
     },
@@ -49,7 +44,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   4: {
     type: SENT_ETHER,
     id: 4,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x4',
     },
@@ -57,7 +52,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   5: {
     type: SENT_ETHER,
     id: 5,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x5',
     },
@@ -65,7 +60,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   6: {
     type: SENT_ETHER,
     id: 6,
-    chainId: KOVAN_CHAIN_ID,
+    chainId: '0x2a',
     txParams: {
       nonce: '0x6',
     },
@@ -73,7 +68,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   7: {
     type: SENT_ETHER,
     id: 7,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x7',
     },
@@ -81,7 +76,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   8: {
     type: SENT_ETHER,
     id: 8,
-    chainId: RINKEBY_CHAIN_ID,
+    chainId: '0x4',
     txParams: {
       nonce: '0x8',
     },
@@ -89,8 +84,8 @@ const ERRONEOUS_TRANSACTION_STATE = {
   9: {
     type: SENT_ETHER,
     id: 9,
-    chainId: RINKEBY_CHAIN_ID,
-    status: TRANSACTION_STATUSES.UNAPPROVED,
+    chainId: '0x4',
+    status: TransactionStatus.unapproved,
   },
 };
 
@@ -98,24 +93,24 @@ const ERRONEOUS_TRANSACTION_STATE_RETRY = {
   ...ERRONEOUS_TRANSACTION_STATE,
   0: {
     ...ERRONEOUS_TRANSACTION_STATE[0],
-    type: TRANSACTION_TYPES.RETRY,
+    type: TransactionType.retry,
   },
 };
 
 const ERRONEOUS_TRANSACTION_STATE_MIXED = {
   ...ERRONEOUS_TRANSACTION_STATE,
   10: {
-    type: TRANSACTION_TYPES.RETRY,
+    type: TransactionType.retry,
     id: 10,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0xa',
     },
   },
   11: {
-    type: TRANSACTION_TYPES.RETRY,
+    type: TransactionType.retry,
     id: 11,
-    chainId: MAINNET_CHAIN_ID,
+    chainId: CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0xb',
     },
@@ -169,7 +164,7 @@ describe('migration #59', () => {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE['0'],
               id: 11,
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
               type: SENT_ETHER,
             },
           },
@@ -250,7 +245,7 @@ describe('migration #59', () => {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE_RETRY['0'],
               id: 11,
-              chainId: GOERLI_CHAIN_ID,
+              chainId: CHAIN_IDS.GOERLI,
               type: SENT_ETHER,
             },
           },

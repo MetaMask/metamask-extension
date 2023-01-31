@@ -56,6 +56,7 @@ export default function DropdownSearchList({
   const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(startingItem);
   const [tokenForImport, setTokenForImport] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -90,6 +91,7 @@ export default function DropdownSearchList({
     setIsImportTokenModalOpen(true);
   };
 
+  /* istanbul ignore next */
   const onImportTokenClick = () => {
     trackEvent({
       event: 'Token Imported',
@@ -154,9 +156,7 @@ export default function DropdownSearchList({
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
 
-  const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? getURLHostName(blockExplorerLink)
-    : t('etherscan');
+  const blockExplorerHostName = getURLHostName(blockExplorerLink);
 
   const importTokenProps = {
     onImportTokenCloseClick,
@@ -168,6 +168,7 @@ export default function DropdownSearchList({
   return (
     <div
       className={classnames('dropdown-search-list', className)}
+      data-testid="dropdown-search-list"
       onClick={onClickSelector}
       onKeyUp={onKeyUp}
       tabIndex="0"
@@ -199,7 +200,8 @@ export default function DropdownSearchList({
                   className={classnames(
                     'dropdown-search-list__closed-primary-label',
                     {
-                      'dropdown-search-list__select-default': !selectedItem?.symbol,
+                      'dropdown-search-list__select-default':
+                        !selectedItem?.symbol,
                     },
                   )}
                 >
@@ -215,7 +217,8 @@ export default function DropdownSearchList({
         <>
           <SearchableItemList
             itemsToSearch={loading ? [] : itemsToSearch}
-            Placeholder={({ searchQuery }) =>
+            Placeholder={() =>
+              /* istanbul ignore next */
               loading ? (
                 <div className="dropdown-search-list__loading-item">
                   <PulseLoader />
@@ -228,15 +231,14 @@ export default function DropdownSearchList({
               ) : (
                 <div className="dropdown-search-list__placeholder">
                   {t('swapBuildQuotePlaceHolderText', [searchQuery])}
-                  <div
-                    tabIndex="0"
-                    className="searchable-item-list__item searchable-item-list__item--add-token"
-                    key="searchable-item-list-item-last"
-                  >
-                    <ActionableMessage
-                      message={
-                        blockExplorerLink &&
-                        t('addCustomTokenByContractAddress', [
+                  {blockExplorerLink && (
+                    <div
+                      tabIndex="0"
+                      className="searchable-item-list__item searchable-item-list__item--add-token"
+                      key="searchable-item-list-item-last"
+                    >
+                      <ActionableMessage
+                        message={t('addCustomTokenByContractAddress', [
                           <a
                             key="dropdown-search-list__etherscan-link"
                             onClick={() => {
@@ -246,9 +248,7 @@ export default function DropdownSearchList({
                                 properties: {
                                   link_type: 'Token Tracker',
                                   action: 'Verify Contract Address',
-                                  block_explorer_domain: getURLHostName(
-                                    blockExplorerLink,
-                                  ),
+                                  block_explorer_domain: blockExplorerHostName,
                                 },
                               });
                               global.platform.openTab({
@@ -258,16 +258,16 @@ export default function DropdownSearchList({
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {blockExplorerLabel}
+                            {blockExplorerHostName}
                           </a>,
-                        ])
-                      }
-                    />
-                  </div>
+                        ])}
+                      />
+                    </div>
+                  )}
                 </div>
               )
             }
-            searchPlaceholderText={t('swapSearchForAToken')}
+            searchPlaceholderText={t('swapSearchNameOrAddress')}
             fuseSearchKeys={fuseSearchKeys}
             defaultToAll={defaultToAll}
             onClickItem={onClickItem}
@@ -284,9 +284,12 @@ export default function DropdownSearchList({
             hideItemIf={hideItemIf}
             listContainerClassName={listContainerClassName}
             shouldSearchForImports={shouldSearchForImports}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
           />
           <div
             className="dropdown-search-list__close-area"
+            data-testid="dropdown-search-list__close-area"
             onClick={(event) => {
               event.stopPropagation();
               setIsOpen(false);

@@ -2,28 +2,24 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { ERC20 } from '../../../helpers/constants/common';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({ metamask: {} });
+  const store = configureMockStore([])({
+    metamask: { provider: { chainId: '0x0' } },
+  });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };
 
 const props = {
-  decimals: 16,
   siteImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-  customTokenAmount: '10',
-  tokenAmount: '10',
   origin: 'https://metamask.github.io/test-dapp/',
-  tokenSymbol: 'TST',
-  assetStandard: ERC20,
+  tokenSymbol: 'TestDappCollectibles (#1)',
+  assetStandard: TokenStandard.ERC721,
   tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-  tokenBalance: '15',
   showCustomizeGasModal: jest.fn(),
-  showEditApprovalPermissionModal: jest.fn(),
-  data:
-    '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+  data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
   toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
   currentCurrency: 'TST',
   nativeCurrency: 'ETH',
@@ -40,23 +36,21 @@ const props = {
 
 describe('ConfirmApproveContent Component', () => {
   it('should render Confirm approve page correctly', () => {
-    const { queryByText, getByText, getAllByText } = renderComponent(props);
-    expect(queryByText('metamask.github.io')).toBeInTheDocument();
+    const { queryByText, getByText, getAllByText, getByTestId } =
+      renderComponent(props);
     expect(
-      queryByText('Give permission to access your TST?'),
+      queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
+    expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
+      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+    );
     expect(
       queryByText(
-        'By granting permission, you are allowing the following contract to access your funds',
+        'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
-    expect(queryByText('Hide full transaction details')).toBeInTheDocument();
-
-    expect(queryByText('Edit Permission')).toBeInTheDocument();
-    const editPermission = getByText('Edit Permission');
-    fireEvent.click(editPermission);
-    expect(props.showEditApprovalPermissionModal).toHaveBeenCalledTimes(1);
+    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('View full transaction details')).toBeInTheDocument();
 
     const editButtons = getAllByText('Edit');
 
@@ -73,15 +67,23 @@ describe('ConfirmApproveContent Component', () => {
     fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(1);
 
-    const showHideTxDetails = getByText('Hide full transaction details');
-    expect(getByText('Permission request')).toBeInTheDocument();
-    expect(getByText('Approved amount:')).toBeInTheDocument();
-    expect(getByText('Granted to:')).toBeInTheDocument();
-    fireEvent.click(showHideTxDetails);
-    expect(getByText('View full transaction details')).toBeInTheDocument();
+    const showViewTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission request')).not.toBeInTheDocument();
-    expect(queryByText('Approved amount:')).not.toBeInTheDocument();
+    expect(queryByText('Approved asset:')).not.toBeInTheDocument();
     expect(queryByText('Granted to:')).not.toBeInTheDocument();
-    expect(getByText('0x9bc5...fef4')).toBeInTheDocument();
+    expect(queryByText('Data')).not.toBeInTheDocument();
+    fireEvent.click(showViewTxDetails);
+    expect(getByText('Hide full transaction details')).toBeInTheDocument();
+    expect(getByText('Permission request')).toBeInTheDocument();
+    expect(getByText('Approved asset:')).toBeInTheDocument();
+    expect(getByText('Granted to:')).toBeInTheDocument();
+    expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
+    expect(getByText('Data')).toBeInTheDocument();
+    expect(getByText('Function: Approve')).toBeInTheDocument();
+    expect(
+      getByText(
+        '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
+      ),
+    ).toBeInTheDocument();
   });
 });

@@ -11,17 +11,7 @@ import {
   addFiat,
   roundExponential,
 } from '../../helpers/utils/confirm-tx.util';
-import {
-  getWeiHexFromDecimalValue,
-  hexWEIToDecETH,
-} from '../../helpers/utils/conversions.util';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-  ETH,
-  PRIMARY,
-} from '../../helpers/constants/common';
+import { PRIMARY } from '../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -30,6 +20,12 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
+import { TokenStandard } from '../../../shared/constants/transaction';
+import {
+  getWeiHexFromDecimalValue,
+  hexWEIToDecETH,
+} from '../../../shared/modules/conversion.utils';
+import { EtherDenomination } from '../../../shared/constants/common';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
@@ -56,10 +52,13 @@ export default function ConfirmTokenTransactionBase({
   );
 
   let title, subtitle;
-  if (assetStandard === ERC721 || assetStandard === ERC1155) {
+  if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
     title = assetName;
     subtitle = `#${tokenId}`;
-  } else if (assetStandard === ERC20) {
+  } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
   }
 
@@ -76,8 +75,8 @@ export default function ConfirmTokenTransactionBase({
 
     return getWeiHexFromDecimalValue({
       value: decimalEthValue,
-      fromCurrency: ETH,
-      fromDenomination: ETH,
+      fromCurrency: EtherDenomination.ETH,
+      fromDenomination: EtherDenomination.ETH,
     });
   }, [tokenAmount, contractExchangeRate]);
 

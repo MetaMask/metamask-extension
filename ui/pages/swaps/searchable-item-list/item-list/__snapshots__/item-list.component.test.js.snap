@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ItemList renders the component with initial props 1`] = `
+<div
+  class="searchable-item-list__item searchable-item-list__item--selected"
+  data-testid="searchable-item-list__item"
+  tabindex="0"
+>
+  <div
+    class=""
+  >
+    <img
+      alt="primaryLabel"
+      class="url-icon"
+      src="iconUrl"
+    />
+  </div>
+  <div
+    class="searchable-item-list__labels"
+  >
+    <div
+      class="searchable-item-list__item-labels"
+    >
+      <span
+        class="searchable-item-list__primary-label"
+      >
+        primaryLabel
+      </span>
+      <span
+        class="searchable-item-list__secondary-label"
+      >
+        secondaryLabel
+      </span>
+    </div>
+    <div
+      class="searchable-item-list__right-labels"
+    >
+      <span
+        class="searchable-item-list__right-primary-label"
+      >
+        rightPrimaryLabel
+      </span>
+      <span
+        class="searchable-item-list__right-secondary-label"
+      >
+        rightSecondaryLabel
+      </span>
+    </div>
+  </div>
+</div>
+`;

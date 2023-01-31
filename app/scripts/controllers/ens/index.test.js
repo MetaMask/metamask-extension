@@ -10,7 +10,7 @@ describe('EnsController', function () {
   let getCurrentChainId;
   let onNetworkDidChange;
   beforeEach(function () {
-    currentChainId = '0x3';
+    currentChainId = '0x5';
     getCurrentChainId = () => currentChainId;
     onNetworkDidChange = sinon.spy();
   });
@@ -20,7 +20,7 @@ describe('EnsController', function () {
   describe('#constructor', function () {
     it('should construct the controller given a provider and a network', async function () {
       const ens = new EnsController({
-        provider: {},
+        provider: sinon.fake(),
         getCurrentChainId,
         onNetworkDidChange,
       });

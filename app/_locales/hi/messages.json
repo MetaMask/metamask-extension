@@ -18,7 +18,7 @@
     "message": "अपने वॉलेट से साइन करने के बाद, हस्ताक्षर लेने के लिए 'हस्ताक्षर प्राप्त करें' पर क्लिक करें"
   },
   "QRHardwareSignRequestGetSignature": {
-    "message": "हस्ताक्षर प्राप्त करें"
+    "message": "हस्ताक्षर पाएं"
   },
   "QRHardwareSignRequestSubtitle": {
     "message": "अपने वॉलेट से QR कोड को स्कैन करें"
@@ -36,27 +36,79 @@
     "message": "QR कोड स्कैन करें"
   },
   "QRHardwareWalletSteps1Description": {
-    "message": "एक एयरगैप हार्डवेयर वॉलेट से कनेक्ट करें जो QR-कोड के जरिये संचार करता है। आधिकारिक रूप से सपोर्टेड एयरगैप हार्डवेयर में शामिल है:"
+    "message": "आप नीचे आधिकारिक क्यूआर-कोड सहायक भागीदारों की सूची में से चुन सकते हैं।"
   },
   "QRHardwareWalletSteps1Title": {
-    "message": "QR-आधारित HW वॉलेट"
+    "message": "अपने क्यूआर हार्डवेयर वॉलेट को कनेक्ट करें"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "एयरगैप वॉल्ट और Ngrave (जल्द आ रहा है)"
+    "message": "Ngrave (जल्द आ रहा है)"
+  },
+  "SIWEAddressInvalid": {
+    "message": "साइन-इन अनुरोध का पता उस अकाउंट के पते से मेल नहीं खाता जिसका उपयोग आप साइन इन करने के लिए कर रहे हैं।"
+  },
+  "SIWEDomainInvalidText": {
+    "message": "आप जिस साइट में साइन इन करने का प्रयास कर रहे हैं, वह अनुरोध किए गए डोमेन से मेल नहीं खाती। सावधानी के साथ आगे बढ़ें।"
+  },
+  "SIWEDomainInvalidTitle": {
+    "message": "भ्रामक साइट अनुरोध।"
+  },
+  "SIWEDomainWarningBody": {
+    "message": "वेबसाइट ($1) आपसे गलत डोमेन में साइन इन करने के लिए कह रही है। यह एक फिशिंग अटैक हो सकता है।",
+    "description": "$1 represents the website domain"
+  },
+  "SIWEDomainWarningLabel": {
+    "message": "असुरक्षित"
+  },
+  "SIWELabelChainID": {
+    "message": "चेन ID:"
+  },
+  "SIWELabelExpirationTime": {
+    "message": "पर समाप्त होगा:"
+  },
+  "SIWELabelIssuedAt": {
+    "message": "जारी किया गया:"
+  },
+  "SIWELabelMessage": {
+    "message": "संदेश:"
+  },
+  "SIWELabelNonce": {
+    "message": "नॉन्स:"
+  },
+  "SIWELabelNotBefore": {
+    "message": "इससे पहले नहीं:"
+  },
+  "SIWELabelRequestID": {
+    "message": "अनुरोध ID:"
+  },
+  "SIWELabelResources": {
+    "message": "संसाधन: $1",
+    "description": "$1 represents the number of resources"
+  },
+  "SIWELabelURI": {
+    "message": "URI:"
+  },
+  "SIWELabelVersion": {
+    "message": "संस्करण:"
+  },
+  "SIWESiteRequestSubtitle": {
+    "message": "ये साइट इसके साथ साइन इन करने के लिए अनुरोध कर रही है"
+  },
+  "SIWESiteRequestTitle": {
+    "message": "साइन-इन अनुरोध"
+  },
+  "SIWEWarningSubtitle": {
+    "message": "यह पुष्टि करने के लिए कि आप समझ गए हैं, जांच करें:"
+  },
+  "SIWEWarningTitle": {
+    "message": "क्या आपको यकीन है?"
   },
   "about": {
     "message": "इसके बारे में"
   },
-  "acceleratingATransaction": {
-    "message": "* गैस की उच्च कीमत का उपयोग करके लेनदेन में तेज़ी लाने से नेटवर्क द्वारा तेज़ी से संसाधित होने की संभावना बढ़ जाती है, लेकिन हमेशा इसकी गारंटी नहीं होती है।"
-  },
   "acceptTermsOfUse": {
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
-  },
-  "accessAndSpendNotice": {
-    "message": "$1 इस अधिकतम राशि तक पहुंच सकते हैं और खर्च कर सकते हैं",
-    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessAndSpendNoticeNFT": {
     "message": "$1 एक्सेस कर सकता है और इस एसेट को खर्च कर सकता है",
@@ -82,14 +134,18 @@
     "message": "अकाउंट आइडेंटिकॉन"
   },
   "accountName": {
-    "message": "खाते का नाम"
+    "message": "अकाउंट का नाम"
   },
   "accountNameDuplicate": {
     "message": "इस अकाउंट का नाम पहले से हीं मौजूद है",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
+  "accountNameReserved": {
+    "message": "यह खाता नाम आरक्षित है",
+    "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
   "accountOptions": {
-    "message": "खाता विकल्प"
+    "message": "अकाउंट विकल्प"
   },
   "accountSelectionRequired": {
     "message": "आपको एक खाते का चयन करने की आवश्यकता है!"
@@ -121,8 +177,20 @@
   "addAlias": {
     "message": "उपनाम जोड़ें"
   },
+  "addBlockExplorer": {
+    "message": "ब्लॉक एक्सप्लोरर जोड़ें"
+  },
   "addContact": {
     "message": "संपर्क जोड़ें"
+  },
+  "addCustomIPFSGateway": {
+    "message": "कस्टम IPFS गेटवे जोड़ें"
+  },
+  "addCustomIPFSGatewayDescription": {
+    "message": "IPFS (आईपीएफएस) गेटवे तृतीय पक्षों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का उपयोग जारी रख सकते हैं।"
+  },
+  "addCustomNetwork": {
+    "message": "कस्टम नेटवर्क जोड़ें"
   },
   "addCustomToken": {
     "message": "कस्टम टोकन जोड़ें"
@@ -148,6 +216,28 @@
   "addEthereumChainConfirmationTitle": {
     "message": "इस साइट को नेटवर्क जोड़ने की अनुमति दें?"
   },
+  "addEthereumChainWarningModalHeader": {
+    "message": "इस RPC प्रदाता को केवल तभी जोड़ें जब आप निश्चित हैं कि आप इस पर विश्वास कर सकते हैं। $1",
+    "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
+  },
+  "addEthereumChainWarningModalHeaderPartTwo": {
+    "message": "द्वेषपूर्ण प्रदाता ब्लॉकचेन की स्थिति के बारे में झूठ बोल सकते हैं और आपकी नेटवर्क गतिविधि रिकॉर्ड कर सकते हैं।"
+  },
+  "addEthereumChainWarningModalListHeader": {
+    "message": "यह महत्वपूर्ण है कि आपका प्रदाता विश्वसनीय हो, क्योंकि उसके पास निम्नलिखित की शक्ति है:"
+  },
+  "addEthereumChainWarningModalListPointOne": {
+    "message": "आपके खाते और IP (आईपी) पता देखने की, और उन्हें एक साथ जोड़ने की"
+  },
+  "addEthereumChainWarningModalListPointThree": {
+    "message": "खाता शेष राशि और अन्य ऑन-चेन स्थिति दिखाने की"
+  },
+  "addEthereumChainWarningModalListPointTwo": {
+    "message": "आपके लेन-देन को प्रसारित करने की"
+  },
+  "addEthereumChainWarningModalTitle": {
+    "message": "आप एथेरियम मेननेट के लिए एक नया आरपीसी (RPC) प्रदाता जोड़ रहे हैं"
+  },
   "addFriendsAndAddresses": {
     "message": "उन मित्रों और पतों को जोड़ें, जिन पर आप भरोसा करते हैं"
   },
@@ -156,6 +246,9 @@
   },
   "addMemo": {
     "message": "मेमो जोड़ें"
+  },
+  "addMoreNetworks": {
+    "message": "मैन्युअल रूप से अधिक नेटवर्क जोड़ें"
   },
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
@@ -182,6 +275,9 @@
   "advancedBaseGasFeeToolTip": {
     "message": "जब आपका लेन-देन ब्लॉक में शामिल हो जाता है, तो आपके अधिकतम आधार शुल्क और वास्तविक आधार शुल्क के बीच का कोई भी अंतर वापस कर दिया जाता है। कुल राशि की गणना अधिकतम आधार शुल्क (GWEI में) * गैस सीमा के रुप में की जाती है।"
   },
+  "advancedConfiguration": {
+    "message": "उन्नत कंफिगुरेशन"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "इन $1 को \"एडवांस\" के लिए मेरे डिफॉल्ट के रूप में सहेजें"
   },
@@ -194,9 +290,6 @@
   "advancedGasPriceTitle": {
     "message": "गैस की कीमत"
   },
-  "advancedOptions": {
-    "message": "उन्नत विकल्प"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "प्राथमिकता शुल्क (उर्फ \"माइनर टिप\") सीधे खनिकों के पास जाता है और उन्हें आपके लेन-देन को प्राथमिकता देने के लिए प्रोत्साहित करता है।"
   },
@@ -205,9 +298,6 @@
   },
   "airgapVault": {
     "message": "AirGap का वॉल्ट"
-  },
-  "airgapVaultTutorial": {
-    "message": " (ट्यूटोरियल्स)"
   },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
@@ -226,6 +316,10 @@
   },
   "alerts": {
     "message": "चेतावनियां"
+  },
+  "allOfYour": {
+    "message": "आपके सभी $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
   "allowExternalExtensionTo": {
     "message": "इस बाहरी एक्सटेंशन को इसकी अनुमति दें:"
@@ -263,27 +357,35 @@
   "approve": {
     "message": "खर्च सीमा अनुमोदित करें"
   },
+  "approveAllTokensTitle": {
+    "message": "आपके सभी $1 को एक्सेस और ट्रांसफर करने के लिए अनुमति दें",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
+  },
   "approveAndInstall": {
-    "message": "स्वीकृति दें और इंस्टॉल करें"
+    "message": "स्वीकृत और इंस्टॉल करें"
+  },
+  "approveAndUpdate": {
+    "message": "स्वीकृत और अपडेट करें"
   },
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },
-  "approveSpendLimit": {
-    "message": "$1 खर्च सीमा अनुमोदित करें",
-    "description": "The token symbol that is being approved"
+  "approveTokenDescription": {
+    "message": "यह किसी तीसरे पक्ष को बिना किसी नोटिस के निम्नलिखित NFTs को ऐक्सेस करने और स्थानांतरित करने की अनुमति देता है जब तक कि आप इसकी ऐक्सेस को रद्द नहीं कर देते।"
+  },
+  "approveTokenTitle": {
+    "message": "अपने $1 को ऐक्सेस करने और स्थानांतरण की अनुमति दें?",
+    "description": "$1 is the symbol of the token for which the user is granting approval"
   },
   "approved": {
     "message": "अनुमोदित"
   },
-  "approvedAmountWithColon": {
-    "message": "स्वीकृत राशि:"
-  },
   "approvedAsset": {
     "message": "स्वीकृत एसेट"
   },
-  "areYouDeveloper": {
-    "message": "क्या आप एक डेवलपर हैं?"
+  "approvedOn": {
+    "message": "$1 पर स्वीकृत किया गया",
+    "description": "$1 is the approval date for a permission"
   },
   "areYouSure": {
     "message": "क्या आप सुनिश्चित हैं?"
@@ -296,6 +398,9 @@
   },
   "assets": {
     "message": "परिसंपत्तियां"
+  },
+  "attemptSendingAssets": {
+    "message": "यदि आप ऐसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने का प्रयास करते हैं, तो इसके परिणामस्वरूप स्थायी ऐसेट्स का नुकसान हो सकता है। ब्रिज का उपयोग करना सुनिश्चित करें।"
   },
   "attemptToCancel": {
     "message": "रद्द करने का प्रयास?"
@@ -312,6 +417,13 @@
   "authorizedPermissions": {
     "message": "आपने निम्नलिखित अनुमतियां अधिकृत की हैं"
   },
+  "autoDetectTokens": {
+    "message": "टोकन ऑटो-डिटेक्ट करें"
+  },
+  "autoDetectTokensDescription": {
+    "message": "हम आपके वॉलेट में भेजे गए नए टोकन का पता लगाने और प्रदर्शित करने के लिए थर्ड पार्टी ऐप्स का उपयोग करते हैं। अगर आप चाहते हैं कि ऐप उन सेवाओं से डेटा न ले, तो उसे बंद कर दें। $1",
+    "description": "$1 is a link to a support article"
+  },
   "autoLockTimeLimit": {
     "message": "ऑटो-लॉक टाइमर (मिनट)"
   },
@@ -327,6 +439,9 @@
   "backToAll": {
     "message": "सभी पर वापस"
   },
+  "backup": {
+    "message": "बैकअप"
+  },
   "backupApprovalInfo": {
     "message": "यदि आप अपना डिवाइस खो देते हैं, अपना पासवर्ड भूल जाते हैं, MetaMask को फिर से स्थापित करना हो या दूसरे डिवाइस पर अपने वॉलेट तक पहुंचना चाहते हों, तो आपके वॉलेट को पुनर्प्राप्त करने के लिए यह गुप्त कोड आवश्यक है।"
   },
@@ -335,6 +450,12 @@
   },
   "backupNow": {
     "message": "अभी बैकअप लें"
+  },
+  "backupUserData": {
+    "message": "अपने डेटा का बैकअप लें"
+  },
+  "backupUserDataDescription": {
+    "message": "आप एक JSON फाइल में वरीयताएं और अकाउंट एड्रेस वाली उपयोगकर्ता सेटिंग्स का बैकअप ले सकते हैं।"
   },
   "balance": {
     "message": "शेषराशि"
@@ -348,21 +469,53 @@
   "basic": {
     "message": "बेसिक"
   },
+  "beCareful": {
+    "message": "सावधान रहें"
+  },
+  "beta": {
+    "message": "बीटा"
+  },
+  "betaHeaderText": {
+    "message": "यह बीटा संस्करण है। कृपया बग रिपोर्ट करें $1",
+    "description": "$1 represents the word 'here' in a hyperlink"
+  },
   "betaMetamaskDescription": {
     "message": "लाखों लोगों का भरोसेमंद, MetaMask एक सुरक्षित वॉलेट है जो वेब3 की दुनिया को सबके लिए सुलभ बनाता है।"
   },
+  "betaMetamaskDescriptionDisclaimerHeading": {
+    "message": "बीटा संस्करण अस्वीकरण"
+  },
   "betaMetamaskDescriptionExplanation": {
-    "message": "आगामी फीचर के रिलीज़ होने से पहले उनके परीक्षण के लिए इस संस्करण का उपयोग करें। आपका उपयोग और फीडबैक हमें MetaMask के सर्वोत्तम संस्करण को संभव बनाने में मदद करता है। MetaMask बीटा का आपका उपयोग हमारे मानक $1 के साथ साथ $2 के अधीन है। बीटा के रूप में, वहां बग का खतरा बढ़ सकता है। आगे बढ़ने पर, आप इन खतरों को स्वीकार करते हैं और पहचानते हैं, साथ हीं साथ वो खतरे हमारे नियम औऱ बीटा नियम में पाए जाते हैं।",
+    "message": "यह संस्करण आपको आगामी सुविधाओं के रिलीज होने से पहले उनका परीक्षण करने की अनुमति देता है, जो MetaMask को और भी बेहतर बनाने में मदद करता है। जैसा कि सभी बीटा संस्करणों में होता है, इसमें बगों का जोखिम बढ़ सकता है। MetaMask बीटा हमारे $1 के साथ-साथ हमारे $2 के अधीन है।",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
+  "betaMetamaskDescriptionExplanation2": {
+    "message": "आगे बढ़कर, आप इन जोखिमों को स्वीकार करते हैं और मानते हैं, हमारे $1, और $2।",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
+    "message": "बीटा की शर्तें"
+  },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "अनुपूरक बीटा नियम"
+    "message": "पूरक बीटा की शर्तें"
   },
   "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "नियम"
+    "message": "मानक शर्तें"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask बीटा संस्करण"
+  },
+  "betaPortfolioSite": {
+    "message": "बीटा पोर्टफोलियो साइट"
+  },
+  "betaTerms": {
+    "message": "बीटा के उपयोग की शर्तें"
+  },
+  "betaWalletCreationSuccessReminder1": {
+    "message": "MetaMask बीटा आपका गुप्त रिकवरी वाक्यांश फिर रिकवर नहीं कर सकता।"
+  },
+  "betaWalletCreationSuccessReminder2": {
+    "message": "MetaMask बीटा आपसे आपका गुप्त रिकवरी वाक्यांश कभी नहीं मांगेगा।"
   },
   "betaWelcome": {
     "message": "MetaMask बीटा में आपका स्वागत है"
@@ -393,7 +546,7 @@
     "message": "ब्लॉकीज़"
   },
   "browserNotSupported": {
-    "message": "आपका ब्राउज़र समर्थित नहीं है..."
+    "message": "आपका ब्राउजर सपोर्टेड नहीं है..."
   },
   "buildContactList": {
     "message": "अपनी संपर्क सूची बनाएं"
@@ -434,11 +587,14 @@
     "message": "Transak 100+ देशों में क्रेडिट और डेबिट कार्ड, Apple Pay, MobiKwik और बैंक ट्रांसफ़र (स्थान के आधार पर) को सपोर्ट करता है। $1 सीधे आपके MetaMask के अकाउंट में जमा होता है।",
     "description": "$1 represents the crypto symbol to be purchased"
   },
+  "buyNow": {
+    "message": "अभी खरीदें"
+  },
   "buyWithWyre": {
-    "message": "Wyre के जरिए $1 खरीदें"
+    "message": "Wyre के साथ $1 खरीदें"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre आपको अपने MetaMask खाते में $1 जमा करने के लिए डेबिट कार्ड का उपयोग करने की सुविधा देता है।"
+    "message": "$1000 तक की खरीदारी के लिए आसान ऑनबोर्डिंग। तेज़ इंटरैक्टिव उच्च सीमा खरीद सत्यापन। डेबिट / क्रेडिट कार्ड, ऐप्पल पे, बैंक ट्रांसफर का समर्थन करता है। 100+ देशों में उपलब्ध है। टोकन आपके मेटामास्क खाते में जमा होते हैं"
   },
   "bytes": {
     "message": "बाइट"
@@ -466,6 +622,13 @@
     "message": "किसी लेनदेन को $1 करने के लिए गैस शुल्क में कम से कम 10% की वृद्धि की जानी चाहिए ताकि उसे नेटवर्क द्वारा मान्यता मिल सके।",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
+  "cancelSwapForFee": {
+    "message": "~$1 में स्वैप रद्द करें",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+  },
+  "cancelSwapForFree": {
+    "message": "मुफ्त में स्वैप रद्द करें"
+  },
   "cancellationGasFee": {
     "message": "रद्दीकरण गैस शुल्क"
   },
@@ -485,12 +648,22 @@
     "message": "चेन आईडी $1 वाला नेटवर्क आपके द्वारा दर्ज किए गए मुद्रा चिह्न ($2) से भिन्न मुद्रा चिह्न का उपयोग कर सकता है। कृपया जारी रखने से पहले सत्यापित करें।",
     "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
   },
+  "chooseYourNetwork": {
+    "message": "अपना नेटवर्क चुनें"
+  },
+  "chooseYourNetworkDescription": {
+    "message": "हम अपने रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में Infura का उपयोग करते हैं ताकि हम एथेरियम डेटा तक सबसे विश्वसनीय और निजी ऐक्सेस प्रदान कर सकें। आप अपना स्वयं का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC लेनदेन करने के लिए आपका IP पता और एथेरियम वॉलेट प्राप्त करेगा। Infura डेटा को कैसे प्रबंधित करता है, इस बारे में अधिक जानने के लिए हमारा $1 पढ़ें।",
+    "description": "$1 is a link to the privacy policy"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "अपने हार्डवेयर वॉलेट से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का उपयोग करने की आवश्यकता है।"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "अपने लेजर को WebHID के जरिये कनेक्ट करने के लिए यहां क्लिक करें",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToManuallyAdd": {
+    "message": "मैन्युअल रूप से टोकन जोड़ने के लिए यहां क्लिक करें"
   },
   "clickToRevealSeed": {
     "message": "गुप्त शब्दों को प्रकट करने के लिए यहाँ क्लिक करें"
@@ -601,23 +774,21 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
-  "connectingToKovan": {
-    "message": "Kovan टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
   },
-  "connectingToRinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क से कनेक्ट हो रहा है"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten टेस्ट नेटवर्क से कनेक्ट हो रहा है"
+  "connectingToSepolia": {
+    "message": "सेपोलिया टेस्ट नेटवर्क से कनेक्ट कर रहा है"
   },
   "contactUs": {
     "message": "हमसे संपर्क करें"
   },
   "contacts": {
     "message": "संपर्क"
+  },
+  "contentFromSnap": {
+    "message": "$1 से सामग्री",
+    "description": "$1 represents the name of the snap"
   },
   "continue": {
     "message": "जारी रखें"
@@ -646,14 +817,38 @@
   "contractDeployment": {
     "message": "अनुबंध परिनियोजन"
   },
+  "contractDescription": {
+    "message": "अपने आप को धोखेबाजों से बचाने के लिए, अनुबंध विवरण की समीक्षा करने के लिए कुछ समय निकालें।"
+  },
   "contractInteraction": {
     "message": "अनुबंध इंटरैक्शन"
   },
+  "contractNFT": {
+    "message": "एनएफटी (NFT) अनुबंध"
+  },
+  "contractRequestingAccess": {
+    "message": "ऐक्सेस के लिए अनुरोध करने वाला अनुबंध"
+  },
+  "contractRequestingSignature": {
+    "message": "हस्ताक्षर का अनुरोध करते हुए अनुबंध"
+  },
+  "contractRequestingSpendingCap": {
+    "message": "खर्च की सीमा का अनुरोध करने वाला अनुबंध"
+  },
+  "contractTitle": {
+    "message": "अनुबंध विवरण"
+  },
+  "contractToken": {
+    "message": "टोकन अनुबंध"
+  },
   "convertTokenToNFTDescription": {
-    "message": "हमने पाया है कि ये एसेट एक एनएफटी है। MetaMask के पास अब एनएफटी के लिए पूर्ण स्थानीय सपोर्ट है। क्या आप इसे अपनी टोकन सूची से हटाना चाहते हैं और इसे एनएफटी के रूप में जोड़ना चाहते हैं?"
+    "message": "हमने पाया है कि यह संपत्ति एक एनएफटी है। मेटामास्क के पास अब एनएफटी के लिए पूर्ण देशी समर्थन है। क्या आप इसे अपनी टोकन सूची से हटाना चाहते हैं और इसे एनएफटी के रूप में जोड़ना चाहते हैं?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "हमने पाया है कि इस एसेट को एक एनएफटी के रूप में जोड़ा गया है। क्या आप इसे अपनी टोकन सूची से हटाना चाहते हैं?"
+  },
+  "coolWallet": {
+    "message": "CoolWallet (कूलवॉलेट)"
   },
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
@@ -680,19 +875,19 @@
     "message": "एक वॉलेट बनाएं"
   },
   "createAccount": {
-    "message": "खाता बनाएं"
+    "message": "अकाउंट बनाएं"
   },
   "createNewWallet": {
     "message": "एक नया वॉलेट बनाएं"
   },
   "createPassword": {
-    "message": "पासवर्ड बनाएँ"
+    "message": "पासवर्ड बनाएं"
   },
   "currencyConversion": {
     "message": "मुद्रा रूपांतरण"
   },
   "currencySymbol": {
-    "message": "मुद्रा प्रतीक"
+    "message": "मुद्रा चिह्न"
   },
   "currencySymbolDefinition": {
     "message": "इस नेटवर्क की मुद्रा के लिए प्रदर्शित टिकर प्रतीक।"
@@ -705,6 +900,9 @@
   },
   "currentLanguage": {
     "message": "वर्तमान भाषा"
+  },
+  "currentRpcUrlDeprecated": {
+    "message": "इस नेटवर्क के लिए वर्तमान rpc url को अवमानित कर दिया गया है।"
   },
   "currentTitle": {
     "message": "मौजूदा:"
@@ -727,18 +925,15 @@
   "customContentSearch": {
     "message": "पहले से जुड़े हुए नेटवर्क के लिए खोजें"
   },
-  "customGas": {
-    "message": "गैस अनुकूलित करें"
-  },
   "customGasSettingToolTipMessage": {
     "message": "गैस की कीमत को अनुकूलित करने के लिए $1 का उपयोग करें। यदि आप परिचित नहीं हैं तो ये भ्रामक हो सकता है। अपनी ज़िम्मेदारी पर बातचीत करें।",
-    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
-  },
-  "customGasSubTitle": {
-    "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
   "customSpendLimit": {
-    "message": "खर्च सीमा कस्टम करें"
+    "message": "कस्टम खर्च सीमा"
+  },
+  "customSpendingCap": {
+    "message": "कस्टम खर्च की सीमा"
   },
   "customToken": {
     "message": "कस्टम टोकन"
@@ -748,6 +943,9 @@
   },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "टोकन को मैन्युअल रूप से इंपोर्ट करने से पहले, सुनिश्चित करें कि आपका उसपर भरोसा हो। $1 के बारे में जानें"
+  },
+  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
+    "message": "सुनिश्चित करें कि आप किसी टोकन को आयात करने से पहले उस पर भरोसा करते हैं। $1 को टालने का तरीका जानें। आप टोकन डिटेक्शन $2 भी सक्षम कर सकते हैं।"
   },
   "customerSupport": {
     "message": "ग्राहक सहायता सेवा"
@@ -772,11 +970,14 @@
   "data": {
     "message": "डेटा"
   },
-  "dataBackupFoundInfo": {
-    "message": "MetaMask की पिछली स्थापना के दौरान आपके कुछ खाता डेटा का बैकअप लिया गया था। इसमें आपकी सेटिंग, संपर्क और टोकन शामिल हो सकते हैं। क्या आप अब इस डेटा को पुनर्स्थापित करना चाहेंगे?"
+  "dataBackupSeemsCorrupt": {
+    "message": "आपका डेटा रीस्टोर नहीं किया जा सकता। लगता है फाइल करप्ट हुई है।"
   },
   "dataHex": {
     "message": "हेक्स"
+  },
+  "dcent": {
+    "message": "D'Cent (डी'सेंट)"
   },
   "decimal": {
     "message": "टोकन दशमलव"
@@ -808,17 +1009,26 @@
     "message": "हटाएँ"
   },
   "deleteAccount": {
-    "message": "खाता हटाएँ"
+    "message": "अकाउंट हटाएं"
   },
   "deleteNetwork": {
-    "message": "नेटवर्क हटाएँ?"
+    "message": "नेटवर्क हटाएं?"
   },
   "deleteNetworkDescription": {
     "message": "क्या आप वाकई इस नेटवर्क को हटाना चाहते हैं?"
   },
+  "deposit": {
+    "message": "जमा करें"
+  },
   "depositCrypto": {
     "message": "$1 जमा करें",
-    "description": "$1 represents the cypto symbol to be purchased"
+    "description": "$1 represents the crypto symbol to be purchased"
+  },
+  "deprecatedTestNetworksLink": {
+    "message": "अधिक जानें"
+  },
+  "deprecatedTestNetworksMsg": {
+    "message": "Ethereum प्रोटोकॉल परिवर्तनों के कारण: Rinkeby, Ropsten, और Kovan टेस्ट नेटवर्क मजबूती से काम करने में असमर्थ हो सकते हैं और जल्द ही अप्रचलित हो जाएंगे।"
   },
   "description": {
     "message": "विवरण"
@@ -875,6 +1085,9 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome डाउनलोड करें"
   },
+  "downloadNow": {
+    "message": "अभी डाउनलोड करें"
+  },
   "downloadSecretBackup": {
     "message": "इस गुप्त बैकअप फ्रेज को डाउनलोड करें और इसे बाहरी एन्क्रिप्ट की गई हार्ड ड्राइव या स्टोरेज माध्यम पर सुरक्षित रूप से संग्रहीत रखें।"
   },
@@ -899,29 +1112,8 @@
   "editContact": {
     "message": "संपर्क संपादित करें"
   },
-  "editGasEducationButtonText": {
-    "message": "मुझे कैसे चुनना चाहिए?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "समय के प्रति संवेदनशील लेन-देन (जैसे कि विनिमय) के लिए यह सबसे अच्छा है क्योंकि यह एक सफल लेन-देन की संभावना को बढ़ाता है। यदि विनिमय को प्रोसेस होने में ज्यादा समय लगता है तो यह विफल हो सकता है और इसके परिणामस्वरुप आपके गैस शुल्क की कुछ हानि हो सकती है।"
-  },
-  "editGasEducationLowExplanation": {
-    "message": "एक निम्न गैस शुल्क का उपयोग केवल तभी किया जाना चाहिए जब प्रोसेस का समय कम महत्वपूर्ण हो। निम्न शुल्क से यह अनुमान लगाना मुश्किल हो जाता है कि आपका लेन-देन कब (या यदि) सफल होगा।"
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "एक मध्यम गैस शुल्क भेजने, निकालने या अन्य गैर-समय संवेदनशील लेन-देन के लिए अच्छा है। इस सेटिंग के परिणामस्वरुप अक्सर एक सफल लेन-देन होता है।"
-  },
-  "editGasEducationModalIntro": {
-    "message": "सही गैस शुल्क का चयन लेन-देन के प्रकार और यह आपके लिए कितना महत्वपूर्ण है इस पर निर्भर करता है।"
-  },
-  "editGasEducationModalTitle": {
-    "message": "कैसे चुनें?"
-  },
   "editGasFeeModalTitle": {
     "message": "गैस शुल्क संपादित करें"
-  },
-  "editGasHigh": {
-    "message": "उच्च"
   },
   "editGasLimitOutOfBounds": {
     "message": "गैस सीमा कम से कम $1 होनी चाहिए"
@@ -932,9 +1124,6 @@
   },
   "editGasLimitTooltip": {
     "message": "गैस सीमा, गैस की वो अधिकतम यूनिट है जिसका आप उपयोग करना चाहते हैं। गैस यूनिट “अधिकतम प्राथमिकता शुल्क” और “अधिकतम शुल्क” का गुणक होती हैं।"
-  },
-  "editGasLow": {
-    "message": "निम्न"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "अधिकतम आधार शुल्क प्राथमिकता शुल्क से कम नहीं हो सकता है।"
@@ -954,9 +1143,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "अधिकतम शुल्क अधिकतम प्राथमिकता शुल्क से कम नहीं हो सकता है"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "अधिकतम शुल्क वह अधिकतम शुल्क है जिसका आप भुगतान करेंगे (आधार शुल्क + प्राथमिकता शुल्क)।"
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "अधिकतम प्राथमिकता शुल्क 0 GWEI से अधिक होना चाहिए"
   },
@@ -974,12 +1160,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "मौजूदा नेटवर्क स्थितियों के लिए प्राथमिकता शुल्क कम है"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "अधिकतम प्राथमिकता शुल्क (उर्फ \"माइनर टिप\") सीधे खनिकों के पास जाता है और उन्हें आपके लेनदेन को प्राथमिकता देने के लिए प्रोत्साहित करता है। आप अक्सर अपनी अधिकतम सेटिंग का भुगतान करेंगे"
-  },
-  "editGasMedium": {
-    "message": "माध्यम"
   },
   "editGasPriceTooLow": {
     "message": "गैस का मूल्य 0 से अधिक होना चाहिए"
@@ -1000,12 +1180,6 @@
   "editGasTooLow": {
     "message": "अज्ञात प्रोसेसिंग समय"
   },
-  "editGasTooLowTooltip": {
-    "message": "मौजूदा बाजार स्थितियों के लिए आपका अधिकतम शुल्क या अधिकतम प्राथमिकता शुल्क कम हो सकता है। हम नहीं जानते कि आपका लेन-देन कब (या यदि) प्रोसेस किया जाएगा। "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "यह आपके अधिकतम शुल्क को कम करता है लेकिन यदि नेटवर्क ट्रैफिक बढ़ता है तो आपके लेन-देन में देरी हो सकती है या लेन-देन विफल हो सकता है।"
-  },
   "editNonceField": {
     "message": "नॉन्स संपादित करें"
   },
@@ -1019,23 +1193,7 @@
     "message": "गैस शुल्क स्पीड अप को एडिट करें"
   },
   "enableAutoDetect": {
-    "message": " ऑटो डिटेक्ट इनेबल करें"
-  },
-  "enableEIP1559V2": {
-    "message": "इनहैन्सड गैस शुल्क UI को सक्षम करें"
-  },
-  "enableEIP1559V2AlertMessage": {
-    "message": "हमने अपडेट किया है कि गैस शुल्क अनुमान और कस्टमाइज़ेशन कैसे काम करता है।"
-  },
-  "enableEIP1559V2ButtonText": {
-    "message": "सेटिंग्स में इनहैन्सड गैस शुल्क यूआइ को चालू करें"
-  },
-  "enableEIP1559V2Description": {
-    "message": "हमने अपडेट किया है कि गैस शुल्क अनुमान और कस्टमाइज़ेशन कैसे काम करता है। अगर आप नए गैस अनुभव का इस्तेमाल करना चाहते हैं तो चालू करें। $1",
-    "description": "$1 here is Learn More link"
-  },
-  "enableEIP1559V2Header": {
-    "message": "नया गैस अनुभव"
+    "message": " ऑटो डिटेक्ट सक्षम करें"
   },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
@@ -1079,7 +1237,7 @@
     "message": "फिशिंग से सावधान रहें! MetaMask कभी भी अनायास ही आपके गुप्त रिकवरी फ्रेज के बारे में नहीं पूछेगा।"
   },
   "endOfFlowMessage6": {
-    "message": "यदि आपको अपने गुप्त रिकवरी फ्रेज का फिर से बैकअप लेने की आवश्यकता है, तो आप इसे सेटिंग -> सुरक्षा में पा सकते हैं।"
+    "message": "यदि आपको अपने गुप्त रिकवरी फ्रेज का फिर से बैकअप लेने की आवश्यकता है, तो आप इसे सेटिंग्स -> सेक्यूरिटी में पा सकते हैं।"
   },
   "endOfFlowMessage7": {
     "message": "यदि आपको कभी कुछ पूछना हो या कुछ गड़बड़ लगे, तो हमारी सहायता $1 से संपर्क करें।",
@@ -1095,6 +1253,9 @@
     "message": "समापन बिंदु ने अलग चेन ID लौटाई है: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "enhancedTokenDetectionAlertMessage": {
+    "message": "उन्नत टोकन डिटेक्शन वर्तमान में $1 पर उपलब्ध है। $2"
+  },
   "ensIllegalCharacter": {
     "message": "ENS के लिए गैर-कानूनी कैरेक्टर।"
   },
@@ -1109,6 +1270,9 @@
   },
   "ensUnknownError": {
     "message": "ENS लुकअप विफल हुआ।"
+  },
+  "enterANumber": {
+    "message": "कोई संख्या दर्ज करें"
   },
   "enterMaxSpendLimit": {
     "message": "अधिकतम खर्च सीमा दर्ज करें"
@@ -1151,14 +1315,11 @@
     "message": "स्टैक:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "अनुमानित प्रसंस्करण समय"
-  },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस की कीमत प्रदान की जाती है क्योंकि मुख्य गैस अनुमान सर्विस अभी उपलब्ध नहीं है।"
   },
   "ethereumPublicAddress": {
-    "message": "Ethereum सार्वजनिक पता"
+    "message": "Ethereum सार्वजनिक ऐड्रेस"
   },
   "etherscan": {
     "message": "Etherscan"
@@ -1182,7 +1343,7 @@
     "message": "निजी कुंजी निर्यात करें"
   },
   "externalExtension": {
-    "message": "बाहरी विस्तार"
+    "message": "बाहरी एक्स्टेन्शन"
   },
   "failed": {
     "message": "विफल"
@@ -1196,14 +1357,8 @@
   "failureMessage": {
     "message": "कुछ गलत हुआ और हम कार्रवाई को पूरा करने में असमर्थ रहे"
   },
-  "fakeTokenWarning": {
-    "message": "कोई भी टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली संस्करण को बनाना शामिल है। $1 के बारे में और अधिक जानें"
-  },
   "fast": {
     "message": "तेज"
-  },
-  "fastest": {
-    "message": "सबसे तेज"
   },
   "feeAssociatedRequest": {
     "message": "इस अनुरोध के साथ एक शुल्क जुड़ा हुआ है।"
@@ -1277,8 +1432,11 @@
   "functionApprove": {
     "message": "फंक्शन: अनुमोदित करें"
   },
+  "functionSetApprovalForAll": {
+    "message": "कार्य: सभी के लिए स्वीकृति सेट करें"
+  },
   "functionType": {
-    "message": "फंक्शन का प्रकार"
+    "message": "फ़ंक्शन का प्रकार"
   },
   "gas": {
     "message": "गैस"
@@ -1289,9 +1447,6 @@
   "gasDisplayDappWarning": {
     "message": "यह गैस शुल्क $1 द्वारा सुझाया गया है। इसे ओवरराइड करने से आपके लेन-देन में समस्या हो सकती है। यदि आपके पास कोई सवाल हैं तो कृपया $1 तक पहुंचें।",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "हमारे निम्न, मध्यम और उच्च अनुमान उपलब्ध नहीं हैं।"
   },
   "gasFee": {
     "message": "गैस शुल्क"
@@ -1376,7 +1531,7 @@
     "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
   },
   "gdprMessagePrivacyPolicy": {
-    "message": "गोपनीयता नीतियां यहां",
+    "message": "गोपनीयता नीति यहां है",
     "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
   "general": {
@@ -1390,7 +1545,7 @@
     "description": "Displays network name for Ether faucet"
   },
   "getStarted": {
-    "message": "प्रारंभ करें"
+    "message": "शुरू करें"
   },
   "goBack": {
     "message": "वापस जाएं"
@@ -1463,7 +1618,7 @@
   },
   "highGasSettingToolTipMessage": {
     "message": "लोकप्रिय NFT ड्रॉप जैसी चीज़ों की वजह से नेटवर्क ट्रैफिक में वृद्धि को कवर करने के लिए $1 का उपयोग करें।",
-    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold font-weight"
   },
   "highLowercase": {
     "message": "उच्च"
@@ -1482,7 +1637,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
-    "message": "खाता आयात करें"
+    "message": "अकाउंट आयात करें"
   },
   "importAccountError": {
     "message": "खाता आयात करने में त्रुटि।"
@@ -1511,6 +1666,12 @@
   "importNFTs": {
     "message": "NFT आयात करें"
   },
+  "importSelectedTokens": {
+    "message": "चयनित टोकन आयात करें?"
+  },
+  "importSelectedTokensDescription": {
+    "message": "आपके द्वारा चुने गए टोकन केवल आपके वॉलेट में दिखाई देंगे। आप बाद में कभी भी छिपे हुए टोकन को खोज कर उन्हें आयात कर सकते हैं।"
+  },
   "importTokenQuestion": {
     "message": "टोकन आयात करें?"
   },
@@ -1537,6 +1698,9 @@
     "message": "आयातित",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "inYourSettings": {
+    "message": "आपके सेटिंग्स में"
+  },
   "infuraBlockedNotification": {
     "message": "MetaMask ब्लॉकचेन होस्ट से कनेक्ट करने में असमर्थ है। संभावित कारणों की समीक्षा करें $1।",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
@@ -1544,12 +1708,29 @@
   "initialTransactionConfirmed": {
     "message": "नेटवर्क द्वारा आपके प्रारंभिक लेनदेन की पुष्टि की गई थी। वापस जाने के लिए ठीक पर क्लिक करें।"
   },
+  "inputLogicEmptyState": {
+    "message": "केवल वही संख्या दर्ज करें जो आप अभी या भविष्य में अनुबंध खर्च के साथ सहज महसूस करते हैं। आप बाद में कभी भी खर्च की सीमा बढ़ा सकते हैं।"
+  },
+  "inputLogicEqualOrSmallerNumber": {
+    "message": "यह अनुबंध को आपकी वर्तमान शेष राशि से $1 खर्च करने की अनुमति देता है।",
+    "description": "$1 is the current token balance in the account and the name of the current token"
+  },
+  "inputLogicHigherNumber": {
+    "message": "यह अनुबंध को आपके सभी टोकन शेष को तब तक खर्च करने की अनुमति देता है जब तक कि यह सीमा तक नहीं पहुंच जाता या आप खर्च की सीमा को रद्द नहीं कर देते। यदि इसका इरादा नहीं है, तो कम खर्च करने की सीमा निर्धारित करने पर विचार करें।"
+  },
+  "install": {
+    "message": "इंस्टॉल करें"
+  },
   "insufficientBalance": {
     "message": "अपर्याप्त शेषराशि।"
   },
   "insufficientCurrencyBuyOrDeposit": {
     "message": "$2 नेटवर्क पर लेनदेन शुल्क का भुगतान करने के लिए आपके अकाउंट में पर्याप्त $1 नहीं है। $3 या किसी अन्य अकाउंट से जमा करें।",
     "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button"
+  },
+  "insufficientCurrencyBuyOrReceive": {
+    "message": "आपके खाते में $2 नेटवर्क पर लेनदेन शुल्क का भुगतान करने के लिए पर्याप्त $1 नहीं है। दूसरे खाते से $3 या $4।",
+    "description": "$1 is the native currency of the network, $2 is the name of the current network, $3 is the key 'buy' + the ticker symbol of the native currency of the chain wrapped in a button, $4 is the key 'deposit' button"
   },
   "insufficientCurrencyDeposit": {
     "message": "$2 नेटवर्क पर लेनदेन शुल्क का भुगतान करने के लिए आपके अकाउंट में पर्याप्त $1 नहीं हैं। अन्य अकाउंट से $1 जमा करें।",
@@ -1617,11 +1798,8 @@
   "invalidSeedPhrase": {
     "message": "अमान्य गुप्त रिकवरी फ्रेज"
   },
-  "ipfsGateway": {
-    "message": "IPFS गेटवे"
-  },
-  "ipfsGatewayDescription": {
-    "message": "ENS सामग्री रिजॉल्यूशन का उपयोग करने के लिए IPFS CID गेटवे का URL दर्ज करें।"
+  "invalidSeedPhraseCaseSensitive": {
+    "message": "अमान्य निवेश! गुप्त पुनर्प्राप्ति वाक्यांश केस संवेदी है।"
   },
   "jazzAndBlockies": {
     "message": "जाज़िकॉन्स और ब्लॉकीज़ विशिष्ट आइकनों की दो अलग-अलग शैलियां हैं जो आपको एक नज़र में किसी अकाउंट की पहचान करने में मदद करती हैं।"
@@ -1636,11 +1814,11 @@
     "message": "JSON फाइल",
     "description": "format for importing an account"
   },
+  "keepTapsOnTokens": {
+    "message": "खातों और नेटवर्क पर अपने टोकन और एनएफटी पर नज़र रखने के लिए।"
+  },
   "keystone": {
     "message": "Keystone"
-  },
-  "keystoneTutorial": {
-    "message": " (ट्यूटोरियल)"
   },
   "knownAddressRecipient": {
     "message": "ज्ञात अनुबंध पता।"
@@ -1648,14 +1826,8 @@
   "knownTokenWarning": {
     "message": "यह कार्रवाई उन टोकन को संपादित करेगी, जो पहले से ही आपके वॉलेट में सूचीबद्ध हैं, जिसका उपयोग आपको फ़िश करने के लिए किया जा सकता है। केवल तभी अनुमोदित करें, जब आप इस बात को लेकर सुनिश्चित हों कि आप इन टोकन का प्रतिनिधित्व बदलना चाहते हैं। $1 के बारे में और अधिक जानें"
   },
-  "kovan": {
-    "message": "Kovan टेस्ट नेटवर्क"
-  },
   "lastConnected": {
-    "message": "अंतिम बार कनेक्ट किया गया"
-  },
-  "learmMoreAboutGas": {
-    "message": "गैस के बारे में $1 चाहते हैं?"
+    "message": "अंतिम बार जुड़ा"
   },
   "learnCancelSpeeedup": {
     "message": "$1 करने का तरीका जानें",
@@ -1663,6 +1835,10 @@
   },
   "learnMore": {
     "message": "अधिक जानें"
+  },
+  "learnMoreAboutGas": {
+    "message": "गैस के बारे में $1 चाहते हैं?",
+    "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreUpperCase": {
     "message": "अधिक जानें"
@@ -1766,7 +1942,7 @@
   },
   "lowGasSettingToolTipMessage": {
     "message": "एक सस्ती कीमत की प्रतीक्षा के लिए $1 का उपयोग करें। समय का अनुमान बहुत कम सही होता है क्योंकि कीमतें कुछ हद तक अप्रत्याशित होती हैं।",
-    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
     "message": "निम्न"
@@ -1810,7 +1986,7 @@
   },
   "mediumGasSettingToolTipMessage": {
     "message": "मौजूदा बाजार मूल्य पर तेजी से प्रोसेस करने के लिए $1का उपयोग करें।",
-    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "मेमो"
@@ -1842,18 +2018,12 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "हमेशा आपको सेटिंग्स के माध्यम से ऑप्ट-आउट करने की अनुमति देगा"
   },
-  "metametricsCommitmentsAllowOptOut2": {
-    "message": "सेटिंग्स के माध्यम से हमेशा ऑप्ट-आउट करने में सक्षम हों"
-  },
   "metametricsCommitmentsBoldNever": {
     "message": "कभी नहीं",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask निम्न चीजें करेगा.."
-  },
-  "metametricsCommitmentsNeverCollect": {
-    "message": "कभी भी चाभियां, पता, लेन-देन, शेष राशि, हैश, या कोई व्यक्तिगत सूचना एकत्र ना करें"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 आपका पूरा IP पता एकत्र करेगा",
@@ -1862,12 +2032,6 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "$1 कुंजी, पते, लेनदेन, शेषराशि, हैश या कोई भी व्यक्तिगत जानकारी एकत्र करता है",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverIP": {
-    "message": "कभी भी आपका पूरा IP पता एकत्र नहीं करता"
-  },
-  "metametricsCommitmentsNeverSell": {
-    "message": "फायदे के लिए कभी डेटा नहीं बेचता। कभी भी!"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 लाभ के लिए डेटा बेचता है। कभी भी!",
@@ -1882,19 +2046,22 @@
   "metametricsOptInDescription": {
     "message": "MetaMask इस बात की बेहतर समझ प्राप्त करने के लिए डेटा एकत्र करना चाहता है कि हमारे उपयोगकर्ता विस्तार के साथ कैसे सहभागिता करते हैं। इस डेटा का उपयोग हमारे उत्पाद और Ethereum पारिस्थितिकी तंत्र की उपयोगिता और उपयोगकर्ता अनुभव को लगातार सुधारने के लिए किया जाएगा।"
   },
-  "metametricsOptInDescription2": {
-    "message": "हम अपने उत्पाद की उपयोगिता में सुधार के लिए बुनियादी उपयोग डेटा एकत्र करना चाहते हैं। ये मेट्रिक्स करेंगे..."
-  },
-  "metametricsTitle": {
-    "message": "MetaMask को बेहतर बनाने के लिए 6M+ उपयोगकर्ताओं से जुड़ें"
-  },
-  "mismatchedChain": {
-    "message": "इस चेन ID के लिए नेटवर्क विवरण हमारे रिकॉर्ड से मेल नहीं खाता। हम अनुशंसा करते हैं कि आप आगे बढ़ने से पहले $1।",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण सत्यापित करें",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "mismatchedChainRecommendation": {
+    "message": "हम सिफ़ारिश करते हैं कि आगे बढ़ने से पहले आप $1 करें।",
+    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key. The link will open to instructions for users to validate custom network details."
+  },
+  "mismatchedNetworkName": {
+    "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन आईडी से ठीक से मेल नहीं खा सकता है।"
+  },
+  "mismatchedNetworkSymbol": {
+    "message": "सबमिट किया गया मुद्रा संकेत इस चेन आईडी के लिए हमारी अपेक्षा से मेल नहीं खाता।"
+  },
+  "mismatchedRpcUrl": {
+    "message": "हमारे रिकॉर्ड के अनुसार, सबमिट किया गया RPC-URL मान इस चेन आईडी के लिए किसी ज्ञात प्रदाता से मेल नहीं खाता।"
   },
   "missingNFT": {
     "message": "अपना NFT नहीं देख रहे हैं?"
@@ -1920,6 +2087,10 @@
   "name": {
     "message": "नाम"
   },
+  "nativeToken": {
+    "message": "इस नेटवर्क पर मूल टोकन $1 है। यह गैस शुल्क के लिए इस्तेमाल किया जाने वाला टोकन है।",
+    "description": "$1 represents the name of the native token on the current network"
+  },
   "needCryptoInWallet": {
     "message": "MetaMask का इस्तेमाल करते हुए विकेंद्रीकृत एप्लिकेशन्स के साथ इंटरैक्ट करने के लिए आपके वॉलेट में $1 होना ज़रूरी है।",
     "description": "$1 represents the cypto symbol to be purchased"
@@ -1929,7 +2100,7 @@
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
   },
   "needHelpFeedback": {
-    "message": "अपना फीडबैक साझा करें"
+    "message": "अपनी प्रतिक्रिया साझा करें"
   },
   "needHelpLinkText": {
     "message": "MetaMask सहायता"
@@ -1947,6 +2118,9 @@
   "network": {
     "message": "नेटवर्क:"
   },
+  "networkAddedSuccessfully": {
+    "message": "नेटवर्क सफलतापूर्वक जोड़ा गया!"
+  },
   "networkDetails": {
     "message": "नेटवर्क विवरण"
   },
@@ -1955,6 +2129,9 @@
   },
   "networkName": {
     "message": "नेटवर्क का नाम"
+  },
+  "networkNameArbitrum": {
+    "message": "मध्यस्थता"
   },
   "networkNameAvalanche": {
     "message": "Avalanche"
@@ -1968,14 +2145,20 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
+  "networkNameGoerli": {
+    "message": "गोएर्ली"
+  },
+  "networkNameOptimism": {
+    "message": "आशावाद"
+  },
   "networkNamePolygon": {
     "message": "बहुभुज"
   },
-  "networkNameRinkeby": {
-    "message": "Rinkeby"
-  },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkProvider": {
+    "message": "नेटवर्क प्रोवाइडर"
   },
   "networkSettingsChainIdDescription": {
     "message": "चेन ID का उपयोग लेनदेन पर हस्ताक्षर करने के लिए किया जाता है। इसे नेटवर्क द्वारा दी गई चेन ID से मेल खाना चाहिए। आप दशमलव या '0x'-उपसर्ग वाली हेक्साडेसिमल संख्या दर्ज कर सकते हैं, लेकिन हम संख्या को दशमलव में प्रदर्शित करेंगे।"
@@ -2006,11 +2189,11 @@
   "nevermind": {
     "message": "कोई बात नहीं"
   },
+  "new": {
+    "message": "नया!"
+  },
   "newAccount": {
     "message": "नया खाता"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "नया पता मिला है! अपनी पता पुस्तिका में जोड़ने के लिए यहां क्लिक करें।"
   },
   "newAccountNumberName": {
     "message": "खाता $1",
@@ -2047,12 +2230,6 @@
   "newTokensImportedTitle": {
     "message": "टोकन इम्पोर्ट हो गया"
   },
-  "newTotal": {
-    "message": "नया कुलयोग"
-  },
-  "newTransactionFee": {
-    "message": "नया लेनदेन शुल्क"
-  },
   "newValues": {
     "message": "नए मान"
   },
@@ -2063,8 +2240,22 @@
     "message": "नॉन्स $1 के सुझाए गए नॉन्स से अधिक है",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nft": {
+    "message": "एनएफटी"
+  },
   "nftTokenIdPlaceholder": {
     "message": "संग्रहणीय ID दर्ज करें"
+  },
+  "nftWarningContent": {
+    "message": "आप भविष्य में आपके द्वारा अपनाए कुछ भी सहित, $1 का ऐक्सेस प्रदान कर रहे हैं। दूसरे छोर पर मौजूद पक्ष इन NFTs को आपके वॉलेट से किसी भी समय बिना आपसे पूछे तब तक स्थानांतरित कर सकता है जब तक कि आप इस अनुमोदन को रद्द नहीं कर देते। $2",
+    "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
+  },
+  "nftWarningContentBold": {
+    "message": "आपके सभी $1 के NFTs",
+    "description": "$1 is name of the collection"
+  },
+  "nftWarningContentGrey": {
+    "message": "सावधानी से आगे बढ़ें।"
   },
   "nfts": {
     "message": "NFT"
@@ -2082,7 +2273,7 @@
     "message": "नहीं, मेरे पास पहले से ही एक गुप्त रिकवरी फ्रेज है"
   },
   "noConversionDateAvailable": {
-    "message": "करेंसी के रुपांतरण की कोई तारीख उपलब्ध नहीं है"
+    "message": "कोई मुद्रा रूपांतरण तारीख उपलब्ध नहीं है"
   },
   "noConversionRateAvailable": {
     "message": "कोई भी रूपांतरण दर उपलब्ध नहीं है"
@@ -2134,13 +2325,13 @@
   },
   "notifications10ActionText": {
     "message": "सेटिंग्स में जाएं",
-    "description": "The 'call to action' on the button, or link, of the 'Visit in settings' notification. Upon clicking, users will be taken to settings page."
+    "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
   },
   "notifications10DescriptionOne": {
     "message": "बेहतर टोकन डिटेक्शन वर्तमान में Ethereum Mainnet, Polygon, BSC और Avalanche के नेटवर्कों पर उपलब्ध है। और भी आने वाला है!"
   },
   "notifications10DescriptionThree": {
-    "message": "टोकन डिटेक्शन फ़ीचर डिफ़ॉल्ट रूप से चालू है। लेकिन आप इसे सेटिंग्स में जाकर अक्षम कर सकते हैं।"
+    "message": "टोकन डिटेक्शन फीचर डिफॉल्ट रूप से बंद है। लेकिन आप इसे सेटिंग्स में जाकर सक्षम कर सकते हैं।"
   },
   "notifications10DescriptionTwo": {
     "message": "हम थर्ड पार्टी टोकन सूचियों से टोकन प्राप्त करते हैं। दो से अधिक टोकन सूचियों पर सूचीबद्ध टोकन स्वचालित रूप से पहचाने जाएंगे।"
@@ -2158,10 +2349,46 @@
     "message": "डार्क मोड सक्षम करें"
   },
   "notifications12Description": {
-    "message": "नए उपयोगकर्ताओं के लिए उनकी सिस्टम प्राथमिकताओं के आधार पर डार्क मोड सक्षम किया जाएगा। मौजूदा उपयोगकर्ताओं के लिए, सेटिंग->एक्सपेरिमेंटल के नीचे मैन्युअल रूप से डार्क मोड सक्षम करें।"
+    "message": "एक्सटेंशन पर डार्क मोड आखिरकार आ गया है! इसे चालू करने के लिए, सेटिंग्स पर जाएं -> एक्सपेरिमेंटल और डिस्प्ले विकल्पों में से एक का चयन करें: लाइट, डार्क, सिस्टम।"
   },
   "notifications12Title": {
     "message": "वेन डार्क मोड? अब डार्क मोड! 🕶️🦊"
+  },
+  "notifications13ActionText": {
+    "message": "कस्टम नेटवर्क सूची दिखाएं"
+  },
+  "notifications13Description": {
+    "message": "अब आप निम्नलिखित लोकप्रिय कस्टम नेटवर्क्स आसानी से जोड़ सकते हैं: आर्बिट्रम, एवलांश, बिनेंस स्मार्ट चेन, फैंटम, हार्मनी, ऑप्टिमिज्म, पाम एंड पॉलीगॉन! इस फीचर को सक्षम करने के लिए, सेटिंग्स पर जाएं ->एक्सपेरिमेंटल और \"शो कस्टम नेटवर्क लिस्ट\" ऑन करें!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes popular network feature."
+  },
+  "notifications13Title": {
+    "message": "लोकप्रिय नेटवर्क्स जोड़ें"
+  },
+  "notifications14ActionText": {
+    "message": "बैकअप सेटिंग दिखाएं"
+  },
+  "notifications14Description": {
+    "message": "हम अक्टूबर की शुरुआत में अपनी 3Box डेटा सुविधा को अवमानित कर रहे हैं। अपने वॉलेट को मैन्युअल रूप से बैकअप और रीस्टोर करने के लिए, उन्नत सेटिंग्स में \"अभी बैकअप लें\" बटन का उपयोग करें।",
+    "description": "Description of a notification in the 'See What's New' popup. Describes 3box deprecation."
+  },
+  "notifications14Title": {
+    "message": "3Box की अस्वीकृति"
+  },
+  "notifications15Description": {
+    "message": "आपकी ओर से कुछ भी करने की आवश्यकता नहीं है, इसलिए हमेशा की तरह अपने वॉलेट का उपयोग करते रहें। मर्ज के आसपास संभावित घोटालों से अवगत रहें।",
+    "description": "Description of a notification in the 'See What's New' popup. Advises users about the ethereum merge (https://ethereum.org/en/upgrades/merge/#main-content) and potential scams."
+  },
+  "notifications15Title": {
+    "message": "इथेरियम मर्ज यहाँ है!"
+  },
+  "notifications17ActionText": {
+    "message": "सुरक्षा और गोपनीयता सेटिंग्स को दिखाएं"
+  },
+  "notifications17Description": {
+    "message": "यह अपडेट अधिक विकल्प प्रदान करता है ताकि आप अपनी गोपनीयता को बेहतर ढंग से नियंत्रित कर सकें। हमने डेटा कैसे एकत्र किया जाता है और इसे साझा करने के लिए स्पष्ट विकल्पों के बारे में और अधिक पारदर्शिता जोड़ी है। सुरक्षा और गोपनीयता के सेटिंग्स के माध्यम से अपनी प्राथमिकताओं को बदलें या एक्सटेंशन उपयोग डेटा हटाएं।"
+  },
+  "notifications17Title": {
+    "message": "सुरक्षा और गोपनीयता सेटिंग्स"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile उपयोगकर्ता अब अपने मोबाइल वॉलेट के अंदर टोकन स्वैप कर सकते हैं। मोबाइल ऐप प्राप्त करने के लिए QR कोड को स्कैन करें और स्वैप करना शुरू करें।",
@@ -2212,7 +2439,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6Title": {
-    "message": "Chrome उपयोगकर्ताओं के लिए Ledger सहायता अद्यतन",
+    "message": "Chrome उपयोगकर्ताओं के लिए Ledger सहायता अपडेट",
     "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
   },
   "notifications7DescriptionOne": {
@@ -2228,15 +2455,15 @@
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
   "notifications8ActionText": {
-    "message": "एडवांस सेटिंग्स पर जाएं",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+    "message": "सेटिंग्स पर जाएं > एडवांस्ड",
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
     "message": "MetaMask v10.4.0 के अनुसार, अब आपको अपने लेजर डिवाइस को मेटामास्क से कनेक्ट करने के लिए लेजर लाइव की आवश्यकता नहीं है।",
     "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
   },
   "notifications8DescriptionTwo": {
-    "message": "एक आसान और अधिक स्थिर लेजर अनुभव के लिए, सेटिंग्स के एडवांस टैब पर जाएं और 'पसंदीदा लेजर कनेक्शन प्रकार' को 'WebHID' पर स्विच करें।",
+    "message": "एक आसान और अधिक स्थिर लेजर अनुभव के लिए, सेटिंग्स के एडवांस्ड टैब पर जाएं और 'पसंदीदा लेजर कनेक्शन प्रकार' को 'WebHID' पर स्विच करें।",
     "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
   },
   "notifications8Title": {
@@ -2259,15 +2486,18 @@
     "message": "सूचनाएं"
   },
   "notificationsInfos": {
-    "message": "$1 से $2",
+    "message": "$1 को $2 से",
     "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
   },
   "notificationsMarkAllAsRead": {
-    "message": "सभी को पढ़ा हुआ मार्क करें"
+    "message": "सभी को पढ़ा हुआ चिन्हित करें"
   },
-  "numberOfNewTokensDetected": {
+  "numberOfNewTokensDetectedPlural": {
     "message": "इस खाते में $1 के नए टोकन पाए गए",
     "description": "$1 is the number of new tokens detected"
+  },
+  "numberOfNewTokensDetectedSingular": {
+    "message": "इस खाते में 1 नया टोकन पाया गया"
   },
   "ofTextNofM": {
     "message": "का"
@@ -2284,14 +2514,87 @@
   "on": {
     "message": "चालू"
   },
+  "onboardingAdvancedPrivacyIPFSDescription": {
+    "message": "IPFS (आईपीएफएस) गेटवे तृतीय पक्षों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का उपयोग जारी रख सकते हैं।"
+  },
+  "onboardingAdvancedPrivacyIPFSInvalid": {
+    "message": "कृपया एक मान्य URL (यूआरएल) को दर्ज करें"
+  },
+  "onboardingAdvancedPrivacyIPFSTitle": {
+    "message": "कस्टम IPFS गेटवे जोड़ें"
+  },
+  "onboardingAdvancedPrivacyIPFSValid": {
+    "message": "IPFS गेटवे URL मान्य है"
+  },
+  "onboardingAdvancedPrivacyNetworkButton": {
+    "message": "कस्टम नेटवर्क जोड़ें"
+  },
+  "onboardingAdvancedPrivacyNetworkDescription": {
+    "message": "हम अपने रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में Infura का उपयोग करते हैं ताकि हम एथेरियम डेटा तक सबसे विश्वसनीय और निजी ऐक्सेस प्रदान कर सकें। आप अपना स्वयं का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC लेनदेन करने के लिए आपका IP पता और एथेरियम वॉलेट प्राप्त करेगा। Infura डेटा को कैसे प्रबंधित करता है, इस बारे में अधिक जानने के लिए हमारा $1 पढ़ें।"
+  },
+  "onboardingAdvancedPrivacyNetworkTitle": {
+    "message": "अपना नेटवर्क चुनें"
+  },
   "onboardingCreateWallet": {
     "message": "एक नया वॉलेट बनाएं"
   },
   "onboardingImportWallet": {
     "message": "मौजूदा वॉलेट इम्पोर्ट करें"
   },
+  "onboardingMetametricsAgree": {
+    "message": "मैं सहमत हूं"
+  },
+  "onboardingMetametricsAllowOptOut": {
+    "message": "सेटिंग के माध्यम से आपको हमेशा ऑप्ट-आउट करने की अनुमति देता है"
+  },
+  "onboardingMetametricsDataTerms": {
+    "message": "यह डेटा एकत्र किया गया है और इसलिए सामान्य डेटा संरक्षण विनियम (EU) 2016/679 के उद्देश्यों के लिए अज्ञात है।"
+  },
+  "onboardingMetametricsDescription": {
+    "message": "MetaMask यह समझने के लिए उपयोग डेटा एकत्र करना चाहता है कि हमारे उपयोगकर्ता MetaMask से कैसे इंटरैक्ट करते हैं। इस डेटा का उपयोग सर्विस प्रदान करने के लिए किया जाएगा, जिसमें आपके उपयोग के आधार पर सर्विस में सुधार करना शामिल है।"
+  },
+  "onboardingMetametricsDescription2": {
+    "message": "MetaMask करेगा..."
+  },
+  "onboardingMetametricsDisagree": {
+    "message": "जी नहीं, धन्यवाद"
+  },
+  "onboardingMetametricsInfuraTerms": {
+    "message": "* जब आप MetaMask में अपने डिफॉल्ट RPC प्रदाता के रूप में Infura का उपयोग करते हैं, तो जब आप लेनदेन भेजते हैं तो Infura आपका IP पता और आपके एथेरियम वॉलेट का पता एकत्र कर लेगा। हम इस जानकारी को इस तरह से संगृहीत नहीं करते हैं जिससे हमारे सिस्टम डेटा के उन दो टुकड़ों को जोड़ सकें। डेटा संग्रह के दृष्टिकोण से MetaMask और Infura कैसे इंटरैक्ट करते हैं, इस बारे में अधिक जानकारी के लिए, हमारा अपडेट $1 देखें। सामान्य तौर पर हमारे गोपनीयता के कार्यप्रणाली के बारे में अधिक जानकारी के लिए, हमारा $2 देखें।",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+  },
+  "onboardingMetametricsInfuraTermsPolicy": {
+    "message": "यहां गोपनीयता नीति"
+  },
+  "onboardingMetametricsInfuraTermsPolicyLink": {
+    "message": "यहां"
+  },
+  "onboardingMetametricsModalTitle": {
+    "message": "कस्टम नेटवर्क जोड़ें"
+  },
+  "onboardingMetametricsNeverCollect": {
+    "message": "$1 ऐसी जानकारी एकत्र करते हैं जिसे हमें सर्विस प्रदान करने की आवश्यकता नहीं है (जैसे कुंजियां, पते, लेन-देन के उलझन, या शेष राशि)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectIP": {
+    "message": "$1 आपका पूरा IP पता एकत्र करते हैं*",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasis": {
+    "message": "कभी नहीं"
+  },
+  "onboardingMetametricsNeverSellData": {
+    "message": "$1 डेटा बेचते हैं। कभी!",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsSendAnonymize": {
+    "message": "अज्ञात क्लिक और पेजव्यू इवेंट भेजें"
+  },
+  "onboardingMetametricsTitle": {
+    "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
+  },
   "onboardingPinExtensionBillboardAccess": {
-    "message": "पूरी पहुंच"
+    "message": "पूरी एक्सेस"
   },
   "onboardingPinExtensionBillboardDescription": {
     "message": "ये एक्सटेंशन जानकारी देख और बदल सकते हैं"
@@ -2348,8 +2651,8 @@
     "message": "अपने लेजर को WebHID के माध्यम से कनेक्ट करने के लिए MetaMask को पूर्ण स्क्रीन में खोलें।",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
-  "openSourceCode": {
-    "message": "सोर्स कोड जांचें"
+  "openInBlockExplorer": {
+    "message": "ब्लॉक एक्सप्लोरर में खोलें"
   },
   "optional": {
     "message": "वैकल्पिक"
@@ -2365,6 +2668,10 @@
   },
   "osTheme": {
     "message": "सिस्टम"
+  },
+  "otherSnaps": {
+    "message": "अन्य स्नैप",
+    "description": "Used in the 'permission_rpc' message."
   },
   "padlock": {
     "message": "पैडलॉक"
@@ -2421,7 +2728,13 @@
     "message": "अनुमति अनुरोध"
   },
   "permissionRequestCapitalized": {
-    "message": "अनुमति हेतु अनुरोध"
+    "message": "अनुमति के लिए अनुरोध"
+  },
+  "permissionRequested": {
+    "message": "अब अनुरोध किया गया"
+  },
+  "permissionRevoked": {
+    "message": "इस अपडेट में रद्द किया गया"
   },
   "permission_accessNetwork": {
     "message": "इंटरनेट एक्सेस करें।",
@@ -2431,21 +2744,41 @@
     "message": "$1 स्नैप से कनेक्ट करें।",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
+  "permission_cronjob": {
+    "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
+    "description": "The description for the `snap_cronjob` permission"
+  },
   "permission_customConfirmation": {
     "message": "MetaMask में पुष्टि को दर्शाएं।",
     "description": "The description for the `snap_confirm` permission"
+  },
+  "permission_dialog": {
+    "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
+    "description": "The description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "पता, खाते की शेषराशि, गतिविधि देखें और लेन-देन शुरू करें",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_ethereumProvider": {
+    "message": "एथेरियम प्रदाता को ऐक्सेस करें।",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "इस स्नैप के लिए अनूठी स्वेच्छित कुंजियां प्राप्त करें।",
+    "description": "The description for the `snap_getEntropy` permission"
+  },
   "permission_longRunning": {
     "message": "अनिश्चित काल तक चलाएं।",
     "description": "The description for the `endowment:long-running` permission"
   },
+  "permission_manageBip32Keys": {
+    "message": "$1($2) के तहत अपने खातों और संपत्तियों को नियंत्रित करें।",
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+  },
   "permission_manageBip44Keys": {
     "message": "आपके \"$1\" अकाउंट्स और एसेट्स नियंत्रित करें।",
-    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
     "message": "उसके डेटा को अपने डिवाइस पर स्टोर करें और प्रबंधित करें।",
@@ -2455,9 +2788,25 @@
     "message": "नोटीफिकेशंस दिखाएं।",
     "description": "The description for the `snap_notify` permission"
   },
+  "permission_rpc": {
+    "message": "$1 को इस स्नैप से सीधे संवाद करने की अनुमति दें।",
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+  },
+  "permission_transactionInsight": {
+    "message": "ट्रांजैक्शन इनसाइट्स प्राप्त करें और प्रदर्शित करें।",
+    "description": "The description for the `endowment:transaction-insight` permission"
+  },
+  "permission_transactionInsightOrigin": {
+    "message": "लेन-देन का सुझाव देने वाली वेबसाइटों की स्रोत देखें",
+    "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
+  },
   "permission_unknown": {
     "message": "अज्ञात अनुमति: $1",
     "description": "$1 is the name of a requested permission that is not recognized."
+  },
+  "permission_viewBip32PublicKeys": {
+    "message": "$1 ($2) के लिए अपनी पब्लिक की को देखें।",
+    "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
   "permissions": {
     "message": "अनुमतियाँ"
@@ -2475,9 +2824,12 @@
   "popularCustomNetworks": {
     "message": "लोकप्रिय कस्टम नेटवर्क"
   },
+  "portfolioSite": {
+    "message": "पोर्टफोलियो साइट"
+  },
   "preferredLedgerConnectionType": {
     "message": "वरीयता वाले लेजर कनेक्शन के प्रकार",
-    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
@@ -2496,6 +2848,9 @@
   },
   "priorityFeeProperCase": {
     "message": "प्राथमिकता शुल्क"
+  },
+  "privacy": {
+    "message": "गोपनीयता"
   },
   "privacyMsg": {
     "message": "गोपनीयता नीति"
@@ -2582,6 +2937,12 @@
   "rejectAll": {
     "message": "सभी को अस्वीकार करें"
   },
+  "rejectRequestsDescription": {
+    "message": "आप $1 अनुरोधों को बैच रूप से अस्वीकार करने वाले हैं।"
+  },
+  "rejectRequestsN": {
+    "message": "$1 अनुरोधों को अस्वीकार करें"
+  },
   "rejectTxsDescription": {
     "message": "आप $1 लेनदेनों को बैच में अस्वीकार करने वाले हैं।"
   },
@@ -2632,7 +2993,7 @@
     "message": "रीसेट करें"
   },
   "resetAccount": {
-    "message": "खाता रीसेट करें"
+    "message": "अकाउंट रीसेट करें"
   },
   "resetAccountDescription": {
     "message": "आपके खाते को रीसेट करने से आपका लेनदेन इतिहास साफ हो जाएगा। इससे आपके खातों में शेषराशि नहीं बदलेगी या आपको अपने गुप्त रिकवरी फ्रेज को फिर से दर्ज करने की आवश्यकता नहीं होगी।"
@@ -2650,14 +3011,22 @@
     "message": "आगे बढ़ने से पहले ये सुनिश्चित करें कि आप सही सीक्रेट रिकवरी फ़्रेज़ का इस्तेमाल कर रहे हैं। इसे आप अनडू नहीं कर पाएंगे।"
   },
   "restartMetamask": {
-    "message": "मेटामास्क को पुनरारंभ करें"
+    "message": "MetaMask को फिर से शुरू करें"
   },
   "restore": {
     "message": "पुनर्स्थापित करें"
   },
-  "restoreWalletPreferences": {
-    "message": "$1 से आपके डेटा का बैकअप मिला है। क्या आप अपनी वॉलेट वरीयताओं को पुनर्स्थापित करना चाहते हैं?",
-    "description": "$1 is the date at which the data was backed up"
+  "restoreFailed": {
+    "message": "प्रदान की गई फाइल से आपके डेटा को रीस्टोर नहीं किया जा सकता"
+  },
+  "restoreSuccessful": {
+    "message": "आपके डेटा को सफलतापूर्वक रीस्टोर किया गया है"
+  },
+  "restoreUserData": {
+    "message": "यूजर डेटा रीस्टोर करें"
+  },
+  "restoreUserDataDescription": {
+    "message": "वरीयताएं और अकाउंट एड्रेस से युक्त यूजर सेटिंग्स को आप पहले से बैकअप की गई JSON फाइल से रीस्टोर सकते हैं।"
   },
   "retryTransaction": {
     "message": "लेनदेन का पुनः प्रयास करें"
@@ -2680,17 +3049,29 @@
   "revealTheSeedPhrase": {
     "message": "सीड फ़्रेज़ दिखाएं"
   },
-  "rinkeby": {
-    "message": "Rinkeby टेस्ट नेटवर्क"
+  "reviewSpendingCap": {
+    "message": "अपनी खर्च के सीमा की समीक्षा करें"
   },
-  "ropsten": {
-    "message": "Ropsten टेस्ट नेटवर्क"
+  "revokeAllTokensTitle": {
+    "message": "अपने सभी $1 को एक्सेस करने की अनुमति निरस्त करें?",
+    "description": "$1 is the symbol of the token for which the user is revoking approval"
+  },
+  "revokeApproveForAllDescription": {
+    "message": "अनुमति निरस्त करने से, निम्नलिखित $1 अब आपके $2 को एक्सेस नहीं कर सकेगा",
+    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+  },
+  "revokeSpendingCap": {
+    "message": "अपने $1 के लिए खर्च की सीमा को हटा दें",
+    "description": "$1 is a token symbol"
+  },
+  "revokeSpendingCapTooltipText": {
+    "message": "यह अनुबंध आपके वर्तमान या भविष्य के और टोकन पर खर्च करने में असमर्थ है।"
   },
   "rpcUrl": {
     "message": "नया RPC URL"
   },
   "safeTransferFrom": {
-    "message": "से सुरक्षित ट्रांसफ़र"
+    "message": "से सुरक्षित ट्रांसफर"
   },
   "save": {
     "message": "सहेजें"
@@ -2711,7 +3092,7 @@
     "message": "खोजें"
   },
   "searchAccounts": {
-    "message": "खाते खोजें"
+    "message": "अकाउंट्स खोजें"
   },
   "searchResults": {
     "message": "खोज परिणाम"
@@ -2736,6 +3117,9 @@
   },
   "secureWallet": {
     "message": "सुरक्षित वॉलेट"
+  },
+  "security": {
+    "message": "सुरक्षा"
   },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
@@ -2797,9 +3181,6 @@
   "seedPhraseWriteDownHeader": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज लिखें"
   },
-  "selectAHigherGasFee": {
-    "message": "अपने लेनदेन की प्रक्रिया में तेजी लाने के लिए उच्च गैस शुल्क का चयन करें। *"
-  },
   "selectAccounts": {
     "message": "इस साइट पर उपयोग करने के लिए खाते (खातों) का चयन करें"
   },
@@ -2833,9 +3214,6 @@
   "send": {
     "message": "भेजें"
   },
-  "sendAmount": {
-    "message": "राशि भेजें"
-  },
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
   },
@@ -2856,11 +3234,26 @@
     "message": "$1 भेजा जा रहा है",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "setAdvancedPrivacySettings": {
-    "message": "एडवांस गोपनीयता सेटिंग्स निर्धारित करें"
+  "sendingToTokenContractWarning": {
+    "message": "चेतावनी: आप एक टोकन अनुबंध को भेजने वाले हैं जिसके परिणामस्वरूप धन की हानि हो सकती है। $1",
+    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
+  },
+  "sepolia": {
+    "message": "सेपोलिया टेस्ट नेटवर्क"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का उपयोग करता है।"
+  },
+  "setApprovalForAll": {
+    "message": "सभी के लिए स्वीकृति सेट करें"
+  },
+  "setApprovalForAllTitle": {
+    "message": "बिना किसी खर्च सीमा के $1 स्वीकृत करें",
+    "description": "The token symbol that is being approved"
+  },
+  "setSpendingCap": {
+    "message": "अपने $1 के लिए खर्च की सीमा को निर्धारित करें",
+    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "सेटिंग"
@@ -2900,16 +3293,14 @@
     "message": "आने वाले लेन-देन दिखाएं"
   },
   "showIncomingTransactionsDescription": {
-    "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें"
+    "message": "लेनदेन सूची में आने वाले लेनदेन को दिखाने के लिए Etherscan का उपयोग करने के लिए इसका चयन करें",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "अनुमतियां दिखाएं"
   },
   "showPrivateKeys": {
     "message": "निजी कुंजियां दिखाएं"
-  },
-  "showRecommendations": {
-    "message": "अनुशंसा दिखाएं"
   },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
@@ -2923,17 +3314,20 @@
   "sign": {
     "message": "हस्ताक्षर करें"
   },
-  "signNotice": {
-    "message": "इस संदेश पर हस्ताक्षर करना खतरनाक हो सकता है। यह हस्ताक्षर संभावित रूप से आपके खाते की ओर से कोई भी संचालन कर सकता है, जिसमें अनुरोध करने वाली साइट को आपके खाते और उसकी सभी संपत्तियों पर पूर्ण नियंत्रण प्रदान करना शामिल है। इस संदेश पर केवल तभी हस्ताक्षर करें जब आप जानते हों कि आप क्या कर रहे हैं या अनुरोध करने वाली साइट पर पूरा भरोसा है"
-  },
   "signatureRequest": {
     "message": "हस्ताक्षर का अनुरोध"
   },
-  "signatureRequest1": {
-    "message": "संदेश"
+  "signatureRequestGuidance": {
+    "message": "यदि आप सामग्री को पूरी तरह से समझते हैं और अनुरोध करने वाली साइट पर भरोसा करते हैं तो ही इस संदेश पर हस्ताक्षर करें।"
+  },
+  "signatureRequestWarning": {
+    "message": "इस संदेश पर हस्ताक्षर करना खतरनाक हो सकता है। हो सकता है कि आप इस संदेश के दूसरे सिरे पर पार्टी को अपने खाते और संपत्ति का पूर्ण नियंत्रण दे रहे हों। इसका मतलब है कि वे किसी भी समय आपका खाता खाली कर सकते हैं। सावधानी के साथ आगे बढ़ें। $1."
   },
   "signed": {
     "message": "हस्ताक्षर किया गया"
+  },
+  "signin": {
+    "message": "साइन-इन करें"
   },
   "simulationErrorMessageV2": {
     "message": "हम गैस का अनुमान नहीं लगा पाए। अनुबंध में कोई त्रुटि हो सकती है और यह लेन-देन विफल हो सकता है।"
@@ -2942,13 +3336,10 @@
     "message": "छोड़ें"
   },
   "skipAccountSecurity": {
-    "message": "खाता सुरक्षा छोड़ें?"
+    "message": "अकाउंट सुरक्षा छोड़ें?"
   },
   "skipAccountSecurityDetails": {
     "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने खाते और उनकी सभी संपत्ति खो सकता हूं।"
-  },
-  "slow": {
-    "message": "धीमा"
   },
   "smartTransaction": {
     "message": "स्मार्ट लेनदेन"
@@ -2961,6 +3352,10 @@
     "message": "$2 से $1 जोड़ा गया",
     "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
   },
+  "snapContent": {
+    "message": "यह सामग्री $1 से आ रही है",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
   "snapError": {
     "message": "स्नैप एरर: '$1'. एरर कोड: '$2'",
     "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
@@ -2969,17 +3364,37 @@
     "message": "स्नैप इंस्टाल करें"
   },
   "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी पर सही का निशान लगाएं।"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।"
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "आप स्नैप \"$1\" को महत्वपूर्ण एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके अकाउंट्स और एसेट्स पर \"$1\" को नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
-    "description": "The parameter is the name of the snap"
+    "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapRequestsPermission": {
     "message": "ये स्नैप निम्नलिखित अनुमतियों हेतु अनुरोध कर रहा है:"
   },
+  "snapUpdate": {
+    "message": "स्नैप अपडेट करें"
+  },
+  "snapUpdateExplanation": {
+    "message": "$1 को आपके स्नैप के नए वर्जन की जरूरत है।",
+    "description": "$1 is the dapp that is requesting an update to the snap."
+  },
   "snaps": {
     "message": "स्नैप्स"
+  },
+  "snapsInsightError": {
+    "message": "$1: $2 के साथ त्रुटि हुई",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name, $2 is the error message."
+  },
+  "snapsInsightLoading": {
+    "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
+  },
+  "snapsNoInsight": {
+    "message": "स्नैप ने कोई इनसाइट नहीं लौटाई"
   },
   "snapsSettingsDescription": {
     "message": "अपने स्नैप्स प्रबंधित करें"
@@ -2989,6 +3404,15 @@
   },
   "snapsToggle": {
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"
+  },
+  "snapsUIError": {
+    "message": "स्नैप द्वारा विनिर्दिष्टत UI अमान्य है।"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और उपयोग करने से पहले जोखिमों को समझें।"
+  },
+  "somethingIsWrong": {
+    "message": "कुछ गड़बड़ हो गया है। पृष्ठ को फिर से लोड करने का प्रयास करें।"
   },
   "somethingWentWrong": {
     "message": "ओह! कुछ गलत हो गया।"
@@ -3014,9 +3438,6 @@
   "speedUpTransaction": {
     "message": "इस लेनदेन को गति दें"
   },
-  "spendLimitAmount": {
-    "message": "खर्च सीमा राशि"
-  },
   "spendLimitInsufficient": {
     "message": "खर्च सीमा अपर्याप्त है"
   },
@@ -3032,6 +3453,13 @@
   },
   "spendLimitTooLarge": {
     "message": "खर्च सीमा बहुत अधिक है"
+  },
+  "spendingCapError": {
+    "message": "त्रुटि: केवल संख्या दर्ज करें"
+  },
+  "spendingCapErrorDescription": {
+    "message": "केवल वही संख्या दर्ज करें जिसे आप अभी या भविष्य में $1 तक ऐक्सेस करने में सहज महसूस करते हैं। आप टोकन सीमा को बाद में कभी भी बढ़ा सकते हैं।",
+    "description": "$1 is origin of the site requesting the token limit"
   },
   "srpInputNumberOfWords": {
     "message": "मेरे पास एक $1-शब्द का फ़्रेज़ है",
@@ -3085,10 +3513,10 @@
     "message": "कनेक्ट नहीं है"
   },
   "step1LatticeWallet": {
-    "message": "सुनिश्चित करें कि आपका Lattice1 कनेक्ट होने के लिए तैयार है"
+    "message": "अपना Lattice1 कनेक्ट करें"
   },
   "step1LatticeWalletMsg": {
-    "message": "MetaMask के सेट अप होने और ऑनलाइन होने के बाद आप उसे अपने Lattice1 डिवाइस से कनेक्ट कर सकते हैं। अपना डिवाइस अनलॉक करें और अपनी डिवाइस ID तैयार रखें। हार्डवेयर वॉलेट का उपयोग करने के बारे में अधिक जानकारी के लिए, $1",
+    "message": "MetaMask के सेट अप और ऑनलाइन होने के बाद आप उसे अपने Lattice1 डिवाइस से कनेक्ट कर सकते हैं। अपना डिवाइस अनलॉक करें और अपनी डिवाइस ID तैयार रखें।",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -3099,17 +3527,17 @@
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
   "step1TrezorWallet": {
-    "message": "Trezor वॉलेट प्लग इन करें"
+    "message": "अपने Trezor को कनेक्ट करें"
   },
   "step1TrezorWalletMsg": {
-    "message": "अपने वॉलेट को सीधे अपने कंप्यूटर से कनेक्ट करें। अपने हार्डवेयर वॉलेट डिवाइस के उपयोग के बारे में अधिक जानकारी के लिए, $1",
+    "message": "अपने Trezor को सीधे अपने कंप्यूटर में प्लग करें और इसे अनलॉक करें। सुनिश्चित करें कि आप सही पासफ्रेज का उपयोग कर रहे हैं।",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step2LedgerWallet": {
-    "message": "Ledger वॉलेट प्लग इन करें"
+    "message": "अपने लेजर को कनेक्ट करें"
   },
   "step2LedgerWalletMsg": {
-    "message": "अपने वॉलेट को सीधे अपने कंप्यूटर से कनेक्ट करें। अपने Ledger को अनलॉक करें और Ethereum ऐप खोलें। अपने हार्डवेयर वॉलेट डिवाइस के उपयोग के बारे में अधिक जानकारी के लिए, $1।",
+    "message": "अपने लेजर को सीधे अपने कंप्यूटर में प्लग करें, फिर इसे अनलॉक करें और एथेरियम ऐप खोलें।",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillGettingMessage": {
@@ -3161,17 +3589,11 @@
     "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से संपर्क करें।",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "स्मार्ट लेनदेन अस्थायी रूप से अनुपलब्ध हैं क्योंकि आपके पास एक लंबित लेनदेन है।"
-  },
-  "stxFallbackUnavailable": {
-    "message": "स्मार्ट लेनदेन अनुपलब्ध होने पर भी आप अपने टोकनों को स्वैप कर सकते हैं।"
-  },
   "stxPendingPrivatelySubmittingSwap": {
-    "message": "आपका स्वैप निजी रूप से भेजा जा रहा है..."
+    "message": "आपका स्वैप निजी रूप से सबमिट किया जा रहा है..."
   },
   "stxPendingPubliclySubmittingSwap": {
-    "message": "आपका स्वैप सार्वजनिक रूप से भेजा जा रहा है..."
+    "message": "आपका स्वैप सार्वजनिक रूप से सबमिट किया जा रहा है..."
   },
   "stxSubDescription": {
     "message": "* स्मार्ट लेनदेन आपके लेनदेन को निजी तौर पर, अनेक बार जमा करने का प्रयास करेंगे। यदि सभी प्रयास विफल हो जाते हैं, तो लेनदेन को सार्वजनिक रूप से प्रसारित किया जाएगा ताकि यह सुनिश्चित हो सके कि आपका स्वैप सफलतापूर्वक पूरा हो।"
@@ -3184,20 +3606,14 @@
     "description": "$1 is a token symbol, e.g. ETH"
   },
   "stxSwapCompleteIn": {
-    "message": "स्वैप < में पूरा होगा",
+    "message": "स्वैप पूरा होने में शेष समय <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
   "stxTooltip": {
     "message": "लेनदेन की लागतें घटाने और विफलताओं को कम करने के लिए सबमिट करने से पहले लेनदेन को सिम्युलेट करें।"
   },
-  "stxTryRegular": {
-    "message": "नियमित स्वैप का प्रयास करें।"
-  },
   "stxTryingToCancel": {
     "message": "अपके लेनदेन को रद्द करने का प्रयास कर रहा है..."
-  },
-  "stxUnavailable": {
-    "message": "स्मार्ट लेनदेन अक्षम किए गए हैं"
   },
   "stxUnknown": {
     "message": "स्टेटस अज्ञात"
@@ -3229,9 +3645,6 @@
   "swap": {
     "message": "स्वैप करें"
   },
-  "swapAdvancedSlippageInfo": {
-    "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे “स्लिपेज” कहा जाता है। यदि आपका स्लिपेज आपकी “अधिकतम स्लिपेज” सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
   "swapAggregator": {
     "message": "एग्रीगेटर"
   },
@@ -3252,10 +3665,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "इस स्वैप को पूरा करने के लिए आपको अधिक $1 और $2 की आवश्यकता होगी",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "आपको और $1 चाहिए होगा ताकि इस स्वैप को स्मार्ट लेनदेन का इस्तेमाल करते हुए पूरा कर सके।",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "$1 उद्धरणों में से सर्वश्रेष्ठ।",
@@ -3395,9 +3804,6 @@
   "swapQuoteDetails": {
     "message": "उद्धरण का विवरण"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
   "swapQuoteSource": {
     "message": "उद्धरण का स्रोत"
   },
@@ -3428,8 +3834,8 @@
   "swapReviewSwap": {
     "message": "स्वैप की समीक्षा करें"
   },
-  "swapSearchForAToken": {
-    "message": "एक टोकन की खोज करें"
+  "swapSearchNameOrAddress": {
+    "message": "नाम खोजें या ऐड्रेस पेस्ट करें"
   },
   "swapSelect": {
     "message": "चयन करें"
@@ -3449,6 +3855,9 @@
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageTooltip": {
+    "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
   },
   "swapSource": {
     "message": "चलनिधि का स्रोत"
@@ -3525,7 +3934,7 @@
     "message": "0% स्लिपेज"
   },
   "swapsAdvancedOptions": {
-    "message": "उन्नत विकल्प"
+    "message": "एडवांस्ड विकल्प"
   },
   "swapsExcessiveSlippageWarning": {
     "message": "स्लिपेज राशि बहुत अधिक है और इसके परिणामस्वरूप खराब दर होगी। कृपया अपने स्लिपेज टॉलरेंस को 15% से नीचे के मान तक कम करें।"
@@ -3552,8 +3961,15 @@
   "switchNetworks": {
     "message": "नेटवर्क स्विच करें"
   },
+  "switchToNetwork": {
+    "message": "$1 पर स्विच करें",
+    "description": "$1 represents the custom network that has previously been added"
+  },
   "switchToThisAccount": {
     "message": "इस खाते पर स्विच करें"
+  },
+  "switchedTo": {
+    "message": "आपने स्विच कर लिया है"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "नेटवर्क स्विच करने से सभी लंबित पुष्टिकरण रद्द हो जाएंगे"
@@ -3591,15 +4007,6 @@
   "syncWithMobileTitle": {
     "message": "मोबाइल के साथ सिंक करें"
   },
-  "syncWithThreeBox": {
-    "message": "3Box के साथ डेटा सिंक करें (प्रयोगात्मक)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "3Box के साथ अपनी सेटिंग का बैकअप लेने के लिए चालू करें। यह सुविधा वर्तमान में प्रयोगात्मक है; अपने जोखिम पर इस्तेमाल करें।"
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "प्रारंभिक सिंक के दौरान एक त्रुटि के कारण 3Box को अक्षम कर दिया गया है"
-  },
   "tenPercentIncreased": {
     "message": "10% बढ़ोत्तरी"
   },
@@ -3621,6 +4028,9 @@
   "themeDescription": {
     "message": "अपनी पसंदीदा MetaMask थीम चुन लें"
   },
+  "thingsToKeep": {
+    "message": "ध्यान रखने योग्य बातें"
+  },
   "thisWillCreate": {
     "message": "यह एक नया वॉलेट और गुप्त रिकवरी फ्रेज बनाएगा"
   },
@@ -3639,7 +4049,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 परीक्षण नेटवर्क",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "टोकन"
@@ -3657,28 +4067,28 @@
     "message": "टोकन दशमलव आवश्यक है।"
   },
   "tokenDecimalTitle": {
-    "message": "टोकन डेसिमल:"
+    "message": "टोकन दशमलव:"
   },
   "tokenDetails": {
     "message": "टोकन विवरण"
   },
-  "tokenDetection": {
-    "message": "टोकन डिटेक्शन"
-  },
-  "tokenDetectionAlertMessage": {
-    "message": "फिलहाल टोकन डिटेक्शन $1 पर उपलब्ध है। $2"
-  },
-  "tokenDetectionAnnouncement": {
-    "message": "नया! प्रायोगिक फीचर के रूप में Ethereum Mainnet पर बेहतर टोकन डिटेक्शन उपलब्ध है। $1"
-  },
-  "tokenDetectionToggleDescription": {
-    "message": "ConsenSys के टोकन का एपीआई विभिन्न थर्ड पार्टी टोकन सूचियों में से टोकन की एक सूची एकत्र करता है। इसे बंद करने से आपके वॉलेट में जोड़े गए नए टोकन का पता चलना बंद हो जाएगा, लेकिन इंपोर्ट करने के लिए टोकन खोजने का विकल्प बना रहेगा।"
+  "tokenFoundTitle": {
+    "message": "1 नया टोकन मिला"
   },
   "tokenId": {
     "message": "टोकन आइडी"
   },
   "tokenList": {
     "message": "टोकन सूचियां:"
+  },
+  "tokenNftAutoDetection": {
+    "message": "टोकन और NFT ऑटो-डिटेक्शन"
+  },
+  "tokenScamSecurityRisk": {
+    "message": "टोकन घोटाले और सुरक्षा जोखिम"
+  },
+  "tokenShowUp": {
+    "message": "हो सकता है आपके वॉलेट में आपके टोकन स्वतः दिखाई नहीं दें।"
   },
   "tokenSymbol": {
     "message": "टोकन का प्रतीक"
@@ -3754,7 +4164,7 @@
     "message": "लेनदेन $2 पर ड्रॉप किया गया।"
   },
   "transactionError": {
-    "message": "लेनदेन में त्रुटि। अनुबंध कोड में अपवाद प्राप्त हुआ।"
+    "message": "लेनदेन में त्रुटि। अनुबंध कोड में अपवाद डाला गया।"
   },
   "transactionErrorNoContract": {
     "message": "एक गैर-अनुबंध वाले पते पर एक फंक्शन को कॉल करने की कोशिश की जा रही है।"
@@ -3789,11 +4199,20 @@
   "transactionResubmitted": {
     "message": "$2 गैस शुल्क में $1 वृद्धि के साथ लेनदेन फिर से सबमिट किया गया"
   },
+  "transactionSecurityCheck": {
+    "message": "लेन-देन की सुरक्षा जांच"
+  },
+  "transactionSecurityCheckDescription": {
+    "message": "अपने सभी लेन-देन और हस्ताक्षर अनुरोधों की समीक्षा करने और ज्ञात दुर्भावनापूर्ण अनुरोधों के बारे में आपको चेतावनी देने के लिए तीसरे पक्ष (OpenSea) को सक्षम करने के लिए इसे चालू करें।"
+  },
   "transactionSubmitted": {
     "message": "$2 पर $1 के गैस शुल्क के साथ लेनदेन सबमिट किया गया।"
   },
   "transactionUpdated": {
     "message": "$2 पर लेनदेन अपडेट किया गया।"
+  },
+  "transactions": {
+    "message": "लेनदेन"
   },
   "transfer": {
     "message": "स्थानांतरण"
@@ -3809,7 +4228,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "मेटामास्क को शुरू करने में दिक्कत हुई। यह त्रुटि रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को पुनरारंभ करने का प्रयास करें।"
+    "message": "MetaMask को शुरू करने में परेशानी आई। यह त्रुटि रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करके देखें।"
   },
   "troubleTokenBalances": {
     "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",
@@ -3821,8 +4240,14 @@
   "tryAgain": {
     "message": "पुनः प्रयास करें"
   },
+  "tryOur": {
+    "message": "हमारा आजमाएं"
+  },
   "turnOnTokenDetection": {
     "message": "उन्नत टोकन डिटेक्शन चालू करें"
+  },
+  "tutorial": {
+    "message": "ट्यूटोरियल"
   },
   "twelveHrTitle": {
     "message": "12 घंटे:"
@@ -3855,6 +4280,9 @@
   "unknownCameraErrorTitle": {
     "message": "ओह! कुछ गलत हो गया...."
   },
+  "unknownCollection": {
+    "message": "अनाम संग्रह"
+  },
   "unknownNetwork": {
     "message": "अज्ञात निजी नेटवर्क"
   },
@@ -3871,12 +4299,12 @@
     "message": "विकेंद्रीकृत वेब प्रतीक्षारत है"
   },
   "unrecognizedChain": {
-    "message": "यह कस्टम नेटवर्क पहचाना नहीं गया है। हम अनुशंसा करते हैं कि आप आगे बढ़ने से पहले $1",
+    "message": "यह कस्टम नेटवर्क पहचाना नहीं गया है",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedChainLinkText": {
-    "message": "नेटवर्क विवरण सत्यापित करें",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
+  "unrecognizedProtocol": {
+    "message": "$1 (अपरिचित प्रोटोकॉल)",
+    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "वर्तमान में संग्रहणीय (ERC-721) टोकन भेजना समर्थित नहीं है",
@@ -3903,17 +4331,29 @@
   "useCollectibleDetectionDescription": {
     "message": "NFT के मीडिया और डेटा प्रदर्शित करना आपके IP पते को केंद्रीकृत सर्वर के सामने उजागर कर सकता है। आपके वॉलेट में NFT को डिटेक्ट करने के लिए तीसरे-पक्ष API (जैसे OpenSea) का उपयोग किया जाता है। यह उन सेवाओं के साथ आपके अकाउंट के पते को उजागर करता है। इसे अक्षम कर दें यदि आप नहीं चाहते कि ऐप उन सेवाओं से डेटा पुल करे।"
   },
+  "useCollectibleDetectionDescriptionLine2": {
+    "message": "इसके अतिरिक्त, ध्यान रखें कि:"
+  },
+  "useCollectibleDetectionDescriptionLine3": {
+    "message": "NFT मेटाडेटा में धोखाधड़ी या फिशिंग साइटों के लिंक हो सकते हैं।"
+  },
+  "useCollectibleDetectionDescriptionLine4": {
+    "message": "कोई भी आपके खाते में NFT को एयरड्रॉप कर सकता है। इसमें आपत्तिजनक सामग्री शामिल हो सकती है जो आपके वॉलेट में स्वचालित रूप से प्रदर्शित हो सकती है।"
+  },
+  "useDefault": {
+    "message": "डिफॉल्ट का उपयोग करें"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "खाता के शेष राशि के अनुरोधों को बैच करें"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "हम खातों को बैच करते हैं और Infura से आपकी शेष राशि को प्रतिक्रियात्मक रूप से दिखाने के लिए पूछताछ करते हैं। यदि आप इसे बंद कर देते हैं, तो केवल सक्रिय खातों के बारे में पूछताछ की जाएगी। कुछ डैप तब तक काम नहीं करेंगे जब तक आप अपने वॉलेट को कनेक्ट नहीं करते।"
+  },
   "usePhishingDetection": {
     "message": "फिशिंग डिटेक्शन का उपयोग करें"
   },
   "usePhishingDetectionDescription": {
     "message": "Ethereum उपयोगकर्ताओं को लक्षित करने वाले फिशिंग डोमेन के लिए एक चेतावनी प्रदर्शित करें"
-  },
-  "useTokenDetection": {
-    "message": "टोकन डिटेक्शन का उपयोग करें"
-  },
-  "useTokenDetectionDescription": {
-    "message": "हम आपके वॉलेट में भेजे गए नए टोकन का पता लगाने और प्रदर्शित करने के लिए तीसरे-पक्ष API का उपयोग करते हैं। बंद करें यदि आप नहीं चाहते कि MetaMask उन सेवाओं से डेटा पुल करे।"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "आपके खाते में भेजे गए टोकन को स्वचालित रूप से प्रदर्शित करने में थर्ड पार्टी के सर्वर्स के साथ संचार शामिल रहेगा, जो टोकन के चित्रों को लाने का काम करते हैं। वे सर्वर्स आपके IP एड्रेस को एक्सेस कर पाएंगे।"
@@ -3923,6 +4363,9 @@
   },
   "userName": {
     "message": "उपयोगकर्ता"
+  },
+  "verifyContractDetails": {
+    "message": "अनुबंध विवरण सत्यापित करें"
   },
   "verifyThisTokenDecimalOn": {
     "message": "टोकन दशमलव $1 पर पाया जा सकता है",
@@ -3936,14 +4379,20 @@
     "message": "इस टोकन को $1 पर सत्यापित करें और सुनिश्चित करें कि यह वही टोकन है जिससे आप व्यापार करना चाहते हैं।",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "view": {
+    "message": "देखें"
+  },
   "viewAccount": {
-    "message": "खाता देखें"
+    "message": "अकाउंट देखें"
   },
   "viewAllDetails": {
     "message": "सभी विवरण देखें"
   },
   "viewContact": {
     "message": "संपर्क देखें"
+  },
+  "viewDetails": {
+    "message": "विवरण देखें"
   },
   "viewFullTransactionDetails": {
     "message": "लेन-देन की पूरी जानकारी देखें"
@@ -3995,8 +4444,15 @@
   "walletCreationSuccessTitle": {
     "message": "वॉलेट का निर्माण सफल हुआ"
   },
+  "wantToAddThisNetwork": {
+    "message": "इस नेटवर्क को जोड़ना चाहते हैं?"
+  },
   "warning": {
     "message": "चेतावनी"
+  },
+  "warningTooltipText": {
+    "message": "$1 अनुबंध आगे की सूचना या सहमति के बिना आपकी संपूर्ण टोकन शेष राशि खर्च कर सकता है। कम खर्च करने की सीमा को समायोजित करके अपनी सुरक्षा करें।",
+    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "कमज़ोर"
@@ -4008,6 +4464,10 @@
   "webhid": {
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
+  },
+  "websites": {
+    "message": "वेबसाइ",
+    "description": "Used in the 'permission_rpc' message."
   },
   "welcome": {
     "message": "MetaMask में आपका स्वागत है"
@@ -4057,11 +4517,21 @@
   "yesLetsTry": {
     "message": "हां, आइए आजमाते हैं"
   },
+  "youHaveAddedAll": {
+    "message": "आपने सभी लोकप्रिय नेटवर्क जोड़ लिए हैं। आप अधिक नेटवर्क खोज सकते हैं $1 या आप $2 कर सकते हैं",
+    "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
+  },
   "youNeedToAllowCameraAccess": {
     "message": "आपको इस सुविधा का उपयोग करने के लिए कैमरे तक पहुंच की अनुमति देने की आवश्यकता है।"
   },
   "youSign": {
     "message": "आप हस्ताक्षर कर रहे हैं"
+  },
+  "yourFundsMayBeAtRisk": {
+    "message": "आपके फंड खतरे में हो सकते हैं"
+  },
+  "yourNFTmayBeAtRisk": {
+    "message": "आपका NFT खतरे में हो सकता है"
   },
   "yourPrivateSeedPhrase": {
     "message": "आपका निजी गुप्त रिकवरी फ्रेज"

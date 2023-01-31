@@ -32,7 +32,8 @@ const NetworkStatistics = () => {
       <Typography
         color={COLORS.TEXT_ALTERNATIVE}
         fontWeight={FONT_WEIGHT.BOLD}
-        margin={[3, 0]}
+        marginTop={3}
+        marginBottom={3}
         variant={TYPOGRAPHY.H8}
       >
         {t('networkStatus')}

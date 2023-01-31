@@ -1,6 +1,6 @@
 .edit-gas-popover {
   &__wrapper {
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       max-height: 84vh;
     }
   }

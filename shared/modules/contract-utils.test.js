@@ -19,12 +19,11 @@ describe('Contract Utils', () => {
       },
     };
 
-    const {
-      isContractAddress: isNotContractAddress,
-    } = await readAddressAsContract(
-      mockEthQuery,
-      '0x76B4aa9Fc4d351a0062c6af8d186DF959D564A84',
-    );
+    const { isContractAddress: isNotContractAddress } =
+      await readAddressAsContract(
+        mockEthQuery,
+        '0x76B4aa9Fc4d351a0062c6af8d186DF959D564A84',
+      );
     expect(isNotContractAddress).toStrictEqual(false);
   });
 });

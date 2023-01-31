@@ -11,8 +11,10 @@ export default function CollectibleDefaultImage({
   handleImageClick,
 }) {
   const t = useI18nContext();
+  const Tag = handleImageClick ? 'button' : 'div';
   return (
-    <div
+    <Tag
+      tabIndex={0}
       className={classnames('collectible-default', {
         'collectible-default--clickable': handleImageClick,
       })}
@@ -21,7 +23,7 @@ export default function CollectibleDefaultImage({
       <Typography variant={TYPOGRAPHY.H6} className="collectible-default__text">
         {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Typography>
-    </div>
+    </Tag>
   );
 }
 

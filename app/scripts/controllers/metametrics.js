@@ -10,7 +10,7 @@ import {
 } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
-import { generateUUID } from 'pubnub';
+import { v4 as uuidv4 } from 'uuid';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -18,6 +18,11 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
+import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+
+const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -25,6 +30,25 @@ const defaultCaptureException = (err) => {
   setTimeout(() => {
     throw err;
   });
+};
+
+// The function is used to build a unique messageId for segment messages
+// It uses actionId and uniqueIdentifier from event if present
+const buildUniqueMessageId = (args) => {
+  const messageIdParts = [];
+  if (args.uniqueIdentifier) {
+    messageIdParts.push(args.uniqueIdentifier);
+  }
+  if (args.actionId) {
+    messageIdParts.push(args.actionId);
+  }
+  if (messageIdParts.length && args.isDuplicateAnonymizedEvent) {
+    messageIdParts.push('0x000');
+  }
+  if (messageIdParts.length) {
+    return messageIdParts.join('-');
+  }
+  return generateRandomId();
 };
 
 const exceptionsToFilter = {
@@ -44,7 +68,7 @@ const exceptionsToFilter = {
  */
 
 /**
- * @typedef {Object} MetaMetricsControllerState
+ * @typedef {object} MetaMetricsControllerState
  * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
  *  attached to all non-anonymized event payloads
  * @property {boolean} [participateInMetaMetrics] - The user's preference for
@@ -52,23 +76,27 @@ const exceptionsToFilter = {
  *  whether or not events are tracked
  * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
  *  by UUID with stored fragments as values.
+ * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
+ *  a user opts into metrics.
+ * @property {object} [traits] - Traits that are not derived from other state keys.
+ * @property {Record<string any>} [previousUserTraits] - The user traits the last
+ *  time they were computed.
  */
 
 export default class MetaMetricsController {
   /**
    * @param {object} options
-   * @param {Object} options.segment - an instance of analytics-node for tracking
+   * @param {object} options.segment - an instance of analytics for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {Object} options.preferencesStore - The preferences controller store, used
+   * @param {object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
    *  network controller
-   * @param {Function} options.getNetworkIdentifier - Gets the current network
-   *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
+   * @param {string} options.extension - webextension-polyfill
    * @param {MetaMetricsControllerState} options.initState - State to initialized with
    * @param options.captureException
    */
@@ -77,10 +105,10 @@ export default class MetaMetricsController {
     preferencesStore,
     onNetworkDidChange,
     getCurrentChainId,
-    getNetworkIdentifier,
     version,
     environment,
     initState,
+    extension,
     captureException = defaultCaptureException,
   }) {
     this._captureException = (err) => {
@@ -92,19 +120,26 @@ export default class MetaMetricsController {
     };
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.network = getNetworkIdentifier();
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
+    this.extension = extension;
+    this.environment = environment;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
+    const segmentApiCalls = initState?.segmentApiCalls || {};
 
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      eventsBeforeMetricsOptIn: [],
+      traits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
+      },
+      segmentApiCalls: {
+        ...segmentApiCalls,
       },
     });
 
@@ -114,7 +149,6 @@ export default class MetaMetricsController {
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();
-      this.network = getNetworkIdentifier();
     });
     this.segment = segment;
 
@@ -128,21 +162,54 @@ export default class MetaMetricsController {
       this.finalizeEventFragment(fragment.id, { abandoned: true });
     });
 
+    // Code below submits any pending segmentApiCalls to Segment if/when the controller is re-instantiated
+    if (isManifestV3) {
+      Object.values(segmentApiCalls).forEach(({ eventType, payload }) => {
+        this._submitSegmentAPICall(eventType, payload);
+      });
+    }
+
     // Close out event fragments that were created but not progressed. An
     // interval is used to routinely check if a fragment has not been updated
     // within the fragment's timeout window. When creating a new event fragment
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
-    setInterval(() => {
-      Object.values(this.store.getState().fragments).forEach((fragment) => {
-        if (
-          fragment.timeout &&
-          Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-        ) {
-          this.finalizeEventFragment(fragment.id, { abandoned: true });
+    if (isManifestV3) {
+      /* eslint-disable no-undef */
+      chrome.alarms.getAll((alarms) => {
+        const hasAlarm = checkAlarmExists(
+          alarms,
+          METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+        );
+
+        if (!hasAlarm) {
+          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
+            delayInMinutes: 1,
+            periodInMinutes: 1,
+          });
         }
       });
-    }, SECOND * 30);
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
+          this.finalizeAbandonedFragments();
+        }
+      });
+    } else {
+      setInterval(() => {
+        this.finalizeAbandonedFragments();
+      }, SECOND * 30);
+    }
+  }
+
+  finalizeAbandonedFragments() {
+    Object.values(this.store.getState().fragments).forEach((fragment) => {
+      if (
+        fragment.timeout &&
+        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+      ) {
+        this.finalizeEventFragment(fragment.id, { abandoned: true });
+      }
+    });
   }
 
   generateMetaMetricsId() {
@@ -177,9 +244,10 @@ export default class MetaMetricsController {
         }`,
       );
     }
+
     const { fragments } = this.store.getState();
 
-    const id = options.uniqueIdentifier ?? generateUUID();
+    const id = options.uniqueIdentifier ?? uuidv4();
     const fragment = {
       id,
       ...options,
@@ -204,6 +272,8 @@ export default class MetaMetricsController {
         value: fragment.value,
         currency: fragment.currency,
         environmentType: fragment.environmentType,
+        actionId: options.actionId,
+        uniqueIdentifier: options.uniqueIdentifier,
       });
     }
 
@@ -285,6 +355,8 @@ export default class MetaMetricsController {
       value: fragment.value,
       currency: fragment.currency,
       environmentType: fragment.environmentType,
+      actionId: fragment.actionId,
+      uniqueIdentifier: fragment.uniqueIdentifier,
     });
     const { fragments } = this.store.getState();
     delete fragments[id];
@@ -295,7 +367,7 @@ export default class MetaMetricsController {
    * Calls this._identify with validated metaMetricsId and user traits if user is participating
    * in the MetaMetrics analytics program
    *
-   * @param {Object} userTraits
+   * @param {object} userTraits
    */
   identify(userTraits) {
     const { metaMetricsId, participateInMetaMetrics } = this.state;
@@ -315,6 +387,26 @@ export default class MetaMetricsController {
     this._identify(allValidTraits);
   }
 
+  // It sets an uninstall URL ("Sorry to see you go!" page),
+  // which is opened if a user uninstalls the extension.
+  updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
+    const query = {};
+    if (participateInMetaMetrics) {
+      // We only want to track these things if a user opted into metrics.
+      query.mmi = Buffer.from(metaMetricsId).toString('base64');
+      query.env = this.environment;
+      query.av = this.version;
+    }
+    const queryString = new URLSearchParams(query);
+
+    // this.extension not currently defined in tests
+    if (this.extension && this.extension.runtime) {
+      this.extension.runtime.setUninstallURL(
+        `${EXTENSION_UNINSTALL_URL}?${queryString}`,
+      );
+    }
+  }
+
   /**
    * Setter for the `participateInMetaMetrics` property
    *
@@ -331,6 +423,12 @@ export default class MetaMetricsController {
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
+    if (participateInMetaMetrics) {
+      this.trackEventsAfterMetricsOptIn();
+      this.clearEventsAfterMetricsOptIn();
+    }
+
+    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     return metaMetricsId;
   }
 
@@ -345,7 +443,10 @@ export default class MetaMetricsController {
    * @param {MetaMetricsPageOptions} [options] - options for handling the page
    *  view
    */
-  trackPage({ name, params, environmentType, page, referrer }, options) {
+  trackPage(
+    { name, params, environmentType, page, referrer, actionId },
+    options,
+  ) {
     try {
       if (this.state.participateInMetaMetrics === false) {
         return;
@@ -360,13 +461,13 @@ export default class MetaMetricsController {
       const { metaMetricsId } = this.state;
       const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
       const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-      this.segment.page({
+      this._submitSegmentAPICall('page', {
+        messageId: buildUniqueMessageId({ actionId }),
         [idTrait]: idValue,
         name,
         properties: {
           params,
           locale: this.locale,
-          network: this.network,
           chain_id: this.chainId,
           environment_type: environmentType,
         },
@@ -432,6 +533,7 @@ export default class MetaMetricsController {
           this._buildEventPayload({
             ...payload,
             properties: combinedProperties,
+            isDuplicateAnonymizedEvent: true,
           }),
           { ...options, excludeMetaMetricsId: true },
         ),
@@ -470,6 +572,37 @@ export default class MetaMetricsController {
     if (userTraits) {
       this.identify(userTraits);
     }
+  }
+
+  // Track all queued events after a user opted into metrics.
+  trackEventsAfterMetricsOptIn() {
+    const { eventsBeforeMetricsOptIn } = this.store.getState();
+    eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
+      this.trackEvent(eventBeforeMetricsOptIn);
+    });
+  }
+
+  // Once we track queued events after a user opts into metrics, we want to clear the event queue.
+  clearEventsAfterMetricsOptIn() {
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [],
+    });
+  }
+
+  // It adds an event into a queue, which is only tracked if a user opts into metrics.
+  addEventBeforeMetricsOptIn(event) {
+    const prevState = this.store.getState().eventsBeforeMetricsOptIn;
+    this.store.updateState({
+      eventsBeforeMetricsOptIn: [...prevState, event],
+    });
+  }
+
+  // Add or update traits for tracking.
+  updateTraits(newTraits) {
+    const { traits } = this.store.getState();
+    this.store.updateState({
+      traits: { ...traits, ...newTraits },
+    });
   }
 
   /** PRIVATE METHODS */
@@ -520,6 +653,7 @@ export default class MetaMetricsController {
     } = rawPayload;
     return {
       event,
+      messageId: buildUniqueMessageId(rawPayload),
       properties: {
         // These values are omitted from properties because they have special meaning
         // in segment. https://segment.com/docs/connections/spec/track/#properties.
@@ -532,7 +666,6 @@ export default class MetaMetricsController {
         value,
         currency,
         category,
-        network: properties?.network ?? this.network,
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
@@ -549,51 +682,53 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+    const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
+      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
       ),
-      [TRAITS.NETWORKS_WITHOUT_TICKER]: metamaskState.frequentRpcListDetail.reduce(
-        (networkList, currentNetwork) => {
-          if (!currentNetwork.ticker) {
-            networkList.push(currentNetwork.chainId);
-          }
-          return networkList;
-        },
-        [],
-      ),
-      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useCollectibleDetection,
+      [TRAITS.NETWORKS_WITHOUT_TICKER]:
+        metamaskState.frequentRpcListDetail.reduce(
+          (networkList, currentNetwork) => {
+            if (!currentNetwork.ticker) {
+              networkList.push(currentNetwork.chainId);
+            }
+            return networkList;
+          },
+          [],
+        ),
+      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
       [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
-        metamaskState.allCollectibles,
+        metamaskState.allNfts,
       ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(
-        metamaskState.allCollectibles,
-      ).length,
+      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(metamaskState.allNfts)
+        .length,
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: metamaskState.threeBoxSyncingAllowed,
+      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
     };
 
-    if (!this.previousTraits) {
-      this.previousTraits = currentTraits;
+    if (!previousUserTraits) {
+      this.store.updateState({ previousUserTraits: currentTraits });
       return currentTraits;
     }
 
-    if (this.previousTraits && !isEqual(this.previousTraits, currentTraits)) {
+    if (previousUserTraits && !isEqual(previousUserTraits, currentTraits)) {
       const updates = pickBy(
         currentTraits,
-        (v, k) => !isEqual(this.previousTraits[k], v),
+        (v, k) => !isEqual(previousUserTraits[k], v),
       );
-      this.previousTraits = currentTraits;
+      this.store.updateState({ previousUserTraits: currentTraits });
       return updates;
     }
 
@@ -604,8 +739,8 @@ export default class MetaMetricsController {
    * Returns a new object of all valid user traits. For dates, we transform them into ISO-8601 timestamp strings.
    *
    * @see {@link https://segment.com/docs/connections/spec/common/#timestamps}
-   * @param {Object} userTraits
-   * @returns {Object}
+   * @param {object} userTraits
+   * @returns {object}
    */
   _buildValidTraits(userTraits) {
     return Object.entries(userTraits).reduce((validTraits, [key, value]) => {
@@ -626,11 +761,11 @@ export default class MetaMetricsController {
    * Returns an array of all of the collectibles/NFTs the user
    * possesses across all networks and accounts.
    *
-   * @param {Object} allCollectibles
+   * @param {object} allNfts
    * @returns {[]}
    */
-  _getAllNFTsFlattened = memoize((allCollectibles = {}) => {
-    return Object.values(allCollectibles).reduce((result, chainNFTs) => {
+  _getAllNFTsFlattened = memoize((allNfts = {}) => {
+    return Object.values(allNfts).reduce((result, chainNFTs) => {
       return result.concat(...Object.values(chainNFTs));
     }, []);
   });
@@ -639,11 +774,11 @@ export default class MetaMetricsController {
    * Returns the number of unique collectible/NFT addresses the user
    * possesses across all networks and accounts.
    *
-   * @param {Object} allCollectibles
+   * @param {object} allNfts
    * @returns {number}
    */
-  _getAllUniqueNFTAddressesLength(allCollectibles = {}) {
-    const allNFTAddresses = this._getAllNFTsFlattened(allCollectibles).map(
+  _getAllUniqueNFTAddressesLength(allNfts = {}) {
+    const allNFTAddresses = this._getAllNFTsFlattened(allNfts).map(
       (nft) => nft.address,
     );
     const uniqueAddresses = new Set(allNFTAddresses);
@@ -668,7 +803,7 @@ export default class MetaMetricsController {
    *
    * @see {@link https://segment.com/docs/connections/sources/catalog/libraries/server/node/#identify}
    * @private
-   * @param {Object} userTraits
+   * @param {object} userTraits
    */
   _identify(userTraits) {
     const { metaMetricsId } = this.state;
@@ -679,7 +814,7 @@ export default class MetaMetricsController {
     }
 
     try {
-      this.segment.identify({
+      this._submitSegmentAPICall('identify', {
         userId: metaMetricsId,
         traits: userTraits,
       });
@@ -808,10 +943,53 @@ export default class MetaMetricsController {
         return resolve();
       };
 
-      this.segment.track(payload, callback);
+      this._submitSegmentAPICall('track', payload, callback);
       if (flushImmediately) {
         this.segment.flush();
       }
     });
+  }
+
+  // Method below submits the request to analytics SDK.
+  // It will also add event to controller store
+  // and pass a callback to remove it from store once request is submitted to segment
+  // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
+  // even if service worker terminates before events are submiteed to segment.
+  _submitSegmentAPICall(eventType, payload, callback) {
+    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    if (!participateInMetaMetrics || !metaMetricsId) {
+      return;
+    }
+
+    const messageId = payload.messageId || generateRandomId();
+    let timestamp = new Date();
+    if (payload.timestamp) {
+      const payloadDate = new Date(payload.timestamp);
+      if (isValidDate(payloadDate)) {
+        timestamp = payloadDate;
+      }
+    }
+    const modifiedPayload = { ...payload, messageId, timestamp };
+    this.store.updateState({
+      segmentApiCalls: {
+        ...this.store.getState().segmentApiCalls,
+        [messageId]: {
+          eventType,
+          payload: {
+            ...modifiedPayload,
+            timestamp: modifiedPayload.timestamp.toString(),
+          },
+        },
+      },
+    });
+    const modifiedCallback = (result) => {
+      const { segmentApiCalls } = this.store.getState();
+      delete segmentApiCalls[messageId];
+      this.store.updateState({
+        segmentApiCalls,
+      });
+      return callback?.(result);
+    };
+    this.segment[eventType](modifiedPayload, modifiedCallback);
   }
 }

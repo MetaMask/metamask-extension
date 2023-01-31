@@ -1,16 +1,8 @@
 import abi from 'ethereumjs-abi';
-import {
-  addCurrencies,
-  conversionUtil,
-  conversionGTE,
-  multiplyCurrencies,
-  conversionGreaterThan,
-  conversionLessThan,
-} from '../../../shared/modules/conversion.utils';
 
-import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
-import { ERC20, ERC721 } from '../../helpers/constants/common';
+import { TokenStandard } from '../../../shared/constants/transaction';
+import { Numeric } from '../../../shared/modules/Numeric';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
@@ -18,7 +10,6 @@ import {
 
 export {
   addGasBuffer,
-  calcGasTotal,
   getAssetTransferData,
   generateERC20TransferData,
   generateERC721TransferData,
@@ -27,14 +18,6 @@ export {
   ellipsify,
 };
 
-function calcGasTotal(gasLimit = '0', gasPrice = '0') {
-  return multiplyCurrencies(gasLimit, gasPrice, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  });
-}
-
 function isBalanceSufficient({
   amount = '0x0',
   balance = '0x0',
@@ -42,46 +25,22 @@ function isBalanceSufficient({
   gasTotal = '0x0',
   primaryCurrency,
 }) {
-  const totalAmount = addCurrencies(amount, gasTotal, {
-    aBase: 16,
-    bBase: 16,
-    toNumericBase: 'hex',
-  });
+  let totalAmount = new Numeric(amount, 16).add(new Numeric(gasTotal, 16));
+  let balanceNumeric = new Numeric(balance, 16);
 
-  const balanceIsSufficient = conversionGTE(
-    {
-      value: balance,
-      fromNumericBase: 'hex',
-      fromCurrency: primaryCurrency,
-      conversionRate,
-    },
-    {
-      value: totalAmount,
-      fromNumericBase: 'hex',
-      conversionRate,
-      fromCurrency: primaryCurrency,
-    },
-  );
+  if (typeof primaryCurrency !== 'undefined' && primaryCurrency !== null) {
+    totalAmount = totalAmount.applyConversionRate(conversionRate);
+    balanceNumeric = balanceNumeric.applyConversionRate(conversionRate);
+  }
 
-  return balanceIsSufficient;
+  return balanceNumeric.greaterThanOrEqualTo(totalAmount);
 }
 
 function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
-  const amountInDec = conversionUtil(amount, {
-    fromNumericBase: 'hex',
-  });
+  const amountNumeric = new Numeric(amount, 16).shiftedBy(decimals);
+  const tokenBalanceNumeric = new Numeric(tokenBalance, 16);
 
-  const tokenBalanceIsSufficient = conversionGTE(
-    {
-      value: tokenBalance,
-      fromNumericBase: 'hex',
-    },
-    {
-      value: calcTokenAmount(amountInDec, decimals),
-    },
-  );
-
-  return tokenBalanceIsSufficient;
+  return tokenBalanceNumeric.greaterThanOrEqualTo(amountNumeric);
 }
 
 function addGasBuffer(
@@ -89,43 +48,25 @@ function addGasBuffer(
   blockGasLimitHex,
   bufferMultiplier = 1.5,
 ) {
-  const upperGasLimit = multiplyCurrencies(blockGasLimitHex, 0.9, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 10,
-    numberOfDecimals: '0',
-  });
-  const bufferedGasLimit = multiplyCurrencies(
-    initialGasLimitHex,
-    bufferMultiplier,
-    {
-      toNumericBase: 'hex',
-      multiplicandBase: 16,
-      multiplierBase: 10,
-      numberOfDecimals: '0',
-    },
-  );
+  const initialGasLimit = new Numeric(initialGasLimitHex, 16);
+  const upperGasLimit = new Numeric(blockGasLimitHex, 16)
+    .times(new Numeric(0.9, 10))
+    .round(0);
+
+  const bufferedGasLimit = initialGasLimit
+    .times(new Numeric(bufferMultiplier, 10))
+    .round(0);
 
   // if initialGasLimit is above blockGasLimit, dont modify it
-  if (
-    conversionGreaterThan(
-      { value: initialGasLimitHex, fromNumericBase: 'hex' },
-      { value: upperGasLimit, fromNumericBase: 'hex' },
-    )
-  ) {
+  if (initialGasLimit.greaterThanOrEqualTo(upperGasLimit)) {
     return initialGasLimitHex;
   }
   // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-  if (
-    conversionLessThan(
-      { value: bufferedGasLimit, fromNumericBase: 'hex' },
-      { value: upperGasLimit, fromNumericBase: 'hex' },
-    )
-  ) {
-    return bufferedGasLimit;
+  if (bufferedGasLimit.lessThan(upperGasLimit)) {
+    return bufferedGasLimit.toString();
   }
   // otherwise use blockGasLimit
-  return upperGasLimit;
+  return upperGasLimit.toString();
 }
 
 function generateERC20TransferData({
@@ -174,13 +115,13 @@ function generateERC721TransferData({
 
 function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
   switch (sendToken.standard) {
-    case ERC721:
+    case TokenStandard.ERC721:
       return generateERC721TransferData({
         toAddress,
         fromAddress,
         tokenId: sendToken.tokenId,
       });
-    case ERC20:
+    case TokenStandard.ERC20:
     default:
       return generateERC20TransferData({
         toAddress,
@@ -191,5 +132,9 @@ function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
 }
 
 function ellipsify(text, first = 6, last = 4) {
+  if (!text) {
+    return '';
+  }
+
   return `${text.slice(0, first)}...${text.slice(-last)}`;
 }

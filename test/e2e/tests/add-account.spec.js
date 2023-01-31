@@ -6,6 +6,7 @@ const {
   completeImportSRPOnboardingFlow,
 } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Add account', function () {
   const testSeedPhrase =
@@ -20,11 +21,13 @@ describe('Add account', function () {
       },
     ],
   };
+  const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
+  const thirdAccount = '0xD38d853771Fb546bd8B18b2F3638491bC0B0E906';
 
   it('should display correct new account name after create', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -34,7 +37,7 @@ describe('Add account', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -50,7 +53,7 @@ describe('Add account', function () {
   it('should add the same account addresses when a secret recovery phrase is imported, the account is locked, and the same secret recovery phrase is imported again', async function () {
     await withFixtures(
       {
-        fixtures: 'onboarding',
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -65,7 +68,7 @@ describe('Add account', function () {
         );
 
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -79,9 +82,10 @@ describe('Add account', function () {
         const detailsModal = await driver.findVisibleElement('span .modal');
         // get the public address for the "second account"
         await driver.waitForSelector('.qr-code__address');
-        const secondAccountAddress = await driver.findElement(
-          '.qr-code__address',
-        );
+        const secondAccountAddress = await driver.findElement({
+          text: secondAccount,
+          tag: 'div',
+        });
         const secondAccountPublicAddress = await secondAccountAddress.getText();
 
         await driver.clickElement('.account-modal__close');
@@ -89,7 +93,7 @@ describe('Add account', function () {
 
         // generate a third accound
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '3rd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -105,9 +109,10 @@ describe('Add account', function () {
           'span .modal',
         );
         await driver.waitForSelector('.qr-code__address');
-        const thirdAccountAddress = await driver.findElement(
-          '.qr-code__address',
-        );
+        const thirdAccountAddress = await driver.findElement({
+          text: thirdAccount,
+          tag: 'div',
+        });
         const thirdAccountPublicAddress = await thirdAccountAddress.getText();
 
         await driver.clickElement('.account-modal__close');
@@ -146,7 +151,7 @@ describe('Add account', function () {
 
         // recreate a "2nd account"
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -161,10 +166,10 @@ describe('Add account', function () {
         );
         // get the public address for the "second account"
         await driver.waitForSelector('.qr-code__address');
-        const recreatedSecondAccountAddress = await driver.findElement(
-          '.qr-code__address',
-        );
-
+        const recreatedSecondAccountAddress = await driver.findElement({
+          text: secondAccount,
+          tag: 'div',
+        });
         assert.equal(
           await recreatedSecondAccountAddress.getText(),
           secondAccountPublicAddress,
@@ -175,7 +180,7 @@ describe('Add account', function () {
 
         // re-generate a third accound
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '3rd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -187,10 +192,10 @@ describe('Add account', function () {
         );
 
         // get the public address for the "third account"
-        await driver.waitForSelector('.qr-code__address');
-        const recreatedThirdAccountAddress = await driver.findElement(
-          '.qr-code__address',
-        );
+        const recreatedThirdAccountAddress = await driver.findElement({
+          text: thirdAccount,
+          tag: 'div',
+        });
         assert.strictEqual(
           await recreatedThirdAccountAddress.getText(),
           thirdAccountPublicAddress,
@@ -205,7 +210,7 @@ describe('Add account', function () {
 
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -217,7 +222,7 @@ describe('Add account', function () {
         await driver.delay(regularDelayMs);
 
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create Account', tag: 'div' });
+        await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
@@ -233,7 +238,7 @@ describe('Add account', function () {
 
         // import with private key
         await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Import Account', tag: 'div' });
+        await driver.clickElement({ text: 'Import account', tag: 'div' });
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey);

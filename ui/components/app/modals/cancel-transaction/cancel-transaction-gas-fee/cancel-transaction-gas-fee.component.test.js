@@ -1,25 +1,32 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display';
+import configureMockStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee.component';
 
 describe('CancelTransactionGasFee Component', () => {
+  const mockState = {
+    metamask: {
+      provider: {
+        chainId: '0x4',
+      },
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: false,
+      },
+    },
+  };
+
+  const mockStore = configureMockStore()(mockState);
+
   it('should render', () => {
-    const wrapper = shallow(<CancelTransactionGasFee value="0x3b9aca00" />);
+    const props = {
+      value: '0x3b9aca00',
+    };
 
-    expect(wrapper.find('.cancel-transaction-gas-fee')).toHaveLength(1);
-    expect(wrapper.find(UserPreferencedCurrencyDisplay)).toHaveLength(2);
-    const ethDisplay = wrapper.find(UserPreferencedCurrencyDisplay).at(0);
-    const fiatDisplay = wrapper.find(UserPreferencedCurrencyDisplay).at(1);
-
-    expect(ethDisplay.props().value).toStrictEqual('0x3b9aca00');
-    expect(ethDisplay.props().className).toStrictEqual(
-      'cancel-transaction-gas-fee__eth',
+    const { container } = renderWithProvider(
+      <CancelTransactionGasFee {...props} />,
+      mockStore,
     );
 
-    expect(fiatDisplay.props().value).toStrictEqual('0x3b9aca00');
-    expect(fiatDisplay.props().className).toStrictEqual(
-      'cancel-transaction-gas-fee__fiat',
-    );
+    expect(container).toMatchSnapshot();
   });
 });

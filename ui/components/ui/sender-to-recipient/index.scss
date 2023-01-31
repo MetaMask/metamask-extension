@@ -107,7 +107,7 @@
         justify-content: center;
         flex: 1;
         border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
         padding: 6px;
         background: var(--color-background-default);
         cursor: pointer;

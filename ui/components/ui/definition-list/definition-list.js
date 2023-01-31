@@ -39,7 +39,7 @@ export default function DefinitionList({
               marginBottom: 1,
             }}
             className="definition-list__term"
-            tag="dt"
+            as="dt"
           >
             {term}
             {tooltips[term] && (
@@ -62,7 +62,7 @@ export default function DefinitionList({
             }}
             className="definition-list__definition"
             overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-            tag="dd"
+            as="dd"
           >
             {definition}
           </Typography>

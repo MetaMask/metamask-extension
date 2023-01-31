@@ -1,9 +1,5 @@
-import {
-  KOVAN_CHAIN_ID,
-  KOVAN_NETWORK_ID,
-  MAINNET_CHAIN_ID,
-} from '../../shared/constants/network';
-import { TRANSACTION_TYPES } from '../../shared/constants/transaction';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { TransactionType } from '../../shared/constants/transaction';
 import {
   unconfirmedTransactionsCountSelector,
   sendTokenTokenAmountAndToAddressSelector,
@@ -26,18 +22,18 @@ describe('Confirm Transaction Selector', () => {
       metamask: {
         unapprovedTxs: {
           1: {
-            metamaskNetworkId: KOVAN_NETWORK_ID,
+            metamaskNetworkId: '5',
           },
           2: {
-            chainId: MAINNET_CHAIN_ID,
+            chainId: CHAIN_IDS.MAINNET,
           },
         },
         unapprovedMsgCount: 1,
         unapprovedPersonalMsgCount: 1,
         unapprovedTypedMessagesCount: 1,
-        network: KOVAN_NETWORK_ID,
+        network: '5',
         provider: {
-          chainId: KOVAN_CHAIN_ID,
+          chainId: '0x5',
         },
       },
     };
@@ -51,7 +47,7 @@ describe('Confirm Transaction Selector', () => {
     const state = {
       confirmTransaction: {
         tokenData: {
-          name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+          name: TransactionType.tokenMethodTransfer,
           args: getEthersArrayLikeFromObj({
             _to: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             _value: { toString: () => '1' },

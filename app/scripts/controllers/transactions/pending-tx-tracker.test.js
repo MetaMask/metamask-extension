@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import BN from 'bn.js';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import PendingTransactionTracker from './pending-tx-tracker';
 
 describe('PendingTransactionTracker', function () {
@@ -154,9 +154,8 @@ describe('PendingTransactionTracker', function () {
     it('should call _checkPendingTx for each pending transaction', async function () {
       const txMeta = {
         id: 1,
-        hash:
-          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TRANSACTION_STATUSES.SIGNED,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.signed,
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',
@@ -212,9 +211,8 @@ describe('PendingTransactionTracker', function () {
     it('should publish a new transaction', async function () {
       const txMeta = {
         id: 1,
-        hash:
-          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TRANSACTION_STATUSES.SIGNED,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.signed,
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',
@@ -257,9 +255,8 @@ describe('PendingTransactionTracker', function () {
     it('should publish the given transaction if more than 2**retryCount blocks have passed', async function () {
       const txMeta = {
         id: 1,
-        hash:
-          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TRANSACTION_STATUSES.SIGNED,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.signed,
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',
@@ -304,9 +301,8 @@ describe('PendingTransactionTracker', function () {
     it('should NOT publish the given transaction if fewer than 2**retryCount blocks have passed', async function () {
       const txMeta = {
         id: 1,
-        hash:
-          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TRANSACTION_STATUSES.SIGNED,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.signed,
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',
@@ -404,9 +400,8 @@ describe('PendingTransactionTracker', function () {
       assert.ok(
         await pendingTxTracker._checkIfTxWasDropped({
           id: 1,
-          hash:
-            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-          status: TRANSACTION_STATUSES.SUBMITTED,
+          hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: TransactionStatus.submitted,
           txParams: {
             from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
             nonce: '0x1',
@@ -437,9 +432,8 @@ describe('PendingTransactionTracker', function () {
 
       const dropped = await pendingTxTracker._checkIfTxWasDropped({
         id: 1,
-        hash:
-          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TRANSACTION_STATUSES.SUBMITTED,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.submitted,
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',
@@ -458,9 +452,8 @@ describe('PendingTransactionTracker', function () {
       const confirmedTxList = [
         {
           id: 1,
-          hash:
-            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: TransactionStatus.confirmed,
           txParams: {
             from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
             nonce: '0x1',
@@ -471,9 +464,8 @@ describe('PendingTransactionTracker', function () {
         },
         {
           id: 2,
-          hash:
-            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: TransactionStatus.confirmed,
           txParams: {
             from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
             nonce: '0x2',
@@ -517,9 +509,8 @@ describe('PendingTransactionTracker', function () {
       const confirmedTxList = [
         {
           id: 1,
-          hash:
-            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: TransactionStatus.confirmed,
           txParams: {
             from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
             nonce: '0x1',
@@ -530,9 +521,8 @@ describe('PendingTransactionTracker', function () {
         },
         {
           id: 2,
-          hash:
-            '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+          status: TransactionStatus.confirmed,
           txParams: {
             from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
             nonce: '0x2',
@@ -577,9 +567,8 @@ describe('PendingTransactionTracker', function () {
     it("should emit 'tx:warning' if getTransactionReceipt rejects", async function () {
       const txMeta = {
         id: 1,
-        hash:
-          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TRANSACTION_STATUSES.SUBMITTED,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.submitted,
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',
@@ -651,7 +640,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.once('tx:failed', listeners.failed);
       pendingTxTracker.once('tx:warning', listeners.warning);
       await pendingTxTracker._checkPendingTx({
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         history: [{}],
         txParams: { nonce: '0x1' },
         id: '456',
@@ -695,7 +684,7 @@ describe('PendingTransactionTracker', function () {
       await pendingTxTracker._checkPendingTx({
         id: '2',
         history: [{}],
-        status: TRANSACTION_STATUSES.SUBMITTED,
+        status: TransactionStatus.submitted,
         txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d' },
       });
 
@@ -717,7 +706,7 @@ describe('PendingTransactionTracker', function () {
     it("should emit 'tx:dropped' if another tx with the same nonce succeeds", async function () {
       const txs = [
         {
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          status: TransactionStatus.confirmed,
           history: [{}],
           txParams: { nonce: '0x1' },
           id: '456',
@@ -725,13 +714,12 @@ describe('PendingTransactionTracker', function () {
           hash: '0xbad',
         },
         {
-          status: TRANSACTION_STATUSES.SUBMITTED,
+          status: TransactionStatus.submitted,
           history: [{}],
           txParams: { nonce: '0x1' },
           id: '123',
           value: '0x02',
-          hash:
-            '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
+          hash: '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
         },
       ];
       const pendingTxTracker = new PendingTransactionTracker({
@@ -774,9 +762,8 @@ describe('PendingTransactionTracker', function () {
       const nonceBN = new BN(2);
       const txMeta = {
         id: 1,
-        hash:
-          '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
-        status: TRANSACTION_STATUSES.SUBMITTED,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.submitted,
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
           nonce: '0x1',

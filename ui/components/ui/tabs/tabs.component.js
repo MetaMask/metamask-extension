@@ -4,26 +4,28 @@ import classnames from 'classnames';
 
 export default class Tabs extends Component {
   static defaultProps = {
-    defaultActiveTabName: null,
+    defaultActiveTabKey: null,
     onTabClick: null,
     tabsClassName: undefined,
+    subHeader: null,
   };
 
   static propTypes = {
-    defaultActiveTabName: PropTypes.string,
+    defaultActiveTabKey: PropTypes.string,
     onTabClick: PropTypes.func,
     children: PropTypes.node.isRequired,
     tabsClassName: PropTypes.string,
+    subHeader: PropTypes.node,
   };
 
   state = {
     activeTabIndex: Math.max(
-      this._findChildByName(this.props.defaultActiveTabName),
+      this._findChildByKey(this.props.defaultActiveTabKey),
       0,
     ),
   };
 
-  handleTabClick(tabIndex, tabName) {
+  handleTabClick(tabIndex, tabKey) {
     const { onTabClick } = this.props;
     const { activeTabIndex } = this.state;
 
@@ -34,7 +36,7 @@ export default class Tabs extends Component {
         },
         () => {
           if (onTabClick) {
-            onTabClick(tabName);
+            onTabClick(tabKey);
           }
         },
       );
@@ -45,11 +47,11 @@ export default class Tabs extends Component {
     const numberOfTabs = React.Children.count(this._getValidChildren());
 
     return React.Children.map(this._getValidChildren(), (child, index) => {
-      const tabName = child?.props.name;
+      const tabKey = child?.props.tabKey;
       return (
         child &&
         React.cloneElement(child, {
-          onClick: (idx) => this.handleTabClick(idx, tabName),
+          onClick: (idx) => this.handleTabClick(idx, tabKey),
           tabIndex: index,
           isActive: numberOfTabs > 1 && index === this.state.activeTabIndex,
         })
@@ -74,26 +76,29 @@ export default class Tabs extends Component {
   }
 
   render() {
-    const { tabsClassName } = this.props;
+    const { tabsClassName, subHeader } = this.props;
     return (
       <div className="tabs">
         <ul className={classnames('tabs__list', tabsClassName)}>
           {this.renderTabs()}
         </ul>
+        {subHeader}
         <div className="tabs__content">{this.renderActiveTabContent()}</div>
       </div>
     );
   }
 
   /**
-   * Returns the index of the child with the given name
+   * Returns the index of the child with the given key
    *
-   * @param {string} name - the name to search for
+   * @param {string} tabKey - the name to search for
    * @returns {number} the index of the child with the given name
    * @private
    */
-  _findChildByName(name) {
-    return this._getValidChildren().findIndex((c) => c?.props.name === name);
+  _findChildByKey(tabKey) {
+    return this._getValidChildren().findIndex(
+      (c) => c?.props.tabKey === tabKey,
+    );
   }
 
   // This ignores any 'null' child elements that are a result of a conditional

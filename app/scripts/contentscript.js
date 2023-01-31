@@ -1,12 +1,15 @@
-import querystring from 'querystring';
 import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
+import log from 'loglevel';
 
+import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
+import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import shouldInjectProvider from '../../shared/modules/provider-injection';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -28,23 +31,38 @@ const PHISHING_WARNING_PAGE = 'metamask-phishing-warning-page';
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
 const PROVIDER = 'metamask-provider';
 
+// For more information about these legacy streams, see here:
+// https://github.com/MetaMask/metamask-extension/issues/15491
 // TODO:LegacyProvider: Delete
 const LEGACY_CONTENT_SCRIPT = 'contentscript';
 const LEGACY_INPAGE = 'inpage';
 const LEGACY_PROVIDER = 'provider';
 const LEGACY_PUBLIC_CONFIG = 'publicConfig';
 
+let legacyExtMux,
+  legacyExtChannel,
+  legacyExtPublicConfigChannel,
+  legacyPageMux,
+  legacyPageMuxLegacyProviderChannel,
+  legacyPagePublicConfigChannel,
+  notificationTransformStream;
+
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
 
-if (
-  window.location.origin === phishingPageUrl.origin &&
-  window.location.pathname === phishingPageUrl.pathname
-) {
-  setupPhishingStream();
-} else if (shouldInjectProvider()) {
-  injectScript(inpageBundle);
-  setupStreams();
-}
+let phishingExtChannel,
+  phishingExtMux,
+  phishingExtPort,
+  phishingExtStream,
+  phishingPageChannel,
+  phishingPageMux;
+
+let extensionMux,
+  extensionChannel,
+  extensionPort,
+  extensionPhishingStream,
+  extensionStream,
+  pageMux,
+  pageChannel;
 
 /**
  * Injects a script tag into the current document
@@ -56,12 +74,7 @@ function injectScript(content) {
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
-    // Inline scripts do not work in MV3 due to more strict security policy
-    if (isManifestV3()) {
-      scriptTag.setAttribute('src', browser.runtime.getURL('inpage.js'));
-    } else {
-      scriptTag.textContent = content;
-    }
+    scriptTag.textContent = content;
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
   } catch (error) {
@@ -69,26 +82,111 @@ function injectScript(content) {
   }
 }
 
-async function setupPhishingStream() {
+/**
+ * SERVICE WORKER LOGIC
+ */
+
+const EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR =
+  'Extension context invalidated.';
+
+const WORKER_KEEP_ALIVE_INTERVAL = 1000;
+const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+const TIME_45_MIN_IN_MS = 45 * 60 * 1000;
+
+/**
+ * Don't run the keep-worker-alive logic for JSON-RPC methods called on initial load.
+ * This is to prevent the service worker from being kept alive when accounts are not
+ * connected to the dapp or when the user is not interacting with the extension.
+ * The keep-alive logic should not work for non-dapp pages.
+ */
+const IGNORE_INIT_METHODS_FOR_KEEP_ALIVE = [
+  MESSAGE_TYPE.GET_PROVIDER_STATE,
+  MESSAGE_TYPE.SEND_METADATA,
+];
+
+let keepAliveInterval;
+let keepAliveTimer;
+
+/**
+ * Sending a message to the extension to receive will keep the service worker alive.
+ *
+ * If the extension is unloaded or reloaded during a session and the user attempts to send a
+ * message to the extension, an "Extension context invalidated." error will be thrown from
+ * chromium browsers. When this happens, prompt the user to reload the extension. Note: Handling
+ * this error is not supported in Firefox here.
+ */
+const sendMessageWorkerKeepAlive = () => {
+  browser.runtime
+    .sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE })
+    .catch((e) => {
+      e.message === EXTENSION_CONTEXT_INVALIDATED_CHROMIUM_ERROR
+        ? log.error(`Please refresh the page. MetaMask: ${e}`)
+        : log.error(`MetaMask: ${e}`);
+    });
+};
+
+/**
+ * Running this method will ensure the service worker is kept alive for 45 minutes.
+ * The first message is sent immediately and subsequent messages are sent at an
+ * interval of WORKER_KEEP_ALIVE_INTERVAL.
+ */
+const runWorkerKeepAliveInterval = () => {
+  clearTimeout(keepAliveTimer);
+
+  keepAliveTimer = setTimeout(() => {
+    clearInterval(keepAliveInterval);
+  }, TIME_45_MIN_IN_MS);
+
+  clearInterval(keepAliveInterval);
+
+  sendMessageWorkerKeepAlive();
+
+  keepAliveInterval = setInterval(() => {
+    if (browser.runtime.id) {
+      sendMessageWorkerKeepAlive();
+    }
+  }, WORKER_KEEP_ALIVE_INTERVAL);
+};
+
+/**
+ * PHISHING STREAM LOGIC
+ */
+
+function setupPhishingPageStreams() {
   // the transport-specific streams for communication between inpage and background
-  const pageStream = new WindowPostMessageStream({
+  const phishingPageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: PHISHING_WARNING_PAGE,
   });
-  const extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  const extensionStream = new PortStream(extensionPort);
+
+  if (isManifestV3) {
+    runWorkerKeepAliveInterval();
+  }
 
   // create and connect channel muxers
   // so we can handle the channels individually
-  const pageMux = new ObjectMultiplex();
-  pageMux.setMaxListeners(25);
-  const extensionMux = new ObjectMultiplex();
-  extensionMux.setMaxListeners(25);
+  phishingPageMux = new ObjectMultiplex();
+  phishingPageMux.setMaxListeners(25);
 
-  pump(pageMux, pageStream, pageMux, (err) =>
+  pump(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
-  pump(extensionMux, extensionStream, extensionMux, (err) => {
+
+  phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
+}
+
+const setupPhishingExtStreams = () => {
+  phishingExtPort = browser.runtime.connect({
+    name: CONTENT_SCRIPT,
+  });
+  phishingExtStream = new PortStream(phishingExtPort);
+
+  // create and connect channel muxers
+  // so we can handle the channels individually
+  phishingExtMux = new ObjectMultiplex();
+  phishingExtMux.setMaxListeners(25);
+
+  pump(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     window.postMessage(
       {
@@ -107,112 +205,322 @@ async function setupPhishingStream() {
   });
 
   // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxes(PHISHING_SAFELIST, pageMux, extensionMux);
-}
+  phishingExtChannel = phishingExtMux.createStream(PHISHING_SAFELIST);
+  pump(phishingPageChannel, phishingExtChannel, phishingPageChannel, (error) =>
+    console.debug(
+      `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
+      error,
+    ),
+  );
+
+  // eslint-disable-next-line no-use-before-define
+  phishingExtPort.onDisconnect.addListener(onDisconnectDestroyPhishingStreams);
+};
+
+/** Destroys all of the phishing extension streams */
+const destroyPhishingExtStreams = () => {
+  phishingPageChannel.removeAllListeners();
+
+  phishingExtMux.removeAllListeners();
+  phishingExtMux.destroy();
+
+  phishingExtChannel.removeAllListeners();
+  phishingExtChannel.destroy();
+
+  phishingExtStream = null;
+};
 
 /**
- * Sets up two-way communication streams between the
- * browser extension and local per-page browser context.
- *
+ * This listener destroys the phishing extension streams when the extension port is disconnected,
+ * so that streams may be re-established later the phishing extension port is reconnected.
  */
-async function setupStreams() {
+const onDisconnectDestroyPhishingStreams = () => {
+  const err = checkForLastError();
+
+  phishingExtPort.onDisconnect.removeListener(
+    onDisconnectDestroyPhishingStreams,
+  );
+
+  destroyPhishingExtStreams();
+
+  /**
+   * If an error is found, reset the streams. When running two or more dapps, resetting the service
+   * worker may cause the error, "Error: Could not establish connection. Receiving end does not
+   * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
+   * may cause issues. We suspect that this is a chromium bug as this event should only be called
+   * once the port and connections are ready. Delay time is arbitrary.
+   */
+  if (err) {
+    console.warn(`${err} Resetting the phishing streams.`);
+    setTimeout(setupPhishingExtStreams, 1000);
+  }
+};
+
+/**
+ * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
+ * This listener/callback receives the message to set up the streams after service worker in-activity.
+ *
+ * @param {object} msg
+ * @param {string} msg.name - custom property and name to identify the message received
+ * @returns {Promise|undefined}
+ */
+const onMessageSetUpPhishingStreams = (msg) => {
+  if (msg.name === EXTENSION_MESSAGES.READY) {
+    if (!phishingExtStream) {
+      setupPhishingExtStreams();
+    }
+    return Promise.resolve(
+      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
+    );
+  }
+  return undefined;
+};
+
+/**
+ * Initializes two-way communication streams between the browser extension and
+ * the phishing page context. This function also creates an event listener to
+ * reset the streams if the service worker resets.
+ */
+const initPhishingStreams = () => {
+  setupPhishingPageStreams();
+  setupPhishingExtStreams();
+
+  browser.runtime.onMessage.addListener(onMessageSetUpPhishingStreams);
+};
+
+/**
+ * INPAGE - EXTENSION STREAM LOGIC
+ */
+
+const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: INPAGE,
   });
-  const extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  const extensionStream = new PortStream(extensionPort);
+
+  if (isManifestV3) {
+    pageStream.on('data', ({ data: { method } }) => {
+      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+        runWorkerKeepAliveInterval();
+      }
+    });
+  }
 
   // create and connect channel muxers
   // so we can handle the channels individually
-  const pageMux = new ObjectMultiplex();
+  pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
-  const extensionMux = new ObjectMultiplex();
-  extensionMux.setMaxListeners(25);
-  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
   pump(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
+
+  pageChannel = pageMux.createStream(PROVIDER);
+};
+
+// The field below is used to ensure that replay is done only once for each restart.
+let METAMASK_EXTENSION_CONNECT_SENT = false;
+
+const setupExtensionStreams = () => {
+  METAMASK_EXTENSION_CONNECT_SENT = true;
+  extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+  extensionStream = new PortStream(extensionPort);
+  extensionStream.on('data', extensionStreamMessageListener);
+
+  // create and connect channel muxers
+  // so we can handle the channels individually
+  extensionMux = new ObjectMultiplex();
+  extensionMux.setMaxListeners(25);
+  extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
+
   pump(extensionMux, extensionStream, extensionMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     notifyInpageOfStreamFailure();
   });
 
   // forward communication across inpage-background for these channels only
-  forwardTrafficBetweenMuxes(PROVIDER, pageMux, extensionMux);
+  extensionChannel = extensionMux.createStream(PROVIDER);
+  pump(pageChannel, extensionChannel, pageChannel, (error) =>
+    console.debug(
+      `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
+      error,
+    ),
+  );
 
   // connect "phishing" channel to warning system
-  const phishingStream = extensionMux.createStream('phishing');
-  phishingStream.once('data', redirectToPhishingWarning);
+  extensionPhishingStream = extensionMux.createStream('phishing');
+  extensionPhishingStream.once('data', redirectToPhishingWarning);
 
-  // TODO:LegacyProvider: Delete
-  // handle legacy provider
+  // eslint-disable-next-line no-use-before-define
+  extensionPort.onDisconnect.addListener(onDisconnectDestroyStreams);
+};
+
+/** Destroys all of the extension streams */
+const destroyExtensionStreams = () => {
+  pageChannel.removeAllListeners();
+
+  extensionMux.removeAllListeners();
+  extensionMux.destroy();
+
+  extensionChannel.removeAllListeners();
+  extensionChannel.destroy();
+
+  extensionStream = null;
+};
+
+/**
+ * LEGACY STREAM LOGIC
+ * TODO:LegacyProvider: Delete
+ */
+
+// TODO:LegacyProvider: Delete
+const setupLegacyPageStreams = () => {
   const legacyPageStream = new WindowPostMessageStream({
     name: LEGACY_CONTENT_SCRIPT,
     target: LEGACY_INPAGE,
   });
 
-  const legacyPageMux = new ObjectMultiplex();
+  if (isManifestV3) {
+    legacyPageStream.on('data', ({ data: { method } }) => {
+      if (!IGNORE_INIT_METHODS_FOR_KEEP_ALIVE.includes(method)) {
+        runWorkerKeepAliveInterval();
+      }
+    });
+  }
+
+  legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
-  const legacyExtensionMux = new ObjectMultiplex();
-  legacyExtensionMux.setMaxListeners(25);
 
   pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
   );
+
+  legacyPageMuxLegacyProviderChannel =
+    legacyPageMux.createStream(LEGACY_PROVIDER);
+  legacyPagePublicConfigChannel =
+    legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
+};
+
+// TODO:LegacyProvider: Delete
+const setupLegacyExtensionStreams = () => {
+  legacyExtMux = new ObjectMultiplex();
+  legacyExtMux.setMaxListeners(25);
+
+  notificationTransformStream = getNotificationTransformStream();
   pump(
-    legacyExtensionMux,
+    legacyExtMux,
     extensionStream,
-    getNotificationTransformStream(),
-    legacyExtensionMux,
+    notificationTransformStream,
+    legacyExtMux,
     (err) => {
       logStreamDisconnectWarning('MetaMask Background Legacy Multiplex', err);
       notifyInpageOfStreamFailure();
     },
   );
 
-  forwardNamedTrafficBetweenMuxes(
-    LEGACY_PROVIDER,
-    PROVIDER,
-    legacyPageMux,
-    legacyExtensionMux,
+  legacyExtChannel = legacyExtMux.createStream(PROVIDER);
+  pump(
+    legacyPageMuxLegacyProviderChannel,
+    legacyExtChannel,
+    legacyPageMuxLegacyProviderChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic between channels "${LEGACY_PROVIDER}" and "${PROVIDER}" failed.`,
+        error,
+      ),
   );
-  forwardTrafficBetweenMuxes(
-    LEGACY_PUBLIC_CONFIG,
-    legacyPageMux,
-    legacyExtensionMux,
-  );
-}
 
-function forwardTrafficBetweenMuxes(channelName, muxA, muxB) {
-  const channelA = muxA.createStream(channelName);
-  const channelB = muxB.createStream(channelName);
-  pump(channelA, channelB, channelA, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic for channel "${channelName}" failed.`,
-      error,
-    ),
+  legacyExtPublicConfigChannel =
+    legacyExtMux.createStream(LEGACY_PUBLIC_CONFIG);
+  pump(
+    legacyPagePublicConfigChannel,
+    legacyExtPublicConfigChannel,
+    legacyPagePublicConfigChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${LEGACY_PUBLIC_CONFIG}" failed.`,
+        error,
+      ),
   );
-}
+};
 
-// TODO:LegacyProvider: Delete
-function forwardNamedTrafficBetweenMuxes(
-  channelAName,
-  channelBName,
-  muxA,
-  muxB,
-) {
-  const channelA = muxA.createStream(channelAName);
-  const channelB = muxB.createStream(channelBName);
-  pump(channelA, channelB, channelA, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic between channels "${channelAName}" and "${channelBName}" failed.`,
-      error,
-    ),
-  );
-}
+/**
+ * Destroys all of the legacy extension streams
+ * TODO:LegacyProvider: Delete
+ */
+const destroyLegacyExtensionStreams = () => {
+  legacyPageMuxLegacyProviderChannel.removeAllListeners();
+  legacyPagePublicConfigChannel.removeAllListeners();
+
+  legacyExtMux.removeAllListeners();
+  legacyExtMux.destroy();
+
+  legacyExtChannel.removeAllListeners();
+  legacyExtChannel.destroy();
+
+  legacyExtPublicConfigChannel.removeAllListeners();
+  legacyExtPublicConfigChannel.destroy();
+};
+
+/**
+ * When the extension background is loaded it sends the EXTENSION_MESSAGES.READY message to the browser tabs.
+ * This listener/callback receives the message to set up the streams after service worker in-activity.
+ *
+ * @param {object} msg
+ * @param {string} msg.name - custom property and name to identify the message received
+ * @returns {Promise|undefined}
+ */
+const onMessageSetUpExtensionStreams = (msg) => {
+  if (msg.name === EXTENSION_MESSAGES.READY) {
+    if (!extensionStream) {
+      setupExtensionStreams();
+      setupLegacyExtensionStreams();
+    }
+    return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
+  }
+  return undefined;
+};
+
+/**
+ * This listener destroys the extension streams when the extension port is disconnected,
+ * so that streams may be re-established later when the extension port is reconnected.
+ */
+const onDisconnectDestroyStreams = () => {
+  const err = checkForLastError();
+
+  extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
+
+  destroyExtensionStreams();
+  destroyLegacyExtensionStreams();
+
+  /**
+   * If an error is found, reset the streams. When running two or more dapps, resetting the service
+   * worker may cause the error, "Error: Could not establish connection. Receiving end does not
+   * exist.", due to a race-condition. The disconnect event may be called by runtime.connect which
+   * may cause issues. We suspect that this is a chromium bug as this event should only be called
+   * once the port and connections are ready. Delay time is arbitrary.
+   */
+  if (err) {
+    console.warn(`${err} Resetting the streams.`);
+    setTimeout(setupExtensionStreams, 1000);
+  }
+};
+
+/**
+ * Initializes two-way communication streams between the browser extension and
+ * the local per-page browser context. This function also creates an event listener to
+ * reset the streams if the service worker resets.
+ */
+const initStreams = () => {
+  setupPageStreams();
+  setupLegacyPageStreams();
+
+  setupExtensionStreams();
+  setupLegacyExtensionStreams();
+
+  browser.runtime.onMessage.addListener(onMessageSetUpExtensionStreams);
+};
 
 // TODO:LegacyProvider: Delete
 function getNotificationTransformStream() {
@@ -242,6 +550,38 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 }
 
 /**
+ * The function notifies inpage when the extension stream connection is ready. When the
+ * 'metamask_chainChanged' method is received from the extension, it implies that the
+ * background state is completely initialized and it is ready to process method calls.
+ * This is used as a notification to replay any pending messages in MV3.
+ *
+ * @param {object} msg - instance of message received
+ */
+function extensionStreamMessageListener(msg) {
+  if (
+    METAMASK_EXTENSION_CONNECT_SENT &&
+    isManifestV3 &&
+    msg.data.method === 'metamask_chainChanged'
+  ) {
+    METAMASK_EXTENSION_CONNECT_SENT = false;
+    window.postMessage(
+      {
+        target: INPAGE, // the post-message-stream "target"
+        data: {
+          // this object gets passed to obj-multiplex
+          name: PROVIDER, // the obj-multiplex channel name
+          data: {
+            jsonrpc: '2.0',
+            method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
+          },
+        },
+      },
+      window.location.origin,
+    );
+  }
+}
+
+/**
  * This function must ONLY be called in pump destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
  * Relies on obj-multiplex and post-message-stream implementation details.
@@ -264,106 +604,36 @@ function notifyInpageOfStreamFailure() {
 }
 
 /**
- * Determines if the provider should be injected
- *
- * @returns {boolean} {@code true} Whether the provider should be injected
- */
-function shouldInjectProvider() {
-  return (
-    doctypeCheck() &&
-    suffixCheck() &&
-    documentElementCheck() &&
-    !blockedDomainCheck()
-  );
-}
-
-/**
- * Checks the doctype of the current document if it exists
- *
- * @returns {boolean} {@code true} if the doctype is html or if none exists
- */
-function doctypeCheck() {
-  const { doctype } = window.document;
-  if (doctype) {
-    return doctype.name === 'html';
-  }
-  return true;
-}
-
-/**
- * Returns whether or not the extension (suffix) of the current document is prohibited
- *
- * This checks {@code window.location.pathname} against a set of file extensions
- * that we should not inject the provider into. This check is indifferent of
- * query parameters in the location.
- *
- * @returns {boolean} whether or not the extension of the current document is prohibited
- */
-function suffixCheck() {
-  const prohibitedTypes = [/\.xml$/u, /\.pdf$/u];
-  const currentUrl = window.location.pathname;
-  for (let i = 0; i < prohibitedTypes.length; i++) {
-    if (prohibitedTypes[i].test(currentUrl)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-/**
- * Checks the documentElement of the current document
- *
- * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
- */
-function documentElementCheck() {
-  const documentElement = document.documentElement.nodeName;
-  if (documentElement) {
-    return documentElement.toLowerCase() === 'html';
-  }
-  return true;
-}
-
-/**
- * Checks if the current domain is blocked
- *
- * @returns {boolean} {@code true} if the current domain is blocked
- */
-function blockedDomainCheck() {
-  const blockedDomains = [
-    'uscourts.gov',
-    'dropbox.com',
-    'webbyawards.com',
-    'cdn.shopify.com/s/javascripts/tricorder/xtld-read-only-frame.html',
-    'adyen.com',
-    'gravityforms.com',
-    'harbourair.com',
-    'ani.gamer.com.tw',
-    'blueskybooking.com',
-    'sharefile.com',
-  ];
-  const currentUrl = window.location.href;
-  let currentRegex;
-  for (let i = 0; i < blockedDomains.length; i++) {
-    const blockedDomain = blockedDomains[i].replace('.', '\\.');
-    currentRegex = new RegExp(
-      `(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`,
-      'u',
-    );
-    if (!currentRegex.test(currentUrl)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
  * Redirects the current page to a phishing information page
+ *
+ * @param data
  */
-function redirectToPhishingWarning() {
+function redirectToPhishingWarning(data = {}) {
   console.debug('MetaMask: Routing to Phishing Warning page.');
+  const { hostname, href } = window.location;
+  const { newIssueUrl } = data;
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
-  window.location.href = `${baseUrl}#${querystring.stringify({
-    hostname: window.location.hostname,
-    href: window.location.href,
-  })}`;
+
+  const querystring = new URLSearchParams({ hostname, href, newIssueUrl });
+  window.location.href = `${baseUrl}#${querystring}`;
 }
+
+const start = () => {
+  const isDetectedPhishingSite =
+    window.location.origin === phishingPageUrl.origin &&
+    window.location.pathname === phishingPageUrl.pathname;
+
+  if (isDetectedPhishingSite) {
+    initPhishingStreams();
+    return;
+  }
+
+  if (shouldInjectProvider()) {
+    if (!isManifestV3) {
+      injectScript(inpageBundle);
+    }
+    initStreams();
+  }
+};
+
+start();

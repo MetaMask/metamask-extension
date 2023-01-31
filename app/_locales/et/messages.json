@@ -8,9 +8,6 @@
   "about": {
     "message": "Teave"
   },
-  "acceleratingATransaction": {
-    "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
-  },
   "accessingYourCamera": {
     "message": "Kaamerale ligipääs..."
   },
@@ -49,9 +46,6 @@
   },
   "advanced": {
     "message": "Täpsemad"
-  },
-  "advancedOptions": {
-    "message": "Täpsemad suvandid"
   },
   "amount": {
     "message": "Summa"
@@ -193,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
-  "connectingToKovan": {
-    "message": "Ühendamine Kovani testvõrguga"
-  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
-  },
-  "connectingToRinkeby": {
-    "message": "Ühendamine Rinkeby testvõrguga"
-  },
-  "connectingToRopsten": {
-    "message": "Ühendamine Ropsteni testvõrguga"
   },
   "continueToWyre": {
     "message": "Ava Wyre"
@@ -249,12 +234,6 @@
   },
   "custom": {
     "message": "Täpsemad"
-  },
-  "customGas": {
-    "message": "Gaasi kohandamine"
-  },
-  "customGasSubTitle": {
-    "message": "Tasu suurendamine võib töötlemisaegu vähendada, kuid see ei ole tagatud."
   },
   "customToken": {
     "message": "Kohandatud luba"
@@ -339,9 +318,6 @@
   },
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Eeldatavad töötlemisajad"
   },
   "ethereumPublicAddress": {
     "message": "Ethereumi avalik aadress"
@@ -499,9 +475,6 @@
   "knownAddressRecipient": {
     "message": "Teadaolev lepinguaadress."
   },
-  "kovan": {
-    "message": "Kovani testvõrk"
-  },
   "learnMore": {
     "message": "Lisateave"
   },
@@ -575,9 +548,6 @@
   "newAccount": {
     "message": "Uus konto"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Leiti uus aadress! Klõpsake siia, et see oma aadressiraamatusse lisada."
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -593,12 +563,6 @@
   },
   "newToMetaMask": {
     "message": "Pole MetaMaski varem kasutanud?"
-  },
-  "newTotal": {
-    "message": "Uus kogusumma"
-  },
-  "newTransactionFee": {
-    "message": "Uus vahendustasu"
   },
   "next": {
     "message": "Edasi"
@@ -758,12 +722,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
   },
-  "rinkeby": {
-    "message": "Rinkeby katsevõrk"
-  },
-  "ropsten": {
-    "message": "Ropsteni testvõrk"
-  },
   "rpcUrl": {
     "message": "Uus RPC URL"
   },
@@ -800,9 +758,6 @@
   "seedPhraseReq": {
     "message": "Seemnefraasid on 12 sõna pikad"
   },
-  "selectAHigherGasFee": {
-    "message": "Valige suurem gaasihind, et kiirendada tehingu töötlemist.*"
-  },
   "selectAnAccount": {
     "message": "Valige konto"
   },
@@ -820,9 +775,6 @@
   },
   "send": {
     "message": "Saada"
-  },
-  "sendAmount": {
-    "message": "Saatke kogus"
   },
   "sendTokens": {
     "message": "Saada lube"
@@ -857,17 +809,11 @@
   "sign": {
     "message": "Allkirjasta"
   },
-  "signNotice": {
-    "message": "Selle sõnumi allkirjastamisel \nvõib olla ohtlikke kõrvaltoimeid. Allkirjastage sõnumeid vaid \nsaitidelt, mida te kogu kontoga usaldate.\n See ohtlik meetod eemaldatakse uues versioonis."
-  },
   "signatureRequest": {
     "message": "Allkirja taotlus"
   },
   "signed": {
     "message": "Allkirjastatud"
-  },
-  "slow": {
-    "message": "Aeglane"
   },
   "somethingWentWrong": {
     "message": "Oih! Midagi läks valesti."

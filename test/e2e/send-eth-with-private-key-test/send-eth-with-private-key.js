@@ -9,7 +9,7 @@ const sendButton = document.getElementById('send')
 sendButton.addEventListener('click', function () {
   var rawTx = {
     nonce: '0x00',
-    gasPrice: '0x09184e72a000', 
+    gasPrice: '0x09184e72a000',
     gasLimit: '0x22710',
     value: '0xde0b6b3a7640000',
     to: document.getElementById('address').value,

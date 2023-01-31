@@ -2,16 +2,17 @@ import EthQuery from 'ethjs-query';
 import log from 'loglevel';
 import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep } from 'lodash';
-import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
+import { hexToBn, BnMultiplyByFraction } from '../../lib/util';
+import { bnToHex } from '../../../../shared/modules/conversion.utils';
 
 /**
  * Result of gas analysis, including either a gas estimate for a successful analysis, or
  * debug information for a failed analysis.
  *
- * @typedef {Object} GasAnalysisResult
+ * @typedef {object} GasAnalysisResult
  * @property {string} blockGasLimit - The gas limit of the block used for the analysis
  * @property {string} estimatedGasHex - The estimated gas, in hexadecimal
- * @property {Object} simulationFails - Debug information about why an analysis failed
+ * @property {object} simulationFails - Debug information about why an analysis failed
  */
 
 /**
@@ -19,7 +20,7 @@ import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
  * its passed ethquery
  * and used to do things like calculate gas of a tx.
  *
- * @param {Object} provider - A network provider.
+ * @param {object} provider - A network provider.
  */
 
 export default class TxGasUtil {
@@ -28,7 +29,7 @@ export default class TxGasUtil {
   }
 
   /**
-   * @param {Object} txMeta - the txMeta object
+   * @param {object} txMeta - the txMeta object
    * @returns {GasAnalysisResult} The result of the gas analysis
    */
   async analyzeGasUsage(txMeta) {
@@ -50,13 +51,17 @@ export default class TxGasUtil {
       };
     }
 
-    return { blockGasLimit: block.gasLimit, estimatedGasHex, simulationFails };
+    return {
+      blockGasLimit: block.gasLimit,
+      estimatedGasHex,
+      simulationFails,
+    };
   }
 
   /**
    * Estimates the tx's gas usage
    *
-   * @param {Object} txMeta - the txMeta object
+   * @param {object} txMeta - the txMeta object
    * @returns {string} the estimated gas limit as a hex string
    */
   async estimateTxGas(txMeta) {
@@ -102,12 +107,8 @@ export default class TxGasUtil {
   }
 
   async getBufferedGasLimit(txMeta, multiplier) {
-    const {
-      blockGasLimit,
-      estimatedGasHex,
-      simulationFails,
-    } = await this.analyzeGasUsage(txMeta);
-
+    const { blockGasLimit, estimatedGasHex, simulationFails } =
+      await this.analyzeGasUsage(txMeta);
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.addGasBuffer(
       addHexPrefix(estimatedGasHex),

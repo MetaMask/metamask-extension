@@ -1,6 +1,4 @@
 .form-field {
-  margin-bottom: 20px;
-
   &__heading {
     display: flex;
     align-items: center;
@@ -14,6 +12,16 @@
   &__heading-detail {
     flex-grow: 1;
     align-self: center;
+  }
+
+  &__heading-title {
+    &__tooltip {
+      width: 180px;
+
+      &__warning-icon {
+        color: var(--color-error-default) !important;
+      }
+    }
   }
 
   &__error,
@@ -31,6 +39,7 @@
   i {
     color: var(--color-icon-default);
     font-size: $font-size-h7;
+    margin-bottom: 10px;
   }
 
   &__input {

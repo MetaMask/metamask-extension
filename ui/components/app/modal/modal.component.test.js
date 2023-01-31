@@ -1,133 +1,103 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
-import sinon from 'sinon';
-import Button from '../../ui/button';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import Modal from './modal.component';
 
 describe('Modal Component', () => {
   it('should render a modal with a submit button', () => {
-    const wrapper = shallow(<Modal />);
+    const { container } = renderWithProvider(<Modal />);
 
-    expect(wrapper.find('.modal-container')).toHaveLength(1);
-    const buttons = wrapper.find(Button);
-    expect(buttons).toHaveLength(1);
-    expect(buttons.at(0).props().type).toStrictEqual('primary');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a modal with a cancel and a submit button', () => {
-    const handleCancel = sinon.spy();
-    const handleSubmit = sinon.spy();
-    const wrapper = shallow(
-      <Modal
-        onCancel={handleCancel}
-        cancelText="Cancel"
-        onSubmit={handleSubmit}
-        submitText="Submit"
-      />,
-    );
+    const props = {
+      onCancel: jest.fn(),
+      cancelText: 'Cancel',
+      onSubmit: jest.fn(),
+      submitText: 'Submit',
+    };
+    const { container, queryByText } = renderWithProvider(<Modal {...props} />);
+    expect(container).toMatchSnapshot();
 
-    const buttons = wrapper.find(Button);
-    expect(buttons).toHaveLength(2);
-    const cancelButton = buttons.at(0);
-    const submitButton = buttons.at(1);
+    const cancelButton = queryByText(props.cancelText);
+    const submitButton = queryByText(props.submitText);
 
-    expect(cancelButton.props().type).toStrictEqual('secondary');
-    expect(cancelButton.props().children).toStrictEqual('Cancel');
-    expect(handleCancel.callCount).toStrictEqual(0);
-    cancelButton.simulate('click');
-    expect(handleCancel.callCount).toStrictEqual(1);
+    expect(props.onCancel).not.toHaveBeenCalled();
+    fireEvent.click(cancelButton);
+    expect(props.onCancel).toHaveBeenCalled();
 
-    expect(submitButton.props().type).toStrictEqual('primary');
-    expect(submitButton.props().children).toStrictEqual('Submit');
-    expect(handleSubmit.callCount).toStrictEqual(0);
-    submitButton.simulate('click');
-    expect(handleSubmit.callCount).toStrictEqual(1);
+    expect(props.onSubmit).not.toHaveBeenCalled();
+    fireEvent.click(submitButton);
+    expect(props.onSubmit).toHaveBeenCalled();
   });
 
   it('should render a modal with different button types', () => {
-    const wrapper = shallow(
-      <Modal
-        onCancel={() => undefined}
-        cancelText="Cancel"
-        cancelType="default"
-        onSubmit={() => undefined}
-        submitText="Submit"
-        submitType="confirm"
-      />,
-    );
+    const props = {
+      onCancel: () => undefined,
+      cancelText: 'Cancel',
+      cancelType: 'default',
+      onSubmit: () => undefined,
+      submitText: 'Submit',
+      submitType: 'confirm',
+    };
 
-    const buttons = wrapper.find(Button);
-    expect(buttons).toHaveLength(2);
-    expect(buttons.at(0).props().type).toStrictEqual('default');
-    expect(buttons.at(1).props().type).toStrictEqual('confirm');
+    const { container } = renderWithProvider(<Modal {...props} />);
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a modal with children', () => {
-    const wrapper = shallow(
-      <Modal
-        onCancel={() => undefined}
-        cancelText="Cancel"
-        onSubmit={() => undefined}
-        submitText="Submit"
-      >
+    const props = {
+      onCancel: () => undefined,
+      cancelText: 'Cancel',
+      onSubmit: () => undefined,
+      submitText: 'Submit',
+    };
+    const { container } = renderWithProvider(
+      <Modal {...props}>
         <div className="test-child" />
       </Modal>,
     );
-    expect(wrapper.find('.test-child')).toHaveLength(1);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a modal with a header', () => {
-    const handleCancel = sinon.spy();
-    const handleSubmit = sinon.spy();
-    const wrapper = shallow(
-      <Modal
-        onCancel={handleCancel}
-        cancelText="Cancel"
-        onSubmit={handleSubmit}
-        submitText="Submit"
-        headerText="My Header"
-        onClose={handleCancel}
-      />,
-    );
+    const props = {
+      onCancel: jest.fn(),
+      cancelText: 'Cancel',
+      onSubmit: jest.fn(),
+      submitText: 'Submit',
+      headerText: 'My Header',
+      onClose: jest.fn(),
+    };
 
-    expect(wrapper.find('.modal-container__header')).toHaveLength(1);
-    expect(wrapper.find('.modal-container__header-text').text()).toStrictEqual(
-      'My Header',
+    const { container, queryByTestId } = renderWithProvider(
+      <Modal {...props} />,
     );
-    expect(handleCancel.callCount).toStrictEqual(0);
-    expect(handleSubmit.callCount).toStrictEqual(0);
-    wrapper.find('.modal-container__header-close').simulate('click');
-    expect(handleCancel.callCount).toStrictEqual(1);
-    expect(handleSubmit.callCount).toStrictEqual(0);
+    expect(container).toMatchSnapshot();
+
+    const modalClose = queryByTestId('modal-header-close');
+    fireEvent.click(modalClose);
+    expect(props.onClose).toHaveBeenCalled();
   });
 
   it('should disable the submit button if submitDisabled is true', () => {
-    const handleCancel = sinon.spy();
-    const handleSubmit = sinon.spy();
-    const wrapper = mount(
-      <Modal
-        onCancel={handleCancel}
-        cancelText="Cancel"
-        onSubmit={handleSubmit}
-        submitText="Submit"
-        submitDisabled
-        headerText="My Header"
-        onClose={handleCancel}
-      />,
-    );
+    const props = {
+      onCancel: jest.fn(),
+      cancelText: 'Cancel',
+      onSubmit: jest.fn(),
+      submitText: 'Submit',
+      submitDisabled: true,
+      headerText: 'My Header',
+      onClose: jest.fn(),
+    };
+    const { queryByText } = renderWithProvider(<Modal {...props} />);
+    const submitButton = queryByText(props.submitText);
 
-    const buttons = wrapper.find(Button);
-    expect(buttons).toHaveLength(2);
-    const cancelButton = buttons.at(0);
-    const submitButton = buttons.at(1);
+    expect(submitButton).toHaveAttribute('disabled');
 
-    expect(handleCancel.callCount).toStrictEqual(0);
-    cancelButton.simulate('click');
-    expect(handleCancel.callCount).toStrictEqual(1);
-
-    expect(submitButton.props().disabled).toStrictEqual(true);
-    expect(handleSubmit.callCount).toStrictEqual(0);
-    submitButton.simulate('click');
-    expect(handleSubmit.callCount).toStrictEqual(0);
+    fireEvent.click(submitButton);
+    expect(props.onSubmit).not.toHaveBeenCalled();
   });
 });

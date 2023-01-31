@@ -23,7 +23,7 @@
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
   &__main-view &__tabs {
     border: none;
-    box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 
   &__main-view &__tab {
@@ -116,7 +116,7 @@
     position: absolute;
     top: 73px;
     opacity: 1;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
     background: none;
   }
 
@@ -182,7 +182,7 @@
     margin-inline-start: 8px;
     padding: 8px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-bottom: 50px;
       margin-inline-end: 8px;
       left: 70%;
@@ -219,6 +219,58 @@
 
     &__switch-to-button {
       margin-bottom: 16px;
+    }
+  }
+
+  &__subheader-link {
+    display: flex;
+    padding: 12px 0;
+    justify-content: center;
+    color: var(--color-primary-default);
+    align-items: center;
+    cursor: pointer;
+
+    &--tooltip-content {
+      &-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        &-text {
+          font-size: 18px;
+          line-height: 22.82px;
+          font-weight: 700;
+        }
+
+        &-button {
+          background-color: var(--color-primary-default);
+          color: var(--color-primary-inverse);
+          border: 0;
+        }
+      }
+
+      &-text-bold {
+        font-weight: 700;
+      }
+    }
+
+    &--tooltip-theme {
+      background-color: var(--color-primary-default) !important;
+
+      & .tippy-tooltip-content {
+        color: var(--color-primary-inverse) !important;
+      }
+
+      & .arrow-regular {
+        border-bottom-color: var(--color-primary-default) !important;
+      }
+    }
+
+    &--text {
+      margin-left: 8px;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 140.62%;
     }
   }
 }

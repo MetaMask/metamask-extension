@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Settings Search', function () {
   const ganacheOptions = {
@@ -12,21 +13,20 @@ describe('Settings Search', function () {
     ],
   };
   const settingsSearch = {
-    general: 'Primary Currency',
-    advanced: 'State Logs',
+    general: 'Primary currency',
+    advanced: 'State logs',
     contacts: 'Contacts',
     security: 'Reveal Secret',
     alerts: 'Browsing a website',
     networks: 'Ethereum Mainnet',
-    experimental: 'Token Detection',
+    experimental: 'Enable transaction security',
     about: 'Terms of Use',
   };
 
   it('should find element inside the General tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -52,8 +52,7 @@ describe('Settings Search', function () {
   it('should find element inside the Advanced tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -80,8 +79,7 @@ describe('Settings Search', function () {
   it('should find element inside the Contacts tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -108,8 +106,7 @@ describe('Settings Search', function () {
   it('should find element inside the Security tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -136,8 +133,7 @@ describe('Settings Search', function () {
   it('should find element inside the Alerts tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -164,8 +160,7 @@ describe('Settings Search', function () {
   it('should find element inside the Networks tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -192,8 +187,7 @@ describe('Settings Search', function () {
   it('should find element inside the Experimental tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -220,8 +214,7 @@ describe('Settings Search', function () {
   it('should find element inside the About tab', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -248,8 +241,7 @@ describe('Settings Search', function () {
   it('should display "Element not found" for a non-existing element', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },

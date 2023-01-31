@@ -1,59 +1,46 @@
 import React from 'react';
-import sinon from 'sinon';
-import { mount } from 'enzyme';
-import messages from '../../../../../app/_locales/en/messages.json';
-import MetaMetricsOptIn from './metametrics-opt-in-modal.container';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import MetaMetricsOptIn from '.';
 
 describe('MetaMetrics Opt In', () => {
-  let wrapper;
-
   const props = {
-    setParticipateInMetaMetrics: sinon.stub().resolves(),
-    hideModal: sinon.spy(),
+    setParticipateInMetaMetrics: jest.fn().mockResolvedValue(),
+    hideModal: jest.fn(),
     participateInMetaMetrics: null,
   };
 
-  beforeEach(() => {
-    wrapper = mount(<MetaMetricsOptIn.WrappedComponent {...props} />, {
-      context: {
-        trackEvent: () => undefined,
-        t: (key) => messages[key].message,
-      },
-    });
-  });
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <MetaMetricsOptIn.WrappedComponent />,
+    );
 
-  afterEach(() => {
-    props.setParticipateInMetaMetrics.resetHistory();
-    props.hideModal.resetHistory();
+    expect(container).toMatchSnapshot();
   });
 
   it('passes false to setParticipateInMetaMetrics and hides modal', async () => {
-    const noThanks = wrapper.find(
-      '.btn-secondary.page-container__footer-button',
+    const { queryByText } = renderWithProvider(
+      <MetaMetricsOptIn.WrappedComponent {...props} />,
     );
-    noThanks.simulate('click');
 
-    expect(await props.setParticipateInMetaMetrics.calledOnce).toStrictEqual(
-      true,
-    );
-    expect(props.setParticipateInMetaMetrics.getCall(0).args[0]).toStrictEqual(
-      false,
-    );
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('[noThanks]'));
+
+    await waitFor(() => {
+      expect(props.setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
+      expect(props.hideModal).toHaveBeenCalled();
+    });
   });
 
   it('passes true to setParticipateInMetaMetrics and hides modal', async () => {
-    const affirmAgree = wrapper.find(
-      '.btn-primary.page-container__footer-button',
+    const { queryByText } = renderWithProvider(
+      <MetaMetricsOptIn.WrappedComponent {...props} />,
     );
-    affirmAgree.simulate('click');
 
-    expect(await props.setParticipateInMetaMetrics.calledOnce).toStrictEqual(
-      true,
-    );
-    expect(props.setParticipateInMetaMetrics.getCall(0).args[0]).toStrictEqual(
-      true,
-    );
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('[affirmAgree]'));
+
+    await waitFor(() => {
+      expect(props.setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
+      expect(props.hideModal).toHaveBeenCalled();
+    });
   });
 });

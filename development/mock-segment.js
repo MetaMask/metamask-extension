@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const { createSegmentServer } = require('./lib/create-segment-server');
 const { parsePort } = require('./lib/parse-port');
 

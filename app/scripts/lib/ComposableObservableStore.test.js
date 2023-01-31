@@ -3,7 +3,7 @@ import {
   BaseController,
   BaseControllerV2,
   ControllerMessenger,
-} from '@metamask/controllers';
+} from '@metamask/base-controller';
 import ComposableObservableStore from './ComposableObservableStore';
 
 class OldExampleController extends BaseController {
@@ -165,7 +165,7 @@ describe('ComposableObservableStore', () => {
             Example: exampleController,
           },
         }),
-    ).toThrow(`Cannot read property 'subscribe' of undefined`);
+    ).toThrow(`Cannot read properties of undefined (reading 'subscribe')`);
   });
 
   it('should throw if the controller messenger is omitted and updateStructure called with a BaseControllerV2 controller', () => {
@@ -175,7 +175,7 @@ describe('ComposableObservableStore', () => {
     });
     const store = new ComposableObservableStore({});
     expect(() => store.updateStructure({ Example: exampleController })).toThrow(
-      `Cannot read property 'subscribe' of undefined`,
+      `Cannot read properties of undefined (reading 'subscribe')`,
     );
   });
 

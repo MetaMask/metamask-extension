@@ -19,10 +19,8 @@ export default {
 
 function transformState(state) {
   if (state.PreferencesController) {
-    const {
-      completedOnboarding,
-      firstTimeFlowType,
-    } = state.PreferencesController;
+    const { completedOnboarding, firstTimeFlowType } =
+      state.PreferencesController;
     state.OnboardingController = state.OnboardingController ?? {};
 
     if (completedOnboarding !== undefined) {

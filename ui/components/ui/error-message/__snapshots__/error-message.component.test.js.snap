@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorMessage Component should render a message from props.errorMessage 1`] = `
+<div>
+  <div
+    class="error-message"
+  >
+    <i
+      class="fa fa-exclamation-circle error-message__icon"
+    />
+    <div
+      class="error-message__text"
+    >
+      This is an error.
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ErrorMessage Component should render a message translated from props.errorKey 1`] = `
+<div>
+  <div
+    class="error-message"
+  >
+    <i
+      class="fa fa-exclamation-circle error-message__icon"
+    />
+    <div
+      class="error-message__text"
+    >
+      [testKey]
+    </div>
+  </div>
+</div>
+`;

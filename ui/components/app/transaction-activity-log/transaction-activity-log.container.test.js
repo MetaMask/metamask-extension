@@ -8,7 +8,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-require('./transaction-activity-log.container.js');
+require('./transaction-activity-log.container');
 
 describe('TransactionActivityLog container', () => {
   describe('mapStateToProps()', () => {
@@ -18,6 +18,9 @@ describe('TransactionActivityLog container', () => {
           conversionRate: 280.45,
           nativeCurrency: 'ETH',
           frequentRpcListDetail: [],
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
 
@@ -43,6 +46,7 @@ describe('TransactionActivityLog container', () => {
           ],
           provider: {
             rpcUrl: 'https://customnetwork.com/',
+            ticker: 'ETH',
           },
         },
       };

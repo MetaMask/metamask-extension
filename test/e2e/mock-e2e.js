@@ -1,9 +1,8 @@
 const blacklistedHosts = [
+  'arbitrum-mainnet.infura.io',
   'goerli.infura.io',
-  'kovan.infura.io',
   'mainnet.infura.io',
-  'rinkeby.infura.io',
-  'ropsten.infura.io',
+  'sepolia.infura.io',
 ];
 
 async function setupMocking(server, testSpecificMock) {
@@ -26,6 +25,46 @@ async function setupMocking(server, testSpecificMock) {
   });
 
   await server
+    .forPost('https://sentry.io/api/0000000/envelope/')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+
+  await server
+    .forPost('https://sentry.io/api/0000000/store/')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+
+  await server
+    .forGet('https://www.4byte.directory/api/v1/signatures/')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [
+            {
+              id: 1,
+              created_at: null,
+              text_signature: 'deposit()',
+              hex_signature: null,
+              bytes_signature: null,
+            },
+          ],
+        },
+      };
+    });
+
+  await server
     .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
     .thenCallback(() => {
       return {
@@ -34,6 +73,23 @@ async function setupMocking(server, testSpecificMock) {
           SafeGasPrice: '1',
           ProposeGasPrice: '2',
           FastGasPrice: '3',
+        },
+      };
+    });
+
+  await server
+    .forGet('https://swap.metaswap.codefi.network/networks/1/token')
+    .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          symbol: 'AGLT',
+          type: 'erc20',
+          decimals: '18',
+          address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
+          occurences: 1,
+          aggregators: ['dynamic'],
         },
       };
     });
@@ -83,36 +139,24 @@ async function setupMocking(server, testSpecificMock) {
         json: [
           {
             ethereum: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             bsc: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             polygon: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
             },
             avalanche: {
-              mobile_active: true,
-              extension_active: true,
-              fallback_to_v1: false,
+              fallbackToV1: false,
               mobileActive: true,
               extensionActive: true,
-            },
-            smart_transactions: {
-              mobile_active: false,
-              extension_active: false,
             },
             smartTransactions: {
               mobileActive: false,
@@ -151,6 +195,148 @@ async function setupMocking(server, testSpecificMock) {
             occurrences: 9,
           },
         ],
+      };
+    });
+
+  await server
+    .forGet('https://swap.metaswap.codefi.network/networks/1/tokens')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+            type: 'native',
+            iconUrl:
+              'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+            coingeckoId: 'ethereum',
+            address: '0x0000000000000000000000000000000000000000',
+            occurrences: 100,
+            aggregators: [],
+          },
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            iconUrl:
+              'https://crypto.com/price/coin-data/icon/DAI/color_icon.png',
+            type: 'erc20',
+            aggregators: [
+              'aave',
+              'bancor',
+              'cmc',
+              'cryptocom',
+              'coinGecko',
+              'oneInch',
+              'pmm',
+              'zerion',
+              'lifi',
+            ],
+            occurrences: 9,
+            fees: {
+              '0xb0da5965d43369968574d399dbe6374683773a65': 0,
+            },
+            storage: {
+              balance: 2,
+            },
+          },
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USD Coin',
+            iconUrl:
+              'https://crypto.com/price/coin-data/icon/USDC/color_icon.png',
+            type: 'erc20',
+            aggregators: [
+              'aave',
+              'bancor',
+              'cryptocom',
+              'coinGecko',
+              'oneInch',
+              'pmm',
+              'zerion',
+              'lifi',
+            ],
+            occurrences: 8,
+            fees: {},
+            storage: {
+              balance: 9,
+            },
+          },
+          {
+            address: '0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f',
+            symbol: 'INUINU',
+            decimals: 18,
+            name: 'Inu Inu',
+            iconUrl:
+              'https://assets.coingecko.com/coins/images/26391/thumb/logo_square_200.png?1657752596',
+            type: 'erc20',
+            aggregators: ['coinGecko'],
+            occurrences: 1,
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet('https://swap.metaswap.codefi.network/networks/1/topAssets')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            symbol: 'ETH',
+          },
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+          },
+          {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+          },
+          {
+            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+          },
+        ],
+      };
+    });
+
+  await server
+    .forGet('https://token-api.metaswap.codefi.network/token/0x539')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+
+  // It disables loading of token icons, e.g. this URL: https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
+  await server
+    .forGet(
+      /^https:\/\/static\.metaswap\.codefi\.network\/api\/v1\/tokenIcons\/1337\/.*\.png/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+
+  await server
+    .forGet('https://min-api.cryptocompare.com/data/price')
+    .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          USD: '1700',
+        },
       };
     });
 

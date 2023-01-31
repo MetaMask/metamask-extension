@@ -1,61 +1,64 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import { Provider } from 'react-redux';
-import configureStore from '../../../../store/store';
-import testData from '../../../../../.storybook/test-data';
-import ConfirmPageContainerHeader from './confirm-page-container-header.component';
+import configureStore from 'redux-mock-store';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import ConfirmPageContainerHeader from '.';
 
-const util = require('../../../../../app/scripts/lib/util');
-
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useLayoutEffect: jest.requireActual('react').useEffect,
+jest.mock('../../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../../app/scripts/lib/util'),
+  getEnvironmentType: jest.fn(),
 }));
 
 describe('Confirm Detail Row Component', () => {
-  describe('render', () => {
-    it('should render a div with a confirm-page-container-header class', () => {
-      const stub = sinon
-        .stub(util, 'getEnvironmentType')
-        .callsFake(() => 'popup');
-      const wrapper = shallow(
-        <Provider store={configureStore(testData)}>
-          <ConfirmPageContainerHeader
-            showEdit={false}
-            onEdit={() => {
-              // noop
-            }}
-            showAccountInHeader={false}
-            accountAddress="0xmockAccountAddress"
-          />
-        </Provider>,
-      );
-      expect(wrapper.html()).toContain('confirm-page-container-header');
-      stub.restore();
-    });
+  const mockState = {
+    appState: {
+      isLoading: false,
+    },
+    metamask: {
+      provider: {
+        type: 'rpc',
+        chainId: '0x5',
+      },
+    },
+  };
 
-    it('should only render children when fullscreen and showEdit is false', () => {
-      const stub = sinon
-        .stub(util, 'getEnvironmentType')
-        .callsFake(() => 'fullscreen');
-      const wrapper = shallow(
-        <Provider store={configureStore(testData)}>
-          <ConfirmPageContainerHeader
-            showEdit={false}
-            onEdit={() => {
-              // noop
-            }}
-            showAccountInHeader={false}
-            accountAddress="0xmockAccountAddress"
-          >
-            <div className="nested-test-class" />
-          </ConfirmPageContainerHeader>
-        </Provider>,
-      );
-      expect(wrapper.html()).toContain('nested-test-class');
-      expect(wrapper.html()).not.toContain('confirm-page-container-header');
-      stub.restore();
-    });
+  const store = configureStore()(mockState);
+
+  it('should match snapshot', () => {
+    getEnvironmentType.mockReturnValue('popup');
+
+    const props = {
+      showEdit: false,
+      onEdit: jest.fn(),
+      showAccountInHeader: false,
+      accountAddress: '0xmockAccountAddress',
+    };
+
+    const { container } = renderWithProvider(
+      <ConfirmPageContainerHeader {...props} />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should only render children when fullscreen and showEdit is false & snapshot match', () => {
+    getEnvironmentType.mockReturnValue('fullscreen');
+
+    const props = {
+      showEdit: false,
+      onEdit: jest.fn(),
+      showAccountInHeader: false,
+      accountAddress: '0xmockAccountAddress',
+    };
+
+    const { container } = renderWithProvider(
+      <ConfirmPageContainerHeader {...props}>
+        <div className="nested-test-class" />
+      </ConfirmPageContainerHeader>,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 });

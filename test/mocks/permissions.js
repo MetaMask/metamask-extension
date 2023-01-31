@@ -49,7 +49,7 @@ const CAVEATS = {
    * Gets a correctly formatted eth_accounts restrictReturnedAccounts caveat.
    *
    * @param {Array<string>} accounts - The accounts for the caveat
-   * @returns {Object} An eth_accounts restrictReturnedAccounts caveats
+   * @returns {object} An eth_accounts restrictReturnedAccounts caveats
    */
   eth_accounts: (accounts) => {
     return [
@@ -71,21 +71,21 @@ const PERMS = {
    */
   requests: {
     /**
-     * @returns {Object} A permissions request object with eth_accounts
+     * @returns {object} A permissions request object with eth_accounts
      */
     eth_accounts: () => {
       return { eth_accounts: {} };
     },
 
     /**
-     * @returns {Object} A permissions request object with test_method
+     * @returns {object} A permissions request object with test_method
      */
     test_method: () => {
       return { test_method: {} };
     },
 
     /**
-     * @returns {Object} A permissions request object with does_not_exist
+     * @returns {object} A permissions request object with does_not_exist
      */
     does_not_exist: () => {
       return { does_not_exist: {} };
@@ -100,7 +100,7 @@ const PERMS = {
   granted: {
     /**
      * @param {Array<string>} accounts - The accounts for the eth_accounts permission caveat
-     * @returns {Object} A granted permissions object with eth_accounts and its caveat
+     * @returns {object} A granted permissions object with eth_accounts and its caveat
      */
     eth_accounts: (accounts) => {
       return {
@@ -110,7 +110,7 @@ const PERMS = {
     },
 
     /**
-     * @returns {Object} A granted permissions object with test_method
+     * @returns {object} A granted permissions object with test_method
      */
     test_method: () => {
       return {
@@ -138,7 +138,7 @@ export const getters = deepFreeze({
      * @param {string} method - The request method
      * @param {Array<any>} params - The request parameters
      * @param {string} [id] - The request id
-     * @returns {Object} An RPC request object
+     * @returns {object} An RPC request object
      */
     custom: (origin, method, params = [], id) => {
       const req = {
@@ -156,7 +156,7 @@ export const getters = deepFreeze({
      * Gets an eth_accounts RPC request object.
      *
      * @param {string} origin - The origin of the request
-     * @returns {Object} An RPC request object
+     * @returns {object} An RPC request object
      */
     eth_accounts: (origin) => {
       return {
@@ -171,7 +171,7 @@ export const getters = deepFreeze({
      *
      * @param {string} origin - The origin of the request
      * @param {boolean} param - The request param
-     * @returns {Object} An RPC request object
+     * @returns {object} An RPC request object
      */
     test_method: (origin, param = false) => {
       return {
@@ -185,7 +185,7 @@ export const getters = deepFreeze({
      * Gets an eth_requestAccounts RPC request object.
      *
      * @param {string} origin - The origin of the request
-     * @returns {Object} An RPC request object
+     * @returns {object} An RPC request object
      */
     eth_requestAccounts: (origin) => {
       return {
@@ -201,7 +201,7 @@ export const getters = deepFreeze({
      *
      * @param {string} origin - The origin of the request
      * @param {string} permissionName - The name of the permission to request
-     * @returns {Object} An RPC request object
+     * @returns {object} An RPC request object
      */
     requestPermission: (origin, permissionName) => {
       return {
@@ -216,8 +216,8 @@ export const getters = deepFreeze({
      * for multiple permissions.
      *
      * @param {string} origin - The origin of the request
-     * @param {Object} permissions - A permission request object
-     * @returns {Object} An RPC request object
+     * @param {object} permissions - A permission request object
+     * @returns {object} An RPC request object
      */
     requestPermissions: (origin, permissions = {}) => {
       return {
@@ -231,9 +231,9 @@ export const getters = deepFreeze({
      * Gets a metamask_sendDomainMetadata RPC request object.
      *
      * @param {string} origin - The origin of the request
-     * @param {Object} name - The subjectMetadata name
+     * @param {object} name - The subjectMetadata name
      * @param {Array<any>} [args] - Any other data for the request's subjectMetadata
-     * @returns {Object} An RPC request object
+     * @returns {object} An RPC request object
      */
     metamask_sendDomainMetadata: (origin, name, ...args) => {
       return {

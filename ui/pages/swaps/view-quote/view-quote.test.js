@@ -10,8 +10,9 @@ import {
 } from '../../../../test/jest';
 import ViewQuote from '.';
 
-jest.mock('../../../components/ui/info-tooltip/info-tooltip-icon', () => () =>
-  '<InfoTooltipIcon />',
+jest.mock(
+  '../../../components/ui/info-tooltip/info-tooltip-icon',
+  () => () => '<InfoTooltipIcon />',
 );
 
 jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {

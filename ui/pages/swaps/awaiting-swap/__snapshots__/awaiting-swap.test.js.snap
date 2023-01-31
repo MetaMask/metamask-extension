@@ -10,7 +10,7 @@ exports[`AwaitingSwap renders the component with initial props 1`] = `
     <span
       class="awaiting-swap__amount-and-symbol"
     >
-      ETH
+      USDC
     </span>
      will be added to your account once this transaction has processed.
      

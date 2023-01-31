@@ -48,6 +48,7 @@ class SelectedAccount extends Component {
         >
           <button
             className="selected-account__clickable"
+            data-testid="selected-account-click"
             onClick={() => {
               this.setState({ copied: true });
               this.copyTimeout = setTimeout(

@@ -5,6 +5,7 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import CollectiblesTab from '.';
 
 const COLLECTIBLES = [
@@ -137,8 +138,8 @@ const COLLECTIBLES_CONTRACTS = [
 ];
 
 const collectiblesDropdownState = {
-  0x495f947276749ce646f68ac8c248420045cb7b5e: true,
-  0xdc7382eb0bc9c352a4cba23c909bda01e0206414: true,
+  '0x495f947276749ce646f68ac8c248420045cb7b5e': true,
+  '0xdc7382eb0bc9c352a4cba23c909bda01e0206414': true,
 };
 
 const ACCOUNT_1 = '0x123';
@@ -149,26 +150,25 @@ const render = ({
   collectibles = [],
   selectedAddress,
   chainId = '0x1',
-  collectiblesDetectionNoticeDismissed = false,
-  useCollectibleDetection,
+  useNftDetection,
   onAddNFT = jest.fn(),
 }) => {
+  const chainIdAsDecimal = hexToDecimal(chainId);
   const store = configureStore({
     metamask: {
-      allCollectibles: {
+      allNfts: {
         [ACCOUNT_1]: {
-          [chainId]: collectibles,
+          [chainIdAsDecimal]: collectibles,
         },
       },
-      allCollectibleContracts: {
+      allNftContracts: {
         [ACCOUNT_1]: {
-          [chainId]: collectibleContracts,
+          [chainIdAsDecimal]: collectibleContracts,
         },
       },
       provider: { chainId },
       selectedAddress,
-      collectiblesDetectionNoticeDismissed,
-      useCollectibleDetection,
+      useNftDetection,
       collectiblesDropdownState,
     },
   });
@@ -177,15 +177,14 @@ const render = ({
 
 describe('Collectible Items', () => {
   const detectCollectiblesStub = jest.fn();
-  const setCollectiblesDetectionNoticeDismissedStub = jest.fn();
   const getStateStub = jest.fn();
   const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
   const updateCollectibleDropDownStateStub = jest.fn();
   setBackgroundConnection({
-    setCollectiblesDetectionNoticeDismissed: setCollectiblesDetectionNoticeDismissedStub,
-    detectCollectibles: detectCollectiblesStub,
+    detectNfts: detectCollectiblesStub,
     getState: getStateStub,
-    checkAndUpdateAllCollectiblesOwnershipStatus: checkAndUpdateAllCollectiblesOwnershipStatusStub,
+    checkAndUpdateAllNftsOwnershipStatus:
+      checkAndUpdateAllCollectiblesOwnershipStatusStub,
     updateCollectibleDropDownState: updateCollectibleDropDownStateStub,
   });
   const historyPushMock = jest.fn();
@@ -214,20 +213,22 @@ describe('Collectible Items', () => {
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
-    it('should take user to the experimental settings tab in setings when user clicks "Turn on NFT detection in Settings"', () => {
+    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
         selectedAddress: ACCOUNT_2,
         collectibles: COLLECTIBLES,
       });
       fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
+      expect(historyPushMock).toHaveBeenCalledWith(
+        `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+      );
     });
     it('should not render the Collectibles Detection Notice when currently selected network is Mainnet and currently selected account has no collectibles but use collectible autodetection preference is set to true', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        useCollectibleDetection: true,
+        useNftDetection: true,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
@@ -235,23 +236,8 @@ describe('Collectible Items', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        collectiblesDetectionNoticeDismissed: true,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
-    });
-
-    it('should call setCollectibesDetectionNoticeDismissed when users clicks "X"', () => {
-      render({
-        selectedAddress: ACCOUNT_2,
-        collectibles: COLLECTIBLES,
-      });
-      expect(
-        setCollectiblesDetectionNoticeDismissedStub,
-      ).not.toHaveBeenCalled();
-      fireEvent.click(
-        screen.queryByTestId('collectibles-detection-notice-close'),
-      );
-      expect(setCollectiblesDetectionNoticeDismissedStub).toHaveBeenCalled();
     });
   });
 
@@ -280,7 +266,7 @@ describe('Collectible Items', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        useCollectibleDetection: true,
+        useNftDetection: true,
       });
       expect(detectCollectiblesStub).not.toHaveBeenCalled();
       expect(
@@ -295,10 +281,10 @@ describe('Collectible Items', () => {
 
     it('should render a link "Refresh list" when some collectibles are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateCollectiblesOwnershipStatus', () => {
       render({
-        chainId: '0x4',
+        chainId: '0x5',
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
-        useCollectibleDetection: true,
+        useNftDetection: true,
       });
       expect(
         checkAndUpdateAllCollectiblesOwnershipStatusStub,
@@ -309,13 +295,13 @@ describe('Collectible Items', () => {
       ).toHaveBeenCalled();
     });
 
-    it('should render a link "Enable Autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
+    it('should render a link "Enable autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
       render({
         selectedAddress: ACCOUNT_1,
         collectibles: COLLECTIBLES,
       });
       expect(historyPushMock).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Enable Autodetect'));
+      fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
     });

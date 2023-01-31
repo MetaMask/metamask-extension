@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserPreferencedCurrencyInput Component rendering should match snapshot 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+      >
+        <input
+          class="unit-input__input"
+          dir="ltr"
+          placeholder="0"
+          style="width: 1.5ch;"
+          type="number"
+          value="0"
+        />
+      </div>
+      <div
+        class="currency-input__conversion-component"
+      >
+        No conversion rate available
+      </div>
+    </div>
+  </div>
+</div>
+`;

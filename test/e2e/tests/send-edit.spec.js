@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
@@ -14,7 +15,9 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: 'send-edit',
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerTypeOneTransaction()
+          .build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -92,7 +95,9 @@ describe('Editing Confirm Transaction', function () {
     };
     await withFixtures(
       {
-        fixtures: 'send-edit-v2',
+        fixtures: new FixtureBuilder()
+          .withTransactionControllerTypeTwoTransaction()
+          .build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,

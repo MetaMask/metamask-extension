@@ -50,7 +50,11 @@ export default class Modal extends PureComponent {
         {headerText && (
           <div className="modal-container__header">
             <div className="modal-container__header-text">{headerText}</div>
-            <div className="modal-container__header-close" onClick={onClose} />
+            <div
+              className="modal-container__header-close"
+              data-testid="modal-header-close"
+              onClick={onClose}
+            />
           </div>
         )}
         <div className={classnames('modal-container__content', contentClass)}>

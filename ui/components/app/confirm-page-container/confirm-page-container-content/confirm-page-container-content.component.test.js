@@ -1,7 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
+import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
@@ -11,15 +11,14 @@ describe('Confirm Page Container Content', () => {
     metamask: {
       provider: {
         type: 'test',
-        chainId: '0x3',
+        chainId: '0x5',
       },
-      eip1559V2Enabled: false,
       addressBook: {
-        '0x3': {
+        '0x5': {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {
             address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
             name: 'Address Book Account 1',
-            chainId: '0x3',
+            chainId: '0x5',
           },
         },
       },
@@ -70,7 +69,7 @@ describe('Confirm Page Container Content', () => {
     expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
     expect(getByText('Confirm').closest('button')).toBeDisabled();
     expect(
-      getByText('Transaction Error. Exception thrown in contract code.'),
+      getByText('Transaction error. Exception thrown in contract code.'),
     ).toBeInTheDocument();
 
     const cancelButton = getByText('Reject');
@@ -91,7 +90,7 @@ describe('Confirm Page Container Content', () => {
       ),
     ).not.toBeInTheDocument();
     expect(
-      queryByText('Transaction Error. Exception thrown in contract code.'),
+      queryByText('Transaction error. Exception thrown in contract code.'),
     ).not.toBeInTheDocument();
     expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
 
@@ -107,7 +106,7 @@ describe('Confirm Page Container Content', () => {
   it('render contract address name from addressBook in title for contract', async () => {
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
-    props.transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
+    props.transactionType = TransactionType.contractInteraction;
     const { queryByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
       store,
@@ -119,7 +118,7 @@ describe('Confirm Page Container Content', () => {
   it('render simple title without address name for simple send', async () => {
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
-    props.transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    props.transactionType = TransactionType.simpleSend;
     const { queryByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
       store,

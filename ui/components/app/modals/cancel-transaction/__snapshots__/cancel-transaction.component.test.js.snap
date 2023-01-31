@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CancelTransaction Component should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container"
+  >
+    <div
+      class="modal-container__header"
+    >
+      <div
+        class="modal-container__header-text"
+      >
+        Attempt to cancel?
+      </div>
+      <div
+        class="modal-container__header-close"
+        data-testid="modal-header-close"
+      />
+    </div>
+    <div
+      class="modal-container__content"
+    >
+      <div>
+        <div
+          class="cancel-transaction__title"
+        >
+          Cancellation gas fee
+        </div>
+        <div
+          class="cancel-transaction__cancel-transaction-gas-fee-container"
+        >
+          <div
+            class="cancel-transaction-gas-fee"
+          >
+            <div
+              class="currency-display-component cancel-transaction-gas-fee__eth"
+              title="0.000021 ETH"
+            >
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
+              >
+                0.000021
+              </span>
+              <span
+                class="currency-display-component__suffix"
+              >
+                ETH
+              </span>
+            </div>
+            <div
+              class="currency-display-component cancel-transaction-gas-fee__fiat"
+              title="0.000021 ETH"
+            >
+              <span
+                class="currency-display-component__prefix"
+              />
+              <span
+                class="currency-display-component__text"
+              >
+                0.000021
+              </span>
+              <span
+                class="currency-display-component__suffix"
+              >
+                ETH
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="cancel-transaction__description"
+        >
+          Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction fee above.
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+        role="button"
+        tabindex="0"
+      >
+        Nevermind
+      </button>
+      <button
+        class="button btn--rounded btn-primary modal-container__footer-button"
+        role="button"
+        tabindex="0"
+      >
+        Yes, let's try
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HexToDecimal Component should render a prefixed hex as a decimal with a className 1`] = `
+<div>
+  <div
+    class="hex-to-decimal"
+  >
+    12345
+  </div>
+</div>
+`;
+
+exports[`HexToDecimal Component should render an unprefixed hex as a decimal with a className 1`] = `
+<div>
+  <div
+    class="hex-to-decimal"
+  >
+    6789
+  </div>
+</div>
+`;

@@ -39,4 +39,3 @@ If a problem is detected, publish the roll-back release to 100% of users, identi
 ## Summary
 
 This protocol is a worst-case scenario, just a way to be incredibly careful about our most sensitive possible changes.
-

@@ -3,14 +3,13 @@ import log from 'loglevel';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_GROUP_STATUSES,
-  TRANSACTION_STATUSES,
-  TRANSACTION_ENVELOPE_TYPES,
+  TransactionType,
+  TransactionGroupStatus,
+  TransactionStatus,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
-import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
-import fetchWithCache from './fetch-with-cache';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
 /**
  * @typedef EthersContractCall
@@ -43,22 +42,13 @@ async function getMethodFrom4Byte(fourBytePrefix) {
   return fourByteResponse.results[0].text_signature;
 }
 
-function pickShortest(registrySig, fourByteSig) {
-  if (!registrySig) {
-    return fourByteSig;
-  } else if (!fourByteSig) {
-    return registrySig;
-  }
-  return fourByteSig.length < registrySig.length ? fourByteSig : registrySig;
-}
-
 let registry;
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
  *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
- * @returns {Object}
+ * @returns {object}
  */
 export async function getMethodDataAsync(fourBytePrefix) {
   try {
@@ -71,18 +61,11 @@ export async function getMethodDataAsync(fourBytePrefix) {
       registry = new MethodRegistry({ provider: global.ethereumProvider });
     }
 
-    const registrySig = await registry.lookup(fourBytePrefix).catch((e) => {
-      log.error(e);
-      return null;
-    });
-
-    const sig = pickShortest(registrySig, fourByteSig);
-
-    if (!sig) {
+    if (!fourByteSig) {
       return {};
     }
 
-    const parsedResult = registry.parse(sig);
+    const parsedResult = registry.parse(fourByteSig);
 
     return {
       name: parsedResult.name,
@@ -114,10 +97,11 @@ export function getFourBytePrefix(data = '') {
  */
 export function isTokenMethodAction(type) {
   return [
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM,
+    TransactionType.tokenMethodTransfer,
+    TransactionType.tokenMethodApprove,
+    TransactionType.tokenMethodSetApprovalForAll,
+    TransactionType.tokenMethodTransferFrom,
+    TransactionType.tokenMethodSafeTransferFrom,
   ].includes(type);
 }
 
@@ -143,32 +127,23 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const { isContractCode } = await readAddressAsContract(global.eth, address);
-  return isContractCode;
-}
-
-export function sumHexes(...args) {
-  const total = args.reduce((acc, hexAmount) => {
-    return addCurrencies(acc, hexAmount, {
-      toNumericBase: 'hex',
-      aBase: 16,
-      bBase: 16,
-    });
-  });
-
-  return addHexPrefix(total);
+  const { isContractAddress } = await readAddressAsContract(
+    global.eth,
+    address,
+  );
+  return isContractAddress;
 }
 
 export function isLegacyTransaction(txParams) {
-  return txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY;
+  return txParams?.type === TransactionEnvelopeType.legacy;
 }
 
 /**
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
  *
- * @param {Object} transaction - The txMeta object of a transaction.
- * @param {Object} transaction.txReceipt - The transaction receipt.
+ * @param {object} transaction - The txMeta object of a transaction.
+ * @param {object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
  */
 export function getStatusKey(transaction) {
@@ -180,14 +155,14 @@ export function getStatusKey(transaction) {
 
   // There was an on-chain failure
   if (receiptStatus === '0x0') {
-    return TRANSACTION_STATUSES.FAILED;
+    return TransactionStatus.failed;
   }
 
   if (
-    status === TRANSACTION_STATUSES.CONFIRMED &&
-    type === TRANSACTION_TYPES.CANCEL
+    status === TransactionStatus.confirmed &&
+    type === TransactionType.cancel
   ) {
-    return TRANSACTION_GROUP_STATUSES.CANCELLED;
+    return TransactionGroupStatus.cancelled;
   }
 
   return transaction.status;
@@ -205,31 +180,34 @@ export function getStatusKey(transaction) {
  */
 export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
   switch (type) {
-    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
+    case TransactionType.tokenMethodTransfer: {
       return t('transfer');
     }
-    case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM: {
+    case TransactionType.tokenMethodTransferFrom: {
       return t('transferFrom');
     }
-    case TRANSACTION_TYPES.TOKEN_METHOD_SAFE_TRANSFER_FROM: {
+    case TransactionType.tokenMethodSafeTransferFrom: {
       return t('safeTransferFrom');
     }
-    case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
+    case TransactionType.tokenMethodApprove: {
       return t('approve');
     }
-    case TRANSACTION_TYPES.SIMPLE_SEND: {
+    case TransactionType.tokenMethodSetApprovalForAll: {
+      return t('setApprovalForAll');
+    }
+    case TransactionType.simpleSend: {
       return t('sendingNativeAsset', [nativeCurrency]);
     }
-    case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
+    case TransactionType.contractInteraction: {
       return t('contractInteraction');
     }
-    case TRANSACTION_TYPES.DEPLOY_CONTRACT: {
+    case TransactionType.deployContract: {
       return t('contractDeployment');
     }
-    case TRANSACTION_TYPES.SWAP: {
+    case TransactionType.swap: {
       return t('swap');
     }
-    case TRANSACTION_TYPES.SWAP_APPROVAL: {
+    case TransactionType.swapApproval: {
       return t('swapApproval');
     }
     default: {

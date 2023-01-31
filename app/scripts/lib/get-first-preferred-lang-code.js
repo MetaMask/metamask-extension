@@ -1,8 +1,10 @@
 import browser from 'webextension-polyfill';
 import allLocales from '../../_locales/index.json';
 
+// ensure that we default users with browser language code 'zh' to the supported 'zh_CN' language code
+const existingLocaleCodes = { zh: 'zh_CN' };
+
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
-const existingLocaleCodes = {};
 allLocales.forEach((locale) => {
   if (locale && locale.code) {
     existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =

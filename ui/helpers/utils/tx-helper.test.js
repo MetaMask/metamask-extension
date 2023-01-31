@@ -1,13 +1,10 @@
-import {
-  MAINNET_CHAIN_ID,
-  MAINNET_NETWORK_ID,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import txHelper from './tx-helper';
 
 describe('txHelper', () => {
   it('always shows the oldest tx first', () => {
-    const metamaskNetworkId = MAINNET_NETWORK_ID;
-    const chainId = MAINNET_CHAIN_ID;
+    const metamaskNetworkId = NETWORK_IDS.MAINNET;
+    const chainId = CHAIN_IDS.MAINNET;
     const txs = {
       a: { metamaskNetworkId, time: 3 },
       b: { metamaskNetworkId, time: 1 },

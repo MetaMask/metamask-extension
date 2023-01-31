@@ -8,9 +8,6 @@
   "about": {
     "message": "Основни подаци"
   },
-  "acceleratingATransaction": {
-    "message": "* Time što se ubrzava transakcija koristeći veću gas cenu, povećavaju se šanse da se procesuira brže od strane mreže, ali to nije uvek zagarantovano."
-  },
   "accessingYourCamera": {
     "message": "Pristupa se vašoj kameri..."
   },
@@ -49,9 +46,6 @@
   },
   "advanced": {
     "message": "Напредне опције"
-  },
-  "advancedOptions": {
-    "message": "Dodatne opcije"
   },
   "amount": {
     "message": "Iznos"
@@ -190,17 +184,8 @@
   "connectingToGoerli": {
     "message": "Povezuje se sa test mrežom Goerli "
   },
-  "connectingToKovan": {
-    "message": "Povezuje se na test mrežu Kovan"
-  },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Ethereum mrežu"
-  },
-  "connectingToRinkeby": {
-    "message": "Poezivanje na Rinkeby Test mrežu"
-  },
-  "connectingToRopsten": {
-    "message": "Povezuje se na Ropsten Test mrežu"
   },
   "continueToWyre": {
     "message": "Nastavite ka Wyre"
@@ -246,12 +231,6 @@
   },
   "custom": {
     "message": "Напредне опције"
-  },
-  "customGas": {
-    "message": "Prilagodi gas"
-  },
-  "customGasSubTitle": {
-    "message": "Povećanje naknade može smanjiti vreme obrade, ali to nije zagarantovano."
   },
   "customToken": {
     "message": "Prilagođeni token"
@@ -336,9 +315,6 @@
   },
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Procenjeno vreme za obradu"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum javna adresa"
@@ -500,9 +476,6 @@
   "knownAddressRecipient": {
     "message": "Poznata adresa ugovora."
   },
-  "kovan": {
-    "message": "Kovan test mreža"
-  },
   "learnMore": {
     "message": "Nauči više"
   },
@@ -576,9 +549,6 @@
   "newAccount": {
     "message": "Nov nalog"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Otkrivena je nova adresa! Kliknite ovde da biste je dodali u Vaš adresar."
-  },
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
@@ -594,12 +564,6 @@
   },
   "newToMetaMask": {
     "message": "Novi ste u MetaMask-u?"
-  },
-  "newTotal": {
-    "message": "Novi zbir"
-  },
-  "newTransactionFee": {
-    "message": "Nova naknada za transakcije"
   },
   "next": {
     "message": "Даље"
@@ -759,12 +723,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "NE delite ovu frazu ni sa kim!"
   },
-  "rinkeby": {
-    "message": "Rinkeby test mreža"
-  },
-  "ropsten": {
-    "message": "Test mreža Ropsten"
-  },
   "rpcUrl": {
     "message": "Novi RPC URL"
   },
@@ -801,9 +759,6 @@
   "seedPhraseReq": {
     "message": "Šifre za oporavak naloga (seed phrases) imaju 12 reči"
   },
-  "selectAHigherGasFee": {
-    "message": "Izaberite veću vrednost gas naknade da biste ubrzali procesuiranje vaše transakcije.*"
-  },
   "selectAnAccount": {
     "message": "Izaberite nalog"
   },
@@ -821,9 +776,6 @@
   },
   "send": {
     "message": "Пошаљи"
-  },
-  "sendAmount": {
-    "message": "Pošaljite iznos"
   },
   "sendTokens": {
     "message": "Pošalji tokene"
@@ -858,17 +810,11 @@
   "sign": {
     "message": "Potpišite"
   },
-  "signNotice": {
-    "message": "Potpisivanje ove poruke može imati \nopasne neželjene efekte. Potpisujte samo poruke sa \nsajtova u koje imate potpuno poverenje u pogledu svog naloga.\n Ovaj opasan metod će biti uklonjen u budućoj verziji."
-  },
   "signatureRequest": {
     "message": "Zahtev za potpis"
   },
   "signed": {
     "message": "Potpisan"
-  },
-  "slow": {
-    "message": "Споро"
   },
   "somethingWentWrong": {
     "message": "Ups! Nešto nije u redu."

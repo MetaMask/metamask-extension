@@ -1,40 +1,27 @@
 import { useSelector } from 'react-redux';
 
-import {
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
-} from '../../../shared/constants/gas';
+import { EditGasModes, GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../../shared/modules/gas.utils';
 
-import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
-import {
-  checkNetworkAndAccountSupports1559,
-  getShouldShowFiat,
-} from '../../selectors';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-} from '../../helpers/utils/conversions.util';
+import { PRIMARY } from '../../helpers/constants/common';
+import { checkNetworkAndAccountSupports1559 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+} from '../../../shared/modules/conversion.utils';
 
 /**
- * @typedef {Object} GasEstimatesReturnType
- * @property {string} [estimatedMinimumFiat] - The amount estimated to be paid
- *  based on current network conditions. Expressed in user's preferred currency.
- * @property {string} [estimatedMaximumFiat] - the maximum amount estimated to be paid if current
- *  network transaction volume increases. Expressed in user's preferred currency.
- * @property {string} [estimatedMaximumNative] - the maximum amount estimated to be paid if the
- *  current network transaction volume increases. Expressed in the network's native currency.
+ * @typedef {object} GasEstimatesReturnType
  * @property {string} [estimatedMinimumNative] - the maximum amount estimated to be paid if the
  *  current network transaction volume increases. Expressed in the network's native currency.
- * @property {HexWeiString} [estimatedBaseFee] - estimatedBaseFee from fee-market gasFeeEstimates
- *  in HexWei.
+ * @property {HexWeiString} [maximumCostInHexWei] - the maximum amount this transaction will cost.
  * @property {HexWeiString} [minimumCostInHexWei] - the minimum amount this transaction will cost.
  */
 
@@ -67,13 +54,6 @@ export function useGasEstimates({
     !isLegacyTransaction(transaction?.txParams);
 
   const {
-    currency: fiatCurrency,
-    numberOfDecimals: fiatNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
-
-  const showFiat = useSelector(getShouldShowFiat);
-
-  const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
   } = useUserPreferencedCurrency(PRIMARY);
@@ -95,66 +75,33 @@ export function useGasEstimates({
       ),
       baseFeePerGas: decGWEIToHexWEI(gasFeeEstimates.estimatedBaseFee ?? '0'),
     };
-  } else if (gasEstimateType === GAS_ESTIMATE_TYPES.NONE) {
-    gasSettings = {
-      ...gasSettings,
-      gasPrice: '0x0',
-    };
   } else {
     gasSettings = {
       ...gasSettings,
-      gasPrice: decGWEIToHexWEI(gasPrice),
+      gasPrice:
+        gasEstimateType === GasEstimateTypes.none
+          ? '0x0'
+          : decGWEIToHexWEI(gasPrice),
     };
   }
 
   // The maximum amount this transaction will cost
   const maximumCostInHexWei = getMaximumGasTotalInHexWei(gasSettings);
 
-  if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+  if (editGasMode === EditGasModes.swaps) {
     gasSettings = { ...gasSettings, gasLimit: minimumGasLimit };
   }
 
   // The minimum amount this transaction will cost
   const minimumCostInHexWei = getMinimumGasTotalInHexWei(gasSettings);
 
-  // The estimated total amount of native currency that will be expended
-  // given the selected gas fees.
-  const [estimatedMaximumNative] = useCurrencyDisplay(maximumCostInHexWei, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
-
-  const [, { value: estimatedMaximumFiat }] = useCurrencyDisplay(
-    maximumCostInHexWei,
-    {
-      numberOfDecimals: fiatNumberOfDecimals,
-      currency: fiatCurrency,
-    },
-  );
-
   const [estimatedMinimumNative] = useCurrencyDisplay(minimumCostInHexWei, {
     numberOfDecimals: primaryNumberOfDecimals,
     currency: primaryCurrency,
   });
 
-  // We also need to display our closest estimate of the low end of estimation
-  // in fiat.
-  const [, { value: estimatedMinimumFiat }] = useCurrencyDisplay(
-    minimumCostInHexWei,
-    {
-      numberOfDecimals: fiatNumberOfDecimals,
-      currency: fiatCurrency,
-    },
-  );
-
   return {
-    estimatedMaximumFiat: showFiat ? estimatedMaximumFiat : '',
-    estimatedMinimumFiat: showFiat ? estimatedMinimumFiat : '',
-    estimatedMaximumNative,
     estimatedMinimumNative,
-    estimatedBaseFee: supportsEIP1559
-      ? decGWEIToHexWEI(gasFeeEstimates.estimatedBaseFee ?? '0')
-      : undefined,
     maximumCostInHexWei,
     minimumCostInHexWei,
   };

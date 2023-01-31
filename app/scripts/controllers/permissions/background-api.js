@@ -14,9 +14,7 @@ export function getPermissionBackgroundApiMethods(permissionController) {
       );
 
       if (existing.value.includes(account)) {
-        throw new Error(
-          `eth_accounts permission for origin "${origin}" already permits account "${account}".`,
-        );
+        return;
       }
 
       permissionController.updateCaveat(
@@ -35,9 +33,7 @@ export function getPermissionBackgroundApiMethods(permissionController) {
       );
 
       if (!existing.value.includes(account)) {
-        throw new Error(
-          `eth_accounts permission for origin "${origin}" already does not permit account "${account}".`,
-        );
+        return;
       }
 
       const remainingAccounts = existing.value.filter(

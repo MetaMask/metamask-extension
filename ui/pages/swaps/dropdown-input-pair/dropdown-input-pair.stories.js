@@ -117,7 +117,7 @@ const tokens = [
 
 export default {
   title: 'Pages/Swaps/DropdownInputPair',
-  id: __filename,
+
   component: DropdownInputPair,
   parameters: {
     docs: {
@@ -150,10 +150,8 @@ const tokensToSearch = tokens.map((token) => ({
 }));
 
 export const DefaultStory = (args) => {
-  const [
-    { inputValue, selectedItem = tokensToSearch[0] },
-    updateArgs,
-  ] = useArgs();
+  const [{ inputValue, selectedItem = tokensToSearch[0] }, updateArgs] =
+    useArgs();
   return (
     <DropdownInputPair
       {...args}

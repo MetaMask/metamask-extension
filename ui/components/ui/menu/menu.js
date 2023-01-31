@@ -27,6 +27,7 @@ const Menu = ({
       <div className="menu__background" onClick={onHide} />
       <div
         className={classnames('menu__container', className)}
+        data-testid={className}
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}

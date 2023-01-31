@@ -26,7 +26,7 @@ describe('transform utils', () => {
       // This error is an artifact of how we're mocking the ESLint singleton,
       // and won't actually occur in production.
       await expect(() => lintTransformedFile()).rejects.toThrow(
-        `Cannot read property '0' of undefined`,
+        `Cannot read properties of undefined (reading '0')`,
       );
       expect(mockESLint).toBeDefined();
     });

@@ -1,14 +1,16 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
-import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  UNKNOWN_TICKER_SYMBOL,
+} from '../../../../../shared/constants/app';
 import { EVENT } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../../shared/constants/network';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -16,6 +18,7 @@ const addEthereumChain = {
   hookNames: {
     addCustomRpc: true,
     getCurrentChainId: true,
+    getCurrentRpcUrl: true,
     findCustomRpcBy: true,
     updateRpcTarget: true,
     requestUserApproval: true,
@@ -32,6 +35,7 @@ async function addEthereumChainHandler(
   {
     addCustomRpc,
     getCurrentChainId,
+    getCurrentRpcUrl,
     findCustomRpcBy,
     updateRpcTarget,
     requestUserApproval,
@@ -135,25 +139,23 @@ async function addEthereumChainHandler(
     );
   }
 
-  if (CHAIN_ID_TO_NETWORK_ID_MAP[_chainId]) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `May not specify default MetaMask chain.`,
-      }),
-    );
-  }
-
   const existingNetwork = findCustomRpcBy({ chainId: _chainId });
 
-  if (existingNetwork) {
+  // if the request is to add a network that is already added and configured
+  // with the same RPC gateway we shouldn't try to add it again.
+  if (existingNetwork && existingNetwork.rpcUrl === firstValidRPCUrl) {
     // If the network already exists, the request is considered successful
     res.result = null;
 
     const currentChainId = getCurrentChainId();
-    if (currentChainId === _chainId) {
+    const currentRpcUrl = getCurrentRpcUrl();
+
+    // If the current chainId and rpcUrl matches that of the incoming request
+    // We don't need to proceed further.
+    if (currentChainId === _chainId && currentRpcUrl === firstValidRPCUrl) {
       return end();
     }
-
+    // If this network is already added with but is not the currently selected network
     // Ask the user to switch the network
     try {
       await updateRpcTarget(
@@ -236,12 +238,29 @@ async function addEthereumChainHandler(
       );
     }
   }
-  const ticker = nativeCurrency?.symbol || 'ETH';
 
-  if (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6) {
+  const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
+
+  if (
+    ticker !== UNKNOWN_TICKER_SYMBOL &&
+    (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6)
+  ) {
     return end(
       ethErrors.rpc.invalidParams({
         message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
+      }),
+    );
+  }
+  // if the chainId is the same as an existing network but the ticker is different we want to block this action
+  // as it is potentially malicious and confusing
+  if (
+    existingNetwork &&
+    existingNetwork.chainId === _chainId &&
+    existingNetwork.ticker !== ticker
+  ) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\n${ticker}`,
       }),
     );
   }
@@ -267,17 +286,9 @@ async function addEthereumChainHandler(
       referrer: {
         url: origin,
       },
-      sensitiveProperties: {
+      properties: {
         chain_id: _chainId,
-        rpc_url: firstValidRPCUrl,
-        network_name: _chainName,
-        // Including network to override the default network
-        // property included in all events. For RPC type networks
-        // the MetaMetrics controller uses the rpcUrl for the network
-        // property.
-        network: firstValidRPCUrl,
         symbol: ticker,
-        block_explorer_url: firstValidBlockExplorerUrl,
         source: EVENT.SOURCE.TRANSACTION.DAPP,
       },
     });

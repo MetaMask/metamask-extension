@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../components/ui/button';
-import { EVENT } from '../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { getAccountNameErrorMessage } from '../../helpers/utils/accounts';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -18,22 +19,18 @@ export default class NewAccountCreateForm extends Component {
 
   render() {
     const { newAccountName, defaultAccountName } = this.state;
-    const {
-      history,
-      createAccount,
-      mostRecentOverviewPage,
-      accounts,
-    } = this.props;
+    const { history, createAccount, mostRecentOverviewPage, accounts } =
+      this.props;
 
-    const createClick = (_) => {
+    const createClick = (event) => {
+      event.preventDefault();
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: 'Added New Account',
+            event: EVENT_NAMES.ACCOUNT_ADDED,
             properties: {
-              action: 'Add New Account',
-              legacy_event: true,
+              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
             },
           });
           history.push(mostRecentOverviewPage);
@@ -41,23 +38,21 @@ export default class NewAccountCreateForm extends Component {
         .catch((e) => {
           this.context.trackEvent({
             category: EVENT.CATEGORIES.ACCOUNTS,
-            event: 'Error',
+            event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
             properties: {
-              action: 'Add New Account',
-              legacy_event: true,
-              errorMessage: e.message,
+              account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+              error: e.message,
             },
           });
         });
     };
 
-    const accountNameExists = (allAccounts, accountName) => {
-      const accountsNames = allAccounts.map((item) => item.name);
-
-      return accountsNames.includes(accountName);
-    };
-
-    const existingAccountName = accountNameExists(accounts, newAccountName);
+    const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
+      accounts,
+      this.context,
+      newAccountName,
+      defaultAccountName,
+    );
 
     return (
       <div className="new-account-create-form">
@@ -66,8 +61,9 @@ export default class NewAccountCreateForm extends Component {
         </div>
         <div>
           <input
-            className={classnames('new-account-create-form__input', {
-              'new-account-create-form__input__error': existingAccountName,
+            className={classnames({
+              'new-account-create-form__input': true,
+              'new-account-create-form__input__error': !isValidAccountName,
             })}
             value={newAccountName}
             placeholder={defaultAccountName}
@@ -76,16 +72,9 @@ export default class NewAccountCreateForm extends Component {
             }
             autoFocus
           />
-          {existingAccountName ? (
-            <div
-              className={classnames(
-                ' new-account-create-form__error',
-                ' new-account-create-form__error-amount',
-              )}
-            >
-              {this.context.t('accountNameDuplicate')}
-            </div>
-          ) : null}
+          <div className="new-account-create-form__error new-account-create-form__error-amount">
+            {errorMessage}
+          </div>
           <div className="new-account-create-form__buttons">
             <Button
               type="secondary"
@@ -100,7 +89,7 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
-              disabled={existingAccountName}
+              disabled={!isValidAccountName}
             >
               {this.context.t('create')}
             </Button>

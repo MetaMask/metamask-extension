@@ -1,5 +1,5 @@
 import mockState from '../../test/data/mock-state.json';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import { HardwareKeyringTypes } from '../../shared/constants/hardware-wallets';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -18,38 +18,38 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
       expect(selectors.isHardwareWallet(mockState)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = 'Simple Key Pair';
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
       expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        KEYRING_TYPES.LEDGER,
+        HardwareKeyringTypes.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        KEYRING_TYPES.TREZOR,
+        HardwareKeyringTypes.trezor,
       );
     });
   });
@@ -87,7 +87,7 @@ describe('Selectors', () => {
           ...mockState.metamask,
           keyrings: [
             {
-              type: KEYRING_TYPES.LEDGER,
+              type: HardwareKeyringTypes.ledger,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
             },
           ],
@@ -125,7 +125,7 @@ describe('Selectors', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          chainId: '0x4',
+          chainId: '0x5',
           isEns: false,
           memo: '',
           name: 'Address Book Account 1',
@@ -135,10 +135,9 @@ describe('Selectors', () => {
   });
 
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
-    const accountsWithSendEther = selectors.accountsWithSendEtherInfoSelector(
-      mockState,
-    );
-    expect(accountsWithSendEther).toHaveLength(2);
+    const accountsWithSendEther =
+      selectors.accountsWithSendEtherInfoSelector(mockState);
+    expect(accountsWithSendEther).toHaveLength(4);
     expect(accountsWithSendEther[0].balance).toStrictEqual('0x0');
     expect(accountsWithSendEther[0].address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -147,9 +146,8 @@ describe('Selectors', () => {
   });
 
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
-    const currentAccountwithSendEther = selectors.getCurrentAccountWithSendEtherInfo(
-      mockState,
-    );
+    const currentAccountwithSendEther =
+      selectors.getCurrentAccountWithSendEtherInfo(mockState);
     expect(currentAccountwithSendEther.balance).toStrictEqual('0x0');
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -235,9 +233,8 @@ describe('Selectors', () => {
     });
   });
   it('#getIsAdvancedGasFeeDefault', () => {
-    const isAdvancedGasFeeDefault = selectors.getIsAdvancedGasFeeDefault(
-      mockState,
-    );
+    const isAdvancedGasFeeDefault =
+      selectors.getIsAdvancedGasFeeDefault(mockState);
     expect(isAdvancedGasFeeDefault).toStrictEqual(true);
   });
   it('#getAppIsLoading', () => {
@@ -253,9 +250,8 @@ describe('Selectors', () => {
     ]);
   });
   it('#getUnreadNotificationsCount', () => {
-    const unreadNotificationCount = selectors.getUnreadNotificationsCount(
-      mockState,
-    );
+    const unreadNotificationCount =
+      selectors.getUnreadNotificationsCount(mockState);
 
     expect(unreadNotificationCount).toStrictEqual(1);
   });
@@ -266,5 +262,10 @@ describe('Selectors', () => {
     expect(unreadNotifications).toStrictEqual([
       mockState.metamask.notifications.test,
     ]);
+  });
+
+  it('#getUseCurrencyRateCheck', () => {
+    const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
+    expect(useCurrencyRateCheck).toStrictEqual(true);
   });
 });

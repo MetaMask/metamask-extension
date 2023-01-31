@@ -16,6 +16,7 @@ export default function AccountListItem({
   return (
     <div
       className={`account-list-item ${className}`}
+      data-testid="account-list-item"
       onClick={() => handleClick?.({ name, address, balance })}
     >
       <div className="account-list-item__top-row">
@@ -25,7 +26,14 @@ export default function AccountListItem({
           diameter={18}
         />
         <div className="account-list-item__account-name">{name || address}</div>
-        {icon ? <div className="account-list-item__icon">{icon}</div> : null}
+        {icon ? (
+          <div
+            className="account-list-item__icon"
+            data-testid="account-list-item-icon"
+          >
+            {icon}
+          </div>
+        ) : null}
         <AccountMismatchWarning address={address} />
       </div>
 

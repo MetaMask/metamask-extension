@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../../../.storybook/test-data';
+import { calcGasTotal } from '../../../../../shared/lib/transactions-controller-utils';
 import { GAS_INPUT_MODES } from '../../../../ducks/send';
 import { updateMetamaskState } from '../../../../store/actions';
 import configureStore from '../../../../store/store';
-import { calcGasTotal } from '../../send.utils';
 import README from './README.mdx';
 import SendGasRow from './send-gas-row.component';
 
@@ -14,7 +14,7 @@ const store = configureStore(testData);
 
 export default {
   title: 'Pages/Send/SendContent/SendGasRow',
-  id: __filename,
+
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   parameters: {
     docs: {
@@ -23,10 +23,11 @@ export default {
   },
   argTypes: {
     insufficientBalance: {
-      name: 'Is Insufficient Balance',
       control: { type: 'boolean' },
-      defaultValue: false,
     },
+  },
+  args: {
+    insufficientBalance: false,
   },
 };
 

@@ -1,34 +1,31 @@
 import React from 'react';
-import sinon from 'sinon';
-import { shallow } from 'enzyme';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { DropdownMenuItem } from './dropdown';
 
 describe('Dropdown', () => {
-  let wrapper;
-  const onClickSpy = sinon.spy();
-  const closeMenuSpy = sinon.spy();
+  const props = {
+    onClick: jest.fn(),
+    closeMenu: jest.fn(),
+    style: { test: 'style' },
+  };
 
-  beforeEach(() => {
-    wrapper = shallow(
-      <DropdownMenuItem
-        onClick={onClickSpy}
-        style={{ test: 'style' }}
-        closeMenu={closeMenuSpy}
-      />,
-    );
-  });
+  it('should matchsnapshot', () => {
+    const { container } = renderWithProvider(<DropdownMenuItem {...props} />);
 
-  it('renders li with dropdown-menu-item class', () => {
-    expect(wrapper.find('li.dropdown-menu-item')).toHaveLength(1);
-  });
-
-  it('adds style based on props passed', () => {
-    expect(wrapper.prop('style').test).toStrictEqual('style');
+    expect(container).toMatchSnapshot();
   });
 
   it('simulates click event and calls onClick and closeMenu', () => {
-    wrapper.prop('onClick')();
-    expect(onClickSpy.callCount).toStrictEqual(1);
-    expect(closeMenuSpy.callCount).toStrictEqual(1);
+    const { queryByTestId } = renderWithProvider(
+      <DropdownMenuItem {...props} />,
+    );
+
+    const dropdownItem = queryByTestId('dropdown-menu-item');
+
+    fireEvent.click(dropdownItem);
+
+    expect(props.onClick).toHaveBeenCalledTimes(1);
+    expect(props.closeMenu).toHaveBeenCalledTimes(1);
   });
 });

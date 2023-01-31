@@ -34,6 +34,11 @@ cleanContextForImports();
 import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
+import shouldInjectProvider from '../../shared/modules/provider-injection';
+
+// contexts
+const CONTENT_SCRIPT = 'metamask-contentscript';
+const INPAGE = 'metamask-inpage';
 
 restoreContextAfterImports();
 
@@ -43,14 +48,16 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 // setup plugin communication
 //
 
-// setup background connection
-const metamaskStream = new WindowPostMessageStream({
-  name: 'metamask-inpage',
-  target: 'metamask-contentscript',
-});
+if (shouldInjectProvider()) {
+  // setup background connection
+  const metamaskStream = new WindowPostMessageStream({
+    name: INPAGE,
+    target: CONTENT_SCRIPT,
+  });
 
-initializeProvider({
-  connectionStream: metamaskStream,
-  logger: log,
-  shouldShimWeb3: true,
-});
+  initializeProvider({
+    connectionStream: metamaskStream,
+    logger: log,
+    shouldShimWeb3: true,
+  });
+}

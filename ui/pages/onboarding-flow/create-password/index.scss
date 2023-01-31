@@ -23,13 +23,12 @@
   }
 
   &__form {
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       max-width: 320px;
     }
 
     &--password-button {
-      background-color: transparent;
-      color: var(--color-text-default);
+      color: var(--color-primary-default);
     }
 
     &--checkmark {

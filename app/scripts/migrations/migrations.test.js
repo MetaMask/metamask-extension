@@ -149,11 +149,6 @@ describe('wallet1 is migrated successfully', () => {
           'testnet',
         );
         return migration13.migrate(twelfthResult);
-      })
-      .then((thirteenthResult) => {
-        expect(thirteenthResult.data.config.provider.type).toStrictEqual(
-          'ropsten',
-        );
       });
   });
 });

@@ -25,8 +25,8 @@ const mapStateToProps = (state) => {
   const permittedAccountsByOrigin = getPermittedAccountsByOrigin(state);
   const selectedAddress = getSelectedAddress(state);
 
-  const currentTabHasNoAccounts = !permittedAccountsByOrigin[originOfCurrentTab]
-    ?.length;
+  const currentTabHasNoAccounts =
+    !permittedAccountsByOrigin[originOfCurrentTab]?.length;
 
   let tabToConnect;
   if (originOfCurrentTab && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {

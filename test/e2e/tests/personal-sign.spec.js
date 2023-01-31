@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Personal sign', function () {
   it('can initiate and confirm a personal sign', async function () {
@@ -16,7 +17,9 @@ describe('Personal sign', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -41,7 +44,7 @@ describe('Personal sign', function () {
         const personalMessage = await personalMessageRow.getText();
         assert.equal(personalMessage, 'Example `personal_sign` message');
 
-        await driver.clickElement('[data-testid="request-signature__sign"]');
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);

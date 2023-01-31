@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ItemList from './item-list';
 import ListItemSearch from './list-item-search';
@@ -19,11 +19,22 @@ export default function SearchableItemList({
   hideItemIf,
   listContainerClassName,
   shouldSearchForImports,
+  searchQuery,
+  setSearchQuery,
 }) {
   const itemListRef = useRef();
 
-  const [results, setResults] = useState(defaultToAll ? itemsToSearch : []);
-  const [searchQuery, setSearchQuery] = useState('');
+  const initialResultsState = useMemo(() => {
+    return defaultToAll ? itemsToSearch : [];
+  }, [defaultToAll, itemsToSearch]);
+  const [results, setResults] = useState(initialResultsState);
+  useEffect(() => {
+    if (!searchQuery) {
+      // Only if there is no searchQuery we want to show all tokens.
+      setResults(initialResultsState);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialResultsState.length, searchQuery]);
 
   return (
     <div className={className}>
@@ -41,6 +52,8 @@ export default function SearchableItemList({
         searchPlaceholderText={searchPlaceholderText}
         defaultToAll={defaultToAll}
         shouldSearchForImports={shouldSearchForImports}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       <ItemList
         searchQuery={searchQuery}
@@ -80,4 +93,6 @@ SearchableItemList.propTypes = {
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
   shouldSearchForImports: PropTypes.bool,
+  searchQuery: PropTypes.string,
+  setSearchQuery: PropTypes.func,
 };

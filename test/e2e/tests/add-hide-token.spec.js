@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Hide token', function () {
   const ganacheOptions = {
@@ -14,7 +15,32 @@ describe('Hide token', function () {
   it('hides the token when clicked', async function () {
     await withFixtures(
       {
-        fixtures: 'custom-token',
+        fixtures: new FixtureBuilder()
+          .withTokensController({
+            allTokens: {
+              '0x539': {
+                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+                  {
+                    address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                    decimals: 4,
+                    image: null,
+                    isERC721: false,
+                    symbol: 'TST',
+                  },
+                ],
+              },
+            },
+            tokens: [
+              {
+                address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
+                decimals: 4,
+                image: null,
+                isERC721: false,
+                symbol: 'TST',
+              },
+            ],
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -69,7 +95,9 @@ describe('Add existing token using search', function () {
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({ useTokenDetection: true })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -80,9 +108,12 @@ describe('Add existing token using search', function () {
 
         await driver.clickElement({ text: 'import tokens', tag: 'a' });
         await driver.fill('#search-tokens', 'BAT');
-        await driver.clickElement({ text: 'BAT', tag: 'span' });
+        await driver.clickElement({
+          text: 'BAT',
+          tag: 'span',
+        });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

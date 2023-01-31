@@ -8,9 +8,6 @@
   "about": {
     "message": "Despre"
   },
-  "acceleratingATransaction": {
-    "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
-  },
   "accessingYourCamera": {
     "message": "Se accesează camera dvs..."
   },
@@ -49,9 +46,6 @@
   },
   "advanced": {
     "message": "Avansate"
-  },
-  "advancedOptions": {
-    "message": "Opțiuni avansate"
   },
   "amount": {
     "message": "Sumă"
@@ -193,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
-  "connectingToKovan": {
-    "message": "Se conectează la rețeaua de test Kovan"
-  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
-  },
-  "connectingToRinkeby": {
-    "message": "Se conectează la Rețeaua de test Rinkeby"
-  },
-  "connectingToRopsten": {
-    "message": "Se conectează la rețeaua de test Ropsten"
   },
   "continueToWyre": {
     "message": "Continuați la Wyre"
@@ -249,12 +234,6 @@
   },
   "custom": {
     "message": "Avansate"
-  },
-  "customGas": {
-    "message": "Particularizați Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Creșterea taxei poate reduce timpii de procesare, dar acest lucru nu este garantat."
   },
   "customToken": {
     "message": "Token personalizat"
@@ -339,9 +318,6 @@
   },
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Timpi estimativi de procesare"
   },
   "ethereumPublicAddress": {
     "message": "Adresa publică Ethereum"
@@ -493,9 +469,6 @@
   "knownAddressRecipient": {
     "message": "Adresa cunoscută din contract."
   },
-  "kovan": {
-    "message": "Rețea de test Kovan"
-  },
   "learnMore": {
     "message": "Aflați mai multe"
   },
@@ -572,9 +545,6 @@
   "newAccount": {
     "message": "Cont nou"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "A fost detectată o adresă nouă! Faceți clic aici pentru a o adăuga în agenda dvs."
-  },
   "newAccountNumberName": {
     "message": "Cont $1",
     "description": "Default name of next account to be created on create account screen"
@@ -590,12 +560,6 @@
   },
   "newToMetaMask": {
     "message": "Nefamiliarizat cu MetaMask?"
-  },
-  "newTotal": {
-    "message": "Total nou"
-  },
-  "newTransactionFee": {
-    "message": "Taxă nouă de tranzacție"
   },
   "next": {
     "message": "Înainte"
@@ -755,12 +719,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "NU împărtășiți această expresie nimănui!"
   },
-  "rinkeby": {
-    "message": "Rețea test Rinkeby"
-  },
-  "ropsten": {
-    "message": "Rețea de testare Ropsten"
-  },
   "rpcUrl": {
     "message": "URL RPC nou"
   },
@@ -797,9 +755,6 @@
   "seedPhraseReq": {
     "message": "Expresiile seed sunt lungi de 12 cuvinte"
   },
-  "selectAHigherGasFee": {
-    "message": "Selectați o taxă gas mai mare pentru a accelera procesarea tranzacției.*"
-  },
   "selectAnAccount": {
     "message": "Selectați un cont"
   },
@@ -817,9 +772,6 @@
   },
   "send": {
     "message": "Trimite"
-  },
-  "sendAmount": {
-    "message": "Suma trimisă"
   },
   "sendTokens": {
     "message": "Trimiteți indicative"
@@ -854,17 +806,11 @@
   "sign": {
     "message": "Semnați"
   },
-  "signNotice": {
-    "message": "Semnarea acestui mesaj poate avea efecte secundare periculoase. Semnați mesajele numai de pe site-urile în care aveți încredere deplină să vă acceseze întregul cont. Această metodă periculoasă va fi eliminată într-o versiune viitoare."
-  },
   "signatureRequest": {
     "message": "Cerere semnătură"
   },
   "signed": {
     "message": "Semnat"
-  },
-  "slow": {
-    "message": "Lent"
   },
   "somethingWentWrong": {
     "message": "Hopa! A apărut o eroare."

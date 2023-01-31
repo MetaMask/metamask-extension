@@ -1,10 +1,4 @@
-import {
-  MAX_SAFE_CHAIN_ID,
-  BSC_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  AVALANCHE_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-} from '../constants/network';
+import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -43,10 +37,10 @@ export function isPrefixedFormattedHexString(value) {
  */
 export function isTokenDetectionEnabledForNetwork(chainId) {
   switch (chainId) {
-    case MAINNET_CHAIN_ID:
-    case BSC_CHAIN_ID:
-    case POLYGON_CHAIN_ID:
-    case AVALANCHE_CHAIN_ID:
+    case CHAIN_IDS.MAINNET:
+    case CHAIN_IDS.BSC:
+    case CHAIN_IDS.POLYGON:
+    case CHAIN_IDS.AVALANCHE:
       return true;
     default:
       return false;

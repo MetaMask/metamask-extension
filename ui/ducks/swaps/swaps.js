@@ -51,16 +51,13 @@ import {
   parseSmartTransactionsError,
   stxErrorTypes,
 } from '../../pages/swaps/swaps.util';
-import { calcGasTotal } from '../../pages/send/send.utils';
 import {
+  addHexes,
+  decGWEIToHexWEI,
   decimalToHex,
   getValueFromWeiHex,
-  decGWEIToHexWEI,
   hexWEIToDecGWEI,
-  addHexes,
-} from '../../helpers/utils/conversions.util';
-import { conversionLessThan } from '../../../shared/modules/conversion.utils';
-import { calcTokenAmount } from '../../helpers/utils/token-util';
+} from '../../../shared/modules/conversion.utils';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -80,17 +77,23 @@ import {
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
   ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
-  SLIPPAGE,
+  Slippage,
 } from '../../../shared/constants/swaps';
 import {
-  TRANSACTION_TYPES,
+  TransactionType,
   IN_PROGRESS_TRANSACTION_STATUSES,
-  SMART_TRANSACTION_STATUSES,
+  SmartTransactionStatus,
 } from '../../../shared/constants/transaction';
-import { getGasFeeEstimates } from '../metamask/metamask';
+import { getGasFeeEstimates, getTokens } from '../metamask/metamask';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import {
+  calcGasTotal,
+  calcTokenAmount,
+} from '../../../shared/lib/transactions-controller-utils';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { Numeric } from '../../../shared/modules/Numeric';
 
-const GAS_PRICES_LOADING_STATES = {
+export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
   LOADING: 'LOADING',
   FAILED: 'FAILED',
@@ -109,7 +112,7 @@ const initialState = {
   fromTokenInputValue: '',
   fromTokenError: null,
   isFeatureFlagLoaded: false,
-  maxSlippage: SLIPPAGE.DEFAULT,
+  maxSlippage: Slippage.default,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
   topAssets: {},
@@ -122,7 +125,6 @@ const initialState = {
     fallBackPrice: null,
   },
   currentSmartTransactionsError: '',
-  currentSmartTransactionsErrorMessageDismissed: false,
   swapsSTXLoading: false,
 };
 
@@ -209,9 +211,6 @@ const slice = createSlice({
         : stxErrorTypes.UNAVAILABLE;
       state.currentSmartTransactionsError = errorType;
     },
-    dismissCurrentSmartTransactionsErrorMessage: (state) => {
-      state.currentSmartTransactionsErrorMessageDismissed = true;
-    },
     setSwapsSTXSubmitLoading: (state, action) => {
       state.swapsSTXLoading = action.payload || false;
     },
@@ -275,9 +274,6 @@ export const getSwapsFallbackGasPrice = (state) =>
 export const getCurrentSmartTransactionsError = (state) =>
   state.swaps.currentSmartTransactionsError;
 
-export const getCurrentSmartTransactionsErrorMessageDismissed = (state) =>
-  state.swaps.currentSmartTransactionsErrorMessageDismissed;
-
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
 
@@ -287,15 +283,13 @@ export function shouldShowCustomPriceTooLowWarning(state) {
     return false;
   }
 
-  const customPriceRisksSwapFailure = conversionLessThan(
-    {
-      value: customGasPrice,
-      fromNumericBase: 'hex',
-      fromDenomination: 'WEI',
-      toDenomination: 'GWEI',
-    },
-    { value: average, fromNumericBase: 'dec' },
-  );
+  const customPriceRisksSwapFailure = new Numeric(
+    customGasPrice,
+    16,
+    EtherDenomination.WEI,
+  )
+    .toDenomination(EtherDenomination.GWEI)
+    .greaterThan(average, 10);
 
   return customPriceRisksSwapFailure;
 }
@@ -316,9 +310,8 @@ export const getSmartTransactionsErrorMessageDismissed = (state) =>
 export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
   const chainId = getCurrentChainId(state);
-  const isAllowedNetwork = ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(
-    chainId,
-  );
+  const isAllowedNetwork =
+    ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
       ?.extensionActive;
@@ -433,7 +426,7 @@ export const getPendingSmartTransactions = (state) => {
     return [];
   }
   return currentSmartTransactions.filter(
-    (stx) => stx.status === SMART_TRANSACTION_STATUSES.PENDING,
+    (stx) => stx.status === SmartTransactionStatus.pending,
   );
 };
 
@@ -490,13 +483,11 @@ const {
   retrievedFallbackSwapsGasPrice,
   swapCustomGasModalClosed,
   setCurrentSmartTransactionsError,
-  dismissCurrentSmartTransactionsErrorMessage,
   setSwapsSTXSubmitLoading,
 } = actions;
 
 export {
   clearSwapsState,
-  dismissCurrentSmartTransactionsErrorMessage,
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
@@ -605,6 +596,15 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
   };
 };
 
+const isTokenAlreadyAdded = (tokenAddress, tokens) => {
+  if (!Array.isArray(tokens)) {
+    return false;
+  }
+  return tokens.find(
+    (token) => token.address.toLowerCase() === tokenAddress.toLowerCase(),
+  );
+};
+
 export const fetchQuotesAndSetQuoteState = (
   history,
   inputValue,
@@ -673,7 +673,8 @@ export const fetchQuotesAndSetQuoteState = (
     if (
       toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
-      contractExchangeRates[toTokenAddress] === undefined
+      contractExchangeRates[toTokenAddress] === undefined &&
+      !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
     ) {
       destinationTokenAddedForSwap = true;
       await dispatch(
@@ -717,14 +718,12 @@ export const fetchQuotesAndSetQuoteState = (
 
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
-    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-      state,
-    );
+    const networkAndAccountSupports1559 =
+      checkNetworkAndAccountSupports1559(state);
     const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
-    const currentSmartTransactionsEnabled = getCurrentSmartTransactionsEnabled(
-      state,
-    );
+    const currentSmartTransactionsEnabled =
+      getCurrentSmartTransactionsEnabled(state);
     trackEvent({
       event: 'Quotes Requested',
       category: EVENT.CATEGORIES.SWAPS,
@@ -734,7 +733,7 @@ export const fetchQuotesAndSetQuoteState = (
         token_to: toTokenSymbol,
         request_type: balanceError ? 'Quote' : 'Order',
         slippage: maxSlippage,
-        custom_slippage: maxSlippage !== SLIPPAGE.DEFAULT,
+        custom_slippage: maxSlippage !== Slippage.default,
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
@@ -788,7 +787,7 @@ export const fetchQuotesAndSetQuoteState = (
             token_to: toTokenSymbol,
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
-            custom_slippage: maxSlippage !== SLIPPAGE.DEFAULT,
+            custom_slippage: maxSlippage !== Slippage.default,
             is_hardware_wallet: hardwareWalletUsed,
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
@@ -813,7 +812,7 @@ export const fetchQuotesAndSetQuoteState = (
             ),
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
-            custom_slippage: maxSlippage !== SLIPPAGE.DEFAULT,
+            custom_slippage: maxSlippage !== Slippage.default,
             response_time: Date.now() - fetchStartTime,
             best_quote_source: newSelectedQuote.aggregator,
             available_quotes: Object.values(fetchedQuotes)?.length,
@@ -875,9 +874,8 @@ export const signAndSendSwapsSmartTransaction = ({
     ).toPrecision(8);
     const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
-    const currentSmartTransactionsEnabled = getCurrentSmartTransactionsEnabled(
-      state,
-    );
+    const currentSmartTransactionsEnabled =
+      getCurrentSmartTransactionsEnabled(state);
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -932,10 +930,11 @@ export const signAndSendSwapsSmartTransaction = ({
         };
       }
       const fees = await dispatch(
-        fetchSwapsSmartTransactionFees(
+        fetchSwapsSmartTransactionFees({
           unsignedTransaction,
-          updatedApproveTxParams,
-        ),
+          approveTxParams: updatedApproveTxParams,
+          fallbackOnNotEnoughFunds: true,
+        }),
       );
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
@@ -977,14 +976,14 @@ export const signAndSendSwapsSmartTransaction = ({
           sourceTokenSymbol,
           swapMetaData,
           swapTokenValue,
-          type: TRANSACTION_TYPES.SWAP,
+          type: TransactionType.swap,
         }),
       );
       if (approvalTxUuid) {
         await dispatch(
           updateSmartTransaction(approvalTxUuid, {
             origin: ORIGIN_METAMASK,
-            type: TRANSACTION_TYPES.SWAP_APPROVAL,
+            type: TransactionType.swapApproval,
             sourceTokenSymbol,
           }),
         );
@@ -998,7 +997,7 @@ export const signAndSendSwapsSmartTransaction = ({
       } = getState();
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
-        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+        dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
     }
   };
@@ -1013,9 +1012,8 @@ export const signAndSendTransactions = (
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
-    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-      state,
-    );
+    const networkAndAccountSupports1559 =
+      checkNetworkAndAccountSupports1559(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
@@ -1121,9 +1119,8 @@ export const signAndSendTransactions = (
     });
     const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
-    const currentSmartTransactionsEnabled = getCurrentSmartTransactionsEnabled(
-      state,
-    );
+    const currentSmartTransactionsEnabled =
+      getCurrentSmartTransactionsEnabled(state);
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -1195,13 +1192,14 @@ export const signAndSendTransactions = (
         delete approveTxParams.gasPrice;
       }
       const approveTxMeta = await addUnapprovedTransaction(
+        undefined,
         { ...approveTxParams, amount: '0x0' },
-        TRANSACTION_TYPES.SWAP_APPROVAL,
+        TransactionType.swapApproval,
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
       finalApproveTxMeta = await dispatch(
         updateSwapApprovalTransaction(approveTxMeta.id, {
-          type: TRANSACTION_TYPES.SWAP_APPROVAL,
+          type: TransactionType.swapApproval,
           sourceTokenSymbol: sourceTokenInfo.symbol,
         }),
       );
@@ -1215,8 +1213,9 @@ export const signAndSendTransactions = (
     }
 
     const tradeTxMeta = await addUnapprovedTransaction(
+      undefined,
       usedTradeTxParams,
-      TRANSACTION_TYPES.SWAP,
+      TransactionType.swap,
     );
     dispatch(setTradeTxId(tradeTxMeta.id));
 
@@ -1240,7 +1239,7 @@ export const signAndSendTransactions = (
         estimatedBaseFee: decEstimatedBaseFee,
         sourceTokenSymbol: sourceTokenInfo.symbol,
         destinationTokenSymbol: destinationTokenInfo.symbol,
-        type: TRANSACTION_TYPES.SWAP,
+        type: TransactionType.swap,
         destinationTokenDecimals: destinationTokenInfo.decimals,
         destinationTokenAddress: destinationTokenInfo.address,
         swapMetaData,
@@ -1312,10 +1311,11 @@ export function fetchMetaSwapsGasPriceEstimates() {
   };
 }
 
-export function fetchSwapsSmartTransactionFees(
+export function fetchSwapsSmartTransactionFees({
   unsignedTransaction,
   approveTxParams,
-) {
+  fallbackOnNotEnoughFunds = false,
+}) {
   return async (dispatch, getState) => {
     const {
       swaps: { isFeatureFlagLoaded },
@@ -1327,7 +1327,12 @@ export function fetchSwapsSmartTransactionFees(
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
-        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+        if (
+          fallbackOnNotEnoughFunds ||
+          errorObj?.error !== stxErrorTypes.NOT_ENOUGH_FUNDS
+        ) {
+          dispatch(setCurrentSmartTransactionsError(errorObj?.error));
+        }
       }
     }
     return null;
@@ -1344,7 +1349,7 @@ export function cancelSwapsSmartTransaction(uuid) {
       } = getState();
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
-        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+        dispatch(setCurrentSmartTransactionsError(errorObj?.error));
       }
     }
   };

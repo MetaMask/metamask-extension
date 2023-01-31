@@ -6,12 +6,13 @@ import {
 } from '../selectors';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 
-import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../helpers/constants/common';
+import { EtherDenomination } from '../../shared/constants/common';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
  *
- * @typedef {Object} UseUserPreferencedCurrencyOptions
+ * @typedef {object} UseUserPreferencedCurrencyOptions
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
  * @property {number} [ethNumberOfDecimals] - Number of significant decimals to display
  *                                             when using ETH
@@ -22,7 +23,7 @@ import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
 /**
  * Defines the return shape of useUserPreferencedCurrency
  *
- * @typedef {Object} UserPreferredCurrency
+ * @typedef {object} UserPreferredCurrency
  * @property {string} currency - the currency type to use (eg: 'ETH', 'usd')
  * @property {number} numberOfDecimals - Number of significant decimals to display
  */
@@ -54,7 +55,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
   ) {
     // Display ETH
-    currency = nativeCurrency || ETH;
+    currency = nativeCurrency || EtherDenomination.ETH;
     numberOfDecimals = opts.numberOfDecimals || opts.ethNumberOfDecimals || 8;
   } else if (
     (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
-  initializeThreeBox,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
@@ -26,7 +25,6 @@ class RestoreVaultPage extends Component {
     leaveImportSeedScreenState: PropTypes.func,
     history: PropTypes.object,
     isLoading: PropTypes.bool,
-    initializeThreeBox: PropTypes.func,
   };
 
   handleImport = async (password, seedPhrase) => {
@@ -35,8 +33,6 @@ class RestoreVaultPage extends Component {
       createNewVaultAndRestore,
       leaveImportSeedScreenState,
       history,
-      // eslint-disable-next-line no-shadow
-      initializeThreeBox,
     } = this.props;
 
     leaveImportSeedScreenState();
@@ -49,7 +45,6 @@ class RestoreVaultPage extends Component {
         legacy_event: true,
       },
     });
-    initializeThreeBox();
     history.push(DEFAULT_ROUTE);
   };
 
@@ -66,7 +61,7 @@ class RestoreVaultPage extends Component {
               onClick={(e) => {
                 e.preventDefault();
                 this.props.leaveImportSeedScreenState();
-                this.props.history.goBack();
+                this.props.history.push(DEFAULT_ROUTE);
               }}
               href="#"
             >
@@ -78,7 +73,11 @@ class RestoreVaultPage extends Component {
             <Typography color={COLORS.TEXT_DEFAULT}>
               {t('resetWalletSubHeader')}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT} margin={[4, 0]}>
+            <Typography
+              color={COLORS.TEXT_DEFAULT}
+              marginTop={4}
+              marginBottom={4}
+            >
               {t('resetWalletUsingSRP', [
                 <Button
                   type="link"
@@ -112,7 +111,7 @@ class RestoreVaultPage extends Component {
                 </Button>,
               ])}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT} margin={[0, 0, 4]}>
+            <Typography color={COLORS.TEXT_DEFAULT} margin={0} marginBottom={4}>
               {t('resetWalletWarning')}
             </Typography>
             <CreateNewVault
@@ -135,6 +134,5 @@ export default connect(
     },
     createNewVaultAndRestore: (pw, seed) =>
       dispatch(createNewVaultAndRestore(pw, seed)),
-    initializeThreeBox: () => dispatch(initializeThreeBox()),
   }),
 )(RestoreVaultPage);

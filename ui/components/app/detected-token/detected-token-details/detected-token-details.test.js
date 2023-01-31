@@ -33,7 +33,7 @@ describe('DetectedTokenDetails', () => {
     },
     handleTokenSelection: jest.fn(),
     tokensListDetected: {
-      0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f: {
+      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
         token: {
           name: 'Synthetix Network',
           address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
@@ -58,7 +58,7 @@ describe('DetectedTokenDetails', () => {
         },
         selected: true,
       },
-      0x514910771af9ca656af840dff83e8264ecf986ca: {
+      '0x514910771af9ca656af840dff83e8264ecf986ca': {
         token: {
           name: 'ChainLink Token',
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -87,7 +87,7 @@ describe('DetectedTokenDetails', () => {
     fireEvent.click(screen.getByText('+ 10 more'));
     expect(
       screen.getByText(
-        'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1Inch, Paraswap, PMM, Synthetix, Zapper, Zerion, 0x.',
+        'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Synthetix, Zapper, Zerion, 0x.',
       ),
     ).toBeInTheDocument();
   });

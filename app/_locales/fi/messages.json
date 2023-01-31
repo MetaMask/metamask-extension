@@ -8,9 +8,6 @@
   "about": {
     "message": "Tietoja asetuksista"
   },
-  "acceleratingATransaction": {
-    "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
-  },
   "accessingYourCamera": {
     "message": "Muodostamme yhteyttä kameraasi..."
   },
@@ -49,9 +46,6 @@
   },
   "advanced": {
     "message": "Lisäasetukset"
-  },
-  "advancedOptions": {
-    "message": "Tarkemmat vaihtoehdot"
   },
   "amount": {
     "message": "Summa"
@@ -193,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
   },
-  "connectingToKovan": {
-    "message": "Yhdistetään Kovanin koeverkkoon"
-  },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
-  },
-  "connectingToRinkeby": {
-    "message": "Yhdistetään Rinkebyn koeverkkoon"
-  },
-  "connectingToRopsten": {
-    "message": "Yhdistetään Ropstenin koeverkkoon"
   },
   "continueToWyre": {
     "message": "Jatka Wyreen"
@@ -249,12 +234,6 @@
   },
   "custom": {
     "message": "Lisäasetukset"
-  },
-  "customGas": {
-    "message": "Mukauta bensa"
-  },
-  "customGasSubTitle": {
-    "message": "Taksan korottaminen saattaa vähentää käsittelyaikaa, mutta siitä ei anneta takeita."
   },
   "customToken": {
     "message": "Mukautettu tietue"
@@ -339,9 +318,6 @@
   },
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
-  },
-  "estimatedProcessingTimes": {
-    "message": "Arvioidut käsittelyajat"
   },
   "ethereumPublicAddress": {
     "message": "Ethereumin julkinen osoite"
@@ -503,9 +479,6 @@
   "knownAddressRecipient": {
     "message": "Tunnettu sopimusosoite."
   },
-  "kovan": {
-    "message": "Kovanin koeverkko"
-  },
   "learnMore": {
     "message": "Lisätietoa"
   },
@@ -585,9 +558,6 @@
   "newAccount": {
     "message": "Uusi tili"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "Uusi osoitettu tunnistettu! Lisää se osoitekirjaasi napsauttamalla tästä."
-  },
   "newAccountNumberName": {
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"
@@ -603,12 +573,6 @@
   },
   "newToMetaMask": {
     "message": "Onko MetaMask ennestään outo?"
-  },
-  "newTotal": {
-    "message": "Uusi kokonaissumma"
-  },
-  "newTransactionFee": {
-    "message": "Uusi tapahtumamaksu"
   },
   "next": {
     "message": "Seuraava"
@@ -765,12 +729,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "ÄLÄ jaa tätä tekstiä kenellekään!"
   },
-  "rinkeby": {
-    "message": "Rinkebyn koeverkko"
-  },
-  "ropsten": {
-    "message": "Ropstenin koeverkko"
-  },
   "rpcUrl": {
     "message": "Uusi RPC:n URL"
   },
@@ -807,9 +765,6 @@
   "seedPhraseReq": {
     "message": "Juurilauseet ovat 12 sanan pituisia"
   },
-  "selectAHigherGasFee": {
-    "message": "Valitse korkeampi bensataksa vauhdittaaksesi tapahtumasi käsittelyä.*"
-  },
   "selectAnAccount": {
     "message": "Valitse tili"
   },
@@ -827,9 +782,6 @@
   },
   "send": {
     "message": "Lähetä"
-  },
-  "sendAmount": {
-    "message": "Lähetä summa"
   },
   "sendTokens": {
     "message": "Lähetä tietueita"
@@ -864,17 +816,11 @@
   "sign": {
     "message": "Allekirjoita"
   },
-  "signNotice": {
-    "message": "Tämän viestin allekirjoittamisella voi olla\nvaarallisia sivuvaikutuksia. Allekirjoita viestejä ainoastaan\nsivustoilta, joihin luotat täysin koko tililläsi.\n Tällainen vaarallinen menetelmä poistetaan tulevista versioista."
-  },
   "signatureRequest": {
     "message": "Allekirjoitus pyydetään"
   },
   "signed": {
     "message": "Allekirjoitettu"
-  },
-  "slow": {
-    "message": "Hidas"
   },
   "somethingWentWrong": {
     "message": "Hupsis! Jotakin meni pieleen."

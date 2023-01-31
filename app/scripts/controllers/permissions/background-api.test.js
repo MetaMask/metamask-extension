@@ -34,7 +34,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('throws if the specified account is already permitted', () => {
+    it('does not add a permitted account', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementationOnce(() => {
           return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
@@ -42,14 +42,9 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
-      expect(() =>
-        getPermissionBackgroundApiMethods(
-          permissionController,
-        ).addPermittedAccount('foo.com', '0x1'),
-      ).toThrow(
-        `eth_accounts permission for origin "foo.com" already permits account "0x1".`,
-      );
-
+      getPermissionBackgroundApiMethods(
+        permissionController,
+      ).addPermittedAccount('foo.com', '0x1');
       expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.getCaveat).toHaveBeenCalledWith(
         'foo.com',
@@ -128,7 +123,7 @@ describe('permission background API methods', () => {
       expect(permissionController.updateCaveat).not.toHaveBeenCalled();
     });
 
-    it('throws if the specified account is not permitted', () => {
+    it('does not call permissionController.updateCaveat if the specified account is not permitted', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementationOnce(() => {
           return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
@@ -137,14 +132,9 @@ describe('permission background API methods', () => {
         updateCaveat: jest.fn(),
       };
 
-      expect(() =>
-        getPermissionBackgroundApiMethods(
-          permissionController,
-        ).removePermittedAccount('foo.com', '0x2'),
-      ).toThrow(
-        `eth_accounts permission for origin "foo.com" already does not permit account "0x2".`,
-      );
-
+      getPermissionBackgroundApiMethods(
+        permissionController,
+      ).removePermittedAccount('foo.com', '0x2');
       expect(permissionController.getCaveat).toHaveBeenCalledTimes(1);
       expect(permissionController.getCaveat).toHaveBeenCalledWith(
         'foo.com',

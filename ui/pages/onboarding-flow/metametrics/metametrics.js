@@ -17,14 +17,9 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../selectors';
 
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-
-const firstTimeFlowTypeNameMap = {
-  create: 'Selected Create New Wallet',
-  import: 'Selected Import Wallet',
-};
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -35,8 +30,6 @@ export default function OnboardingMetametrics() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const firstTimeSelectionMetaMetricsName =
-    firstTimeFlowTypeNameMap[firstTimeFlowType];
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -50,10 +43,9 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: 'Metrics Opt In',
+            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
             properties: {
-              action: 'Metrics Option',
-              legacy_event: true,
+              is_metrics_enabled: true,
             },
           },
           {
@@ -65,10 +57,12 @@ export default function OnboardingMetametrics() {
       trackEvent(
         {
           category: EVENT.CATEGORIES.ONBOARDING,
-          event: firstTimeSelectionMetaMetricsName,
+          event: EVENT_NAMES.WALLET_SETUP_STARTED,
           properties: {
-            action: 'Import or Create',
-            legacy_event: true,
+            account_type:
+              firstTimeFlowType === 'create'
+                ? EVENT.ACCOUNT_TYPES.DEFAULT
+                : EVENT.ACCOUNT_TYPES.IMPORTED,
           },
         },
         {
@@ -93,10 +87,9 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: 'Metrics Opt Out',
+            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
             properties: {
-              action: 'Metrics Option',
-              legacy_event: true,
+              is_metrics_enabled: false,
             },
           },
           {
@@ -111,40 +104,73 @@ export default function OnboardingMetametrics() {
   };
 
   return (
-    <div className="onboarding-metametrics">
+    <div
+      className="onboarding-metametrics"
+      data-testid="onboarding-metametrics"
+    >
       <Typography
         variant={TYPOGRAPHY.H2}
         align={TEXT_ALIGN.CENTER}
         fontWeight={FONT_WEIGHT.BOLD}
       >
-        {t('metametricsTitle')}
+        {t('onboardingMetametricsTitle')}
       </Typography>
       <Typography
         className="onboarding-metametrics__desc"
         align={TEXT_ALIGN.CENTER}
       >
-        {t('metametricsOptInDescription2')}
+        {t('onboardingMetametricsDescription')}
+      </Typography>
+      <Typography
+        className="onboarding-metametrics__desc"
+        align={TEXT_ALIGN.CENTER}
+      >
+        {t('onboardingMetametricsDescription2')}
       </Typography>
       <ul>
         <li>
           <i className="fa fa-check" />
-          {t('metametricsCommitmentsAllowOptOut2')}
+          {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
           <i className="fa fa-check" />
-          {t('metametricsCommitmentsSendAnonymizedEvents')}
+          {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
           <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverCollect')}
+          {t('onboardingMetametricsNeverCollect', [
+            <Typography
+              variant={TYPOGRAPHY.Span}
+              key="never"
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('onboardingMetametricsNeverEmphasis')}
+            </Typography>,
+          ])}
         </li>
         <li>
           <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverIP')}
+          {t('onboardingMetametricsNeverCollectIP', [
+            <Typography
+              variant={TYPOGRAPHY.Span}
+              key="never-collect"
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('onboardingMetametricsNeverEmphasis')}
+            </Typography>,
+          ])}
         </li>
         <li>
           <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverSell')}
+          {t('onboardingMetametricsNeverSellData', [
+            <Typography
+              variant={TYPOGRAPHY.Span}
+              key="never-sell"
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('onboardingMetametricsNeverEmphasis')}
+            </Typography>,
+          ])}
         </li>
       </ul>
       <Typography
@@ -153,31 +179,50 @@ export default function OnboardingMetametrics() {
         variant={TYPOGRAPHY.H6}
         className="onboarding-metametrics__terms"
       >
-        {t('gdprMessage', [
+        {t('onboardingMetametricsDataTerms')}
+      </Typography>
+      <Typography
+        color={COLORS.TEXT_ALTERNATIVE}
+        align={TEXT_ALIGN.CENTER}
+        variant={TYPOGRAPHY.H6}
+        className="onboarding-metametrics__terms"
+      >
+        {t('onboardingMetametricsInfuraTerms', [
           <a
-            key="metametrics-bottom-text-wrapper"
+            href="https://consensys.net/blog/news/consensys-data-retention-update/"
+            target="_blank"
+            rel="noopener noreferrer"
+            key="retention-link"
+          >
+            {t('onboardingMetametricsInfuraTermsPolicyLink')}
+          </a>,
+          <a
             href="https://metamask.io/privacy.html"
             target="_blank"
             rel="noopener noreferrer"
+            key="privacy-link"
           >
-            {t('gdprMessagePrivacyPolicy')}
+            {t('onboardingMetametricsInfuraTermsPolicy')}
           </a>,
         ])}
       </Typography>
+
       <div className="onboarding-metametrics__buttons">
-        <Button
-          data-testid="metametrics-no-thanks"
-          type="secondary"
-          onClick={onCancel}
-        >
-          {t('noThanks')}
-        </Button>
         <Button
           data-testid="metametrics-i-agree"
           type="primary"
+          large
           onClick={onConfirm}
         >
-          {t('affirmAgree')}
+          {t('onboardingMetametricsAgree')}
+        </Button>
+        <Button
+          data-testid="metametrics-no-thanks"
+          type="secondary"
+          large
+          onClick={onCancel}
+        >
+          {t('onboardingMetametricsDisagree')}
         </Button>
       </div>
     </div>

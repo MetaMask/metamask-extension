@@ -12,6 +12,7 @@ export default class Tooltip extends PureComponent {
     onHidden: null,
     position: 'left',
     offset: 0,
+    open: undefined,
     size: 'small',
     title: null,
     trigger: 'mouseenter focus',
@@ -29,6 +30,7 @@ export default class Tooltip extends PureComponent {
     interactive: PropTypes.bool,
     offset: PropTypes.number,
     onHidden: PropTypes.func,
+    open: PropTypes.bool,
     position: PropTypes.oneOf(['top', 'right', 'bottom', 'left']),
     size: PropTypes.oneOf(['small', 'regular', 'big']),
     title: PropTypes.string,
@@ -54,6 +56,7 @@ export default class Tooltip extends PureComponent {
       trigger,
       onHidden,
       offset,
+      open,
       wrapperClassName,
       style,
       theme,
@@ -82,6 +85,7 @@ export default class Tooltip extends PureComponent {
         style={style}
         title={disabled ? '' : title}
         trigger={trigger}
+        open={open}
         theme={`tippy-tooltip--mm-custom ${theme}`} // Required for correct theming
         tabIndex={tabIndex || 0}
         tag={tag}

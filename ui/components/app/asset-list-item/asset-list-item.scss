@@ -58,7 +58,7 @@
     padding-bottom: 0;
   }
 
-  @media (min-width: $break-large) {
+  @include screen-sm-min {
     &__warning-tooltip {
       display: none;
     }

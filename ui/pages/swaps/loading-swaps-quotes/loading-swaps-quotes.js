@@ -105,12 +105,8 @@ export default function LoadingSwapsQuotes({
 
   useEffect(() => {
     if (currentMascotContainer) {
-      const {
-        top,
-        left,
-        width,
-        height,
-      } = currentMascotContainer.getBoundingClientRect();
+      const { top, left, width, height } =
+        currentMascotContainer.getBoundingClientRect();
       const center = { x: left + width / 2, y: top + height / 2 };
       setMidpointTarget(center);
     }

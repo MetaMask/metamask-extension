@@ -1,13 +1,12 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import { EVENT } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TextField from '../../ui/text-field';
 import Button from '../../ui/button';
 import CheckBox from '../../ui/check-box';
 import Typography from '../../ui/typography';
 import SrpInput from '../srp-input';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
 export default function CreateNewVault({
   disabled = false,
@@ -23,14 +22,13 @@ export default function CreateNewVault({
   const [termsChecked, setTermsChecked] = useState(false);
 
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
 
   const onPasswordChange = useCallback(
     (newPassword) => {
       let newConfirmPasswordError = '';
       let newPasswordError = '';
 
-      if (newPassword && newPassword.length < 8) {
+      if (newPassword && newPassword.length < PASSWORD_MIN_LENGTH) {
         newPasswordError = t('passwordNotLongEnough');
       }
 
@@ -83,17 +81,8 @@ export default function CreateNewVault({
   );
 
   const toggleTermsCheck = useCallback(() => {
-    trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: 'Check ToS',
-      properties: {
-        action: 'Import Seed Phrase',
-        legacy_event: true,
-      },
-    });
-
     setTermsChecked((currentTermsChecked) => !currentTermsChecked);
-  }, [trackEvent]);
+  }, []);
 
   const termsOfUse = t('acceptTermsOfUse', [
     <a
@@ -146,7 +135,7 @@ export default function CreateNewVault({
             className="create-new-vault__terms-label"
             htmlFor="create-new-vault__terms-checkbox"
           >
-            <Typography tag="span">{termsOfUse}</Typography>
+            <Typography as="span">{termsOfUse}</Typography>
           </label>
         </div>
       ) : null}

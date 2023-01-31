@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
+import { EditGasModes } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
   getNextNonce,
 } from '../../store/actions';
-import { calcTokenAmount } from '../../helpers/utils/token-util';
+import { getTokenApprovedParam } from '../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { GasFeeContextProvider } from '../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
@@ -16,6 +16,7 @@ import {
   getNativeCurrency,
   isAddressLedger,
 } from '../../ducks/metamask/metamask';
+import ConfirmContractInteraction from '../confirm-contract-interaction';
 import {
   getCurrentCurrency,
   getSubjectMetadata,
@@ -26,14 +27,16 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
-  getEIP1559V2Enabled,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
 import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
-import { ERC20, ERC1155, ERC721 } from '../../helpers/constants/common';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { TokenStandard } from '../../../shared/constants/transaction';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import TokenAllowance from '../token-allowance/token-allowance';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -57,6 +60,7 @@ export default function ConfirmApprove({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
+  isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
   const { txParams: { data: transactionData } = {} } = transaction;
@@ -80,8 +84,7 @@ export default function ConfirmApprove({
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
 
-  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
-  const supportsEIP1559V2 = eip1559V2Enabled && networkAndAccountSupports1559;
+  const supportsEIP1559 = networkAndAccountSupports1559;
 
   const previousTokenAmount = useRef(tokenAmount);
   const {
@@ -134,9 +137,10 @@ export default function ConfirmApprove({
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
   let tokensText;
-  if (assetStandard === ERC20) {
-    tokensText = `${Number(tokenAmount)} ${tokenSymbol}`;
-  } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+  if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
     tokensText = assetName;
   }
 
@@ -150,58 +154,88 @@ export default function ConfirmApprove({
       })
     : null;
 
-  return tokenSymbol === undefined && assetName === undefined ? (
-    <Loading />
-  ) : (
+  const parsedTransactionData =
+    parseStandardTokenTransactionData(transactionData);
+  const isApprovalOrRejection = getTokenApprovedParam(parsedTransactionData);
+
+  if (tokenSymbol === undefined && assetName === undefined) {
+    return <Loading />;
+  }
+  if (assetStandard === undefined) {
+    return <ConfirmContractInteraction />;
+  }
+  if (assetStandard === TokenStandard.ERC20) {
+    return (
+      <GasFeeContextProvider transaction={transaction}>
+        <TransactionModalContextProvider>
+          <TokenAllowance
+            origin={formattedOrigin}
+            siteImage={siteImage}
+            showCustomizeGasModal={approveTransaction}
+            useNonceField={useNonceField}
+            currentCurrency={currentCurrency}
+            nativeCurrency={nativeCurrency}
+            ethTransactionTotal={ethTransactionTotal}
+            fiatTransactionTotal={fiatTransactionTotal}
+            hexTransactionTotal={hexTransactionTotal}
+            txData={transaction}
+            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+            supportsEIP1559={supportsEIP1559}
+            userAddress={userAddress}
+            tokenAddress={tokenAddress}
+            data={transactionData}
+            isSetApproveForAll={isSetApproveForAll}
+            isApprovalOrRejection={isApprovalOrRejection}
+            dappProposedTokenAmount={tokenAmount}
+            currentTokenBalance={tokenBalance}
+            toAddress={toAddress}
+            tokenSymbol={tokenSymbol}
+            decimals={decimals}
+          />
+          {showCustomizeGasPopover && !supportsEIP1559 && (
+            <EditGasPopover
+              onClose={closeCustomizeGasPopover}
+              mode={EditGasModes.modifyInPlace}
+              transaction={transaction}
+            />
+          )}
+          {supportsEIP1559 && (
+            <>
+              <EditGasFeePopover />
+              <AdvancedGasFeePopover />
+            </>
+          )}
+        </TransactionModalContextProvider>
+      </GasFeeContextProvider>
+    );
+  }
+  return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
         toAddress={toAddress}
         identiconAddress={toAddress}
         showAccountInHeader
         title={tokensText}
+        tokenAddress={tokenAddress}
+        customTokenAmount={String(customPermissionAmount)}
+        dappProposedTokenAmount={tokenAmount}
+        currentTokenBalance={tokenBalance}
+        isApprovalOrRejection={isApprovalOrRejection}
         contentComponent={
           <TransactionModalContextProvider>
             <ConfirmApproveContent
-              decimals={decimals}
+              userAddress={userAddress}
+              isSetApproveForAll={isSetApproveForAll}
+              isApprovalOrRejection={isApprovalOrRejection}
               siteImage={siteImage}
-              setCustomAmount={setCustomPermissionAmount}
-              customTokenAmount={String(customPermissionAmount)}
-              tokenAmount={tokenAmount}
               origin={formattedOrigin}
               tokenSymbol={tokenSymbol}
               tokenImage={tokenImage}
-              tokenBalance={tokenBalance}
               tokenId={tokenId}
               assetName={assetName}
               assetStandard={assetStandard}
               tokenAddress={tokenAddress}
               showCustomizeGasModal={approveTransaction}
-              showEditApprovalPermissionModal={({
-                /* eslint-disable no-shadow */
-                customTokenAmount,
-                decimals,
-                origin,
-                setCustomAmount,
-                tokenAmount,
-                tokenBalance,
-                tokenSymbol,
-                /* eslint-enable no-shadow */
-              }) =>
-                dispatch(
-                  showModal({
-                    name: 'EDIT_APPROVAL_PERMISSION',
-                    customTokenAmount,
-                    decimals,
-                    origin,
-                    setCustomAmount,
-                    tokenAmount,
-                    tokenBalance,
-                    tokenSymbol,
-                    tokenId,
-                    assetStandard,
-                  }),
-                )
-              }
               data={customData || transactionData}
               toAddress={toAddress}
               currentCurrency={currentCurrency}
@@ -243,16 +277,16 @@ export default function ConfirmApprove({
               rpcPrefs={rpcPrefs}
               isContract={isContract}
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
             />
-            {showCustomizeGasPopover && !supportsEIP1559V2 && (
+            {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
                 onClose={closeCustomizeGasPopover}
-                mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+                mode={EditGasModes.modifyInPlace}
                 transaction={transaction}
               />
             )}
-            {supportsEIP1559V2 && (
+            {supportsEIP1559 && (
               <>
                 <EditGasFeePopover />
                 <AdvancedGasFeePopover />
@@ -262,6 +296,7 @@ export default function ConfirmApprove({
         }
         hideSenderToRecipient
         customTxParamsData={customData}
+        assetStandard={assetStandard}
       />
     </GasFeeContextProvider>
   );
@@ -290,4 +325,5 @@ ConfirmApprove.propTypes = {
   ethTransactionTotal: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   hexTransactionTotal: PropTypes.string,
+  isSetApproveForAll: PropTypes.bool,
 };

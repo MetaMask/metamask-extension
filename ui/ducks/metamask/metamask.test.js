@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
@@ -40,10 +40,12 @@ describe('MetaMask Reducers', () => {
         currentBlockGasLimit: '0x4c1878',
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
-        network: '3',
+        useCurrencyRateCheck: true,
+        network: '5',
         provider: {
           type: 'testnet',
-          chainId: '0x3',
+          chainId: '0x5',
+          ticker: 'TestETH',
         },
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -72,11 +74,11 @@ describe('MetaMask Reducers', () => {
           },
         },
         addressBook: {
-          '0x3': {
+          '0x5': {
             '0x06195827297c7a80a443b6894d3bdb8824b43896': {
               address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
               name: 'Address Book Account 1',
-              chainId: '0x3',
+              chainId: '0x5',
             },
           },
         },
@@ -84,15 +86,15 @@ describe('MetaMask Reducers', () => {
           4768706228115573: {
             id: 4768706228115573,
             time: 1487363153561,
-            status: TRANSACTION_STATUSES.UNAPPROVED,
+            status: TransactionStatus.unapproved,
             gasMultiplier: 1,
-            metamaskNetworkId: '3',
+            metamaskNetworkId: '5',
             txParams: {
               from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
               to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
               value: '0xde0b6b3a7640000',
               metamaskId: 4768706228115573,
-              metamaskNetworkId: '3',
+              metamaskNetworkId: '5',
               gas: '0x5209',
             },
             txFee: '17e0186e60800',
@@ -308,8 +310,20 @@ describe('MetaMask Reducers', () => {
     });
 
     describe('getNativeCurrency()', () => {
-      it('should return the ticker symbol of the selected network', () => {
+      it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
         expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+      });
+
+      it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
+        expect(
+          getNativeCurrency({
+            ...mockState,
+            metamask: {
+              ...mockState.metamask,
+              useCurrencyRateCheck: false,
+            },
+          }),
+        ).toStrictEqual('TestETH');
       });
     });
 
@@ -353,7 +367,7 @@ describe('MetaMask Reducers', () => {
           {
             address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
             name: 'Address Book Account 1',
-            chainId: '0x3',
+            chainId: '0x5',
           },
         ]);
       });
@@ -364,15 +378,15 @@ describe('MetaMask Reducers', () => {
         4768706228115573: {
           id: 4768706228115573,
           time: 1487363153561,
-          status: TRANSACTION_STATUSES.UNAPPROVED,
+          status: TransactionStatus.unapproved,
           gasMultiplier: 1,
-          metamaskNetworkId: '3',
+          metamaskNetworkId: '5',
           txParams: {
             from: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
             to: '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761',
             value: '0xde0b6b3a7640000',
             metamaskId: 4768706228115573,
-            metamaskNetworkId: '3',
+            metamaskNetworkId: '5',
             gas: '0x5209',
           },
           txFee: '17e0186e60800',

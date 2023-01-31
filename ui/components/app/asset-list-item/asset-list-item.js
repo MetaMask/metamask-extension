@@ -9,12 +9,12 @@ import Tooltip from '../../ui/tooltip';
 import InfoIcon from '../../ui/icon/info-icon.component';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { updateSendAsset } from '../../../ducks/send';
+import { startNewDraftTransaction } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const AssetListItem = ({
@@ -74,8 +74,8 @@ const AssetListItem = ({
           });
           try {
             await dispatch(
-              updateSendAsset({
-                type: ASSET_TYPES.TOKEN,
+              startNewDraftTransaction({
+                type: AssetType.token,
                 details: {
                   address: tokenAddress,
                   decimals: tokenDecimals,
@@ -111,6 +111,7 @@ const AssetListItem = ({
       title={
         <button
           className="asset-list-item__token-button"
+          data-testid="token-button"
           onClick={onClick}
           title={`${primary} ${tokenSymbol}`}
         >

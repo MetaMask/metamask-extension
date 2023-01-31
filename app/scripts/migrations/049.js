@@ -18,11 +18,8 @@ export default {
 
 function transformState(state = {}) {
   if (state.PreferencesController) {
-    const {
-      metaMetricsId,
-      participateInMetaMetrics,
-      metaMetricsSendCount,
-    } = state.PreferencesController;
+    const { metaMetricsId, participateInMetaMetrics, metaMetricsSendCount } =
+      state.PreferencesController;
     state.MetaMetricsController = state.MetaMetricsController ?? {};
 
     if (metaMetricsId !== undefined) {
@@ -31,7 +28,8 @@ function transformState(state = {}) {
     }
 
     if (participateInMetaMetrics !== undefined) {
-      state.MetaMetricsController.participateInMetaMetrics = participateInMetaMetrics;
+      state.MetaMetricsController.participateInMetaMetrics =
+        participateInMetaMetrics;
       delete state.PreferencesController.participateInMetaMetrics;
     }
 

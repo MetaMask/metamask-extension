@@ -78,17 +78,8 @@
   "connect": {
     "message": "இணை"
   },
-  "connectingToKovan": {
-    "message": "கோவன் டெஸ்ட் நெட்வொர்க்குடன் இணைத்தல்"
-  },
   "connectingToMainnet": {
     "message": "முக்கிய எதெரியும் நெட்வொர்க் இணைக்கும்"
-  },
-  "connectingToRinkeby": {
-    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
-  },
-  "connectingToRopsten": {
-    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்குடன் இணைக்கிறது"
   },
   "contractDeployment": {
     "message": "ஒப்பந்த வரிசைப்படுத்தல்"
@@ -110,9 +101,6 @@
   },
   "custom": {
     "message": "மேம்பட்டவை"
-  },
-  "customGas": {
-    "message": "எரிவாயுவைத் தனிப்பயனாக்குங்கள்"
   },
   "customToken": {
     "message": "தனிப்பயன் டோக்கன்"
@@ -238,9 +226,6 @@
     "message": "JSON கோப்பு",
     "description": "format for importing an account"
   },
-  "kovan": {
-    "message": "கோவன் டெஸ்ட் நெட்வொர்க்"
-  },
   "learnMore": {
     "message": "மேலும் அறிக"
   },
@@ -297,7 +282,7 @@
     "message": "புதிய கணக்கு"
   },
   "newAccountNumberName": {
-    "message": "கணக்கு $ 1",
+    "message": "கணக்கு $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
@@ -392,12 +377,6 @@
   "revealSeedWordsWarning": {
     "message": "உங்கள் விதை வார்த்தைகள் ஒரு பொது இடத்தில் மீட்க வேண்டாம்! உங்கள் எல்லா கணக்குகளையும் திருட இந்த வார்த்தைகள் பயன்படுத்தப்படலாம்."
   },
-  "rinkeby": {
-    "message": "ரிங்கெப்ய டெஸ்ட் நெட்வொர்க்"
-  },
-  "ropsten": {
-    "message": "ரொப்ஸ்டென் டெஸ்ட் நெட்வொர்க்"
-  },
   "save": {
     "message": "சேமி"
   },
@@ -431,14 +410,8 @@
   "sign": {
     "message": "உள்நுழை"
   },
-  "signNotice": {
-    "message": "இந்த செய்தியில் கையொப்பமிடலாம் \nஆபத்தான பக்க விளைவுகள் இருக்கலாம். \n உங்கள் மொத்த கணக்கில் முழுமையாக நம்பக்கூடிய தளங்களில் செய்திகளை மட்டுமே கையொப்பமிடுங்கள். \n இந்த ஆபத்தான முறை எதிர்கால பதிப்பில் அகற்றப்படும்."
-  },
   "signed": {
     "message": "கையொப்பமிடப்பட்ட"
-  },
-  "slow": {
-    "message": "மெதுவான"
   },
   "stateLogError": {
     "message": "மாநில பதிவுகளை மீட்டெடுப்பதில் பிழை."

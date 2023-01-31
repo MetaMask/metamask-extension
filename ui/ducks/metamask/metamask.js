@@ -1,22 +1,27 @@
-import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
-import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import { AlertTypes } from '../../../shared/constants/alerts';
 import {
-  GAS_ESTIMATE_TYPES,
-  NETWORK_CONGESTION_THRESHOLDS,
+  GasEstimateTypes,
+  NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
-import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
-import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import {
+  decGWEIToHexWEI,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -65,7 +70,7 @@ export default function reduceMetamask(state = {}, action) {
       return {
         ...metamaskState,
         provider: {
-          type: NETWORK_TYPE_RPC,
+          type: NETWORK_TYPES.RPC,
           rpcUrl: action.value,
         },
       };
@@ -250,10 +255,10 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale;
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount];
+  getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
 export const getWeb3ShimUsageAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage];
+  getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
 
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
@@ -262,40 +267,36 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDetectionNoticeDismissed(state) {
-  return state.metamask.collectiblesDetectionNoticeDismissed;
-}
-
 export function getCollectiblesDropdownState(state) {
   return state.metamask.collectiblesDropdownState;
-}
-
-export function getEnableEIP1559V2NoticeDismissed(state) {
-  return state.metamask.enableEIP1559V2NoticeDismissed;
 }
 
 export const getCollectibles = (state) => {
   const {
     metamask: {
-      allCollectibles,
+      allNfts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
   const {
     metamask: {
-      allCollectibleContracts,
+      allNftContracts,
       provider: { chainId },
       selectedAddress,
     },
   } = state;
 
-  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export function getBlockGasLimit(state) {
@@ -307,7 +308,10 @@ export function getConversionRate(state) {
 }
 
 export function getNativeCurrency(state) {
-  return state.metamask.nativeCurrency;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
+  return useCurrencyRateCheck
+    ? state.metamask.nativeCurrency
+    : state.metamask.provider.ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -355,31 +359,28 @@ export function getEstimatedGasFeeTimeBounds(state) {
 }
 
 export function getIsGasEstimatesLoading(state) {
-  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-    state,
-  );
+  const networkAndAccountSupports1559 =
+    checkNetworkAndAccountSupports1559(state);
   const gasEstimateType = getGasEstimateType(state);
 
   // We consider the gas estimate to be loading if the gasEstimateType is
   // 'NONE' or if the current gasEstimateType cannot be supported by the current
   // network
   const isEIP1559TolerableEstimateType =
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
+    gasEstimateType === GasEstimateTypes.feeMarket ||
+    gasEstimateType === GasEstimateTypes.ethGasPrice;
   const isGasEstimatesLoading =
-    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
+    gasEstimateType === GasEstimateTypes.none ||
     (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
     (!networkAndAccountSupports1559 &&
-      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+      gasEstimateType === GasEstimateTypes.feeMarket);
 
   return isGasEstimatesLoading;
 }
 
 export function getIsNetworkBusy(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
-  return (
-    gasFeeEstimates?.networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY
-  );
+  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
 export function getCompletedOnboarding(state) {
@@ -400,9 +401,9 @@ export function getSeedPhraseBackedUp(state) {
 /**
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @param {string} address - the address to search for among the keyring addresses
- * @returns {Object|undefined} The keyring which contains the passed address, or undefined
+ * @returns {object | undefined} The keyring which contains the passed address, or undefined
  */
 export function findKeyringForAddress(state, address) {
   const keyring = state.metamask.keyrings.find((kr) => {
@@ -420,7 +421,7 @@ export function findKeyringForAddress(state, address) {
 /**
  * Given the redux state object, returns the users preferred ledger transport type
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {string} The users preferred ledger transport type. One of'ledgerLive', 'webhid' or 'u2f'
  */
 export function getLedgerTransportType(state) {
@@ -430,25 +431,25 @@ export function getLedgerTransportType(state) {
 /**
  * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @param {string} address - the address to search for among all keyring addresses
  * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
  */
 export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
-  return keyring?.type === KEYRING_TYPES.LEDGER;
+  return keyring?.type === HardwareKeyringTypes.ledger;
 }
 
 /**
  * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
  * in state)
  *
- * @param {Object} state - the redux state object
+ * @param {object} state - the redux state object
  * @returns {boolean} true if the user has a Ledger account and false otherwise
  */
 export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
-    return kr.type === KEYRING_TYPES.LEDGER;
+    return kr.type === HardwareKeyringTypes.ledger;
   });
 }

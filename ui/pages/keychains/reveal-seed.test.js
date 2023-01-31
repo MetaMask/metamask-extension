@@ -1,24 +1,42 @@
 import React from 'react';
-import sinon from 'sinon';
-import { mount } from 'enzyme';
+import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
+import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../test/lib/render-helpers';
 import RevealSeedPage from './reveal-seed';
 
+const mockRequestRevealSeedWords = jest.fn().mockResolvedValue();
+
+jest.mock('../../store/actions.js', () => ({
+  requestRevealSeedWords: () => mockRequestRevealSeedWords,
+}));
+
 describe('Reveal Seed Page', () => {
-  it('form submit', () => {
-    const props = {
-      history: {
-        push: sinon.spy(),
-      },
-      requestRevealSeedWords: sinon.stub().resolves(),
+  const mockState = {
+    history: {
       mostRecentOverviewPage: '/',
-    };
-    const wrapper = mount(<RevealSeedPage.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
+    },
+  };
+  const mockStore = configureMockStore([thunk])(mockState);
+
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(<RevealSeedPage />, mockStore);
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('form submit', () => {
+    const { queryByTestId, queryByText } = renderWithProvider(
+      <RevealSeedPage />,
+      mockStore,
+    );
+
+    fireEvent.change(queryByTestId('input-password'), {
+      target: { value: 'password' },
     });
 
-    wrapper.find('form').simulate('submit');
-    expect(props.requestRevealSeedWords.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('Next'));
+
+    expect(mockRequestRevealSeedWords).toHaveBeenCalled();
   });
 });

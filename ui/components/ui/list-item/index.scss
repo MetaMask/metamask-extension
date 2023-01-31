@@ -16,12 +16,12 @@
     'icon head     head     head     head     head     head     head     right right right right'
     'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
     '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
-  align-items: start;
+  align-items: flex-start;
   cursor: pointer;
 
   &:hover,
   &:focus-within {
-    background-color: var(--color-background-alternative);
+    background-color: var(--color-background-default-hover);
   }
 
   &__icon {
@@ -97,13 +97,13 @@
     white-space: nowrap;
   }
 
-  @media (max-width: $break-small) {
+  @include screen-sm-max {
     &__mid-content {
       display: none;
     }
   }
 
-  @media (min-width: $break-large) {
+  @include screen-sm-min {
     grid-template-areas:
       'icon head     head     head     head     mid mid mid mid right right right'
       'icon sub      sub      sub      sub      mid mid mid mid right right right'
@@ -115,7 +115,7 @@
   grid-template-areas: 'icon head     head     head     head     head     head     head     right right right right';
   align-items: center;
 
-  @media (min-width: $break-large) {
+  @include screen-sm-min {
     grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
   }
 }

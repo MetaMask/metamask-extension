@@ -6,8 +6,11 @@ import {
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_SEED_PHRASE_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { exportAsFile } from '../../../../helpers/utils/util';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
+import { exportAsFile } from '../../../../helpers/utils/export-utils';
 import DraggableSeed from './draggable-seed.component';
 
 const EMPTY_SEEDS = Array(12).fill(null);
@@ -25,7 +28,6 @@ export default class ConfirmSeedPhrase extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     seedPhrase: PropTypes.string,
-    initializeThreeBox: PropTypes.func,
     setSeedPhraseBackedUp: PropTypes.func,
   };
 
@@ -71,28 +73,37 @@ export default class ConfirmSeedPhrase extends PureComponent {
   };
 
   handleSubmit = async () => {
-    const { history, setSeedPhraseBackedUp, initializeThreeBox } = this.props;
+    const { history, setSeedPhraseBackedUp } = this.props;
 
     if (!this.isValid()) {
       return;
     }
 
     try {
-      this.context.trackEvent({
-        category: EVENT.CATEGORIES.ONBOARDING,
-        event: 'Verify Complete',
-        properties: {
-          action: 'Seed Phrase Setup',
-          legacy_event: true,
-        },
-      });
-
       setSeedPhraseBackedUp(true).then(async () => {
-        initializeThreeBox();
+        this.context.trackEvent({
+          category: EVENT.CATEGORIES.ONBOARDING,
+          event: EVENT_NAMES.WALLET_CREATED,
+          properties: {
+            account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+            is_backup_skipped: false,
+          },
+        });
+
         history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
       });
     } catch (error) {
       console.error(error.message);
+      this.context.trackEvent({
+        category: EVENT.CATEGORIES.ONBOARDING,
+        event: EVENT_NAMES.WALLET_SETUP_FAILED,
+        properties: {
+          account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+          is_backup_skipped: false,
+          reason: 'Seed Phrase Creation Error',
+          error: error.message,
+        },
+      });
     }
   };
 
@@ -126,14 +137,11 @@ export default class ConfirmSeedPhrase extends PureComponent {
   render() {
     const { t } = this.context;
     const { history } = this.props;
-    const {
-      selectedSeedIndices,
-      sortedSeedWords,
-      draggingSeedIndex,
-    } = this.state;
+    const { selectedSeedIndices, sortedSeedWords, draggingSeedIndex } =
+      this.state;
 
     return (
-      <div className="confirm-seed-phrase">
+      <div className="confirm-seed-phrase" data-testid="confirm-seed-phrase">
         <div className="confirm-seed-phrase__back-button">
           <a
             onClick={(e) => {
@@ -190,6 +198,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
         </div>
         <Button
           type="primary"
+          data-testid="confirm-dragged-seed-phrase"
           className="first-time-flow__button"
           onClick={this.handleSubmit}
           disabled={!this.isValid()}
@@ -201,11 +210,8 @@ export default class ConfirmSeedPhrase extends PureComponent {
   }
 
   renderSelectedSeeds() {
-    const {
-      sortedSeedWords,
-      selectedSeedIndices,
-      draggingSeedIndex,
-    } = this.state;
+    const { sortedSeedWords, selectedSeedIndices, draggingSeedIndex } =
+      this.state;
     return EMPTY_SEEDS.map((_, index) => {
       const seedIndex = selectedSeedIndices[index];
       const word = sortedSeedWords[seedIndex];

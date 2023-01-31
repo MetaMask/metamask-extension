@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 /**
  * @deprecated - Please use ActionableMessage type danger
  * @see ActionableMessage
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.errorMessage
  * @param {string} props.errorKey
- * @param {Object} context
+ * @param {object} context
  */
 const ErrorMessage = (props, context) => {
   const { errorMessage, errorKey } = props;

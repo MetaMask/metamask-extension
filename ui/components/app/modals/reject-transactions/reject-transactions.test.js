@@ -1,45 +1,44 @@
 import React from 'react';
-import sinon from 'sinon';
-import { mount } from 'enzyme';
-import RejectTransactionsModal from './reject-transactions.container';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import RejectTransactionsModal from '.';
 
 describe('Reject Transactions Model', () => {
-  let wrapper;
-
   const props = {
-    onSubmit: sinon.spy(),
-    hideModal: sinon.spy(),
+    onSubmit: jest.fn(),
+    hideModal: jest.fn(),
     unapprovedTxCount: 2,
   };
 
-  beforeEach(() => {
-    wrapper = mount(<RejectTransactionsModal.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
-  });
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <RejectTransactionsModal.WrappedComponent {...props} />,
+    );
 
-  afterEach(() => {
-    props.hideModal.resetHistory();
+    expect(container).toMatchSnapshot();
   });
 
   it('hides modal when cancel button is clicked', () => {
-    const cancelButton = wrapper.find(
-      '.btn-secondary.modal-container__footer-button',
+    const { queryByText } = renderWithProvider(
+      <RejectTransactionsModal.WrappedComponent {...props} />,
     );
-    cancelButton.simulate('click');
 
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('[cancel]'));
+
+    expect(props.onSubmit).not.toHaveBeenCalled();
+    expect(props.hideModal).toHaveBeenCalled();
   });
 
   it('onSubmit is called and hides modal when reject all clicked', async () => {
-    const rejectAllButton = wrapper.find(
-      '.btn-primary.modal-container__footer-button',
+    const { queryByText } = renderWithProvider(
+      <RejectTransactionsModal.WrappedComponent {...props} />,
     );
-    rejectAllButton.simulate('click');
 
-    expect(await props.onSubmit.calledOnce).toStrictEqual(true);
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('[rejectAll]'));
+
+    await waitFor(() => {
+      expect(props.onSubmit).toHaveBeenCalled();
+      expect(props.hideModal).toHaveBeenCalled();
+    });
   });
 });

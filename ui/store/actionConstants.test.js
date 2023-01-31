@@ -1,6 +1,6 @@
 import freeze from 'deep-freeze-strict';
 import reducers from '../ducks';
-import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
+import { NETWORK_TYPES } from '../../shared/constants/network';
 import * as actionConstants from './actionConstants';
 
 describe('Redux actionConstants', () => {
@@ -26,7 +26,7 @@ describe('Redux actionConstants', () => {
       };
 
       const result = reducers(initialState, action);
-      expect(result.metamask.provider.type).toStrictEqual(NETWORK_TYPE_RPC);
+      expect(result.metamask.provider.type).toStrictEqual(NETWORK_TYPES.RPC);
       expect(result.metamask.provider.rpcUrl).toStrictEqual('foo');
     });
   });

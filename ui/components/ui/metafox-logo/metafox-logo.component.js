@@ -26,6 +26,7 @@ export default class MetaFoxLogo extends PureComponent {
           'onboarding-app-header__logo-container': isOnboarding,
           'app-header__logo-container--clickable': Boolean(onClick),
         })}
+        data-testid="app-header-logo"
       >
         <MetaFoxHorizontalLogo
           className={classnames({

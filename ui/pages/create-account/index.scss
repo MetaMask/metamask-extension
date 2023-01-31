@@ -4,7 +4,7 @@
 .new-account {
   width: 375px;
   background-color: var(--color-background-default);
-  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   z-index: 25;
   height: unset;
   overflow: auto;
@@ -14,7 +14,7 @@
     display: none;
   }
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     position: absolute;
   }
 
@@ -84,12 +84,17 @@
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;
     background-color: var(--color-background-default);
-    color: var(--color-text-muted);
+    color: var(--color-text-default);
     margin-top: 15px;
     padding: 0 20px;
 
     &__error {
       border: 1px solid var(--color-error-alternative);
+    }
+
+    &::placeholder {
+      color: var(--color-text-muted);
+      opacity: 1;
     }
   }
 
@@ -105,7 +110,7 @@
   }
 
   &__buttons {
-    margin-top: 39px;
+    margin-top: 22px;
     display: flex;
     width: 100%;
     justify-content: space-between;

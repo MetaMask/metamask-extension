@@ -25,15 +25,13 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = ownProps.txData;
+  const { provider } = state.metamask;
 
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    from,
-  );
+  const hardwareWalletRequiresConnection =
+    doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
-
   return {
     requester: null,
     requesterAddress: null,
@@ -47,6 +45,7 @@ function mapStateToProps(state, ownProps) {
     subjectMetadata: getSubjectMetadata(state),
     messagesList,
     messagesCount,
+    provider,
   };
 }
 
@@ -63,6 +62,7 @@ function mapDispatchToProps(dispatch) {
           name: 'REJECT_TRANSACTIONS',
           onSubmit,
           unapprovedTxCount: messagesCount,
+          isRequestType: true,
         }),
       );
     },

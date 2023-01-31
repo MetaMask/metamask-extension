@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -15,9 +15,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
-const { isValidMnemonic } = ethers.utils;
-
 const defaultNumberOfWords = 12;
+
+const hasUpperCase = (draftSrp) => {
+  return draftSrp !== draftSrp.toLowerCase();
+};
 
 export default function SrpInput({ onChange, srpText }) {
   const [srpError, setSrpError] = useState('');
@@ -35,11 +37,13 @@ export default function SrpInput({ onChange, srpText }) {
   const onSrpChange = useCallback(
     (newDraftSrp) => {
       let newSrpError = '';
-      const joinedDraftSrp = newDraftSrp.join(' ');
+      const joinedDraftSrp = newDraftSrp.join(' ').trim();
 
       if (newDraftSrp.some((word) => word !== '')) {
         if (newDraftSrp.some((word) => word === '')) {
           newSrpError = t('seedPhraseReq');
+        } else if (hasUpperCase(joinedDraftSrp)) {
+          newSrpError = t('invalidSeedPhraseCaseSensitive');
         } else if (!isValidMnemonic(joinedDraftSrp)) {
           newSrpError = t('invalidSeedPhrase');
         }

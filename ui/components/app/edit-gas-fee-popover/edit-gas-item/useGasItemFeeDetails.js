@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
+  EditGasModes,
+  PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexWEIToDecGWEI,
-} from '../../../../helpers/utils/conversions.util';
 import {
   addTenPercentAndRound,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
 } from '../../../../helpers/utils/gas';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+  hexWEIToDecGWEI,
+} from '../../../../../shared/modules/conversion.utils';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 export const useGasItemFeeDetails = (priorityLevel) => {
@@ -29,9 +29,8 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     transaction,
   } = useGasFeeContext();
-  const [estimateGreaterThanGasUse, setEstimateGreaterThanGasUse] = useState(
-    false,
-  );
+  const [estimateGreaterThanGasUse, setEstimateGreaterThanGasUse] =
+    useState(false);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
   let maxFeePerGas;
@@ -45,7 +44,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     maxPriorityFeePerGas =
       gasFeeEstimates[priorityLevel].suggestedMaxPriorityFeePerGas;
   } else if (
-    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+    priorityLevel === PriorityLevels.dAppSuggested &&
     dappSuggestedGasFees
   ) {
     maxFeePerGas = hexWEIToDecGWEI(
@@ -54,16 +53,16 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     maxPriorityFeePerGas = hexWEIToDecGWEI(
       dappSuggestedGasFees.maxPriorityFeePerGas || maxFeePerGas,
     );
-  } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
-    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
+  } else if (priorityLevel === PriorityLevels.custom) {
+    if (estimateUsed === PriorityLevels.custom) {
       maxFeePerGas = maxFeePerGasValue;
       maxPriorityFeePerGas = maxPriorityFeePerGasValue;
-    } else if (advancedGasFeeValues && editGasMode !== EDIT_GAS_MODES.SWAPS) {
+    } else if (advancedGasFeeValues && editGasMode !== EditGasModes.swaps) {
       maxFeePerGas = advancedGasFeeValues.maxBaseFee;
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
   } else if (
-    priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED &&
+    priorityLevel === PriorityLevels.tenPercentIncreased &&
     transaction.previousGas
   ) {
     maxFeePerGas = hexWEIToDecGWEI(
@@ -82,7 +81,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
 
   if (gasFeeEstimates[priorityLevel]) {
     minWaitTime =
-      priorityLevel === PRIORITY_LEVELS.HIGH
+      priorityLevel === PriorityLevels.high
         ? gasFeeEstimates?.high.minWaitTimeEstimate
         : gasFeeEstimates?.low.maxWaitTimeEstimate;
   } else {
@@ -100,10 +99,10 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     // For cancel and speed-up medium / high option is disabled if
     // gas used in transaction + 10% is greater tham estimate
     if (
-      (editGasMode === EDIT_GAS_MODES.CANCEL ||
-        editGasMode === EDIT_GAS_MODES.SPEED_UP) &&
-      (priorityLevel === PRIORITY_LEVELS.MEDIUM ||
-        priorityLevel === PRIORITY_LEVELS.HIGH)
+      (editGasMode === EditGasModes.cancel ||
+        editGasMode === EditGasModes.speedUp) &&
+      (priorityLevel === PriorityLevels.medium ||
+        priorityLevel === PriorityLevels.high)
     ) {
       const estimateGreater = !gasEstimateGreaterThanGasUsedPlusTenPercent(
         transaction.previousGas || transaction.txParams,

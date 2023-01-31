@@ -7,6 +7,7 @@ import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -19,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import {
   getCurrentChainId,
   getIpfsGateway,
@@ -26,32 +28,27 @@ import {
   getSelectedIdentity,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
-import Copy from '../../ui/icon/copy-icon.component';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
-  checkAndUpdateSingleCollectibleOwnershipStatus,
-  removeAndIgnoreCollectible,
+  checkAndUpdateSingleNftOwnershipStatus,
+  removeAndIgnoreNft,
+  setRemoveCollectibleMessage,
 } from '../../../store/actions';
-import {
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  POLYGON_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CollectibleOptions from '../collectible-options/collectible-options';
 import Button from '../../ui/button';
-import { updateSendAsset } from '../../../ducks/send';
+import { startNewDraftTransaction } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
-import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { ASSET_TYPES } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import CollectibleDefaultImage from '../collectible-default-image';
 
 export default function CollectibleDetails({ collectible }) {
@@ -72,7 +69,8 @@ export default function CollectibleDetails({ collectible }) {
   const ipfsGateway = useSelector(getIpfsGateway);
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [sourceCopied, handleSourceCopy] = useCopyToClipboard();
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -85,29 +83,30 @@ export default function CollectibleDetails({ collectible }) {
     imageOriginal ?? image,
     ipfsGateway,
   );
+  const collectibleImageAlt = getCollectibleImageAlt(collectible);
+  const isDataURI = collectibleImageURL.startsWith('data:');
 
   const onRemove = () => {
-    dispatch(removeAndIgnoreCollectible(address, tokenId));
+    dispatch(removeAndIgnoreNft(address, tokenId));
+    dispatch(setRemoveCollectibleMessage('success'));
     history.push(DEFAULT_ROUTE);
   };
 
   const prevCollectible = usePrevious(collectible);
   useEffect(() => {
     if (!isEqual(prevCollectible, collectible)) {
-      checkAndUpdateSingleCollectibleOwnershipStatus(collectible);
+      checkAndUpdateSingleNftOwnershipStatus(collectible);
     }
   }, [collectible, prevCollectible]);
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
-      case MAINNET_CHAIN_ID:
+      case CHAIN_IDS.MAINNET:
         return `https://opensea.io/assets/${address}/${tokenId}`;
-      case POLYGON_CHAIN_ID:
+      case CHAIN_IDS.POLYGON:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
-      case GOERLI_CHAIN_ID:
-      case KOVAN_CHAIN_ID:
-      case ROPSTEN_CHAIN_ID:
-      case RINKEBY_CHAIN_ID:
+      case CHAIN_IDS.GOERLI:
+      case CHAIN_IDS.SEPOLIA:
         return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
       default:
         return null;
@@ -115,13 +114,13 @@ export default function CollectibleDetails({ collectible }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== ERC721;
+  const sendDisabled = standard !== TokenStandard.ERC721;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
     await dispatch(
-      updateSendAsset({
-        type: ASSET_TYPES.COLLECTIBLE,
+      startNewDraftTransaction({
+        type: AssetType.NFT,
         details: collectible,
       }),
     );
@@ -178,7 +177,11 @@ export default function CollectibleDetails({ collectible }) {
             className="collectible-details__card"
           >
             {image ? (
-              <img className="collectible-details__image" src={image} />
+              <img
+                className="collectible-details__image"
+                src={collectibleImageURL}
+                alt={collectibleImageAlt}
+              />
             ) : (
               <CollectibleDefaultImage name={name} tokenId={tokenId} />
             )}
@@ -246,23 +249,37 @@ export default function CollectibleDetails({ collectible }) {
               {t('source')}
             </Typography>
             <Typography
-              color={COLORS.PRIMARY_DEFAULT}
               variant={TYPOGRAPHY.H6}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
-              className="collectible-details__image-link"
+              className="collectible-details__image-source"
+              color={isDataURI ? COLORS.TEXT_DEFAULT : COLORS.PRIMARY_DEFAULT}
             >
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={collectibleImageURL}
-                title={collectibleImageURL}
-              >
-                {collectibleImageURL}
-              </a>
+              {isDataURI ? (
+                <>{collectibleImageURL}</>
+              ) : (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={collectibleImageURL}
+                  title={collectibleImageURL}
+                >
+                  {collectibleImageURL}
+                </a>
+              )}
             </Typography>
+            <ButtonIcon
+              ariaLabel="copy"
+              className="collectible-details__contract-copy-button"
+              onClick={() => {
+                handleSourceCopy(collectibleImageURL);
+              }}
+              iconName={
+                sourceCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+              }
+            />
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
@@ -308,21 +325,22 @@ export default function CollectibleDetails({ collectible }) {
                   {inPopUp ? shortenAddress(address) : address}
                 </a>
               </Typography>
-              <button
+              <ButtonIcon
+                ariaLabel="copy"
                 className="collectible-details__contract-copy-button"
                 onClick={() => {
-                  handleCopy(address);
+                  handleAddressCopy(address);
                 }}
-              >
-                {copied ? (
-                  t('copiedExclamation')
-                ) : (
-                  <Copy size={15} color="var(--color-icon-alternative)" />
-                )}
-              </button>
+                iconName={
+                  addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                }
+              />
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
+          <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H7}>
+            {t('nftDisclaimer')}
+          </Typography>
         </Box>
       </Box>
     </>

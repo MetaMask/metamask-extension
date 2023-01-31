@@ -63,17 +63,8 @@
   "confirmed": {
     "message": "Potvrzeno"
   },
-  "connectingToKovan": {
-    "message": "Připojuji se k Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Připojuji se k Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Připojuji se k Ropsten Test Network"
   },
   "contractDeployment": {
     "message": "Nasazení kontraktu"
@@ -92,9 +83,6 @@
   },
   "createAccount": {
     "message": "Vytvořit účet"
-  },
-  "customGas": {
-    "message": "Nastavit palivo"
   },
   "customToken": {
     "message": "Vlastní token"
@@ -345,9 +333,6 @@
   },
   "sign": {
     "message": "Podepsat"
-  },
-  "signNotice": {
-    "message": "Podepsání zprávy může mít \nnebezpečný vedlejší učinek. Podepisujte zprávy pouze ze \nstránek, kterým plně důvěřujete celým svým účtem.\n Tato nebezpečná metoda bude odebrána v budoucí verzi. "
   },
   "signatureRequest": {
     "message": "Požadavek podpisu"

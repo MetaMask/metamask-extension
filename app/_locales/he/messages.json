@@ -8,9 +8,6 @@
   "about": {
     "message": "מידע כללי"
   },
-  "acceleratingATransaction": {
-    "message": "* האצת עסקה על ידי שימוש במחיר דלק גבוה יותר מגדילה את סיכוייה לעבור עיבוד מהיר יותר ע\"י הרשת, אך זה לא תמיד מובטח."
-  },
   "accessingYourCamera": {
     "message": "ניגש למצלמה שלך ..."
   },
@@ -49,9 +46,6 @@
   },
   "advanced": {
     "message": "מתקדם"
-  },
-  "advancedOptions": {
-    "message": "אפשרויות מתקדמות"
   },
   "amount": {
     "message": "כמות"
@@ -193,17 +187,8 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "מתחבר ל-Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
-  },
-  "connectingToRinkeby": {
-    "message": "מתחבר ל- Rinkeby Test Network  "
-  },
-  "connectingToRopsten": {
-    "message": "מתחבר אל רשת בדיקה Ropsten "
   },
   "continueToWyre": {
     "message": "המשך ל-Wyre"
@@ -249,12 +234,6 @@
   },
   "custom": {
     "message": "מתקדם"
-  },
-  "customGas": {
-    "message": "התאמה אישית של דלק"
-  },
-  "customGasSubTitle": {
-    "message": "הגדלת התשלום עשויה לצמצם את זמני העיבוד, אבל אין ערובה לכך."
   },
   "customToken": {
     "message": "אסימון מותאם אישית"
@@ -339,9 +318,6 @@
   },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
-  },
-  "estimatedProcessingTimes": {
-    "message": "זמני עיבוד משוערים"
   },
   "ethereumPublicAddress": {
     "message": "כתובת אתריום ציבורית"
@@ -503,9 +479,6 @@
   "knownAddressRecipient": {
     "message": "כתובת חוזה ידועה."
   },
-  "kovan": {
-    "message": "רשת בדיקה Kovan "
-  },
   "learnMore": {
     "message": "למדו עוד"
   },
@@ -582,9 +555,6 @@
   "newAccount": {
     "message": "חשבון חדש"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "זוהתה כתובת חדש! נא להקיש כאן כדי להוסיף לפנקס הכתובות שלך."
-  },
   "newAccountNumberName": {
     "message": "חשבון $1",
     "description": "Default name of next account to be created on create account screen"
@@ -600,12 +570,6 @@
   },
   "newToMetaMask": {
     "message": "חדש/ה ב- MetaMask?"
-  },
-  "newTotal": {
-    "message": "סכום כולל חדש"
-  },
-  "newTransactionFee": {
-    "message": "עמלת עסקה חדשה"
   },
   "next": {
     "message": "הבא"
@@ -765,9 +729,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "אין לשתף צירוף מילים זה עם אף אחד!"
   },
-  "rinkeby": {
-    "message": "רשת בדיקה Rinkeby "
-  },
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"
   },
@@ -804,9 +765,6 @@
   "seedPhraseReq": {
     "message": "צירופי גרעין מורכבים מ-12 מילים"
   },
-  "selectAHigherGasFee": {
-    "message": "בחר/י בעמלת דלק גבוהה יותר כדי להאיץ את עיבוד העסקה שלך. *"
-  },
   "selectAnAccount": {
     "message": "בחר חשבון"
   },
@@ -824,9 +782,6 @@
   },
   "send": {
     "message": "שלח"
-  },
-  "sendAmount": {
-    "message": "שלח סכום"
   },
   "sendTokens": {
     "message": "שלח טוקנים"
@@ -861,17 +816,11 @@
   "sign": {
     "message": "חתימה"
   },
-  "signNotice": {
-    "message": "לחתימה על הודעה זו יכולות להיות תוצאות לוואי מסוכנות. מומלץ לחתום רק הודעות מאתרים שיש לך אמון מלא בהם והפקדת את כל החשבון שלך בידיהם. השיטה המסוכנת תוסר בגרסה עתידית."
-  },
   "signatureRequest": {
     "message": "בקשת חתימה"
   },
   "signed": {
     "message": "חתום"
-  },
-  "slow": {
-    "message": "אטי"
   },
   "somethingWentWrong": {
     "message": "אופס! משהו השתבש."

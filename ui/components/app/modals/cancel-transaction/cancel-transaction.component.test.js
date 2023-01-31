@@ -1,60 +1,90 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-import Modal from '../../modal';
-import CancelTransaction from './cancel-transaction.component';
-import CancelTransactionGasFee from './cancel-transaction-gas-fee';
+import configureMockStore from 'redux-mock-store';
+import { fireEvent, waitFor } from '@testing-library/react';
+import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockState from '../../../../../test/data/mock-state.json';
+import {
+  yesLetsTry,
+  nevermind,
+} from '../../../../../app/_locales/en/messages.json';
+import CancelTransaction from '.';
+
+const mockCreateCancelTransaction = jest.fn();
+const mockShowModal = jest.fn();
+const mockHideModal = jest.fn();
+
+jest.mock('../../../../store/actions.js', () => {
+  return {
+    createCancelTransaction: () => mockCreateCancelTransaction,
+    showModal: () => mockShowModal,
+    hideModal: () => mockHideModal,
+  };
+});
 
 describe('CancelTransaction Component', () => {
-  const t = (key) => key;
-
-  it('should render a CancelTransaction modal', () => {
-    const wrapper = shallow(<CancelTransaction newGasFee="0x1319718a5000" />, {
-      context: { t },
-    });
-
-    expect(wrapper.find(Modal)).toHaveLength(1);
-    expect(wrapper.find(CancelTransactionGasFee)).toHaveLength(1);
-    expect(wrapper.find(CancelTransactionGasFee).props().value).toStrictEqual(
-      '0x1319718a5000',
-    );
-    expect(wrapper.find('.cancel-transaction__title').text()).toStrictEqual(
-      'cancellationGasFee',
-    );
-    expect(
-      wrapper.find('.cancel-transaction__description').text(),
-    ).toStrictEqual('attemptToCancelDescription');
+  afterEach(() => {
+    mockCreateCancelTransaction.mockClear();
+    mockShowModal.mockClear();
+    mockHideModal.mockClear();
   });
 
-  it('should pass the correct props to the Modal component', async () => {
-    const createCancelTransactionSpy = sinon
-      .stub()
-      .callsFake(() => Promise.resolve());
-    const hideModalSpy = sinon.spy();
+  const props = {
+    newGasFee: '0x1319718a5000', // 21000000000000
+  };
 
-    const wrapper = shallow(
-      <CancelTransaction
-        defaultNewGasPrice="0x3b9aca00"
-        createCancelTransaction={createCancelTransactionSpy}
-        hideModal={hideModalSpy}
-        showTransactionConfirmedModal={() => undefined}
-      />,
-      { context: { t } },
+  it('should match snapshot', () => {
+    const mockStore = configureMockStore()(mockState);
+
+    const { container } = renderWithProvider(
+      <CancelTransaction {...props} />,
+      mockStore,
     );
 
-    expect(wrapper.find(Modal)).toHaveLength(1);
-    const modalProps = wrapper.find(Modal).props();
+    expect(container).toMatchSnapshot();
+  });
 
-    expect(modalProps.headerText).toStrictEqual('attemptToCancel');
-    expect(modalProps.submitText).toStrictEqual('yesLetsTry');
-    expect(modalProps.cancelText).toStrictEqual('nevermind');
+  it('should call create cancel transaction and hide modal', async () => {
+    const mockStore = configureMockStore([thunk])(mockState);
 
-    expect(createCancelTransactionSpy.callCount).toStrictEqual(0);
-    expect(hideModalSpy.callCount).toStrictEqual(0);
-    await modalProps.onSubmit();
-    expect(createCancelTransactionSpy.callCount).toStrictEqual(1);
-    expect(hideModalSpy.callCount).toStrictEqual(1);
-    modalProps.onCancel();
-    expect(hideModalSpy.callCount).toStrictEqual(2);
+    const { queryByText } = renderWithProvider(
+      <CancelTransaction />,
+      mockStore,
+    );
+
+    fireEvent.click(queryByText(yesLetsTry.message));
+
+    await waitFor(() => {
+      expect(mockCreateCancelTransaction).toHaveBeenCalled();
+      expect(mockHideModal).toHaveBeenCalled();
+    });
+  });
+
+  it('should hide modal when clicking "Nevermind" button', () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+
+    const { queryByText } = renderWithProvider(
+      <CancelTransaction />,
+      mockStore,
+    );
+
+    fireEvent.click(queryByText(nevermind.message));
+
+    expect(mockCreateCancelTransaction).not.toHaveBeenCalled();
+    expect(mockHideModal).toHaveBeenCalled();
+  });
+
+  it('should hide modal when closing from header', () => {
+    const mockStore = configureMockStore([thunk])(mockState);
+
+    const { queryByTestId } = renderWithProvider(
+      <CancelTransaction {...props} />,
+      mockStore,
+    );
+
+    fireEvent.click(queryByTestId('modal-header-close'));
+
+    expect(mockCreateCancelTransaction).not.toHaveBeenCalled();
+    expect(mockHideModal).toHaveBeenCalled();
   });
 });

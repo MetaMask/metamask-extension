@@ -29,7 +29,8 @@ const DetectedTokenAddress = ({ tokenAddress }) => {
       <Typography
         variant={TYPOGRAPHY.H7}
         color={COLORS.PRIMARY_DEFAULT}
-        margin={[1, 2]}
+        marginLeft={2}
+        marginRight={2}
       >
         {shortenAddress(tokenAddress)}
       </Typography>

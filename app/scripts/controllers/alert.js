@@ -1,20 +1,20 @@
 import { ObservableStore } from '@metamask/obs-store';
 import {
   TOGGLEABLE_ALERT_TYPES,
-  WEB3_SHIM_USAGE_ALERT_STATES,
+  Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 
 /**
- * @typedef {Object} AlertControllerInitState
- * @property {Object} alertEnabledness - A map of alerts IDs to booleans, where
+ * @typedef {object} AlertControllerInitState
+ * @property {object} alertEnabledness - A map of alerts IDs to booleans, where
  * `true` indicates that the alert is enabled and shown, and `false` the opposite.
- * @property {Object} unconnectedAccountAlertShownOrigins - A map of origin
+ * @property {object} unconnectedAccountAlertShownOrigins - A map of origin
  * strings to booleans indicating whether the "switch to connected" alert has
  * been shown (`true`) or otherwise (`false`).
  */
 
 /**
- * @typedef {Object} AlertControllerOptions
+ * @typedef {object} AlertControllerOptions
  * @property {AlertControllerInitState} initState - The initial controller state
  */
 
@@ -101,7 +101,7 @@ export default class AlertController {
    * @param {string} origin - The origin the that used the web3 shim.
    */
   setWeb3ShimUsageRecorded(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.RECORDED);
+    this._setWeb3ShimUsageState(origin, Web3ShimUsageAlertStates.recorded);
   }
 
   /**
@@ -111,7 +111,7 @@ export default class AlertController {
    * dismissed for.
    */
   setWeb3ShimUsageAlertDismissed(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.DISMISSED);
+    this._setWeb3ShimUsageState(origin, Web3ShimUsageAlertStates.dismissed);
   }
 
   /**

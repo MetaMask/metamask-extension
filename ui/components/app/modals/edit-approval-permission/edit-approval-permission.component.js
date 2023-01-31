@@ -6,7 +6,10 @@ import BigNumber from 'bignumber.js';
 import Modal from '../../modal';
 import Identicon from '../../../ui/identicon';
 import TextField from '../../../ui/text-field';
-import { calcTokenAmount } from '../../../../helpers/utils/token-util';
+import {
+  calcTokenAmount,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../../../shared/lib/transactions-controller-utils';
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 
@@ -70,7 +73,10 @@ export default class EditApprovalPermission extends PureComponent {
             </div>
           </div>
           <div className="edit-approval-permission__account-info__balance">
-            {`${Number(tokenBalance).toPrecision(9)} ${tokenSymbol}`}
+            {`${toPrecisionWithoutTrailingZeros(
+              tokenBalance,
+              9,
+            )} ${tokenSymbol}`}
           </div>
         </div>
         <div className="edit-approval-permission__edit-section">
@@ -87,8 +93,10 @@ export default class EditApprovalPermission extends PureComponent {
             >
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__radio-button-outline': !selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__radio-button-outline--selected': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline':
+                    !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected':
+                    selectedOptionIsUnlimited,
                 })}
               />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
@@ -99,8 +107,10 @@ export default class EditApprovalPermission extends PureComponent {
             <div className="edit-approval-permission__edit-section__option-text">
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__option-label': !selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__option-label--selected': selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label':
+                    !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected':
+                    selectedOptionIsUnlimited,
                 })}
               >
                 {new BigNumber(tokenAmount).equals(
@@ -126,8 +136,10 @@ export default class EditApprovalPermission extends PureComponent {
             >
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__radio-button-outline': selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__radio-button-outline--selected': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline':
+                    selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__radio-button-outline--selected':
+                    !selectedOptionIsUnlimited,
                 })}
               />
               <div className="edit-approval-permission__edit-section__radio-button-fill" />
@@ -138,8 +150,10 @@ export default class EditApprovalPermission extends PureComponent {
             <div className="edit-approval-permission__edit-section__option-text">
               <div
                 className={classnames({
-                  'edit-approval-permission__edit-section__option-label': selectedOptionIsUnlimited,
-                  'edit-approval-permission__edit-section__option-label--selected': !selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label':
+                    selectedOptionIsUnlimited,
+                  'edit-approval-permission__edit-section__option-label--selected':
+                    !selectedOptionIsUnlimited,
                 })}
               >
                 {t('customSpendLimit')}

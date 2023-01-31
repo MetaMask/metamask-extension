@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confusable component should detect homoglyphic unicode points 1`] = `
+<div>
+  f
+  a
+  c
+  e
+  b
+  o
+  o
+  k
+  .
+  e
+  t
+  h
+</div>
+`;
+
+exports[`Confusable component should detect multiple homoglyphic unicode points 1`] = `
+<div>
+  s
+  c
+  o
+  p
+  e
+  .
+  e
+  t
+  h
+</div>
+`;
+
+exports[`Confusable component should detect zero-width unicode 1`] = `
+<div>
+  v
+  i
+  t
+  a
+  l
+  i
+  k
+  .
+  e
+  t
+  h
+</div>
+`;
+
+exports[`Confusable component should not detect emoji 1`] = `
+<div>
+  👻
+  .
+  e
+  t
+  h
+</div>
+`;

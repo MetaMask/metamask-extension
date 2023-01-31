@@ -1,9 +1,9 @@
 import { HttpProvider } from 'ethjs';
 import nock from 'nock';
 import {
-  TRANSACTION_GROUP_STATUSES,
-  TRANSACTION_STATUSES,
-  TRANSACTION_ENVELOPE_TYPES,
+  TransactionGroupStatus,
+  TransactionStatus,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 
@@ -13,27 +13,27 @@ describe('Transactions utils', () => {
       const tests = [
         {
           transaction: {
-            status: TRANSACTION_STATUSES.CONFIRMED,
+            status: TransactionStatus.confirmed,
             txReceipt: {
               status: '0x0',
             },
           },
-          expected: TRANSACTION_STATUSES.FAILED,
+          expected: TransactionStatus.failed,
         },
         {
           transaction: {
-            status: TRANSACTION_STATUSES.CONFIRMED,
+            status: TransactionStatus.confirmed,
             txReceipt: {
               status: '0x1',
             },
           },
-          expected: TRANSACTION_STATUSES.CONFIRMED,
+          expected: TransactionStatus.confirmed,
         },
         {
           transaction: {
-            status: TRANSACTION_GROUP_STATUSES.PENDING,
+            status: TransactionGroupStatus.pending,
           },
-          expected: TRANSACTION_GROUP_STATUSES.PENDING,
+          expected: TransactionGroupStatus.pending,
         },
       ];
 
@@ -46,13 +46,13 @@ describe('Transactions utils', () => {
   describe('isLegacyTransaction', () => {
     it('should return true if transaction is type-0', () => {
       expect(
-        utils.isLegacyTransaction({ type: TRANSACTION_ENVELOPE_TYPES.LEGACY }),
+        utils.isLegacyTransaction({ type: TransactionEnvelopeType.legacy }),
       ).toStrictEqual(true);
     });
     it('should return false if transaction is not type-0', () => {
       expect(
         utils.isLegacyTransaction({
-          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          type: TransactionEnvelopeType.feeMarket,
         }),
       ).toStrictEqual(false);
     });
@@ -87,14 +87,6 @@ describe('Transactions utils', () => {
             },
           ],
         });
-      nock('https://mainnet.infura.io:443', { encodedQueryParams: true })
-        .post('/v3/341eacb578dd44a1a049cbc5f6fd4035')
-        .reply(200, (_, requestBody) => ({
-          id: requestBody.id,
-          jsonrpc: '2.0',
-          result:
-            '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002f6e69636546756e6374696f6e48657265506c7a436c69636b39343332333030383928616464726573732c626f6f6c290000000000000000000000000000000000',
-        }));
       expect(await utils.getMethodDataAsync('0xa22cb465')).toStrictEqual({
         name: 'Set Approval For All',
         params: [{ type: 'address' }, { type: 'bool' }],

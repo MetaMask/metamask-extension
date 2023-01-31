@@ -1,10 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { mount, shallow } from 'enzyme';
-import { MemoryRouter } from 'react-router-dom';
+import { Router, MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { createMemoryHistory } from 'history';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
+import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 
@@ -77,25 +80,34 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-export function renderWithProvider(component, store) {
+export function renderWithProvider(component, store, pathname = '/') {
+  const history = createMemoryHistory({ initialEntries: [pathname] });
   const Wrapper = ({ children }) =>
     store ? (
       <Provider store={store}>
-        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+        <Router history={history}>
           <I18nProvider currentLocale="en" current={en} en={en}>
-            <LegacyI18nProvider>{children}</LegacyI18nProvider>
+            <LegacyI18nProvider>
+              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+            </LegacyI18nProvider>
           </I18nProvider>
-        </MemoryRouter>
+        </Router>
       </Provider>
     ) : (
-      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+      <Router history={history}>
+        <LegacyI18nProvider>
+          <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+        </LegacyI18nProvider>
+      </Router>
     );
 
   Wrapper.propTypes = {
     children: PropTypes.node,
   };
-
-  return render(component, { wrapper: Wrapper });
+  return {
+    ...render(component, { wrapper: Wrapper }),
+    history,
+  };
 }
 
 export function renderWithLocalization(component) {
@@ -110,4 +122,27 @@ export function renderWithLocalization(component) {
   };
 
   return render(component, { wrapper: Wrapper });
+}
+
+export function renderControlledInput(InputComponent, props) {
+  const ControlledWrapper = () => {
+    const [value, setValue] = useState('');
+    return (
+      <InputComponent
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        {...props}
+      />
+    );
+  };
+  return { user: userEvent.setup(), ...render(<ControlledWrapper />) };
+}
+
+// userEvent setup function as per testing-library docs
+// https://testing-library.com/docs/user-event/intr
+export function renderWithUserEvent(jsx) {
+  return {
+    user: userEvent.setup(),
+    ...render(jsx),
+  };
 }

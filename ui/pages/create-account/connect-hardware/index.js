@@ -10,12 +10,13 @@ import {
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
-  DEVICE_NAMES,
-  LEDGER_TRANSPORT_TYPES,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -88,9 +89,9 @@ class ConnectHardwareForm extends Component {
 
   async checkIfUnlocked() {
     for (const device of [
-      DEVICE_NAMES.TREZOR,
-      DEVICE_NAMES.LEDGER,
-      DEVICE_NAMES.LATTICE,
+      HardwareDeviceNames.trezor,
+      HardwareDeviceNames.ledger,
+      HardwareDeviceNames.lattice,
     ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
@@ -232,11 +233,8 @@ class ConnectHardwareForm extends Component {
   };
 
   onUnlockAccounts = (device, path) => {
-    const {
-      history,
-      mostRecentOverviewPage,
-      unlockHardwareWalletAccounts,
-    } = this.props;
+    const { history, mostRecentOverviewPage, unlockHardwareWalletAccounts } =
+      this.props;
     const { selectedAccounts } = this.state;
 
     if (selectedAccounts.length === 0) {
@@ -256,10 +254,10 @@ class ConnectHardwareForm extends Component {
       .then((_) => {
         this.context.trackEvent({
           category: EVENT.CATEGORIES.ACCOUNTS,
-          event: `Connected Account with: ${device}`,
+          event: EVENT_NAMES.ACCOUNT_ADDED,
           properties: {
-            action: 'Connected Hardware Wallet',
-            legacy_event: true,
+            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_hardware_type: device,
           },
         });
         history.push(mostRecentOverviewPage);
@@ -267,10 +265,10 @@ class ConnectHardwareForm extends Component {
       .catch((e) => {
         this.context.trackEvent({
           category: EVENT.CATEGORIES.ACCOUNTS,
-          event: 'Error connecting hardware wallet',
+          event: EVENT_NAMES.ACCOUNT_ADD_FAILED,
           properties: {
-            action: 'Connected Hardware Wallet',
-            legacy_event: true,
+            account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+            account_hardware_type: device,
             error: e.message,
           },
         });
@@ -291,7 +289,7 @@ class ConnectHardwareForm extends Component {
             this.state.device,
             // eslint-disable-next-line react/jsx-key
             <a
-              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+              href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="hardware-connection-guide"
               target="_blank"
               rel="noopener noreferrer"
@@ -366,7 +364,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-  ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+  ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
 };
 
 const mapStateToProps = (state) => ({

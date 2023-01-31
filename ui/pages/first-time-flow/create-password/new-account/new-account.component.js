@@ -6,7 +6,10 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
 import TextField from '../../../../components/ui/text-field';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 
 export default class NewAccount extends PureComponent {
   static contextTypes = {
@@ -28,12 +31,8 @@ export default class NewAccount extends PureComponent {
   };
 
   isValid() {
-    const {
-      password,
-      confirmPassword,
-      passwordError,
-      confirmPasswordError,
-    } = this.state;
+    const { password, confirmPassword, passwordError, confirmPasswordError } =
+      this.state;
 
     if (!password || !confirmPassword || password !== confirmPassword) {
       return false;
@@ -103,13 +102,9 @@ export default class NewAccount extends PureComponent {
 
       this.context.trackEvent({
         category: EVENT.CATEGORIES.ONBOARDING,
-        event: 'Submit Password',
-        properties: {
-          action: 'Create Password',
-          legacy_event: true,
-        },
+        event: EVENT_NAMES.ACCOUNT_PASSWORD_CREATED,
+        properties: {},
       });
-
       history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
     } catch (error) {
       this.setState({ passwordError: error.message });
@@ -117,15 +112,6 @@ export default class NewAccount extends PureComponent {
   };
 
   toggleTermsCheck = () => {
-    this.context.trackEvent({
-      category: EVENT.CATEGORIES.ONBOARDING,
-      event: 'Check ToS',
-      properties: {
-        action: 'Create Password',
-        legacy_event: true,
-      },
-    });
-
     this.setState((prevState) => ({
       termsChecked: !prevState.termsChecked,
     }));
@@ -151,16 +137,9 @@ export default class NewAccount extends PureComponent {
       <div>
         <div className="first-time-flow__create-back">
           <a
+            data-testid="onboarding-back-button"
             onClick={(e) => {
               e.preventDefault();
-              this.context.trackEvent({
-                category: EVENT.CATEGORIES.ONBOARDING,
-                event: 'Go Back from Onboarding Create',
-                properties: {
-                  action: 'Create Password',
-                  legacy_event: true,
-                },
-              });
               this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
             }}
             href="#"
@@ -171,6 +150,7 @@ export default class NewAccount extends PureComponent {
         <div className="first-time-flow__header">{t('createPassword')}</div>
         <form className="first-time-flow__form" onSubmit={this.handleCreate}>
           <TextField
+            data-testid="create-password"
             id="create-password"
             label={t('newPassword')}
             type="password"
@@ -185,6 +165,7 @@ export default class NewAccount extends PureComponent {
             largeLabel
           />
           <TextField
+            data-testid="confirm-password"
             id="confirm-password"
             label={t('confirmPassword')}
             type="password"

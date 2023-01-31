@@ -5,12 +5,20 @@
 
   .chip {
     padding-right: 8px;
+    margin-top: 4px;
+  }
+
+  .chip__label {
+    max-width: 168px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   &:hover,
   &:focus {
     .chip {
-      background-color: var(--color-background-alternative);
+      background-color: var(--color-background-default-hover);
     }
   }
 }

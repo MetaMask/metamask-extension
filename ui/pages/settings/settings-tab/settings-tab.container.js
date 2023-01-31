@@ -6,8 +6,9 @@ import {
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
+  setTheme,
 } from '../../../store/actions';
-import { getPreferences } from '../../../selectors';
+import { getTokenList, getPreferences, getTheme } from '../../../selectors';
 import SettingsTab from './settings-tab.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -21,15 +22,12 @@ const mapStateToProps = (state, ownProps) => {
     useBlockie,
     currentLocale,
     selectedAddress,
-    useTokenDetection,
-    tokenList,
   } = metamask;
-  const {
-    useNativeCurrencyAsPrimaryCurrency,
-    hideZeroBalanceTokens,
-  } = getPreferences(state);
+  const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
+    getPreferences(state);
 
   const { lastFetchedConversionDate } = ownProps;
+  const tokenList = getTokenList(state);
 
   return {
     warning,
@@ -41,8 +39,8 @@ const mapStateToProps = (state, ownProps) => {
     hideZeroBalanceTokens,
     lastFetchedConversionDate,
     selectedAddress,
-    useTokenDetection,
     tokenList,
+    theme: getTheme(state),
   };
 };
 
@@ -58,6 +56,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setParticipateInMetaMetrics(val)),
     setHideZeroBalanceTokens: (value) =>
       dispatch(setHideZeroBalanceTokens(value)),
+    setTheme: (val) => dispatch(setTheme(val)),
   };
 };
 

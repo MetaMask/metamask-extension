@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ConfirmTokenTransactionBase from '../confirm-token-transaction-base/confirm-token-transaction-base';
 import { SEND_ROUTE } from '../../helpers/constants/routes';
-import { editTransaction } from '../../ducks/send';
+import { editExistingTransaction } from '../../ducks/send';
 import {
   contractExchangeRateSelector,
   getCurrentCurrency,
@@ -13,10 +13,12 @@ import {
   getConversionRate,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
-import { ERC20, ERC721 } from '../../helpers/constants/common';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { showSendTokenPage } from '../../store/actions';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../shared/constants/transaction';
 
 export default function ConfirmSendToken({
   assetStandard,
@@ -35,27 +37,17 @@ export default function ConfirmSendToken({
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleEditTransaction = ({
-    txData,
-    tokenData,
-    tokenProps: assetDetails,
-  }) => {
+  const handleEditTransaction = async ({ txData }) => {
     const { id } = txData;
-    dispatch(
-      editTransaction(
-        ASSET_TYPES.TOKEN,
-        id.toString(),
-        tokenData,
-        assetDetails,
-      ),
-    );
+    await dispatch(editExistingTransaction(AssetType.token, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
   };
 
   const handleEdit = (confirmTransactionData) => {
-    handleEditTransaction(confirmTransactionData);
-    history.push(SEND_ROUTE);
+    handleEditTransaction(confirmTransactionData).then(() => {
+      history.push(SEND_ROUTE);
+    });
   };
   const conversionRate = useSelector(getConversionRate);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -64,10 +56,10 @@ export default function ConfirmSendToken({
 
   let title, subtitle;
 
-  if (assetStandard === ERC721) {
+  if (assetStandard === TokenStandard.ERC721) {
     title = assetName;
     subtitle = `#${tokenId}`;
-  } else if (assetStandard === ERC20) {
+  } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
   }
 

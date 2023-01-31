@@ -13,7 +13,7 @@
       border-radius: 10px;
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 96%;
       height: 96%;
     }

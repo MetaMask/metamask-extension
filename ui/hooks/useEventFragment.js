@@ -15,7 +15,7 @@ import { useSegmentContext } from './useSegmentContext';
  * fragment id.
  *
  * @param {string} existingId
- * @param {Object} fragmentOptions
+ * @param {object} fragmentOptions
  * @returns
  */
 export function useEventFragment(existingId, fragmentOptions = {}) {

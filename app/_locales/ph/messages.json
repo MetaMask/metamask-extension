@@ -2,16 +2,9 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "acceleratingATransaction": {
-    "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas, mas magiging malaki ang tsansang mas mabilis na maiproseso ng network, pero hindi ito palaging ginagarantiya."
-  },
   "acceptTermsOfUse": {
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
-  },
-  "accessAndSpendNotice": {
-    "message": "Maaaring i-access ng $1 ang max na halagang ito at gumastos hanggang sa max na halagang ito",
-    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "Ina-access ang iyong camera..."
@@ -85,9 +78,6 @@
   "advanced": {
     "message": "Advanced"
   },
-  "advancedOptions": {
-    "message": "Mga Advanced na Opsyon"
-  },
   "affirmAgree": {
     "message": "Sang-ayon ako"
   },
@@ -143,10 +133,6 @@
   },
   "approveButtonText": {
     "message": "Aprubahan"
-  },
-  "approveSpendLimit": {
-    "message": "Aprubahan ang limitasyon sa paggastos na $1",
-    "description": "The token symbol that is being approved"
   },
   "approved": {
     "message": "Inaprubahan"
@@ -355,17 +341,8 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToKovan": {
-    "message": "Kumokonekta sa Kovan Test Network"
-  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "connectingToRinkeby": {
-    "message": "Kumokonekta sa Rinkeby Test Network"
-  },
-  "connectingToRopsten": {
-    "message": "Kumokonekta sa Ropsten Test Network"
   },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
@@ -436,20 +413,11 @@
   "currentLanguage": {
     "message": "Kasalukuyang Wika"
   },
-  "customGas": {
-    "message": "I-customize ang Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
-  },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
   },
   "customToken": {
     "message": "Custom na Token"
-  },
-  "dataBackupFoundInfo": {
-    "message": "Ang ilan sa data ng iyong account ay na-back up sa nakaraang pag-install ng MetaMask. Maaaring kasama rito ang iyong mga setting, contact, at token. Gusto mo na bang i-restore ang data na ito ngayon?"
   },
   "decimal": {
     "message": "Decimal ng Token"
@@ -641,9 +609,6 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
-  "estimatedProcessingTimes": {
-    "message": "Mga Tinatantyang Tagal ng Pagproseso"
-  },
   "ethGasPriceFetchWarning": {
     "message": "Ibinibigay ang backup na presyo ng gas dahil hindi available ang pangunahing serbisyo sa pagtatantya ng gas sa ngayon."
   },
@@ -676,9 +641,6 @@
   },
   "fast": {
     "message": "Mabilis"
-  },
-  "fastest": {
-    "message": "Pinakamabilis"
   },
   "feeAssociatedRequest": {
     "message": "May nauugnay na bayarin para sa request na ito."
@@ -908,12 +870,6 @@
   "invalidSeedPhrase": {
     "message": "Invalid na Secret Recovery Phrase"
   },
-  "ipfsGateway": {
-    "message": "IPFS Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "Ilagay ang URL ng IPFS CID gateway para magamit para sa resolusyon ng content ng ENS."
-  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -923,9 +879,6 @@
   },
   "knownTokenWarning": {
     "message": "Mae-edit ng aksyong ito ang mga token na nakalista na sa iyong wallet, na puwedeng gamitin para i-phish ka. Aprubahan lang kung sigurado kang gusto mong baguhin kung ano ang kinakatawan ng mga token na ito."
-  },
-  "kovan": {
-    "message": "Kovan Test Network"
   },
   "lastConnected": {
     "message": "Huling Kumonekta"
@@ -1039,10 +992,6 @@
   "metametricsOptInDescription": {
     "message": "Gustong kunin ng MetaMask ang data ng paggamit para mas maunawaan kung paano ginagamit ng mga user namin ang extension. Gagamitin ang data na ito para patuloy na mapahusay ang kakayahang magamit at karanasan ng user sa paggamit ng produkto namin at Ethereum ecosystem."
   },
-  "mismatchedChain": {
-    "message": "Ang mga detalye ng network para sa chain ID na ito ay hindi tumutugma sa aming mga record. Inirerekomenda naming $1 ka bago magpatuloy.",
-    "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
-  },
   "mismatchedChainLinkText": {
     "message": "i-verify ang mga detalye ng network",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1106,9 +1055,6 @@
   "newAccount": {
     "message": "Bagong Account"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "May natukoy na bagong address! Mag-click dito para idagdag sa iyong address book."
-  },
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
@@ -1124,12 +1070,6 @@
   },
   "newToMetaMask": {
     "message": "Bago ka ba sa MetaMask?"
-  },
-  "newTotal": {
-    "message": "Bagong Kabuuan"
-  },
-  "newTransactionFee": {
-    "message": "Bagong Bayarin sa Transaksyon"
   },
   "next": {
     "message": "Susunod"
@@ -1417,10 +1357,6 @@
   "restore": {
     "message": "I-restore"
   },
-  "restoreWalletPreferences": {
-    "message": "Nakita ang backup ng iyong data mula sa $1. Gusto mo bang i-restore ang mga kagustuhan mo sa wallet?",
-    "description": "$1 is the date at which the data was backed up"
-  },
   "retryTransaction": {
     "message": "Subukan Ulit ang Transaksyon"
   },
@@ -1438,12 +1374,6 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "Huwag ibahagi ang phrase na ito sa kahit sino!"
-  },
-  "rinkeby": {
-    "message": "Rinkeby Test Network"
-  },
-  "ropsten": {
-    "message": "Ropsten Test Network"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"
@@ -1526,9 +1456,6 @@
   "seedPhraseReq": {
     "message": "Ang mga Secret Recovery Phrase ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
-  "selectAHigherGasFee": {
-    "message": "Pumili ng mas malaking bayarin sa gas para mapabilis ang pagproseso ng iyong transaksyon.*"
-  },
   "selectAccounts": {
     "message": "Pumili ng (mga) account"
   },
@@ -1558,9 +1485,6 @@
   },
   "send": {
     "message": "Magpadala"
-  },
-  "sendAmount": {
-    "message": "Halaga ng Ipapadala"
   },
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
@@ -1594,7 +1518,8 @@
     "message": "Ipakita ang Mga Papasok na Transaksyon"
   },
   "showIncomingTransactionsDescription": {
-    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon"
+    "message": "Piliin ito para gamitin ang Etherscan sa pagpapakita ng mga papasok na transaksyon sa listahan ng mga transaksyon",
+    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
@@ -1608,20 +1533,11 @@
   "sign": {
     "message": "Lumagda"
   },
-  "signNotice": {
-    "message": "Puwedeng may mga \nmapanganib na side effect ang paglagda sa mensaheng ito. Lagdaan lang ang mga mensahe mula sa \nmga site na pinagkakatiwalaan mo para sa buong account mo.\n Aalisin ang mapanganib na paraang ito sa bersyon sa hinaharap. "
-  },
   "signatureRequest": {
     "message": "Request ng Signature"
   },
-  "signatureRequest1": {
-    "message": "Mensahe"
-  },
   "signed": {
     "message": "Nilagdaan"
-  },
-  "slow": {
-    "message": "Mabagal"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaproblema."
@@ -1634,9 +1550,6 @@
   },
   "speedUpTransaction": {
     "message": "Pabilisin ang transaksyong ito"
-  },
-  "spendLimitAmount": {
-    "message": "Halaga ng limitasyon sa paggastos"
   },
   "spendLimitInsufficient": {
     "message": "Hindi sapat ang limitasyon sa paggastos"
@@ -1710,9 +1623,6 @@
   },
   "swap": {
     "message": "I-swap"
-  },
-  "swapAdvancedSlippageInfo": {
-    "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong “slippage.” Awtomatikong makakansela ang iyong pag-swap kung lalampas ang slippage sa iyong setting na “max slippage”."
   },
   "swapAggregator": {
     "message": "Aggregator"
@@ -1837,9 +1747,6 @@
   "swapQuoteDetails": {
     "message": "Mga detalye ng quote"
   },
-  "swapQuoteDetailsSlippageInfo": {
-    "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong \"slippage\". Awtomatikong makakansela ang iyong Pag-swap kung lalampas ang slippage sa iyong setting na \"tolerance ng slippage.\""
-  },
   "swapQuoteSource": {
     "message": "Pinagkunan ng quote"
   },
@@ -1869,9 +1776,6 @@
   },
   "swapReviewSwap": {
     "message": "Suriin ang Pag-swap"
-  },
-  "swapSearchForAToken": {
-    "message": "Maghanap ng token"
   },
   "swapSelect": {
     "message": "Piliin"
@@ -2013,15 +1917,6 @@
   "syncWithMobileTitle": {
     "message": "I-sync sa mobile"
   },
-  "syncWithThreeBox": {
-    "message": "I-sync ang data sa 3Box (pinag-eeksperimentuhan)"
-  },
-  "syncWithThreeBoxDescription": {
-    "message": "I-on para ma-back up ang iyong mga setting sa 3Box. Kasalukuyang pinag-eeksperimentuhan ang feature na ito; gamitin sa sarili mong pagpapasya."
-  },
-  "syncWithThreeBoxDisabled": {
-    "message": "Na-disable ang 3Box dahil sa isang error sa unang pag-sync"
-  },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"
   },
@@ -2161,10 +2056,6 @@
     "message": "Hindi kinikilala ang custom na network na ito. Inirerekomenda naming $1 ka bago magpatuloy",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedChainLinkText": {
-    "message": "i-verify ang mga detalye ng network",
-    "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
-  },
   "updatedWithDate": {
     "message": "Na-update noong $1"
   },
@@ -2224,7 +2115,7 @@
     "message": "Welcome sa MetaMask"
   },
   "welcomeBack": {
-    "message": "Welcome Back!"
+    "message": "Welcome back!"
   },
   "whatsNew": {
     "message": "Ano'ng bago",

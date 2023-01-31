@@ -6,7 +6,7 @@ $spacer-break-small: 16px;
 .collectible-details {
   padding: 0 $spacer-break-small;
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     padding: 0 $spacer-break-large;
   }
 
@@ -15,14 +15,14 @@ $spacer-break-small: 16px;
     flex-direction: column;
     margin-bottom: $spacer-break-small;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-bottom: $spacer-break-large;
       flex-direction: row;
     }
   }
 
   &__info {
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       max-width:
         calc(
           100% - #{$card-width-break-large} - #{$spacer-break-large}
@@ -35,7 +35,7 @@ $spacer-break-small: 16px;
     overflow: hidden;
     margin-bottom: $spacer-break-small;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-right: $spacer-break-large;
       margin-bottom: 0;
       max-width: $card-width-break-large;
@@ -68,6 +68,7 @@ $spacer-break-small: 16px;
     cursor: pointer;
     color: var(--color-text-alternative);
     border: 0;
+    margin-top: -4px;
 
     &:active {
       transform: scale(0.97);
@@ -78,13 +79,14 @@ $spacer-break-small: 16px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 332px;
   }
 
-  &__image-link {
+  &__image-source {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 332px;
+    width: 332px;
   }
 
   &__link-title {
@@ -95,7 +97,7 @@ $spacer-break-small: 16px;
   &__send-button {
     margin-inline-end: 8px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       max-width: 160px;
     }
   }

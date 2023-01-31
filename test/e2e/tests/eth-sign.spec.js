@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Eth sign', function () {
   it('can initiate and confirm a eth sign', async function () {
@@ -19,7 +20,9 @@ describe('Eth sign', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -39,10 +42,10 @@ describe('Eth sign', function () {
         );
 
         const title = await driver.findElement(
-          '.request-signature__header__text',
+          '.request-signature__content__title',
         );
         const origin = await driver.findElement('.request-signature__origin');
-        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await title.getText(), 'Signature request');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
 
         const personalMessageRow = await driver.findElement(
@@ -51,8 +54,10 @@ describe('Eth sign', function () {
         const personalMessage = await personalMessageRow.getText();
         assert.equal(personalMessage, expectedPersonalMessage);
 
-        await driver.clickElement('[data-testid="request-signature__sign"]');
-
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement(
+          '.signature-request-warning__footer__sign-button',
+        );
         // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();

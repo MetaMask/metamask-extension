@@ -53,7 +53,7 @@ describe('AddCollectible', () => {
     expect(getByText('Add')).not.toBeEnabled();
   });
 
-  it('should call addCollectibleVerifyOwnership action with correct values (tokenId should not be in scientific notation)', () => {
+  it('should call addNftVerifyOwnership action with correct values (tokenId should not be in scientific notation)', () => {
     const { getByTestId, getByText } = renderWithProvider(
       <AddCollectible />,
       store,
@@ -67,7 +67,7 @@ describe('AddCollectible', () => {
     });
     const addCollectibleVerifyOwnershipSpy = jest.spyOn(
       Actions,
-      'addCollectibleVerifyOwnership',
+      'addNftVerifyOwnership',
     );
 
     fireEvent.click(getByText('Add'));

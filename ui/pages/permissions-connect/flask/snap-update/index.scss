@@ -1,0 +1,22 @@
+.snap-update {
+  box-shadow: none;
+
+  .update-snap-permission-list {
+    padding: 0 24px;
+
+    .new-permission,
+    .approved-permission,
+    .revoked-permission {
+      padding: 8px 0;
+    }
+  }
+
+  .page-container__footer {
+    width: 100%;
+    margin-top: 12px;
+
+    button {
+      padding: 0.75rem;
+    }
+  }
+}

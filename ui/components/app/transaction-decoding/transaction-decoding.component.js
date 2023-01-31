@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux';
 import * as Codec from '@truffle/codec';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
-import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
-import { hexToDecimal } from '../../../helpers/utils/conversions.util';
 import { I18nContext } from '../../../contexts/i18n';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { transformTxDecoding } from './transaction-decoding.util';
 import {
   FETCH_PROJECT_INFO_URI,
@@ -129,9 +129,17 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
               </span>
             );
 
+          case 'bool':
+            return <span className="sol-item">{String(value.asBoolean)}</span>;
+
           case 'bytes':
             return (
               <span className="sol-item solidity-bytes">{value.asHex}</span>
+            );
+
+          case 'string':
+            return (
+              <span className="sol-item solidity-string">{value.asString}</span>
             );
 
           case 'array':

@@ -1,11 +1,7 @@
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import {
-  ROPSTEN_CHAIN_ID,
-  ROPSTEN_NETWORK_ID,
-} from '../../../../shared/constants/network';
-import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../../../shared/constants/transaction';
 import {
   combineTransactionHistories,
@@ -21,15 +17,14 @@ describe('TransactionActivityLog utils', () => {
     it('should return activities for an array of transactions', () => {
       const transactions = [
         {
-          hash:
-            '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
+          hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           history: [
             {
               id: 6400627574331058,
               time: 1543958845581,
-              status: TRANSACTION_STATUSES.UNAPPROVED,
-              metamaskNetworkId: ROPSTEN_NETWORK_ID,
-              chainId: ROPSTEN_CHAIN_ID,
+              status: TransactionStatus.unapproved,
+              metamaskNetworkId: '5',
+              chainId: '0x5',
               loadingDefaults: true,
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
@@ -38,13 +33,13 @@ describe('TransactionActivityLog utils', () => {
                 gas: GAS_LIMITS.SIMPLE,
                 gasPrice: '0x3b9aca00',
               },
-              type: TRANSACTION_TYPES.STANDARD,
+              type: TransactionType.simpleSend,
             },
             [
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.APPROVED,
+                value: TransactionStatus.approved,
                 note: 'txStateManager: setting status to approved',
                 timestamp: 1543958847813,
               },
@@ -53,7 +48,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.SUBMITTED,
+                value: TransactionStatus.submitted,
                 note: 'txStateManager: setting status to submitted',
                 timestamp: 1543958848147,
               },
@@ -62,7 +57,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.DROPPED,
+                value: TransactionStatus.dropped,
                 note: 'txStateManager: setting status to dropped',
                 timestamp: 1543958897181,
               },
@@ -76,9 +71,9 @@ describe('TransactionActivityLog utils', () => {
           ],
           id: 6400627574331058,
           loadingDefaults: false,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
-          chainId: ROPSTEN_CHAIN_ID,
-          status: TRANSACTION_STATUSES.DROPPED,
+          metamaskNetworkId: '5',
+          chainId: '0x5',
+          status: TransactionStatus.dropped,
           submittedTime: 1543958848135,
           time: 1543958845581,
           txParams: {
@@ -89,18 +84,17 @@ describe('TransactionActivityLog utils', () => {
             to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
             value: '0x2386f26fc10000',
           },
-          type: TRANSACTION_TYPES.STANDARD,
+          type: TransactionType.simpleSend,
         },
         {
-          hash:
-            '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
+          hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           history: [
             {
               id: 6400627574331060,
               time: 1543958857697,
-              status: TRANSACTION_STATUSES.UNAPPROVED,
-              metamaskNetworkId: ROPSTEN_NETWORK_ID,
-              chainId: ROPSTEN_CHAIN_ID,
+              status: TransactionStatus.unapproved,
+              metamaskNetworkId: '5',
+              chainId: '0x5',
               loadingDefaults: false,
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
@@ -111,7 +105,7 @@ describe('TransactionActivityLog utils', () => {
                 nonce: '0x32',
               },
               lastGasPrice: '0x4190ab00',
-              type: TRANSACTION_TYPES.RETRY,
+              type: TransactionType.retry,
             },
             [
               {
@@ -126,7 +120,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.APPROVED,
+                value: TransactionStatus.approved,
                 note: 'txStateManager: setting status to approved',
                 timestamp: 1543958859485,
               },
@@ -135,7 +129,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.SIGNED,
+                value: TransactionStatus.signed,
                 note: 'transactions#publishTransaction',
                 timestamp: 1543958859889,
               },
@@ -144,7 +138,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.SUBMITTED,
+                value: TransactionStatus.submitted,
                 note: 'txStateManager: setting status to submitted',
                 timestamp: 1543958860061,
               },
@@ -162,7 +156,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.CONFIRMED,
+                value: TransactionStatus.confirmed,
                 timestamp: 1543958897165,
               },
             ],
@@ -170,9 +164,9 @@ describe('TransactionActivityLog utils', () => {
           id: 6400627574331060,
           lastGasPrice: '0x4190ab00',
           loadingDefaults: false,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
-          chainId: ROPSTEN_CHAIN_ID,
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          metamaskNetworkId: '5',
+          chainId: '0x5',
+          status: TransactionStatus.confirmed,
           submittedTime: 1543958860054,
           time: 1543958857697,
           txParams: {
@@ -186,47 +180,43 @@ describe('TransactionActivityLog utils', () => {
           txReceipt: {
             status: '0x1',
           },
-          type: TRANSACTION_TYPES.RETRY,
+          type: TransactionType.retry,
         },
       ];
 
       const expected = [
         {
           id: 6400627574331058,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
-          chainId: ROPSTEN_CHAIN_ID,
-          hash:
-            '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
+          metamaskNetworkId: '5',
+          chainId: '0x5',
+          hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionCreated',
           timestamp: 1543958845581,
           value: '0x2386f26fc10000',
         },
         {
           id: 6400627574331058,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
-          chainId: ROPSTEN_CHAIN_ID,
-          hash:
-            '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
+          metamaskNetworkId: '5',
+          chainId: '0x5',
+          hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionSubmitted',
           timestamp: 1543958848147,
           value: '0x1319718a5000',
         },
         {
           id: 6400627574331060,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
-          chainId: ROPSTEN_CHAIN_ID,
-          hash:
-            '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
+          metamaskNetworkId: '5',
+          chainId: '0x5',
+          hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionResubmitted',
           timestamp: 1543958860061,
           value: '0x171c3a061400',
         },
         {
           id: 6400627574331060,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
-          chainId: ROPSTEN_CHAIN_ID,
-          hash:
-            '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
+          metamaskNetworkId: '5',
+          chainId: '0x5',
+          hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionConfirmed',
           timestamp: 1543958897165,
           value: '0x171c3a061400',
@@ -242,7 +232,7 @@ describe('TransactionActivityLog utils', () => {
       const transaction = {
         history: [],
         id: 1,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         txParams: {
           from: '0x1',
           gas: GAS_LIMITS.SIMPLE,
@@ -262,9 +252,9 @@ describe('TransactionActivityLog utils', () => {
           {
             id: 5559712943815343,
             loadingDefaults: true,
-            metamaskNetworkId: ROPSTEN_NETWORK_ID,
-            chainId: ROPSTEN_CHAIN_ID,
-            status: TRANSACTION_STATUSES.UNAPPROVED,
+            metamaskNetworkId: '5',
+            chainId: '0x5',
+            status: TransactionStatus.unapproved,
             time: 1535507561452,
             txParams: {
               from: '0x1',
@@ -308,7 +298,7 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507564302,
-              value: TRANSACTION_STATUSES.APPROVED,
+              value: TransactionStatus.approved,
             },
           ],
           [
@@ -335,7 +325,7 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507564518,
-              value: TRANSACTION_STATUSES.SIGNED,
+              value: TransactionStatus.signed,
             },
             {
               op: 'add',
@@ -370,7 +360,7 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507564665,
-              value: TRANSACTION_STATUSES.SUBMITTED,
+              value: TransactionStatus.submitted,
             },
           ],
           [
@@ -388,12 +378,12 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507615993,
-              value: TRANSACTION_STATUSES.CONFIRMED,
+              value: TransactionStatus.confirmed,
             },
           ],
         ],
         id: 1,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         txParams: {
           from: '0x1',
           gas: GAS_LIMITS.SIMPLE,
@@ -403,8 +393,8 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2386f26fc10000',
         },
         hash: '0xabc',
-        chainId: ROPSTEN_CHAIN_ID,
-        metamaskNetworkId: ROPSTEN_NETWORK_ID,
+        chainId: '0x5',
+        metamaskNetworkId: '5',
       };
 
       const expectedResult = [
@@ -414,8 +404,8 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2386f26fc10000',
           id: 1,
           hash: '0xabc',
-          chainId: ROPSTEN_CHAIN_ID,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: '0x5',
+          metamaskNetworkId: '5',
         },
         {
           eventKey: 'transactionSubmitted',
@@ -423,8 +413,8 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2632e314a000',
           id: 1,
           hash: '0xabc',
-          chainId: ROPSTEN_CHAIN_ID,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: '0x5',
+          metamaskNetworkId: '5',
         },
         {
           eventKey: 'transactionConfirmed',
@@ -432,8 +422,8 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2632e314a000',
           id: 1,
           hash: '0xabc',
-          chainId: ROPSTEN_CHAIN_ID,
-          metamaskNetworkId: ROPSTEN_NETWORK_ID,
+          chainId: '0x5',
+          metamaskNetworkId: '5',
         },
       ];
 

@@ -2,25 +2,21 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import BN from 'bn.js';
 import createId from '../../../shared/modules/random-id';
-import { bnToHex } from '../lib/util';
+import { previousValueComparator } from '../lib/util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
 import {
+  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
-import { SECOND } from '../../../shared/constants/time';
+import { bnToHex } from '../../../shared/modules/conversion.utils';
 
-const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+const fetchWithTimeout = getFetchWithTimeout();
 
 /**
  * @typedef {import('../../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -31,7 +27,7 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  *
  * Note that this is not an exhaustive type definiton; only the properties we use are defined
  *
- * @typedef {Object} EtherscanTransaction
+ * @typedef {object} EtherscanTransaction
  * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
  * @property {string} from - The hex-prefixed address of the sender
  * @property {string} gas - The gas limit, in decimal GWEI
@@ -54,11 +50,9 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  * attempt to retrieve incoming transactions on any custom RPC endpoints.
  */
 const etherscanSupportedNetworks = [
-  GOERLI_CHAIN_ID,
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-  ROPSTEN_CHAIN_ID,
+  CHAIN_IDS.GOERLI,
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.SEPOLIA,
 ];
 
 export default class IncomingTransactionsController {
@@ -68,10 +62,12 @@ export default class IncomingTransactionsController {
       onNetworkDidChange,
       getCurrentChainId,
       preferencesController,
+      onboardingController,
     } = opts;
     this.blockTracker = blockTracker;
     this.getCurrentChainId = getCurrentChainId;
     this.preferencesController = preferencesController;
+    this.onboardingController = onboardingController;
 
     this._onLatestBlock = async (newBlockNumberHex) => {
       const selectedAddress = this.preferencesController.getSelectedAddress();
@@ -82,11 +78,9 @@ export default class IncomingTransactionsController {
     const initState = {
       incomingTransactions: {},
       incomingTxLastFetchedBlockByChainId: {
-        [GOERLI_CHAIN_ID]: null,
-        [KOVAN_CHAIN_ID]: null,
-        [MAINNET_CHAIN_ID]: null,
-        [RINKEBY_CHAIN_ID]: null,
-        [ROPSTEN_CHAIN_ID]: null,
+        [CHAIN_IDS.GOERLI]: null,
+        [CHAIN_IDS.MAINNET]: null,
+        [CHAIN_IDS.SEPOLIA]: null,
       },
       ...opts.initState,
     };
@@ -130,6 +124,17 @@ export default class IncomingTransactionsController {
       }, this.preferencesController.store.getState()),
     );
 
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          const address = this.preferencesController.getSelectedAddress();
+          await this._update(address);
+        }
+      }, this.onboardingController.store.getState()),
+    );
+
     onNetworkDidChange(async () => {
       const address = this.preferencesController.getSelectedAddress();
       await this._update(address);
@@ -163,8 +168,13 @@ export default class IncomingTransactionsController {
    * @param {number} [newBlockNumberDec] - block number to begin fetching from
    */
   async _update(address, newBlockNumberDec) {
+    const { completedOnboarding } = this.onboardingController.store.getState();
     const chainId = this.getCurrentChainId();
-    if (!etherscanSupportedNetworks.includes(chainId) || !address) {
+    if (
+      !etherscanSupportedNetworks.includes(chainId) ||
+      !address ||
+      !completedOnboarding
+    ) {
       return;
     }
     try {
@@ -226,7 +236,7 @@ export default class IncomingTransactionsController {
    */
   async _getNewIncomingTransactions(address, fromBlock, chainId) {
     const etherscanSubdomain =
-      chainId === MAINNET_CHAIN_ID
+      chainId === CHAIN_IDS.MAINNET
         ? 'api'
         : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`;
 
@@ -268,8 +278,8 @@ export default class IncomingTransactionsController {
     const time = parseInt(etherscanTransaction.timeStamp, 10) * 1000;
     const status =
       etherscanTransaction.isError === '0'
-        ? TRANSACTION_STATUSES.CONFIRMED
-        : TRANSACTION_STATUSES.FAILED;
+        ? TransactionStatus.confirmed
+        : TransactionStatus.failed;
     const txParams = {
       from: etherscanTransaction.from,
       gas: bnToHex(new BN(etherscanTransaction.gas)),
@@ -298,35 +308,7 @@ export default class IncomingTransactionsController {
       time,
       txParams,
       hash: etherscanTransaction.hash,
-      type: TRANSACTION_TYPES.INCOMING,
+      type: TransactionType.incoming,
     };
   }
-}
-
-/**
- * Returns a function with arity 1 that caches the argument that the function
- * is called with and invokes the comparator with both the cached, previous,
- * value and the current value. If specified, the initialValue will be passed
- * in as the previous value on the first invocation of the returned method.
- *
- * @template A - The type of the compared value.
- * @param {(prevValue: A, nextValue: A) => void} comparator - A method to compare
- * the previous and next values.
- * @param {A} [initialValue] - The initial value to supply to prevValue
- * on first call of the method.
- */
-function previousValueComparator(comparator, initialValue) {
-  let first = true;
-  let cache;
-  return (value) => {
-    try {
-      if (first) {
-        first = false;
-        return comparator(initialValue ?? value, value);
-      }
-      return comparator(cache, value);
-    } finally {
-      cache = value;
-    }
-  };
 }

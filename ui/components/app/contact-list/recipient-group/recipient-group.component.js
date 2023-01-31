@@ -37,10 +37,8 @@ export default function RecipientGroup({
               address,
               selectedAddress,
             ),
-            'send__select-recipient-wrapper__group-item--selected': addressesEqual(
-              address,
-              selectedAddress,
-            ),
+            'send__select-recipient-wrapper__group-item--selected':
+              addressesEqual(address, selectedAddress),
           })}
         >
           <Identicon address={address} diameter={28} />

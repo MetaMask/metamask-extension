@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function SwapStepIcon({ stepNumber = 1 }) {
   switch (stepNumber) {
@@ -50,3 +51,7 @@ export default function SwapStepIcon({ stepNumber = 1 }) {
       return undefined; // Don't return any SVG if a step number is not supported.
   }
 }
+
+SwapStepIcon.propTypes = {
+  stepNumber: PropTypes.number,
+};

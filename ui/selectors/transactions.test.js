@@ -1,8 +1,5 @@
-import {
-  KOVAN_CHAIN_ID,
-  MAINNET_CHAIN_ID,
-} from '../../shared/constants/network';
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { CHAIN_IDS } from '../../shared/constants/network';
+import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -23,7 +20,7 @@ describe('Transaction Selectors', () => {
           origin: 'origin',
         },
         time: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         type: 'eth_sign',
       };
 
@@ -33,7 +30,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: '0x5',
           },
         },
       };
@@ -53,7 +50,7 @@ describe('Transaction Selectors', () => {
           origin: 'origin',
         },
         time: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         type: 'personal_sign',
       };
 
@@ -63,7 +60,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: '0x5',
           },
         },
       };
@@ -84,7 +81,7 @@ describe('Transaction Selectors', () => {
           origin: 'origin',
         },
         time: 1,
-        status: TRANSACTION_STATUSES.UNAPPROVED,
+        status: TransactionStatus.unapproved,
         type: 'eth_signTypedData',
       };
 
@@ -94,7 +91,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           provider: {
-            chainId: KOVAN_CHAIN_ID,
+            chainId: '0x5',
           },
         },
       };
@@ -112,7 +109,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           provider: {
             nickname: 'mainnet',
-            chainId: MAINNET_CHAIN_ID,
+            chainId: CHAIN_IDS.MAINNET,
           },
           featureFlags: {
             showIncomingTransactions: false,
@@ -176,7 +173,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           provider: {
             nickname: 'mainnet',
-            chainId: MAINNET_CHAIN_ID,
+            chainId: CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
           featureFlags: {
@@ -220,7 +217,7 @@ describe('Transaction Selectors', () => {
         to: '0xRecipient',
         nonce: '0x0',
       },
-      status: TRANSACTION_STATUSES.SUBMITTED,
+      status: TransactionStatus.submitted,
     };
 
     const unapprovedTx = {
@@ -231,7 +228,7 @@ describe('Transaction Selectors', () => {
         to: '0xRecipient',
         nonce: '0x1',
       },
-      status: TRANSACTION_STATUSES.UNAPPROVED,
+      status: TransactionStatus.unapproved,
     };
 
     const approvedTx = {
@@ -242,7 +239,7 @@ describe('Transaction Selectors', () => {
         to: '0xRecipient',
         nonce: '0x2',
       },
-      status: TRANSACTION_STATUSES.APPROVED,
+      status: TransactionStatus.approved,
     };
 
     const confirmedTx = {
@@ -253,14 +250,14 @@ describe('Transaction Selectors', () => {
         to: '0xRecipient',
         nonce: '0x3',
       },
-      status: TRANSACTION_STATUSES.CONFIRMED,
+      status: TransactionStatus.confirmed,
     };
 
     const state = {
       metamask: {
         provider: {
           nickname: 'mainnet',
-          chainId: MAINNET_CHAIN_ID,
+          chainId: CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',
         featureFlags: {

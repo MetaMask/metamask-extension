@@ -27,6 +27,10 @@
       color: var(--color-overlay-inverse);
       text-align: center;
     }
+
+    &__icon-chevron {
+      color: var(--color-icon-default);
+    }
   }
 
   &__item-wrapper {
@@ -38,12 +42,12 @@
   }
 
   &__item {
-    border-radius: 4px;
     width: 100%;
     display: flex;
     justify-content: center;
     cursor: pointer;
     align-self: center;
+    padding: 0;
 
     &-image {
       border-radius: 4px;
@@ -51,9 +55,5 @@
       height: 100%;
       cursor: pointer;
     }
-  }
-
-  &__icon-chevron {
-    color: var(--color-icon-default);
   }
 }

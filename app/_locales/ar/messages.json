@@ -8,16 +8,9 @@
   "about": {
     "message": "حول"
   },
-  "acceleratingATransaction": {
-    "message": "* تسريع المعاملات باستخدام سعر عملة جاس أعلى يزيد من فرص معالجتها بواسطة الشبكة بشكلٍ أسرع، لكن ذلك غير مضمون دائماً."
-  },
   "acceptTermsOfUse": {
     "message": "لقد قرأت دولار واحد وأوافق عليه",
     "description": "$1 is the `terms` message"
-  },
-  "accessAndSpendNotice": {
-    "message": "$1 يمكن الوصول إلى هذا المبلغ الأقصى وإنفاقه حتى",
-    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
@@ -57,9 +50,6 @@
   },
   "advanced": {
     "message": "إعدادات متقدمة"
-  },
-  "advancedOptions": {
-    "message": "خيارات متقدمة"
   },
   "amount": {
     "message": "المبلغ"
@@ -201,17 +191,8 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
-  "connectingToKovan": {
-    "message": "الاتصال بشبكة اختبار Kovan"
-  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
-  },
-  "connectingToRinkeby": {
-    "message": "جارِ الاتصال بشبكة اختبار Rinkeby "
-  },
-  "connectingToRopsten": {
-    "message": "جارِ الاتصال بشبكة اختبار Ropsten "
   },
   "continueToWyre": {
     "message": "الاستمرار إلى Wyre"
@@ -257,12 +238,6 @@
   },
   "custom": {
     "message": "إعدادات متقدمة"
-  },
-  "customGas": {
-    "message": "تخصيص الغاز"
-  },
-  "customGasSubTitle": {
-    "message": "قد تؤدي زيادة الرسوم إلى تقليل أزمنة المعالجة، ولكن ذلك غير مضمون."
   },
   "customToken": {
     "message": "عملة رمزية مخصصة"
@@ -347,9 +322,6 @@
   },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
-  },
-  "estimatedProcessingTimes": {
-    "message": "أوقات المعالجة المقدرة"
   },
   "ethereumPublicAddress": {
     "message": "عنوان الإيثيريوم العمومي"
@@ -507,9 +479,6 @@
   "knownAddressRecipient": {
     "message": "عنوان العقد المعروف."
   },
-  "kovan": {
-    "message": "شبكة اختبار Kovan "
-  },
   "learnMore": {
     "message": "اكتشف المزيد"
   },
@@ -586,9 +555,6 @@
   "newAccount": {
     "message": "حساب جديد"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "تم اكتشاف عنوان جديد! انقر هنا لإضافته إلى دفتر عناوينك."
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
@@ -604,12 +570,6 @@
   },
   "newToMetaMask": {
     "message": "هل انت جديد في MetaMask؟"
-  },
-  "newTotal": {
-    "message": "إجمالي جديد"
-  },
-  "newTransactionFee": {
-    "message": "رسوم المعاملات الجديدة"
   },
   "next": {
     "message": "التالي"
@@ -769,12 +729,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "لا تشارك هذه الجملة مع أي شخص آخر!"
   },
-  "rinkeby": {
-    "message": "شبكة اختبارات Rinkeby"
-  },
-  "ropsten": {
-    "message": "شبكة اختبار Ropsten"
-  },
   "rpcUrl": {
     "message": "عنوان جديد لاستدعاء الإجراء عن بعد"
   },
@@ -811,9 +765,6 @@
   "seedPhraseReq": {
     "message": "طول الجمل البذرية 12 كلمة"
   },
-  "selectAHigherGasFee": {
-    "message": "حدد رسوم جاس أعلى لتسريع معالجة معاملتك. *"
-  },
   "selectAnAccount": {
     "message": "قم بتحديد حساب"
   },
@@ -831,9 +782,6 @@
   },
   "send": {
     "message": "إرسال"
-  },
-  "sendAmount": {
-    "message": "إرسال المبلغ"
   },
   "sendTokens": {
     "message": "إرسال عملات رمزية"
@@ -868,17 +816,11 @@
   "sign": {
     "message": "توقيع"
   },
-  "signNotice": {
-    "message": "توقيع هذه الرسالة يمكن أن يكون له\nآثار جانبية خطيرة. قم فقط بتوقيع الرسائل من\nالمواقع التي تثق بها تماماً في التعامل مع حسابك بالكامل.\n  ستتم إزالة هذه الطريقة الخطيرة في إصدار مستقبلي."
-  },
   "signatureRequest": {
     "message": "طلب التوقيع"
   },
   "signed": {
     "message": "مسجل الدخول"
-  },
-  "slow": {
-    "message": "بطيء"
   },
   "somethingWentWrong": {
     "message": "عذراً! حدث خطأ ما."

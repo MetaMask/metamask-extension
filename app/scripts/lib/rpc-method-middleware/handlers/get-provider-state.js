@@ -16,14 +16,14 @@ const getProviderState = {
 export default getProviderState;
 
 /**
- * @typedef {Object} ProviderStateHandlerResult
+ * @typedef {object} ProviderStateHandlerResult
  * @property {string} chainId - The current chain ID.
  * @property {boolean} isUnlocked - Whether the extension is unlocked or not.
  * @property {string} networkVersion - The current network ID.
  */
 
 /**
- * @typedef {Object} ProviderStateHandlerOptions
+ * @typedef {object} ProviderStateHandlerOptions
  * @property {() => ProviderStateHandlerResult} getProviderState - A function that
  * gets the current provider state.
  */

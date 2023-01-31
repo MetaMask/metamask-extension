@@ -33,21 +33,21 @@ import Settings from './settings.component';
 
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
+  [ADD_NETWORK_ROUTE]: 'networks',
+  [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
   [ALERTS_ROUTE]: 'alerts',
-  [GENERAL_ROUTE]: 'general',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
+  [CONTACT_VIEW_ROUTE]: 'viewContact',
+  [EXPERIMENTAL_ROUTE]: 'experimental',
+  [GENERAL_ROUTE]: 'general',
+  [NETWORKS_FORM_ROUTE]: 'networks',
+  [NETWORKS_ROUTE]: 'networks',
+  [SECURITY_ROUTE]: 'securityAndPrivacy',
   [SNAPS_LIST_ROUTE]: 'snaps',
   [SNAPS_VIEW_ROUTE]: 'snaps',
-  [CONTACT_VIEW_ROUTE]: 'viewContact',
-  [NETWORKS_ROUTE]: 'networks',
-  [NETWORKS_FORM_ROUTE]: 'networks',
-  [ADD_NETWORK_ROUTE]: 'networks',
-  [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [EXPERIMENTAL_ROUTE]: 'experimental',
-  [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -98,18 +98,18 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   return {
-    isAddressEntryPage,
-    backRoute,
-    currentPath: pathname,
-    isPopup,
-    pathnameI18nKey,
-    addressName,
-    initialBreadCrumbRoute,
-    initialBreadCrumbKey,
-    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     addNewNetwork,
+    addressName,
+    backRoute,
     conversionDate,
+    currentPath: pathname,
+    initialBreadCrumbKey,
+    initialBreadCrumbRoute,
+    isAddressEntryPage,
+    isPopup,
     isSnapViewPage,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    pathnameI18nKey,
   };
 };
 

@@ -2,7 +2,7 @@
   &__networks-container {
     padding-inline-end: 24px;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       padding: 0;
     }
   }
@@ -10,7 +10,7 @@
   &__header {
     border-bottom: 1px solid var(--color-border-default);
 
-    @media screen and (max-width: 575px) {
+    @include screen-sm-max {
       padding-inline-start: 24px;
       padding-inline-end: 24px;
     }
@@ -22,14 +22,14 @@
   }
 
   &__main-container {
-    @media screen and (max-width: 575px) {
+    @include screen-sm-max {
       padding-inline-start: 24px;
       padding-inline-end: 24px;
     }
   }
 
   &__list-of-networks {
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       width: 75%;
     }
   }
@@ -65,7 +65,7 @@
     width: 100%;
     padding-bottom: 8px;
 
-    @media screen and (max-width: 575px) {
+    @include screen-sm-max {
       padding-inline-start: 24px !important;
     }
 

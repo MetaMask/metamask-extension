@@ -24,7 +24,7 @@
     flex-direction: column;
     justify-content: flex-end;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       flex-direction: column-reverse;
       justify-content: space-between;
       padding-bottom: 20px;
@@ -40,7 +40,7 @@
     margin-top: 12px;
     border-top: 1px solid var(--color-border-muted);
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       border-top: none;
     }
 

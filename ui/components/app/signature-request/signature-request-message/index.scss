@@ -1,75 +1,24 @@
 .signature-request-message {
   flex: 1 60%;
-  display: flex;
   max-height: 231px;
-  flex-direction: column;
   position: relative;
 
-  &__title {
-    @include H6;
-
-    font-weight: 500;
-    color: var(--color-text-alternative);
-    margin-left: 12px;
-  }
-
-  h2 {
-    @include H6;
-
-    flex: 1 1 0;
-    text-align: left;
-    border-bottom: 1px solid var(--color-border-default);
-    padding: 0.5rem;
-    margin: 0;
-    color: var(--color-text-alternative);
-  }
-
-  &--root {
+  &__root {
     flex: 1 100%;
-    background-color: var(--color-background-alternative);
-    padding-bottom: 0.5rem;
     overflow: auto;
-    padding-left: 12px;
-    padding-right: 12px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       width: auto;
     }
   }
 
-  &--node,
-  &--node-leaf {
-    padding-left: 0.3rem;
-
-    &-label {
-      color: var(--color-text-alternative);
-      margin-left: 0.5rem;
-    }
-
-    &-value {
-      color: var(--color-text-default);
-      margin-left: 0.5rem;
-      white-space: pre-line;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
-  }
-
-  &--node-leaf {
-    display: flex;
-  }
-
   &__scroll-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--color-border-default);
-    background: var(--color-background-alternative);
-    color: var(--color-icon-default);
     position: absolute;
-    right: 24px;
+    right: 28px;
     bottom: 12px;
     border-radius: 50%;
+    height: 24px;
+    width: 24px;
     cursor: pointer;
   }
 }

@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import { exportAsFile } from '../../../helpers/utils/util';
 import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
@@ -18,10 +16,15 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import {
-  LEDGER_TRANSPORT_TYPES,
+  LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { exportAsFile } from '../../../helpers/utils/export-utils';
+import ActionableMessage from '../../../components/ui/actionable-message';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+
+const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -46,26 +49,22 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    threeBoxSyncingAllowed: PropTypes.bool.isRequired,
-    setThreeBoxSyncingPermission: PropTypes.func.isRequired,
-    threeBoxDisabled: PropTypes.bool.isRequired,
-    setIpfsGateway: PropTypes.func.isRequired,
-    ipfsGateway: PropTypes.string.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+    ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
     setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     userHasALedgerAccount: PropTypes.bool.isRequired,
-    useTokenDetection: PropTypes.bool.isRequired,
-    setUseTokenDetection: PropTypes.func.isRequired,
+    backupUserData: PropTypes.func.isRequired,
+    restoreUserData: PropTypes.func.isRequired,
   };
 
   state = {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
     lockTimeError: '',
-    ipfsGateway: this.props.ipfsGateway,
-    ipfsGatewayError: '',
     showLedgerTransportWarning: false,
+    showResultMessage: false,
+    restoreSuccessful: true,
+    restoreMessage: null,
   };
 
   settingsRefs = Array(
@@ -86,36 +85,65 @@ export default class AdvancedTab extends PureComponent {
     handleSettingsRefs(t, t('advanced'), this.settingsRefs);
   }
 
-  renderMobileSync() {
-    const { t } = this.context;
-    const { history } = this.props;
+  async getTextFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new window.FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        resolve(text);
+      };
 
-    return (
-      <div
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-mobile-sync"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithMobile')}</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              large
-              onClick={(event) => {
-                event.preventDefault();
-                history.push(MOBILE_SYNC_ROUTE);
-              }}
-            >
-              {t('syncWithMobile')}
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
+      reader.onerror = (e) => {
+        reject(e);
+      };
+
+      reader.readAsText(file);
+    });
   }
+
+  async handleFileUpload(event) {
+    /**
+     * we need this to be able to access event.target after
+     * the event handler has been called. [Synthetic Event Pooling, pre React 17]
+     *
+     * @see https://fb.me/react-event-pooling
+     */
+    event.persist();
+    const file = event.target.files[0];
+    const jsonString = await this.getTextFromFile(file);
+    /**
+     * so that we can restore same file again if we want to.
+     * chrome blocks uploading same file twice.
+     */
+    event.target.value = '';
+    try {
+      const result = await this.props.restoreUserData(jsonString);
+      this.setState({
+        showResultMessage: true,
+        restoreSuccessful: result,
+        restoreMessage: null,
+      });
+    } catch (e) {
+      if (e.message.match(/Unexpected.+JSON/iu)) {
+        this.setState({
+          showResultMessage: true,
+          restoreSuccessful: false,
+          restoreMessage: CORRUPT_JSON_FILE,
+        });
+      }
+    }
+  }
+
+  backupUserData = async () => {
+    const { fileName, data } = await this.props.backupUserData();
+    exportAsFile(fileName, data);
+
+    this.context.trackEvent({
+      event: 'User Data Exported',
+      category: 'Backup',
+      properties: {},
+    });
+  };
 
   renderStateLogs() {
     const { t } = this.context;
@@ -156,6 +184,37 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderMobileSync() {
+    const { t } = this.context;
+    const { history } = this.props;
+
+    return (
+      <div
+        ref={this.settingsRefs[1]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-mobile-sync"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('syncWithMobile')}</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <Button
+              type="secondary"
+              large
+              onClick={(event) => {
+                event.preventDefault();
+                history.push(MOBILE_SYNC_ROUTE);
+              }}
+            >
+              {t('syncWithMobile')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderResetAccount() {
     const { t } = this.context;
     const { showResetAccountConfirmationModal } = this.props;
@@ -182,17 +241,44 @@ export default class AdvancedTab extends PureComponent {
                 event.preventDefault();
                 this.context.trackEvent({
                   category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Reset Account',
-                  properties: {
-                    action: 'Reset Account',
-                    legacy_event: true,
-                  },
+                  event: EVENT_NAMES.ACCOUNT_RESET,
+                  properties: {},
                 });
                 showResetAccountConfirmationModal();
               }}
             >
               {t('resetAccount')}
             </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderAdvancedGasInputInline() {
+    const { t } = this.context;
+    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props;
+
+    return (
+      <div
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-advanced-gas-inline"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('showAdvancedGasInline')}</span>
+          <div className="settings-page__content-description">
+            {t('showAdvancedGasInlineDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={advancedInlineGas}
+              onToggle={(value) => setAdvancedInlineGasFeatureFlag(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
           </div>
         </div>
       </div>
@@ -229,27 +315,30 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderAdvancedGasInputInline() {
+  renderShowConversionInTestnets() {
     const { t } = this.context;
-    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props;
+    const { showFiatInTestnets, setShowFiatConversionOnTestnetsPreference } =
+      this.props;
 
     return (
       <div
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
-        data-testid="advanced-setting-advanced-gas-inline"
+        data-testid="advanced-setting-show-testnet-conversion"
       >
         <div className="settings-page__content-item">
-          <span>{t('showAdvancedGasInline')}</span>
+          <span>{t('showFiatConversionInTestnets')}</span>
           <div className="settings-page__content-description">
-            {t('showAdvancedGasInlineDescription')}
+            {t('showFiatConversionInTestnetsDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={advancedInlineGas}
-              onToggle={(value) => setAdvancedInlineGasFeatureFlag(!value)}
+              value={showFiatInTestnets}
+              onToggle={(value) =>
+                setShowFiatConversionOnTestnetsPreference(!value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -289,41 +378,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderShowConversionInTestnets() {
-    const { t } = this.context;
-    const {
-      showFiatInTestnets,
-      setShowFiatConversionOnTestnetsPreference,
-    } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[5]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-show-testnet-conversion"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('showFiatConversionInTestnets')}</span>
-          <div className="settings-page__content-description">
-            {t('showFiatConversionInTestnetsDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={showFiatInTestnets}
-              onToggle={(value) =>
-                setShowFiatConversionOnTestnetsPreference(!value)
-              }
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderUseNonceOptIn() {
     const { t } = this.context;
     const { useNonceField, setUseNonceField } = this.props;
@@ -354,24 +408,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  handleLockChange(time) {
-    const { t } = this.context;
-    const autoLockTimeLimit = Math.max(Number(time), 0);
-
-    this.setState(() => {
-      let lockTimeError = '';
-
-      if (autoLockTimeLimit > 10080) {
-        lockTimeError = t('lockTimeTooGreat');
-      }
-
-      return {
-        autoLockTimeLimit,
-        lockTimeError,
-      };
-    });
-  }
-
   renderAutoLockTimeLimit() {
     const { t } = this.context;
     const { lockTimeError } = this.state;
@@ -394,6 +430,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               type="number"
               id="autoTimeout"
+              data-testid="auto-lockout-time"
               placeholder="5"
               value={this.state.autoLockTimeLimit}
               onChange={(e) => this.handleLockChange(e.target.value)}
@@ -404,6 +441,7 @@ export default class AdvancedTab extends PureComponent {
             />
             <Button
               type="primary"
+              data-testid="auto-lockout-button"
               className="settings-tab__rpc-save-button"
               disabled={lockTimeError !== ''}
               onClick={() => {
@@ -412,55 +450,6 @@ export default class AdvancedTab extends PureComponent {
             >
               {t('save')}
             </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderThreeBoxControl() {
-    const { t } = this.context;
-    const {
-      threeBoxSyncingAllowed,
-      setThreeBoxSyncingPermission,
-      threeBoxDisabled,
-    } = this.props;
-
-    let allowed = threeBoxSyncingAllowed;
-    let description = t('syncWithThreeBoxDescription');
-
-    if (threeBoxDisabled) {
-      allowed = false;
-      description = t('syncWithThreeBoxDisabled');
-    }
-    return (
-      <div
-        ref={this.settingsRefs[9]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-3box"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('syncWithThreeBox')}</span>
-          <div className="settings-page__content-description">
-            {description}
-          </div>
-        </div>
-        <div
-          className={classnames('settings-page__content-item', {
-            'settings-page__content-item--disabled': threeBoxDisabled,
-          })}
-        >
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={allowed}
-              onToggle={(value) => {
-                if (!threeBoxDisabled) {
-                  setThreeBoxSyncingPermission(!value);
-                }
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
           </div>
         </div>
       </div>
@@ -484,18 +473,18 @@ export default class AdvancedTab extends PureComponent {
     const transportTypeOptions = [
       {
         name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LEDGER_TRANSPORT_TYPES.LIVE,
+        value: LedgerTransportTypes.live,
       },
       {
         name: LEDGER_TRANSPORT_NAMES.U2F,
-        value: LEDGER_TRANSPORT_TYPES.U2F,
+        value: LedgerTransportTypes.u2f,
       },
     ];
 
     if (window.navigator.hid) {
       transportTypeOptions.push({
         name: LEDGER_TRANSPORT_NAMES.WEBHID,
-        value: LEDGER_TRANSPORT_TYPES.WEBHID,
+        value: LedgerTransportTypes.webhid,
       });
     }
 
@@ -504,7 +493,7 @@ export default class AdvancedTab extends PureComponent {
       : LEDGER_TRANSPORT_NAMES.U2F;
 
     return (
-      <div ref={this.settingsRefs[11]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('preferredLedgerConnectionType')}</span>
           <div className="settings-page__content-description">
@@ -513,7 +502,7 @@ export default class AdvancedTab extends PureComponent {
               <Button
                 key="ledger-connection-settings-learn-more"
                 type="link"
-                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+                href={ZENDESK_URLS.HARDWARE_CONNECTION}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="settings-page__inline-link"
@@ -531,14 +520,14 @@ export default class AdvancedTab extends PureComponent {
               selectedOption={ledgerTransportType}
               onChange={async (transportType) => {
                 if (
-                  ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE &&
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID
+                  ledgerTransportType === LedgerTransportTypes.live &&
+                  transportType === LedgerTransportTypes.webhid
                 ) {
                   this.setState({ showLedgerTransportWarning: true });
                 }
                 setLedgerTransportPreference(transportType);
                 if (
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+                  transportType === LedgerTransportTypes.webhid &&
                   userHasALedgerAccount
                 ) {
                   await window.navigator.hid.requestDevice({
@@ -560,95 +549,14 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  handleIpfsGatewayChange(url) {
+  renderDismissSeedBackupReminderControl() {
     const { t } = this.context;
-
-    this.setState(() => {
-      let ipfsGatewayError = '';
-
-      try {
-        const urlObj = new URL(addUrlProtocolPrefix(url));
-        if (!urlObj.host) {
-          throw new Error();
-        }
-
-        // don't allow the use of this gateway
-        if (urlObj.host === 'gateway.ipfs.io') {
-          throw new Error('Forbidden gateway');
-        }
-      } catch (error) {
-        ipfsGatewayError =
-          error.message === 'Forbidden gateway'
-            ? t('forbiddenIpfsGateway')
-            : t('invalidIpfsGateway');
-      }
-
-      return {
-        ipfsGateway: url,
-        ipfsGatewayError,
-      };
-    });
-  }
-
-  handleIpfsGatewaySave() {
-    const url = new URL(addUrlProtocolPrefix(this.state.ipfsGateway));
-    const { host } = url;
-
-    this.props.setIpfsGateway(host);
-  }
-
-  renderIpfsGatewayControl() {
-    const { t } = this.context;
-    const { ipfsGatewayError } = this.state;
+    const { dismissSeedBackUpReminder, setDismissSeedBackUpReminder } =
+      this.props;
 
     return (
       <div
         ref={this.settingsRefs[10]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-ipfs-gateway"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('ipfsGateway')}</span>
-          <div className="settings-page__content-description">
-            {t('ipfsGatewayDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <TextField
-              type="text"
-              value={this.state.ipfsGateway}
-              onChange={(e) => this.handleIpfsGatewayChange(e.target.value)}
-              error={ipfsGatewayError}
-              fullWidth
-              margin="dense"
-            />
-            <Button
-              type="primary"
-              className="settings-tab__rpc-save-button"
-              disabled={Boolean(ipfsGatewayError)}
-              onClick={() => {
-                this.handleIpfsGatewaySave();
-              }}
-            >
-              {t('save')}
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderDismissSeedBackupReminderControl() {
-    const { t } = this.context;
-    const {
-      dismissSeedBackUpReminder,
-      setDismissSeedBackUpReminder,
-    } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[12]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
       >
@@ -672,45 +580,111 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderTokenDetectionToggle() {
-    if (!process.env.TOKEN_DETECTION_V2) {
-      return null;
-    }
-
+  handleLockChange(time) {
     const { t } = this.context;
-    const { useTokenDetection, setUseTokenDetection } = this.props;
+    const autoLockTimeLimit = Math.max(Number(time), 0);
 
+    this.setState(() => {
+      let lockTimeError = '';
+
+      if (autoLockTimeLimit > 10080) {
+        lockTimeError = t('lockTimeTooGreat');
+      }
+
+      return {
+        autoLockTimeLimit,
+        lockTimeError,
+      };
+    });
+  }
+
+  renderUserDataBackup() {
+    const { t } = this.context;
     return (
       <div
-        ref={this.settingsRefs[13]}
+        ref={this.settingsRefs[11]}
         className="settings-page__content-row"
-        data-testid="advanced-setting-token-detection"
+        data-testid="advanced-setting-data-backup"
       >
         <div className="settings-page__content-item">
-          <span>{t('tokenDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('tokenDetectionToggleDescription')}
-          </div>
+          <span>{t('backupUserData')}</span>
+          <span className="settings-page__content-description">
+            {t('backupUserDataDescription')}
+          </span>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useTokenDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Token Detection',
-                  properties: {
-                    action: 'Token Detection',
-                    legacy_event: true,
-                  },
-                });
-                setUseTokenDetection(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
+            <Button
+              data-testid="backup-button"
+              type="secondary"
+              large
+              onClick={() => this.backupUserData()}
+            >
+              {t('backup')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderRestoreUserData() {
+    const { t } = this.context;
+    const { showResultMessage, restoreSuccessful, restoreMessage } = this.state;
+
+    const defaultRestoreMessage = restoreSuccessful
+      ? t('restoreSuccessful')
+      : t('restoreFailed');
+    const restoreMessageToRender =
+      restoreMessage === CORRUPT_JSON_FILE
+        ? t('dataBackupSeemsCorrupt')
+        : defaultRestoreMessage;
+
+    return (
+      <div
+        ref={this.settingsRefs[12]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-data-restore"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('restoreUserData')}</span>
+          <span className="settings-page__content-description">
+            {t('restoreUserDataDescription')}
+          </span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <label
+              htmlFor="restore-file"
+              className="button btn btn--rounded btn-secondary btn--large settings-page__button"
+            >
+              {t('restore')}
+            </label>
+            <input
+              id="restore-file"
+              data-testid="restore-file"
+              style={{ visibility: 'hidden' }}
+              type="file"
+              accept=".json"
+              onChange={(e) => this.handleFileUpload(e)}
             />
           </div>
+          {showResultMessage && (
+            <ActionableMessage
+              type={restoreSuccessful ? 'success' : 'danger'}
+              message={restoreMessageToRender}
+              primaryActionV2={{
+                label: t('dismiss'),
+                onClick: () => {
+                  this.setState({
+                    showResultMessage: false,
+                    restoreSuccessful: true,
+                    restoreMessage: null,
+                  });
+                },
+              }}
+            />
+          )}
         </div>
       </div>
     );
@@ -728,24 +702,16 @@ export default class AdvancedTab extends PureComponent {
         {this.renderMobileSync()}
         {this.renderResetAccount()}
         {this.renderAdvancedGasInputInline()}
-        {this.renderTokenDetectionToggle()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
         {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
-        {this.renderThreeBoxControl()}
-        {this.renderIpfsGatewayControl()}
+        {this.renderUserDataBackup()}
+        {this.renderRestoreUserData()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
       </div>
     );
   }
-}
-
-function addUrlProtocolPrefix(urlString) {
-  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
-    return `https://${urlString}`;
-  }
-  return urlString;
 }

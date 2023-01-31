@@ -1,37 +1,51 @@
 .critical-error {
-  padding: 16px;
+  padding: 1em;
   max-width: 600px;
   margin: 0 auto;
+  border-radius: 4px;
+  border-left: #f66a0a 4px solid;
+  background-color: rgba(255, 211, 61, 0.1);
+  display: flex;
+  padding: 0 4px 0 4px;
+  gap: 12px;
+
+  &__icon {
+    color: var(--color-error-default);
+    height: 100px;
+    padding: 4px 4px 0 4px;
+  }
+
+  &__description {
+    flex-grow: 1;
+  }
 
   &__alert {
-    color: var(--color-text-default);
-    background-color: var(--color-error-muted);
-    border: 1px solid var(--color-error-default);
-    border-radius: 8px;
-    padding: 16px;
     display: flex;
     flex-direction: column;
     margin-bottom: 16px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
 
     &__message {
       margin-bottom: 16px;
+      text-align: left;
+      color: var(--color-text-default);
     }
 
-    &__button {
+    &__action-link {
+      text-align: left;
       height: 40px;
-      border-radius: 20px;
-      padding-left: 16px;
-      padding-right: 16px;
-      background-color: var(--color-primary-default);
-      color: var(--color-primary-inverse);
-      border: 1px solid var(--color-primary-default);
-      margin: 0 auto;
+      color: var(--color-primary-default);
+      text-decoration: none;
+      cursor: pointer;
     }
   }
 
   &__paragraph {
+    text-align: left;
     color: var(--color-text-default);
-    text-align: center;
 
     &__link {
       color: var(--color-primary-default);

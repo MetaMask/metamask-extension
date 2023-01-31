@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap manageState', function () {
@@ -13,14 +14,13 @@ describe('Test Snap manageState', function () {
         },
       ],
     };
+
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
+        failOnConsoleError: false,
         title: this.test.title,
-        driverOptions: {
-          type: 'flask',
-        },
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -29,17 +29,23 @@ describe('Test Snap manageState', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // navigate to test snaps page and connect
+        // navigate to test snaps page, then fill in the snapId
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.fill('.snapId3', 'npm:@metamask/test-snap-managestate');
-        await driver.clickElement({
-          text: 'Connect manageState Snap',
-          tag: 'button',
-        });
+        await driver.delay(1000);
+
+        // find and scroll to the connect button and click it
+        const snapButton1 = await driver.findElement('#connectManageState');
+        await driver.scrollToElement(snapButton1);
+        await driver.delay(1000);
+        await driver.clickElement('#connectManageState');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        let windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -51,90 +57,69 @@ describe('Test Snap manageState', function () {
           },
           10000,
         );
-
         await driver.delay(2000);
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
         await driver.clickElement({
-          text: 'Approve & Install',
+          text: 'Approve & install',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // fill and click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.fill('.dataManageState', '23');
-        await driver.clickElement({
-          text: 'Send data to manageState Snap',
-          tag: 'button',
-        });
+        await driver.delay(1000);
+        await driver.fill('#dataManageState', '23');
+        const snapButton2 = await driver.findElement(
+          '#retrieveManageStateResult',
+        );
+        await driver.scrollToElement(snapButton2);
+        await driver.delay(1000);
+        await driver.clickElement('#sendManageState');
 
         // check the results of the public key test
-        await driver.delay(2000);
+        await driver.delay(1000);
         const manageStateResult = await driver.findElement(
-          '.sendManageStateResult',
+          '#sendManageStateResult',
         );
         assert.equal(await manageStateResult.getText(), 'true');
 
-        // click get results
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Get data from manageState Snap',
-          tag: 'button',
-        });
-
         // check the results
-        await driver.delay(2000);
+        await driver.delay(1000);
         const retrieveManageStateResult = await driver.findElement(
-          '.retrieveManageStateResult',
+          '#retrieveManageStateResult',
         );
         assert.equal(
           await retrieveManageStateResult.getText(),
-          '{"testState":["23"]}',
+          '{ "testState": [ "23" ] }',
         );
 
         // click clear results
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Clear data of manageState Snap',
-          tag: 'button',
-        });
+        await driver.clickElement('#clearManageState');
 
         // check if true
-        await driver.delay(2000);
+        await driver.delay(1000);
         const clearManageStateResult = await driver.findElement(
-          '.clearManageStateResult',
+          '#clearManageStateResult',
         );
         assert.equal(await clearManageStateResult.getText(), 'true');
 
-        // click get results again
-        await driver.waitUntilXWindowHandles(1, 5000, 10000);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.clickElement({
-          text: 'Get data from manageState Snap',
-          tag: 'button',
-        });
-
         // check result array is empty
-        await driver.delay(2000);
+        await driver.delay(1000);
         const retrieveManageStateResult2 = await driver.findElement(
-          '.retrieveManageStateResult',
+          '#retrieveManageStateResult',
         );
         assert.equal(
           await retrieveManageStateResult2.getText(),
-          '{"testState":[]}',
+          '{ "testState": [] }',
         );
       },
     );

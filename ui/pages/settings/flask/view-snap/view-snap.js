@@ -24,7 +24,11 @@ import {
   removeSnap,
   removePermissionsFor,
 } from '../../../../store/actions';
-import { getSnaps, getSubjectsWithPermission } from '../../../../selectors';
+import {
+  getSnaps,
+  getSubjectsWithPermission,
+  getPermissions,
+} from '../../../../selectors';
 import { formatDate } from '../../../../helpers/utils/util';
 
 function ViewSnap() {
@@ -49,6 +53,9 @@ function ViewSnap() {
 
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithPermission(state, snap?.permissionName),
+  );
+  const permissions = useSelector(
+    (state) => snap && getPermissions(state, snap.id),
   );
   const dispatch = useDispatch();
   const onDisconnect = (connectedOrigin, snapPermissionName) => {
@@ -138,7 +145,7 @@ function ViewSnap() {
             </Typography>
             <Box width={FRACTIONS.TEN_TWELFTHS}>
               <PermissionsConnectPermissionList
-                permissions={snap.manifest.initialPermissions}
+                permissions={permissions ?? {}}
               />
             </Box>
           </div>

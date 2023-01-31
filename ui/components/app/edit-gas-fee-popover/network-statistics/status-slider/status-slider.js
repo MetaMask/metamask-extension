@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { NETWORK_CONGESTION_THRESHOLDS } from '../../../../../../shared/constants/gas';
+import { NetworkCongestionThresholds } from '../../../../../../shared/constants/gas';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
-import I18nValue from '../../../../ui/i18n-value';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { NetworkStabilityTooltip } from '../tooltips';
 
 const GRADIENT_COLORS = [
@@ -25,14 +25,14 @@ const determineStatusInfo = (givenNetworkCongestion) => {
   const color = GRADIENT_COLORS[colorIndex];
   const sliderTickValue = colorIndex * 10;
 
-  if (networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY) {
+  if (networkCongestion >= NetworkCongestionThresholds.busy) {
     return {
       statusLabel: 'busy',
       tooltipLabel: 'highLowercase',
       color,
       sliderTickValue,
     };
-  } else if (networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.STABLE) {
+  } else if (networkCongestion >= NetworkCongestionThresholds.stable) {
     return {
       statusLabel: 'stable',
       tooltipLabel: 'stableLowercase',
@@ -49,6 +49,7 @@ const determineStatusInfo = (givenNetworkCongestion) => {
 };
 
 const StatusSlider = () => {
+  const t = useI18nContext();
   const { gasFeeEstimates } = useGasFeeContext();
   const statusInfo = determineStatusInfo(gasFeeEstimates.networkCongestion);
 
@@ -81,7 +82,7 @@ const StatusSlider = () => {
           style={{ color: statusInfo.color }}
           data-testid="status-slider-label"
         >
-          <I18nValue messageKey={statusInfo.statusLabel} />
+          {t(statusInfo.statusLabel)}
         </div>
       </div>
     </NetworkStabilityTooltip>

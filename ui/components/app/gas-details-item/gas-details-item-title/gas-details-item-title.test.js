@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 
-import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
@@ -20,7 +20,7 @@ jest.mock('../../../../store/actions', () => ({
 const render = () => {
   const store = configureStore({
     metamask: {
-      provider: { chainId: MAINNET_CHAIN_ID },
+      provider: { chainId: CHAIN_IDS.MAINNET },
       cachedBalances: {},
       accounts: {
         '0xAddress': {

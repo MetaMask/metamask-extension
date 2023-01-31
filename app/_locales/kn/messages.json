@@ -8,9 +8,6 @@
   "about": {
     "message": "ಕುರಿತು"
   },
-  "acceleratingATransaction": {
-    "message": "* ಹೆಚ್ಚಿನ ಗ್ಯಾಸ್ ಬೆಲೆಯನ್ನು ಬಳಸಿಕೊಂಡು ವಹಿವಾಟನ್ನು ವೇಗಗೊಳಿಸುವುದರಿಂದ ನೆಟ್‌ವರ್ಕ್ ವೇಗವಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುವ ಸಾಧ್ಯತೆಗಳನ್ನು ಅದು ಹೆಚ್ಚಿಸುತ್ತದೆ, ಆದರೆ ಇದು ಯಾವಾಗಲೂ ಖಚಿತವಾಗಿರುವುದಿಲ್ಲ."
-  },
   "accessingYourCamera": {
     "message": "ನಿಮ್ಮ ಕ್ಯಾಮರಾವನ್ನು ಪ್ರವೇಶಿಸಲಾಗುತ್ತಿದೆ..."
   },
@@ -49,9 +46,6 @@
   },
   "advanced": {
     "message": "ಸುಧಾರಿತ"
-  },
-  "advancedOptions": {
-    "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
   },
   "amount": {
     "message": "ಮೊತ್ತ"
@@ -193,17 +187,8 @@
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToKovan": {
-    "message": "Kovan ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ "
-  },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "connectingToRinkeby": {
-    "message": "Rinkeby ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "connectingToRopsten": {
-    "message": "Ropsten ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
   "continueToWyre": {
     "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
@@ -249,12 +234,6 @@
   },
   "custom": {
     "message": "ಸುಧಾರಿತ"
-  },
-  "customGas": {
-    "message": "ಗ್ಯಾಸ್ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ"
-  },
-  "customGasSubTitle": {
-    "message": "ಹೆಚ್ಚುತ್ತಿರುವ ಶುಲ್ಕವು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುವ ಸಮಯದಲ್ಲಿ ಕಡಿಮೆಯಾಗುತ್ತದೆ ಆದರೆ ಇದು ಖಚಿತವಾಗಿಲ್ಲ."
   },
   "customToken": {
     "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
@@ -339,9 +318,6 @@
   },
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
-  },
-  "estimatedProcessingTimes": {
-    "message": "ಅಂದಾಜು ಪ್ರಕ್ರಿಯೆ ಸಮಯ"
   },
   "ethereumPublicAddress": {
     "message": "ಎಥೆರಿಯಮ್ ಸಾರ್ವಜನಿಕ ವಿಳಾಸ"
@@ -503,9 +479,6 @@
   "knownAddressRecipient": {
     "message": "ತಿಳಿದಿರುವ ಒಪ್ಪಂದದ ವಿಳಾಸ."
   },
-  "kovan": {
-    "message": "Kovan ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
   "learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
@@ -585,9 +558,6 @@
   "newAccount": {
     "message": "ಹೊಸ ಖಾತೆ"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "ಹೊಸ ವಿಳಾಸ ಪತ್ತೆಯಾಗಿದೆ! ನಿಮ್ಮ ವಿಳಾಸ ಪುಸ್ತಕಕ್ಕೆ ಸೇರಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
-  },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"
@@ -603,12 +573,6 @@
   },
   "newToMetaMask": {
     "message": "MetaMask ಗೆ ಹೊಸಬರೇ?"
-  },
-  "newTotal": {
-    "message": "ಹೊಸ ಮೊತ್ತ"
-  },
-  "newTransactionFee": {
-    "message": "ಹೊಸ ವಹಿವಾಟು ಶುಲ್ಕ"
   },
   "next": {
     "message": "ಮುಂದೆ"
@@ -768,12 +732,6 @@
   "revealSeedWordsWarningTitle": {
     "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!"
   },
-  "rinkeby": {
-    "message": "Rinkeby ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "ropsten": {
-    "message": "Ropsten ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
   "rpcUrl": {
     "message": "ಹೊಸ RPC URL"
   },
@@ -810,9 +768,6 @@
   "seedPhraseReq": {
     "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳು 12 ಪದಗಳಷ್ಟು ದೀರ್ಘವಾಗಿವೆ"
   },
-  "selectAHigherGasFee": {
-    "message": "ನಿಮ್ಮ ವಹಿವಾಟಿನ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಸುಧಾರಿಸಲು ಅಧಿಕ ಗ್ಯಾಸ್ ಶುಲ್ಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ.*"
-  },
   "selectAnAccount": {
     "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
@@ -830,9 +785,6 @@
   },
   "send": {
     "message": "ಕಳುಹಿಸು"
-  },
-  "sendAmount": {
-    "message": "ಮೊತ್ತವನ್ನು ಕಳುಹಿಸಿ"
   },
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
@@ -867,17 +819,11 @@
   "sign": {
     "message": "ಸಹಿ"
   },
-  "signNotice": {
-    "message": "ಈ ಸಂದೇಶಕ್ಕೆ ಸಹಿ ಮಾಡುವಿಕೆಯು \nಅಪಾಯಕಾರಿ ಅಡ್ಡಪರಿಣಾಮಗಳನ್ನು ಹೊಂದಿರಬಹುದು. ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಖಾತೆಯೊಂದಿಗೆ ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ನಂಬುವ ಸೈಟ್‌ಗಳಿಂದ\nಮಾತ್ರ ಸಂದೇಶಗಳಿಗೆ ಸಹಿ ಮಾಡಿ.\nಭವಿಷ್ಯದ ಆವೃತ್ತಿಯಲ್ಲಿ ಈ ಅಪಾಯಕಾರಿ ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
-  },
   "signatureRequest": {
     "message": "ಸಹಿಯ ವಿನಂತಿ"
   },
   "signed": {
     "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"
-  },
-  "slow": {
-    "message": "ನಿಧಾನ"
   },
   "somethingWentWrong": {
     "message": "ಓಹ್‌‍! ಏನೋ ತಪ್ಪಾಗಿದೆ."

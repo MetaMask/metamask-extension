@@ -1,20 +1,27 @@
 const path = require('path');
+const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
-const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
+const { PAGES } = require('./webdriver/driver');
 const { ensureXServerIsRunning } = require('./x-server');
+const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
 const dappBasePort = 8080;
+
+const createDownloadFolder = async (downloadsFolder) => {
+  await fs.rm(downloadsFolder, { recursive: true, force: true });
+  await fs.mkdir(downloadsFolder, { recursive: true });
+};
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
@@ -23,6 +30,7 @@ async function withFixtures(options, testSuite) {
     dapp,
     fixtures,
     ganacheOptions,
+    smartContract,
     driverOptions,
     dappOptions,
     title,
@@ -43,9 +51,19 @@ async function withFixtures(options, testSuite) {
   const phishingPageServer = new PhishingWarningPageServer();
 
   let webDriver;
+  let driver;
+  const errors = [];
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
+    let contractRegistry;
+
+    if (smartContract) {
+      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+      await ganacheSeeder.deploySmartContract(smartContract);
+      contractRegistry = ganacheSeeder.getContractRegistry();
+    }
+
     if (ganacheOptions?.concurrent) {
       const { port, chainId } = ganacheOptions.concurrent;
       secondaryGanacheServer = new Ganache();
@@ -57,7 +75,7 @@ async function withFixtures(options, testSuite) {
       });
     }
     await fixtureServer.start();
-    await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
+    fixtureServer.loadJsonState(fixtures);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
@@ -94,16 +112,41 @@ async function withFixtures(options, testSuite) {
     ) {
       await ensureXServerIsRunning();
     }
-    const { driver } = await buildWebDriver(driverOptions);
-    webDriver = driver;
+    driver = (await buildWebDriver(driverOptions)).driver;
+    webDriver = driver.driver;
+
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      await driver.checkBrowserForExceptions();
+    }
+
+    let driverProxy;
+    if (process.env.E2E_DEBUG === 'true') {
+      driverProxy = new Proxy(driver, {
+        get(target, prop, receiver) {
+          const originalProperty = target[prop];
+          if (typeof originalProperty === 'function') {
+            return (...args) => {
+              console.log(
+                `[driver] Called '${prop}' with arguments ${JSON.stringify(
+                  args,
+                )}`,
+              );
+              return originalProperty.bind(target)(...args);
+            };
+          }
+          return Reflect.get(target, prop, receiver);
+        },
+      });
+    }
 
     await testSuite({
-      driver,
+      driver: driverProxy ?? driver,
       mockServer,
+      contractRegistry,
     });
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await driver.checkBrowserForConsoleErrors(driver);
+      errors.concat(await driver.checkBrowserForConsoleErrors(driver));
       if (errors.length) {
         const errorReports = errors.map((err) => err.message);
         const errorMessage = `Errors found in browser console:\n${errorReports.join(
@@ -120,9 +163,25 @@ async function withFixtures(options, testSuite) {
     failed = true;
     if (webDriver) {
       try {
-        await webDriver.verboseReportOnFailure(title);
+        await driver.verboseReportOnFailure(title);
       } catch (verboseReportError) {
         console.error(verboseReportError);
+      }
+      if (
+        errors.length === 0 &&
+        driver.exceptions.length > 0 &&
+        failOnConsoleError
+      ) {
+        /**
+         * Navigate to the background
+         * forcing background exceptions to be captured
+         * proving more helpful context
+         */
+        await driver.navigate(PAGES.BACKGROUND);
+        const errorMessage = `Errors found in browser console including the background:\n${driver.exceptions.join(
+          '\n',
+        )}`;
+        throw Error(errorMessage);
       }
     }
     throw error;
@@ -134,7 +193,7 @@ async function withFixtures(options, testSuite) {
         await secondaryGanacheServer.quit();
       }
       if (webDriver) {
-        await webDriver.quit();
+        await driver.quit();
       }
       if (dapp) {
         for (let i = 0; i < numberOfDapps; i++) {
@@ -181,90 +240,36 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const connectDappWithExtensionPopup = async (driver) => {
-  await driver.openNewPage(`http://127.0.0.1:${dappBasePort}/`);
-  await driver.delay(regularDelayMs);
-  await driver.clickElement({ text: 'Connect', tag: 'button' });
-  await driver.delay(regularDelayMs);
-
-  const windowHandles = await getWindowHandles(driver, 3);
-
-  // open extension popup and confirm connect
-  await driver.switchToWindow(windowHandles.popup);
-  await driver.delay(largeDelayMs);
-  await driver.clickElement({ text: 'Next', tag: 'button' });
-  await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-  // send from dapp
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindow(windowHandles.dapp);
-  await driver.delay(regularDelayMs);
-};
-
 const completeImportSRPOnboardingFlow = async (
   driver,
   seedPhrase,
   password,
 ) => {
-  if (process.env.ONBOARDING_V2 === '1') {
-    // welcome
-    await driver.clickElement('[data-testid="onboarding-import-wallet"]');
+  // welcome
+  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
-    // metrics
-    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  // metrics
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-    // import with recovery phrase
-    await driver.fill('[data-testid="import-srp-text"]', seedPhrase);
-    await driver.clickElement('[data-testid="import-srp-confirm"]');
+  // import with recovery phrase
+  await driver.pasteIntoField(
+    '[data-testid="import-srp__srp-word-0"]',
+    seedPhrase,
+  );
+  await driver.clickElement('[data-testid="import-srp-confirm"]');
 
-    // create password
-    await driver.fill('[data-testid="create-password-new"]', password);
-    await driver.fill('[data-testid="create-password-confirm"]', password);
-    await driver.clickElement('[data-testid="create-password-terms"]');
-    await driver.clickElement('[data-testid="create-password-import"]');
+  // create password
+  await driver.fill('[data-testid="create-password-new"]', password);
+  await driver.fill('[data-testid="create-password-confirm"]', password);
+  await driver.clickElement('[data-testid="create-password-terms"]');
+  await driver.clickElement('[data-testid="create-password-import"]');
 
-    // complete
-    await driver.clickElement('[data-testid="onboarding-complete-done"]');
+  // complete
+  await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
-    // pin extension
-    await driver.clickElement('[data-testid="pin-extension-next"]');
-    await driver.clickElement('[data-testid="pin-extension-done"]');
-  } else {
-    // clicks the continue button on the welcome screen
-    await driver.findElement('.welcome-page__header');
-    await driver.clickElement({
-      text: enLocaleMessages.getStarted.message,
-      tag: 'button',
-    });
-
-    // clicks the "Import Wallet" option
-    await driver.clickElement({ text: 'Import wallet', tag: 'button' });
-
-    // clicks the "No thanks" option on the metametrics opt-in screen
-    await driver.clickElement('.btn-secondary');
-
-    // Import Secret Recovery Phrase
-    await driver.pasteIntoField(
-      '[data-testid="import-srp__srp-word-0"]',
-      seedPhrase,
-    );
-
-    await driver.fill('#password', password);
-    await driver.fill('#confirm-password', password);
-
-    await driver.clickElement(
-      '[data-testid="create-new-vault__terms-checkbox"]',
-    );
-
-    await driver.clickElement({ text: 'Import', tag: 'button' });
-
-    // clicks through the success screen
-    await driver.findElement({ text: 'Congratulations', tag: 'div' });
-    await driver.clickElement({
-      text: enLocaleMessages.endOfFlowMessage10.message,
-      tag: 'button',
-    });
-  }
+  // pin extension
+  await driver.clickElement('[data-testid="pin-extension-next"]');
+  await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
 const completeImportSRPOnboardingFlowWordByWord = async (
@@ -272,19 +277,13 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   seedPhrase,
   password,
 ) => {
-  // clicks the continue button on the welcome screen
-  await driver.findElement('.welcome-page__header');
-  await driver.clickElement({
-    text: enLocaleMessages.getStarted.message,
-    tag: 'button',
-  });
+  // welcome
+  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
-  // clicks the "Import Wallet" option
-  await driver.clickElement({ text: 'Import wallet', tag: 'button' });
+  // metrics
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-  // clicks the "No thanks" option on the metametrics opt-in screen
-  await driver.clickElement('.btn-secondary');
-
+  // import with recovery phrase, word by word
   const words = seedPhrase.split(' ');
   for (const word of words) {
     await driver.pasteIntoField(
@@ -292,20 +291,20 @@ const completeImportSRPOnboardingFlowWordByWord = async (
       word,
     );
   }
+  await driver.clickElement('[data-testid="import-srp-confirm"]');
 
-  await driver.fill('#password', password);
-  await driver.fill('#confirm-password', password);
+  // create password
+  await driver.fill('[data-testid="create-password-new"]', password);
+  await driver.fill('[data-testid="create-password-confirm"]', password);
+  await driver.clickElement('[data-testid="create-password-terms"]');
+  await driver.clickElement('[data-testid="create-password-import"]');
 
-  await driver.clickElement('[data-testid="create-new-vault__terms-checkbox"]');
+  // complete
+  await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
-  await driver.clickElement({ text: 'Import', tag: 'button' });
-
-  // clicks through the success screen
-  await driver.findElement({ text: 'Congratulations', tag: 'div' });
-  await driver.clickElement({
-    text: enLocaleMessages.endOfFlowMessage10.message,
-    tag: 'button',
-  });
+  // pin extension
+  await driver.clickElement('[data-testid="pin-extension-next"]');
+  await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
 const completeCreateNewWalletOnboardingFlow = async (
@@ -410,8 +409,9 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
+  createDownloadFolder,
+
 };

@@ -12,7 +12,7 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import Button from '../../ui/button';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { TransactionType } from '../../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 const PAGE_INCREMENT = 10;
@@ -42,7 +42,7 @@ const tokenTransactionFilter = ({
 }) => {
   if (TOKEN_CATEGORY_HASH[type]) {
     return false;
-  } else if (type === TRANSACTION_TYPES.SWAP) {
+  } else if (type === TransactionType.swap) {
     return destinationTokenSymbol === 'ETH' || sourceTokenSymbol === 'ETH';
   }
   return true;
@@ -125,10 +125,11 @@ export default function TransactionList({
             </div>
             {pendingTransactions.map((transactionGroup, index) =>
               transactionGroup.initialTransaction.transactionType ===
-              TRANSACTION_TYPES.SMART ? (
+              TransactionType.smart ? (
                 <SmartTransactionListItem
                   isEarliestNonce={index === 0}
                   smartTransaction={transactionGroup.initialTransaction}
+                  transactionGroup={transactionGroup}
                   key={`${transactionGroup.nonce}:${index}`}
                 />
               ) : (
@@ -152,6 +153,7 @@ export default function TransactionList({
                 transactionGroup.initialTransaction?.transactionType ===
                 'smart' ? (
                   <SmartTransactionListItem
+                    transactionGroup={transactionGroup}
                     smartTransaction={transactionGroup.initialTransaction}
                     key={`${transactionGroup.nonce}:${index}`}
                   />

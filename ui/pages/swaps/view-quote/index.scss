@@ -28,13 +28,13 @@
       pointer-events: none;
     }
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       overflow-y: auto;
       max-height: 420px;
     }
   }
 
-  @media screen and (min-width: $break-large) {
+  @include screen-sm-min {
     width: 348px;
   }
 
@@ -134,7 +134,7 @@
     margin-top: 8px;
     margin-bottom: 8px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       &--thin {
         min-height: 36px;
       }
@@ -160,7 +160,7 @@
     max-width: 311px;
     margin-bottom: 8px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       margin-bottom: 0;
     }
   }
@@ -182,7 +182,7 @@
   &__thin-swaps-footer {
     max-height: 82px;
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       height: 72px;
     }
   }

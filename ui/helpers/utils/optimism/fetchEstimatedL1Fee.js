@@ -1,24 +1,42 @@
-import * as ethers from 'ethers';
-import * as optimismContracts from '@eth-optimism/contracts';
+import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
-// The code in this file is largely drawn from https://community.optimism.io/docs/developers/l2/new-fees.html#for-frontend-and-wallet-developers
+// Snippet of the ABI that we need
+// Should we need more of it at some point, the full ABI can be found here:
+// https://github.com/ethereum-optimism/optimism/blob/develop/gas-oracle/abis/OVM_GasPriceOracle.json
+const OPTIMISM_GAS_PRICE_ORACLE_ABI = [
+  {
+    inputs: [{ internalType: 'bytes', name: '_data', type: 'bytes' }],
+    name: 'getL1Fee',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
 
-function buildOVMGasPriceOracleContract(eth) {
-  const OVMGasPriceOracle = optimismContracts
-    .getContractFactory('OVM_GasPriceOracle')
-    .attach(optimismContracts.predeploys.OVM_GasPriceOracle);
-  const abi = JSON.parse(
-    OVMGasPriceOracle.interface.format(ethers.utils.FormatTypes.json),
+// BlockExplorer link: https://optimistic.etherscan.io/address/0x420000000000000000000000000000000000000f#code
+const OPTIMISM_GAS_PRICE_ORACLE_ADDRESS =
+  '0x420000000000000000000000000000000000000F';
+
+export default async function fetchEstimatedL1Fee(txMeta, ethersProvider) {
+  const provider = global.ethereumProvider
+    ? new Web3Provider(global.ethereumProvider, 10)
+    : ethersProvider;
+  if (process.env.IN_TEST) {
+    provider.detectNetwork = async () => ({
+      name: 'optimism',
+      chainId: 10,
+    });
+  }
+  const contract = new Contract(
+    OPTIMISM_GAS_PRICE_ORACLE_ADDRESS,
+    OPTIMISM_GAS_PRICE_ORACLE_ABI,
+    provider,
   );
-  return eth.contract(abi).at(OVMGasPriceOracle.address);
-}
+  const serializedTransaction =
+    buildUnserializedTransaction(txMeta).serialize();
 
-export default async function fetchEstimatedL1Fee(eth, txMeta) {
-  const contract = buildOVMGasPriceOracleContract(eth);
-  const serializedTransaction = buildUnserializedTransaction(
-    txMeta,
-  ).serialize();
   const result = await contract.getL1Fee(serializedTransaction);
-  return result?.[0]?.toString(16);
+  return result?.toHexString();
 }

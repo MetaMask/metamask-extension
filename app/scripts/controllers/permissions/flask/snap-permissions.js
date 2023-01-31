@@ -1,9 +1,12 @@
-import { endowmentPermissionBuilders } from '@metamask/snap-controllers';
+import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import {
   restrictedMethodPermissionBuilders,
   selectHooks,
 } from '@metamask/rpc-methods';
-import { ExcludedSnapPermissions } from '../../../../../shared/constants/permissions';
+import {
+  ExcludedSnapEndowments,
+  ExcludedSnapPermissions,
+} from '../../../../../shared/constants/permissions';
 
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
@@ -12,7 +15,9 @@ import { ExcludedSnapPermissions } from '../../../../../shared/constants/permiss
 export const buildSnapEndowmentSpecifications = () =>
   Object.values(endowmentPermissionBuilders).reduce(
     (allSpecifications, { targetKey, specificationBuilder }) => {
-      allSpecifications[targetKey] = specificationBuilder();
+      if (!ExcludedSnapEndowments.has(targetKey)) {
+        allSpecifications[targetKey] = specificationBuilder();
+      }
       return allSpecifications;
     },
     {},

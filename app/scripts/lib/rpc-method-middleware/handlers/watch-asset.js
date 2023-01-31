@@ -11,14 +11,14 @@ const watchAsset = {
 export default watchAsset;
 
 /**
- * @typedef {Object} WatchAssetOptions
+ * @typedef {object} WatchAssetOptions
  * @property {Function} handleWatchAssetRequest - The wallet_watchAsset method implementation.
  */
 
 /**
- * @typedef {Object} WatchAssetParam
+ * @typedef {object} WatchAssetParam
  * @property {string} type - The type of the asset to watch.
- * @property {Object} options - Watch options for the asset.
+ * @property {object} options - Watch options for the asset.
  */
 
 /**

@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
 import InfoTooltip from '../../../../components/ui/info-tooltip';
 import ExchangeRateDisplay from '../../exchange-rate-display';
+import { getUseCurrencyRateCheck } from '../../../../selectors';
 
 const QuoteDetails = ({
   slippage,
@@ -18,6 +20,8 @@ const QuoteDetails = ({
   hideEstimatedGasFee,
 }) => {
   const t = useContext(I18nContext);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
   return (
     <div className="quote-details">
       <div className="quote-details__row">
@@ -38,7 +42,7 @@ const QuoteDetails = ({
           {t('swapMaxSlippage')}
           <InfoTooltip
             position="bottom"
-            contentText={t('swapQuoteDetailsSlippageInfo')}
+            contentText={t('swapSlippageTooltip')}
           />
         </div>
         <div className="quote-details__detail-content">{`${slippage}%`}</div>
@@ -67,7 +71,9 @@ const QuoteDetails = ({
           </div>
           <div className="quote-details__detail-content">
             <span>{feeInEth}</span>
-            <span className="quote-details__light-grey">{` (${networkFees})`}</span>
+            <span className="quote-details__light-grey">
+              {useCurrencyRateCheck && ` (${networkFees})`}
+            </span>
           </div>
         </div>
       )}

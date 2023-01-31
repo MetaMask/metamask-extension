@@ -2,10 +2,13 @@ import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
+import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
+import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isBeta } from '../../../ui/helpers/utils/build-types';
 
 export default class AppStateController extends EventEmitter {
   /**
-   * @param {Object} opts
+   * @param {object} opts
    */
   constructor(opts = {}) {
     const {
@@ -30,13 +33,18 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
-      collectiblesDetectionNoticeDismissed: false,
-      enableEIP1559V2NoticeDismissed: false,
       showTestnetMessageInDropdown: true,
+      showPortfolioTooltip: true,
+      showBetaHeader: isBeta(),
       trezorModel: null,
       ...initState,
       qrHardware: {},
       collectiblesDropdownState: {},
+      usedNetworks: {
+        '0x1': true,
+        '0x5': true,
+        '0x539': true,
+      },
     });
     this.timer = null;
 
@@ -178,21 +186,37 @@ export default class AppStateController extends EventEmitter {
    *
    * @private
    */
+  /* eslint-disable no-undef */
   _resetTimer() {
     const { timeoutMinutes } = this.store.getState();
 
     if (this.timer) {
       clearTimeout(this.timer);
+    } else if (isManifestV3) {
+      chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
       return;
     }
 
-    this.timer = setTimeout(
-      () => this.onInactiveTimeout(),
-      timeoutMinutes * MINUTE,
-    );
+    if (isManifestV3) {
+      chrome.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
+        delayInMinutes: timeoutMinutes,
+        periodInMinutes: timeoutMinutes,
+      });
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+          this.onInactiveTimeout();
+          chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+        }
+      });
+    } else {
+      this.timer = setTimeout(
+        () => this.onInactiveTimeout(),
+        timeoutMinutes * MINUTE,
+      );
+    }
   }
 
   /**
@@ -252,36 +276,30 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the portfolio site tooltip should be shown on the home page
+   *
+   * @param showPortfolioTooltip
+   */
+  setShowPortfolioTooltip(showPortfolioTooltip) {
+    this.store.updateState({ showPortfolioTooltip });
+  }
+
+  /**
+   * Sets whether the beta notification heading on the home page
+   *
+   * @param showBetaHeader
+   */
+  setShowBetaHeader(showBetaHeader) {
+    this.store.updateState({ showBetaHeader });
+  }
+
+  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
    */
   setTrezorModel(trezorModel) {
     this.store.updateState({ trezorModel });
-  }
-
-  /**
-   * A setter for the `collectiblesDetectionNoticeDismissed` property
-   *
-   * @param collectiblesDetectionNoticeDismissed
-   */
-  setCollectiblesDetectionNoticeDismissed(
-    collectiblesDetectionNoticeDismissed,
-  ) {
-    this.store.updateState({
-      collectiblesDetectionNoticeDismissed,
-    });
-  }
-
-  /**
-   * A setter for the `enableEIP1559V2NoticeDismissed` property
-   *
-   * @param enableEIP1559V2NoticeDismissed
-   */
-  setEnableEIP1559V2NoticeDismissed(enableEIP1559V2NoticeDismissed) {
-    this.store.updateState({
-      enableEIP1559V2NoticeDismissed,
-    });
   }
 
   /**
@@ -293,5 +311,19 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({
       collectiblesDropdownState,
     });
+  }
+
+  /**
+   * Updates the array of the first time used networks
+   *
+   * @param chainId
+   * @returns {void}
+   */
+  setFirstTimeUsedNetwork(chainId) {
+    const currentState = this.store.getState();
+    const { usedNetworks } = currentState;
+    usedNetworks[chainId] = true;
+
+    this.store.updateState({ usedNetworks });
   }
 }

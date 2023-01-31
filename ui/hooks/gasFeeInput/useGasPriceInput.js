@@ -2,25 +2,25 @@ import { useState } from 'react';
 import { isEqual } from 'lodash';
 
 import {
-  GAS_ESTIMATE_TYPES,
+  GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
 } from '../../../shared/constants/gas';
-import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
+import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
 import { feeParamsAreCustom } from './utils';
 
 function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
-  if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+  if (gasEstimateType === GasEstimateTypes.legacy) {
     return gasFeeEstimates?.[estimateToUse] ?? '0';
-  } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+  } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
     return gasFeeEstimates?.gasPrice ?? '0';
   }
   return '0';
 }
 
 /**
- * @typedef {Object} GasPriceInputsReturnType
+ * @typedef {object} GasPriceInputsReturnType
  * @property {DecGweiString} [gasPrice] - the gasPrice input value.
  * @property {(DecGweiString) => void} setGasPrice - state setter method to update the gasPrice.
  * @property {(boolean) => true} setGasPriceHasBeenManuallySet - state setter method to update gasPriceHasBeenManuallySet

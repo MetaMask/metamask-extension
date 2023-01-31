@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const { promises: fs } = require('fs');
 const path = require('path');
+// Fetch is part of node js in future versions, thus triggering no-shadow
+// eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
 const glob = require('fast-glob');
 const VERSION = require('../package.json').version;
@@ -21,6 +23,8 @@ async function start() {
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
   const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
+  const { PARENT_COMMIT } = process.env;
+  console.log('PARENT_COMMIT', PARENT_COMMIT);
 
   if (!CIRCLE_PULL_REQUEST) {
     console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
@@ -34,7 +38,7 @@ async function start() {
   // build the github comment content
 
   // links to extension builds
-  const platforms = ['chrome', 'firefox', 'opera'];
+  const platforms = ['chrome', 'firefox'];
   const buildLinks = platforms
     .map((platform) => {
       const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
@@ -85,15 +89,31 @@ async function start() {
     .map((key) => `<li>${key}: ${bundles[key].join(', ')}</li>`)
     .join('')}</ul>`;
 
+  const bundleSizeDataUrl =
+    'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
+
   const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
   const coverageLink = `<a href="${coverageUrl}">Report</a>`;
 
   const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
+  const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
+  const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
+
   // links to bundle browser builds
   const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
+  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
+  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
+  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
+  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
+  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
+  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
+  const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
+  const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
+  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -103,8 +123,14 @@ async function start() {
     `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
     `build viz: ${depVizLink}`,
+    `mv3: ${moduleInitStatsBackgroundLink}`,
+    `mv3: ${moduleInitStatsUILink}`,
+    `mv3: ${moduleLoadStatsLink}`,
+    `mv3: ${bundleSizeStatsLink}`,
+    `mv2: ${userActionsStatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
+    `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
@@ -220,6 +246,67 @@ async function start() {
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
+  }
+
+  try {
+    const prBundleSizeStats = JSON.parse(
+      await fs.readFile(
+        path.resolve(
+          __dirname,
+          '..',
+          path.join('test-artifacts', 'chrome', 'mv3', 'bundle_size.json'),
+        ),
+        'utf-8',
+      ),
+    );
+
+    const devBundleSizeStats = await (
+      await fetch(bundleSizeDataUrl, {
+        method: 'GET',
+      })
+    ).json();
+
+    const prSizes = {
+      background: prBundleSizeStats.background.size,
+      ui: prBundleSizeStats.ui.size,
+      common: prBundleSizeStats.common.size,
+    };
+
+    const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
+      sizes[part] = devBundleSizeStats[PARENT_COMMIT][part] || 0;
+      return sizes;
+    }, {});
+
+    const diffs = Object.keys(prSizes).reduce((output, part) => {
+      output[part] = prSizes[part] - devSizes[part];
+      return output;
+    }, {});
+
+    const sizeDiffRows = Object.keys(diffs).map(
+      (part) => `${part}: ${diffs[part]} bytes`,
+    );
+
+    const sizeDiffHiddenContent = `<ul>${sizeDiffRows
+      .map((row) => `<li>${row}</li>`)
+      .join('\n')}</ul>`;
+
+    const sizeDiff = diffs.background + diffs.common;
+
+    const sizeDiffWarning =
+      sizeDiff > 0
+        ? `🚨 Warning! Bundle size has increased!`
+        : `🚀 Bundle size reduced!`;
+
+    const sizeDiffExposedContent =
+      sizeDiff === 0
+        ? `Bundle size diffs`
+        : `Bundle size diffs [${sizeDiffWarning}]`;
+
+    const sizeDiffBody = `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
+
+    commentBody += sizeDiffBody;
+  } catch (error) {
+    console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
   try {

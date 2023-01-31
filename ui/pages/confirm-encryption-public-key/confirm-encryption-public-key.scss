@@ -3,7 +3,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--color-background-default);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -11,13 +11,13 @@
     position: relative;
     height: 100%;
 
-    @media screen and (max-width: $break-small) {
+    @include screen-sm-max {
       width: 100%;
       top: 0;
       box-shadow: none;
     }
 
-    @media screen and (min-width: $break-large) {
+    @include screen-sm-min {
       height: 620px;
     }
   }
@@ -163,27 +163,6 @@
     padding-left: 20px;
     padding-right: 20px;
     color: var(--color-text-alternative);
-  }
-
-  &__footer {
-    @include H3;
-
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    flex: 0 0 auto;
-    border-top: 1px solid var(--color-border-muted);
-    padding: 1.6rem;
-
-    button {
-      width: 165px;
-    }
-
-    &__cancel-button {
-      margin-right: 1.2rem;
-    }
   }
 
   &__visual {

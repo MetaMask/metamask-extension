@@ -1,44 +1,41 @@
 import React from 'react';
-import sinon from 'sinon';
-import { mount } from 'enzyme';
-import ConfirmResetAccount from './confirm-reset-account.container';
+import { fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import ConfirmResetAccount from '.';
 
 describe('Confirm Reset Account', () => {
-  let wrapper;
-
   const props = {
-    hideModal: sinon.spy(),
-    resetAccount: sinon.stub().resolves(),
+    hideModal: jest.fn(),
+    resetAccount: jest.fn().mockResolvedValue(),
   };
 
-  beforeEach(() => {
-    wrapper = mount(<ConfirmResetAccount.WrappedComponent {...props} />, {
-      context: {
-        t: (str) => str,
-      },
-    });
-  });
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <ConfirmResetAccount.WrappedComponent {...props} />,
+    );
 
-  afterEach(() => {
-    props.hideModal.resetHistory();
+    expect(container).toMatchSnapshot();
   });
 
   it('hides modal when nevermind button is clicked', () => {
-    const nevermind = wrapper.find(
-      '.btn-secondary.modal-container__footer-button',
+    const { queryByText } = renderWithProvider(
+      <ConfirmResetAccount.WrappedComponent {...props} />,
     );
-    nevermind.simulate('click');
 
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('[nevermind]'));
+
+    expect(props.resetAccount).not.toHaveBeenCalled();
+    expect(props.hideModal).toHaveBeenCalled();
   });
 
   it('resets account and hides modal when reset button is clicked', async () => {
-    const reset = wrapper.find(
-      '.btn-danger-primary.modal-container__footer-button',
+    const { queryByText } = renderWithProvider(
+      <ConfirmResetAccount.WrappedComponent {...props} />,
     );
-    reset.simulate('click');
 
-    expect(await props.resetAccount.calledOnce).toStrictEqual(true);
-    expect(props.hideModal.calledOnce).toStrictEqual(true);
+    fireEvent.click(queryByText('[reset]'));
+
+    expect(props.resetAccount).toHaveBeenCalled();
+    expect(props.hideModal).toHaveBeenCalled();
   });
 });
