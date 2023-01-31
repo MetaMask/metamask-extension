@@ -150,6 +150,9 @@ export default class SendAssetRow extends Component {
       if (token) {
         return this.renderToken(token);
       }
+
+      // if token is not found in tokens list, render the details
+      return this.renderToken(details);
     } else if (type === AssetType.NFT) {
       const collectible = collectibles.find(
         ({ address, tokenId }) =>
