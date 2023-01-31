@@ -1,7 +1,7 @@
 import { KeyringController } from '@metamask/eth-keyring-controller';
 import log from 'loglevel';
 
-import { KeyringTypes } from '../../../shared/constants/keyring';
+import { KeyringType } from '../../../shared/constants/keyring';
 
 const seedPhraseVerifier = {
   /**
@@ -23,7 +23,7 @@ const seedPhraseVerifier = {
 
     const keyringController = new KeyringController({});
     const keyringBuilder = keyringController.getKeyringBuilderForType(
-      KeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     const keyring = keyringBuilder();
     const opts = {

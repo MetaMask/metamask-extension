@@ -1,9 +1,9 @@
-import { HardwareKeyringTypes } from './hardware-wallets';
+import { HardwareKeyringType } from './hardware-wallets';
 
 /**
  * These are the keyrings that are managed entirely by MetaMask.
  */
-export enum InternalKeyringTypes {
+export enum InternalKeyringType {
   hdKeyTree = 'HD Key Tree',
   imported = 'Simple Key Pair',
 }
@@ -11,7 +11,7 @@ export enum InternalKeyringTypes {
 /**
  * All keyrings supported by MetaMask.
  */
-export const KeyringTypes = {
-  ...HardwareKeyringTypes,
-  ...InternalKeyringTypes,
+export const KeyringType = {
+  ...HardwareKeyringType,
+  ...InternalKeyringType,
 };

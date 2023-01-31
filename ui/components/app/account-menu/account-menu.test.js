@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { KeyringTypes } from '../../../../shared/constants/keyring';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import AccountMenu from '.';
 
 describe('Account Menu', () => {
@@ -37,11 +37,11 @@ describe('Account Menu', () => {
     ],
     keyrings: [
       {
-        type: KeyringTypes.hdKeyTree,
+        type: KeyringType.hdKeyTree,
         accounts: ['0xAdress'],
       },
       {
-        type: KeyringTypes.imported,
+        type: KeyringType.imported,
         accounts: ['0x1'],
       },
     ],

@@ -1,7 +1,7 @@
 /**
  * Hardware wallets supported by MetaMask.
  */
-export enum HardwareKeyringTypes {
+export enum HardwareKeyringType {
   ledger = 'Ledger Hardware',
   trezor = 'Trezor Hardware',
   lattice = 'Lattice Hardware',
