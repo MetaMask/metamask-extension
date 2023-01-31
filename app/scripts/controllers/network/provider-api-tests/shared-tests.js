@@ -3310,7 +3310,7 @@ export function testsForRpcMethodSupportingBlockParam(
 
       describe.each(
         [
-          ['less than the curent block number', '0x200'],
+          ['less than the current block number', '0x200'],
           ['equal to the curent block number', '0x100'],
         ],
         '%s',
