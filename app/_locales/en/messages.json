@@ -823,7 +823,7 @@
     "message": "CoolWallet"
   },
   "copiedExclamation": {
-    "message": "Copied. It will be stored for one minute."
+    "message": "Copied."
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
