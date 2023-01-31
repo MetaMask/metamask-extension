@@ -9,8 +9,8 @@ import {
   renderWithProvider,
   setBackgroundConnection,
 } from '../../../test/jest';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
 
@@ -47,18 +47,13 @@ setBackgroundConnection({
   promisifiedBackground: jest.fn(),
 });
 
-jest.mock('ethers', () => {
-  const originalModule = jest.requireActual('ethers');
+jest.mock('@ethersproject/providers', () => {
+  const originalModule = jest.requireActual('@ethersproject/providers');
   return {
     ...originalModule,
-    ethers: {
-      ...originalModule.ethers,
-      providers: {
-        Web3Provider: jest.fn().mockImplementation(() => {
-          return {};
-        }),
-      },
-    },
+    Web3Provider: jest.fn().mockImplementation(() => {
+      return {};
+    }),
   };
 });
 const baseStore = {
@@ -77,7 +72,7 @@ const baseStore = {
         },
       },
     },
-    gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+    gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
       medium: '1',
@@ -86,7 +81,7 @@ const baseStore = {
     selectedAddress: '0x0',
     keyrings: [
       {
-        type: KEYRING_TYPES.HD_KEY_TREE,
+        type: HardwareKeyringTypes.hdKeyTree,
         accounts: ['0x0'],
       },
     ],

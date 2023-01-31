@@ -48,7 +48,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Icon',
-  id: __filename,
+
   component: Icon,
   parameters: {
     docs: {
@@ -93,7 +93,7 @@ export default {
     },
   },
   args: {
-    name: ICON_NAMES.ADD_SQUARE_FILLED,
+    name: ICON_NAMES.ADD_SQUARE,
     color: COLORS.INHERIT,
     size: SIZES.MD,
   },
@@ -179,7 +179,7 @@ export const DefaultStory = (args) => {
                   backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
                   rightAccessory={
                     <ButtonIcon
-                      iconName={ICON_NAMES.COPY_FILLED}
+                      iconName={ICON_NAMES.COPY}
                       size={SIZES.SM}
                       color={COLORS.ICON_ALTERNATIVE}
                       ariaLabel="Copy to clipboard"
@@ -203,7 +203,7 @@ export const DefaultStory = (args) => {
         <Text>
           No matches. Please try again or ask in the{' '}
           <ButtonLink
-            size={SIZES.AUTO}
+            size={SIZES.INHERIT}
             color={COLORS.PRIMARY_DEFAULT}
             href="https://consensys.slack.com/archives/C0354T27M5M"
             target="_blank"
@@ -258,8 +258,8 @@ export const Size = (args) => (
       <Icon {...args} size={SIZES.XL} />
     </Box>
     <Text as="p" variant={TEXT.BODY_SM}>
-      <Icon {...args} size={SIZES.AUTO} /> Auto also exists and inherits the
-      font-size of the parent element.
+      <Icon {...args} size={SIZES.INHERIT} /> inherits the font-size of the
+      parent element.
     </Text>
   </>
 );

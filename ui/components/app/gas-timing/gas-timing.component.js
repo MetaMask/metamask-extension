@@ -4,28 +4,26 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 
 import { usePrevious } from '../../../hooks/usePrevious';
 import { I18nContext } from '../../../contexts/i18n';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 
 import {
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
 } from '../../../ducks/metamask/metamask';
-import { getEIP1559V2Enabled } from '../../../selectors';
 
 import Typography from '../../ui/typography/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
-import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
 import { getGasFeeTimeEstimate } from '../../../store/actions';
 import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
-import { useGasFeeContext } from '../../../contexts/gasFee';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -46,11 +44,10 @@ export default function GasTiming({
   const gasEstimateType = useSelector(getGasEstimateType);
   const gasFeeEstimates = useSelector(getGasFeeEstimates);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
-  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
-  const { estimateUsed, supportsEIP1559V2 } = useGasFeeContext();
+  const { estimateUsed } = useGasFeeContext();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -96,18 +93,6 @@ export default function GasTiming({
     previousIsUnknownLow,
   ]);
 
-  let unknownProcessingTimeText;
-  if (supportsEIP1559V2) {
-    unknownProcessingTimeText = t('editGasTooLow');
-  } else {
-    unknownProcessingTimeText = (
-      <>
-        {t('editGasTooLow')}{' '}
-        <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
-      </>
-    );
-  }
-
   if (
     gasWarnings?.maxPriorityFee === GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW ||
     gasWarnings?.maxFee === GAS_FORM_ERRORS.MAX_FEE_TOO_LOW
@@ -118,16 +103,13 @@ export default function GasTiming({
         fontWeight={FONT_WEIGHT.BOLD}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
-        {unknownProcessingTimeText}
+        {t('editGasTooLow')}
       </Typography>
     );
   }
 
   // Don't show anything if we don't have enough information
-  if (
-    isGasEstimatesLoading ||
-    gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET
-  ) {
+  if (isGasEstimatesLoading || gasEstimateType !== GasEstimateTypes.feeMarket) {
     return null;
   }
 
@@ -155,7 +137,7 @@ export default function GasTiming({
       ]);
     }
   } else {
-    if (!supportsEIP1559V2 || estimateUsed === 'low') {
+    if (estimateUsed === 'low') {
       attitude = 'negative';
     }
     // If the user has chosen a value less than our low estimate,
@@ -168,28 +150,16 @@ export default function GasTiming({
         customEstimatedTime === 'unknown' ||
         customEstimatedTime?.upperTimeBound === 'unknown'
       ) {
-        text = unknownProcessingTimeText;
+        text = t('editGasTooLow');
       } else {
         text = t('gasTimingNegative', [
           toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
         ]);
       }
-    } else if (supportsEIP1559V2) {
+    } else {
       text = t('gasTimingNegative', [
         toHumanReadableTime(low.maxWaitTimeEstimate, t),
       ]);
-    } else {
-      text = (
-        <>
-          {t('gasTimingNegative', [
-            toHumanReadableTime(low.maxWaitTimeEstimate, t),
-          ])}
-          <InfoTooltip
-            position="top"
-            contentText={t('editGasTooLowWarningTooltip')}
-          />
-        </>
-      );
     }
   }
 
@@ -197,10 +167,7 @@ export default function GasTiming({
     <Typography
       variant={TYPOGRAPHY.H7}
       className={classNames('gas-timing', {
-        [`gas-timing--${attitude}`]:
-          attitude && (eip1559V2Enabled || !supportsEIP1559V2),
-        [`gas-timing--${attitude}-V2`]:
-          attitude && (eip1559V2Enabled || supportsEIP1559V2),
+        [`gas-timing--${attitude}`]: attitude,
       })}
     >
       {text}

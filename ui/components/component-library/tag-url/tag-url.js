@@ -41,14 +41,15 @@ export const TagUrl = ({
       display={DISPLAY.FLEX}
       {...props}
     >
-      <AvatarFavicon imageSource={src} {...avatarFaviconProps} />
+      <AvatarFavicon src={src} {...avatarFaviconProps} />
       {showLockIcon && (
         <Icon
-          className="tag-url__lock-icon"
-          name={ICON_NAMES.LOCK_FILLED}
+          className="mm-tag-url__lock-icon"
+          name={ICON_NAMES.LOCK}
           color={COLORS.ICON_ALTERNATIVE}
           size={SIZES.SM}
           aria-label="https://"
+          role="img"
           {...lockIconProps}
         />
       )}
@@ -110,6 +111,10 @@ TagUrl.propTypes = {
    * Additional classNames to be added to the TagUrl component
    */
   className: PropTypes.string,
+  /**
+   * TagUrl accepts all the props from Box
+   */
+  ...Box.propTypes,
 };
 
 export default TagUrl;

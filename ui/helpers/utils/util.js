@@ -15,7 +15,7 @@ import {
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { toBigNumber } from '../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -485,9 +485,10 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
   if (numberish === undefined || numberish === null) {
     return '';
   }
-  return toBigNumber
-    .dec(toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces))
-    .toNumber();
+  return new Numeric(
+    new Numeric(numberish, 10).toFixed(numberOfDecimalPlaces),
+    10,
+  ).toNumber();
 }
 
 /**

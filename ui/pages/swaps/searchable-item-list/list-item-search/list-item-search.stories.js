@@ -4,7 +4,7 @@ import ListItemSearch from '.';
 
 export default {
   title: 'Pages/Swaps/SearchableItemList/ListItemSearch',
-  id: __filename,
+
   argTypes: {
     onSearch: {
       action: 'onSearch',

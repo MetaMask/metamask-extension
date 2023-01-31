@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
@@ -40,7 +40,7 @@ const render = () => {
       },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
-        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
 
@@ -63,12 +63,12 @@ describe('AdvancedGasFeePopover', () => {
     expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
   });
 
-  it('should disable save button if priority fee 0 is entered', () => {
+  it('should enable save button if priority fee 0 is entered', () => {
     render();
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 0 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeEnabled();
   });
 
   it('should disable save button if priority fee entered is greater than base fee', () => {

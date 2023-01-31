@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { conversionUtil } from '../../../../shared/modules/conversion.utils';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -17,6 +16,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../shared/constants/common';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -111,7 +112,7 @@ export default class SignatureRequest extends PureComponent {
   memoizedParseMessage = memoize((data) => {
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
-    return { sanitizedMessage, domain };
+    return { sanitizedMessage, domain, primaryType };
   });
 
   render() {
@@ -134,18 +135,19 @@ export default class SignatureRequest extends PureComponent {
       nativeCurrency,
     } = this.props;
     const { trackEvent } = this.context;
-    const { sanitizedMessage, domain } = this.memoizedParseMessage(data);
-
+    const {
+      sanitizedMessage,
+      domain: { verifyingContract },
+      primaryType,
+    } = this.memoizedParseMessage(data);
     const currentNetwork = this.getNetworkName();
 
-    const balanceInBaseAsset = conversionUtil(balance, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromDenomination: 'WEI',
-      numberOfDecimals: 6,
-      conversionRate,
-    });
-
+    const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
+      .toDenomination(EtherDenomination.ETH)
+      .applyConversionRate(conversionRate)
+      .round(6)
+      .toBase(10)
+      .toString();
     const onSign = (event) => {
       sign(event);
       trackEvent({
@@ -222,20 +224,23 @@ export default class SignatureRequest extends PureComponent {
           >
             {this.context.t('signatureRequestGuidance')}
           </Typography>
-          <div>
-            <Button
-              type="link"
-              onClick={() => this.setState({ showContractDetails: true })}
-              className="signature-request-content__verify-contract-details"
-            >
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.PRIMARY_DEFAULT}
+          {verifyingContract ? (
+            <div>
+              <Button
+                type="link"
+                onClick={() => this.setState({ showContractDetails: true })}
+                className="signature-request-content__verify-contract-details"
+                data-testid="verify-contract-details"
               >
-                {this.context.t('verifyContractDetails')}
-              </Typography>
-            </Button>
-          </div>
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  color={COLORS.PRIMARY_DEFAULT}
+                >
+                  {this.context.t('verifyContractDetails')}
+                </Typography>
+              </Button>
+            </div>
+          ) : null}
         </div>
         {isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
@@ -248,6 +253,7 @@ export default class SignatureRequest extends PureComponent {
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}
           messageIsScrollable={messageIsScrollable}
+          primaryType={primaryType}
         />
         <Footer
           cancelAction={onCancel}
@@ -259,7 +265,7 @@ export default class SignatureRequest extends PureComponent {
         />
         {this.state.showContractDetails && (
           <ContractDetailsModal
-            toAddress={domain.verifyingContract}
+            toAddress={verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
             origin={origin}

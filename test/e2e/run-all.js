@@ -36,12 +36,22 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
+          .option('debug', {
+            default: process.env.E2E_DEBUG === 'true',
+            description:
+              'Run tests in debug mode, logging each driver interaction',
+            type: 'boolean',
+          })
           .option('snaps', {
             description: `run snaps e2e tests`,
             type: 'boolean',
           })
           .option('mv3', {
             description: `run mv3 specific e2e tests`,
+            type: 'boolean',
+          })
+          .option('nft', {
+            description: `run nft specific e2e tests`,
             type: 'boolean',
           })
           .option('retries', {
@@ -53,12 +63,15 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries, snaps, mv3 } = argv;
+  const { browser, debug, retries, snaps, mv3, nft } = argv;
 
   let testPaths;
 
   if (snaps) {
     const testDir = path.join(__dirname, 'snaps');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (nft) {
+    const testDir = path.join(__dirname, 'nft');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
@@ -83,6 +96,9 @@ async function main() {
   }
   if (retries) {
     args.push('--retries', retries);
+  }
+  if (debug) {
+    args.push('--debug');
   }
 
   // For running E2Es in parallel in CI

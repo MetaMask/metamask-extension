@@ -23,13 +23,17 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
-import IconChart from '../../components/ui/icon/icon-chart';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   DISPLAY,
   COLORS,
+  BLOCK_SIZES,
+  SIZES,
+  TEXT,
 } from '../../helpers/constants/design-system';
+import { SECOND } from '../../../shared/constants/time';
+import { ButtonLink, ICON_NAMES } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -135,6 +139,8 @@ export default class Home extends PureComponent {
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    removeCollectibleMessage: PropTypes.string,
+    setRemoveCollectibleMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -263,12 +269,18 @@ export default class Home extends PureComponent {
       setNewNetworkAdded,
       newCollectibleAddedMessage,
       setNewCollectibleAddedMessage,
+      removeCollectibleMessage,
+      setRemoveCollectibleMessage,
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
       clearNewCustomNetworkAdded,
       setRpcTarget,
     } = this.props;
+
+    const onAutoHide = () => setNewCollectibleAddedMessage('');
+    const autoHideDelay = 5 * SECOND;
+
     return (
       <MultipleNotifications>
         {
@@ -312,6 +324,8 @@ export default class Home extends PureComponent {
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
@@ -324,7 +338,32 @@ export default class Home extends PureComponent {
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
-                  onClick={() => setNewCollectibleAddedMessage('')}
+                  onClick={onAutoHide}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+
+        {removeCollectibleMessage === 'success' ? (
+          <ActionableMessage
+            type="danger"
+            className="home__new-network-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
+            message={
+              <Box display={DISPLAY.INLINE_FLEX}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {t('removeCollectibleMessage')}
+                </Typography>
+                <button
+                  className="fas fa-times home__new-nft-notification-close"
+                  title={t('close')}
+                  onClick={() => setRemoveCollectibleMessage('')}
                 />
               </Box>
             }
@@ -610,7 +649,8 @@ export default class Home extends PureComponent {
               <EthOverview />
             </div>
             <Tabs
-              defaultActiveTabName={defaultHomeActiveTabName}
+              t={this.context.t}
+              defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
               subHeader={
@@ -619,6 +659,7 @@ export default class Home extends PureComponent {
                   open={
                     !process.env.IN_TEST &&
                     !shouldShowSeedPhraseReminder &&
+                    !showRecoveryPhraseReminder &&
                     showPortfolioTooltip
                   }
                   interactive
@@ -648,8 +689,9 @@ export default class Home extends PureComponent {
                     </div>
                   }
                 >
-                  <div
+                  <ButtonLink
                     className="home__subheader-link"
+                    data-testid="home__portfolio-site"
                     onClick={async () => {
                       const portfolioUrl = process.env.PORTFOLIO_URL;
                       global.platform.openTab({
@@ -670,15 +712,13 @@ export default class Home extends PureComponent {
                         },
                       );
                     }}
+                    iconName={ICON_NAMES.DIAGRAM}
+                    width={BLOCK_SIZES.FULL}
+                    size={SIZES.MD}
+                    textProps={{ variant: TEXT.BODY_SM }}
                   >
-                    <IconChart />
-                    <div
-                      className="home__subheader-link--text"
-                      data-testid="home__portfolio-site"
-                    >
-                      {t('portfolioSite')}
-                    </div>
-                  </div>
+                    {t('portfolioSite')}
+                  </ButtonLink>
                 </Tooltip>
               }
             >
@@ -686,7 +726,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={t('assets')}
+                name={this.context.t('assets')}
+                tabKey="assets"
               >
                 <AssetList
                   onClickAsset={(asset) =>
@@ -694,12 +735,13 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              {process.env.COLLECTIBLES_V1 ? (
+              {process.env.NFTS_V1 ? (
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
                   data-testid="home__nfts-tab"
-                  name={t('nfts')}
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
                 >
                   <CollectiblesTab
                     onAddNFT={() => {
@@ -712,7 +754,8 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__activity-tab"
-                name={t('activity')}
+                name={this.context.t('activity')}
+                tabKey="activity"
               >
                 <TransactionList />
               </Tab>

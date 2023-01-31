@@ -33,7 +33,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Button',
-  id: __filename,
+
   component: Button,
   parameters: {
     docs: {
@@ -64,7 +64,7 @@ export default {
     href: {
       control: 'text',
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -146,12 +146,15 @@ export const Size = (args) => (
       <Button {...args} size={SIZES.LG}>
         Large Button
       </Button>
+      <Button {...args} type={BUTTON_TYPES.LINK}>
+        Auto ButtonLink
+      </Button>
     </Box>
     <Text variant={TEXT.BODY_SM}>
-      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.AUTO}>
-        Button Auto
+      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.INHERIT}>
+        Button Inherit
       </Button>{' '}
-      inherits the font-size of the parent element. Auto size only used for
+      inherits the font-size of the parent element. Inherit size only used for
       ButtonLink.
     </Text>
   </>
@@ -167,7 +170,7 @@ export const Danger = (args) => (
   </Box>
 );
 
-export const Href = (args) => <Button {...args}>Href Example</Button>;
+export const Href = (args) => <Button {...args}>Anchor Element</Button>;
 
 Href.args = {
   href: '/metamask',
@@ -206,7 +209,7 @@ Loading.args = {
 };
 
 export const Icon = (args) => (
-  <Button {...args} icon={ICON_NAMES.ADD_SQUARE_FILLED}>
+  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
     Button
   </Button>
 );

@@ -49,7 +49,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/FormTextField',
-  id: __filename,
+
   component: FormTextField,
   parameters: {
     docs: {
@@ -400,11 +400,7 @@ export const FormExample = () => {
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
-      <ButtonSecondary
-        icon={ICON_NAMES.CLOSE_OUTLINE}
-        onClick={handleClearForm}
-        danger
-      >
+      <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
         Clear form
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
@@ -439,18 +435,18 @@ export const CustomLabelOrHelpText = () => (
           Custom spending cap
         </Label>
         <Icon
-          name={ICON_NAMES.INFO_FILLED}
+          name={ICON_NAMES.INFO}
           size={SIZES.SM}
           marginLeft={1}
           color={COLORS.ICON_ALTERNATIVE}
         />
       </Box>
-      <ButtonLink size={SIZES.AUTO}>Use default</ButtonLink>
+      <ButtonLink>Use default</ButtonLink>
     </Box>
     <FormTextField
       id="custom-spending-cap"
       placeholder="Enter a number"
-      rightAccessory={<ButtonLink size={SIZES.AUTO}>Max</ButtonLink>}
+      rightAccessory={<ButtonLink>Max</ButtonLink>}
       marginBottom={4}
       type={TEXT_FIELD_TYPES.NUMBER}
     />
@@ -473,7 +469,7 @@ export const CustomLabelOrHelpText = () => (
         accessing now or in the future. You can always increase the token limit
         later.
       </HelpText>
-      <ButtonLink size={SIZES.AUTO} marginLeft="auto" marginTop={1}>
+      <ButtonLink marginLeft="auto" marginTop={1}>
         Max
       </ButtonLink>
     </Box>

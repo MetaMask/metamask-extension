@@ -8,12 +8,12 @@ import { ButtonBase } from './button-base';
 The `ButtonBase` is the base component for buttons.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--default-story" />
+  <Story id="components-componentlibrary-buttonbase--default-story" />
 </Canvas>
 
 ## Props
 
-The `ButtonBase` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `ButtonBase` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={ButtonBase} />
 
@@ -26,20 +26,18 @@ Optional: `BUTTON_BASE_SIZES` from `./button-base` object can be used instead of
 
 Possible sizes include:
 
-- `SIZES.AUTO` inherits the font-size of the parent element.
 - `SIZES.SM` 32px
 - `SIZES.MD` 40px
 - `SIZES.LG` 48px
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--size" />
+  <Story id="components-componentlibrary-buttonbase--size" />
 </Canvas>
 
 ```jsx
 import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
-<ButtonBase size={SIZES.AUTO} />
 <ButtonBase size={SIZES.SM} />
 <ButtonBase size={SIZES.MD} />
 <ButtonBase size={SIZES.LG} />
@@ -50,12 +48,12 @@ import { ButtonBase } from '../../ui/components/component-library';
 Use boolean `block` prop to quickly enable a full width block button
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--block" />
+  <Story id="components-componentlibrary-buttonbase--block" />
 </Canvas>
 
 ```jsx
 import { DISPLAY } from '../../../helpers/constants/design-system';
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase>Default Button</ButtonBase>
 <ButtonBase block>Block Button</ButtonBase>
@@ -73,11 +71,11 @@ Button `as` options:
 - `a`
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--as" />
+  <Story id="components-componentlibrary-buttonbase--as" />
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 
 <ButtonBase as="button">Button Element</ButtonBase>
@@ -91,11 +89,11 @@ import { ButtonBase } from '../../ui/components/component-library';
 When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--href" />
+  <Story id="components-componentlibrary-buttonbase--href" />
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase href="/metamask">Anchor Element</ButtonBase>;
 ```
@@ -105,11 +103,11 @@ import { ButtonBase } from '../../ui/components/component-library';
 Use the boolean `disabled` prop to disable button
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--disabled" />
+  <Story id="components-componentlibrary-buttonbase--disabled" />
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase disabled>Disabled Button</ButtonBase>;
 ```
@@ -119,26 +117,26 @@ import { ButtonBase } from '../../ui/components/component-library';
 Use the boolean `loading` prop to set loading spinner
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--loading" />
+  <Story id="components-componentlibrary-buttonbase--loading" />
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 
 <ButtonBase loading>Loading Button</ButtonBase>;
 ```
 
-### Icon
+### Icon Name
 
-Use the `icon` prop and the `ICON_NAMES` object from `./ui/components/component-library` to select icon.
+Use the `iconName` prop and the `ICON_NAMES` object from `./ui/components/component-library` to select icon.
 
 <Canvas>
-  <Story id="ui-components-component-library-button-base-button-base-stories-js--icon" />
+  <Story id="components-componentlibrary-buttonbase--icon" />
 </Canvas>
 
 ```jsx
-import { ButtonBase } from '../../ui/components/component-library';
+import { ButtonBase } from '../../component-library';
 import { ICON_NAMES } from '../icon';
 
-<ButtonBase icon={ICON_NAMES.ADD_SQUARE_FILLED}>Button</ButtonBase>;
+<ButtonBase icon={ICON_NAMES.ADD_SQUARE}>Button</ButtonBase>;
 ```

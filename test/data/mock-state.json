@@ -1,6 +1,6 @@
 {
-  "ENS": {
-    "resolution": ""
+  "DNS": {
+    "resolution": null
   },
   "appState": {
     "networkDropdownOpen": false,

@@ -1,9 +1,9 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
-import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import { AlertTypes } from '../../../shared/constants/alerts';
 import {
-  GAS_ESTIMATE_TYPES,
-  NETWORK_CONGESTION_THRESHOLDS,
+  GasEstimateTypes,
+  NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
@@ -14,11 +14,14 @@ import {
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 
-import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import {
+  decGWEIToHexWEI,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -252,10 +255,10 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale;
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount];
+  getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
 export const getWeb3ShimUsageAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage];
+  getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
 
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
@@ -264,16 +267,8 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDetectionNoticeDismissed(state) {
-  return state.metamask.collectiblesDetectionNoticeDismissed;
-}
-
 export function getCollectiblesDropdownState(state) {
   return state.metamask.collectiblesDropdownState;
-}
-
-export function getEnableEIP1559V2NoticeDismissed(state) {
-  return state.metamask.enableEIP1559V2NoticeDismissed;
 }
 
 export const getCollectibles = (state) => {
@@ -285,7 +280,9 @@ export const getCollectibles = (state) => {
     },
   } = state;
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
@@ -297,7 +294,9 @@ export const getCollectibleContracts = (state) => {
     },
   } = state;
 
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  const chainIdAsDecimal = hexToDecimal(chainId);
+
+  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
 export function getBlockGasLimit(state) {
@@ -368,22 +367,20 @@ export function getIsGasEstimatesLoading(state) {
   // 'NONE' or if the current gasEstimateType cannot be supported by the current
   // network
   const isEIP1559TolerableEstimateType =
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
+    gasEstimateType === GasEstimateTypes.feeMarket ||
+    gasEstimateType === GasEstimateTypes.ethGasPrice;
   const isGasEstimatesLoading =
-    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
+    gasEstimateType === GasEstimateTypes.none ||
     (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
     (!networkAndAccountSupports1559 &&
-      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+      gasEstimateType === GasEstimateTypes.feeMarket);
 
   return isGasEstimatesLoading;
 }
 
 export function getIsNetworkBusy(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
-  return (
-    gasFeeEstimates?.networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY
-  );
+  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
 export function getCompletedOnboarding(state) {
@@ -441,7 +438,7 @@ export function getLedgerTransportType(state) {
 export function isAddressLedger(state, address) {
   const keyring = findKeyringForAddress(state, address);
 
-  return keyring?.type === KEYRING_TYPES.LEDGER;
+  return keyring?.type === HardwareKeyringTypes.ledger;
 }
 
 /**
@@ -453,6 +450,6 @@ export function isAddressLedger(state, address) {
  */
 export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
-    return kr.type === KEYRING_TYPES.LEDGER;
+    return kr.type === HardwareKeyringTypes.ledger;
   });
 }

@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Напредне опције"
   },
-  "advancedOptions": {
-    "message": "Dodatne opcije"
-  },
   "amount": {
     "message": "Iznos"
   },
@@ -551,9 +548,6 @@
   },
   "newAccount": {
     "message": "Nov nalog"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Otkrivena je nova adresa! Kliknite ovde da biste je dodali u Vaš adresar."
   },
   "newAccountNumberName": {
     "message": "Nalog $1",

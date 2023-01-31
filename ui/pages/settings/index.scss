@@ -171,6 +171,11 @@
 
   &__subheader--break {
     margin-inline-start: 4px;
+    white-space: nowrap;
+    width: 100%;
+    max-width: calc(100% - 125px - 85px);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__sub-header {
@@ -350,6 +355,10 @@
     }
   }
 
+  &__content-row-experimental {
+    padding: 10px 0 0 12px;
+  }
+
   &__content-label {
     text-transform: capitalize;
   }
@@ -364,7 +373,6 @@
     @include H6;
 
     color: var(--color-text-alternative);
-    padding-top: 5px;
 
     a {
       color: var(--color-primary-default);
@@ -380,6 +388,12 @@
       max-width: 100%;
       width: 100%;
     }
+  }
+
+  &__content-item-col-open-sea {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4px;
   }
 
   &__button {

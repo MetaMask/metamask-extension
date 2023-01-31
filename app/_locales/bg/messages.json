@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Разширени"
   },
-  "advancedOptions": {
-    "message": "Разширени опции"
-  },
   "amount": {
     "message": "Сума"
   },
@@ -556,9 +553,6 @@
   },
   "newAccount": {
     "message": "Нов акаунт"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Открит е нов адрес! Кликнете тук, за да го добавите към вашата адресна книга."
   },
   "newAccountNumberName": {
     "message": "Акаунт $1",

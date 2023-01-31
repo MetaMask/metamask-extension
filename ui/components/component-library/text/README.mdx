@@ -9,12 +9,12 @@ import { Text } from './text';
 Good typography improves readability, legibility and hierarchy of information.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--default-story" />
+  <Story id="components-componentlibrary-text--default-story" />
 </Canvas>
 
 ## Props
 
-The `Text` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `Text` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={Text} />
 
@@ -25,11 +25,11 @@ Use the `variant` prop and the `TEXT` object from `./ui/helpers/constants/design
 Optional: `TEXT_VARIANTS` from ./text object can also be used.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--variant" />
+  <Story id="components-componentlibrary-text--variant" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 import { TEXT } from '../../../helpers/constants/design-system';
 
 <Text variant={TEXT.DISPLAY_MD}>display-md</Text>
@@ -50,11 +50,11 @@ import { TEXT } from '../../../helpers/constants/design-system';
 Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design-system.js` to change the color of the `Text` component.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--color" />
+  <Story id="components-componentlibrary-text--color" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 import { COLORS } from '../../../helpers/constants/design-system';
 
 <Text color={COLORS.TEXT_DEFAULT}>
@@ -66,34 +66,34 @@ import { COLORS } from '../../../helpers/constants/design-system';
 <Text color={COLORS.TEXT_MUTED}>
   text-muted
 </Text>
-<Text color={COLORS.OVERLAY_INVERSE} backgroundColor:{COLORS.OVERLAY_DEFAULT}>
+<Text color={COLORS.OVERLAY_INVERSE} backgroundColor={COLORS.OVERLAY_DEFAULT}>
   overlay-inverse
 </Text>
 <Text color={COLORS.PRIMARY_DEFAULT}>
   primary-default
 </Text>
-<Text color={COLORS.PRIMARY_INVERSE} backgroundColor:{COLORS.PRIMARY_DEFAULT}>
+<Text color={COLORS.PRIMARY_INVERSE} backgroundColor={COLORS.PRIMARY_DEFAULT}>
   primary-inverse
 </Text>
 <Text color={COLORS.ERROR_DEFAULT}>
   error-default
 </Text>
-<Text color={COLORS.ERROR_INVERSE} backgroundColor:{COLORS.ERROR_DEFAULT}>
+<Text color={COLORS.ERROR_INVERSE} backgroundColor={COLORS.ERROR_DEFAULT}>
   error-inverse
 </Text>
 <Text color={COLORS.SUCCESS_DEFAULT}>
   success-default
 </Text>
-<Text color={COLORS.SUCCESS_INVERSE} backgroundColor:{COLORS.SUCCESS_DEFAULT}>
+<Text color={COLORS.SUCCESS_INVERSE} backgroundColor={COLORS.SUCCESS_DEFAULT}>
   success-inverse
 </Text>
-<Text color={COLORS.WARNING_INVERSE} backgroundColor:{COLORS.WARNING_DEFAULT}>
+<Text color={COLORS.WARNING_INVERSE} backgroundColor={COLORS.WARNING_DEFAULT}>
   warning-inverse
 </Text>
 <Text color={COLORS.INFO_DEFAULT}>
   info-default
 </Text>
-<Text color={COLORS.INFO_INVERSE} backgroundColor:{COLORS.INFO_DEFAULT}>
+<Text color={COLORS.INFO_INVERSE} backgroundColor={COLORS.INFO_DEFAULT}>
   info-inverse
 </Text>
 ```
@@ -107,11 +107,11 @@ Use the `fontWeight` prop and the `FONT_WEIGHT` object from `./ui/helpers/consta
 - `FONT_WEIGHT.BOLD` = `bold` || `700`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--font-weight" />
+  <Story id="components-componentlibrary-text--font-weight" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 import { FONT_WEIGHT } from '../../../helpers/constants/design-system';
 
 <Text fontWeight={FONT_WEIGHT.NORMAL}>
@@ -133,11 +133,11 @@ Use the `fontStyle` prop and the `FONT_STYLE` object from `./ui/helpers/constant
 - `FONT_STYLE.ITALIC`
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--font-style" />
+  <Story id="components-componentlibrary-text--font-style" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 import { FONT_STYLE } from '../../../helpers/constants/design-system';
 
 <Text fontStyle={FONT_STYLE.NORMAL}>
@@ -153,11 +153,11 @@ import { FONT_STYLE } from '../../../helpers/constants/design-system';
 Use the `textTransform` prop and the `TEXT_TRANSFORM` object from `./ui/helpers/constants/design-system.js` to change the text alignment of the `Text` component
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--text-transform" />
+  <Story id="components-componentlibrary-text--text-transform" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 import { TEXT_TRANSFORM } from '../../../helpers/constants/design-system';
 
 <Text textAlign={TEXT_TRANSFORM.UPPERCASE}>
@@ -176,11 +176,11 @@ import { TEXT_TRANSFORM } from '../../../helpers/constants/design-system';
 Use the `textAlign` prop and the `TEXT_ALIGN` object from `./ui/helpers/constants/design-system.js` to change the text alignment of the `Text` component
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--text-align" />
+  <Story id="components-componentlibrary-text--text-align" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 
 <Text textAlign={TEXT_ALIGN.LEFT}>
@@ -205,11 +205,11 @@ import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
 Use the `overflowWrap` prop and the `OVERFLOW_WRAP` object from `./ui/helpers/constants/design-system.js` to change the overflow wrap of the `Text` component
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--overflow-wrap" />
+  <Story id="components-componentlibrary-text--overflow-wrap" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
 
 <div
@@ -233,11 +233,11 @@ import { OVERFLOW_WRAP } from '../../../helpers/constants/design-system';
 Use the boolean `ellipsis` prop to change the if the `Text` component to have an ellipsis.
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--ellipsis" />
+  <Story id="components-componentlibrary-text--ellipsis" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 
 <div
   style={{
@@ -256,11 +256,11 @@ import { Text } from '../../ui/components/component-library';
 Use the `as` prop to change the root html element of the `Text` component
 
 <Canvas>
-  <Story id="ui-components-component-library-text-text-stories-js--as" />
+  <Story id="components-componentlibrary-text--as" />
 </Canvas>
 
 ```jsx
-import { Text } from '../../ui/components/component-library';
+import { Text } from '../../component-library';
 
 <Text as="dd">dd</Text>
 <Text as="div">div</Text>
@@ -299,9 +299,31 @@ Renders the html:
 <input placeholder="input" />
 ```
 
+### Text Direction
+
+Use the `textDirection` prop and the `TEXT_DIRECTIONS` object from `./text.constants.js` to change the text direction of `Text`
+
+<Canvas>
+  <Story id="components-componentlibrary-text--text-direction" />
+</Canvas>
+
+```jsx
+import { Text, TEXT_DIRECTIONS } from '../../component-library';
+
+<Text textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>
+  This is left to right (ltr) for English and most languages
+</Text>
+<Text textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>
+  This is right to left (rtl) for use with other laguanges such as Arabic. This Enlgish example is incorrect usage.
+</Text>
+<Text textDirection={TEXT_DIRECTIONS.AUTO}>
+  Let the user agent decide with the auto option
+</Text>
+```
+
 ### Box Props
 
-Use any valid box props [Box](/?path=/story/ui-components-ui-box-box-stories-js--default-story) component props to the Text component.
+Use any valid box props [Box](/?path=/story/components-ui-box--default-story) component props to the Text component.
 
 ### Class Name
 

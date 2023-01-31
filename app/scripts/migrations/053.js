@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { TransactionType } from '../../../shared/constants/transaction';
 
 const version = 53;
 
@@ -25,8 +25,8 @@ function transformState(state) {
     transactions.forEach((transaction) => {
       if (transaction) {
         if (
-          transaction.type !== TRANSACTION_TYPES.RETRY &&
-          transaction.type !== TRANSACTION_TYPES.CANCEL
+          transaction.type !== TransactionType.retry &&
+          transaction.type !== TransactionType.cancel
         ) {
           transaction.type = transaction.transactionCategory;
         }
@@ -41,7 +41,7 @@ function transformState(state) {
         delete transaction.transactionCategory;
         state.IncomingTransactionsController.incomingTransactions[key] = {
           ...transaction,
-          type: TRANSACTION_TYPES.INCOMING,
+          type: TransactionType.incoming,
         };
       }
     });

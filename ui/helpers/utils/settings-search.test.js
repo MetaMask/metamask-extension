@@ -103,10 +103,6 @@ const t = (key) => {
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    case 'enableEIP1559V2':
-      return 'Enable enhanced gas fee UI';
-    case 'enableEIP1559V2Description':
-      return "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. Learn more";
     case 'autoDetectTokens':
       return 'Autodetect tokens';
     case 'autoDetectTokensDescription':
@@ -186,7 +182,7 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        3,
+        1,
       );
     });
 

@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Mipangilio ya kina"
   },
-  "advancedOptions": {
-    "message": "Machaguo ya Juu"
-  },
   "amount": {
     "message": "Kiasi"
   },
@@ -538,9 +535,6 @@
   },
   "newAccount": {
     "message": "Akaunti Mpya"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Anwani mpya zimegunduliwa! Bofya hapa ili uongeze kitabu chako cha anwani."
   },
   "newAccountNumberName": {
     "message": "Akaunti $1",

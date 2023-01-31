@@ -19,7 +19,6 @@ import {
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
-import { getValueFromWeiHex } from '../../helpers/utils/conversions.util';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
@@ -27,7 +26,6 @@ import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   calcGasTotal,
   calcTokenAmount,
-  decimalToHex,
   toPrecisionWithoutTrailingZeros,
 } from '../../../shared/lib/transactions-controller-utils';
 import {
@@ -35,7 +33,11 @@ import {
   truthyString,
   validateData,
 } from '../../../shared/lib/swaps-utils';
-import { sumHexes } from '../../helpers/utils/transactions.util';
+import {
+  decimalToHex,
+  getValueFromWeiHex,
+  sumHexes,
+} from '../../../shared/modules/conversion.utils';
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
@@ -361,7 +363,7 @@ export function quotesToRenderableData(
   chainId,
   smartTransactionEstimatedGas,
   nativeCurrencySymbol,
-  multiLayerL1FeeTotal,
+  multiLayerL1ApprovalFeeTotal,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -376,7 +378,20 @@ export function quotesToRenderableData(
       averageGas,
       fee,
       trade,
+      multiLayerL1TradeFeeTotal,
     } = quote;
+    let multiLayerL1FeeTotal = null;
+    if (
+      multiLayerL1TradeFeeTotal !== null &&
+      multiLayerL1ApprovalFeeTotal !== null
+    ) {
+      multiLayerL1FeeTotal = sumHexes(
+        multiLayerL1TradeFeeTotal || '0x0',
+        multiLayerL1ApprovalFeeTotal || '0x0',
+      );
+    } else if (multiLayerL1TradeFeeTotal !== null) {
+      multiLayerL1FeeTotal = multiLayerL1TradeFeeTotal;
+    }
     const sourceValue = calcTokenAmount(
       sourceAmount,
       sourceTokenInfo.decimals,

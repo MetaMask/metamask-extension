@@ -51,10 +51,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 pode acessar e gastar até esse valor máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessingYourCamera": {
     "message": "Acessando sua câmera..."
   },
@@ -167,9 +163,6 @@
   "advancedGasPriceTitle": {
     "message": "Preço do gás"
   },
-  "advancedOptions": {
-    "message": "Opções avançadas"
-  },
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
@@ -233,15 +226,8 @@
   "approveButtonText": {
     "message": "Aprovar"
   },
-  "approveSpendLimit": {
-    "message": "Aprovar limite de gastos de $1",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "Aprovado"
-  },
-  "approvedAmountWithColon": {
-    "message": "Valor aprovado:"
   },
   "asset": {
     "message": "Ativo"
@@ -738,29 +724,8 @@
   "editContact": {
     "message": "Editar contato"
   },
-  "editGasEducationButtonText": {
-    "message": "Como devo escolher?"
-  },
-  "editGasEducationHighExplanation": {
-    "message": "Essa opção é mais indicada para transações urgentes (como trocas, ou \"swaps\"), pois aumenta a probabilidade de sucesso da transação. Se uma troca leva muito tempo para ser processada, pode falhar e resultar na perda de parte da sua taxa de gás."
-  },
-  "editGasEducationLowExplanation": {
-    "message": "Uma taxa de gás mais baixa só deve ser usada quando o tempo de processamento é menos importante. Taxas reduzidas dificultam a previsão de quando (ou se) a sua transação será bem-sucedida."
-  },
-  "editGasEducationMediumExplanation": {
-    "message": "Uma taxa de gás média é indicada para envios, saques ou outras transações não urgentes. Essa configuração geralmente resulta em uma transação bem-sucedida."
-  },
-  "editGasEducationModalIntro": {
-    "message": "A escolha da taxa de gás ideal depende do tipo de transação e da importância dela para você."
-  },
-  "editGasEducationModalTitle": {
-    "message": "Como escolher?"
-  },
   "editGasFeeModalTitle": {
     "message": "Editar taxa de gás"
-  },
-  "editGasHigh": {
-    "message": "Alta"
   },
   "editGasLimitOutOfBounds": {
     "message": "O limite de gás deve ser de pelo menos $1"
@@ -771,9 +736,6 @@
   },
   "editGasLimitTooltip": {
     "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
-  },
-  "editGasLow": {
-    "message": "Baixa"
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "A taxa de base máxima não pode ser inferior à taxa de prioridade"
@@ -793,9 +755,6 @@
   "editGasMaxFeePriorityImbalance": {
     "message": "A taxa máxima não pode ser inferior à taxa de prioridade máxima"
   },
-  "editGasMaxFeeTooltip": {
-    "message": "A taxa máxima é o maior valor que você pagará (taxa de base + taxa de prioridade)."
-  },
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "A taxa de prioridade máxima deve ser superior a 0 GWEI"
   },
@@ -813,12 +772,6 @@
   },
   "editGasMaxPriorityFeeLowV2": {
     "message": "A taxa de prioridade está baixa para as condições atuais da rede"
-  },
-  "editGasMaxPriorityFeeTooltip": {
-    "message": "A taxa de prioridade máxima (ou seja, a \"gorjeta dos mineradores\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação. Você geralmente paga a sua configuração máxima"
-  },
-  "editGasMedium": {
-    "message": "Média"
   },
   "editGasPriceTooLow": {
     "message": "O preço do gás deve ser superior a 0"
@@ -838,12 +791,6 @@
   },
   "editGasTooLow": {
     "message": "Tempo de processamento desconhecido"
-  },
-  "editGasTooLowTooltip": {
-    "message": "Sua taxa máxima ou taxa de prioridade máxima pode estar baixa para as condições atuais do mercado. Não sabemos quando (ou se) a sua transação será processada. "
-  },
-  "editGasTooLowWarningTooltip": {
-    "message": "Isso reduz a sua taxa máxima, mas se o tráfego da rede aumentar, a sua transação poderá sofrer atrasos ou falhar."
   },
   "editNonceField": {
     "message": "Editar nonce"
@@ -1084,9 +1031,6 @@
   "gasDisplayDappWarning": {
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasEstimatesUnavailableWarning": {
-    "message": "Nossas estimativas baixas, médias e altas não estão disponíveis."
   },
   "gasLimit": {
     "message": "Limite de gás"
@@ -1665,9 +1609,6 @@
   },
   "newAccount": {
     "message": "Nova conta"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Novo endereço detectado! Clique aqui para adicionar à sua agenda de endereços."
   },
   "newAccountNumberName": {
     "message": "Conta $1",
@@ -2361,9 +2302,6 @@
   "showPrivateKeys": {
     "message": "Mostrar chaves privadas"
   },
-  "showRecommendations": {
-    "message": "Mostrar recomendações"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
   },
@@ -2378,9 +2316,6 @@
   },
   "signatureRequest": {
     "message": "Solicitação de assinatura"
-  },
-  "signatureRequest1": {
-    "message": "Mensagem"
   },
   "signed": {
     "message": "Assinado"
@@ -2420,9 +2355,6 @@
   },
   "speedUpTransaction": {
     "message": "Acelerar essa transação"
-  },
-  "spendLimitAmount": {
-    "message": "Valor do limite de gastos"
   },
   "spendLimitInsufficient": {
     "message": "Limite de gastos insuficiente"

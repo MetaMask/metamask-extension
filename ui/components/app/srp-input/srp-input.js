@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -14,8 +14,6 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
-
-const { isValidMnemonic } = ethers.utils;
 
 const defaultNumberOfWords = 12;
 
