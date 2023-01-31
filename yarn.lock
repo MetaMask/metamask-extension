@@ -7425,6 +7425,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/remote-redux-devtools@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@types/remote-redux-devtools@npm:0.5.5"
+  dependencies:
+    redux: ^4.0.0
+  checksum: 1ff59a41e194b8785ba358109a3b5cf30d91a868e04cce57d912344ec5f6e38b647fec7194f621abebac97492dfb344ac6e535654ea05da60c5f78704c108634
+  languageName: node
+  linkType: hard
+
 "@types/responselike@npm:*, @types/responselike@npm:^1.0.0":
   version: 1.0.0
   resolution: "@types/responselike@npm:1.0.0"
@@ -24125,6 +24134,7 @@ __metadata:
     "@types/pump": ^1.1.1
     "@types/react": ^16.9.53
     "@types/react-dom": ^17.0.11
+    "@types/remote-redux-devtools": ^0.5.5
     "@types/watchify": ^3.11.1
     "@types/yargs": ^17.0.8
     "@typescript-eslint/eslint-plugin": ^5.30.7
@@ -29142,6 +29152,15 @@ __metadata:
   version: 2.3.0
   resolution: "redux-thunk@npm:2.3.0"
   checksum: d13f442ffc91249b534bf14884c33feff582894be2562169637dc9d4d70aec6423bfe6d66f88c46ac027ac1c0cd07d6c2dd4a61cf7695b8e43491de679df9bcf
+  languageName: node
+  linkType: hard
+
+"redux@npm:^4.0.0":
+  version: 4.2.1
+  resolution: "redux@npm:4.2.1"
+  dependencies:
+    "@babel/runtime": ^7.9.2
+  checksum: f63b9060c3a1d930ae775252bb6e579b42415aee7a23c4114e21a0b4ba7ec12f0ec76936c00f546893f06e139819f0e2855e0d55ebfce34ca9c026241a6950dd
   languageName: node
   linkType: hard
 
