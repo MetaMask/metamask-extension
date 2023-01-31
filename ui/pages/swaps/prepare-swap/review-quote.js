@@ -1266,7 +1266,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
                 tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
                 onTokenApprovalClick={onFeeCardTokenApprovalClick}
                 metaMaskFee={String(metaMaskFee)}
-                numberOfQuotes={Object.values(quotes).length}
+                numberOfQuotes={numberOfQuotes}
                 onQuotesClick={
                   /* istanbul ignore next */
                   () => {

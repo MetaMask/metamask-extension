@@ -24,7 +24,6 @@ import DropdownInputPair from '../dropdown-input-pair';
 import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
-import InfoTooltip from '../../../components/ui/info-tooltip';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
@@ -39,6 +38,7 @@ import {
   JUSTIFY_CONTENT,
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
+import { SWAPS_ERROR_ROUTE } from '../../../helpers/constants/routes';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -64,6 +64,8 @@ import {
   getIsFeatureFlagLoaded,
   getCurrentSmartTransactionsError,
   getFetchingQuotes,
+  getSwapsErrorKey,
+  getAggregatorMetadata,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -94,6 +96,8 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   TokenBucketPriority,
+  ERROR_FETCHING_QUOTES,
+  QUOTES_NOT_AVAILABLE_ERROR,
 } from '../../../../shared/constants/swaps';
 
 import {
@@ -102,6 +106,8 @@ import {
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
+  setSwapsErrorKey,
+  setBackgroundSwapRouteState,
 } from '../../../store/actions';
 import {
   countDecimals,
@@ -142,6 +148,8 @@ export default function PrepareSwap({
   const [isSwapToOpen, setIsSwapToOpen] = useState(false);
   const onSwapToOpen = () => setIsSwapToOpen(true);
   const onSwapToClose = () => setIsSwapToOpen(false);
+  const [quoteCount, updateQuoteCount] = useState(0);
+  const [prefetchingQuotes, setPrefetchingQuotes] = useState(false);
 
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
   const balanceError = useSelector(getBalanceError);
@@ -160,7 +168,13 @@ export default function PrepareSwap({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
-  const areQuotesPresent = Object.keys(quotes).length > 0;
+  const numberOfQuotes = Object.keys(quotes).length;
+  const areQuotesPresent = numberOfQuotes > 0;
+  const swapsErrorKey = useSelector(getSwapsErrorKey);
+  const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
+  const numberOfAggregators = aggregatorMetadata
+    ? Object.keys(aggregatorMetadata).length
+    : 0;
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -180,6 +194,7 @@ export default function PrepareSwap({
   );
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
+  const loadingComplete = !fetchingQuotes && areQuotesPresent;
   const animationEventEmitter = useRef(new EventEmitter());
 
   const showSmartTransactionsOptInPopover =
@@ -299,6 +314,62 @@ export default function PrepareSwap({
     },
     [dispatch, fromToken, balanceError],
   );
+
+  useEffect(() => {
+    let timeoutLength;
+
+    if (!prefetchingQuotes) {
+      updateQuoteCount(0);
+      return;
+    }
+
+    const onQuotesLoadingDone = async () => {
+      await dispatch(setBackgroundSwapRouteState(''));
+      setPrefetchingQuotes(false);
+      if (
+        swapsErrorKey === ERROR_FETCHING_QUOTES ||
+        swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
+      ) {
+        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
+        history.push(SWAPS_ERROR_ROUTE);
+      }
+    };
+
+    // The below logic simulates a sequential loading of the aggregator quotes, even though we are fetching them all with a single call.
+    // This is to give the user a sense of progress. The callback passed to `setTimeout` updates the quoteCount and therefore causes
+    // a new logo to be shown, the fox to look at that logo, the logo bar and aggregator name to update.
+
+    if (loadingComplete) {
+      // If loading is complete, but the quoteCount is not, we quickly display the remaining logos/names/fox looks. 0.2s each
+      timeoutLength = 20;
+    } else {
+      // If loading is not complete, we display remaining logos/names/fox looks at random intervals between 0.5s and 2s, to simulate the
+      // sort of loading a user would experience in most async scenarios
+      timeoutLength = 500 + Math.floor(Math.random() * 1500);
+    }
+    const quoteCountTimeout = setTimeout(() => {
+      if (quoteCount < numberOfAggregators) {
+        updateQuoteCount(quoteCount + 1);
+      } else if (quoteCount === numberOfAggregators && loadingComplete) {
+        onQuotesLoadingDone();
+      }
+    }, timeoutLength);
+
+    // eslint-disable-next-line consistent-return
+    return function cleanup() {
+      clearTimeout(quoteCountTimeout);
+    };
+  }, [
+    fetchingQuotes,
+    quoteCount,
+    loadingComplete,
+    numberOfQuotes,
+    dispatch,
+    history,
+    swapsErrorKey,
+    numberOfAggregators,
+    prefetchingQuotes,
+  ]);
 
   const onFromSelect = (token) => {
     if (
@@ -542,6 +613,7 @@ export default function PrepareSwap({
     dispatch(clearSwapsQuotes());
     dispatch(stopPollingForQuotes());
     const prefetchQuotesWithoutRedirecting = async () => {
+      setPrefetchingQuotes(true);
       const pageRedirectionDisabled = true;
       await dispatch(
         fetchQuotesAndSetQuoteState(
@@ -807,28 +879,24 @@ export default function PrepareSwap({
             }
           />
         )}
-        {!areQuotesPresent &&
-          !fetchingQuotes &&
-          (smartTransactionsEnabled ||
-            (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
-            <div className="prepare-swap__slippage-buttons-container">
-              <SlippageButtons
-                onSelect={(newSlippage) => {
-                  dispatch(setMaxSlippage(newSlippage));
-                }}
-                maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-                currentSlippage={maxSlippage}
-                smartTransactionsEnabled={smartTransactionsEnabled}
-                smartTransactionsOptInStatus={smartTransactionsOptInStatus}
-                setSmartTransactionsOptInStatus={
-                  setSmartTransactionsOptInStatus
-                }
-                currentSmartTransactionsError={currentSmartTransactionsError}
-                isDirectWrappingEnabled={isDirectWrappingEnabled}
-              />
-            </div>
-          )}
-        {fetchingQuotes && (
+        {(smartTransactionsEnabled ||
+          (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
+          <div className="prepare-swap__slippage-buttons-container">
+            <SlippageButtons
+              onSelect={(newSlippage) => {
+                dispatch(setMaxSlippage(newSlippage));
+              }}
+              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+              currentSlippage={maxSlippage}
+              smartTransactionsEnabled={smartTransactionsEnabled}
+              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
+              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
+              currentSmartTransactionsError={currentSmartTransactionsError}
+              isDirectWrappingEnabled={isDirectWrappingEnabled}
+            />
+          </div>
+        )}
+        {prefetchingQuotes && (
           <Box
             marginTop={4}
             display={DISPLAY.FLEX}
@@ -836,13 +904,29 @@ export default function PrepareSwap({
             alignItems={ALIGN_ITEMS.CENTER}
             flexDirection={FLEX_DIRECTION.COLUMN}
           >
-            <Typography
-              color={COLORS.TEXT_ALTERNATIVE}
-              variant={TYPOGRAPHY.H6}
-              boxProps={{ marginLeft: 1 }}
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.CENTER}
+              alignItems={ALIGN_ITEMS.CENTER}
             >
-              {`${t('swapFetchingQuotes')}... `}
-            </Typography>
+              <Typography
+                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TYPOGRAPHY.H6}
+                boxProps={{ marginLeft: 1, marginRight: 1 }}
+              >
+                {t('swapFetchingQuote')}
+              </Typography>
+              <Typography
+                fontWeight={FONT_WEIGHT.BOLD}
+                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TYPOGRAPHY.H6}
+              >
+                {t('swapQuoteNofM', [
+                  Math.min(quoteCount + 1, numberOfAggregators),
+                  numberOfAggregators,
+                ])}
+              </Typography>
+            </Box>
             <div className="mascot-background-animation__animation">
               <MascotBackgroundAnimation />
               <div className="mascot-background-animation__mascot-container">
@@ -856,11 +940,8 @@ export default function PrepareSwap({
             </div>
           </Box>
         )}
-        {areQuotesPresent && (
-          <ReviewQuote
-            numberOfQuotes={Object.values(quotes).length}
-            setReceiveToAmount={setReceiveToAmount}
-          />
+        {!prefetchingQuotes && areQuotesPresent && (
+          <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
         )}
       </div>
     </div>

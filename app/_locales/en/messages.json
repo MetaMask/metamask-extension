@@ -3998,6 +3998,9 @@
   "swapFailedErrorTitle": {
     "message": "Swap failed"
   },
+  "swapFetchingQuote": {
+    "message": "Fetching quote"
+  },
   "swapFetchingQuoteNofN": {
     "message": "Fetching quote $1 of $2",
     "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
@@ -4085,6 +4088,10 @@
   },
   "swapQuoteDetails": {
     "message": "Quote details"
+  },
+  "swapQuoteNofM": {
+    "message": "$1 of $2",
+    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Quote source"
