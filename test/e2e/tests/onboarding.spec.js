@@ -9,16 +9,17 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask onboarding', function () {
+  
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
   const testPassword = 'correct horse battery staple';
   
-  const ganacheOptions2 = {
+  const ganacheOptions = {
     accounts: [
       {
         secretKey:
           '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(10000000000000000000),
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -27,7 +28,7 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions2,
+        ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
       },
@@ -59,6 +60,19 @@ describe('MetaMask onboarding', function () {
           testSeedPhrase,
           testPassword,
         );
+      }
+      );
+    });
+
+    const ganacheOptions2 = {
+      accounts: [
+        {
+          secretKey:
+            '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+          balance: convertToHexValue(10000000000000000000),
+        },
+      ],
+    };
 
   it(`User can add custom network during onboarding`, async function () {
     const networkName = 'Localhost 8546';
@@ -124,3 +138,4 @@ describe('MetaMask onboarding', function () {
     );
   });
 });
+

@@ -11,6 +11,7 @@ const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
+const { strict: assert } = require('assert');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -346,6 +347,7 @@ const completeCreateNewWalletOnboardingFlow = async (
   //confirm SRP
   const words = seedPhrase.split(/\s*(?:[0-9\(\)]+|\n|\.|^$|$)\s*/);
   const finalWords = words.filter((str) => str !== '');
+  assert.equal(finalWords.length, 12);
 
   await driver.fill('[data-testid="recovery-phrase-input-2"]', finalWords[2]);
   await driver.fill('[data-testid="recovery-phrase-input-3"]', finalWords[3]);
