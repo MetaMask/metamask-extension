@@ -1,5 +1,5 @@
 import { omit } from 'lodash';
-import { BN, toBuffer } from 'ethereumjs-util';
+import { BN } from 'ethereumjs-util';
 
 import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';

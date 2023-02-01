@@ -1,6 +1,14 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import TrezorKeyring from 'eth-trezor-keyring';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import LatticeKeyring from 'eth-lattice-keyring';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 // import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring/dist/MetaMaskKeyring';
 
 /**
@@ -80,8 +88,8 @@ export const HARDWARE_KEYRINGS = [
   LedgerBridgeKeyring,
   LatticeKeyring,
   // QRHardwareKeyring,
-];
+] as const;
 
 export const HARDWARE_KEYRING_INIT_OPTS = {
   delayInit: true,
-};
+} as const;

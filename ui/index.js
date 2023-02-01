@@ -9,7 +9,7 @@ import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
-import { CONTROLLER_CONNECTION_EVENTS } from '../shared/constants/events';
+import { ControllerConnectionEvents } from '../shared/constants/events';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
@@ -45,16 +45,16 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
   backgroundConnection.onNotification((data) => {
     switch (data.method) {
-      case CONTROLLER_CONNECTION_EVENTS.SEND_UPDATE: {
+      case ControllerConnectionEvents.sendUpdate: {
         reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
         break;
       }
-      case CONTROLLER_CONNECTION_EVENTS.SEND_HARDWARE_CALL: {
+      case ControllerConnectionEvents.sendHardwareCall: {
         console.log('Hardware Notification', data);
         handleHardwareCall(data.params[0]);
         break;
       }
-      case CONTROLLER_CONNECTION_EVENTS.SEND_ACTION: {
+      case ControllerConnectionEvents.sendAction: {
         const [action, payload] = data.params;
 
         if (Object.hasOwnProperty.call(actions, action)) {

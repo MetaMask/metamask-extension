@@ -102,7 +102,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
-import { CONTROLLER_CONNECTION_EVENTS } from '../../shared/constants/events';
+import { ControllerConnectionEvents } from '../../shared/constants/events';
 
 import { getTokenIdParam } from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -441,7 +441,7 @@ export default class MetamaskController extends EventEmitter {
       captureException,
     });
 
-    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, (update) => {
+    this.on(ControllerConnectionEvents.update, (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
 
@@ -1169,7 +1169,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, (memState) =>
+    this.on(ControllerConnectionEvents.update, (memState) =>
       this._onStateUpdate(memState),
     );
 
@@ -1598,7 +1598,7 @@ export default class MetamaskController extends EventEmitter {
     const { networkController } = this;
 
     // setup memStore subscription hooks
-    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, updatePublicConfigStore);
+    this.on(ControllerConnectionEvents.update, updatePublicConfigStore);
     updatePublicConfigStore(this.getState());
 
     function updatePublicConfigStore(memState) {
@@ -3717,15 +3717,15 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    const handleUpdate = handleWrite(CONTROLLER_CONNECTION_EVENTS.SEND_UPDATE);
-    const handleMessage = handleWrite(CONTROLLER_CONNECTION_EVENTS.SEND_ACTION);
+    const handleUpdate = handleWrite(ControllerConnectionEvents.sendUpdate);
+    const handleMessage = handleWrite(ControllerConnectionEvents.sendAction);
     const handleHardwareCall = handleWrite(
-      CONTROLLER_CONNECTION_EVENTS.SEND_HARDWARE_CALL,
+      ControllerConnectionEvents.sendHardwareCall,
     );
 
-    this.on(CONTROLLER_CONNECTION_EVENTS.UPDATE, handleUpdate);
-    this.on(CONTROLLER_CONNECTION_EVENTS.ACTION, handleMessage);
-    this.on(CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL, handleHardwareCall);
+    this.on(ControllerConnectionEvents.update, handleUpdate);
+    this.on(ControllerConnectionEvents.action, handleMessage);
+    this.on(ControllerConnectionEvents.hardwareCall, handleHardwareCall);
     const startUISync = () => {
       if (outStream._writableState.ended) {
         return;
@@ -3750,10 +3750,10 @@ export default class MetamaskController extends EventEmitter {
         this.activeControllerConnections,
       );
 
-      this.removeListener(CONTROLLER_CONNECTION_EVENTS.UPDATE, handleUpdate);
-      this.removeListener(CONTROLLER_CONNECTION_EVENTS.ACTION, handleMessage);
+      this.removeListener(ControllerConnectionEvents.update, handleUpdate);
+      this.removeListener(ControllerConnectionEvents.action, handleMessage);
       this.removeListener(
-        CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL,
+        ControllerConnectionEvents.hardwareCall,
         handleHardwareCall,
       );
     });
@@ -4280,11 +4280,11 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   privateSendUpdate() {
-    this.emit(CONTROLLER_CONNECTION_EVENTS.UPDATE, this.getState());
+    this.emit(ControllerConnectionEvents.update, this.getState());
   }
 
   sendHardwareCall = (message) => {
-    this.emit(CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL, message);
+    this.emit(ControllerConnectionEvents.hardwareCall, message);
   };
 
   /**
@@ -4294,7 +4294,7 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   sendClientAction(message) {
-    this.emit(CONTROLLER_CONNECTION_EVENTS.ACTION, message);
+    this.emit(ControllerConnectionEvents.action, message);
   }
 
   sendPromisifiedMessage = (event, _message) => {
@@ -4307,11 +4307,11 @@ export default class MetamaskController extends EventEmitter {
       this._clientMessagePromises[promiseId] = { resolve, reject };
 
       switch (event) {
-        case CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL: {
+        case ControllerConnectionEvents.hardwareCall: {
           this.sendHardwareCall(message);
           break;
         }
-        case CONTROLLER_CONNECTION_EVENTS.ACTION: {
+        case ControllerConnectionEvents.action: {
           this.sendClientAction(message);
           break;
         }
@@ -4326,14 +4326,14 @@ export default class MetamaskController extends EventEmitter {
 
   sendPromisifiedClientAction = (message) => {
     return this.sendPromisifiedMessage(
-      CONTROLLER_CONNECTION_EVENTS.ACTION,
+      ControllerConnectionEvents.action,
       message,
     );
   };
 
   sendPromisifiedHardwareCall = (message) => {
     return this.sendPromisifiedMessage(
-      CONTROLLER_CONNECTION_EVENTS.HARDWARE_CALL,
+      ControllerConnectionEvents.hardwareCall,
       message,
     );
   };
@@ -4342,9 +4342,10 @@ export default class MetamaskController extends EventEmitter {
    * Either rejects or resolves the promise associated with the given promiseId,
    * created by sendPromisifiedClientAction.
    *
-   * @param {string} promiseId
-   * @param {'resolve'|'reject'} result
-   * @param {any} data
+   * @param arg
+   * @param {string} arg.promiseId
+   * @param {"resolve"|"reject"} arg.result
+   * @param {object} arg.data
    */
   closeBackgroundPromise({ promiseId, result, data }) {
     console.log(

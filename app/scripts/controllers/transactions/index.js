@@ -1,6 +1,6 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
-import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
+import { bufferToHex, isHexString, keccak, toBuffer } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import Common from '@ethereumjs/common';
@@ -8,28 +8,28 @@ import { TransactionFactory } from '@ethereumjs/tx';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
-import { isString, merge, pickBy } from 'lodash';
+import { merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
-  hexToBn,
-  BnMultiplyByFraction,
   addHexPrefix,
+  BnMultiplyByFraction,
   getChainType,
+  hexToBn,
 } from '../../lib/util';
 import {
-  TransactionStatus,
-  TransactionType,
   TokenStandard,
+  TransactionApprovalAmountType,
   TransactionEnvelopeType,
   TransactionMetaMetricsEvent,
-  TransactionApprovalAmountType,
+  TransactionStatus,
+  TransactionType,
 } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
+  CUSTOM_GAS_ESTIMATE,
   GAS_LIMITS,
   GasEstimateTypes,
   GasRecommendations,
-  CUSTOM_GAS_ESTIMATE,
   PriorityLevels,
 } from '../../../../shared/constants/gas';
 import {
@@ -41,8 +41,8 @@ import {
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
-  HARDFORKS,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
+  HARDFORKS,
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import {
