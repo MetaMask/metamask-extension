@@ -93,7 +93,7 @@ const RevealSeedPage = () => {
 
   const renderWarning = () => {
     return (
-      <Banner severity={SEVERITIES.DANGER} marginTop={6} marginBottom={12}>
+      <Banner severity={SEVERITIES.DANGER} marginTop={6} marginBottom={3}>
         <Text variant={TEXT.BODY_MD}>
           {t('revealSeedWordsWarning', [
             <Text
