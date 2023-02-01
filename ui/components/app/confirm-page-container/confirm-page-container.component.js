@@ -277,7 +277,11 @@ const ConfirmPageContainer = (props) => {
                 : onSubmit
             }
             submitText={t('confirm')}
-            submitButtonType={isSetApproveForAll ? 'danger-primary' : 'primary'}
+            submitButtonType={
+              isSetApproveForAll && isApprovalOrRejection
+                ? 'danger-primary'
+                : 'primary'
+            }
             disabled={disabled}
           >
             {unapprovedTxCount > 1 && (
