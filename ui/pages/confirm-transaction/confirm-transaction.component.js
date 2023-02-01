@@ -86,8 +86,6 @@ const ConfirmTransaction = () => {
   }, [pollingToken]);
 
   useEffect(() => {
-    const { txParams: { data } = {}, origin } = transaction;
-
     setIsMounted(true);
 
     getGasFeeEstimatesAndStartPolling().then((_pollingToken) => {
@@ -105,6 +103,8 @@ const ConfirmTransaction = () => {
     if (!totalUnapproved && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
+      const { txParams: { data } = {}, origin } = transaction;
+
       if (origin !== ORIGIN_METAMASK) {
         dispatch(getContractMethodData(data));
       }
@@ -123,13 +123,13 @@ const ConfirmTransaction = () => {
   }, []);
 
   useEffect(() => {
-    const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
-
     if (
       paramsTransactionId &&
       transactionId &&
       prevParamsTransactionId !== paramsTransactionId
     ) {
+      const { txParams: { data } = {}, origin } = transaction;
+
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
       if (origin !== ORIGIN_METAMASK) {
