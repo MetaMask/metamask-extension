@@ -9,13 +9,9 @@ import {
   TransactionType,
   SmartTransactionStatus,
 } from '../../shared/constants/transaction';
-import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
+import { transactionMatchesChain } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-import {
-  getCurrentChainId,
-  deprecatedGetCurrentNetworkId,
-  getSelectedAddress,
-} from './selectors';
+import { getCurrentChainId, getSelectedAddress } from './selectors';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -29,14 +25,13 @@ export const incomingTxListSelector = (state) => {
   }
 
   const {
-    network,
     provider: { chainId },
   } = state.metamask;
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
       tx.txParams.to === selectedAddress &&
-      transactionMatchesNetwork(tx, chainId, network),
+      transactionMatchesChain(tx, chainId),
   );
 };
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -81,7 +76,6 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedMsgs = {},
@@ -89,7 +83,6 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
     chainId,
   ) =>
     txHelper(
@@ -99,7 +92,6 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      network,
       chainId,
     ) || [],
 );
@@ -457,6 +449,7 @@ export const nonceSortedTransactionsSelector = createSelector(
       orderedTransactionGroups,
       incomingTransactionGroups,
     );
+
     return unapprovedTransactionGroups
       .concat(orderedTransactionGroups)
       .map((txGroup) => {

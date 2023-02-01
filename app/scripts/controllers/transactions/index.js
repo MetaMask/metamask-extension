@@ -44,6 +44,7 @@ import {
   HARDFORKS,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
+  NetworkStatus,
 } from '../../../../shared/constants/network';
 import {
   determineTransactionAssetType,
@@ -115,7 +116,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  *
  * @param {object} opts
  * @param {object} opts.initState - initial transaction list default is an empty array
- * @param {Function} opts.getNetworkState - Get the current network state.
+ * @param {Function} opts.getNetworkStatus - Get the current network status.
  * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
  * @param {object} opts.provider - A network provider.
@@ -129,7 +130,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
 export default class TransactionController extends EventEmitter {
   constructor(opts) {
     super();
-    this.getNetworkState = opts.getNetworkState;
+    this.getNetworkStatus = opts.getNetworkStatus;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
@@ -167,7 +168,7 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
-      getNetworkState: this.getNetworkState,
+      getNetworkStatus: this.getNetworkStatus,
       getCurrentChainId: opts.getCurrentChainId,
     });
 
@@ -226,10 +227,13 @@ export default class TransactionController extends EventEmitter {
    * @returns {number} The numerical chainId.
    */
   getChainId() {
-    const networkState = this.getNetworkState();
+    const networkStatus = this.getNetworkStatus();
     const chainId = this._getCurrentChainId();
     const integerChainId = parseInt(chainId, 16);
-    if (networkState === 'loading' || Number.isNaN(integerChainId)) {
+    if (
+      networkStatus !== NetworkStatus.Available ||
+      Number.isNaN(integerChainId)
+    ) {
       return 0;
     }
     return integerChainId;
@@ -272,27 +276,12 @@ export default class TransactionController extends EventEmitter {
       });
     }
 
-    // For 'rpc' we need to use the same basic configuration as mainnet,
-    // since we only support EVM compatible chains, and then override the
-    // name, chainId and networkId properties. This is done using the
-    // `forCustomChain` static method on the Common class.
+    // For 'rpc' we need to use the same basic configuration as mainnet, since
+    // we only support EVM compatible chains, and then override the name and
+    // chainId properties. This is done using the `forCustomChain` static method
+    // on the Common class.
     const chainId = parseInt(this._getCurrentChainId(), 16);
-    const networkId = this.getNetworkState();
-
-    const customChainParams = {
-      name,
-      chainId,
-      // It is improbable for a transaction to be signed while the network
-      // is loading for two reasons.
-      // 1. Pending, unconfirmed transactions are wiped on network change
-      // 2. The UI is unusable (loading indicator) when network is loading.
-      // setting the networkId to 0 is for type safety and to explicity lead
-      // the transaction to failing if a user is able to get to this branch
-      // on a custom network that requires valid network id. I have not ran
-      // into this limitation on any network I have attempted, even when
-      // hardcoding networkId to 'loading'.
-      networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
-    };
+    const customChainParams = { name, chainId };
 
     return Common.forCustomChain(
       NETWORK_TYPES.MAINNET,

@@ -170,7 +170,7 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
-        network: '1337',
+        networkStatus: 'available',
         provider: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',

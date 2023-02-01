@@ -17,9 +17,10 @@ function buildTransactionCommon(txMeta) {
   // genesis points to the mainnet genesis, not the Optimism genesis — but
   // considering that all we want to do is serialize a transaction, this works
   // fine for our use case.
+  const chainId = new BN(stripHexPrefix(txMeta.chainId), 16);
   return Common.forCustomChain(Chain.Mainnet, {
-    chainId: new BN(stripHexPrefix(txMeta.chainId), 16),
-    networkId: new BN(txMeta.metamaskNetworkId, 10),
+    chainId,
+    networkId: chainId.toString(10),
     // Optimism only supports type-0 transactions; it does not support any of
     // the newer EIPs since EIP-155. Source:
     // <https://github.com/ethereum-optimism/optimism/blob/develop/specs/l2geth/transaction-types.md>

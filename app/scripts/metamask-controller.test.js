@@ -739,13 +739,13 @@ describe('MetaMaskController', function () {
         metamaskController.preferencesController,
         'getSelectedAddress',
       );
-      const getNetworkstub = sinon.stub(
+      const getNetworkStatusStub = sinon.stub(
         metamaskController.txController.txStateManager,
-        'getNetworkState',
+        'getNetworkStatus',
       );
 
       selectedAddressStub.returns('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-      getNetworkstub.returns(42);
+      getNetworkStatusStub.returns(42);
 
       metamaskController.txController.txStateManager._addTransactionsToState([
         createTxMeta({

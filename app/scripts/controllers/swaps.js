@@ -41,7 +41,6 @@ import fetchEstimatedL1Fee from '../../../ui/helpers/utils/optimism/fetchEstimat
 
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
 const MAX_GAS_LIMIT = 2500000;
@@ -107,7 +106,6 @@ const initialState = {
 export default class SwapsController {
   constructor({
     getBufferedGasLimit,
-    networkController,
     provider,
     getProviderConfig,
     getTokenRatesState,
@@ -136,13 +134,6 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.ethersProvider = new Web3Provider(provider);
-    this._currentNetwork = networkController.store.getState().network;
-    networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, (network) => {
-      if (network !== 'loading' && network !== this._currentNetwork) {
-        this._currentNetwork = network;
-        this.ethersProvider = new Web3Provider(provider);
-      }
-    });
   }
 
   async fetchSwapsNetworkConfig(chainId) {

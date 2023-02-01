@@ -5,8 +5,10 @@ import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
+import { transactionMatchesChain } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { NetworkStatus } from '../../../../shared/constants/network';
+import { hexToBn } from '../../lib/util';
 import {
   generateHistoryEntry,
   replayHistory,
@@ -54,13 +56,13 @@ export const ERROR_SUBMITTING =
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
  *  transactions can hang around in state
- * @param {Function} opts.getNetworkState - Get the current network state.
+ * @param {Function} opts.getNetworkStatus - Get the current network status.
  */
 export default class TransactionStateManager extends EventEmitter {
   constructor({
     initState,
     txHistoryLimit,
-    getNetworkState,
+    getNetworkStatus,
     getCurrentChainId,
   }) {
     super();
@@ -70,7 +72,7 @@ export default class TransactionStateManager extends EventEmitter {
       ...initState,
     });
     this.txHistoryLimit = txHistoryLimit;
-    this.getNetworkState = getNetworkState;
+    this.getNetworkStatus = getNetworkStatus;
     this.getCurrentChainId = getCurrentChainId;
   }
 
@@ -86,9 +88,9 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta} the default txMeta object
    */
   generateTxMeta(opts = {}) {
-    const netId = this.getNetworkState();
+    const networkStatus = this.getNetworkStatus();
     const chainId = this.getCurrentChainId();
-    if (netId === 'loading') {
+    if (networkStatus !== NetworkStatus.Available) {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
 
@@ -128,7 +130,7 @@ export default class TransactionStateManager extends EventEmitter {
       id: createId(),
       time: new Date().getTime(),
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: netId,
+      metamaskNetworkId: hexToBn(chainId).toString(10),
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
       chainId,
@@ -149,12 +151,11 @@ export default class TransactionStateManager extends EventEmitter {
    */
   getUnapprovedTxList() {
     const chainId = this.getCurrentChainId();
-    const network = this.getNetworkState();
     return pickBy(
       this.store.getState().transactions,
       (transaction) =>
         transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesNetwork(transaction, chainId, network),
+        transactionMatchesChain(transaction, chainId),
     );
   }
 
@@ -413,7 +414,6 @@ export default class TransactionStateManager extends EventEmitter {
     limit,
   } = {}) {
     const chainId = this.getCurrentChainId();
-    const network = this.getNetworkState();
     // searchCriteria is an object that might have values that aren't predicate
     // methods. When providing any other value type (string, number, etc), we
     // consider this shorthand for "check the value at key for strict equality
@@ -442,7 +442,7 @@ export default class TransactionStateManager extends EventEmitter {
         // when filterToCurrentNetwork is true.
         if (
           filterToCurrentNetwork &&
-          transactionMatchesNetwork(transaction, chainId, network) === false
+          transactionMatchesChain(transaction, chainId) === false
         ) {
           return false;
         }
@@ -596,8 +596,7 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
-   * Removes all transactions for the given address on the current network,
-   * preferring chainId for comparison over networkId.
+   * Removes all transactions for the given address on the current network.
    *
    * @param {string} address - hex string of the from address on the txParams
    *  to remove
@@ -605,7 +604,6 @@ export default class TransactionStateManager extends EventEmitter {
   wipeTransactions(address) {
     // network only tx
     const { transactions } = this.store.getState();
-    const network = this.getNetworkState();
     const chainId = this.getCurrentChainId();
 
     // Update state
@@ -614,7 +612,7 @@ export default class TransactionStateManager extends EventEmitter {
         transactions,
         (transaction) =>
           transaction.txParams.from === address &&
-          transactionMatchesNetwork(transaction, chainId, network),
+          transactionMatchesChain(transaction, chainId),
       ),
     });
   }

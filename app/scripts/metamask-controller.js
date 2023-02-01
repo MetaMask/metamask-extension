@@ -74,7 +74,11 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  NETWORK_TYPES,
+  NetworkStatus,
+} from '../../shared/constants/network';
 import {
   HardwareDeviceNames,
   HardwareKeyringTypes,
@@ -319,9 +323,8 @@ export default class MetamaskController extends EventEmitter {
       {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
-        onNetworkStateChange: (cb) =>
-          this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-            const networkState = this.networkController.store.getState();
+        onNetworkStateChange: (cb) => {
+          this.networkController.store.subscribe((networkState) => {
             const modifiedNetworkState = {
               ...networkState,
               providerConfig: {
@@ -330,7 +333,8 @@ export default class MetamaskController extends EventEmitter {
               },
             };
             return cb(modifiedNetworkState);
-          }),
+          });
+        },
       },
       {
         provider: this.provider,
@@ -466,6 +470,8 @@ export default class MetamaskController extends EventEmitter {
       clientId: SWAPS_CLIENT_ID,
       getProvider: () =>
         this.networkController.getProviderAndBlockTracker().provider,
+      // NOTE: This option is inaccurately named; it should be called
+      // onNetworkDidChange
       onNetworkStateChange: this.networkController.on.bind(
         this.networkController,
         NETWORK_EVENTS.NETWORK_DID_CHANGE,
@@ -907,9 +913,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getNetworkState: () => this.networkController.store.getState().network,
+      getNetworkStatus: () =>
+        this.networkController.store.getState().networkStatus,
       onNetworkStateChange: (listener) =>
-        this.networkController.networkStore.subscribe(listener),
+        this.networkController.networkStatusStore.subscribe(listener),
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
       preferencesStore: this.preferencesController.store,
@@ -1078,7 +1085,6 @@ export default class MetamaskController extends EventEmitter {
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
         this.txController.txGasUtil,
       ),
-      networkController: this.networkController,
       provider: this.provider,
       getProviderConfig: () => this.networkController.store.getState().provider,
       getTokenRatesState: () => this.tokenRatesController.state,
@@ -1100,7 +1106,6 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           });
         },
-        getNetwork: () => this.networkController.store.getState().network,
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
@@ -1609,7 +1614,7 @@ export default class MetamaskController extends EventEmitter {
 
     function updatePublicConfigStore(memState) {
       const { chainId } = networkController.store.getState().provider;
-      if (memState.network !== 'loading') {
+      if (memState.networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(selectPublicState(chainId, memState));
       }
     }
@@ -1629,12 +1634,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
-   * @returns {Promise<{
-   *  isUnlocked: boolean,
-   *  networkVersion: string,
-   *  chainId: string,
-   *  accounts: string[],
-   * }>} An object with relevant state properties.
+   * @returns {Promise<{ isUnlocked: boolean, chainId: string, accounts: string[] }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
     return {
@@ -1647,15 +1647,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Gets network state relevant for external providers.
    *
-   * @param {object} [memState] - The MetaMask memState. If not provided,
-   * this function will retrieve the most recent state.
    * @returns {object} An object with relevant network state properties.
    */
-  getProviderNetworkState(memState) {
-    const { network } = memState || this.getState();
+  getProviderNetworkState() {
+    const { provider, networkStatus } = this.networkController.store.getState();
     return {
-      chainId: this.networkController.store.getState().provider.chainId,
-      networkVersion: network,
+      chainId: provider.chainId,
+      // NOTE: For compatibility with providers, this must return "loading" if
+      // the network is unavailable
+      networkVersion:
+        networkStatus === NetworkStatus.Available ? 'available' : 'loading',
     };
   }
 
@@ -4299,7 +4300,7 @@ export default class MetamaskController extends EventEmitter {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.chainChanged,
-      params: this.getProviderNetworkState(newState),
+      params: this.getProviderNetworkState(),
     });
   }
 

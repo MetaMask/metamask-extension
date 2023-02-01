@@ -12,7 +12,7 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState in false', () => {
     const mockState = {
       metamask: {
-        network: '1',
+        networkStatus: 'available',
         provider: {
           type: 'test',
         },
@@ -46,7 +46,7 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState is true and show test networks is true', () => {
     const mockState = {
       metamask: {
-        network: '1',
+        networkStatus: 'available',
         provider: {
           type: 'test',
         },
@@ -112,7 +112,7 @@ describe('Network Dropdown', () => {
   describe('NetworkDropdown in appState is true and show test networks is false', () => {
     const mockState = {
       metamask: {
-        network: '1',
+        networkStatus: 'available',
         provider: {
           type: 'test',
         },

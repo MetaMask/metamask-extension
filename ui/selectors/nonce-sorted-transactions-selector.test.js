@@ -19,6 +19,7 @@ const SENDERS = {
 const INCOMING_TX = {
   id: '0-incoming',
   type: TransactionType.incoming,
+  chainId: CHAIN_IDS.MAINNET,
   txParams: {
     value: '0x0',
     from: RECIPIENTS.ONE,

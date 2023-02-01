@@ -345,8 +345,13 @@ export interface TransactionMeta {
   originalType: TransactionType;
   /** The current status of the transaction. */
   status: TransactionStatus;
-  /** The transaction's network ID, used for EIP-155 compliance. */
-  metamaskNetworkId: string;
+  /**
+   * The transaction's network ID, used for EIP-155 compliance.
+   *
+   * @deprecated This property is being phased out along with the concept of
+   * network ID. Please use the chain ID of the network instead.
+   */
+  metamaskNetworkId?: string;
   /** TODO: Find out what this is and document it */
   loadingDefaults: boolean;
   /** The transaction params as passed to the network provider. */
