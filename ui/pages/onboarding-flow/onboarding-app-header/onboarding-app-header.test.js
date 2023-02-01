@@ -17,7 +17,7 @@ jest.mock('../../../store/actions.js', () => ({
 
 describe('OnboardingAppHeader', () => {
   const mockState = {
-    metamask: {
+    localeMessages: {
       currentLocale: 'en',
     },
   };
