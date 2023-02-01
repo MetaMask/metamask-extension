@@ -1,5 +1,5 @@
 import React from 'react';
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 import README from './README.mdx';
 import RadioGroup from '.';
 
@@ -31,13 +31,13 @@ DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   name: 'gas-recommendation',
   options: [
-    { value: GAS_RECOMMENDATIONS.LOW, label: 'Low', recommended: false },
+    { value: GasRecommendations.low, label: 'Low', recommended: false },
     {
-      value: GAS_RECOMMENDATIONS.MEDIUM,
+      value: GasRecommendations.medium,
       label: 'Medium',
       recommended: false,
     },
-    { value: GAS_RECOMMENDATIONS.HIGH, label: 'High', recommended: true },
+    { value: GasRecommendations.high, label: 'High', recommended: true },
   ],
-  selectedValue: GAS_RECOMMENDATIONS.HIGH,
+  selectedValue: GasRecommendations.high,
 };

@@ -27,10 +27,10 @@ import {
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
-  GAS_ESTIMATE_TYPES,
-  GAS_RECOMMENDATIONS,
+  GasEstimateTypes,
+  GasRecommendations,
   CUSTOM_GAS_ESTIMATE,
-  PRIORITY_LEVELS,
+  PriorityLevels,
 } from '../../../../shared/constants/gas';
 import {
   bnToHex,
@@ -927,7 +927,7 @@ export default class TransactionController extends EventEmitter {
         if (txMeta.origin === ORIGIN_METAMASK) {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         } else {
-          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
+          txMeta.userFeeLevel = PriorityLevels.dAppSuggested;
         }
       } else {
         if (
@@ -937,9 +937,9 @@ export default class TransactionController extends EventEmitter {
             !txMeta.txParams.maxPriorityFeePerGas) ||
           txMeta.origin === ORIGIN_METAMASK
         ) {
-          txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
+          txMeta.userFeeLevel = GasRecommendations.medium;
         } else {
-          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
+          txMeta.userFeeLevel = PriorityLevels.dAppSuggested;
         }
 
         if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
@@ -1036,7 +1036,7 @@ export default class TransactionController extends EventEmitter {
         await this._getEIP1559GasFeeEstimates();
       if (
         eip1559Compatibility &&
-        gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
+        gasEstimateType === GasEstimateTypes.feeMarket
       ) {
         const {
           medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {},
@@ -1050,13 +1050,13 @@ export default class TransactionController extends EventEmitter {
             ),
           };
         }
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      } else if (gasEstimateType === GasEstimateTypes.legacy) {
         // The LEGACY type includes low, medium and high estimates of
         // gas price values.
         return {
           gasPrice: decGWEIToHexWEI(gasFeeEstimates.medium),
         };
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
         // The ETH_GASPRICE type just includes a single gas price property,
         // which we can assume was retrieved from eth_gasPrice
         return {
@@ -2186,9 +2186,9 @@ export default class TransactionController extends EventEmitter {
 
         if (
           [
-            GAS_RECOMMENDATIONS.LOW,
-            GAS_RECOMMENDATIONS.MEDIUM,
-            GAS_RECOMMENDATIONS.MEDIUM.HIGH,
+            GasRecommendations.low,
+            GasRecommendations.medium,
+            GasRecommendations.high,
           ].includes(estimateType)
         ) {
           const { gasFeeEstimates } = await this._getEIP1559GasFeeEstimates();

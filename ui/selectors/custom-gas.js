@@ -4,7 +4,7 @@ import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { formatETHFee } from '../helpers/utils/formatters';
 
 import { getGasPrice } from '../ducks/send';
-import { GAS_ESTIMATE_TYPES as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
+import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../shared/constants/gas';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
@@ -52,7 +52,7 @@ export function getSafeLowEstimate(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
   const gasEstimateType = getGasEstimateType(state);
 
-  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.LEGACY
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
     ? gasFeeEstimates?.low
     : null;
 }
@@ -61,7 +61,7 @@ export function getAverageEstimate(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
   const gasEstimateType = getGasEstimateType(state);
 
-  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.LEGACY
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
     ? gasFeeEstimates?.medium
     : null;
 }
@@ -71,7 +71,7 @@ export function getFastPriceEstimate(state) {
 
   const gasEstimateType = getGasEstimateType(state);
 
-  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.LEGACY
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
     ? gasFeeEstimates?.high
     : null;
 }
@@ -193,7 +193,7 @@ export function getGasPriceInHexWei(price) {
 export function getIsEthGasPriceFetched(state) {
   const gasEstimateType = getGasEstimateType(state);
   return (
-    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ETH_GASPRICE &&
+    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
     getIsMainnet(state)
   );
 }
@@ -201,14 +201,14 @@ export function getIsEthGasPriceFetched(state) {
 export function getIsCustomNetworkGasPriceFetched(state) {
   const gasEstimateType = getGasEstimateType(state);
   return (
-    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ETH_GASPRICE &&
+    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.ethGasPrice &&
     !getIsMainnet(state)
   );
 }
 
 export function getNoGasPriceFetched(state) {
   const gasEstimateType = getGasEstimateType(state);
-  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.NONE;
+  return gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none;
 }
 
 export function getIsGasEstimatesFetched(state) {
@@ -216,5 +216,5 @@ export function getIsGasEstimatesFetched(state) {
   if (isEIP1559Network(state)) {
     return false;
   }
-  return gasEstimateType !== GAS_FEE_CONTROLLER_ESTIMATE_TYPES.NONE;
+  return gasEstimateType !== GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none;
 }

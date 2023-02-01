@@ -60,9 +60,8 @@ export default function GasDisplay({ gasError }) {
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
-  const { nativeCurrency, provider, unapprovedTxs } = useSelector(
-    (state) => state.metamask,
-  );
+  const { provider, unapprovedTxs } = useSelector((state) => state.metamask);
+  const nativeCurrency = provider.ticker;
   const { chainId } = provider;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =

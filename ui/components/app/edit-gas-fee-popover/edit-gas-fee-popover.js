@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
-} from '../../../../shared/constants/gas';
+import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import Box from '../../ui/box';
@@ -30,9 +27,9 @@ const EditGasFeePopover = () => {
   }
 
   let popupTitle = 'editGasFeeModalTitle';
-  if (editGasMode === EDIT_GAS_MODES.CANCEL) {
+  if (editGasMode === EditGasModes.cancel) {
     popupTitle = 'editCancellationGasFeeModalTitle';
-  } else if (editGasMode === EDIT_GAS_MODES.SPEED_UP) {
+  } else if (editGasMode === EditGasModes.speedUp) {
     popupTitle = 'editSpeedUpEditGasFeeModalTitle';
   }
 
@@ -59,28 +56,28 @@ const EditGasFeePopover = () => {
                   {t('gasOption')}
                 </span>
                 <span className="edit-gas-fee-popover__content__header-time">
-                  {editGasMode !== EDIT_GAS_MODES.SWAPS && t('time')}
+                  {editGasMode !== EditGasModes.swaps && t('time')}
                 </span>
                 <span className="edit-gas-fee-popover__content__header-max-fee">
                   {t('maxFee')}
                 </span>
               </div>
-              {(editGasMode === EDIT_GAS_MODES.CANCEL ||
-                editGasMode === EDIT_GAS_MODES.SPEED_UP) && (
+              {(editGasMode === EditGasModes.cancel ||
+                editGasMode === EditGasModes.speedUp) && (
                 <EditGasItem
-                  priorityLevel={PRIORITY_LEVELS.TEN_PERCENT_INCREASED}
+                  priorityLevel={PriorityLevels.tenPercentIncreased}
                 />
               )}
-              {editGasMode === EDIT_GAS_MODES.MODIFY_IN_PLACE && (
-                <EditGasItem priorityLevel={PRIORITY_LEVELS.LOW} />
+              {editGasMode === EditGasModes.modifyInPlace && (
+                <EditGasItem priorityLevel={PriorityLevels.low} />
               )}
-              <EditGasItem priorityLevel={PRIORITY_LEVELS.MEDIUM} />
-              <EditGasItem priorityLevel={PRIORITY_LEVELS.HIGH} />
+              <EditGasItem priorityLevel={PriorityLevels.medium} />
+              <EditGasItem priorityLevel={PriorityLevels.high} />
               <div className="edit-gas-fee-popover__content__separator" />
-              {editGasMode === EDIT_GAS_MODES.MODIFY_IN_PLACE && (
-                <EditGasItem priorityLevel={PRIORITY_LEVELS.DAPP_SUGGESTED} />
+              {editGasMode === EditGasModes.modifyInPlace && (
+                <EditGasItem priorityLevel={PriorityLevels.dAppSuggested} />
               )}
-              <EditGasItem priorityLevel={PRIORITY_LEVELS.CUSTOM} />
+              <EditGasItem priorityLevel={PriorityLevels.custom} />
             </Box>
             <Box>
               <NetworkStatistics />

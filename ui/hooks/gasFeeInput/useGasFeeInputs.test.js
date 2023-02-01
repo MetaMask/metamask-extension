@@ -2,8 +2,8 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { TransactionEnvelopeType } from '../../../shared/constants/transaction';
 import {
-  GAS_RECOMMENDATIONS,
-  EDIT_GAS_MODES,
+  GasRecommendations,
+  EditGasModes,
 } from '../../../shared/constants/gas';
 
 import { ETH, PRIMARY } from '../../helpers/constants/common';
@@ -94,7 +94,7 @@ describe('useGasFeeInputs', () => {
 
     it('returns gasPrice appropriately, and "0" for EIP1559 fields', () => {
       const { result } = renderHook(() =>
-        useGasFeeInputs(GAS_RECOMMENDATIONS.MEDIUM, {
+        useGasFeeInputs(GasRecommendations.medium, {
           txParams: {
             value: '3782DACE9D90000',
             gasLimit: '0x5028',
@@ -157,7 +157,7 @@ describe('useGasFeeInputs', () => {
     it('should return true', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
-          userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
+          userFeeLevel: GasRecommendations.medium,
           txParams: { gas: '0x5208' },
         }),
       );
@@ -168,9 +168,9 @@ describe('useGasFeeInputs', () => {
   describe('editGasMode', () => {
     it('should return editGasMode passed', () => {
       const { result } = renderHook(() =>
-        useGasFeeInputs(undefined, undefined, undefined, EDIT_GAS_MODES.SWAPS),
+        useGasFeeInputs(undefined, undefined, undefined, EditGasModes.swaps),
       );
-      expect(result.current.editGasMode).toBe(EDIT_GAS_MODES.SWAPS);
+      expect(result.current.editGasMode).toBe(EditGasModes.swaps);
     });
   });
 });

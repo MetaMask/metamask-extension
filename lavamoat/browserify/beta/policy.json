@@ -2032,7 +2032,7 @@
     },
     "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": {
       "packages": {
-        "react-dnd>shallowequal": true
+        "@storybook/addon-a11y>react-sizeme>shallowequal": true
       }
     },
     "@truffle/decoder>bn.js": {
@@ -3672,50 +3672,11 @@
         "setTimeout": true
       }
     },
-    "react-dnd": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "lodash": true,
-        "prop-types": true,
-        "react": true,
-        "react-dnd>disposables": true,
-        "react-dnd>dnd-core": true,
-        "react-dnd>hoist-non-react-statics": true,
-        "react-dnd>invariant": true,
-        "react-dnd>shallowequal": true
-      }
-    },
     "react-dnd-html5-backend": {
       "globals": {
-        "Image": true,
         "addEventListener": true,
         "clearTimeout": true,
-        "console.warn": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "navigator.userAgent": true,
-        "removeEventListener": true,
-        "safari": true,
-        "setTimeout": true
-      }
-    },
-    "react-dnd>dnd-core": {
-      "packages": {
-        "lodash": true,
-        "react-dnd>dnd-core>asap": true,
-        "react-dnd>invariant": true,
-        "redux": true
-      }
-    },
-    "react-dnd>dnd-core>asap": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "document.createTextNode": true,
-        "setInterval": true,
-        "setTimeout": true
+        "removeEventListener": true
       }
     },
     "react-dom": {

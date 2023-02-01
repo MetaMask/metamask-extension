@@ -1,15 +1,16 @@
 import { addHexPrefix, isHexString } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
-import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import { AlertTypes } from '../../../shared/constants/alerts';
 import {
-  GAS_ESTIMATE_TYPES,
-  NETWORK_CONGESTION_THRESHOLDS,
+  GasEstimateTypes,
+  NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -254,10 +255,10 @@ export const getCurrentLocale = (state) => state.metamask.currentLocale;
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
 export const getUnconnectedAccountAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.unconnectedAccount];
+  getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
 export const getWeb3ShimUsageAlertEnabledness = (state) =>
-  getAlertEnabledness(state)[ALERT_TYPES.web3ShimUsage];
+  getAlertEnabledness(state)[AlertTypes.web3ShimUsage];
 
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
@@ -307,7 +308,10 @@ export function getConversionRate(state) {
 }
 
 export function getNativeCurrency(state) {
-  return state.metamask.nativeCurrency;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
+  return useCurrencyRateCheck
+    ? state.metamask.nativeCurrency
+    : state.metamask.provider.ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {
@@ -363,22 +367,20 @@ export function getIsGasEstimatesLoading(state) {
   // 'NONE' or if the current gasEstimateType cannot be supported by the current
   // network
   const isEIP1559TolerableEstimateType =
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE;
+    gasEstimateType === GasEstimateTypes.feeMarket ||
+    gasEstimateType === GasEstimateTypes.ethGasPrice;
   const isGasEstimatesLoading =
-    gasEstimateType === GAS_ESTIMATE_TYPES.NONE ||
+    gasEstimateType === GasEstimateTypes.none ||
     (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
     (!networkAndAccountSupports1559 &&
-      gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
+      gasEstimateType === GasEstimateTypes.feeMarket);
 
   return isGasEstimatesLoading;
 }
 
 export function getIsNetworkBusy(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
-  return (
-    gasFeeEstimates?.networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY
-  );
+  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
 export function getCompletedOnboarding(state) {

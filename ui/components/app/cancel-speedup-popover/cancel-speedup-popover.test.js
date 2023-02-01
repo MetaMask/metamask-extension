@@ -3,8 +3,8 @@ import { act, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 
 import {
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
+  EditGasModes,
+  GasEstimateTypes,
 } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
@@ -31,7 +31,7 @@ const EXPECTED_ETH_FEE_1 = hexWEIToDecETH(
 );
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI =
-  mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates.medium
+  mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.medium
     .suggestedMaxFeePerGas;
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI = new BigNumber(
   decGWEIToHexWEI(MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI),
@@ -84,7 +84,7 @@ const render = (
       },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
-        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
+        mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
     },
   });
 
@@ -98,7 +98,7 @@ const render = (
           maxPriorityFeePerGas: '0x59682f00',
         },
       }}
-      editGasMode={EDIT_GAS_MODES.CANCEL}
+      editGasMode={EditGasModes.cancel}
       {...props}
     >
       <CancelSpeedupPopover />
@@ -118,7 +118,7 @@ describe('CancelSpeedupPopover', () => {
   });
 
   it('should have 🚀Speed up in header if editGasMode is speedup', async () => {
-    await act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
+    await act(async () => render({ editGasMode: EditGasModes.speedUp }));
     expect(screen.queryByText('🚀Speed up')).toBeInTheDocument();
   });
 
@@ -132,7 +132,7 @@ describe('CancelSpeedupPopover', () => {
   });
 
   it('information tooltip should contain the correct text if editGasMode is speedup', async () => {
-    await act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
+    await act(async () => render({ editGasMode: EditGasModes.speedUp }));
     expect(
       InfoTooltip.mock.calls[0][0].contentText.props.children[0],
     ).toStrictEqual(
@@ -144,7 +144,7 @@ describe('CancelSpeedupPopover', () => {
     await act(async () =>
       render(
         {
-          editGasMode: EDIT_GAS_MODES.SPEED_UP,
+          editGasMode: EditGasModes.speedUp,
         },
         MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX,
       ),
@@ -158,7 +158,7 @@ describe('CancelSpeedupPopover', () => {
     await act(async () =>
       render(
         {
-          editGasMode: EDIT_GAS_MODES.SPEED_UP,
+          editGasMode: EditGasModes.speedUp,
         },
         `0x${MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX}`,
       ),
