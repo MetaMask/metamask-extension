@@ -479,29 +479,6 @@
     "message": "これはベータ版です。バグは報告してください $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
-  "betaMetamaskDescription": {
-    "message": "MetaMaskは何百万人もに信頼されている安全なウォレットで、誰もがWeb3の世界にアクセスできるようにしています。"
-  },
-  "betaMetamaskDescriptionDisclaimerHeading": {
-    "message": "ベータ版の免責事項"
-  },
-  "betaMetamaskDescriptionExplanation": {
-    "message": "このバージョンでは、リリース前に今後の機能をテストできます。皆様からのご意見は、可能な限り最高のバージョンのMetaMaskを開発するために参考にさせていただきます。MetaMaskベータの使用には、$1および$2が適用されます。",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2": {
-    "message": "続行することで、これらのリスク、当社の$1、および$2を確認し、これらに同意したものとみなされます。",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
-    "message": "ベータ版規約"
-  },
-  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "ベータ版の追加規約"
-  },
-  "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "利用規約"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMaskベータバージョン"
   },
@@ -516,9 +493,6 @@
   },
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask ベータ版がユーザーのシークレットリカバリーフレーズを求めることは絶対にありません。"
-  },
-  "betaWelcome": {
-    "message": "MetaMaskベータへようこそ"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",
@@ -665,9 +639,6 @@
   "clickToManuallyAdd": {
     "message": "トークンを手動で追加するにはこちらをクリックしてください。"
   },
-  "clickToRevealSeed": {
-    "message": "秘密の言葉を表示するには、ここをクリックします"
-  },
   "close": {
     "message": "閉じる"
   },
@@ -687,9 +658,6 @@
   "confirmRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズの確認"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "シークレットバックアップフレーズの確認"
-  },
   "confirmed": {
     "message": "確認されました"
   },
@@ -701,9 +669,6 @@
   },
   "confusingEnsDomain": {
     "message": "ENS名に混乱しやすい文字が発見されました。詐欺を防ぐためにENS名を確認して下さい。"
-  },
-  "congratulations": {
-    "message": "おめでとうございます"
   },
   "connect": {
     "message": "接続"
@@ -870,9 +835,6 @@
   },
   "create": {
     "message": "作成"
-  },
-  "createAWallet": {
-    "message": "ウォレットを作成"
   },
   "createAccount": {
     "message": "アカウントを作成"
@@ -1088,9 +1050,6 @@
   "downloadNow": {
     "message": "今すぐダウンロード"
   },
-  "downloadSecretBackup": {
-    "message": "このシークレットバックアップフレーズをダウンロードして、外部の暗号化されたハードウェアドライブまたはストレージ媒体に安全に保管します。"
-  },
   "downloadStateLogs": {
     "message": "ステータスログをダウンロード"
   },
@@ -1217,37 +1176,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "公開暗号鍵を要求"
-  },
-  "endOfFlowMessage1": {
-    "message": "テストに合格しました。シークレットリカバリーフレーズを安全に保管してください。保管はユーザーの責任となります!"
-  },
-  "endOfFlowMessage10": {
-    "message": "すべて完了"
-  },
-  "endOfFlowMessage2": {
-    "message": "安全に保管するためのヒント"
-  },
-  "endOfFlowMessage3": {
-    "message": "バックアップは複数の場所に保存します。"
-  },
-  "endOfFlowMessage4": {
-    "message": "フレーズは絶対に誰にも教えないでください。"
-  },
-  "endOfFlowMessage5": {
-    "message": "フィッシングにご注意ください! MetaMaskがシークレットリカバリーフレーズをいきなり要求することは絶対にありません。"
-  },
-  "endOfFlowMessage6": {
-    "message": "シークレットリカバリーフレーズを再度バックアップする場合は、[設定]  >  [セキュリティ] から確認できます。"
-  },
-  "endOfFlowMessage7": {
-    "message": "ご質問、または不審な点がある場合は、サポート$1までお問い合わせください。",
-    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMaskはシークレットリカバリーフレーズを復元できません。"
-  },
-  "endOfFlowMessage9": {
-    "message": "詳細。"
   },
   "endpointReturnedDifferentChainId": {
     "message": "エンドポイントが別のチェーン ID を返してきました。$1",
@@ -1544,9 +1472,6 @@
     "message": "$1 ネットワークのフォーセットから Ether を取得",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "開始"
-  },
   "goBack": {
     "message": "戻る"
   },
@@ -1561,9 +1486,6 @@
   },
   "gwei": {
     "message": "GWEI"
-  },
-  "happyToSeeYou": {
-    "message": "お会いできてうれしいです。"
   },
   "hardware": {
     "message": "ハードウェア"
@@ -1645,9 +1567,6 @@
   "importAccountMsg": {
     "message": " インポートされたアカウントは、最初に作成したMetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
   },
-  "importAccountSeedPhrase": {
-    "message": "シークレットリカバリーフレーズを使用してウォレットをインポート"
-  },
   "importMyWallet": {
     "message": "ウォレットをインポート"
   },
@@ -1684,15 +1603,9 @@
   "importTokensCamelCase": {
     "message": "トークンをインポート"
   },
-  "importWallet": {
-    "message": "ウォレットをインポート"
-  },
   "importWithCount": {
     "message": "$1 をインポート",
     "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
-  },
-  "importYourExisting": {
-    "message": "シークレットリカバリーフレーズを使用して既存のウォレットをインポート"
   },
   "imported": {
     "message": "インポート済み",
@@ -1894,9 +1807,6 @@
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "letsGoSetUp": {
-    "message": "さあセットアップしましょう!"
-  },
   "levelArrow": {
     "message": "水平矢印"
   },
@@ -1991,9 +1901,6 @@
   "memo": {
     "message": "メモ"
   },
-  "memorizePhrase": {
-    "message": "このフレーズを記憶します。"
-  },
   "message": {
     "message": "メッセージ"
   },
@@ -2005,9 +1912,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "訪問しているWebサイトが現在選択しているアカウントに接続されている場合、接続ステータスボタンが表示されます。"
-  },
-  "metamaskDescription": {
-    "message": "イーサリアムと分散型Webに接続しています。"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swapsはメンテナンス中です。後でもう一度確認してください。"
@@ -2220,9 +2124,6 @@
   "newPassword": {
     "message": "新しいパスワード (最低8文字)"
   },
-  "newToMetaMask": {
-    "message": "MetaMaskを初めてご利用の場合"
-  },
   "newTokensImportedMessage": {
     "message": "$1 をインポートしました。",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -2268,9 +2169,6 @@
   },
   "noAddressForName": {
     "message": "この名前にアドレスが設定されていません。"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "いいえ、すでにシークレットリカバリーフレーズを持っています"
   },
   "noConversionDateAvailable": {
     "message": "通貨換算日がありません"
@@ -2629,10 +2527,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました!"
   },
-  "onboardingReturnNotice": {
-    "message": "「$1」はこのタブを閉じます。$2に戻ってください。",
-    "description": "Return the user to the site that initiated onboarding"
-  },
   "onboardingShowIncomingTransactionsDescription": {
     "message": "ウォレットに受け取ったトランザクションを表示するには、$1との通信が必要です。EtherscanはユーザーのイーサリアムアドレスとIPアドレスにアクセスできます。$2をご覧ください。",
     "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
@@ -2955,9 +2849,6 @@
   "remember": {
     "message": "ご注意:"
   },
-  "remindMeLater": {
-    "message": "後で通知する"
-  },
   "remove": {
     "message": "削除"
   },
@@ -3103,15 +2994,6 @@
   "searchTokens": {
     "message": "トークンを検索"
   },
-  "secretBackupPhraseDescription": {
-    "message": "シークレットリカバリーフレーズを使用すると、アカウントのバックアップと復元が容易になります。"
-  },
-  "secretBackupPhraseWarning": {
-    "message": "警告:シークレットリカバリーフレーズは絶対に教えないでください。このフレーズを使用すると、誰でもEtherを永久に利用することができます。"
-  },
-  "secretPhrase": {
-    "message": "このウォレットの最初のアカウントのみが自動的に読み込まれます。 このプロセスの完了後、他のアカウントを追加するには、ドロップダウンメニューをクリックし、[アカウントを作成] を選択します。"
-  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -3144,9 +3026,6 @@
   },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "セーフティボックスに保管する。"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "銀行の金庫に保管する。"
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "リカバリーフレーズは12単語のフレーズで、ウォレットと資金への「マスターキー」となります。"
@@ -3192,9 +3071,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "このアカウントはすでにMetaMaskに接続されています"
-  },
-  "selectEachPhrase": {
-    "message": "各フレーズを選択して、正しいことを確認してください。"
   },
   "selectHdPath": {
     "message": "HDパスを選択"
@@ -3542,9 +3418,6 @@
   },
   "stillGettingMessage": {
     "message": "まだこのメッセージが表示されますか？"
-  },
-  "storePhrase": {
-    "message": "このフレーズを1Passwordのようなパスワードマネージャーに保存します。"
   },
   "strong": {
     "message": "強"
@@ -4031,9 +3904,6 @@
   "thingsToKeep": {
     "message": "留意点:"
   },
-  "thisWillCreate": {
-    "message": "これにより、新しいウォレットとシークレットリカバリーフレーズが作成されます"
-  },
   "time": {
     "message": "時間"
   },
@@ -4466,9 +4336,6 @@
     "message": "Web サイト",
     "description": "Used in the 'permission_rpc' message."
   },
-  "welcome": {
-    "message": "MetaMaskにようこそ"
-  },
   "welcomeBack": {
     "message": "お帰りなさい！"
   },
@@ -4496,9 +4363,6 @@
   },
   "whatsThis": {
     "message": "これは何ですか?"
-  },
-  "writePhrase": {
-    "message": "このフレーズを紙に書いて安全な場所に保管してください。さらにセキュリティを高めるには、複数の紙に書いて、それぞれを2～3の異なる場所に保管します。"
   },
   "xOfY": {
     "message": "$2中の$1",
