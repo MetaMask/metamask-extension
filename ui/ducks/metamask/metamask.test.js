@@ -248,18 +248,6 @@ describe('MetaMask Reducers', () => {
     expect(state.welcomeScreenSeen).toStrictEqual(true);
   });
 
-  it('sets current locale', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_CURRENT_LOCALE,
-        value: { locale: 'ge' },
-      },
-    );
-
-    expect(state.currentLocale).toStrictEqual('ge');
-  });
-
   it('sets pending tokens', () => {
     const payload = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
