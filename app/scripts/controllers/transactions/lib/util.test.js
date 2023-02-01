@@ -30,6 +30,18 @@ describe('txUtils', function () {
       });
     });
 
+    it('throws for data out of bounds buffer overrun', function () {
+      const sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        to: '0xfbb5595c18ca76bab52d66188e4ca50c7d95f77a',
+        data: '0xa9059cbb00000000000000000000000011b6A5fE2906F3354145613DB0d99CEB51f604C90000000000000000000000000000000000000000000000004563918244F400',
+      };
+      assert.throws(() => txUtils.validateTxParams(sample), {
+        message:
+          'Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.',
+      });
+    });
+
     it('throws for missing "to" and "data"', function () {
       const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
