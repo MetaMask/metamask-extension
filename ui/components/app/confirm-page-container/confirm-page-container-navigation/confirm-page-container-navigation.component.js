@@ -27,9 +27,9 @@ const ConfirmPageContainerNavigation = () => {
     unconfirmedTransactionsHashSelector,
   );
 
-  const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs);
+  const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs || {});
   const enumUnapprovedEncryptMsgsKey = Object.keys(
-    unapprovedEncryptionPublicKeyMsgs,
+    unapprovedEncryptionPublicKeyMsgs || {},
   );
   const enumDecryptAndEncryptMsgs = [
     ...enumUnapprovedDecryptMsgsKey,

@@ -268,4 +268,10 @@ describe('Selectors', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
   });
+
+  it('#getTotalUnapprovedSignatureRequestCount', () => {
+    const totalUnapprovedSignatureRequestCount =
+      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
+    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
+  });
 });
