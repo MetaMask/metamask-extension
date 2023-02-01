@@ -40,7 +40,7 @@ const HomeNotification = ({
             title={infoText}
             wrapperClassName="home-notification__tooltip-wrapper"
           >
-            <Icon name={ICON_NAMES.INFO} className="info-circle" />
+            <Icon name={ICON_NAMES.INFO} />
           </Tooltip>
         ) : null}
       </div>

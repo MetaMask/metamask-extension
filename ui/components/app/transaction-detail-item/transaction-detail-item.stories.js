@@ -46,7 +46,7 @@ DefaultStory.args = {
     <>
       <strong>Estimated gas fee</strong>
       <InfoTooltip contentText="This is the tooltip text" position="top">
-        <Icon name={ICON_NAMES.INFO} className="info-circle" />
+        <Icon name={ICON_NAMES.INFO} />
       </InfoTooltip>
     </>
   ),

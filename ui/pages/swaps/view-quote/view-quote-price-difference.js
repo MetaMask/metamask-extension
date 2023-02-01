@@ -75,7 +75,7 @@ export default function ViewQuotePriceDifference(props) {
                   {priceDifferenceTitle}
                 </div>
                 <Tooltip position="bottom" title={t('swapPriceImpactTooltip')}>
-                  <Icon name={ICON_NAMES.INFO} className="fa-info-circle" />
+                  <Icon name={ICON_NAMES.INFO} />
                 </Tooltip>
               </Box>
               {priceDifferenceMessage}

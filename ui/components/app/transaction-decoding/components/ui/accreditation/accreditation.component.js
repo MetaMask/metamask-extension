@@ -56,7 +56,7 @@ const Accreditation = ({ fetchVia, address }) => {
   return (
     <div className="accreditation">
       <div className="accreditation__icon">
-        <Icon name={ICON_NAMES.INFO} className="info-circle" />
+        <Icon name={ICON_NAMES.INFO} />
       </div>
       <div className="accreditation__info">
         <AccreditationLink />

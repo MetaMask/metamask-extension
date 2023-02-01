@@ -28,7 +28,7 @@ const rows = [
       <>
         Estimated gas fee
         <InfoTooltip contentText="This is the tooltip text" position="top">
-          <Icon name={ICON_NAMES.INFO} className="info-circle" />
+          <Icon name={ICON_NAMES.INFO} />
         </InfoTooltip>
       </>
     }

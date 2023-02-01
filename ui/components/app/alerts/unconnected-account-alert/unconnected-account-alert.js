@@ -69,7 +69,7 @@ const UnconnectedAccountAlert = () => {
               title={t('alertDisableTooltip')}
               wrapperClassName="unconnected-account-alert__checkbox-label-tooltip"
             >
-              <Icon name={ICON_NAMES.INFO} className="fa-info-circle" />
+              <Icon name={ICON_NAMES.INFO} />
             </Tooltip>
           </label>
         </div>
