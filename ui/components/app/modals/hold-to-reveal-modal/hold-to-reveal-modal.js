@@ -51,7 +51,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
         <Text variant={TEXT.HEADING_SM}>{t('holdToRevealTitle')}</Text>
         <ButtonIcon
           className="hold-to-reveal-modal__close"
-          iconName={ICON_NAMES.CLOSE_OUTLINE}
+          iconName={ICON_NAMES.CLOSE}
           size={SIZES.SM}
           onClick={handleCancel}
           ariaLabel={t('close')}
@@ -87,9 +87,6 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"
               rel="noopener noreferrer"
-              buttonTextProps={{
-                variant: TEXT.BODY_MD,
-              }}
             >
               {t('holdToRevealContent5')}
             </Button>,
