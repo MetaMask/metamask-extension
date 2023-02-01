@@ -74,7 +74,8 @@
     "network": "5",
     "provider": {
       "type": "rpc",
-      "chainId": "0x5"
+      "chainId": "0x5",
+      "ticker": "ETH"
     },
     "keyrings": [
       {

@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Added displaying the primaryType during Typed data signing ([#17077](https://github.com/MetaMask/metamask-extension/pull/17077))
 
+## [10.24.2]
+### Fixed
+- Fix incorrect network information after switching networks when "Show balance and token price checker" is toggled off ([#17450](https://github.com/MetaMask/metamask-extension/pull/17450))
+- Improve rendering time of signTypedData confirmation screens for large payloads ([#17432](https://github.com/MetaMask/metamask-extension/pull/17432))
+
+## [10.24.1]
+### Added
+- Ensure app name appears for Taiwanese language speakers in the extension stores ([#17304](https://github.com/MetaMask/metamask-extension/pull/17304))
+
 ## [10.24.0]
 ### Added
 - Add NFT setApprovalForAll warning popover when approving the NFT Colleciton ([#16195](https://github.com/MetaMask/metamask-extension/pull/16195))
@@ -3427,6 +3436,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.25.0...HEAD
 [10.25.0]: https://github.com/MetaMask/metamask-extension/compare/v10.24.0...v10.25.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.24.2...HEAD
+[10.24.2]: https://github.com/MetaMask/metamask-extension/compare/v10.24.1...v10.24.2
+[10.24.1]: https://github.com/MetaMask/metamask-extension/compare/v10.24.0...v10.24.1
 [10.24.0]: https://github.com/MetaMask/metamask-extension/compare/v10.23.3...v10.24.0
 [10.23.3]: https://github.com/MetaMask/metamask-extension/compare/v10.23.2...v10.23.3
 [10.23.2]: https://github.com/MetaMask/metamask-extension/compare/v10.23.1...v10.23.2

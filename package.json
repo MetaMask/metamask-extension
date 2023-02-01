@@ -87,6 +87,7 @@
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
+    "cookiejar": "^2.1.4",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",
     "pubnub/superagent-proxy": "^3.0.0",
