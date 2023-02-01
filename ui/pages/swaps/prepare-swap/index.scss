@@ -36,7 +36,6 @@
 
     input {
       text-align: right;
-      padding-bottom: 0;
     }
 
     .MuiInputBase-root {
@@ -189,6 +188,12 @@
         border: 0;
         // border: 1px solid var(--color-border-default);
         // border-left: 0;
+      }
+    }
+
+    &__two-line-input {
+      input {
+        padding-bottom: 0;
       }
     }
   }
