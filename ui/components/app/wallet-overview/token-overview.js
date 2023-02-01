@@ -25,10 +25,6 @@ import {
   getIsBuyableWyreToken,
 } from '../../../selectors/selectors';
 
-import BuyIcon from '../../ui/icon/overview-buy-icon.component';
-import SwapIcon from '../../ui/icon/swap-icon.component';
-import SendIcon from '../../ui/icon/overview-send-icon.component';
-
 import IconButton from '../../ui/icon-button';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
@@ -36,6 +32,9 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import DepositPopover from '../deposit-popover';
+
+import { Icon, ICON_NAMES } from '../../component-library';
+import { COLORS } from '../../../helpers/constants/design-system';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -115,7 +114,9 @@ const TokenOverview = ({ className, token }) => {
             {isBuyable && (
               <IconButton
                 className="token-overview__button"
-                Icon={BuyIcon}
+                Icon={
+                  <Icon name={ICON_NAMES.CARD} color={COLORS.PRIMARY_INVERSE} />
+                }
                 label={t('buy')}
                 onClick={() => {
                   trackEvent({
@@ -157,7 +158,9 @@ const TokenOverview = ({ className, token }) => {
                   }
                 }
               }}
-              Icon={SendIcon}
+              Icon={
+                <Icon name={ICON_NAMES.SEND_1} color={COLORS.PRIMARY_INVERSE} />
+              }
               label={t('send')}
               data-testid="eth-overview-send"
               disabled={token.isERC721}
@@ -165,7 +168,12 @@ const TokenOverview = ({ className, token }) => {
             <IconButton
               className="token-overview__button"
               disabled={!isSwapsChain}
-              Icon={SwapIcon}
+              Icon={
+                <Icon
+                  name={ICON_NAMES.SWAP_HORIZONTAL}
+                  color={COLORS.PRIMARY_INVERSE}
+                />
+              }
               onClick={() => {
                 if (isSwapsChain) {
                   trackEvent({

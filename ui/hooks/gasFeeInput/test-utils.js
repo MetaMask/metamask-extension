@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   getConversionRate,
   getNativeCurrency,
@@ -31,7 +31,7 @@ import { EtherDenomination } from '../../../shared/constants/common';
 export const MOCK_ETH_USD_CONVERSION_RATE = 100000;
 
 export const LEGACY_GAS_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+  gasEstimateType: GasEstimateTypes.legacy,
   gasFeeEstimates: {
     low: '10',
     medium: '20',
@@ -41,7 +41,7 @@ export const LEGACY_GAS_ESTIMATE_RETURN_VALUE = {
 };
 
 export const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+  gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
     low: {
       minWaitTimeEstimate: 180000,
@@ -67,7 +67,7 @@ export const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
 };
 
 export const HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+  gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
     low: {
       minWaitTimeEstimate: 180000,

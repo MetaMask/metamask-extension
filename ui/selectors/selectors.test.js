@@ -274,16 +274,4 @@ describe('Selectors', () => {
       selectors.getTotalUnapprovedSignatureRequestCount(mockState);
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
-
-  it('#getMetamaskStateValueSelector', () => {
-    const getGasEstimateTypeSelector =
-      selectors.getMetamaskStateValueSelector('gasEstimateType');
-    expect(getGasEstimateTypeSelector(mockState)).toStrictEqual('fee-market');
-  });
-
-  it('#getAppStateValueSelector', () => {
-    const getGasIsLoadingSelector =
-      selectors.getAppStateValueSelector('gasIsLoading');
-    expect(getGasIsLoadingSelector(mockState)).toStrictEqual(false);
-  });
 });

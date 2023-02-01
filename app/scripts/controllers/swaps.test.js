@@ -8,7 +8,7 @@ import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
@@ -151,7 +151,7 @@ const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
     gasFeeEstimates: {
       high: '150',
     },
-    gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+    gasEstimateType: GasEstimateTypes.legacy,
   };
 });
 

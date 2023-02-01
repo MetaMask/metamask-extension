@@ -96,7 +96,7 @@ describe('Icon', () => {
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          size={SIZES.AUTO}
+          size={SIZES.INHERIT}
           data-testid="icon-auto"
         />
       </>,
@@ -106,7 +106,7 @@ describe('Icon', () => {
     expect(getByTestId('icon-md')).toHaveClass('mm-icon--size-md');
     expect(getByTestId('icon-lg')).toHaveClass('mm-icon--size-lg');
     expect(getByTestId('icon-xl')).toHaveClass('mm-icon--size-xl');
-    expect(getByTestId('icon-auto')).toHaveClass('mm-icon--size-auto');
+    expect(getByTestId('icon-auto')).toHaveClass('mm-icon--size-inherit');
   });
   it('should render with icon colors', () => {
     const { getByTestId } = render(

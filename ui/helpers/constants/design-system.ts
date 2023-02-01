@@ -54,6 +54,7 @@ export const COLORS = {
   GOERLI_INVERSE: 'goerli-inverse',
   SEPOLIA_INVERSE: 'sepolia-inverse',
 };
+
 export const BACKGROUND_COLORS = pick(COLORS, [
   'BACKGROUND_DEFAULT',
   'BACKGROUND_ALTERNATIVE',
@@ -186,7 +187,8 @@ export const SIZES = {
   MD: 'md',
   LG: 'lg',
   XL: 'xl',
-  AUTO: 'auto', // Used for Text, Icon, and Button components to inherit the parent elements font-size
+  INHERIT: 'inherit', // Used for Text, Icon, and Button components to inherit the parent elements font-size
+  AUTO: 'auto',
   NONE,
 };
 

@@ -77,9 +77,9 @@ import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
-import { THEME_TYPE } from '../settings/settings-tab/settings-tab.constant';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
+import { ThemeType } from '../../../shared/constants/preferences';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -125,8 +125,8 @@ export default class Routes extends Component {
 
   handleOsTheme() {
     const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
-      ? THEME_TYPE.DARK
-      : THEME_TYPE.LIGHT;
+      ? ThemeType.dark
+      : ThemeType.light;
 
     document.documentElement.setAttribute('data-theme', osTheme);
   }
@@ -135,7 +135,7 @@ export default class Routes extends Component {
     const { theme } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === THEME_TYPE.OS) {
+      if (theme === ThemeType.OS) {
         this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
@@ -160,7 +160,7 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    if (theme === THEME_TYPE.OS) {
+    if (theme === ThemeType.os) {
       this.handleOsTheme();
     } else {
       document.documentElement.setAttribute('data-theme', theme);

@@ -45,14 +45,11 @@ import {
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
-  dismissCurrentSmartTransactionsErrorMessage,
-  getCurrentSmartTransactionsErrorMessageDismissed,
   navigateBackToBuildQuote,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
   currentNetworkTxListSelector,
-  getSwapsDefaultToken,
 } from '../../selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -85,14 +82,12 @@ import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { EVENT } from '../../../shared/constants/metametrics';
 import { TransactionStatus } from '../../../shared/constants/transaction';
-import ActionableMessage from '../../components/ui/actionable-message';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   fetchTokens,
   fetchTopAssets,
   fetchAggregatorMetadata,
-  stxErrorTypes,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
@@ -135,7 +130,6 @@ export default function Swap() {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -151,11 +145,6 @@ export default function Swap() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
-  const smartTransactionsErrorMessageDismissed = useSelector(
-    getCurrentSmartTransactionsErrorMessageDismissed,
-  );
-  const showSmartTransactionsErrorMessage =
-    currentSmartTransactionsError && !smartTransactionsErrorMessageDismissed;
 
   useEffect(() => {
     const leaveSwaps = async () => {
@@ -374,11 +363,6 @@ export default function Swap() {
     return <></>;
   }
 
-  const isStxNotEnoughFundsError =
-    currentSmartTransactionsError === stxErrorTypes.NOT_ENOUGH_FUNDS;
-  const isRegularTxInProgressError =
-    currentSmartTransactionsError === stxErrorTypes.REGULAR_TX_IN_PROGRESS;
-
   return (
     <div className="swaps">
       <div className="swaps__container">
@@ -408,53 +392,6 @@ export default function Swap() {
           </div>
         </div>
         <div className="swaps__content">
-          {showSmartTransactionsErrorMessage && (
-            <ActionableMessage
-              type={isStxNotEnoughFundsError ? 'default' : 'warning'}
-              message={
-                isStxNotEnoughFundsError ? (
-                  <div>
-                    {t('swapApproveNeedMoreTokensSmartTransactions', [
-                      defaultSwapsToken.symbol,
-                    ])}{' '}
-                    <span
-                      onClick={() =>
-                        dispatch(dismissCurrentSmartTransactionsErrorMessage())
-                      }
-                      style={{
-                        textDecoration: 'underline',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {t('stxTryRegular')}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="build-quote__token-verification-warning-message">
-                    <button
-                      onClick={() => {
-                        dispatch(dismissCurrentSmartTransactionsErrorMessage());
-                      }}
-                      className="swaps__notification-close-button"
-                    />
-                    <div className="swaps__notification-title">
-                      {t('stxUnavailable')}
-                    </div>
-                    <div>
-                      {isRegularTxInProgressError
-                        ? t('stxFallbackPendingTx')
-                        : t('stxFallbackUnavailable')}
-                    </div>
-                  </div>
-                )
-              }
-              className={
-                isStxNotEnoughFundsError
-                  ? 'swaps__error-message'
-                  : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
-              }
-            />
-          )}
           <Switch>
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}

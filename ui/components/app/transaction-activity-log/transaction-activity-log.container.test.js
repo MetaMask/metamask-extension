@@ -18,6 +18,9 @@ describe('TransactionActivityLog container', () => {
           conversionRate: 280.45,
           nativeCurrency: 'ETH',
           frequentRpcListDetail: [],
+          provider: {
+            ticker: 'ETH',
+          },
         },
       };
 
@@ -43,6 +46,7 @@ describe('TransactionActivityLog container', () => {
           ],
           provider: {
             rpcUrl: 'https://customnetwork.com/',
+            ticker: 'ETH',
           },
         },
       };

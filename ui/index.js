@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 
 import { getEnvironmentType } from '../app/scripts/lib/util';
-import { ALERT_TYPES } from '../shared/constants/alerts';
+import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
@@ -114,7 +114,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       permittedAccountsForCurrentTab.length > 0 &&
       !permittedAccountsForCurrentTab.includes(selectedAddress)
     ) {
-      draftInitialState[ALERT_TYPES.unconnectedAccount] = {
+      draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,
       };
       actions.setUnconnectedAccountAlertShown(origin);
