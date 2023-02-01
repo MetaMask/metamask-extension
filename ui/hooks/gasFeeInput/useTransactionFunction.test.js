@@ -90,7 +90,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
     });
   });
 
-  it('should invoke action updateTransaction with 10% increased max priority fee and medium fee + 10% when updateTransactionToTenPercentIncreasedGasFee callback is invoked while original priority fee is 0', async () => {
+  it('invokes action updateTransaction with 10% increased max priority fee and medium fee + 10% when updateTransactionToTenPercentIncreasedGasFee callback is invoked while original priority fee is 0', async () => {
     const mockUpdateGasFees = jest
       .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: '' }));
