@@ -2173,6 +2173,9 @@
   "nft": {
     "message": "NFT"
   },
+  "nftAutodetectionTurnedOffNotification": {
+    "message": "NFT auto-detection turned OFF for all NFTs from now on. To change this settings, go to  Settings > Privacy."
+  },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },

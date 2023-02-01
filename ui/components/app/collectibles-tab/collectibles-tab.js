@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
+import SystemNotification from '../system-notification';
 import CollectiblesDetectionNotice from '../collectibles-detection-notice';
 import CollectiblesItems from '../collectibles-items';
 import {
@@ -145,6 +146,12 @@ export default function CollectiblesTab({ onAddNFT }) {
             </Button>
           </Box>
         </Box>
+        {true ? (
+          <SystemNotification
+            descriptionText={t('nftAutodetectionTurnedOffNotification')}
+            key="nft-autodetection-off-notification"
+          />
+        ) : null}
       </Box>
     </Box>
   );
