@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getSelectedAccount,
@@ -180,8 +180,7 @@ export function useGasFeeErrors({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const isFeeMarketGasEstimate =
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET;
+  const isFeeMarketGasEstimate = gasEstimateType === GasEstimateTypes.feeMarket;
 
   // Get all errors
   const gasLimitError = validateGasLimit(gasLimit, minimumGasLimit);

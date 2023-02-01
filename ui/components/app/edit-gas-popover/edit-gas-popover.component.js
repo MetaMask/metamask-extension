@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { txParamsAreDappSuggested } from '../../../../shared/modules/transaction.utils';
 import {
-  EDIT_GAS_MODES,
+  EditGasModes,
   GAS_LIMITS,
   CUSTOM_GAS_ESTIMATE,
-  GAS_RECOMMENDATIONS,
+  GasRecommendations,
 } from '../../../../shared/constants/gas';
 
 import Popover from '../../ui/popover';
@@ -50,7 +50,7 @@ export default function EditGasPopover({
   const updatedCustomGasSettings = useIncrementedGasFees(transaction);
 
   let updatedTransaction = transaction;
-  if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
+  if (mode === EditGasModes.speedUp || mode === EditGasModes.cancel) {
     updatedTransaction = {
       ...transaction,
       userFeeLevel: CUSTOM_GAS_ESTIMATE,
@@ -74,7 +74,7 @@ export default function EditGasPopover({
     onManualChange,
     balanceError,
   } = useGasFeeInputs(
-    GAS_RECOMMENDATIONS.MEDIUM,
+    GasRecommendations.medium,
     updatedTransaction,
     minimumGasLimit,
     mode,
@@ -123,17 +123,17 @@ export default function EditGasPopover({
     };
 
     switch (mode) {
-      case EDIT_GAS_MODES.CANCEL:
+      case EditGasModes.cancel:
         dispatch(
           createCancelTransaction(updatedTransaction.id, newGasSettings),
         );
         break;
-      case EDIT_GAS_MODES.SPEED_UP:
+      case EditGasModes.speedUp:
         dispatch(
           createSpeedUpTransaction(updatedTransaction.id, newGasSettings),
         );
         break;
-      case EDIT_GAS_MODES.MODIFY_IN_PLACE:
+      case EditGasModes.modifyInPlace:
         newGasSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
         newGasSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
 
@@ -162,9 +162,9 @@ export default function EditGasPopover({
   let title = t('editGasTitle');
   if (popoverTitle) {
     title = popoverTitle;
-  } else if (mode === EDIT_GAS_MODES.SPEED_UP) {
+  } else if (mode === EditGasModes.speedUp) {
     title = t('speedUpPopoverTitle');
-  } else if (mode === EDIT_GAS_MODES.CANCEL) {
+  } else if (mode === EditGasModes.cancel) {
     title = t('cancelPopoverTitle');
   }
 
@@ -217,6 +217,6 @@ EditGasPopover.propTypes = {
   confirmButtonText: PropTypes.string,
   onClose: PropTypes.func,
   transaction: PropTypes.object,
-  mode: PropTypes.oneOf(Object.values(EDIT_GAS_MODES)),
+  mode: PropTypes.oneOf(Object.values(EditGasModes)),
   minimumGasLimit: PropTypes.string,
 };

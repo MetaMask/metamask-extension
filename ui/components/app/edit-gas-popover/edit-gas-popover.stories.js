@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import {
-  EDIT_GAS_MODES,
-  GAS_RECOMMENDATIONS,
+  EditGasModes,
+  GasRecommendations,
 } from '../../../../shared/constants/gas';
 
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
@@ -32,7 +32,7 @@ export default {
 };
 
 const transaction = {
-  userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
+  userFeeLevel: GasRecommendations.medium,
   txParams: {
     maxFeePerGas: decGWEIToHexWEI('10000'),
     maxPriorityFeePerGas: '0x5600',
@@ -40,8 +40,8 @@ const transaction = {
     gasPrice: '0x5600',
   },
 };
-const defaultEstimateToUse = GAS_RECOMMENDATIONS.HIGH;
-const mode = EDIT_GAS_MODES.SWAPS;
+const defaultEstimateToUse = GasRecommendations.high;
+const mode = EditGasModes.swaps;
 const confirmButtonText = 'Submit';
 const minimumGasLimit = '5700';
 

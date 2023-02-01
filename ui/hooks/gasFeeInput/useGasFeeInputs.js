@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import {
   CUSTOM_GAS_ESTIMATE,
-  GAS_RECOMMENDATIONS,
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
+  GasRecommendations,
+  EditGasModes,
+  PriorityLevels,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
@@ -81,20 +81,20 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  * Will update the gas fee state when estimates update if the user has not yet
  * modified the fields.
  *
- * @param {EstimateLevel} [defaultEstimateToUse] - which estimate
+ * @param {GasRecommendations} [defaultEstimateToUse] - which estimate
  *  level to default the 'estimateToUse' state variable to.
  * @param {object} [_transaction]
  * @param {string} [minimumGasLimit]
- * @param {EDIT_GAS_MODES[keyof EDIT_GAS_MODES]} editGasMode
+ * @param {EditGasModes[keyof EditGasModes]} editGasMode
  * @returns {GasFeeInputReturnType & import(
  *  './useGasFeeEstimates'
  * ).GasEstimates} gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
-  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
+  defaultEstimateToUse = GasRecommendations.medium,
   _transaction,
   minimumGasLimit = '0x5208',
-  editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
+  editGasMode = EditGasModes.modifyInPlace,
 ) {
   const initialRetryTxMeta = {
     txParams: _transaction?.txParams,
@@ -148,7 +148,7 @@ export function useGasFeeInputs(
     if (estimateToUse) {
       return estimateToUse;
     }
-    return PRIORITY_LEVELS.CUSTOM;
+    return PriorityLevels.custom;
   });
 
   const [gasLimit, setGasLimit] = useState(() =>

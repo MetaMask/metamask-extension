@@ -59,8 +59,8 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
 import {
-  ALERT_TYPES,
-  WEB3_SHIM_USAGE_ALERT_STATES,
+  AlertTypes,
+  Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import Home from './home.component';
 
@@ -104,7 +104,7 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageAlertEnabledness(state) &&
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
-      WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
+      Web3ShimUsageAlertStates.recorded;
 
   const isSigningQRHardwareTransaction =
     hasUnsignedQRHardwareTransaction(state) ||
@@ -165,7 +165,7 @@ const mapDispatchToProps = (dispatch) => ({
   setWeb3ShimUsageAlertDismissed: (origin) =>
     setWeb3ShimUsageAlertDismissed(origin),
   disableWeb3ShimUsageAlert: () =>
-    setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
+    setAlertEnabledness(AlertTypes.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
   hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
