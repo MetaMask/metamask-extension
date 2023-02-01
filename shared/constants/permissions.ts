@@ -61,15 +61,16 @@ const ExcludedFlaskSnapEndowments = Object.freeze({
     'This endowment is still in development therefore not available.',
 });
 
-export const EndowmentPermissions = Object.freeze(
-  isMain ? StableEndowmentPermissions : FlaskEndowmentPermissions,
-);
+export const EndowmentPermissions = isMain
+  ? StableEndowmentPermissions
+  : FlaskEndowmentPermissions;
 
-export const ExcludedSnapPermissions = Object.freeze(
-  isMain ? ExcludedStableSnapPermissions : ExcludedFlaskSnapPermissions,
-);
+export const ExcludedSnapPermissions = isMain
+  ? ExcludedStableSnapPermissions
+  : ExcludedFlaskSnapPermissions;
 
-export const ExcludedSnapEndowments = Object.freeze(
-  isMain ? ExcludedStableSnapEndowments : ExcludedFlaskSnapEndowments,
-);
+export const ExcludedSnapEndowments = isMain
+  ? ExcludedStableSnapEndowments
+  : ExcludedFlaskSnapEndowments;
+
 ///: END:ONLY_INCLUDE_IN
