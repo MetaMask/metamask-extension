@@ -1,4 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
+import { Interface } from '@ethersproject/abi';
+import abi from 'human-standard-token-abi';
 import { addHexPrefix } from '../../../lib/util';
 import {
   TransactionEnvelopeType,
@@ -218,10 +220,36 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
           );
         }
         break;
+      case 'data':
+        validateInputData(value);
+        ensureFieldIsString(txParams, 'data');
+        break;
       default:
         ensureFieldIsString(txParams, key);
     }
   });
+}
+
+/**
+ *
+ * @param {*} value
+ */
+export function validateInputData(value) {
+  if (value !== null) {
+    // Validate the input data
+    const hstInterface = new Interface(abi);
+    try {
+      hstInterface.parseTransaction({ data: value });
+    } catch (e) {
+      // Throw an invalidParams error if BUFFER_OVERRUN
+      /* eslint require-unicode-regexp: off */
+      if (e.message.match(/BUFFER_OVERRUN/)) {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.`,
+        );
+      }
+    }
+  }
 }
 
 /**
