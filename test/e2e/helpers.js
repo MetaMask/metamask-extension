@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const path = require('path');
 const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
@@ -11,7 +12,6 @@ const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
-const { strict: assert } = require('assert');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -330,22 +330,24 @@ const completeCreateNewWalletOnboardingFlow = async (
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-wallet"]');
 
-  //secure my wallet
+  // secure my wallet
   await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
-  //reveal SRP
+  // reveal SRP
   await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
 
   const revealedSeedPhrase = await driver.findElement(
     '[data-testid="recovery-phrase-chips"]',
   );
 
-  seedPhrase = await revealedSeedPhrase.getText();
+  let recoveryPhrase = seedPhrase;
+
+  recoveryPhrase = await revealedSeedPhrase.getText();
 
   await driver.clickElement('[data-testid="recovery-phrase-next"]');
 
-  //confirm SRP
-  const words = seedPhrase.split(/\s*(?:[0-9\(\)]+|\n|\.|^$|$)\s*/);
+  // confirm SRP
+  const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
   const finalWords = words.filter((str) => str !== '');
   assert.equal(finalWords.length, 12);
 
