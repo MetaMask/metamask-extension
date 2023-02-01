@@ -7,6 +7,7 @@ import { submittedPendingTransactionsSelector } from '../../../selectors/transac
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import SimulationErrorMessage from '../../ui/simulation-error-message';
 import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -23,19 +24,9 @@ const TransactionAlerts = ({
   return (
     <div className="transaction-alerts">
       {supportsEIP1559 && hasSimulationError && (
-        <ActionableMessage
-          message={t('simulationErrorMessageV2')}
-          useIcon
-          iconFillColor="var(--color-error-default)"
-          type="danger"
-          primaryActionV2={
-            userAcknowledgedGasMissing === true
-              ? undefined
-              : {
-                  label: t('proceedWithTransaction'),
-                  onClick: setUserAcknowledgedGasMissing,
-                }
-          }
+        <SimulationErrorMessage
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
         />
       )}
       {supportsEIP1559 && pendingTransactions?.length > 0 && (
