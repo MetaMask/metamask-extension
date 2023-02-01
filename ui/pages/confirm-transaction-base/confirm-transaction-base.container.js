@@ -37,9 +37,6 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getInsightSnaps,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -195,10 +192,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const insightSnaps = getInsightSnaps(state);
-  ///: END:ONLY_INCLUDE_IN
-
   return {
     balance,
     fromAddress,
@@ -249,9 +242,6 @@ const mapStateToProps = (state, ownProps) => {
     isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    insightSnaps,
-    ///: END:ONLY_INCLUDE_IN
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
   };
 };

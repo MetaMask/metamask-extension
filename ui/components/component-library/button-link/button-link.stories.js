@@ -153,8 +153,13 @@ export const Size = (args) => (
       </ButtonLink>
     </Text>
     <Text variant={TEXT.BODY_XS}>
-      Inherits the font-size of the parent element.{' '}
-      <ButtonLink {...args} size={SIZES.INHERIT}>
+      Inherits the font-size of the parent element and example with textProps
+      override for a success color.{' '}
+      <ButtonLink
+        {...args}
+        size={SIZES.INHERIT}
+        textProps={{ color: COLORS.SUCCESS_DEFAULT }}
+      >
         Learn more
       </ButtonLink>
     </Text>

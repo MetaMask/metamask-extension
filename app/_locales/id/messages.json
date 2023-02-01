@@ -3058,7 +3058,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "Dengan mencabut izin, $1 berikut tidak lagi dapat mengakses $2 Anda",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Cabut batas pengeluaran untuk $1",
@@ -4080,9 +4080,6 @@
   },
   "tokenList": {
     "message": "Daftar token:"
-  },
-  "tokenNftAutoDetection": {
-    "message": "Deteksi otomatis Token dan NFT"
   },
   "tokenScamSecurityRisk": {
     "message": "penipuan token dan risiko keamanan"
