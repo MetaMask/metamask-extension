@@ -743,7 +743,6 @@ export default function PrepareSwap({
               onInputChange(value, fromTokenBalance);
             }}
             inputValue={fromTokenInputValue}
-            leftValue={fromTokenInputValue && swapFromFiatValue}
             selectedItem={selectedFromToken}
             maxListItems={30}
             loading={
@@ -759,49 +758,69 @@ export default function PrepareSwap({
             listContainerClassName="prepare-swap__open-dropdown"
             autoFocus
           />
-          <div
-            className={classnames('prepare-swap__balance-message', {
-              'prepare-swap__balance-message--error':
-                balanceError || fromTokenError,
-            })}
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={ALIGN_ITEMS.STRETCH}
           >
-            {!fromTokenError &&
-              !balanceError &&
-              fromTokenSymbol &&
-              swapYourTokenBalance}
-            {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
-              <div
-                className="prepare-swap__max-button"
-                data-testid="prepare-swap__max-button"
-                onClick={() =>
-                  onInputChange(fromTokenBalance || '0', fromTokenBalance)
-                }
+            <div
+              className={classnames('prepare-swap__balance-message', {
+                'prepare-swap__balance-message--error':
+                  balanceError || fromTokenError,
+              })}
+            >
+              {!fromTokenError &&
+                !balanceError &&
+                fromTokenSymbol &&
+                swapYourTokenBalance}
+              {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
+                <div
+                  className="prepare-swap__max-button"
+                  data-testid="prepare-swap__max-button"
+                  onClick={() =>
+                    onInputChange(fromTokenBalance || '0', fromTokenBalance)
+                  }
+                >
+                  {t('max')}
+                </div>
+              )}
+              {!fromTokenError && balanceError && fromTokenSymbol && (
+                <div className="build-quite__insufficient-funds">
+                  <div className="build-quite__insufficient-funds-first">
+                    {t('swapsNotEnoughForTx', [fromTokenSymbol])}
+                  </div>
+                  <div className="build-quite__insufficient-funds-second">
+                    {swapYourTokenBalance}
+                  </div>
+                </div>
+              )}
+              {fromTokenError && (
+                <>
+                  <div className="prepare-swap__form-error">
+                    {t('swapTooManyDecimalsError', [
+                      fromTokenSymbol,
+                      fromTokenDecimals,
+                    ])}
+                  </div>
+                  <div>{swapYourTokenBalance}</div>
+                </>
+              )}
+            </div>
+            {fromTokenInputValue && swapFromFiatValue && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JUSTIFY_CONTENT.FLEX_END}
+                alignItems={ALIGN_ITEMS.FLEX_END}
               >
-                {t('max')}
-              </div>
+                <Typography
+                  color={COLORS.TEXT_ALTERNATIVE}
+                  variant={TYPOGRAPHY.H7}
+                >
+                  {swapFromFiatValue}
+                </Typography>
+              </Box>
             )}
-            {!fromTokenError && balanceError && fromTokenSymbol && (
-              <div className="build-quite__insufficient-funds">
-                <div className="build-quite__insufficient-funds-first">
-                  {t('swapsNotEnoughForTx', [fromTokenSymbol])}
-                </div>
-                <div className="build-quite__insufficient-funds-second">
-                  {swapYourTokenBalance}
-                </div>
-              </div>
-            )}
-            {fromTokenError && (
-              <>
-                <div className="prepare-swap__form-error">
-                  {t('swapTooManyDecimalsError', [
-                    fromTokenSymbol,
-                    fromTokenDecimals,
-                  ])}
-                </div>
-                <div>{swapYourTokenBalance}</div>
-              </>
-            )}
-          </div>
+          </Box>
         </div>
         <div className="prepare-swap__swap-arrows-row">
           <button

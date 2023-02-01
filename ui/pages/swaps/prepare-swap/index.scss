@@ -33,6 +33,15 @@
     box-shadow: none;
     border: 1px solid var(--color-border-default);
     margin-top: 16px;
+
+    input {
+      text-align: right;
+      padding-bottom: 0;
+    }
+
+    .MuiInputBase-root {
+      padding-right: 0;      
+    }
   }
 
   &__swap-to-content {
@@ -103,7 +112,7 @@
     @include H7;
 
     width: 100%;
-    color: var(--color-text-muted);
+    color: var(--color-text-alternative);
     margin-top: 4px;
     display: flex;
     flex-flow: row;
