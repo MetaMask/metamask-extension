@@ -144,11 +144,11 @@ class NetworkCommunications {
    * @param {"infura" | "custom"} options.networkClientType - Specifies the
    * expected middleware stack that will represent the provider: "infura" for an
    * Infura network; "custom" for a custom RPC endpoint.
-   * @param {string} options.infuraNetwork - The name of the Infura network
+   * @param {string} [options.infuraNetwork] - The name of the Infura network
    * being tested, assuming that `networkClientType` is "infura".
-   * @param {string} options.infuraProjectId - The project ID of the Infura
+   * @param {string} [options.infuraProjectId] - The project ID of the Infura
    * network being tested, assuming that `networkClientType` is "infura".
-   * @param {string} options.customRpcUrl - The URL of the custom RPC endpoint,
+   * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
    * assuming that `networkClientType` is "custom".
    * @returns {NockScope} The nock scope.
    */
