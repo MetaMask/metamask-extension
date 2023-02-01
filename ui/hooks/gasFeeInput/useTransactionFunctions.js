@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
+import BigNumber from 'bignumber.js';
 import {
   EditGasModes,
   PriorityLevels,
@@ -168,13 +169,14 @@ export const useTransactionFunctions = ({
         maxPriorityFeePerGas,
       } = transaction.previousGas || transaction.txParams;
 
-      const newMaxPriorityFeePerGas =
-        maxPriorityFeePerGas === '0x0'
-          ? decGWEIToHexWEI(
-              gasFeeEstimates[defaultEstimateToUse]
-                .suggestedMaxPriorityFeePerGas,
-            )
-          : maxPriorityFeePerGas;
+      const newMaxPriorityFeePerGas = new BigNumber(
+        maxPriorityFeePerGas,
+        16,
+      ).isZero()
+        ? decGWEIToHexWEI(
+            gasFeeEstimates[defaultEstimateToUse].suggestedMaxPriorityFeePerGas,
+          )
+        : maxPriorityFeePerGas;
 
       const estimateUsed =
         maxPriorityFeePerGas === '0x0'
