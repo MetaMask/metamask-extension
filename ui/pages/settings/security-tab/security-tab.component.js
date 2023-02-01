@@ -50,10 +50,6 @@ export default class SecurityTab extends PureComponent {
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
-    useNftDetection: PropTypes.bool,
-    setUseNftDetection: PropTypes.func,
-    setOpenSeaEnabled: PropTypes.func,
-    openSeaEnabled: PropTypes.bool,
   };
 
   state = {
@@ -428,60 +424,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderCollectibleDetectionToggle() {
-    if (!process.env.NFTS_V1) {
-      return null;
-    }
-
-    const { t } = this.context;
-    const {
-      useNftDetection,
-      setUseNftDetection,
-      openSeaEnabled,
-      setOpenSeaEnabled,
-    } = this.props;
-
-    return (
-      <div ref={this.settingsRefs[7]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('useCollectibleDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useCollectibleDetectionDescription')}
-            <br />
-            {t('useCollectibleDetectionDescriptionLine2')}
-            <ul className="settings-page__content-unordered-list">
-              <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
-              <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
-            </ul>
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useNftDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Collectible Detection',
-                  properties: {
-                    action: 'Collectible Detection',
-                    legacy_event: true,
-                  },
-                });
-                if (!value && !openSeaEnabled) {
-                  setOpenSeaEnabled(!value);
-                }
-                setUseNftDetection(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderCurrencyRateCheckToggle() {
     const { t } = this.context;
     const { useCurrencyRateCheck, setUseCurrencyRateCheck } = this.props;
@@ -570,12 +512,11 @@ export default class SecurityTab extends PureComponent {
           {this.renderIpfsGatewayControl()}
         </div>
         <span className="settings-page__security-tab-sub-header">
-          {this.context.t('tokenNftAutoDetection')}
+          {this.context.t('tokenAutoDetection')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderAutoDectectTokensToggle()}
           {this.renderBatchAccountBalanceRequestsToggle()}
-          {this.renderCollectibleDetectionToggle()}
         </div>
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}

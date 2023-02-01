@@ -287,5 +287,10 @@ describe('Selectors', () => {
     const showOutdatedBrowserWarning =
       selectors.getShowOutdatedBrowserWarning(mockState);
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
+
+  it('#getTotalUnapprovedSignatureRequestCount', () => {
+    const totalUnapprovedSignatureRequestCount =
+      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
+    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 });

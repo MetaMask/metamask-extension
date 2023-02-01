@@ -532,6 +532,20 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
+export function getTotalUnapprovedSignatureRequestCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedTypedMessagesCount
+  );
+}
+
 export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
@@ -841,7 +855,7 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
-const getCurrentNetworkTransactionList = (state) =>
+export const getCurrentNetworkTransactionList = (state) =>
   state.metamask.currentNetworkTxList;
 
 export const getTxData = (state) => state.confirmTransaction.txData;
