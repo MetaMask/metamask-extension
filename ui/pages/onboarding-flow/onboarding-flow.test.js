@@ -37,6 +37,9 @@ describe('Onboarding Flow', () => {
     metamask: {
       identities: {},
     },
+    localeMessages: {
+      currentLocale: 'en',
+    },
   };
 
   const store = configureMockStore()(mockState);
