@@ -15,7 +15,7 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { THEME_TYPE } from './settings-tab.constant';
+import { ThemeType } from '../../../../shared/constants/preferences';
 
 const sortedCurrencies = availableCurrencies.sort((a, b) => {
   return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
@@ -336,15 +336,15 @@ export default class SettingsTab extends PureComponent {
     const themesOptions = [
       {
         name: t('lightTheme'),
-        value: THEME_TYPE.LIGHT,
+        value: ThemeType.light,
       },
       {
         name: t('darkTheme'),
-        value: THEME_TYPE.DARK,
+        value: ThemeType.dark,
       },
       {
         name: t('osTheme'),
-        value: THEME_TYPE.OS,
+        value: ThemeType.os,
       },
     ];
 

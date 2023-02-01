@@ -4081,9 +4081,6 @@
   "tokenList": {
     "message": "टोकन सूचियां:"
   },
-  "tokenNftAutoDetection": {
-    "message": "टोकन और NFT ऑटो-डिटेक्शन"
-  },
   "tokenScamSecurityRisk": {
     "message": "टोकन घोटाले और सुरक्षा जोखिम"
   },

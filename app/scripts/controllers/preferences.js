@@ -3,7 +3,7 @@ import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { getInitLedgerTransportType } from '../../../shared/lib/preferences-utils';
-import { THEME_TYPE } from '../../../ui/pages/settings/settings-tab/settings-tab.constant';
+import { ThemeType } from '../../../shared/constants/preferences';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -65,7 +65,7 @@ export default class PreferencesController {
       ledgerTransportType: getInitLedgerTransportType(),
       improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
-      theme: THEME_TYPE.OS,
+      theme: ThemeType.os,
       ...opts.initState,
     };
 
