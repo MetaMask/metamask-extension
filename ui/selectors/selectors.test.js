@@ -287,6 +287,7 @@ describe('Selectors', () => {
     const showOutdatedBrowserWarning =
       selectors.getShowOutdatedBrowserWarning(mockState);
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
+  });
 
   it('#getTotalUnapprovedSignatureRequestCount', () => {
     const totalUnapprovedSignatureRequestCount =
