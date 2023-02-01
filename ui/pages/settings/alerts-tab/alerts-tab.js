@@ -33,7 +33,7 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
           >
             <Icon
               name={ICON_NAMES.INFO}
-              className="info-circle alerts-tab__description__icon"
+              className="alerts-tab__description__icon"
             />
           </Tooltip>
           <ToggleButton
