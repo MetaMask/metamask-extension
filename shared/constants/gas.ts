@@ -83,3 +83,31 @@ export enum NetworkCongestionThresholds {
   stable = 0.33,
   busy = 0.66,
 }
+
+export interface TxGasFees {
+  /** Maxmimum number of units of gas to use for this transaction. */
+  gasLimit: string;
+  /** Price per gas for legacy txs */
+  gasPrice: string;
+  /**
+   * Maximum amount per gas to pay for the transaction, including the priority
+   * fee.
+   */
+  maxFeePerGas: string;
+  /** Maximum amount per gas to give to validator as incentive. */
+  maxPriorityFeePerGas: string;
+  /** Which estimate level was used */
+  estimateUsed: string;
+  /** Which estimate level that the API suggested. */
+  estimateSuggested: string;
+  /** The default estimate for gas. */
+  defaultGasEstimates: string;
+  /** same as gasLimit? */
+  gas: string;
+  /** Original estimate for gas. */
+  originalGasEstimate: string;
+  /** The gas limit supplied by user. */
+  userEditedGasLimit: string;
+  /** Estimate level user selected. */
+  userFeeLevel: string;
+}

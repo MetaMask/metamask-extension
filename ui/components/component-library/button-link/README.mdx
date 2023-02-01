@@ -66,7 +66,13 @@ import { ButtonLink, Text, TEXT } from '../../component-library';
   Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
 </Text>
 <Text variant={TEXT.BODY_XS}>
-  Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
+    Inherits the font-size of the parent element and example with textProps override for a success color.
+    <ButtonLink
+      size={SIZES.INHERIT}
+      textProps={{ color: COLORS.SUCCESS_DEFAULT }}
+    >
+      Learn more
+    </ButtonLink>
 </Text>
 ```
 
