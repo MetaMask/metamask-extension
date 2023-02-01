@@ -9,7 +9,7 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
-import ActionableMessage from '../../../components/ui/actionable-message';
+import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import {
@@ -66,13 +66,15 @@ export default class ConfirmApproveContent extends Component {
     isSetApproveForAll: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
+    userAcknowledgedGasMissing: PropTypes.bool,
+    setUserAcknowledgedGasMissing: PropTypes.func,
+    renderSimulationFailureWarning: PropTypes.bool,
   };
 
   state = {
     showFullTxDetails: false,
     copied: false,
     setShowContractDetails: false,
-    userAcknowledgedGasMissing: false,
   };
 
   renderApproveContentCard({
@@ -86,12 +88,12 @@ export default class ConfirmApproveContent extends Component {
     footer,
     noBorder,
   }) {
-    const { supportsEIP1559, txData } = this.props;
-    const { userAcknowledgedGasMissing } = this.state;
+    const {
+      supportsEIP1559,
+      renderSimulationFailureWarning,
+      userAcknowledgedGasMissing,
+    } = this.props;
     const { t } = this.context;
-    const hasSimulationError = Boolean(txData.simulationFails);
-    const renderSimulationFailureWarning =
-      hasSimulationError && !userAcknowledgedGasMissing;
     return (
       <div
         className={classnames({
@@ -99,30 +101,6 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content__card--no-border': noBorder,
         })}
       >
-        {renderSimulationFailureWarning && (
-          <Box
-            paddingTop={0}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingLeft={4}
-          >
-            <ActionableMessage
-              message={t('simulationErrorMessageV2')}
-              useIcon
-              iconFillColor="var(--color-error-default)"
-              type="danger"
-              primaryActionV2={
-                userAcknowledgedGasMissing === true
-                  ? undefined
-                  : {
-                      label: t('proceedWithTransaction'),
-                      onClick: () =>
-                        this.setState({ userAcknowledgedGasMissing: true }),
-                    }
-              }
-            />
-          </Box>
-        )}
         {showHeader && (
           <div className="confirm-approve-content__card-header">
             {supportsEIP1559 && title === t('transactionFee') ? null : (
@@ -174,17 +152,19 @@ export default class ConfirmApproveContent extends Component {
       txData,
       isMultiLayerFeeNetwork,
       supportsEIP1559,
+      userAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
-    const { userAcknowledgedGasMissing } = this.state;
-    const hasSimulationError = Boolean(txData.simulationFails);
-    const renderSimulationFailureWarning =
-      hasSimulationError && !userAcknowledgedGasMissing;
     if (
       !isMultiLayerFeeNetwork &&
       supportsEIP1559 &&
       !renderSimulationFailureWarning
     ) {
-      return <GasDetailsItem userAcknowledgedGasMissing />;
+      return (
+        <GasDetailsItem
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        />
+      );
     }
     return (
       <div className="confirm-approve-content__transaction-details-content">
@@ -534,6 +514,9 @@ export default class ConfirmApproveContent extends Component {
       tokenId,
       tokenAddress,
       assetName,
+      userAcknowledgedGasMissing,
+      setUserAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
     const { showFullTxDetails, setShowContractDetails } = this.state;
 
@@ -601,6 +584,21 @@ export default class ConfirmApproveContent extends Component {
           )}
         </Box>
         <div className="confirm-approve-content__card-wrapper">
+          {renderSimulationFailureWarning && (
+            <Box
+              paddingTop={0}
+              paddingRight={6}
+              paddingBottom={4}
+              paddingLeft={6}
+            >
+              <SimulationErrorMessage
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                setUserAcknowledgedGasMissing={() =>
+                  setUserAcknowledgedGasMissing(true)
+                }
+              />
+            </Box>
+          )}
           {this.renderApproveContentCard({
             symbol: <i className="fa fa-tag" />,
             title: t('transactionFee'),

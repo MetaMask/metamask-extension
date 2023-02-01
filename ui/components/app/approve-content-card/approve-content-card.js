@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
@@ -18,7 +18,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../.storybook/i18n';
 import GasDetailsItem from '../gas-details-item/gas-details-item';
-import ActionableMessage from '../../ui/actionable-message';
 import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
@@ -44,13 +43,10 @@ export default function ApproveContentCard({
   isSetApproveForAll,
   isApprovalOrRejection,
   data,
+  userAcknowledgedGasMissing,
+  renderSimulationFailureWarning,
 }) {
   const t = useContext(I18nContext);
-  const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
-    useState(false);
-  const hasSimulationError = Boolean(fullTxData.simulationFails);
-  const renderSimulationFailureWarning =
-    hasSimulationError && !userAcknowledgedGasMissing;
 
   return (
     <Box
@@ -59,24 +55,6 @@ export default function ApproveContentCard({
         'approve-content-card-container__card--no-border': noBorder,
       })}
     >
-      {renderSimulationFailureWarning && (
-        <Box paddingTop={0} paddingRight={4} paddingBottom={4} paddingLeft={4}>
-          <ActionableMessage
-            message={t('simulationErrorMessageV2')}
-            useIcon
-            iconFillColor="var(--color-error-default)"
-            type="danger"
-            primaryActionV2={
-              userAcknowledgedGasMissing === true
-                ? undefined
-                : {
-                    label: t('proceedWithTransaction'),
-                    onClick: () => setUserAcknowledgedGasMissing(true),
-                  }
-            }
-          />
-        </Box>
-      )}
       {showHeader && (
         <Box
           display={DISPLAY.FLEX}
@@ -334,4 +312,12 @@ ApproveContentCard.propTypes = {
    * Current transaction data
    */
   data: PropTypes.string,
+  /**
+   * User acknowledge gas is missing or not
+   */
+  userAcknowledgedGasMissing: PropTypes.bool,
+  /**
+   * Render simulation failure warning
+   */
+  renderSimulationFailureWarning: PropTypes.bool,
 };
