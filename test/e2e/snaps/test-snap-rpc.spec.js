@@ -68,12 +68,15 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // switch back to test snaps page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectRpcSnap',
+          text: 'Reconnect to RPC Snap',
+        });
 
         // click send inputs on test snap page
         const snapButton2 = await driver.findElement('#sendRpc');
@@ -104,8 +107,13 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(1000);
+        // wait for permissions popover
+        await driver.waitForSelector({
+          text: 'Confirm',
+          tag: 'button',
+        });
+
+        // click checkboxes and confirm
         await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
         await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-0');
         await driver.clickElement({
@@ -113,7 +121,7 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
+        // delay for result creation
         await driver.delay(2000);
 
         // check the results of the custom confirm
