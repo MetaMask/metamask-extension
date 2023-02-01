@@ -35,8 +35,9 @@ exports[`View Price Quote Difference displays a fiat error when calculationError
                   style="display: inline;"
                   tabindex="0"
                 >
-                  <i
-                    class="fa fa-info-circle"
+                  <div
+                    class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>
               </div>
@@ -92,8 +93,9 @@ exports[`View Price Quote Difference displays an error when in high bucket 1`] =
                   style="display: inline;"
                   tabindex="0"
                 >
-                  <i
-                    class="fa fa-info-circle"
+                  <div
+                    class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>
               </div>
@@ -149,8 +151,9 @@ exports[`View Price Quote Difference displays an error when in medium bucket 1`]
                   style="display: inline;"
                   tabindex="0"
                 >
-                  <i
-                    class="fa fa-info-circle"
+                  <div
+                    class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>
               </div>
@@ -206,8 +209,9 @@ exports[`View Price Quote Difference should match snapshot 1`] = `
                   style="display: inline;"
                   tabindex="0"
                 >
-                  <i
-                    class="fa fa-info-circle"
+                  <div
+                    class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+                    style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>
               </div>
