@@ -28,6 +28,9 @@ describe('Secure Your Wallet Onboarding View', () => {
         type: 'test',
       },
     },
+    localeMessages: {
+      currentLocale: 'en',
+    },
   };
 
   const store = configureMockStore([thunk])(mockStore);

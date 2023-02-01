@@ -151,9 +151,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Du må bruke MetaMask på Google Chrome for å koble deg til maskinvare-lommeboken."
   },
-  "clickToRevealSeed": {
-    "message": "Klikk her for å vise hemmelige ord "
-  },
   "close": {
     "message": "Lukk"
   },
@@ -163,14 +160,8 @@
   "confirmPassword": {
     "message": "Bekreft passord"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Bekreft din hemmelige gjennopprettingsfrase"
-  },
   "confirmed": {
     "message": "Bekreftet"
-  },
-  "congratulations": {
-    "message": "Gratulerer "
   },
   "connect": {
     "message": "Koble til"
@@ -213,9 +204,6 @@
   },
   "create": {
     "message": "Opprett"
-  },
-  "createAWallet": {
-    "message": "Opprett en lommebok"
   },
   "createAccount": {
     "message": "Opprett konto"
@@ -262,9 +250,6 @@
   "downloadGoogleChrome": {
     "message": "Last ned Google Chrome "
   },
-  "downloadSecretBackup": {
-    "message": "Last ned denne hemmelige gjenopprettingsfrasen og lagre den trygt på ekstern, kryptert harddisk eller lagringsmedium."
-  },
   "downloadStateLogs": {
     "message": "Last ned tilstandslogg"
   },
@@ -276,33 +261,6 @@
   },
   "editContact": {
     "message": "Rediger kontakt"
-  },
-  "endOfFlowMessage1": {
-    "message": "Du besto prøven - oppbevar den mnemoniske gjenopprettingsfrasen din på et sikkert sted, det er ditt ansvar! "
-  },
-  "endOfFlowMessage10": {
-    "message": "Ferdig"
-  },
-  "endOfFlowMessage2": {
-    "message": "Tips om sikker lagring "
-  },
-  "endOfFlowMessage3": {
-    "message": "Lagre en sikkerhetskopi på flere steder. "
-  },
-  "endOfFlowMessage4": {
-    "message": "Aldri del frasen med noen."
-  },
-  "endOfFlowMessage5": {
-    "message": "Vær forsiktig med phishing! MetaMask vil aldri be om den mnemoniske gjenopprettingsfrasen din spontant."
-  },
-  "endOfFlowMessage6": {
-    "message": "Hvis du trenger å sikkerhetskopiere seed-frasen din igjen kan du finne den i Innstillinger -> Sikkerhet."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask klarer ikke å gjenopprette den mnemoniske gjenopprettingsfrasen din. Finn ut mer. "
-  },
-  "endOfFlowMessage9": {
-    "message": "Finn ut mer."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS-navn ikke funnet i det gjeldende nettverket. Prøv å bytte til hovednettverket for Ethereum."
@@ -378,12 +336,6 @@
     "message": "Få Ether fra en kran for $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Kom i gang"
-  },
-  "happyToSeeYou": {
-    "message": "Vi er glade for å se deg "
-  },
   "hardware": {
     "message": "Maskinvare"
   },
@@ -418,12 +370,6 @@
   },
   "importAccountMsg": {
     "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Importer en konto med den mnemoniske gjenopprettingsfrasen "
-  },
-  "importWallet": {
-    "message": "Importér lommebok "
   },
   "imported": {
     "message": "Importert",
@@ -475,9 +421,6 @@
   "ledgerAccountRestriction": {
     "message": "Du må bruke den siste kontoen din før du kan legge til en ny."
   },
-  "letsGoSetUp": {
-    "message": "Ja, la oss komme i gang!"
-  },
   "likeToImportTokens": {
     "message": "Ønsker du å legge til disse tokenene"
   },
@@ -508,14 +451,8 @@
   "memo": {
     "message": "beskjed"
   },
-  "memorizePhrase": {
-    "message": "Memorer denne frasen. "
-  },
   "message": {
     "message": "Melding "
-  },
-  "metamaskDescription": {
-    "message": "Kobler deg til Ethereum og det desentraliserte nettet."
   },
   "metamaskVersion": {
     "message": "MetaMask-versjon "
@@ -558,17 +495,11 @@
   "newPassword": {
     "message": "Nytt passord (minimum 8 tegn)"
   },
-  "newToMetaMask": {
-    "message": "Ny på MetaMask? "
-  },
   "next": {
     "message": "Neste"
   },
   "noAddressForName": {
     "message": "Ingen adresse har blitt angitt for dette navnet. "
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Nei, jeg har allerede en mnemonisk gjenopprettingsfrase"
   },
   "noConversionRateAvailable": {
     "message": "Ingen konverteringsrate tilgjengelig "
@@ -677,9 +608,6 @@
   "rejected": {
     "message": "Avvist"
   },
-  "remindMeLater": {
-    "message": "Minn meg på dette senere"
-  },
   "remove": {
     "message": "Fjern"
   },
@@ -743,12 +671,6 @@
   "searchTokens": {
     "message": "Søk i sjetonger"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Den hemmelige gjenopprettingsfrasen din gjør det enkelt å sikkerhetskopiere og gjenopprette kontoen din."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ADVARSEL: Du må aldri avsløre gjenopprettingsfrasen din. Alle som har denne frasen kan ta fra deg Etheren din for alltid."
-  },
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"
   },
@@ -757,9 +679,6 @@
   },
   "selectAnAccount": {
     "message": "Velg en konto"
-  },
-  "selectEachPhrase": {
-    "message": "Velg hver frase for å kontrollere at den er riktig."
   },
   "selectHdPath": {
     "message": "Velg HD-bane"
@@ -830,9 +749,6 @@
   "stateLogsDescription": {
     "message": "Tilstandslogger inneholder de offentlige kontoadressene og sendte transaksjoner."
   },
-  "storePhrase": {
-    "message": "Lagre denne frasen i en passordbehandler slik som 1Password."
-  },
   "submitted": {
     "message": "Sendt inn"
   },
@@ -871,9 +787,6 @@
   },
   "testFaucet": {
     "message": "Testkran"
-  },
-  "thisWillCreate": {
-    "message": "Dette vil opprette en ny lommebok og mnemonisk gjenopprettingsfrase"
   },
   "to": {
     "message": "Til "
@@ -999,14 +912,8 @@
   "visitWebSite": {
     "message": "Besøk nettsiden vår "
   },
-  "welcome": {
-    "message": "Velkommen til MetaMask"
-  },
   "welcomeBack": {
     "message": "Velkommen tilbake!"
-  },
-  "writePhrase": {
-    "message": "Skriv denne frasen på et papir og oppbevar på et sikkert sted. Hvis du vil ha enda mer sikkerhet, kan du skrive det ned på flere papirbiter og oppbevare hver på 2 - 3 forskjellige steder."
   },
   "yesLetsTry": {
     "message": "Ja, la oss prøve"
