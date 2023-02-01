@@ -258,7 +258,7 @@ module.exports = {
      * Jest tests
      *
      * These are files that make use of globals and syntax introduced by the
-     * Jest library.
+     * Jest library. The files in this section should match the Mocha excludedFiles section.
      */
     {
       files: [
