@@ -43,6 +43,7 @@ import ViewSnap from './snaps/view-snap';
 ///: END:ONLY_INCLUDE_IN
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import { Icon, ICON_NAMES } from '../../components/component-library';
 
 class SettingsPage extends PureComponent {
   static propTypes = {

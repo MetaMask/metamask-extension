@@ -2,6 +2,8 @@ import React from 'react';
 import Box from '../box/box';
 import { Text } from '../../component-library';
 import Tooltip from '.';
+import { ICON_COLORS } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 export default {
   title: 'Components/UI/Tooltip',
@@ -60,9 +62,10 @@ export const DefaultStory = (args) => (
   <Box display="flex">
     <Text>Hover over the info icon to see the tooltip</Text>
     <Tooltip {...args}>
-      <i
-        className="fa fa-sm fa-info-circle"
-        style={{ color: 'var(--color-icon-alternative)' }}
+      <Icon
+        name={ICON_NAMES.INFO}
+        className="deprecated-test-networks__content__icon"
+        color={ICON_COLORS.ICON_ALTERNATIVE}
       />
     </Tooltip>
   </Box>
@@ -74,9 +77,10 @@ export const HTML = (args) => (
   <Box display="flex">
     <Text>This tooltips content is html</Text>
     <Tooltip {...args}>
-      <i
-        className="fa fa-sm fa-info-circle"
-        style={{ color: 'var(--color-icon-alternative)' }}
+      <Icon
+        name={ICON_NAMES.INFO}
+        className="deprecated-test-networks__content__icon"
+        color={ICON_COLORS.ICON_ALTERNATIVE}
       />
     </Tooltip>
   </Box>

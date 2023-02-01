@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '../../ui/button';
 import Checkbox from '../../ui/check-box';
 import Tooltip from '../../ui/tooltip';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const HomeNotification = ({
   acceptText,
@@ -39,7 +40,7 @@ const HomeNotification = ({
             title={infoText}
             wrapperClassName="home-notification__tooltip-wrapper"
           >
-            <i className="fa fa-info-circle" />
+            <Icon name={ICON_NAMES.INFO} className="info-circle" />
           </Tooltip>
         ) : null}
       </div>

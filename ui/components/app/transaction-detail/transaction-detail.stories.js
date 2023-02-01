@@ -4,6 +4,7 @@ import TransactionDetailItem from '../transaction-detail-item/transaction-detail
 import GasTiming from '../gas-timing/gas-timing.component';
 import README from './README.mdx';
 import TransactionDetail from '.';
+import { Icon, ICON_NAMES } from 'ui/components/component-library';
 
 export default {
   title: 'Components/App/TransactionDetail',
@@ -27,7 +28,7 @@ const rows = [
       <>
         Estimated gas fee
         <InfoTooltip contentText="This is the tooltip text" position="top">
-          <i className="fa fa-info-circle" />
+          <Icon name={ICON_NAMES.INFO} className="info-circle" />
         </InfoTooltip>
       </>
     }

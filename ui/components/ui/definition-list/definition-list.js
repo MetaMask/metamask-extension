@@ -10,6 +10,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const MARGIN_MAP = {
   [Size.XS]: 0,
@@ -48,7 +49,7 @@ export default function DefinitionList({
                 position="top"
                 containerClassName="definition-list__tooltip-wrapper"
               >
-                <i className="fas fa-info-circle" />
+                <Icon name={ICON_NAMES.INFO} />
               </Tooltip>
             )}
           </Typography>
