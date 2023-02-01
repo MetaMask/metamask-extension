@@ -94,10 +94,6 @@ BannerBase.propTypes = {
    */
   children: PropTypes.node,
   /**
-   * The action of the BannerBase below the children
-   */
-  action: PropTypes.node,
-  /**
    * Label for action button (ButtonLink) of the BannerBase below the children
    */
   actionButtonLabel: PropTypes.string,
