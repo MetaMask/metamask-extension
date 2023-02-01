@@ -28,6 +28,9 @@ import DepositPopover from '../deposit-popover/deposit-popover';
 import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import useTransactionInsights from '../../../hooks/useTransactionInsights';
+///: END:ONLY_INCLUDE_IN(flask)
 import {
   getAccountName,
   getAddressBookEntry,
@@ -84,8 +87,8 @@ const ConfirmPageContainer = (props) => {
     supportsEIP1559,
     nativeCurrency,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    insightComponent,
-    ///: END:ONLY_INCLUDE_IN
+    txData,
+    ///: END:ONLY_INCLUDE_IN(flask)
     assetStandard,
     isApprovalOrRejection,
   } = props;
@@ -126,6 +129,14 @@ const ConfirmPageContainer = (props) => {
     const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  // As confirm-transction-base is converted to functional component
+  // this code can bemoved to it.
+  const insightComponent = useTransactionInsights({
+    txData,
+  });
+  ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
     if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
@@ -336,8 +347,8 @@ ConfirmPageContainer.propTypes = {
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  insightComponent: PropTypes.node,
-  ///: END:ONLY_INCLUDE_IN
+  txData: PropTypes.object,
+  ///: END:ONLY_INCLUDE_IN(flask)
   tokenAddress: PropTypes.string,
   nonce: PropTypes.string,
   warning: PropTypes.string,
