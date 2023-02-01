@@ -418,7 +418,7 @@ exports[`Security Tab should match snapshot 1`] = `
     <span
       class="settings-page__security-tab-sub-header"
     >
-      Token and NFT autodetection
+      Token autodetection
     </span>
     <div
       class="settings-page__content-padded"

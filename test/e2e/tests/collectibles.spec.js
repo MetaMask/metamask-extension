@@ -252,7 +252,7 @@ describe('Collectibles', function () {
         );
         assert.equal(
           await title.getText(),
-          'Revoke permission to access all of your TestDappCollectibles?',
+          'Revoke permission to access and transfer all of your TestDappCollectibles?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: false');

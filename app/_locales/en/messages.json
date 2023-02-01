@@ -3085,12 +3085,12 @@
     "message": "Review your spending cap"
   },
   "revokeAllTokensTitle": {
-    "message": "Revoke permission to access all of your $1?",
+    "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
   "revokeApproveForAllDescription": {
-    "message": "By revoking permission, the following $1 will no longer be able to access your $2",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "message": "This revokes the permission for a third party to access and transfer all of your $1 without further notice.",
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -4101,6 +4101,9 @@
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
+  "tokenAutoDetection": {
+    "message": "Token autodetection"
+  },
   "tokenContractAddress": {
     "message": "Token contract address"
   },
@@ -4121,9 +4124,6 @@
   },
   "tokenList": {
     "message": "Token lists:"
-  },
-  "tokenNftAutoDetection": {
-    "message": "Token and NFT autodetection"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"

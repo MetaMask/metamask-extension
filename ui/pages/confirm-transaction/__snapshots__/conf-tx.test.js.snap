@@ -6,72 +6,6 @@ exports[`Signature Request Component render should match snapshot 1`] = `
     class="signature-request"
   >
     <div
-      class="confirm-page-container-navigation"
-      style="display: none;"
-    >
-      <div
-        class="confirm-page-container-navigation__container"
-        data-testid="navigation-container"
-        style="visibility: hidden;"
-      >
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="first-page"
-        >
-          <i
-            class="fa fa-angle-double-left fa-2x"
-          />
-        </button>
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="previous-page"
-        >
-          <i
-            class="fa fa-angle-left fa-2x"
-          />
-        </button>
-      </div>
-      <div
-        class="confirm-page-container-navigation__textcontainer"
-      >
-        <div
-          class="confirm-page-container-navigation__navtext"
-        >
-          0
-           
-          of
-           
-          0
-        </div>
-        <div
-          class="confirm-page-container-navigation__longtext"
-        >
-          requests waiting to be acknowledged
-        </div>
-      </div>
-      <div
-        class="confirm-page-container-navigation__container"
-        style="visibility: hidden;"
-      >
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="next-page"
-        >
-          <i
-            class="fa fa-angle-right fa-2x"
-          />
-        </button>
-        <button
-          class="confirm-page-container-navigation__arrow"
-          data-testid="last-page"
-        >
-          <i
-            class="fa fa-angle-double-right fa-2x"
-          />
-        </button>
-      </div>
-    </div>
-    <div
       class="request-signature__account"
     >
       <div
@@ -91,7 +25,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                 style="height: 32px; width: 32px; border-radius: 16px;"
               >
                 <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(245, 228, 0);"
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
                 >
                   <svg
                     height="32"
@@ -100,25 +34,25 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                     y="0"
                   >
                     <rect
-                      fill="#F2BE02"
+                      fill="#FB184D"
                       height="32"
-                      transform="translate(5.482725134273373 -5.1953603353074) rotate(387.1 16 16)"
+                      transform="translate(-0.010232866814926739 -2.467961361206475) rotate(274.3 16 16)"
                       width="32"
                       x="0"
                       y="0"
                     />
                     <rect
-                      fill="#01778E"
+                      fill="#1888F2"
                       height="32"
-                      transform="translate(-2.6054559418209475 16.704606255523125) rotate(227.4 16 16)"
+                      transform="translate(0.7019171336752298 13.759175028660584) rotate(203.5 16 16)"
                       width="32"
                       x="0"
                       y="0"
                     />
                     <rect
-                      fill="#C81435"
+                      fill="#FA8900"
                       height="32"
-                      transform="translate(17.969690840904306 -12.592649051897114) rotate(422.3 16 16)"
+                      transform="translate(28.820219003567207 11.830135279564011) rotate(192.7 16 16)"
                       width="32"
                       x="0"
                       y="0"
@@ -133,7 +67,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
               <span
                 class="icon-with-fallback__fallback"
               >
-                U
+                G
               </span>
             </div>
           </div>
@@ -143,11 +77,13 @@ exports[`Signature Request Component render should match snapshot 1`] = `
             <h6
               class="box box--margin-top-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
             >
-              Unknown private network
+              Goerli test network
             </h6>
             <h6
               class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
-            />
+            >
+              Account 1
+            </h6>
           </div>
         </div>
         <div
@@ -161,7 +97,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           <h6
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
-            0
+            9.107408
              
           </h6>
         </div>
@@ -188,14 +124,14 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                 <span
                   class="icon-with-fallback__fallback"
                 >
-                  T
+                  M
                 </span>
               </div>
             </div>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
             >
-              test
+              https://metamask.github.io
             </span>
           </div>
         </div>

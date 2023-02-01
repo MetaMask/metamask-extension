@@ -3058,7 +3058,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "Wenn Sie diese Erlaubnis entziehen, wird folgende/s/r $1 nicht mehr dazu in der Lage sein, auf Ihr/e/n $2 zuzugreifen.",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Ausgabengrenze für Ihr $1 aufgeben",
@@ -4080,9 +4080,6 @@
   },
   "tokenList": {
     "message": "Token-Listen:"
-  },
-  "tokenNftAutoDetection": {
-    "message": "Automatische Token- und NFT-Erkennung"
   },
   "tokenScamSecurityRisk": {
     "message": "Token-Betrügereien und Sicherheitsrisiken"
