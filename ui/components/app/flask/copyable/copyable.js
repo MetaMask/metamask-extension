@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
-import IconCopied from '../../../ui/icon/icon-copied';
-import IconCopy from '../../../ui/icon/icon-copy';
 import Typography from '../../../ui/typography';
 import {
   ALIGN_ITEMS,
@@ -14,6 +12,7 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
 
 export const Copyable = ({ text }) => {
   const [copied, handleCopy] = useCopyToClipboard();
@@ -45,17 +44,17 @@ export const Copyable = ({ text }) => {
         marginBottom={1}
       >
         {copied ? (
-          <IconCopied
-            color="var(--color-icon-alternative)"
-            className="copyable__icon"
-            size={18}
+          <Icon
+            name={ICON_NAMES.COPY_SUCCESS}
+            size={ICON_SIZES.LG}
+            color={COLORS.ICON_ALTERNATIVE}
           />
         ) : (
-          <IconCopy
-            className="copyable__icon"
-            color="var(--color-icon-alternative)"
+          <Icon
+            name={ICON_NAMES.COPY}
+            size={ICON_SIZES.LG}
+            color={COLORS.ICON_ALTERNATIVE}
             onClick={() => handleCopy(text)}
-            size={18}
           />
         )}
       </Box>
