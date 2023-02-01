@@ -42,7 +42,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
            
           of
            
-          0
+          1
         </div>
         <div
           class="confirm-page-container-navigation__longtext"
@@ -52,7 +52,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
       </div>
       <div
         class="confirm-page-container-navigation__container"
-        style="visibility: hidden;"
+        style="visibility: initial;"
       >
         <button
           class="confirm-page-container-navigation__arrow"
