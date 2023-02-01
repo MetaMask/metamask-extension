@@ -41,33 +41,35 @@ const FlaskEndowmentPermissions = Object.freeze({
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
-const ExcludedFlaskSnapPermissions = {
+const ExcludedFlaskSnapPermissions = Object.freeze({
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
-};
-const ExcludedStableSnapPermissions = {
+});
+const ExcludedStableSnapPermissions = Object.freeze({
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
-};
-const ExcludedStableSnapEndowments = {
-  'endowment:keyring': 'This endowment is not available',
+});
+const ExcludedStableSnapEndowments = Object.freeze({
+  'endowment:keyring':
+    'This endowment is still in development therefore not available.',
   'endowment:long-running':
     'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945. ',
-};
+});
 
-const ExcludedFlaskSnapEndowments = {
-  'endowment:keyring': 'This endowment is not available',
-};
+const ExcludedFlaskSnapEndowments = Object.freeze({
+  'endowment:keyring':
+    'This endowment is still in development therefore not available.',
+});
 
-export const EndowmentPermissions = isMain
-  ? StableEndowmentPermissions
-  : FlaskEndowmentPermissions;
+export const EndowmentPermissions = Object.freeze(
+  isMain ? StableEndowmentPermissions : FlaskEndowmentPermissions,
+);
 
-export const ExcludedSnapPermissions = isMain
-  ? ExcludedStableSnapPermissions
-  : ExcludedFlaskSnapPermissions;
+export const ExcludedSnapPermissions = Object.freeze(
+  isMain ? ExcludedStableSnapPermissions : ExcludedFlaskSnapPermissions,
+);
 
-export const ExcludedSnapEndowments = isMain
-  ? ExcludedStableSnapEndowments
-  : ExcludedFlaskSnapEndowments;
+export const ExcludedSnapEndowments = Object.freeze(
+  isMain ? ExcludedStableSnapEndowments : ExcludedFlaskSnapEndowments,
+);
 ///: END:ONLY_INCLUDE_IN
