@@ -594,9 +594,7 @@ describe('NetworkController', () => {
             {
               state: {
                 provider: {
-                  type: 'rpc',
-                  rpcUrl: 'https://mock-rpc-url',
-                  chainId: '0x1337',
+                  type: networkType,
                 },
               },
             },
