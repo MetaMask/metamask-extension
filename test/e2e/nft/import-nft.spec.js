@@ -14,43 +14,6 @@ describe('Import NFT', function () {
       },
     ],
   };
-  it('should not be able to import an NFT that dose not belong to user', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions,
-        smartContract,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // After login, go to NFTs tab, open the import NFT form
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
-
-        // Enter an NFT that not belongs to user
-        await driver.fill(
-          '[data-testid="address"]',
-          '0x932Ca55B9Ef0b3094E8Fa82435b3b4c50d713043',
-        );
-        await driver.fill('[data-testid="token-id"]', '927');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
-
-        // Check error message appears
-        const invalidNftNotification = await driver.findElement({
-          text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',
-          tag: 'h6',
-        });
-        assert.equal(await invalidNftNotification.isDisplayed(), true);
-      },
-    );
-  });
 
   it('should be able to import an NFT that user owns', async function () {
     await withFixtures(
@@ -95,6 +58,43 @@ describe('Import NFT', function () {
         );
         assert.equal(await importedNft.isDisplayed(), true);
         assert.equal(await importedNftImage.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should not be able to import an NFT that dose not belong to user', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        smartContract,
+        title: this.test.title,
+      },
+      async ({ driver, _, contractRegistry }) => {
+        const contractAddress =
+          contractRegistry.getContractAddress(smartContract);
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // After login, go to NFTs tab, open the import NFT form
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
+
+        // Enter an NFT that not belongs to user with a valid address and an invalid token id
+        await driver.fill('[data-testid="address"]', contractAddress);
+        await driver.fill('[data-testid="token-id"]', '2');
+        await driver.clickElement({ text: 'Add', tag: 'button' });
+
+        // Check error message appears
+        const invalidNftNotification = await driver.findElement({
+          text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',
+          tag: 'h6',
+        });
+        assert.equal(await invalidNftNotification.isDisplayed(), true);
       },
     );
   });
