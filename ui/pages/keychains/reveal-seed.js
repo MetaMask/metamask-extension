@@ -27,6 +27,7 @@ import {
   BUTTON_TYPES,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
+  BUTTON_SIZES,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -123,9 +124,7 @@ const RevealSeedPage = () => {
   const renderPasswordPromptContent = () => {
     return (
       <form onSubmit={(event) => handleSubmit(event)}>
-        <Label htmlFor="password-box" variant={TEXT.BODY_MD_BOLD}>
-          {t('enterPasswordContinue')}
-        </Label>
+        <Label htmlFor="password-box">{t('enterPasswordContinue')}</Label>
         <TextField
           inputProps={{
             'data-testid': 'input-password',
@@ -154,9 +153,7 @@ const RevealSeedPage = () => {
             activeClassName="reveal-seed__active-tab"
             tabKey="text-seed"
           >
-            <Label variant={TEXT.BODY_MD_BOLD} marginTop={4}>
-              {t('yourPrivateSeedPhrase')}
-            </Label>
+            <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
             <ExportTextContainer
               text={seedWords}
               onClickCopy={() => {
@@ -277,13 +274,11 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription1', [
           <Button
             key="srp-learn-srp"
-            type="link"
-            size="inherit"
+            type={BUTTON_TYPES.LINK}
+            size={BUTTON_SIZES.INHERIT}
             as="a"
-            block={false}
             href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
             target="_blank"
-            variant={TEXT.BODY_MD}
             rel="noopener noreferrer"
           >
             {t('revealSeedWordsSRPName')}
@@ -301,13 +296,11 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription2', [
           <Button
             key="srp-learn-more-non-custodial"
-            type="link"
-            size="inherit"
+            type={BUTTON_TYPES.LINK}
+            size={BUTTON_SIZES.INHERIT}
             as="a"
-            block={false}
             href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
             target="_blank"
-            variant={TEXT.BODY_MD}
             rel="noopener noreferrer"
           >
             {t('revealSeedWordsNonCustodialWallet')}

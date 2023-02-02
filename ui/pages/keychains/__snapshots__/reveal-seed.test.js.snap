@@ -21,7 +21,6 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
           href="https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure"
           rel="noopener noreferrer"
           target="_blank"
-          variant="body-md"
         >
           <span
             class="box mm-text mm-button-base__content mm-text--inherit mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
@@ -51,7 +50,6 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
           href="https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet"
           rel="noopener noreferrer"
           target="_blank"
-          variant="body-md"
         >
           <span
             class="box mm-text mm-button-base__content mm-text--inherit mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
@@ -90,7 +88,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     </div>
     <form>
       <label
-        class="box mm-text mm-label mm-label--html-for mm-text--body-md-bold mm-text--font-weight-bold mm-text--color-text-default box--display-inline-flex box--flex-direction-row box--align-items-center"
+        class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-text--color-text-default box--display-inline-flex box--flex-direction-row box--align-items-center"
         for="password-box"
       >
         Enter password to continue
