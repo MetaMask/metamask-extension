@@ -486,6 +486,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         await driver.delay(500);
         await driver.clickElement({ text: 'Approve', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
 
         // check transaction in Activity tab
         const approveTokenTask = await driver.waitForSelector({
