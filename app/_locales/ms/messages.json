@@ -154,9 +154,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk menyambung kepada Dompet Perkakasan anda."
   },
-  "clickToRevealSeed": {
-    "message": "Klik di sini untuk mendedahkan perkataan rahsia"
-  },
   "close": {
     "message": "Tutup"
   },
@@ -166,14 +163,8 @@
   "confirmPassword": {
     "message": "Sahkan Kata Laluan"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Sahkan Frasa Sandaran Rahsia anda"
-  },
   "confirmed": {
     "message": "Disahkan"
-  },
-  "congratulations": {
-    "message": "Tahniah"
   },
   "connect": {
     "message": "Sambung"
@@ -216,9 +207,6 @@
   },
   "create": {
     "message": "Cipta"
-  },
-  "createAWallet": {
-    "message": "Cipta Dompet"
   },
   "createAccount": {
     "message": "Cipta Akaun"
@@ -265,9 +253,6 @@
   "downloadGoogleChrome": {
     "message": "Muat Turun Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Muat turun Frasa Sandaran Rahsia ini dan simpannya secara selamat di dalam medium storan atau cakera keras tersulit luaran."
-  },
   "downloadStateLogs": {
     "message": "Muat Turun Log Keadaan"
   },
@@ -276,33 +261,6 @@
   },
   "editContact": {
     "message": "Edit Kenalan"
-  },
-  "endOfFlowMessage1": {
-    "message": "Anda telah lulus ujian - simpan frasa benih anda di tempat yang selamat, itu tanggungjawab anda!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Semua Selesai"
-  },
-  "endOfFlowMessage2": {
-    "message": "Petua menyimpannya dengan selamat"
-  },
-  "endOfFlowMessage3": {
-    "message": "Simpan sandaran di beberapa tempat."
-  },
-  "endOfFlowMessage4": {
-    "message": "Jangan sesekali kongsi frasa ini dengan sesiapa."
-  },
-  "endOfFlowMessage5": {
-    "message": "Berhati-hati dengan pemancingan data! MetaMask tidak akan sesekali meminta frasa benih anda secara tiba-tiba."
-  },
-  "endOfFlowMessage6": {
-    "message": "Jika anda perlu membuat sandaran ungkapan benih anda sekali lagi, anda boleh lakukannya melalui Tetapan -> Keselamatan."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask tidak dapat memulihkan ungkapan benih anda. Ketahui lebih lanjut."
-  },
-  "endOfFlowMessage9": {
-    "message": "Ketahui lebih lanjut."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Nama ENS tidak ditemui di rangkaian semasa. Cuba beralih kepada Rangkaian Ethereum Utama."
@@ -378,14 +336,8 @@
     "message": "Dapatkan Ether daripada pili untuk $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Bermula"
-  },
   "goerli": {
     "message": "Rangkaian Ujian Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Kami gembira bertemu anda."
   },
   "hardware": {
     "message": "perkakasan"
@@ -420,12 +372,6 @@
   },
   "importAccountMsg": {
     "message": "Akaun yang diimport tidak akan dikaitkan dengan frasa benih akaun MetaMask asal yang anda cipta. Ketahui lebih lanjut tentang akaun import"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Import Akaun dengan Frasa Benih"
-  },
-  "importWallet": {
-    "message": "Import Dompet"
   },
   "imported": {
     "message": "Diimport",
@@ -477,9 +423,6 @@
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
   },
-  "letsGoSetUp": {
-    "message": "Ya, mari sediakannya!"
-  },
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
@@ -504,14 +447,8 @@
   "max": {
     "message": "Maks"
   },
-  "memorizePhrase": {
-    "message": "Hafal ungkapan ini."
-  },
   "message": {
     "message": "Mesej"
-  },
-  "metamaskDescription": {
-    "message": "Menyambungkan anda kepada Ethereum dan Web Ternyahpusat."
   },
   "metamaskVersion": {
     "message": "Versi MetaMask"
@@ -554,17 +491,11 @@
   "newPassword": {
     "message": "Kata Laluan Baru (min 8 aks)"
   },
-  "newToMetaMask": {
-    "message": "Baru mengenali MetaMask?"
-  },
   "next": {
     "message": "Seterusnya"
   },
   "noAddressForName": {
     "message": "Tiada alamat yang ditetapkan untuk nama ini."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Tidak, saya sudah pun memiliki frasa benih"
   },
   "noConversionRateAvailable": {
     "message": "Tiada Kadar Penukaran yang Tersedia"
@@ -670,9 +601,6 @@
   "rejected": {
     "message": "Ditolak"
   },
-  "remindMeLater": {
-    "message": "Ingatkan saya nanti"
-  },
   "remove": {
     "message": "Alih keluar"
   },
@@ -736,12 +664,6 @@
   "searchTokens": {
     "message": "Cari Token"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Ungkapan rahsia sandaran anda memudahkan membuat sandaran dan memulihkan akaun anda."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "AMARAN: Jangan sesekali dedahkan frasa sandaran anda. Sesiapa yang memperoleh frasa ini boleh mengambil Ether anda selama-lamanya."
-  },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
@@ -750,9 +672,6 @@
   },
   "selectAnAccount": {
     "message": "Pilih Akaun"
-  },
-  "selectEachPhrase": {
-    "message": "Sila pilih setiap ungkapan untuk memastikan ia betul."
   },
   "selectHdPath": {
     "message": "Pilih Laluan HD"
@@ -826,9 +745,6 @@
   "stateLogsDescription": {
     "message": "Log keadaan mengandungi alamat akaun awam anda dan transaksi dihantar."
   },
-  "storePhrase": {
-    "message": "Simpan ungkapan ini di dalam pengurus kata laluan seperti 1Password."
-  },
   "submitted": {
     "message": "Dihantar"
   },
@@ -870,9 +786,6 @@
   },
   "testFaucet": {
     "message": "Uji Pili"
-  },
-  "thisWillCreate": {
-    "message": "Ini akan mencipta dompet dan frasa benih baru"
   },
   "tips": {
     "message": "Tip"
@@ -998,14 +911,8 @@
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
   },
-  "welcome": {
-    "message": "Selamat datang ke MetaMask"
-  },
   "welcomeBack": {
     "message": "Selamat Kembali!"
-  },
-  "writePhrase": {
-    "message": "Tulis frasa ini di atas kertas dan simpan di tempat yang selamat. JIka anda mahu lebih selamat, tuliskannya di beberapa helai kertas dan simpan setiap satunya di 2 -3 lokasi berbeza."
   },
   "yesLetsTry": {
     "message": "Ya, mari cuba"

@@ -9,7 +9,6 @@ import {
 } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
-  forgotPassword,
   markPasswordForgotten,
   forceUpdateMetamaskState,
   showModal,
@@ -27,7 +26,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    forgotPassword: () => dispatch(forgotPassword()),
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),

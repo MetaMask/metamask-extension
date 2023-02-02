@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import { omit } from 'lodash';
 import Typography from '../typography';
 import {
-  COLORS,
-  SIZES,
-  TYPOGRAPHY,
+  Size,
+  TypographyVariant,
   FONT_WEIGHT,
   OVERFLOW_WRAP,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
 
 const MARGIN_MAP = {
-  [SIZES.XS]: 0,
-  [SIZES.SM]: 2,
-  [SIZES.MD]: 4,
-  [SIZES.LG]: 6,
-  [SIZES.XL]: 8,
+  [Size.XS]: 0,
+  [Size.SM]: 2,
+  [Size.MD]: 4,
+  [Size.LG]: 6,
+  [Size.XL]: 8,
 };
 
 export default function DefinitionList({
@@ -24,14 +24,14 @@ export default function DefinitionList({
   termTypography = {},
   definitionTypography = {},
   tooltips = {},
-  gapSize = SIZES.SM,
+  gapSize = Size.SM,
 }) {
   return (
     <dl className="definition-list">
       {Object.entries(dictionary).map(([term, definition]) => (
         <React.Fragment key={`definition-for-${term}`}>
           <Typography
-            variant={TYPOGRAPHY.H6}
+            variant={TypographyVariant.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             {...termTypography}
             boxProps={{
@@ -53,8 +53,8 @@ export default function DefinitionList({
             )}
           </Typography>
           <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TypographyVariant.H6}
+            color={TextColor.textAlternative}
             {...definitionTypography}
             boxProps={{
               marginTop: 0,
@@ -73,15 +73,15 @@ export default function DefinitionList({
 }
 
 DefinitionList.propTypes = {
-  gapSize: PropTypes.oneOf(Object.values(SIZES)),
+  gapSize: PropTypes.oneOf(Object.values(Size)),
   dictionary: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ),
   tooltips: PropTypes.objectOf(PropTypes.string),
   termTypography: PropTypes.shape({
-    ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),
+    ...omit(TypographyVariant.propTypes, ['tag', 'className', 'boxProps']),
   }),
   definitionTypography: PropTypes.shape({
-    ...omit(Typography.propTypes, ['tag', 'className', 'boxProps']),
+    ...omit(TypographyVariant.propTypes, ['tag', 'className', 'boxProps']),
   }),
 };

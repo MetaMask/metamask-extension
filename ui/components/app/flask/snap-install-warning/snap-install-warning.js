@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box/check-box.component';
 import Typography from '../../../ui/typography/typography';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
 
@@ -69,7 +69,10 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
       contentProps={{ padding: [6, 4] }}
       footerProps={{ padding: [4, 6] }}
     >
-      <Typography variant={TYPOGRAPHY.H6} boxProps={{ paddingBottom: 4 }}>
+      <Typography
+        variant={TypographyVariant.H6}
+        boxProps={{ paddingBottom: 4 }}
+      >
         {warnings.length > 1
           ? t('snapInstallWarningCheckPlural')
           : t('snapInstallWarningCheck')}

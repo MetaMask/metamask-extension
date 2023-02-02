@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { COLORS } from '../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 
 import Card from '../card';
 import Box from '../box';
@@ -49,7 +49,7 @@ const LogoItem = ({ Component }) => {
       display="flex"
       flexDirection="column"
       textAlign="center"
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Box marginBottom={2}>{Component}</Box>
       <Typography>{`${Component.type.__docgenInfo.displayName}`}</Typography>

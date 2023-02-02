@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
-  COLORS,
+  BackgroundColor,
   SEVERITIES,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Card from '../card';
 import Typography from '../typography';
@@ -84,7 +85,7 @@ const IconItem = ({ Component }) => {
       display="flex"
       flexDirection="column"
       textAlign="center"
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Box marginBottom={2}>{Component}</Box>
       <code>{`${Component.type.__docgenInfo.displayName}`}</code>
@@ -98,10 +99,13 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
-    <Typography variant={TYPOGRAPHY.H2} boxProps={{ marginBottom: 4 }}>
+    <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
     </Typography>
-    <Typography variant={TYPOGRAPHY.Paragraph} boxProps={{ marginBottom: 4 }}>
+    <Typography
+      variant={TypographyVariant.paragraph}
+      boxProps={{ marginBottom: 4 }}
+    >
       To ensure correct licensing we suggest you use an icon from the
       @fortawesome/fontawesome-free: ^5.13.0 package. If there is no icon to
       suit your needs and you need to create a new one. Ensure that it has the
@@ -134,8 +138,8 @@ export const DefaultStory = (args) => (
       </div>
     </Box>
     <Typography
-      variant={TYPOGRAPHY.H2}
-      color={COLORS.ERROR_DEFAULT}
+      variant={TypographyVariant.H2}
+      color={TextColor.errorDefault}
       boxProps={{ marginBottom: 4 }}
     >
       DEPRECATED

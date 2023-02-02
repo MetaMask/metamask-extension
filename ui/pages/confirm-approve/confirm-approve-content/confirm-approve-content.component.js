@@ -9,15 +9,17 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   BLOCK_SIZES,
-  JUSTIFY_CONTENT,
-  COLORS,
+  JustifyContent,
   DISPLAY,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
@@ -65,12 +67,15 @@ export default class ConfirmApproveContent extends Component {
     isSetApproveForAll: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
+    userAcknowledgedGasMissing: PropTypes.bool,
+    setUserAcknowledgedGasMissing: PropTypes.func,
+    renderSimulationFailureWarning: PropTypes.bool,
   };
 
   state = {
     showFullTxDetails: false,
     copied: false,
-    setshowContractDetails: false,
+    setShowContractDetails: false,
   };
 
   renderApproveContentCard({
@@ -84,7 +89,11 @@ export default class ConfirmApproveContent extends Component {
     footer,
     noBorder,
   }) {
-    const { supportsEIP1559 } = this.props;
+    const {
+      supportsEIP1559,
+      renderSimulationFailureWarning,
+      userAcknowledgedGasMissing,
+    } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -116,9 +125,14 @@ export default class ConfirmApproveContent extends Component {
                 </Button>
               </Box>
             )}
-            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559 && (
-              <EditGasFeeButton />
-            )}
+            {showEdit &&
+              showAdvanceGasFeeOptions &&
+              supportsEIP1559 &&
+              !renderSimulationFailureWarning && (
+                <EditGasFeeButton
+                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                />
+              )}
           </div>
         )}
         <div className="confirm-approve-content__card-content">{content}</div>
@@ -139,9 +153,19 @@ export default class ConfirmApproveContent extends Component {
       txData,
       isMultiLayerFeeNetwork,
       supportsEIP1559,
+      userAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
-    if (!isMultiLayerFeeNetwork && supportsEIP1559) {
-      return <GasDetailsItem />;
+    if (
+      !isMultiLayerFeeNetwork &&
+      supportsEIP1559 &&
+      !renderSimulationFailureWarning
+    ) {
+      return (
+        <GasDetailsItem
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        />
+      );
     }
     return (
       <div className="confirm-approve-content__transaction-details-content">
@@ -212,7 +236,7 @@ export default class ConfirmApproveContent extends Component {
             <ButtonIcon
               ariaLabel="copy"
               onClick={() => copyToClipboard(toAddress)}
-              color={COLORS.ICON_DEFAULT}
+              color={IconColor.iconDefault}
               iconName={
                 this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
               }
@@ -297,10 +321,10 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__custom-nonce-content">
             <Box
               className="confirm-approve-content__custom-nonce-header"
-              justifyContent={JUSTIFY_CONTENT.FLEX_START}
+              justifyContent={JustifyContent.flexStart}
             >
               <Typography
-                variant={TYPOGRAPHY.H6}
+                variant={TypographyVariant.H6}
                 fontWeight={FONT_WEIGHT.NORMAL}
               >
                 {t('nonce')}
@@ -322,7 +346,7 @@ export default class ConfirmApproveContent extends Component {
             </Box>
             <Typography
               className="confirm-approve-content__custom-nonce-value"
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {customNonceValue || nextNonce}
@@ -491,8 +515,11 @@ export default class ConfirmApproveContent extends Component {
       tokenId,
       tokenAddress,
       assetName,
+      userAcknowledgedGasMissing,
+      setUserAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
-    const { showFullTxDetails, setshowContractDetails } = this.state;
+    const { showFullTxDetails, setShowContractDetails } = this.state;
 
     return (
       <div
@@ -517,9 +544,9 @@ export default class ConfirmApproveContent extends Component {
               url={siteImage}
             />
             <Typography
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.NORMAL}
-              color={COLORS.TEXT_ALTERNATIVE}
+              color={TextColor.textAlternative}
               boxProps={{ marginLeft: 1, marginTop: 2 }}
             >
               {origin}
@@ -539,13 +566,13 @@ export default class ConfirmApproveContent extends Component {
           <Button
             type="link"
             className="confirm-approve-content__verify-contract-details"
-            onClick={() => this.setState({ setshowContractDetails: true })}
+            onClick={() => this.setState({ setShowContractDetails: true })}
           >
             {t('verifyContractDetails')}
           </Button>
-          {setshowContractDetails && (
+          {setShowContractDetails && (
             <ContractDetailsModal
-              onClose={() => this.setState({ setshowContractDetails: false })}
+              onClose={() => this.setState({ setShowContractDetails: false })}
               tokenName={tokenSymbol}
               tokenAddress={tokenAddress}
               toAddress={toAddress}
@@ -558,6 +585,21 @@ export default class ConfirmApproveContent extends Component {
           )}
         </Box>
         <div className="confirm-approve-content__card-wrapper">
+          {renderSimulationFailureWarning && (
+            <Box
+              paddingTop={0}
+              paddingRight={6}
+              paddingBottom={4}
+              paddingLeft={6}
+            >
+              <SimulationErrorMessage
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                setUserAcknowledgedGasMissing={() =>
+                  setUserAcknowledgedGasMissing(true)
+                }
+              />
+            </Box>
+          )}
           {this.renderApproveContentCard({
             symbol: <i className="fa fa-tag" />,
             title: t('transactionFee'),

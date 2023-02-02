@@ -1,18 +1,18 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
   BLOCK_SIZES,
-  BORDER_STYLE,
-  COLORS,
-  TEXT_COLORS,
-  BORDER_COLORS,
-  BACKGROUND_COLORS,
+  BorderStyle,
+  BorderRadius,
+  TextColor,
+  BorderColor,
+  BackgroundColor,
   DISPLAY,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
   TEXT_ALIGN,
   FLEX_DIRECTION,
   FLEX_WRAP,
-  BORDER_RADIUS,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 import Typography from '../typography';
@@ -81,19 +81,19 @@ export default {
       table: { category: 'display' },
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
       control: 'select',
       table: {
         category: 'background',
       },
     },
     color: {
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
       control: 'select',
       table: { category: 'color' },
     },
     borderStyle: {
-      options: Object.values(BORDER_STYLE),
+      options: Object.values(BorderStyle),
       control: 'select',
       table: { category: 'border' },
     },
@@ -103,12 +103,12 @@ export default {
       table: { category: 'border' },
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
       table: { category: 'border' },
     },
     borderRadius: {
-      options: Object.values(BORDER_RADIUS),
+      options: Object.values(BorderRadius),
       control: 'select',
       table: { category: 'border' },
     },
@@ -123,12 +123,12 @@ export default {
       table: { category: 'display' },
     },
     justifyContent: {
-      options: Object.values(JUSTIFY_CONTENT),
+      options: Object.values(JustifyContent),
       control: 'select',
       table: { category: 'display' },
     },
     alignItems: {
-      options: Object.values(ALIGN_ITEMS),
+      options: Object.values(AlignItems),
       control: 'select',
       table: { category: 'display' },
     },
@@ -229,10 +229,10 @@ export default {
     display: DISPLAY.BLOCK,
     width: BLOCK_SIZES.HALF,
     height: BLOCK_SIZES.HALF,
-    borderStyle: BORDER_STYLE.DASHED,
-    borderColor: COLORS.BORDER_DEFAULT,
-    justifyContent: JUSTIFY_CONTENT.FLEX_START,
-    alignItems: ALIGN_ITEMS.FLEX_START,
+    borderStyle: BorderStyle.dashed,
+    borderColor: BorderColor.borderDefault,
+    justifyContent: JustifyContent.flexStart,
+    alignItems: AlignItems.flexStart,
     textAlign: TEXT_ALIGN.LEFT,
   },
 };
@@ -244,8 +244,8 @@ export const DefaultStory = (args) => {
     children.push(
       <Box
         as="img"
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_MUTED}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderMuted}
         key={$i}
         style={{ width: size, height: size }}
         src="./images/eth_logo.svg"
@@ -253,7 +253,7 @@ export const DefaultStory = (args) => {
     );
   }
   return (
-    <Box {...rest} borderColor={COLORS.BORDER_MUTED}>
+    <Box {...rest} borderColor={BorderColor.borderMuted}>
       {children}
     </Box>
   );
@@ -263,13 +263,13 @@ DefaultStory.storyName = 'Default';
 
 export const Margin = (args) => {
   return (
-    <Box borderColor={COLORS.BORDER_MUTED}>
+    <Box borderColor={BorderColor.borderMuted}>
       <Box
         {...args}
         margin={2}
         padding={4}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_MUTED}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderMuted}
       >
         Static margin
       </Box>
@@ -277,8 +277,8 @@ export const Margin = (args) => {
         {...args}
         margin={[2, 4, 8, 12]}
         padding={[4]}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_MUTED}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderMuted}
       >
         Responsive margin changes based on breakpoint
       </Box>
@@ -288,20 +288,20 @@ export const Margin = (args) => {
 
 export const Padding = (args) => {
   return (
-    <Box borderColor={COLORS.BORDER_MUTED}>
+    <Box borderColor={BorderColor.borderMuted}>
       <Box
         {...args}
         padding={4}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_MUTED}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderMuted}
       >
         Static padding
       </Box>
       <Box
         {...args}
         padding={[4, 8, 12]}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_MUTED}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderMuted}
       >
         Responsive padding changes based on breakpoint
       </Box>
@@ -309,233 +309,244 @@ export const Padding = (args) => {
   );
 };
 
-export const Color = (args) => {
+export const ColorStory = (args) => {
   return (
     <>
-      <Box {...args} padding={3} color={COLORS.TEXT_DEFAULT}>
-        COLORS.TEXT_DEFAULT
+      <Box {...args} padding={3} color={Color.textDefault}>
+        Color.textDefault
       </Box>
-      <Box {...args} padding={3} color={COLORS.TEXT_ALTERNATIVE}>
-        COLORS.TEXT_ALTERNATIVE
+      <Box {...args} padding={3} color={Color.textAlternative}>
+        Color.textAlternative
       </Box>
-      <Box {...args} padding={3} color={COLORS.TEXT_MUTED}>
-        COLORS.TEXT_MUTED
+      <Box {...args} padding={3} color={Color.textMuted}>
+        Color.textMuted
       </Box>
-      <Box {...args} padding={3} color={COLORS.PRIMARY_DEFAULT}>
-        COLORS.PRIMARY_DEFAULT
-      </Box>
-      <Box
-        {...args}
-        padding={3}
-        color={COLORS.PRIMARY_INVERSE}
-        backgroundColor={COLORS.PRIMARY_DEFAULT}
-      >
-        COLORS.PRIMARY_INVERSE
-      </Box>
-      <Box {...args} padding={3} color={COLORS.ERROR_DEFAULT}>
-        COLORS.ERROR_DEFAULT
+      <Box {...args} padding={3} color={Color.primaryDefault}>
+        Color.primaryDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={COLORS.ERROR_INVERSE}
-        backgroundColor={COLORS.ERROR_DEFAULT}
+        color={Color.primaryInverse}
+        backgroundColor={BackgroundColor.primaryDefault}
       >
-        COLORS.ERROR_INVERSE
+        Color.primaryInverse
       </Box>
-      <Box {...args} padding={3} color={COLORS.SUCCESS_DEFAULT}>
-        COLORS.SUCCESS_DEFAULT
+      <Box {...args} padding={3} color={Color.errorDefault}>
+        Color.errorDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={COLORS.SUCCESS_INVERSE}
-        backgroundColor={COLORS.SUCCESS_DEFAULT}
+        color={Color.errorInverse}
+        backgroundColor={BackgroundColor.errorDefault}
       >
-        COLORS.SUCCESS_INVERSE
+        Color.errorInverse
       </Box>
-      <Box {...args} padding={3} color={COLORS.WARNING_DEFAULT}>
-        COLORS.WARNING_DEFAULT
+      <Box {...args} padding={3} color={Color.successDefault}>
+        Color.successDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={COLORS.WARNING_INVERSE}
-        backgroundColor={COLORS.WARNING_DEFAULT}
+        color={Color.successInverse}
+        backgroundColor={BackgroundColor.successDefault}
       >
-        COLORS.WARNING_INVERSE
+        Color.successInverse
       </Box>
-      <Box {...args} padding={3} color={COLORS.INFO_DEFAULT}>
-        COLORS.INFO_DEFAULT
+      <Box {...args} padding={3} color={Color.warningDefault}>
+        Color.warningDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={COLORS.INFO_INVERSE}
-        backgroundColor={COLORS.INFO_DEFAULT}
+        color={Color.warningInverse}
+        backgroundColor={BackgroundColor.warningDefault}
       >
-        COLORS.INFO_INVERSE
+        Color.warningInverse
       </Box>
-      <Box {...args} padding={3} color={COLORS.INHERIT}>
-        COLORS.INHERIT
-      </Box>
-      <Box
-        {...args}
-        padding={3}
-        backgroundColor={COLORS.SEPOLIA}
-        color={COLORS.SEPOLIA_INVERSE}
-      >
-        COLORS.SEPOLIA_INVERSE
+      <Box {...args} padding={3} color={Color.infoDefault}>
+        Color.infoDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        backgroundColor={COLORS.GOERLI}
-        color={COLORS.GOERLI_INVERSE}
+        color={Color.infoInverse}
+        backgroundColor={BackgroundColor.infoDefault}
       >
-        COLORS.GOERLI_INVERSE
+        Color.infoInverse
+      </Box>
+      <Box {...args} padding={3} color={Color.inherit}>
+        Color.inherit
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        backgroundColor={Color.sepolia}
+        color={Color.sepoliaInverse}
+      >
+        Color.sepoliaInverse
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        backgroundColor={Color.goerli}
+        color={Color.goerliInverse}
+      >
+        Color.goerliInverse
       </Box>
     </>
   );
 };
+ColorStory.storyName = 'Color';
 
-export const BackgroundColor = () => {
+export const BackgroundColorStory = () => {
   return (
     <>
-      <Box padding={3} backgroundColor={COLORS.BACKGROUND_DEFAULT}>
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.BACKGROUND_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.backgroundDefault}>
+        <Typography color={TextColor.textDefault}>
+          BackgroundColor.backgroundDefault
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}>
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.BACKGROUND_ALTERNATIVE
+      <Box padding={3} backgroundColor={BackgroundColor.backgroundAlternative}>
+        <Typography color={TextColor.textDefault}>
+          BackgroundColor.backgroundAlternative
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.OVERLAY_DEFAULT}>
-        <Typography color={COLORS.OVERLAY_INVERSE}>
-          COLORS.OVERLAY_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.overlayDefault}>
+        <Typography color={TextColor.overlayInverse}>
+          BackgroundColor.overlayDefault
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.PRIMARY_DEFAULT}>
-        <Typography color={COLORS.PRIMARY_INVERSE}>
-          COLORS.PRIMARY_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.primaryDefault}>
+        <Typography color={Color.primaryInverse}>
+          BackgroundColor.primaryDefault
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.PRIMARY_MUTED}>
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.PRIMARY_MUTED
+      <Box padding={3} backgroundColor={BackgroundColor.primaryMuted}>
+        <Typography color={TextColor.textDefault}>
+          BackgroundColor.primaryMuted
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.ERROR_DEFAULT}>
-        <Typography color={COLORS.ERROR_INVERSE}>
-          COLORS.ERROR_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.errorDefault}>
+        <Typography color={TextColor.errorInverse}>
+          BackgroundColor.errorDefault
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.ERROR_MUTED}>
-        <Typography color={COLORS.TEXT_DEFAULT}>COLORS.ERROR_MUTED</Typography>
-      </Box>
-      <Box padding={3} backgroundColor={COLORS.SUCCESS_DEFAULT}>
-        <Typography color={COLORS.SUCCESS_INVERSE}>
-          COLORS.SUCCESS_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.errorMuted}>
+        <Typography color={TextColor.textDefault}>
+          BackgroundColor.errorMuted
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.SUCCESS_MUTED}>
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.SUCCESS_MUTED
+      <Box padding={3} backgroundColor={BackgroundColor.successDefault}>
+        <Typography color={TextColor.successInverse}>
+          BackgroundColor.successDefault
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.WARNING_DEFAULT}>
-        <Typography color={COLORS.WARNING_INVERSE}>
-          COLORS.WARNING_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.successMuted}>
+        <Typography color={TextColor.textDefault}>
+          BackgroundColor.successMuted
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.WARNING_MUTED}>
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.WARNING_MUTED
+      <Box padding={3} backgroundColor={BackgroundColor.warningDefault}>
+        <Typography color={TextColor.warningInverse}>
+          BackgroundColor.warningDefault
         </Typography>
       </Box>
-      <Box padding={3} backgroundColor={COLORS.SEPOLIA}>
-        <Typography color={COLORS.SEPOLIA_INVERSE}>COLORS.SEPOLIA</Typography>
-      </Box>
-      <Box padding={3} backgroundColor={COLORS.GOERLI}>
-        <Typography color={COLORS.GOERLI_INVERSE}>COLORS.GOERLI</Typography>
-      </Box>
-    </>
-  );
-};
-
-export const BorderColor = () => {
-  return (
-    <>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_DEFAULT}
-        borderColor={COLORS.BORDER_DEFAULT}
-        borderWidth={2}
-        marginBottom={1}
-      >
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.BORDER_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.warningMuted}>
+        <Typography color={TextColor.textDefault}>
+          BackgroundColor.warningMuted
         </Typography>
       </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.BACKGROUND_DEFAULT}
-        borderColor={COLORS.BORDER_MUTED}
-        borderWidth={2}
-        marginBottom={1}
-      >
-        <Typography color={COLORS.TEXT_DEFAULT}>COLORS.BORDER_MUTED</Typography>
-      </Box>
-      <Box
-        padding={3}
-        borderColor={COLORS.PRIMARY_DEFAULT}
-        borderWidth={2}
-        marginBottom={1}
-        backgroundColor={COLORS.PRIMARY_MUTED}
-      >
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.PRIMARY_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.sepolia}>
+        <Typography color={TextColor.sepoliaInverse}>
+          BackgroundColor.sepolia
         </Typography>
       </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.ERROR_MUTED}
-        borderColor={COLORS.ERROR_DEFAULT}
-        borderWidth={2}
-        marginBottom={1}
-      >
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.ERROR_DEFAULT
-        </Typography>
-      </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.SUCCESS_MUTED}
-        borderColor={COLORS.SUCCESS_DEFAULT}
-        borderWidth={2}
-        marginBottom={1}
-      >
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.SUCCESS_DEFAULT
-        </Typography>
-      </Box>
-      <Box
-        padding={3}
-        backgroundColor={COLORS.WARNING_MUTED}
-        borderColor={COLORS.WARNING_DEFAULT}
-        borderWidth={2}
-      >
-        <Typography color={COLORS.TEXT_DEFAULT}>
-          COLORS.WARNING_DEFAULT
+      <Box padding={3} backgroundColor={BackgroundColor.goerli}>
+        <Typography color={TextColor.goerliInverse}>
+          BackgroundColor.goerli
         </Typography>
       </Box>
     </>
   );
 };
+BackgroundColorStory.storyName = 'BackgroundColor';
 
-export const BorderRadius = () => {
+export const BorderColorStory = () => {
+  return (
+    <>
+      <Box
+        padding={3}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderColor={BorderColor.borderDefault}
+        borderWidth={2}
+        marginBottom={1}
+      >
+        <Typography color={TextColor.textDefault}>
+          BorderColor.borderDefault
+        </Typography>
+      </Box>
+      <Box
+        padding={3}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderColor={BorderColor.borderMuted}
+        borderWidth={2}
+        marginBottom={1}
+      >
+        <Typography color={TextColor.textDefault}>
+          BorderColor.borderMuted
+        </Typography>
+      </Box>
+      <Box
+        padding={3}
+        borderColor={BorderColor.primaryDefault}
+        borderWidth={2}
+        marginBottom={1}
+        backgroundColor={BackgroundColor.primaryMuted}
+      >
+        <Typography color={TextColor.textDefault}>
+          BorderColor.primaryDefault
+        </Typography>
+      </Box>
+      <Box
+        padding={3}
+        backgroundColor={BackgroundColor.errorMuted}
+        borderColor={BorderColor.errorDefault}
+        borderWidth={2}
+        marginBottom={1}
+      >
+        <Typography color={TextColor.textDefault}>
+          BorderColor.errorDefault
+        </Typography>
+      </Box>
+      <Box
+        padding={3}
+        backgroundColor={BackgroundColor.successDefault}
+        borderColor={BorderColor.successDefault}
+        borderWidth={2}
+        marginBottom={1}
+      >
+        <Typography color={TextColor.textDefault}>
+          BorderColor.successDefault
+        </Typography>
+      </Box>
+      <Box
+        padding={3}
+        backgroundColor={BackgroundColor.warningMuted}
+        borderColor={BorderColor.warningDefault}
+        borderWidth={2}
+      >
+        <Typography color={TextColor.textDefault}>
+          BorderColor.warningDefault
+        </Typography>
+      </Box>
+    </>
+  );
+};
+BorderColorStory.storyName = 'BorderColor';
+
+export const BorderRadiusStories = () => {
   return (
     <>
       <Box
@@ -545,84 +556,85 @@ export const BorderRadius = () => {
       >
         <Box
           padding={3}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderDefault}
           borderWidth={2}
-          borderRadius={BORDER_RADIUS.NONE}
+          borderRadius={BorderRadius.none}
         >
-          BORDER_RADIUS.NONE 0px
+          BorderRadius.NONE 0px
         </Box>
         <Box
           padding={3}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderDefault}
           borderWidth={2}
-          borderRadius={BORDER_RADIUS.XS}
+          borderRadius={BorderRadius.XS}
         >
-          BORDER_RADIUS.XS 2px
+          BorderRadius.XS 2px
         </Box>
         <Box
           padding={3}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderDefault}
           borderWidth={2}
-          borderRadius={BORDER_RADIUS.SM}
+          borderRadius={BorderRadius.SM}
         >
-          BORDER_RADIUS.SM 4px
+          BorderRadius.SM 4px
         </Box>
         <Box
           padding={3}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderDefault}
           borderWidth={2}
-          borderRadius={BORDER_RADIUS.MD}
+          borderRadius={BorderRadius.MD}
         >
-          BORDER_RADIUS.MD 6px
+          BorderRadius.MD 6px
         </Box>
         <Box
           padding={3}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderDefault}
           borderWidth={2}
-          borderRadius={BORDER_RADIUS.LG}
+          borderRadius={BorderRadius.LG}
         >
-          BORDER_RADIUS.LG 8px
+          BorderRadius.LG 8px
         </Box>
         <Box
           padding={3}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderDefault}
           borderWidth={2}
-          borderRadius={BORDER_RADIUS.XL}
+          borderRadius={BorderRadius.XL}
         >
-          BORDER_RADIUS.XL 12px
+          BorderRadius.XL 12px
         </Box>
         <Box
           padding={3}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_DEFAULT}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderDefault}
           borderWidth={2}
-          borderRadius={BORDER_RADIUS.PILL}
+          borderRadius={BorderRadius.pill}
         >
-          BORDER_RADIUS.PILL 9999px
+          BorderRadius.pill 9999px
         </Box>
       </Box>
       <Box
         padding={3}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-        borderColor={COLORS.BORDER_DEFAULT}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderDefault}
         borderWidth={2}
-        borderRadius={BORDER_RADIUS.FULL}
+        borderRadius={BorderRadius.full}
         margin={4}
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         style={{ height: '250px', width: '250px' }}
       >
-        BORDER_RADIUS.FULL 50%
+        BorderRadius.full 50%
       </Box>
     </>
   );
 };
+BorderRadiusStories.storyName = 'BorderRadius';
 
 export const ResponsiveProps = () => {
   return (
@@ -643,52 +655,52 @@ export const ResponsiveProps = () => {
           FLEX_DIRECTION.COLUMN,
           FLEX_DIRECTION.ROW,
         ]}
-        borderColor={COLORS.BORDER_DEFAULT}
+        borderColor={BorderColor.borderDefault}
       >
         <Box
           padding={[4, 8]}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_MUTED}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderMuted}
         >
           responsive
         </Box>
         <Box
           padding={[4, 8]}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_MUTED}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderMuted}
         >
           props
         </Box>
         <Box
           padding={[4, 8]}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_MUTED}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderMuted}
         >
           example
         </Box>
         <Box
           padding={[4, 8]}
           borderRadius={[
-            BORDER_RADIUS.XS,
-            BORDER_RADIUS.SM,
-            BORDER_RADIUS.MD,
-            BORDER_RADIUS.LG,
+            BorderRadius.XS,
+            BorderRadius.SM,
+            BorderRadius.MD,
+            BorderRadius.LG,
           ]}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_MUTED}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderMuted}
         >
           Responsive Border Radius 1
         </Box>
         <Box
           padding={[4, 8]}
           borderRadius={[
-            BORDER_RADIUS.XL,
-            BORDER_RADIUS.PILL,
-            BORDER_RADIUS.NONE,
-            BORDER_RADIUS.FULL,
+            BorderRadius.XL,
+            BorderRadius.PILL,
+            BorderRadius.none,
+            BorderRadius.full,
           ]}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-          borderColor={COLORS.BORDER_MUTED}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          borderColor={BorderColor.borderMuted}
         >
           Responsive Border Radius 2
         </Box>
@@ -721,10 +733,12 @@ export const Width = (args) => {
         <Box
           key={i}
           backgroundColor={
-            i % 2 === 0 ? COLORS.ERROR_MUTED : COLORS.WARNING_MUTED
+            i % 2 === 0
+              ? BackgroundColor.errorMuted
+              : BackgroundColor.warningMuted
           }
           width={BLOCK_SIZES.ONE_TWELFTH}
-        ></Box>,
+        />,
       );
     }
     return content;
@@ -737,12 +751,12 @@ export const Width = (args) => {
       </p>
 
       <Box
-        borderColor={COLORS.BORDER_MUTED}
+        borderColor={BorderColor.borderMuted}
         borderWidth={6}
         marginBottom={6}
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
         {...args}
       >
         {args.width.map((item, i) => {
@@ -755,7 +769,7 @@ export const Width = (args) => {
       </p>
       <Box
         display={DISPLAY.FLEX}
-        borderColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={BackgroundColor.backgroundAlternative}
         style={{
           height: '100vh',
           position: 'relative',
@@ -777,108 +791,108 @@ export const Width = (args) => {
           }}
         >
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
             width={BLOCK_SIZES.FULL}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.FULL
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
             width={BLOCK_SIZES.HALF}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.HALF
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
             width={BLOCK_SIZES.HALF}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.HALF
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
             width={BLOCK_SIZES.ONE_THIRD}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.ONE_THIRD
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
             width={BLOCK_SIZES.ONE_THIRD}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.ONE_THIRD
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
             width={BLOCK_SIZES.ONE_THIRD}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.ONE_THIRD
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={BLOCK_SIZES.ONE_FOURTH}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.ONE_FOURTH
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={BLOCK_SIZES.ONE_FOURTH}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.ONE_FOURTH
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={BLOCK_SIZES.ONE_FOURTH}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.ONE_FOURTH
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={BLOCK_SIZES.ONE_FOURTH}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.ONE_FOURTH
           </Box>
@@ -889,7 +903,7 @@ export const Width = (args) => {
       </p>
       <Box
         display={DISPLAY.FLEX}
-        borderColor={COLORS.BACKGROUND_ALTERNATIVE}
+        borderColor={BackgroundColor.backgroundAlternative}
         style={{ height: '100vh', position: 'relative', textAlign: 'center' }}
       >
         {getColumns()}
@@ -907,7 +921,7 @@ export const Width = (args) => {
           }}
         >
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
               BLOCK_SIZES.FULL,
@@ -916,14 +930,14 @@ export const Width = (args) => {
               BLOCK_SIZES.ONE_FOURTH,
             ]}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
             BLOCK_SIZES.ONE_FOURTH,
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
               BLOCK_SIZES.FULL,
@@ -932,14 +946,14 @@ export const Width = (args) => {
               BLOCK_SIZES.ONE_FOURTH,
             ]}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
             BLOCK_SIZES.ONE_FOURTH,
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
               BLOCK_SIZES.FULL,
@@ -948,14 +962,14 @@ export const Width = (args) => {
               BLOCK_SIZES.ONE_FOURTH,
             ]}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
             BLOCK_SIZES.ONE_FOURTH,
           </Box>
           <Box
-            borderColor={COLORS.BORDER_MUTED}
+            borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
               BLOCK_SIZES.FULL,
@@ -964,8 +978,8 @@ export const Width = (args) => {
               BLOCK_SIZES.ONE_FOURTH,
             ]}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
             BLOCK_SIZES.ONE_FOURTH,

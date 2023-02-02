@@ -41,19 +41,19 @@ Optional: `BUTTON_ICON_SIZES` from `./button-icon` object can be used instead of
 
 Possible sizes include:
 
-- `SIZES.SM` 24px
-- `SIZES.LG` 32px
+- `Size.SM` 24px
+- `Size.LG` 32px
 
 <Canvas>
   <Story id="components-componentlibrary-buttonicon--size" />
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { ButtonIcon } from '../ui/component-library';
 
-<ButtonIcon size={SIZES.SM} iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
-<ButtonIcon size={SIZES.LG} iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
+<ButtonIcon size={Size.SM} iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
+<ButtonIcon size={Size.LG} iconName={ICON_NAMES.CLOSE} ariaLabel="Close"/>
 ```
 
 ### Aria Label

@@ -31,18 +31,18 @@ The `children` of the `HelpText` can be plain text or react nodes
 </Canvas>
 
 ```jsx
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { Size, IconColor } from '../../../helpers/constants/design-system';
 import { HelpText, Icon, ICON_NAMES } from '../../component-library';
 
 <HelpText>Plain text</HelpText>
 <HelpText>
   Text and icon
-  <Icon
-    marginLeft={1}
-    color={COLORS.INHERIT}
-    name={ICON_NAMES.WARNING}
-    size={SIZES.INHERIT}
-  />
+      <Icon
+        marginLeft={1}
+        color={IconColor.inherit}
+        name={ICON_NAMES.WARNING}
+        size={Size.inherit}
+      />
 </HelpText>
 ```
 
@@ -69,21 +69,21 @@ It may be useful to change the color of the `HelpText`. Use the `color` prop and
 </Canvas>
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 import { HelpText } from '../../component-library';
 
 <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-  <HelpText color={COLORS.TEXT_DEFAULT}>
-    The HelpText default color is COLORS.TEXT_DEFAULT
+  <HelpText color={Color.textDefault} {...args}>
+    This HelpText default color is Color.textDefault
   </HelpText>
-  <HelpText color={COLORS.INFO_DEFAULT}>
-    This HelpText color is COLORS.INFO_DEFAULT
+  <HelpText color={Color.infoDefault} {...args}>
+    This HelpText color is Color.infoDefault
   </HelpText>
-  <HelpText color={COLORS.WARNING_DEFAULT}>
-    This HelpText color is COLORS.WARNING_DEFAULT
+  <HelpText color={Color.warningDefault} {...args}>
+    This HelpText color is Color.warningDefault
   </HelpText>
-  <HelpText color={COLORS.SUCCESS_DEFAULT}>
-    This HelpText color is COLORS.SUCCESS_DEFAULT
+  <HelpText color={Color.successDefault} {...args}>
+    This HelpText color is Color.successDefault
   </HelpText>
 </Box>;
 ```

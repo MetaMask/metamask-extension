@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  SIZES,
+  Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
 import { ButtonPrimary } from './button-primary';
-import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
+
 import README from './README.mdx';
+import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
 
 const marginSizeControlOptions = [
   undefined,
@@ -111,19 +112,20 @@ export const DefaultStory = (args) => <ButtonPrimary {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonPrimary {...args} size={SIZES.SM}>
+export const SizeStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+    <ButtonPrimary {...args} size={Size.SM}>
       Small Button
     </ButtonPrimary>
-    <ButtonPrimary {...args} size={SIZES.MD}>
+    <ButtonPrimary {...args} size={Size.MD}>
       Medium (Default) Button
     </ButtonPrimary>
-    <ButtonPrimary {...args} size={SIZES.LG}>
+    <ButtonPrimary {...args} size={Size.LG}>
       Large Button
     </ButtonPrimary>
   </Box>
 );
+SizeStory.storyName = 'Size';
 
 export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>

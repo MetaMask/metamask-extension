@@ -83,6 +83,7 @@ const VALID_UNAPPROVED_TRANSACTION_TYPES = [
 
 /**
  * @typedef {import('../../../../shared/constants/transaction').TransactionMeta} TransactionMeta
+ * @typedef {import('../../../../shared/constants/gas').TxGasFees} TxGasFees
  */
 
 const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -508,18 +509,7 @@ export default class TransactionController extends EventEmitter {
    * updates the gas fees of the transaction with id if the transaction state is unapproved
    *
    * @param {string} txId - transaction id
-   * @param {object} txGasFees - holds the gas fees parameters
-   * @param {string} txGasFees.gasLimit
-   * @param {string} txGasFees.gasPrice
-   * @param {string} txGasFees.maxPriorityFeePerGas
-   * @param {string} txGasFees.maxFeePerGas
-   * @param {string} txGasFees.estimateUsed
-   * @param {string} txGasFees.estimateSuggested
-   * @param {string} txGasFees.defaultGasEstimates
-   * @param {string} txGasFees.gas
-   * @param {string} txGasFees.originalGasEstimate
-   * @param {string} txGasFees.userEditedGasLimit
-   * @param {string} txGasFees.userFeeLevel
+   * @param {TxGasFees} txGasFees - holds the gas fees parameters
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateTransactionGasFees(

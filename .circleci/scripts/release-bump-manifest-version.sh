@@ -19,7 +19,7 @@ fi
 printf '%s\n' 'Updating the manifest version if needed'
 
 version="${CIRCLE_BRANCH/Version-v/}"
-yarn version --no-git-tag-version --new-version "${version}"
+yarn version "${version}"
 
 if [[ -z $(git status --porcelain) ]]
 then

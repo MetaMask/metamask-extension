@@ -3,22 +3,23 @@ import PropTypes from 'prop-types';
 
 import Box from '../box';
 import {
-  BORDER_STYLE,
-  COLORS,
-  SIZES,
+  BackgroundColor,
+  BorderColor,
+  BorderStyle,
+  Size,
 } from '../../../helpers/constants/design-system';
 
 const Card = ({
   border = true,
   padding = 4,
-  backgroundColor = COLORS.BACKGROUND_DEFAULT,
+  backgroundColor = BackgroundColor.backgroundDefault,
   children,
   ...props
 }) => {
   const defaultBorderProps = {
-    borderColor: border && COLORS.BORDER_MUTED,
-    borderRadius: border && SIZES.MD,
-    borderStyle: border && BORDER_STYLE.SOLID,
+    borderColor: border && BorderColor.borderMuted,
+    borderRadius: border && Size.MD,
+    borderStyle: border && BorderStyle.solid,
   };
 
   return (

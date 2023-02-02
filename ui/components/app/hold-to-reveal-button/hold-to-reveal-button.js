@@ -4,9 +4,9 @@ import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box/box';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  JUSTIFY_CONTENT,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 
 const radius = 14;
@@ -103,8 +103,8 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         </Box>
         <Box
           display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
-          justifyContent={JUSTIFY_CONTENT.CENTER}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
           className="hold-to-reveal-button__lock-icon-container"
         >
           <img

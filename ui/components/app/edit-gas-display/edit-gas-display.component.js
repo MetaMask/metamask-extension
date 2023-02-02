@@ -8,10 +8,10 @@ import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 
 import {
-  COLORS,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
 
@@ -98,8 +98,8 @@ export default function EditGasDisplay({
         {mode === EditGasModes.speedUp && (
           <div className="edit-gas-display__top-tooltip">
             <Typography
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H8}
+              color={TextColor.textDefault}
+              variant={TypographyVariant.H8}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('speedUpTooltipText')}{' '}
@@ -111,8 +111,8 @@ export default function EditGasDisplay({
           </div>
         )}
         <Typography
-          color={COLORS.TEXT_DEFAULT}
-          variant={TYPOGRAPHY.H1}
+          color={TextColor.textDefault}
+          variant={TypographyVariant.H1}
           align={TEXT_ALIGN.CENTER}
         >
           {estimatedMinimumNative}
