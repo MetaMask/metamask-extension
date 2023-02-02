@@ -1926,7 +1926,7 @@ describe('NetworkController', () => {
       );
     });
 
-    it('emits networkWillChange', async () => {
+    it('emits networkWillChange before emitting networkDidChange', async () => {
       await withController(async ({ controller }) => {
         const network = new NetworkCommunications({
           networkClientType: 'custom',
@@ -1936,15 +1936,21 @@ describe('NetworkController', () => {
         });
         network.mockEssentialRpcCalls();
 
-        const networkWillChange = await waitForEvent({
+        await waitForEvent({
           controller,
-          eventName: 'networkWillChange',
-          operation: () => {
-            controller.setRpcTarget('https://mock-rpc-url', '0x1337');
+          eventName: 'networkDidChange',
+          operation: async () => {
+            const networkWillChange = await waitForEvent({
+              controller,
+              eventName: 'networkWillChange',
+              operation: () => {
+                controller.setRpcTarget('https://mock-rpc-url', '0x1337');
+              },
+            });
+
+            expect(networkWillChange).toBe(true);
           },
         });
-
-        expect(networkWillChange).toBe(true);
       });
     });
 
