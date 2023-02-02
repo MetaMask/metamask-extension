@@ -9,9 +9,9 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
-import CopyIcon from '../../../components/ui/icon/copy-icon.component';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -20,13 +20,13 @@ import {
   COLORS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
+import { ICON_NAMES, ButtonIcon } from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -66,12 +66,15 @@ export default class ConfirmApproveContent extends Component {
     isSetApproveForAll: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
+    userAcknowledgedGasMissing: PropTypes.bool,
+    setUserAcknowledgedGasMissing: PropTypes.func,
+    renderSimulationFailureWarning: PropTypes.bool,
   };
 
   state = {
     showFullTxDetails: false,
     copied: false,
-    setshowContractDetails: false,
+    setShowContractDetails: false,
   };
 
   renderApproveContentCard({
@@ -85,7 +88,11 @@ export default class ConfirmApproveContent extends Component {
     footer,
     noBorder,
   }) {
-    const { supportsEIP1559 } = this.props;
+    const {
+      supportsEIP1559,
+      renderSimulationFailureWarning,
+      userAcknowledgedGasMissing,
+    } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -117,9 +124,14 @@ export default class ConfirmApproveContent extends Component {
                 </Button>
               </Box>
             )}
-            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559 && (
-              <EditGasFeeButton />
-            )}
+            {showEdit &&
+              showAdvanceGasFeeOptions &&
+              supportsEIP1559 &&
+              !renderSimulationFailureWarning && (
+                <EditGasFeeButton
+                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                />
+              )}
           </div>
         )}
         <div className="confirm-approve-content__card-content">{content}</div>
@@ -140,9 +152,19 @@ export default class ConfirmApproveContent extends Component {
       txData,
       isMultiLayerFeeNetwork,
       supportsEIP1559,
+      userAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
-    if (!isMultiLayerFeeNetwork && supportsEIP1559) {
-      return <GasDetailsItem />;
+    if (
+      !isMultiLayerFeeNetwork &&
+      supportsEIP1559 &&
+      !renderSimulationFailureWarning
+    ) {
+      return (
+        <GasDetailsItem
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        />
+      );
     }
     return (
       <div className="confirm-approve-content__transaction-details-content">
@@ -210,25 +232,19 @@ export default class ConfirmApproveContent extends Component {
             {displayedAddress}
           </div>
           <div className="confirm-approve-content__medium-text">
-            <Button
-              type="link"
-              className="confirm-approve-content__copy-address"
-              onClick={() => {
-                this.setState({ copied: true });
-                this.copyTimeout = setTimeout(
-                  () => this.setState({ copied: false }),
-                  SECOND * 3,
-                );
-                copyToClipboard(toAddress);
-              }}
+            <ButtonIcon
+              ariaLabel="copy"
+              onClick={() => copyToClipboard(toAddress)}
+              color={COLORS.ICON_DEFAULT}
+              iconName={
+                this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+              }
               title={
                 this.state.copied
                   ? t('copiedExclamation')
                   : t('copyToClipboard')
               }
-            >
-              <CopyIcon size={14} color="var(--color-icon-default)" />
-            </Button>
+            />
           </div>
         </div>
       </div>
@@ -465,7 +481,6 @@ export default class ConfirmApproveContent extends Component {
 
     if (isSetApproveForAll && isApprovalOrRejection === false) {
       description = t('revokeApproveForAllDescription', [
-        grantee,
         this.getTitleTokenDescription(),
       ]);
     } else if (
@@ -499,8 +514,11 @@ export default class ConfirmApproveContent extends Component {
       tokenId,
       tokenAddress,
       assetName,
+      userAcknowledgedGasMissing,
+      setUserAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
-    const { showFullTxDetails, setshowContractDetails } = this.state;
+    const { showFullTxDetails, setShowContractDetails } = this.state;
 
     return (
       <div
@@ -547,13 +565,13 @@ export default class ConfirmApproveContent extends Component {
           <Button
             type="link"
             className="confirm-approve-content__verify-contract-details"
-            onClick={() => this.setState({ setshowContractDetails: true })}
+            onClick={() => this.setState({ setShowContractDetails: true })}
           >
             {t('verifyContractDetails')}
           </Button>
-          {setshowContractDetails && (
+          {setShowContractDetails && (
             <ContractDetailsModal
-              onClose={() => this.setState({ setshowContractDetails: false })}
+              onClose={() => this.setState({ setShowContractDetails: false })}
               tokenName={tokenSymbol}
               tokenAddress={tokenAddress}
               toAddress={toAddress}
@@ -566,6 +584,21 @@ export default class ConfirmApproveContent extends Component {
           )}
         </Box>
         <div className="confirm-approve-content__card-wrapper">
+          {renderSimulationFailureWarning && (
+            <Box
+              paddingTop={0}
+              paddingRight={6}
+              paddingBottom={4}
+              paddingLeft={6}
+            >
+              <SimulationErrorMessage
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                setUserAcknowledgedGasMissing={() =>
+                  setUserAcknowledgedGasMissing(true)
+                }
+              />
+            </Box>
+          )}
           {this.renderApproveContentCard({
             symbol: <i className="fa fa-tag" />,
             title: t('transactionFee'),

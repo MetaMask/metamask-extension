@@ -154,12 +154,6 @@ export default function reduceMetamask(state = {}, action) {
         welcomeScreenSeen: true,
       };
 
-    case actionConstants.SET_CURRENT_LOCALE:
-      return {
-        ...metamaskState,
-        currentLocale: action.value.locale,
-      };
-
     case actionConstants.SET_PENDING_TOKENS:
       return {
         ...metamaskState,
@@ -249,8 +243,6 @@ export function updateGasFees({
 }
 
 // Selectors
-
-export const getCurrentLocale = (state) => state.metamask.currentLocale;
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 

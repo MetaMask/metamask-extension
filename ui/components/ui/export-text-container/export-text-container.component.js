@@ -16,7 +16,7 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
       </div>
       <div className="export-text-container__button">
         <div
-          className="export-text-container__button export-text-container__button--copy-only"
+          className="export-text-container__button export-text-container__button--copy"
           onClick={() => {
             if (onClickCopy) {
               onClickCopy();
