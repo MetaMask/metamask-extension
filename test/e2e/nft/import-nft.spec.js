@@ -14,7 +14,45 @@ describe('Import NFT', function () {
       },
     ],
   };
-  it('user should be able to import an NFT', async function () {
+  it('should not be able to import an NFT that dose not belong to user', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        smartContract,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // After login, go to NFTs tab, open the import NFT form
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
+
+        // Enter an NFT that not belongs to user
+        await driver.fill(
+          '[data-testid="address"]',
+          '0x932Ca55B9Ef0b3094E8Fa82435b3b4c50d713043',
+        );
+        await driver.fill('[data-testid="token-id"]', '927');
+        await driver.clickElement({ text: 'Add', tag: 'button' });
+
+        // Check error message appears
+        const invalidNftNotification = await driver.findElement({
+          text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',
+          tag: 'h6',
+        });
+        assert.equal(await invalidNftNotification.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should be able to import an NFT that user owns', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -32,34 +70,13 @@ describe('Import NFT', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // After login, go to NFTs tab, open the form to import NFT
+        // After login, go to NFTs tab, open the import NFT form
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
-        const nftAddressField = await driver.findElement(
-          '[data-testid="address"]',
-        );
-        const nftTokenIdField = await driver.findElement(
-          '[data-testid="token-id"]',
-        );
 
-        // Enter an NFT that not belongs to user and check error message appears
-        await nftAddressField.sendKeys(
-          '0x932Ca55B9Ef0b3094E8Fa82435b3b4c50d713043',
-        );
-        await nftTokenIdField.sendKeys('927');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
-
-        const invalidNftNotification = await driver.findElement({
-          text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',
-          tag: 'h6',
-        });
-        assert.equal(await invalidNftNotification.isDisplayed(), true);
-
-        // Enter the valid NFT that belongs to user and check success message appears
-        await nftAddressField.clear();
-        await nftAddressField.sendKeys(contractAddress);
-        await nftTokenIdField.clear();
-        await nftTokenIdField.sendKeys('1');
+        // Enter a valid NFT that belongs to user and check success message appears
+        await driver.fill('[data-testid="address"]', contractAddress);
+        await driver.fill('[data-testid="token-id"]', '1');
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
         const newNftNotification = await driver.findElement({
@@ -69,8 +86,9 @@ describe('Import NFT', function () {
         assert.equal(await newNftNotification.isDisplayed(), true);
 
         // Check the imported NFT and its image are displayed in the NFT tab
-        const importedNft = await driver.findElement({
-          xpath: "//h5[contains(text(), 'TestDappCollectibles')]",
+        const importedNft = await driver.waitForSelector({
+          css: 'h5',
+          text: 'TestDappCollectibles (1)',
         });
         const importedNftImage = await driver.findElement(
           '.collectibles-items__item-image',
