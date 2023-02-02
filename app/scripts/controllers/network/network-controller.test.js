@@ -133,36 +133,42 @@ const INFURA_NETWORKS = [
  * Handles mocking provider requests for a particular network.
  */
 class NetworkCommunications {
-  #infuraNetwork;
-
-  #customRpcUrl;
+  #networkClientOptions;
 
   /**
    * Builds an object for mocking provider requests.
    *
-   * @param {object} options - An options bag.
-   * @param {"infura" | "custom"} options.networkClientType - Specifies the
+   * @param {object} args - The arguments.
+   * @param {"infura" | "custom"} args.networkClientType - Specifies the
    * expected middleware stack that will represent the provider: "infura" for an
    * Infura network; "custom" for a custom RPC endpoint.
-   * @param {string} [options.infuraNetwork] - The name of the Infura network
-   * being tested, assuming that `networkClientType` is "infura".
-   * @param {string} [options.infuraProjectId] - The project ID of the Infura
-   * network being tested, assuming that `networkClientType` is "infura".
-   * @param {string} [options.customRpcUrl] - The URL of the custom RPC endpoint,
-   * assuming that `networkClientType` is "custom".
+   * @param {object} args.networkClientOptions - Details about the network
+   * client used to determine the base URL or URL path to mock.
+   * @param {string} [args.networkClientOptions.infuraNetwork] - The name of the
+   * Infura network being tested, assuming that `networkClientType` is "infura".
+   * @param {string} [args.networkClientOptions.infuraProjectId] - The project
+   * ID of the Infura network being tested, assuming that `networkClientType` is
+   * "infura".
+   * @param {string} [args.networkClientOptions.customRpcUrl] - The URL of the
+   * custom RPC endpoint, assuming that `networkClientType` is "custom".
    * @returns {NockScope} The nock scope.
    */
   constructor({
     networkClientType,
-    infuraNetwork,
-    infuraProjectId = DEFAULT_INFURA_PROJECT_ID,
-    customRpcUrl,
+    networkClientOptions: {
+      infuraNetwork,
+      infuraProjectId = DEFAULT_INFURA_PROJECT_ID,
+      customRpcUrl,
+    } = {},
   }) {
+    const networkClientOptions = {
+      infuraNetwork,
+      infuraProjectId,
+      customRpcUrl,
+    };
     this.networkClientType = networkClientType;
-    this.#infuraNetwork = infuraNetwork;
+    this.#networkClientOptions = networkClientOptions;
     this.infuraProjectId = infuraProjectId;
-    this.#customRpcUrl = customRpcUrl;
-
     const rpcUrl =
       networkClientType === 'infura'
         ? `https://${infuraNetwork}.infura.io`
@@ -174,15 +180,13 @@ class NetworkCommunications {
    * Constructs a new NetworkCommunications object using a different set of
    * options, using the options from this instance as a base.
    *
-   * @param options - The same options that NetworkCommunications takes.
+   * @param args - The same arguments that NetworkCommunications takes.
    */
-  with(options) {
+  with(args) {
     return new NetworkCommunications({
       networkClientType: this.networkClientType,
-      infuraNetwork: this.#infuraNetwork,
-      infuraProjectId: this.infuraProjectId,
-      customRpcUrl: this.#customRpcUrl,
-      ...options,
+      networkClientOptions: this.#networkClientOptions,
+      ...args,
     });
   }
 
@@ -1020,7 +1024,9 @@ describe('NetworkController', () => {
               async ({ controller }) => {
                 const network1 = new NetworkCommunications({
                   networkClientType: 'infura',
-                  infuraNetwork: networkType,
+                  networkClientOptions: {
+                    infuraNetwork: networkType,
+                  },
                 });
                 network1.mockEssentialRpcCalls({
                   eth_blockNumber: {
@@ -1052,7 +1058,9 @@ describe('NetworkController', () => {
                 });
                 const network2 = new NetworkCommunications({
                   networkClientType: 'rpc',
-                  customRpcUrl: 'http://some-rpc-url',
+                  networkClientOptions: {
+                    customRpcUrl: 'http://some-rpc-url',
+                  },
                 });
                 network2.mockEssentialRpcCalls();
                 await withoutCallingLookupNetwork({
@@ -1127,7 +1135,9 @@ describe('NetworkController', () => {
               async ({ controller }) => {
                 const network1 = new NetworkCommunications({
                   networkClientType: 'infura',
-                  infuraNetwork: networkType,
+                  networkClientOptions: {
+                    infuraNetwork: networkType,
+                  },
                 });
                 network1.mockEssentialRpcCalls({
                   eth_blockNumber: {
@@ -1158,7 +1168,9 @@ describe('NetworkController', () => {
                 });
                 const network2 = new NetworkCommunications({
                   networkClientType: 'rpc',
-                  customRpcUrl: 'http://some-rpc-url',
+                  networkClientOptions: {
+                    customRpcUrl: 'http://some-rpc-url',
+                  },
                 });
                 network2.mockEssentialRpcCalls();
                 await withoutCallingLookupNetwork({
@@ -1786,7 +1798,9 @@ describe('NetworkController', () => {
         async ({ controller }) => {
           const network = new NetworkCommunications({
             networkClientType: 'custom',
-            customRpcUrl: 'https://mock-rpc-url',
+            networkClientOptions: {
+              customRpcUrl: 'https://mock-rpc-url',
+            },
           });
           network.mockEssentialRpcCalls();
 
@@ -1819,7 +1833,9 @@ describe('NetworkController', () => {
         async ({ controller }) => {
           const network = new NetworkCommunications({
             networkClientType: 'custom',
-            customRpcUrl: 'https://mock-rpc-url',
+            networkClientOptions: {
+              customRpcUrl: 'https://mock-rpc-url',
+            },
           });
           network.mockEssentialRpcCalls();
 
@@ -1852,7 +1868,9 @@ describe('NetworkController', () => {
         async ({ controller }) => {
           const network = new NetworkCommunications({
             networkClientType: 'custom',
-            customRpcUrl: 'https://mock-rpc-url',
+            networkClientOptions: {
+              customRpcUrl: 'https://mock-rpc-url',
+            },
           });
           network.mockEssentialRpcCalls();
 
@@ -1880,7 +1898,9 @@ describe('NetworkController', () => {
       await withController(async ({ controller }) => {
         const network = new NetworkCommunications({
           networkClientType: 'custom',
-          customRpcUrl: 'https://mock-rpc-url',
+          networkClientOptions: {
+            customRpcUrl: 'https://mock-rpc-url',
+          },
         });
         network.mockEssentialRpcCalls();
 
@@ -1900,7 +1920,9 @@ describe('NetworkController', () => {
       await withController(async ({ controller }) => {
         const network = new NetworkCommunications({
           networkClientType: 'custom',
-          customRpcUrl: 'https://mock-rpc-url',
+          networkClientOptions: {
+            customRpcUrl: 'https://mock-rpc-url',
+          },
         });
         network.mockEssentialRpcCalls();
         network.mockRpcCall({
@@ -1937,7 +1959,9 @@ describe('NetworkController', () => {
       await withController(async ({ controller }) => {
         const network = new NetworkCommunications({
           networkClientType: 'custom',
-          customRpcUrl: 'https://mock-rpc-url',
+          networkClientOptions: {
+            customRpcUrl: 'https://mock-rpc-url',
+          },
         });
         network.mockEssentialRpcCalls();
         controller.initializeProvider();
@@ -1973,7 +1997,9 @@ describe('NetworkController', () => {
           });
           const network2 = network1.with({
             networkClientType: 'custom',
-            customRpcUrl: 'https://mock-rpc-url-2',
+            networkClientOptions: {
+              customRpcUrl: 'https://mock-rpc-url-2',
+            },
           });
           network2.mockEssentialRpcCalls({
             net_version: {
@@ -2018,7 +2044,9 @@ describe('NetworkController', () => {
           });
           const network2 = network1.with({
             networkClientType: 'custom',
-            customRpcUrl: 'https://mock-rpc-url-2',
+            networkClientOptions: {
+              customRpcUrl: 'https://mock-rpc-url-2',
+            },
           });
           network2.mockEssentialRpcCalls({
             latestBlock: PRE_1559_BLOCK,
@@ -2054,7 +2082,9 @@ describe('NetworkController', () => {
       await withController(async ({ controller }) => {
         const network = new NetworkCommunications({
           networkClientType: 'custom',
-          customRpcUrl: 'https://mock-rpc-url',
+          networkClientOptions: {
+            customRpcUrl: 'https://mock-rpc-url',
+          },
         });
         network.mockEssentialRpcCalls();
 
@@ -2074,7 +2104,9 @@ describe('NetworkController', () => {
       await withController(async ({ controller }) => {
         const network = new NetworkCommunications({
           networkClientType: 'custom',
-          customRpcUrl: 'https://mock-rpc-url',
+          networkClientOptions: {
+            customRpcUrl: 'https://mock-rpc-url',
+          },
         });
         network.mockEssentialRpcCalls();
 
@@ -2094,7 +2126,9 @@ describe('NetworkController', () => {
       await withController(async ({ controller }) => {
         const network = new NetworkCommunications({
           networkClientType: 'custom',
-          customRpcUrl: 'https://mock-rpc-url',
+          networkClientOptions: {
+            customRpcUrl: 'https://mock-rpc-url',
+          },
         });
         network.mockEssentialRpcCalls({
           net_version: {
@@ -2128,7 +2162,9 @@ describe('NetworkController', () => {
         async ({ controller }) => {
           const network = new NetworkCommunications({
             networkClientType: 'custom',
-            customRpcUrl: 'https://mock-rpc-url',
+            networkClientOptions: {
+              customRpcUrl: 'https://mock-rpc-url',
+            },
           });
           network.mockEssentialRpcCalls({
             latestBlock: POST_1559_BLOCK,
@@ -2175,7 +2211,9 @@ describe('NetworkController', () => {
             async ({ controller }) => {
               const network = new NetworkCommunications({
                 networkClientType: 'infura',
-                infuraNetwork: networkType,
+                networkClientOptions: {
+                  infuraNetwork: networkType,
+                },
               });
               network.mockEssentialRpcCalls();
 
@@ -2208,7 +2246,9 @@ describe('NetworkController', () => {
             async ({ controller }) => {
               const network = new NetworkCommunications({
                 networkClientType: 'infura',
-                infuraNetwork: networkType,
+                networkClientOptions: {
+                  infuraNetwork: networkType,
+                },
               });
               network.mockEssentialRpcCalls();
 
@@ -2229,7 +2269,9 @@ describe('NetworkController', () => {
           await withController(async ({ controller }) => {
             const network = new NetworkCommunications({
               networkClientType: 'infura',
-              infuraNetwork: networkType,
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
             });
             network.mockEssentialRpcCalls();
 
@@ -2249,7 +2291,9 @@ describe('NetworkController', () => {
           await withController(async ({ controller }) => {
             const network = new NetworkCommunications({
               networkClientType: 'infura',
-              infuraNetwork: networkType,
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
             });
             network.mockEssentialRpcCalls();
 
@@ -2270,7 +2314,9 @@ describe('NetworkController', () => {
           await withController(async ({ controller }) => {
             const network = new NetworkCommunications({
               networkClientType: 'infura',
-              infuraNetwork: networkType,
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
             });
             network.mockEssentialRpcCalls();
             controller.initializeProvider();
@@ -2306,7 +2352,9 @@ describe('NetworkController', () => {
               });
               const network2 = network1.with({
                 networkClientType: 'infura',
-                infuraNetwork: networkType,
+                networkClientOptions: {
+                  infuraNetwork: networkType,
+                },
               });
               network2.mockEssentialRpcCalls();
 
@@ -2347,7 +2395,9 @@ describe('NetworkController', () => {
               });
               const network2 = network1.with({
                 networkClientType: 'infura',
-                infuraNetwork: networkType,
+                networkClientOptions: {
+                  infuraNetwork: networkType,
+                },
               });
               network2.mockEssentialRpcCalls({
                 latestBlock: PRE_1559_BLOCK,
@@ -2383,7 +2433,9 @@ describe('NetworkController', () => {
           await withController(async ({ controller }) => {
             const network = new NetworkCommunications({
               networkClientType: 'infura',
-              infuraNetwork: networkType,
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
             });
             network.mockEssentialRpcCalls();
 
@@ -2403,7 +2455,9 @@ describe('NetworkController', () => {
           await withController(async ({ controller }) => {
             const network = new NetworkCommunications({
               networkClientType: 'infura',
-              infuraNetwork: networkType,
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
             });
             network.mockEssentialRpcCalls();
 
@@ -2423,7 +2477,9 @@ describe('NetworkController', () => {
           await withController(async ({ controller }) => {
             const network = new NetworkCommunications({
               networkClientType: 'infura',
-              infuraNetwork: networkType,
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
             });
             network.mockEssentialRpcCalls();
 
@@ -2453,7 +2509,9 @@ describe('NetworkController', () => {
             async ({ controller }) => {
               const network = new NetworkCommunications({
                 networkClientType: 'infura',
-                infuraNetwork: networkType,
+                networkClientOptions: {
+                  infuraNetwork: networkType,
+                },
               });
               network.mockEssentialRpcCalls({
                 latestBlock: POST_1559_BLOCK,
@@ -3035,7 +3093,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls();
 
@@ -3085,7 +3145,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls();
               await waitForLookupNetworkToComplete({
@@ -3126,7 +3188,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls();
               await waitForLookupNetworkToComplete({
@@ -3168,7 +3232,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls({
                 net_version: {
@@ -3221,7 +3287,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls({
                 latestBlock: POST_1559_BLOCK,
@@ -3278,7 +3346,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls();
 
@@ -3319,7 +3389,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls();
 
@@ -3361,7 +3433,9 @@ describe('NetworkController', () => {
               network1.mockEssentialRpcCalls();
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls({
                 net_version: {
@@ -3408,7 +3482,9 @@ describe('NetworkController', () => {
               });
               const network2 = network1.with({
                 networkClientType: 'custom',
-                customRpcUrl: 'https://mock-rpc-url',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
               });
               network2.mockEssentialRpcCalls({
                 latestBlock: PRE_1559_BLOCK,
@@ -3461,7 +3537,9 @@ describe('NetworkController', () => {
             network1.mockEssentialRpcCalls();
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls();
 
@@ -3511,7 +3589,9 @@ describe('NetworkController', () => {
             network1.mockEssentialRpcCalls();
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls();
             await waitForLookupNetworkToComplete({
@@ -3554,7 +3634,9 @@ describe('NetworkController', () => {
             network1.mockEssentialRpcCalls();
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls();
             await waitForLookupNetworkToComplete({
@@ -3598,7 +3680,9 @@ describe('NetworkController', () => {
             network1.mockEssentialRpcCalls();
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls();
 
@@ -3647,7 +3731,9 @@ describe('NetworkController', () => {
             network1.mockEssentialRpcCalls();
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls({
               latestBlock: POST_1559_BLOCK,
@@ -3706,7 +3792,9 @@ describe('NetworkController', () => {
             network1.mockEssentialRpcCalls();
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls();
 
@@ -3749,7 +3837,9 @@ describe('NetworkController', () => {
             network1.mockEssentialRpcCalls();
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls();
 
@@ -3799,7 +3889,9 @@ describe('NetworkController', () => {
             });
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls();
 
@@ -3845,7 +3937,9 @@ describe('NetworkController', () => {
             });
             const network2 = network1.with({
               networkClientType: 'infura',
-              infuraNetwork: 'goerli',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
             });
             network2.mockEssentialRpcCalls({
               latestBlock: PRE_1559_BLOCK,
@@ -3906,9 +4000,7 @@ async function withController(...args) {
     networkClientType === 'custom' ? providerConfig.rpcUrl : undefined;
   const network = new NetworkCommunications({
     networkClientType,
-    infuraProjectId,
-    infuraNetwork,
-    customRpcUrl,
+    networkClientOptions: { infuraProjectId, infuraNetwork, customRpcUrl },
   });
 
   try {
