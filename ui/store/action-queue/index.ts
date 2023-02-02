@@ -59,7 +59,7 @@ function failQueue() {
  *
  * @param [silently]
  */
-export function dropQueue(silently: boolean) {
+export function dropQueue(silently: boolean): void {
   if (!silently) {
     failQueue();
   }
@@ -67,7 +67,7 @@ export function dropQueue(silently: boolean) {
 }
 
 // add action to queue
-const executeActionOrAddToRetryQueue = (item: BackgroundAction) => {
+const executeActionOrAddToRetryQueue = (item: BackgroundAction): void => {
   if (actionRetryQueue.some((act) => act.actionId === item.actionId)) {
     return;
   }
