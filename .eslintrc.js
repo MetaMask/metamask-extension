@@ -235,6 +235,7 @@ module.exports = {
         'test/e2e/**/*.spec.js',
       ],
       excludedFiles: [
+        'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -257,11 +258,12 @@ module.exports = {
      * Jest tests
      *
      * These are files that make use of globals and syntax introduced by the
-     * Jest library.
+     * Jest library. The files in this section should match the Mocha excludedFiles section.
      */
     {
       files: [
         '**/__snapshots__/*.snap',
+        'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/network/provider-api-tests/*.js',
         'app/scripts/controllers/permissions/**/*.test.js',

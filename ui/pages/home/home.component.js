@@ -122,6 +122,8 @@ export default class Home extends PureComponent {
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
+    showOutdatedBrowserWarning: PropTypes.bool.isRequired,
+    setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: (props) => {
       if (
         props.seedPhraseBackedUp !== null &&
@@ -249,6 +251,11 @@ export default class Home extends PureComponent {
     setRecoveryPhraseReminderLastShown(new Date().getTime());
   };
 
+  onOutdatedBrowserWarningClose = () => {
+    const { setOutdatedBrowserWarningLastShown } = this.props;
+    setOutdatedBrowserWarningLastShown(new Date().getTime());
+  };
+
   renderNotifications() {
     const { t } = this.context;
     const {
@@ -265,6 +272,7 @@ export default class Home extends PureComponent {
       shouldShowErrors,
       ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
+      showOutdatedBrowserWarning,
       newNetworkAdded,
       setNewNetworkAdded,
       newCollectibleAddedMessage,
@@ -278,7 +286,11 @@ export default class Home extends PureComponent {
       setRpcTarget,
     } = this.props;
 
-    const onAutoHide = () => setNewCollectibleAddedMessage('');
+    const onAutoHide = () => {
+      setNewCollectibleAddedMessage('');
+      setRemoveCollectibleMessage('');
+    };
+
     const autoHideDelay = 5 * SECOND;
 
     return (
@@ -363,7 +375,7 @@ export default class Home extends PureComponent {
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
-                  onClick={() => setRemoveCollectibleMessage('')}
+                  onClick={onAutoHide}
                 />
               </Box>
             }
@@ -484,6 +496,14 @@ export default class Home extends PureComponent {
               });
             }}
             key="home-infuraBlockedNotification"
+          />
+        ) : null}
+        {showOutdatedBrowserWarning ? (
+          <HomeNotification
+            descriptionText={t('outdatedBrowserNotification')}
+            acceptText={t('gotIt')}
+            onAccept={this.onOutdatedBrowserWarningClose}
+            key="home-outdatedBrowserNotification"
           />
         ) : null}
         {Object.keys(newCustomNetworkAdded).length !== 0 && (
