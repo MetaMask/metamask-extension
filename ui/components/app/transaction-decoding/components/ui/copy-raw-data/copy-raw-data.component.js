@@ -5,7 +5,7 @@ import { I18nContext } from '../../../../../../contexts/i18n';
 
 import { useCopyToClipboard } from '../../../../../../hooks/useCopyToClipboard';
 import { Icon, ICON_NAMES } from '../../../../../component-library';
-import { COLORS } from '../../../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../../../helpers/constants/design-system';
 
 const CopyRawData = ({ data }) => {
   const t = useContext(I18nContext);
@@ -23,7 +23,7 @@ const CopyRawData = ({ data }) => {
           <div className="copy-raw-data__icon">
             <Icon
               name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-              color={COLORS.ICON_DEFAULT}
+              color={IconColor.iconDefault}
             />
           </div>
           <div className="copy-raw-data__label">

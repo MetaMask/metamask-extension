@@ -7,10 +7,10 @@ import Typography from '../../../ui/typography/typography';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import {
-  COLORS,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
-  ALIGN_ITEMS,
+  TypographyVariant,
+  JustifyContent,
+  AlignItems,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import Button from '../../../ui/button';
 import Box from '../../../ui/box/box';
@@ -26,14 +26,14 @@ export default function SnapContentFooter({ snapName, snapId }) {
   // TODO: add truncation to the snap name, need to pick a character length at which to cut off
   return (
     <Box
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      alignItems={ALIGN_ITEMS.CENTER}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
       paddingTop={4}
       paddingBottom={4}
       className="snap-content-footer"
     >
       <i className="fas fa-exclamation-circle fa-sm" />
-      <Typography color={COLORS.TEXT_MUTED} variant={TYPOGRAPHY.H7}>
+      <Typography color={TextColor.textMuted} variant={TypographyVariant.H7}>
         {t('snapContent', [
           <Button type="inline" onClick={handleNameClick} key="button">
             {snapName}

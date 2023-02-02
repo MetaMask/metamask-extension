@@ -9,9 +9,9 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
@@ -204,11 +204,11 @@ export default function SlippageButtons({
               <Box marginTop={2} display={DISPLAY.FLEX}>
                 <Box
                   display={DISPLAY.FLEX}
-                  alignItems={ALIGN_ITEMS.CENTER}
+                  alignItems={AlignItems.center}
                   paddingRight={3}
                 >
                   <Typography
-                    variant={TYPOGRAPHY.H6}
+                    variant={TypographyVariant.H6}
                     boxProps={{ paddingRight: 2 }}
                     fontWeight={FONT_WEIGHT.BOLD}
                   >

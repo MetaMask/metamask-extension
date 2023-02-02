@@ -80,12 +80,12 @@ The `children` is the description area of the `Banner` that can be a text or rea
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { Banner } from '../../component-library';
 
 <Banner>
   {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-  <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
+  <ButtonLink size={Size.auto} href="https://metamask.io/" target="_blank">
     hyperlink.
   </ButtonLink>
 </Banner>;

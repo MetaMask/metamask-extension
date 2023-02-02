@@ -12,7 +12,7 @@ import Typography from '../../../components/ui/typography';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -42,12 +42,15 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         marginBottom={4}
       />
       <div className="import-srp__header">
-        <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TypographyVariant.H2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('accessYourWalletWithSRP')}
         </Typography>
       </div>
       <div className="import-srp__description">
-        <Typography variant={TYPOGRAPHY.H4}>
+        <Typography variant={TypographyVariant.H4}>
           {t('accessYourWalletWithSRPDescription', [
             <a
               key="learnMore"
