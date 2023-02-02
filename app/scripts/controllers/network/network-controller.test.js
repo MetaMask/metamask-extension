@@ -628,9 +628,7 @@ describe('NetworkController', () => {
 
               await controller.initializeProvider();
 
-              expect(controller.store.getState().network).toStrictEqual(
-                networkVersion,
-              );
+              expect(controller.store.getState().network).toBe(networkVersion);
             },
           );
         });
@@ -757,7 +755,7 @@ describe('NetworkController', () => {
 
             await controller.initializeProvider();
 
-            expect(controller.store.getState().network).toStrictEqual('42');
+            expect(controller.store.getState().network).toBe('42');
           },
         );
       });
@@ -1274,9 +1272,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(controller.store.getState().network).toStrictEqual(
-                networkVersion,
-              );
+              expect(controller.store.getState().network).toBe(networkVersion);
             },
           );
         });
@@ -1498,7 +1494,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(controller.store.getState().network).toStrictEqual('42');
+              expect(controller.store.getState().network).toBe('42');
             },
           );
         });
@@ -1699,7 +1695,7 @@ describe('NetworkController', () => {
                 ],
               });
               await controller.initializeProvider();
-              expect(controller.store.getState().network).toStrictEqual('42');
+              expect(controller.store.getState().network).toBe('42');
 
               await waitForStateChanges({
                 controller,
@@ -1708,9 +1704,7 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
-              expect(controller.store.getState().network).toStrictEqual(
-                'loading',
-              );
+              expect(controller.store.getState().network).toBe('loading');
             },
           );
         });
@@ -2022,7 +2016,7 @@ describe('NetworkController', () => {
           });
 
           await controller.initializeProvider();
-          expect(controller.store.getState().network).toStrictEqual('255');
+          expect(controller.store.getState().network).toBe('255');
 
           await waitForStateChanges({
             controller,
@@ -2034,7 +2028,7 @@ describe('NetworkController', () => {
               controller.setRpcTarget('https://mock-rpc-url-2', '0xCC');
             },
           });
-          expect(controller.store.getState().network).toStrictEqual('loading');
+          expect(controller.store.getState().network).toBe('loading');
         },
       );
     });
@@ -2158,7 +2152,7 @@ describe('NetworkController', () => {
           },
         });
 
-        expect(controller.store.getState().network).toStrictEqual('42');
+        expect(controller.store.getState().network).toBe('42');
       });
     });
 
@@ -2371,7 +2365,7 @@ describe('NetworkController', () => {
               network2.mockEssentialRpcCalls();
 
               await controller.initializeProvider();
-              expect(controller.store.getState().network).toStrictEqual('255');
+              expect(controller.store.getState().network).toBe('255');
 
               await waitForStateChanges({
                 controller,
@@ -2383,9 +2377,7 @@ describe('NetworkController', () => {
                   controller.setProviderType(networkType);
                 },
               });
-              expect(controller.store.getState().network).toStrictEqual(
-                'loading',
-              );
+              expect(controller.store.getState().network).toBe('loading');
             },
           );
         });
@@ -2503,9 +2495,7 @@ describe('NetworkController', () => {
               },
             });
 
-            expect(controller.store.getState().network).toStrictEqual(
-              networkVersion,
-            );
+            expect(controller.store.getState().network).toBe(networkVersion);
           });
         });
 
@@ -2650,9 +2640,7 @@ describe('NetworkController', () => {
               });
 
               await controller.initializeProvider();
-              expect(controller.store.getState().network).toStrictEqual(
-                networkVersion,
-              );
+              expect(controller.store.getState().network).toBe(networkVersion);
 
               await waitForStateChanges({
                 controller,
@@ -2664,9 +2652,7 @@ describe('NetworkController', () => {
                   controller.resetConnection();
                 },
               });
-              expect(controller.store.getState().network).toStrictEqual(
-                'loading',
-              );
+              expect(controller.store.getState().network).toBe('loading');
             },
           );
         });
@@ -2784,9 +2770,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(controller.store.getState().network).toStrictEqual(
-                networkVersion,
-              );
+              expect(controller.store.getState().network).toBe(networkVersion);
             },
           );
         });
@@ -2903,7 +2887,7 @@ describe('NetworkController', () => {
             });
 
             await controller.initializeProvider();
-            expect(controller.store.getState().network).toStrictEqual('255');
+            expect(controller.store.getState().network).toBe('255');
 
             await waitForStateChanges({
               controller,
@@ -2915,9 +2899,7 @@ describe('NetworkController', () => {
                 controller.resetConnection();
               },
             });
-            expect(controller.store.getState().network).toStrictEqual(
-              'loading',
-            );
+            expect(controller.store.getState().network).toBe('loading');
           },
         );
       });
@@ -3049,7 +3031,7 @@ describe('NetworkController', () => {
               },
             });
 
-            expect(controller.store.getState().network).toStrictEqual('42');
+            expect(controller.store.getState().network).toBe('42');
           },
         );
       });
@@ -3262,7 +3244,7 @@ describe('NetworkController', () => {
                   controller.setRpcTarget('https://mock-rpc-url', '0x1337');
                 },
               });
-              expect(controller.store.getState().network).toStrictEqual('255');
+              expect(controller.store.getState().network).toBe('255');
 
               await waitForLookupNetworkToComplete({
                 controller,
@@ -3277,9 +3259,7 @@ describe('NetworkController', () => {
                       controller.rollbackToPreviousProvider();
                     },
                   });
-                  expect(controller.store.getState().network).toStrictEqual(
-                    'loading',
-                  );
+                  expect(controller.store.getState().network).toBe('loading');
                 },
               });
             },
@@ -3463,7 +3443,7 @@ describe('NetworkController', () => {
                   controller.setRpcTarget('https://mock-rpc-url', '0x1337');
                 },
               });
-              expect(controller.store.getState().network).toStrictEqual('255');
+              expect(controller.store.getState().network).toBe('255');
 
               await waitForLookupNetworkToComplete({
                 controller,
@@ -3472,9 +3452,7 @@ describe('NetworkController', () => {
                   controller.rollbackToPreviousProvider();
                 },
               });
-              expect(controller.store.getState().network).toStrictEqual(
-                networkVersion,
-              );
+              expect(controller.store.getState().network).toBe(networkVersion);
             },
           );
         });
@@ -3704,7 +3682,7 @@ describe('NetworkController', () => {
                 controller.setProviderType('goerli');
               },
             });
-            expect(controller.store.getState().network).toStrictEqual('5');
+            expect(controller.store.getState().network).toBe('5');
 
             await waitForLookupNetworkToComplete({
               controller,
@@ -3719,9 +3697,7 @@ describe('NetworkController', () => {
                     controller.rollbackToPreviousProvider();
                   },
                 });
-                expect(controller.store.getState().network).toStrictEqual(
-                  'loading',
-                );
+                expect(controller.store.getState().network).toBe('loading');
               },
             });
           },
@@ -3913,7 +3889,7 @@ describe('NetworkController', () => {
                 controller.setProviderType('goerli');
               },
             });
-            expect(controller.store.getState().network).toStrictEqual('5');
+            expect(controller.store.getState().network).toBe('5');
 
             await waitForLookupNetworkToComplete({
               controller,
@@ -3922,7 +3898,7 @@ describe('NetworkController', () => {
                 controller.rollbackToPreviousProvider();
               },
             });
-            expect(controller.store.getState().network).toStrictEqual('42');
+            expect(controller.store.getState().network).toBe('42');
           },
         );
       });
