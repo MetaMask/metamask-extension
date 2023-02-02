@@ -279,10 +279,12 @@ class NetworkCommunications {
       }
     });
 
-    // Mock the request that the block tracker makes last so that the request
-    // that NetworkController makes can be customized without interfering with
-    // *this* request (which cannot be customized except for the block number
-    // it returns).
+    // The request that the block tracker makes always occurs after any request
+    // that the network controller makes (because such a request goes through
+    // the block cache middleware and that is what spawns the block tracker). We
+    // don't need to customize the block tracker request; we just need to ensure
+    // that the block number it returns matches the same block number that
+    // `eth_getBlockByNumber` uses.
     allMocks.push({
       request: {
         method: 'eth_blockNumber',
