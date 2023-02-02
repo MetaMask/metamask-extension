@@ -485,29 +485,29 @@ describe('NetworkController', () => {
     it('sets default state without initial state', async () => {
       await withController(({ controller }) => {
         expect(controller.store.getState()).toMatchInlineSnapshot(`
-            {
-              "network": "loading",
-              "networkDetails": {
-                "EIPS": {
-                  "1559": undefined,
-                },
+          {
+            "network": "loading",
+            "networkDetails": {
+              "EIPS": {
+                "1559": undefined,
               },
-              "previousProviderStore": {
-                "chainId": "0x539",
-                "nickname": "Localhost 8545",
-                "rpcUrl": "http://localhost:8545",
-                "ticker": "ETH",
-                "type": "rpc",
-              },
-              "provider": {
-                "chainId": "0x539",
-                "nickname": "Localhost 8545",
-                "rpcUrl": "http://localhost:8545",
-                "ticker": "ETH",
-                "type": "rpc",
-              },
-            }
-          `);
+            },
+            "previousProviderStore": {
+              "chainId": "0x539",
+              "nickname": "Localhost 8545",
+              "rpcUrl": "http://localhost:8545",
+              "ticker": "ETH",
+              "type": "rpc",
+            },
+            "provider": {
+              "chainId": "0x539",
+              "nickname": "Localhost 8545",
+              "rpcUrl": "http://localhost:8545",
+              "ticker": "ETH",
+              "type": "rpc",
+            },
+          }
+        `);
       });
     });
   });
