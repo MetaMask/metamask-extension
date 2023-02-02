@@ -1731,6 +1731,7 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
+
               expect(controller.store.getState().network).toBe('loading');
             },
           );
