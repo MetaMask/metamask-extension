@@ -100,10 +100,12 @@ describe('ConfirmApproveContent Component', () => {
   });
 
   it('should render Confirm approve page correctly and simulation error message without I want to procced anyway link', () => {
-    props.userAcknowledgedGasMissing = true;
-    props.renderSimulationFailureWarning = true;
     const { queryByText, getByText, getAllByText, getByTestId } =
-      renderComponent(props);
+      renderComponent({
+        ...props,
+        userAcknowledgedGasMissing: true,
+        renderSimulationFailureWarning: true,
+      });
     expect(
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
@@ -160,10 +162,12 @@ describe('ConfirmApproveContent Component', () => {
   });
 
   it('should render Confirm approve page correctly and simulation error message with I want to procced anyway link', () => {
-    props.userAcknowledgedGasMissing = false;
-    props.renderSimulationFailureWarning = true;
     const { queryByText, getByText, getAllByText, getByTestId } =
-      renderComponent(props);
+      renderComponent({
+        ...props,
+        userAcknowledgedGasMissing: false,
+        renderSimulationFailureWarning: true,
+      });
     expect(
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
@@ -220,8 +224,8 @@ describe('ConfirmApproveContent Component', () => {
   });
 
   it('should render Confirm approve page correctly when the fiat conversion is OFF', () => {
-    props.useCurrencyRateCheck = false;
-    const { queryByText, getByText, getByTestId } = renderComponent(props);
+    const { queryByText, getByText, getAllByText, getByTestId } =
+      renderComponent({ ...props, useCurrencyRateCheck: false });
     expect(
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
@@ -251,12 +255,12 @@ describe('ConfirmApproveContent Component', () => {
     expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
     expect(queryByText(`$10.00`)).not.toBeInTheDocument();
     fireEvent.click(editButtons[0]);
-    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(1);
+    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(4);
 
     expect(queryByText('Nonce')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
     fireEvent.click(editButtons[1]);
-    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(1);
+    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(4);
 
     const showViewTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission request')).not.toBeInTheDocument();
