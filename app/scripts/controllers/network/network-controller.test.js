@@ -90,7 +90,7 @@ const BLOCK = POST_1559_BLOCK;
  * (Infura should not be hit during tests, but just in case, this should not
  * refer to a real project ID.)
  */
-const DEFAULT_INFURA_PROJECT_ID = 'infura-project-id';
+const DEFAULT_INFURA_PROJECT_ID = 'fake-infura-project-id';
 
 /**
  * Despite the signature of its constructor, NetworkController must take an
