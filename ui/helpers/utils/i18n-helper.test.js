@@ -129,7 +129,7 @@ describe('i18n helper', () => {
       );
     });
 
-    it('should correctly render falsey substitutions', () => {
+    it('should correctly render falsy substitutions', () => {
       const result = t(TEST_KEY_4, [0, -0, '', false, NaN]);
       expect(result).toStrictEqual('0 - 0 -  - false - NaN');
     });

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { ButtonBase } from '../button-base';
+import { Text } from '../text';
 import { COLORS, TEXT, SIZES } from '../../../helpers/constants/design-system';
 import { BUTTON_LINK_SIZES } from './button-link.constants';
 
@@ -10,6 +11,7 @@ export const ButtonLink = ({
   className,
   danger,
   size = SIZES.AUTO,
+  textProps,
   ...props
 }) => {
   return (
@@ -25,10 +27,10 @@ export const ButtonLink = ({
       backgroundColor={COLORS.TRANSPARENT}
       color={danger ? COLORS.ERROR_DEFAULT : COLORS.PRIMARY_DEFAULT}
       borderRadius={null}
-      {...props}
       textProps={{
         variant:
           size === BUTTON_LINK_SIZES.INHERIT ? TEXT.INHERIT : TEXT.BODY_MD,
+        ...textProps,
       }}
       iconProps={{
         size: size === BUTTON_LINK_SIZES.INHERIT ? SIZES.INHERIT : SIZES.SM,
@@ -36,6 +38,7 @@ export const ButtonLink = ({
       iconLoadingProps={{
         size: size === BUTTON_LINK_SIZES.INHERIT ? SIZES.INHERIT : SIZES.MD,
       }}
+      {...props}
     />
   );
 };
@@ -54,6 +57,10 @@ ButtonLink.propTypes = {
    * Default value is 'SIZES.AUTO'.
    */
   size: PropTypes.oneOf(Object.values(BUTTON_LINK_SIZES)),
+  /**
+   * textProps accepts all the props from Text component
+   */
+  textProps: PropTypes.shape(Text.PropTypes),
   /**
    * ButtonLink accepts all the props from ButtonBase
    */

@@ -132,7 +132,6 @@ describe('App State', () => {
       type: actions.SHOW_ACCOUNT_DETAIL,
       value: 'context address',
     });
-    expect(state.forgottenPassword).toBeNull(); // default
     expect(state.accountDetail.subview).toStrictEqual('transactions'); // default
     expect(state.accountDetail.accountExport).toStrictEqual('none'); // default
     expect(state.accountDetail.privateKey).toStrictEqual(''); // default
@@ -163,7 +162,6 @@ describe('App State', () => {
     expect(state.isLoading).toStrictEqual(false);
     expect(state.warning).toBeNull();
     expect(state.scrollToBottom).toStrictEqual(false);
-    expect(state.forgottenPassword).toStrictEqual(false);
   });
 
   it('shows confirm tx page', () => {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
+import { EditGasModes } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
@@ -29,6 +29,7 @@ import {
   checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
+import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
 import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
@@ -83,6 +84,8 @@ export default function ConfirmApprove({
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
+  const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
+    useState(false);
 
   const supportsEIP1559 = networkAndAccountSupports1559;
 
@@ -92,6 +95,9 @@ export default function ConfirmApprove({
     showCustomizeGasPopover,
     closeCustomizeGasPopover,
   } = useApproveTransaction();
+  const renderSimulationFailureWarning = useSimulationFailureWarning(
+    userAcknowledgedGasMissing,
+  );
 
   useEffect(() => {
     if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
@@ -195,7 +201,7 @@ export default function ConfirmApprove({
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
               onClose={closeCustomizeGasPopover}
-              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              mode={EditGasModes.modifyInPlace}
               transaction={transaction}
             />
           )}
@@ -246,6 +252,9 @@ export default function ConfirmApprove({
               useNonceField={useNonceField}
               nextNonce={nextNonce}
               customNonceValue={customNonceValue}
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
+              renderSimulationFailureWarning={renderSimulationFailureWarning}
               updateCustomNonce={(value) => {
                 dispatch(updateCustomNonce(value));
               }}
@@ -282,7 +291,7 @@ export default function ConfirmApprove({
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
                 onClose={closeCustomizeGasPopover}
-                mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+                mode={EditGasModes.modifyInPlace}
                 transaction={transaction}
               />
             )}

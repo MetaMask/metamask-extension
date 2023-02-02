@@ -40,10 +40,12 @@ describe('MetaMask Reducers', () => {
         currentBlockGasLimit: '0x4c1878',
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
+        useCurrencyRateCheck: true,
         network: '5',
         provider: {
           type: 'testnet',
           chainId: '0x5',
+          ticker: 'TestETH',
         },
         accounts: {
           '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -246,18 +248,6 @@ describe('MetaMask Reducers', () => {
     expect(state.welcomeScreenSeen).toStrictEqual(true);
   });
 
-  it('sets current locale', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_CURRENT_LOCALE,
-        value: { locale: 'ge' },
-      },
-    );
-
-    expect(state.currentLocale).toStrictEqual('ge');
-  });
-
   it('sets pending tokens', () => {
     const payload = {
       address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
@@ -308,8 +298,20 @@ describe('MetaMask Reducers', () => {
     });
 
     describe('getNativeCurrency()', () => {
-      it('should return the ticker symbol of the selected network', () => {
+      it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
         expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+      });
+
+      it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
+        expect(
+          getNativeCurrency({
+            ...mockState,
+            metamask: {
+              ...mockState.metamask,
+              useCurrencyRateCheck: false,
+            },
+          }),
+        ).toStrictEqual('TestETH');
       });
     });
 

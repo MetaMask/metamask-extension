@@ -23,14 +23,17 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
-import IconChart from '../../components/ui/icon/icon-chart';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   DISPLAY,
   COLORS,
+  BLOCK_SIZES,
+  SIZES,
+  TEXT,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
+import { ButtonLink, ICON_NAMES } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -275,7 +278,11 @@ export default class Home extends PureComponent {
       setRpcTarget,
     } = this.props;
 
-    const onAutoHide = () => setNewCollectibleAddedMessage('');
+    const onAutoHide = () => {
+      setNewCollectibleAddedMessage('');
+      setRemoveCollectibleMessage('');
+    };
+
     const autoHideDelay = 5 * SECOND;
 
     return (
@@ -360,7 +367,7 @@ export default class Home extends PureComponent {
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
-                  onClick={() => setRemoveCollectibleMessage('')}
+                  onClick={onAutoHide}
                 />
               </Box>
             }
@@ -686,8 +693,9 @@ export default class Home extends PureComponent {
                     </div>
                   }
                 >
-                  <div
+                  <ButtonLink
                     className="home__subheader-link"
+                    data-testid="home__portfolio-site"
                     onClick={async () => {
                       const portfolioUrl = process.env.PORTFOLIO_URL;
                       global.platform.openTab({
@@ -708,15 +716,13 @@ export default class Home extends PureComponent {
                         },
                       );
                     }}
+                    iconName={ICON_NAMES.DIAGRAM}
+                    width={BLOCK_SIZES.FULL}
+                    size={SIZES.MD}
+                    textProps={{ variant: TEXT.BODY_SM }}
                   >
-                    <IconChart />
-                    <div
-                      className="home__subheader-link--text"
-                      data-testid="home__portfolio-site"
-                    >
-                      {t('portfolioSite')}
-                    </div>
-                  </div>
+                    {t('portfolioSite')}
+                  </ButtonLink>
                 </Tooltip>
               }
             >

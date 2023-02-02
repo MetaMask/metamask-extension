@@ -154,9 +154,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Du skal bruge MetaMask i Google Chrome for at forbinde med din Hardware Wallet."
   },
-  "clickToRevealSeed": {
-    "message": "Klik her for at se hemmelige ord"
-  },
   "close": {
     "message": "Luk"
   },
@@ -166,14 +163,8 @@
   "confirmPassword": {
     "message": "Bekræft adgangskode"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Bekræft din hemmelige backup-sætning"
-  },
   "confirmed": {
     "message": "Bekræftet"
-  },
-  "congratulations": {
-    "message": "Tillykke"
   },
   "connect": {
     "message": "Få forbindelse"
@@ -216,9 +207,6 @@
   },
   "create": {
     "message": "Opret"
-  },
-  "createAWallet": {
-    "message": "Opret en tegnebog"
   },
   "createAccount": {
     "message": "Opret konto"
@@ -265,9 +253,6 @@
   "downloadGoogleChrome": {
     "message": "Hent Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Download denne Hemmelige Backupfrase og opbevar den sikkert på et ekstern, krypteret harddisk eller lagringsenhed."
-  },
   "downloadStateLogs": {
     "message": "Download tilstandslogs"
   },
@@ -279,33 +264,6 @@
   },
   "editContact": {
     "message": "Redigér Kontakt"
-  },
-  "endOfFlowMessage1": {
-    "message": "Du bestod testen - pas godt på din seed-sætning, det er dit ansvar!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Helt klar"
-  },
-  "endOfFlowMessage2": {
-    "message": "Tip til sikker opbevaring "
-  },
-  "endOfFlowMessage3": {
-    "message": "Gem en sikkerhedskopi flere steder."
-  },
-  "endOfFlowMessage4": {
-    "message": "Del aldrig frasen med nogen."
-  },
-  "endOfFlowMessage5": {
-    "message": "Vær varsom med phishing! MetaMask vil aldrig spontant bede om din seedfrase."
-  },
-  "endOfFlowMessage6": {
-    "message": "Hvis du får brug for at lave en backup af din seedfrase igen, kan du finde det under Indstillinger -> Sikkerhed."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask kan ikke gendanne din seed-sætning. Få mere at vide."
-  },
-  "endOfFlowMessage9": {
-    "message": "Lær mere. "
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS-navn ikke fundet for det nuværende netværk. Prøv at skifte til Ethereums hovednetværk."
@@ -381,14 +339,8 @@
     "message": "Hent Ether fra en hane til $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Kom godt i gang"
-  },
   "goerli": {
     "message": "Goerli-testnetværk"
-  },
-  "happyToSeeYou": {
-    "message": "Vi er glade for at se dig."
   },
   "hardwareWalletConnected": {
     "message": "Hardware-tegnebog tilsluttet"
@@ -424,12 +376,6 @@
   },
   "importAccountMsg": {
     "message": "Importerede konti vil ikke blive forbundet med din oprindeligt oprettede seed-sætning for din MetaMask-konto. Få mere at vide om importerede konti"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Importér en Konto med Seedfrase"
-  },
-  "importWallet": {
-    "message": "Importér pung"
   },
   "imported": {
     "message": "Importeret",
@@ -481,9 +427,6 @@
   "ledgerAccountRestriction": {
     "message": "Du skal benytte din tidligere konto, før du kan tilføje en ny."
   },
-  "letsGoSetUp": {
-    "message": "Ja, lad os komme i gang!"
-  },
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
@@ -508,14 +451,8 @@
   "memo": {
     "message": "notat"
   },
-  "memorizePhrase": {
-    "message": "Husk denne sætning."
-  },
   "message": {
     "message": "Besked"
-  },
-  "metamaskDescription": {
-    "message": "Som forbinder dig til Ethereum og de decentraliserede internet."
   },
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
@@ -555,17 +492,11 @@
   "newPassword": {
     "message": "Ny adgangskode (min. 8 tegn)"
   },
-  "newToMetaMask": {
-    "message": "Ny på MetaMask?"
-  },
   "next": {
     "message": "Næste"
   },
   "noAddressForName": {
     "message": "Ingen adresse indstillet for dette navn."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Nej, jeg har allerede en seedfrase"
   },
   "noConversionRateAvailable": {
     "message": "Ingen tilgængelig omregningskurs"
@@ -671,9 +602,6 @@
   "rejected": {
     "message": "Afvist"
   },
-  "remindMeLater": {
-    "message": "Påminde mig senere"
-  },
   "remove": {
     "message": "Fjern"
   },
@@ -737,12 +665,6 @@
   "searchTokens": {
     "message": "Søg efter tokens"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Din hemmelige backup-sætning gør det nemt at lave backup og gendanne din konto."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ADVARSEL: Afslør aldrig din backup-frase. Enhver med denne frase kan tage din Ether for altid."
-  },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
@@ -751,9 +673,6 @@
   },
   "selectAnAccount": {
     "message": "Vælg en Konto"
-  },
-  "selectEachPhrase": {
-    "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."
   },
   "selectHdPath": {
     "message": "Vælg HD-Sti"
@@ -824,9 +743,6 @@
   "stateLogsDescription": {
     "message": "Status-logføringer indeholder dine offentlige kontoadresser og afsendte transaktioner."
   },
-  "storePhrase": {
-    "message": "Gem denne sætning i en adgangskodeadministrator som 1Password."
-  },
   "submitted": {
     "message": "Indsendt"
   },
@@ -865,9 +781,6 @@
   },
   "testFaucet": {
     "message": "Testhane"
-  },
-  "thisWillCreate": {
-    "message": "Dette vil skabe en ny pung og seedfrase"
   },
   "tips": {
     "message": "Donationer"
@@ -990,14 +903,8 @@
   "visitWebSite": {
     "message": "Besøg vores webside"
   },
-  "welcome": {
-    "message": "Velkommen til MetaMask"
-  },
   "welcomeBack": {
     "message": "Velkommen tilbage!"
-  },
-  "writePhrase": {
-    "message": "Skriv denne sætning på et stykke papir, og opbevar den et sikkert sted. Hvis du vil have endnu mere sikkerhed, skal du skrive den ned på flere papirstykker og opbevare hver på 2 - 3 forskellige placeringer."
   },
   "yesLetsTry": {
     "message": "Ja, lad os prøve"

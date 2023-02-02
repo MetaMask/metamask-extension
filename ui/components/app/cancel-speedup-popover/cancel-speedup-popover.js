@@ -1,10 +1,7 @@
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
 
-import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
-} from '../../../../shared/constants/gas';
+import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   ALIGN_ITEMS,
   DISPLAY,
@@ -55,10 +52,10 @@ const CancelSpeedupPopover = () => {
       gasEstimateGreaterThanGasUsedPlusTenPercent(
         transaction.txParams,
         gasFeeEstimates,
-        PRIORITY_LEVELS.MEDIUM,
+        PriorityLevels.medium,
       );
     if (gasUsedLessThanMedium) {
-      updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM);
+      updateTransactionUsingEstimate(PriorityLevels.medium);
       return;
     }
     updateTransactionToTenPercentIncreasedGasFee(true);
@@ -78,7 +75,7 @@ const CancelSpeedupPopover = () => {
   }
 
   const submitTransactionChange = () => {
-    if (editGasMode === EDIT_GAS_MODES.CANCEL) {
+    if (editGasMode === EditGasModes.cancel) {
       cancelTransaction();
     } else {
       speedUpTransaction();
@@ -90,7 +87,7 @@ const CancelSpeedupPopover = () => {
     <Popover
       title={
         <>
-          {editGasMode === EDIT_GAS_MODES.CANCEL
+          {editGasMode === EditGasModes.cancel
             ? `❌${t('cancel')}`
             : `🚀${t('speedUp')}`}
         </>
@@ -114,7 +111,7 @@ const CancelSpeedupPopover = () => {
             contentText={
               <Box>
                 {t('cancelSpeedUpTransactionTooltip', [
-                  editGasMode === EDIT_GAS_MODES.CANCEL
+                  editGasMode === EditGasModes.cancel
                     ? t('cancel')
                     : t('speedUp'),
                 ])}

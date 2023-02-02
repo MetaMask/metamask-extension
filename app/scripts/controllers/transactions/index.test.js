@@ -22,8 +22,8 @@ import {
 
 import { SECOND } from '../../../../shared/constants/time';
 import {
-  GAS_ESTIMATE_TYPES,
-  GAS_RECOMMENDATIONS,
+  GasEstimateTypes,
+  GasRecommendations,
 } from '../../../../shared/constants/gas';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
@@ -849,7 +849,7 @@ describe('Transaction Controller', function () {
             suggestedMaxFeePerGas: '5',
           },
         },
-        gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        gasEstimateType: GasEstimateTypes.feeMarket,
       }));
 
       const defaultGasFees = await txController._getDefaultGasFees(
@@ -868,7 +868,7 @@ describe('Transaction Controller', function () {
 
       getGasFeeStub.callsFake(() => ({
         gasFeeEstimates: { medium: '2' },
-        gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+        gasEstimateType: GasEstimateTypes.legacy,
       }));
 
       const defaultGasFees = await txController._getDefaultGasFees(
@@ -886,7 +886,7 @@ describe('Transaction Controller', function () {
 
       getGasFeeStub.callsFake(() => ({
         gasFeeEstimates: { gasPrice: '2' },
-        gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+        gasEstimateType: GasEstimateTypes.ethGasPrice,
       }));
 
       const defaultGasFees = await txController._getDefaultGasFees(
@@ -1218,8 +1218,8 @@ describe('Transaction Controller', function () {
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         gas: '0x5209',
         gasPrice: '0xa',
-        estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
-        estimateUsed: GAS_RECOMMENDATIONS.HIGH,
+        estimateSuggested: GasRecommendations.medium,
+        estimateUsed: GasRecommendations.high,
       };
       txController.txStateManager._addTransactionsToState([
         {
@@ -2232,8 +2232,8 @@ describe('Transaction Controller', function () {
           maxPriorityFeePerGas: '0x77359400',
           gas: '0x7b0d',
           nonce: '0x4b',
-          estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
-          estimateUsed: GAS_RECOMMENDATIONS.HIGH,
+          estimateSuggested: GasRecommendations.medium,
+          estimateUsed: GasRecommendations.high,
         },
         type: TransactionType.simpleSend,
         origin: 'other',
@@ -2280,8 +2280,8 @@ describe('Transaction Controller', function () {
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
           status: 'unapproved',
-          estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
-          estimate_used: GAS_RECOMMENDATIONS.HIGH,
+          estimate_suggested: GasRecommendations.medium,
+          estimate_used: GasRecommendations.high,
           default_estimate: 'medium',
           default_max_fee_per_gas: '70',
           default_max_priority_fee_per_gas: '7',
@@ -2359,14 +2359,14 @@ describe('Transaction Controller', function () {
       const params = {
         max_fee_per_gas: '0x77359400',
         max_priority_fee_per_gas: '0x77359400',
-        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
-        estimate_used: GAS_RECOMMENDATIONS.HIGH,
+        estimate_suggested: GasRecommendations.medium,
+        estimate_used: GasRecommendations.high,
       };
       const expectedParams = {
         max_fee_per_gas: '2',
         max_priority_fee_per_gas: '2',
-        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
-        estimate_used: GAS_RECOMMENDATIONS.HIGH,
+        estimate_suggested: GasRecommendations.medium,
+        estimate_used: GasRecommendations.high,
       };
       const result = txController._getGasValuesInGWEI(params);
       assert.deepEqual(result, expectedParams);
