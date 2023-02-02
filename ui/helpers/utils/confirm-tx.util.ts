@@ -7,13 +7,13 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { TransactionMeta } from '../../../shared/constants/transaction';
 
-export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }) {
+export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }): string {
   return new Numeric(gasLimit, 16)
     .times(new Numeric(gasPrice, 16))
     .toPrefixedHexString();
 }
 
-export function addEth(firstValue: string, ...otherValues: string[]) {
+export function addEth(firstValue: string, ...otherValues: string[]): string {
   return otherValues
     .reduce((numericAcc, ethAmount) => {
       return numericAcc.add(new Numeric(ethAmount, 10)).round(6);
@@ -21,7 +21,7 @@ export function addEth(firstValue: string, ...otherValues: string[]) {
     .toString();
 }
 
-export function addFiat(firstValue: string, ...otherValues: string[]) {
+export function addFiat(firstValue: string, ...otherValues: string[]): string {
   return otherValues
     .reduce((numericAcc, fiatAmount) => {
       return numericAcc.add(new Numeric(fiatAmount, 10)).round(2);
@@ -41,7 +41,7 @@ export function getTransactionFee({
   toCurrency: string;
   conversionRate: number;
   numberOfDecimals: number;
-}) {
+}): string {
   let fee = new Numeric(value, 16, EtherDenomination.WEI)
     .toDenomination(EtherDenomination.ETH)
     .toBase(10);
@@ -52,7 +52,7 @@ export function getTransactionFee({
   return fee.round(numberOfDecimals).toString();
 }
 
-export function formatCurrency(value: string, currencyCode: string) {
+export function formatCurrency(value: string, currencyCode: string): string {
   const upperCaseCurrencyCode = currencyCode.toUpperCase();
 
   return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
@@ -74,7 +74,7 @@ export function convertTokenToFiat({
   toCurrency: string;
   conversionRate: number;
   contractExchangeRate: number;
-}) {
+}): string {
   const totalExchangeRate = conversionRate * contractExchangeRate;
 
   let tokenInFiat = new Numeric(value, 10);
@@ -96,7 +96,9 @@ export function convertTokenToFiat({
  * @param state - MetaMask state
  * @returns true if there are unconfirmed transactions in state
  */
-export function hasUnconfirmedTransactions(state: Record<string, any>) {
+export function hasUnconfirmedTransactions(
+  state: Record<string, any>,
+): boolean {
   return unconfirmedTransactionsCountSelector(state) > 0;
 }
 
@@ -107,7 +109,7 @@ export function hasUnconfirmedTransactions(state: Record<string, any>) {
  * @returns The rounded number, or the original number if no
  * rounding was necessary.
  */
-export function roundExponential(decimalString: string) {
+export function roundExponential(decimalString: string): string {
   const PRECISION = 4;
   const bigNumberValue = new BigNumber(decimalString);
 
@@ -119,7 +121,7 @@ export function roundExponential(decimalString: string) {
 
 export function areDappSuggestedAndTxParamGasFeesTheSame(
   txData: TransactionMeta,
-) {
+): boolean {
   const { txParams, dappSuggestedGasFees } = txData ?? {};
   const {
     gasPrice: txParamsGasPrice,
@@ -151,9 +153,9 @@ export function areDappSuggestedAndTxParamGasFeesTheSame(
     txParamsMaxFeePerGas === dappMaxFeePerGas &&
     txParamsMaxPriorityFeePerGas === dappMaxPriorityFeePerGas;
 
-  return (
+  return Boolean(
     txParamsGasPriceMatchesDappSuggestedGasPrice ||
-    txParamsEIP1559FeesMatchDappSuggestedGasPrice ||
-    txParamsEIP1559FeesMatchDappSuggestedEIP1559Fees
+      txParamsEIP1559FeesMatchDappSuggestedGasPrice ||
+      txParamsEIP1559FeesMatchDappSuggestedEIP1559Fees,
   );
 }
