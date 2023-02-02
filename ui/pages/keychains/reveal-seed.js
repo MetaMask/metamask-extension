@@ -1,13 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import classnames from 'classnames';
 import qrCode from 'qrcode-generator';
 import { requestRevealSeedWords, showModal } from '../../store/actions';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
-import { TEXT, SEVERITIES, SIZES } from '../../helpers/constants/design-system';
+import {
+  TEXT,
+  SEVERITIES,
+  SIZES,
+  BLOCK_SIZES,
+  JUSTIFY_CONTENT,
+  ALIGN_ITEMS,
+  DISPLAY,
+} from '../../helpers/constants/design-system';
 
 import Box from '../../components/ui/box';
 import {
@@ -15,8 +22,11 @@ import {
   Label,
   Banner,
   Button,
-  ButtonPrimary,
-  ButtonSecondary,
+  TextField,
+  HelpText,
+  BUTTON_TYPES,
+  TEXT_FIELD_SIZES,
+  TEXT_FIELD_TYPES,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -94,13 +104,13 @@ const RevealSeedPage = () => {
 
   const renderWarning = () => {
     return (
-      <Banner severity={SEVERITIES.DANGER} marginTop={6} marginBottom={3}>
+      <Banner severity={SEVERITIES.DANGER}>
         <Text variant={TEXT.BODY_MD}>
           {t('revealSeedWordsWarning', [
             <Text
               key="reveal-seed-words-warning-2"
               variant={TEXT.BODY_MD_BOLD}
-              as="span"
+              as="strong"
             >
               {t('revealSeedWordsWarning2')}
             </Text>,
@@ -116,20 +126,20 @@ const RevealSeedPage = () => {
         <Label htmlFor="password-box" variant={TEXT.BODY_MD_BOLD}>
           {t('enterPasswordContinue')}
         </Label>
-        <div className="input-group">
-          <input
-            data-testid="input-password"
-            type="password"
-            placeholder={t('makeSureNoOneWatching')}
-            id="password-box"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            className={classnames('form-control', {
-              'form-control--error': error,
-            })}
-          />
-        </div>
-        {error && <div className="reveal-seed__error">{error}</div>}
+        <TextField
+          inputProps={{
+            'data-testid': 'input-password',
+          }}
+          type={TEXT_FIELD_TYPES.PASSWORD}
+          placeholder={t('makeSureNoOneWatching')}
+          id="password-box"
+          size={TEXT_FIELD_SIZES.LG}
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          error={error}
+          width={BLOCK_SIZES.FULL}
+        />
+        {error && <HelpText error>{error}</HelpText>}
       </form>
     );
   };
@@ -144,24 +154,22 @@ const RevealSeedPage = () => {
             activeClassName="reveal-seed__active-tab"
             tabKey="text-seed"
           >
-            <div className="reveal-seed__text-container">
-              <Label variant={TEXT.BODY_MD_BOLD}>
-                {t('yourPrivateSeedPhrase')}
-              </Label>
-              <ExportTextContainer
-                text={seedWords}
-                onClickCopy={() => {
-                  trackEvent({
-                    category: EVENT.CATEGORIES.KEYS,
-                    event: EVENT_NAMES.KEY_EXPORT_COPIED,
-                    properties: {
-                      key_type: EVENT.KEY_TYPES.SRP,
-                      copy_method: 'clipboard',
-                    },
-                  });
-                }}
-              />
-            </div>
+            <Label variant={TEXT.BODY_MD_BOLD} marginTop={4}>
+              {t('yourPrivateSeedPhrase')}
+            </Label>
+            <ExportTextContainer
+              text={seedWords}
+              onClickCopy={() => {
+                trackEvent({
+                  category: EVENT.CATEGORIES.KEYS,
+                  event: EVENT_NAMES.KEY_EXPORT_COPIED,
+                  properties: {
+                    key_type: EVENT.KEY_TYPES.SRP,
+                    copy_method: 'clipboard',
+                  },
+                });
+              }}
+            />
           </Tab>
           <Tab
             name={t('revealSeedWordsQR')}
@@ -169,14 +177,18 @@ const RevealSeedPage = () => {
             activeClassName="reveal-seed__active-tab"
             tabKey="qr-seed"
           >
-            <div className="reveal-seed__qr-container">
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.CENTER}
+              alignItems={ALIGN_ITEMS.CENTER}
+              paddingTop={4}
+            >
               <div
-                className="qr-code__wrapper"
                 dangerouslySetInnerHTML={{
                   __html: renderQR().createTableTag(5, 15),
                 }}
               />
-            </div>
+            </Box>
           </Tab>
         </Tabs>
       </div>
@@ -185,14 +197,11 @@ const RevealSeedPage = () => {
 
   const renderPasswordPromptFooter = () => {
     return (
-      <Box
-        className="page-container__footer srp__footer"
-        marginTop="auto"
-        padding={4}
-      >
-        <ButtonSecondary
+      <Box display={DISPLAY.FLEX} marginTop="auto" gap={4}>
+        <Button
+          width={BLOCK_SIZES.FULL}
           size={SIZES.LG}
-          className="page-container__footer-button srp__footer-button"
+          type={BUTTON_TYPES.SECONDARY}
           onClick={() => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
@@ -205,10 +214,10 @@ const RevealSeedPage = () => {
           }}
         >
           {t('cancel')}
-        </ButtonSecondary>
-        <ButtonPrimary
+        </Button>
+        <Button
+          width={BLOCK_SIZES.FULL}
           size={SIZES.LG}
-          className="page-container__footer-button srp__footer-button"
           onClick={(event) => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
@@ -222,25 +231,22 @@ const RevealSeedPage = () => {
           disabled={password === ''}
         >
           {t('next')}
-        </ButtonPrimary>
+        </Button>
       </Box>
     );
   };
 
   const renderRevealSeedFooter = () => {
     return (
-      <Box
-        className="page-container__footer srp__footer"
-        marginTop="auto"
-        padding={4}
-      >
-        <ButtonSecondary
+      <Box marginTop="auto">
+        <Button
+          type={BUTTON_TYPES.SECONDARY}
+          width={BLOCK_SIZES.FULL}
           size={SIZES.LG}
-          className="page-container__footer-button srp__footer-button"
           onClick={() => history.push(mostRecentOverviewPage)}
         >
           {t('close')}
-        </ButtonSecondary>
+        </Button>
       </Box>
     );
   };
@@ -258,58 +264,60 @@ const RevealSeedPage = () => {
   };
 
   return (
-    <div className="page-container">
-      <div className="srp__header">
-        <Text variant={TEXT.HEADING_LG}>{t('secretRecoveryPhrase')}</Text>
-      </div>
-      <div className="srp__content">
-        <Text variant={TEXT.BODY_MD}>
-          {t('revealSeedWordsDescription1', [
-            <Button
-              key="srp-learn-srp"
-              type="link"
-              size="inherit"
-              as="a"
-              block={false}
-              href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
-              target="_blank"
-              variant={TEXT.BODY_MD}
-              rel="noopener noreferrer"
-            >
-              {t('revealSeedWordsSRPName')}
-            </Button>,
-            <Text
-              key="reveal-seed-word-part-3"
-              variant={TEXT.BODY_MD_BOLD}
-              as="span"
-            >
-              {t('revealSeedWordsDescription3')}
-            </Text>,
-          ])}
-        </Text>
-        <br />
-        <Text variant={TEXT.BODY_MD}>
-          {t('revealSeedWordsDescription2', [
-            <Button
-              key="srp-learn-more-non-custodial"
-              type="link"
-              size="inherit"
-              as="a"
-              block={false}
-              href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
-              target="_blank"
-              variant={TEXT.BODY_MD}
-              rel="noopener noreferrer"
-            >
-              {t('revealSeedWordsNonCustodialWallet')}
-            </Button>,
-          ])}
-        </Text>
-        {renderWarning()}
-        <div className="reveal-seed__content"> {renderContent()}</div>
-      </div>
+    <Box
+      className="page-container"
+      paddingTop={8}
+      paddingBottom={8}
+      paddingLeft={4}
+      paddingRight={4}
+      gap={4}
+    >
+      <Text variant={TEXT.HEADING_LG}>{t('secretRecoveryPhrase')}</Text>
+      <Text variant={TEXT.BODY_MD}>
+        {t('revealSeedWordsDescription1', [
+          <Button
+            key="srp-learn-srp"
+            type="link"
+            size="inherit"
+            as="a"
+            block={false}
+            href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
+            target="_blank"
+            variant={TEXT.BODY_MD}
+            rel="noopener noreferrer"
+          >
+            {t('revealSeedWordsSRPName')}
+          </Button>,
+          <Text
+            key="reveal-seed-word-part-3"
+            variant={TEXT.BODY_MD_BOLD}
+            as="strong"
+          >
+            {t('revealSeedWordsDescription3')}
+          </Text>,
+        ])}
+      </Text>
+      <Text variant={TEXT.BODY_MD}>
+        {t('revealSeedWordsDescription2', [
+          <Button
+            key="srp-learn-more-non-custodial"
+            type="link"
+            size="inherit"
+            as="a"
+            block={false}
+            href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
+            target="_blank"
+            variant={TEXT.BODY_MD}
+            rel="noopener noreferrer"
+          >
+            {t('revealSeedWordsNonCustodialWallet')}
+          </Button>,
+        ])}
+      </Text>
+      {renderWarning()}
+      {renderContent()}
       {renderFooter()}
-    </div>
+    </Box>
   );
 };
 
