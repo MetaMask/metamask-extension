@@ -184,6 +184,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
@@ -268,6 +269,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
