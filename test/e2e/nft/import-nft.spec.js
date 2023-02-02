@@ -88,7 +88,7 @@ describe('Import NFT', function () {
         // Check the imported NFT and its image are displayed in the NFT tab
         const importedNft = await driver.waitForSelector({
           css: 'h5',
-          text: 'TestDappCollectibles (1)',
+          text: 'TestDappCollectibles',
         });
         const importedNftImage = await driver.findElement(
           '.collectibles-items__item-image',
