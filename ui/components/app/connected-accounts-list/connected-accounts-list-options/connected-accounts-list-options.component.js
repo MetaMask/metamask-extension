@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { Menu } from '../../../ui/menu';
+import { ButtonIcon, ICON_NAMES } from '../../../component-library';
 
 const ConnectedAccountsListOptions = ({
   children,
@@ -8,18 +9,18 @@ const ConnectedAccountsListOptions = ({
   onHideOptions,
   show,
 }) => {
-  const [optionsButtonElement, setOptionsButtonElement] = useState(null);
+  const ref = useRef(false);
 
   return (
-    <>
-      <button
-        className="fas fa-ellipsis-v connected-accounts-options__button"
+    <div ref={ref}>
+      <ButtonIcon
+        iconName={ICON_NAMES.MORE_VERTICAL}
+        className="connected-accounts-options__button"
         onClick={onShowOptions}
-        ref={setOptionsButtonElement}
       />
       {show ? (
         <Menu
-          anchorElement={optionsButtonElement}
+          anchorElement={ref.current}
           onHide={onHideOptions}
           popperOptions={{
             modifiers: [
@@ -30,7 +31,7 @@ const ConnectedAccountsListOptions = ({
           {children}
         </Menu>
       ) : null}
-    </>
+    </div>
   );
 };
 
