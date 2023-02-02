@@ -193,6 +193,7 @@ describe('Create token, approve token and approve token without gas', function (
           return pendingTxes.length === 1;
         }, 10000);
 
+        await driver.waitForElementNotPresent('.loading-overlay');
         const approveTokenTask = await driver.waitForSelector({
           // Selects only the very first transaction list item immediately following the 'Pending' header
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
