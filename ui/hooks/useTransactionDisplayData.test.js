@@ -10,7 +10,11 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
 } from '../selectors';
-import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  getCollectibles,
+} from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
@@ -23,6 +27,7 @@ import {
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
+import * as useAssetDetailsHooks from './useAssetDetails';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
 
 const expectedResults = [
@@ -143,9 +148,21 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
   },
+  {
+    title: 'Approve ABC spending cap',
+    category: TransactionGroupCategory.approval,
+    subtitle: `metamask.github.io`,
+    subtitleContainsOrigin: true,
+    primaryCurrency: '0.00000000000005 ABC',
+    senderAddress: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+    secondaryCurrency: undefined,
+    displayedStatusKey: TransactionStatus.confirmed,
+    isPending: false,
+  },
 ];
 
-let useSelector, useI18nContext, useTokenFiatAmount;
+let useSelector, useI18nContext, useTokenFiatAmount, useAssetDetails;
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
@@ -166,8 +183,16 @@ describe('useTransactionDisplayData', () => {
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
     );
-    useTokenFiatAmount.returns((tokenAddress) => {
-      return tokenAddress ? '1 TST' : undefined;
+    useTokenFiatAmount.returns(undefined);
+    useAssetDetails = sinon.stub(useAssetDetailsHooks, 'useAssetDetails');
+    useAssetDetails.returns((isTokenCategory) => {
+      return isTokenCategory
+        ? {
+            tokenSymbol: 'ABC',
+            decimals: 18,
+            toAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          }
+        : undefined;
     });
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
@@ -194,6 +219,8 @@ describe('useTransactionDisplayData', () => {
         return 'ETH';
       } else if (selector === getCurrentChainId) {
         return CHAIN_IDS.MAINNET;
+      } else if (selector === getCollectibles) {
+        return [];
       }
       return null;
     });
