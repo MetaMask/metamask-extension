@@ -1778,6 +1778,7 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
+
               expect(controller.store.getState().networkDetails).toStrictEqual({
                 EIPS: {
                   1559: undefined,
