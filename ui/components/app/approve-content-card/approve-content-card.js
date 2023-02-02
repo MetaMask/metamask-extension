@@ -167,9 +167,9 @@ export default function ApproveContentCard({
                     {useCurrencyRateCheck && (
                       <Box>
                         <Typography
-                          variant={TYPOGRAPHY.H4}
+                          variant={TypographyVariant.H4}
                           fontWeight={FONT_WEIGHT.BOLD}
-                          color={COLORS.TEXT_DEFAULT}
+                          color={TextColor.TEXT_DEFAULT}
                         >
                           {formatCurrency(
                             fiatTransactionTotal,
