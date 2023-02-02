@@ -58,8 +58,8 @@ const RevealSeedPage = () => {
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
-    try {
-      dispatch(requestRevealSeedWords(password)).then((revealedSeedWords) => {
+    dispatch(requestRevealSeedWords(password))
+      .then((revealedSeedWords) => {
         trackEvent({
           category: EVENT.CATEGORIES.KEYS,
           event: EVENT_NAMES.KEY_EXPORT_REVEALED,
@@ -68,27 +68,28 @@ const RevealSeedPage = () => {
           },
         });
         setSeedWords(revealedSeedWords);
-      });
-      dispatch(
-        showModal({
-          name: 'HOLD_TO_REVEAL_SRP',
-          onLongPressed: () => {
-            setCompletedLongPress(true);
-            setScreen(REVEAL_SEED_SCREEN);
+
+        dispatch(
+          showModal({
+            name: 'HOLD_TO_REVEAL_SRP',
+            onLongPressed: () => {
+              setCompletedLongPress(true);
+              setScreen(REVEAL_SEED_SCREEN);
+            },
+          }),
+        );
+      })
+      .catch((e) => {
+        trackEvent({
+          category: EVENT.CATEGORIES.KEYS,
+          event: EVENT_NAMES.KEY_EXPORT_FAILED,
+          properties: {
+            key_type: EVENT.KEY_TYPES.SRP,
+            reason: e.message, // 'incorrect_password',
           },
-        }),
-      );
-    } catch (e) {
-      trackEvent({
-        category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.KEY_EXPORT_FAILED,
-        properties: {
-          key_type: EVENT.KEY_TYPES.SRP,
-          reason: e.message, // 'incorrect_password',
-        },
+        });
+        setError(e.message);
       });
-      setError(e.message);
-    }
   };
 
   const renderWarning = () => {
