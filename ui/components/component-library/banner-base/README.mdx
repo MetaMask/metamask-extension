@@ -61,12 +61,12 @@ The `children` prop is an alternative to `description` for `BannerBase` when mor
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { BannerBase } from '../../component-library';
 
 <BannerBase>
   {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-  <ButtonLink size={SIZES.INHERIT} href="https://metamask.io/" target="_blank">
+  <ButtonLink size={Size.inherit} href="https://metamask.io/" target="_blank">
     hyperlink.
   </ButtonLink>
 </BannerBase>;

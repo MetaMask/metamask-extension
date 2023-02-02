@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
-  COLORS,
-  BORDER_COLORS,
-  SIZES,
+  BorderColor,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
+  BackgroundColor,
+  IconColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -18,9 +20,9 @@ import { AvatarBase } from '../avatar-base';
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
 
 export const AvatarIcon = ({
-  size = SIZES.MD,
-  color = COLORS.PRIMARY_DEFAULT,
-  backgroundColor = COLORS.PRIMARY_MUTED,
+  size = Size.MD,
+  color = TextColor.primaryDefault,
+  backgroundColor = BackgroundColor.primaryMuted,
   className,
   iconProps,
   iconName,
@@ -30,15 +32,20 @@ export const AvatarIcon = ({
     <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
       color={color}
       backgroundColor={backgroundColor}
-      borderColor={BORDER_COLORS.TRANSPARENT}
+      borderColor={BorderColor.transparent}
       className={classnames('mm-avatar-icon', className)}
       {...props}
     >
-      <Icon color={COLORS.INHERIT} name={iconName} size={size} {...iconProps} />
+      <Icon
+        color={IconColor.inherit}
+        name={iconName}
+        size={size}
+        {...iconProps}
+      />
     </AvatarBase>
   );
 };
@@ -61,12 +68,12 @@ AvatarIcon.propTypes = {
   size: PropTypes.oneOf(Object.values(AVATAR_ICON_SIZES)),
   /**
    * The background color of the AvatarIcon
-   * Defaults to COLORS.PRIMARY_MUTED
+   * Defaults to BackgroundColor.primaryMuted
    */
   backgroundColor: Box.propTypes.backgroundColor,
   /**
    * The color of the text inside the AvatarIcon
-   * Defaults to COLORS.PRIMARY_DEFAULT
+   * Defaults to TextColor.primaryDefault
    */
   color: Box.propTypes.color,
   /**

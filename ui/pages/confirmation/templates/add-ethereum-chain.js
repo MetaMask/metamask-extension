@@ -3,13 +3,13 @@ import React from 'react';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   SEVERITIES,
-  TYPOGRAPHY,
+  TypographyVariant,
   TEXT_ALIGN,
-  JUSTIFY_CONTENT,
   DISPLAY,
-  COLORS,
   FLEX_DIRECTION,
-  ALIGN_ITEMS,
+  AlignItems,
+  JustifyContent,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -164,7 +164,7 @@ function getValues(pendingApproval, t, actions, history) {
         props: {
           textAlign: TEXT_ALIGN.CENTER,
           display: DISPLAY.FLEX,
-          justifyContent: JUSTIFY_CONTENT.CENTER,
+          justifyContent: JustifyContent.center,
           marginTop: 4,
           marginBottom: 2,
         },
@@ -174,7 +174,7 @@ function getValues(pendingApproval, t, actions, history) {
             key: 'network-chip',
             props: {
               label: pendingApproval.requestData.chainName,
-              backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
+              backgroundColor: BackgroundColor.backgroundAlternative,
               leftIconUrl: pendingApproval.requestData.imageUrl,
             },
           },
@@ -187,7 +187,7 @@ function getValues(pendingApproval, t, actions, history) {
           ? t('wantToAddThisNetwork')
           : t('addEthereumChainConfirmationTitle'),
         props: {
-          variant: TYPOGRAPHY.H3,
+          variant: TypographyVariant.H3,
           align: 'center',
           fontWeight: 'bold',
           boxProps: {
@@ -200,7 +200,7 @@ function getValues(pendingApproval, t, actions, history) {
         key: 'description',
         children: t('addEthereumChainConfirmationDescription'),
         props: {
-          variant: TYPOGRAPHY.H7,
+          variant: TypographyVariant.H7,
           align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
@@ -284,12 +284,12 @@ function getValues(pendingApproval, t, actions, history) {
           },
         ],
         props: {
-          variant: TYPOGRAPHY.H7,
+          variant: TypographyVariant.H7,
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
             display: DISPLAY.FLEX,
             flexDirection: FLEX_DIRECTION.COLUMN,
-            alignItems: ALIGN_ITEMS.CENTER,
+            alignItems: AlignItems.center,
           },
         },
       },

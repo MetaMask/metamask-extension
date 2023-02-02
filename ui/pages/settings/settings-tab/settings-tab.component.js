@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
-import { TYPOGRAPHY, COLORS } from '../../../helpers/constants/design-system';
+import {
+  TypographyVariant,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import Dropdown from '../../../components/ui/dropdown';
 import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../app/_locales/index.json';
@@ -192,7 +195,10 @@ export default class SettingsTab extends PureComponent {
         id="blockie-optin"
       >
         <div className="settings-page__content-item">
-          <Typography variant={TYPOGRAPHY.H5} color={COLORS.TEXT_DEFAULT}>
+          <Typography
+            variant={TypographyVariant.H5}
+            color={TextColor.textDefault}
+          >
             {t('accountIdenticon')}
           </Typography>
           <span className="settings-page__content-item__description">
@@ -222,8 +228,8 @@ export default class SettingsTab extends PureComponent {
                 />
               </div>
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H7}
                 marginTop={0}
                 marginRight={12}
                 marginBottom={0}
@@ -254,8 +260,8 @@ export default class SettingsTab extends PureComponent {
                 />
               </div>
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H7}
                 marginTop={3}
                 marginRight={0}
                 marginBottom={3}

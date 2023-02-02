@@ -35,6 +35,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/constants/error-utils.test.js',
+    '<rootDir>/app/scripts/controllers/app-state.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/flask/**/*.test.js',

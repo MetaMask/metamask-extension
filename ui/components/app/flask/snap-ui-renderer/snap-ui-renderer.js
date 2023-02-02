@@ -5,7 +5,7 @@ import nanoid from 'nanoid';
 import { isComponent } from '@metamask/snaps-ui';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
   FLEX_DIRECTION,
@@ -31,7 +31,7 @@ export const UI_MAPPING = {
     element: 'Typography',
     children: props.value,
     props: {
-      variant: TYPOGRAPHY.H3,
+      variant: TypographyVariant.H3,
       fontWeight: FONT_WEIGHT.BOLD,
     },
   }),

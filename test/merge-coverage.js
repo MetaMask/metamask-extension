@@ -13,6 +13,8 @@ const codecovConfig = yaml.load(fs.readFileSync('codecov.yml', 'utf8'));
 
 const COVERAGE_DIR = './coverage/';
 
+const COVERAGE_THRESHOLD_FOR_BUMP = 1;
+
 /**
  * Load .json file at path and parse it into a javascript object
  *
@@ -113,12 +115,14 @@ function isCoverageInsufficient(target, actual) {
  * @returns {boolean}
  */
 function shouldCoverageBeBumped(target, actual) {
-  const lineCoverageNeedsBumped = actual.lines.pct > target.lines + 5;
-  const branchCoverageNeedsBumped = actual.branches.pct > target.branches + 5;
+  const lineCoverageNeedsBumped =
+    actual.lines.pct > target.lines + COVERAGE_THRESHOLD_FOR_BUMP;
+  const branchCoverageNeedsBumped =
+    actual.branches.pct > target.branches + COVERAGE_THRESHOLD_FOR_BUMP;
   const functionCoverageNeedsBumped =
-    actual.functions.pct > target.functions + 5;
+    actual.functions.pct > target.functions + COVERAGE_THRESHOLD_FOR_BUMP;
   const statementCoverageNeedsBumped =
-    actual.statements.pct > target.statements + 5;
+    actual.statements.pct > target.statements + COVERAGE_THRESHOLD_FOR_BUMP;
   return (
     lineCoverageNeedsBumped ||
     branchCoverageNeedsBumped ||

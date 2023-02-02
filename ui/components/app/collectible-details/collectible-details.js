@@ -7,15 +7,15 @@ import Box from '../../ui/box';
 import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TextColor,
+  IconColor,
+  TypographyVariant,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   FLEX_DIRECTION,
   OVERFLOW_WRAP,
   DISPLAY,
   BLOCK_SIZES,
-  ICON_COLORS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -181,7 +181,7 @@ export default function CollectibleDetails({ collectible }) {
         <div className="collectible-details__top-section">
           <Card
             padding={0}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            justifyContent={JustifyContent.center}
             className="collectible-details__card"
           >
             {image ? (
@@ -197,20 +197,20 @@ export default function CollectibleDetails({ collectible }) {
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
             className="collectible-details__info"
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            justifyContent={JustifyContent.spaceBetween}
           >
             <div>
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H4}
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H4}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ margin: 0, marginBottom: 2 }}
               >
                 {name}
               </Typography>
               <Typography
-                color={COLORS.TEXT_MUTED}
-                variant={TYPOGRAPHY.H5}
+                color={TextColor.textMuted}
+                variant={TypographyVariant.H5}
                 boxProps={{ margin: 0, marginBottom: 4 }}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
               >
@@ -220,8 +220,8 @@ export default function CollectibleDetails({ collectible }) {
             {description ? (
               <div>
                 <Typography
-                  color={COLORS.TEXT_DEFAULT}
-                  variant={TYPOGRAPHY.H6}
+                  color={TextColor.textDefault}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.BOLD}
                   className="collectible-details__description"
                   boxProps={{ margin: 0, marginBottom: 2 }}
@@ -229,8 +229,8 @@ export default function CollectibleDetails({ collectible }) {
                   {t('description')}
                 </Typography>
                 <Typography
-                  color={COLORS.TEXT_ALTERNATIVE}
-                  variant={TYPOGRAPHY.H6}
+                  color={TextColor.textAlternative}
+                  variant={TypographyVariant.H6}
                   overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                   boxProps={{ margin: 0, marginBottom: 4 }}
                 >
@@ -246,8 +246,8 @@ export default function CollectibleDetails({ collectible }) {
             <>
               <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
                 <Typography
-                  color={COLORS.TEXT_DEFAULT}
-                  variant={TYPOGRAPHY.H6}
+                  color={TextColor.textDefault}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.BOLD}
                   boxProps={{
                     margin: 0,
@@ -264,8 +264,8 @@ export default function CollectibleDetails({ collectible }) {
                   className="collectible-details__contract-wrapper"
                 >
                   <Typography
-                    color={COLORS.TEXT_ALTERNATIVE}
-                    variant={TYPOGRAPHY.H6}
+                    color={TextColor.textAlternative}
+                    variant={TypographyVariant.H6}
                     overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                     boxProps={{ margin: 0, marginBottom: 4 }}
                   >
@@ -275,8 +275,8 @@ export default function CollectibleDetails({ collectible }) {
               </Box>
               <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
                 <Typography
-                  color={COLORS.TEXT_DEFAULT}
-                  variant={TYPOGRAPHY.H6}
+                  color={TextColor.textDefault}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.BOLD}
                   boxProps={{
                     margin: 0,
@@ -293,8 +293,8 @@ export default function CollectibleDetails({ collectible }) {
                   className="collectible-details__contract-wrapper"
                 >
                   <Typography
-                    color={COLORS.TEXT_ALTERNATIVE}
-                    variant={TYPOGRAPHY.H6}
+                    color={TextColor.textAlternative}
+                    variant={TypographyVariant.H6}
                     overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                     boxProps={{ margin: 0, marginBottom: 4 }}
                   >
@@ -306,8 +306,8 @@ export default function CollectibleDetails({ collectible }) {
           ) : null}
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H6}
+              color={TextColor.textDefault}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{
                 margin: 0,
@@ -319,13 +319,15 @@ export default function CollectibleDetails({ collectible }) {
               {t('source')}
             </Typography>
             <Typography
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
               className="collectible-details__image-source"
-              color={isDataURI ? COLORS.TEXT_DEFAULT : COLORS.PRIMARY_DEFAULT}
+              color={
+                isDataURI ? TextColor.textDefault : TextColor.primaryDefault
+              }
             >
               {isDataURI ? (
                 <>{collectibleImageURL}</>
@@ -343,8 +345,8 @@ export default function CollectibleDetails({ collectible }) {
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H6}
+              color={TextColor.textDefault}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{
                 margin: 0,
@@ -356,13 +358,15 @@ export default function CollectibleDetails({ collectible }) {
               {t('link')}
             </Typography>
             <Typography
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
               className="collectible-details__image-source"
-              color={isDataURI ? COLORS.TEXT_DEFAULT : COLORS.PRIMARY_DEFAULT}
+              color={
+                isDataURI ? TextColor.textDefault : TextColor.primaryDefault
+              }
             >
               <a
                 target="_blank"
@@ -376,8 +380,8 @@ export default function CollectibleDetails({ collectible }) {
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H6}
+              color={TextColor.textDefault}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{
                 margin: 0,
@@ -394,8 +398,8 @@ export default function CollectibleDetails({ collectible }) {
               className="collectible-details__contract-wrapper"
             >
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H6}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                 boxProps={{ margin: 0, marginBottom: 4 }}
               >
@@ -410,7 +414,7 @@ export default function CollectibleDetails({ collectible }) {
               >
                 <ButtonIcon
                   ariaLabel="copy"
-                  color={ICON_COLORS.ICON_ALTERNATIVE}
+                  color={IconColor.iconAlternative}
                   className="collectible-details__contract-copy-button"
                   onClick={() => {
                     handleAddressCopy(address);
@@ -423,7 +427,10 @@ export default function CollectibleDetails({ collectible }) {
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
-          <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H7}>
+          <Typography
+            color={TextColor.textAlternative}
+            variant={TypographyVariant.H7}
+          >
             {t('nftDisclaimer')}
           </Typography>
         </Box>

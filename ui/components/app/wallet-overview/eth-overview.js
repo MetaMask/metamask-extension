@@ -22,7 +22,7 @@ import {
   getIsBuyableChain,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-} from '../../../selectors/selectors';
+} from '../../../selectors';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -33,7 +33,7 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import DepositPopover from '../deposit-popover';
 import { Icon, ICON_NAMES } from '../../component-library';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -109,7 +109,7 @@ const EthOverview = ({ className }) => {
             <IconButton
               className="eth-overview__button"
               Icon={
-                <Icon name={ICON_NAMES.CARD} color={COLORS.PRIMARY_INVERSE} />
+                <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
               }
               disabled={!isBuyableChain}
               label={t('buy')}
@@ -129,7 +129,10 @@ const EthOverview = ({ className }) => {
               className="eth-overview__button"
               data-testid="eth-overview-send"
               Icon={
-                <Icon name={ICON_NAMES.SEND_1} color={COLORS.PRIMARY_INVERSE} />
+                <Icon
+                  name={ICON_NAMES.SEND_1}
+                  color={IconColor.primaryInverse}
+                />
               }
               label={t('send')}
               onClick={() => {
@@ -155,7 +158,7 @@ const EthOverview = ({ className }) => {
               Icon={
                 <Icon
                   name={ICON_NAMES.SWAP_HORIZONTAL}
-                  color={COLORS.PRIMARY_INVERSE}
+                  color={IconColor.primaryInverse}
                 />
               }
               onClick={() => {
