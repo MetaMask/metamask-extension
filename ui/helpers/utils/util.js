@@ -5,6 +5,7 @@ import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
+import { isString } from 'lodash';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -516,3 +517,15 @@ export function coinTypeToProtocolName(coinType) {
 export function isNullish(value) {
   return value === null || value === undefined;
 }
+
+/**
+ * The method escape RTL character in string
+ * @param {string} str
+ * @returns {string} escaped string
+ */
+export const sanitizeString = (str) => {
+  if (!str) return str;
+  if (!isString(str)) return str;
+  const regex = /\u202E/gi;
+  return str.replaceAll(regex, '\\u202E');
+};
