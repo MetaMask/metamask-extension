@@ -199,9 +199,10 @@ class NetworkCommunications {
    * Mocks the RPC calls that NetworkController makes internally.
    *
    * @param {object} args - The arguments.
-   * @param {{number: string, baseFeePerGas?: string}} [args.latestBlock] - The
+   * @param {{number: string, baseFeePerGas?: string} | null} [args.latestBlock] - The
    * block object that will be used to mock `eth_blockNumber` and
-   * `eth_getBlockByNumber`.
+   * `eth_getBlockByNumber`. If null, then both `eth_blockNumber` and
+   * `eth_getBlockByNumber` will respond with null.
    * @param {RpcMock | Partial<RpcMock>[] | null} [args.eth_blockNumber] -
    * Options for mocking the `eth_blockNumber` RPC method (see `mockRpcCall` for
    * valid properties). By default, the number from the `latestBlock` will be
@@ -221,8 +222,10 @@ class NetworkCommunications {
     eth_getBlockByNumber: ethGetBlockByNumberMocks = [],
     net_version: netVersionMocks = [],
   } = {}) {
-    const { number: latestBlockNumber } = latestBlock;
-    assert(latestBlockNumber, 'Please provide a latestBlock with a number.');
+    const latestBlockNumber = latestBlock === null ? null : latestBlock.number;
+    if (latestBlock && latestBlock.number === undefined) {
+      throw new Error('The latest block must have a `number`.');
+    }
 
     const defaultMocksByRpcMethod = {
       eth_blockNumber: {
@@ -298,6 +301,7 @@ class NetworkCommunications {
       response: {
         result: latestBlockNumber,
       },
+      times: latestBlock === null ? 2 : 1,
     });
 
     allMocks.forEach((mock) => {
@@ -890,6 +894,45 @@ describe('NetworkController', () => {
           const supportsEIP1559 = await controller.getEIP1559Compatibility();
 
           expect(supportsEIP1559).toBe(false);
+        });
+      });
+    });
+
+    describe.only('when the request for the latest block responds with null', () => {
+      it('persists null to state as whether the network supports EIP-1559', async () => {
+        await withController(
+          {
+            state: {
+              networkDetails: {
+                EIPS: {},
+              },
+            },
+          },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls({
+              latestBlock: null,
+            });
+            await controller.initializeProvider();
+
+            await controller.getEIP1559Compatibility();
+
+            expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
+              null,
+            );
+          },
+        );
+      });
+
+      it('returns null', async () => {
+        await withController(async ({ controller, network }) => {
+          network.mockEssentialRpcCalls({
+            latestBlock: null,
+          });
+          await controller.initializeProvider();
+
+          const supportsEIP1559 = await controller.getEIP1559Compatibility();
+
+          expect(supportsEIP1559).toBe(null);
         });
       });
     });
