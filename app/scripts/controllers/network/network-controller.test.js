@@ -933,21 +933,11 @@ describe('NetworkController', () => {
           },
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls();
+            const stateAfterConstruction = controller.store.getState();
 
-            await waitForStateChanges({
-              controller,
-              propertyPath: ['network'],
-              count: 0,
-              operation: async () => {
-                await controller.lookupNetwork();
-              },
-            });
+            await controller.lookupNetwork();
 
-            expect(controller.store.getState()).toStrictEqual({
-              ...initialState,
-              network: 'loading',
-              previousProviderStore: providerConfig,
-            });
+            expect(controller.store.getState()).toStrictEqual(stateAfterConstruction);
           },
         );
       });
