@@ -898,7 +898,7 @@ describe('NetworkController', () => {
       });
     });
 
-    describe.only('when the request for the latest block responds with null', () => {
+    describe('when the request for the latest block responds with null', () => {
       it('persists null to state as whether the network supports EIP-1559', async () => {
         await withController(
           {
@@ -1103,11 +1103,8 @@ describe('NetworkController', () => {
                     },
                   },
                 });
-                const network2 = new NetworkCommunications({
-                  networkClientType: 'rpc',
-                  networkClientOptions: {
-                    customRpcUrl: 'http://some-rpc-url',
-                  },
+                const network2 = network1.with({
+                  networkType: anotherNetworkType,
                 });
                 network2.mockEssentialRpcCalls();
                 await withoutCallingLookupNetwork({
