@@ -16,20 +16,20 @@ const originalSetTimeout = global.setTimeout;
  */
 
 /**
- * @typedef {{request: JsonRpcResponseBodyMock, response: JsonRpcResponseBodyMock | { httpStatus?: number, body: JsonRpcResponseBodyMock | (() => JsonRpcResponseBodyMock | Promise<JsonRpcResponseBodyMock>) }, error?: unknown, delay?: number; times?: number}} RpcMock
+ * @typedef {{request: MockJsonResponseBody, response: { httpStatus?: number } & MockJsonResponseBody, error?: unknown, delay?: number; times?: number, beforeCompleting: () => void | Promise<void>}} RpcMock
  *
  * Arguments to `mockRpcCall` which allow for specifying a canned response for a
  * particular RPC request.
  */
 
 /**
- * @typedef {{id?: number; jsonrpc?: string, method: string, params?: unknown[]}} JsonRpcRequestBodyMock
+ * @typedef {{id?: number; jsonrpc?: string, method: string, params?: unknown[]}} MockJsonRpcRequestBody
  *
  * A partial form of a prototypical JSON-RPC request body.
  */
 
 /**
- * @typedef {{id?: number; jsonrpc?: string; result?: string; error?: string}} JsonRpcResponseBodyMock
+ * @typedef {{id?: number; jsonrpc?: string; result?: string; error?: string}} MockJsonResponseBody
  *
  * A partial form of a prototypical JSON-RPC response body.
  */
@@ -100,6 +100,11 @@ const DEFAULT_INFURA_PROJECT_ID = 'infura-project-id';
 const DEFAULT_CONTROLLER_OPTIONS = {
   infuraProjectId: DEFAULT_INFURA_PROJECT_ID,
 };
+
+/**
+ * The set of properties allowed in a valid JSON-RPC response object.
+ */
+const JSONRPC_RESPONSE_BODY_PROPERTIES = ['id', 'jsonrpc', 'result', 'error'];
 
 /**
  * The set of networks that, when specified, create an Infura provider as
@@ -304,11 +309,11 @@ class NetworkCommunications {
    * Mocks a JSON-RPC request sent to the provider with the given response.
    *
    * @param {RpcMock} args - The arguments.
-   * @param {JsonRpcRequestBodyMock} args.request - The request data. Must
+   * @param {MockJsonRpcRequestBody} args.request - The request data. Must
    * include a `method`. Note that EthQuery's `sendAsync` method implicitly uses
    * an empty array for `params` if it is not provided in the original request,
    * so make sure to include this.
-   * @param {JsonRpcResponseBodyMock | { httpStatus?: number, body: JsonRpcResponseBodyMock | (() => JsonRpcResponseBodyMock | Promise<JsonRpcResponseBodyMock>) }} args.response - Information
+   * @param {MockJsonResponseBody & { httpStatus?: number }} [args.response] - Information
    * concerning the response that the request should have. Takes one of two
    * forms. The simplest form is an object that represents the response body;
    * the second form allows you to specify the HTTP status, as well as a
@@ -319,16 +324,29 @@ class NetworkCommunications {
    * pass before the request resolves with the response.
    * @param {number} [args.times] - The number of times that the
    * request is expected to be made.
+   * @param {() => void | Promise<void>} [args.beforeCompleting] - Sometimes it is useful to do
+   * something after the request is kicked off but before it ends (or, in terms
+   * of a `fetch` promise, when the promise is initiated but before it is
+   * resolved). You can pass an (async) function for this option to do this.
    * @returns {NockScope | null} The nock scope object that represents all of
    * the mocks for the network, or null if `times` is 0.
    */
-  mockRpcCall({ request, response, error, delay, times }) {
+  mockRpcCall({ request, response, error, delay, times, beforeCompleting }) {
     if (times === 0) {
       return null;
     }
 
     const url =
       this.networkClientType === 'infura' ? `/v3/${this.infuraProjectId}` : '/';
+
+    const httpStatus = response?.httpStatus ?? 200;
+    this.#validateMockResponseBody(response);
+    const partialResponseBody = { jsonrpc: '2.0' };
+    JSONRPC_RESPONSE_BODY_PROPERTIES.forEach((prop) => {
+      if (response[prop] !== undefined) {
+        partialResponseBody[prop] = response[prop];
+      }
+    });
 
     let nockInterceptor = this.nockScope.post(url, (actualBody) => {
       const expectedPartialBody = { jsonrpc: '2.0', ...request };
@@ -345,38 +363,39 @@ class NetworkCommunications {
 
     if (error !== undefined) {
       return nockInterceptor.replyWithError(error);
-    } else if (response !== undefined) {
+    }
+    if (response !== undefined) {
       return nockInterceptor.reply(async (_uri, requestBody) => {
-        const httpStatus = response?.httpStatus ?? 200;
-
-        let unresolvedPartialResponseBody;
-        if (typeof response.body === 'function') {
-          unresolvedPartialResponseBody = response.body();
-        } else if ('body' in response) {
-          unresolvedPartialResponseBody = response.body;
-        } else {
-          unresolvedPartialResponseBody = response;
+        if (beforeCompleting !== undefined) {
+          await beforeCompleting();
         }
 
-        const partialResponseBody = await unresolvedPartialResponseBody;
-
-        const completeResponseBody = { jsonrpc: '2.0' };
-        if (requestBody.id !== undefined) {
-          completeResponseBody.id = requestBody.id;
-        }
-        ['id', 'jsonrpc', 'result', 'error'].forEach((prop) => {
-          if (partialResponseBody[prop] !== undefined) {
-            completeResponseBody[prop] = partialResponseBody[prop];
-          }
-        });
+        const completeResponseBody = {
+          jsonrpc: '2.0',
+          ...(requestBody.id === undefined ? {} : { id: requestBody.id }),
+          ...partialResponseBody,
+        };
 
         return [httpStatus, completeResponseBody];
       });
     }
-
     throw new Error(
       'Neither `response` nor `error` was given. Please specify one of them.',
     );
+  }
+
+  #validateMockResponseBody(mockResponseBody) {
+    const invalidProperties = Object.keys(mockResponseBody).filter(
+      (key) =>
+        key !== 'httpStatus' && !JSONRPC_RESPONSE_BODY_PROPERTIES.includes(key),
+    );
+    if (invalidProperties.length > 0) {
+      throw new Error(
+        `Mock response object ${inspect(
+          mockResponseBody,
+        )} has invalid properties: ${inspect(invalidProperties)}.`,
+      );
+    }
   }
 }
 
@@ -1015,6 +1034,10 @@ describe('NetworkController', () => {
           });
 
           it('does not emit infuraIsUnblocked if the network has changed by the time the request ends', async () => {
+            const anotherNetworkType = INFURA_NETWORKS.find(
+              (network) => network.networkType !== networkType,
+            );
+
             await withController(
               {
                 state: {
@@ -1033,28 +1056,21 @@ describe('NetworkController', () => {
                 network1.mockEssentialRpcCalls({
                   eth_blockNumber: {
                     response: {
-                      body: async () => {
-                        await waitForEvent({
-                          controller,
-                          eventName: 'networkDidChange',
-                          operation: async () => {
-                            await withoutCallingLookupNetwork({
-                              controller,
-                              operation: () => {
-                                controller.setProviderType(
-                                  INFURA_NETWORKS.filter(
-                                    (network) =>
-                                      network.networkType !== networkType,
-                                  )[0],
-                                );
-                              },
-                            });
-                          },
-                        });
-                        return {
-                          result: '0x42',
-                        };
-                      },
+                      result: '0x42',
+                    },
+                    beforeCompleting: async () => {
+                      await waitForEvent({
+                        controller,
+                        eventName: 'networkDidChange',
+                        operation: async () => {
+                          await withoutCallingLookupNetwork({
+                            controller,
+                            operation: () => {
+                              controller.setProviderType(anotherNetworkType);
+                            },
+                          });
+                        },
+                      });
                     },
                   },
                 });
@@ -1145,26 +1161,24 @@ describe('NetworkController', () => {
                   eth_blockNumber: {
                     response: {
                       httpStatus: 500,
-                      body: async () => {
-                        await withoutCallingLookupNetwork({
-                          controller,
-                          operation: async () => {
-                            await waitForEvent({
-                              controller,
-                              eventName: 'networkDidChange',
-                              operation: () => {
-                                controller.setRpcTarget(
-                                  'http://some-rpc-url',
-                                  '0x1337',
-                                );
-                              },
-                            });
-                          },
-                        });
-                        return {
-                          error: 'countryBlocked',
-                        };
-                      },
+                      error: 'countryBlocked',
+                    },
+                    beforeCompleting: async () => {
+                      await withoutCallingLookupNetwork({
+                        controller,
+                        operation: async () => {
+                          await waitForEvent({
+                            controller,
+                            eventName: 'networkDidChange',
+                            operation: () => {
+                              controller.setRpcTarget(
+                                'http://some-rpc-url',
+                                '0x1337',
+                              );
+                            },
+                          });
+                        },
+                      });
                     },
                   },
                 });
@@ -1211,9 +1225,7 @@ describe('NetworkController', () => {
                   eth_blockNumber: {
                     response: {
                       httpStatus: 500,
-                      body: {
-                        error: 'oops',
-                      },
+                      error: 'oops',
                     },
                   },
                 });
