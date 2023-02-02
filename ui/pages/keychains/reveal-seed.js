@@ -172,7 +172,7 @@ const RevealSeedPage = () => {
               <div
                 className="qr-code__wrapper"
                 dangerouslySetInnerHTML={{
-                  __html: renderQR().createTableTag(6),
+                  __html: renderQR().createTableTag(5, 15),
                 }}
               />
             </div>
