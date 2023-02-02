@@ -17,6 +17,7 @@ import {
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
+  getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
@@ -36,6 +37,7 @@ import {
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
+  setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
   setRemoveCollectibleMessage,
@@ -54,6 +56,7 @@ import {
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -143,6 +146,8 @@ const mapStateToProps = (state) => {
     portfolioTooltipWasShownInThisSession:
       getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
+    showOutdatedBrowserWarning:
+      getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
@@ -172,6 +177,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+  setOutdatedBrowserWarningLastShown: (lastShown) => {
+    dispatch(setOutdatedBrowserWarningLastShown(lastShown));
+  },
   setNewNetworkAdded: (newNetwork) => {
     console.log({ newNetwork });
     dispatch(setNewNetworkAdded(newNetwork));

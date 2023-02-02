@@ -3274,6 +3274,14 @@ export function setRecoveryPhraseReminderLastShown(lastShown) {
   };
 }
 
+export function setOutdatedBrowserWarningLastShown(lastShown) {
+  return async () => {
+    await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
+      lastShown,
+    ]);
+  };
+}
+
 export function loadingMethodDataStarted() {
   return {
     type: actionConstants.LOADING_METHOD_DATA_STARTED,
