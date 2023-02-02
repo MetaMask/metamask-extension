@@ -20,5 +20,5 @@ export const ICON_SIZES = {
   MD: SIZES.MD,
   LG: SIZES.LG,
   XL: SIZES.XL,
-  AUTO: SIZES.AUTO,
+  AUTO: SIZES.INHERIT,
 };

@@ -63,7 +63,7 @@ export const Children = (args) => (
       <Icon
         color={COLORS.ICON_ALTERNATIVE}
         name={ICON_NAMES.INFO}
-        size={SIZES.AUTO}
+        size={SIZES.INHERIT}
       />
     </Label>
     <Label

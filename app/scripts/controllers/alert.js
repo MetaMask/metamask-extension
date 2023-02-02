@@ -1,7 +1,7 @@
 import { ObservableStore } from '@metamask/obs-store';
 import {
   TOGGLEABLE_ALERT_TYPES,
-  WEB3_SHIM_USAGE_ALERT_STATES,
+  Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 
 /**
@@ -101,7 +101,7 @@ export default class AlertController {
    * @param {string} origin - The origin the that used the web3 shim.
    */
   setWeb3ShimUsageRecorded(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.RECORDED);
+    this._setWeb3ShimUsageState(origin, Web3ShimUsageAlertStates.recorded);
   }
 
   /**
@@ -111,7 +111,7 @@ export default class AlertController {
    * dismissed for.
    */
   setWeb3ShimUsageAlertDismissed(origin) {
-    this._setWeb3ShimUsageState(origin, WEB3_SHIM_USAGE_ALERT_STATES.DISMISSED);
+    this._setWeb3ShimUsageState(origin, Web3ShimUsageAlertStates.dismissed);
   }
 
   /**

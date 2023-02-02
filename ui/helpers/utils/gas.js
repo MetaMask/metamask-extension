@@ -1,8 +1,8 @@
 import { constant, times, uniq, zip } from 'lodash';
 import BigNumber from 'bignumber.js';
 import {
-  GAS_RECOMMENDATIONS,
-  EDIT_GAS_MODES,
+  GasRecommendations,
+  EditGasModes,
 } from '../../../shared/constants/gas';
 import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -48,9 +48,9 @@ export function addTenPercentAndRound(hexStringValue) {
 
 export function isMetamaskSuggestedGasEstimate(estimate) {
   return [
-    GAS_RECOMMENDATIONS.HIGH,
-    GAS_RECOMMENDATIONS.MEDIUM,
-    GAS_RECOMMENDATIONS.LOW,
+    GasRecommendations.high,
+    GasRecommendations.medium,
+    GasRecommendations.low,
   ].includes(estimate);
 }
 
@@ -102,7 +102,6 @@ export function formatGasFeeOrFeeRange(
  */
 export function editGasModeIsSpeedUpOrCancel(editGasMode) {
   return (
-    editGasMode === EDIT_GAS_MODES.CANCEL ||
-    editGasMode === EDIT_GAS_MODES.SPEED_UP
+    editGasMode === EditGasModes.cancel || editGasMode === EditGasModes.speedUp
   );
 }

@@ -57,8 +57,7 @@ export const BannerBase = ({
         )}
         {actionButtonLabel && (
           <ButtonLink
-            // noPadding TODO: Use noPadding option when released
-            size={SIZES.AUTO} // TODO: Remove when noPadding is added
+            size={SIZES.AUTO}
             onClick={actionButtonOnClick}
             {...actionButtonProps}
           >
@@ -94,10 +93,6 @@ BannerBase.propTypes = {
    * The children is the description area of the BannerBase below the title
    */
   children: PropTypes.node,
-  /**
-   * The action of the BannerBase below the children
-   */
-  action: PropTypes.node,
   /**
    * Label for action button (ButtonLink) of the BannerBase below the children
    */

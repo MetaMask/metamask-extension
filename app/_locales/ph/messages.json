@@ -246,9 +246,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome para maikonekta sa iyong Hardware Wallet."
   },
-  "clickToRevealSeed": {
-    "message": "Mag-click dito para ipakita ang mga lihim na salita"
-  },
   "close": {
     "message": "Isara"
   },
@@ -257,9 +254,6 @@
   },
   "confirmPassword": {
     "message": "Kumpirmahin ang password"
-  },
-  "confirmSecretBackupPhrase": {
-    "message": "Kumpirmahin ang iyong Secret Backup Phrase"
   },
   "confirmed": {
     "message": "Nakumpirma"
@@ -272,9 +266,6 @@
   },
   "confusingEnsDomain": {
     "message": "May na-detect kaming nakakalitong character sa ENS name. Tingnan ang ENS name para maiwasan ang potensyal na scam."
-  },
-  "congratulations": {
-    "message": "Congratulations"
   },
   "connect": {
     "message": "Kumonekta"
@@ -386,9 +377,6 @@
   "create": {
     "message": "Gumawa"
   },
-  "createAWallet": {
-    "message": "Gumawa ng Wallet"
-  },
   "createAccount": {
     "message": "Gumawa ng Account"
   },
@@ -496,9 +484,6 @@
   "downloadGoogleChrome": {
     "message": "I-download ang Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "I-download ang Secret Backup Phrase na ito at panatilihin itong naka-store nang ligtas sa isang external na naka-encrypt na hard drive o storage medium."
-  },
   "downloadStateLogs": {
     "message": "I-download ang Mga Log ng Status"
   },
@@ -526,37 +511,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "Mag-request ng encryption public key"
-  },
-  "endOfFlowMessage1": {
-    "message": "Pumasa ka sa test - panatilihing ligtas ang iyong Secret Recovery Phrase, responsibilidad mo ito!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Tapos Na ang Lahat"
-  },
-  "endOfFlowMessage2": {
-    "message": "Mga tip sa ligtas na pag-store nito"
-  },
-  "endOfFlowMessage3": {
-    "message": "Mag-save ng backup sa maraming lugar."
-  },
-  "endOfFlowMessage4": {
-    "message": "Huwag kailanmang ibahagi ang parirala sa sinuman."
-  },
-  "endOfFlowMessage5": {
-    "message": "Mag-ingat sa phishing! Hindi kailanman basta na lang hihingin ng MetaMask ang iyong Secret Recovery Phrase."
-  },
-  "endOfFlowMessage6": {
-    "message": "Kung kailangan mong i-back up ulit ang iyong Secret Recovery Phrase, makikita mo ito sa Mga Setting -> Seguridad."
-  },
-  "endOfFlowMessage7": {
-    "message": "Kung mayroon kang mga tanong o may nakita kang kahina-hinalang bagay, i-contact ang aming suporta sa $1.",
-    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "endOfFlowMessage8": {
-    "message": "Hindi mababawi ng MetaMask ang iyong Secret Recovery Phrase."
-  },
-  "endOfFlowMessage9": {
-    "message": "Matuto pa."
   },
   "endpointReturnedDifferentChainId": {
     "message": "Nagbalik ang endpoint ng ibang chain ID: $1",
@@ -724,14 +678,8 @@
     "message": "Kunin ang Ether mula sa isang faucet sa halagang $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Magsimula"
-  },
   "goerli": {
     "message": "Goerli Test Network"
-  },
-  "happyToSeeYou": {
-    "message": "Nagagalak kaming makilala ka."
   },
   "hardware": {
     "message": "Hardware"
@@ -785,20 +733,11 @@
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi mauugnay sa orihinal mong nagawang Secret Recovery Phrase ng MetaMask account. Matuto pa tungkol sa mga na-import account "
   },
-  "importAccountSeedPhrase": {
-    "message": "Mag-import ng account gamit ang Secret Recovery Phrase"
-  },
   "importTokenQuestion": {
     "message": "Mag-import ng token?"
   },
   "importTokenWarning": {
     "message": "Sinuman ay makakagawa ng token na may anumang pangalan, kasama ang mga pekeng bersyon ng mga token na mayroon na. Magdagdag at mag-trade sa sarili mong pananagutan!"
-  },
-  "importWallet": {
-    "message": "Mag-import ng wallet"
-  },
-  "importYourExisting": {
-    "message": "I-import ang iyong kasalukuyang wallet gamit ang isang Secret Recovery Phrase"
   },
   "imported": {
     "message": "Na-import",
@@ -898,9 +837,6 @@
   "ledgerTimeout": {
     "message": "Masyadong natatagalan ang Ledger Live para tumugon o nakakaranas ito ng timeout sa koneksyon. Tiyaking nakabukas ang Ledger Live app at naka-unlock ang iyong device."
   },
-  "letsGoSetUp": {
-    "message": "Sige, simulan na nating mag-set up!"
-  },
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
@@ -937,9 +873,6 @@
   "memo": {
     "message": "memo"
   },
-  "memorizePhrase": {
-    "message": "Tandaan ang phrase na ito."
-  },
   "message": {
     "message": "Mensahe"
   },
@@ -951,9 +884,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Makikita sa button ng status ng koneksyon kung nakakonekta ang website na binibisita mo sa kasalukuyan mong napiling account."
-  },
-  "metamaskDescription": {
-    "message": "Ikinokonekta ka sa Ethereum at sa Decentralized Web."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Kasalukuyang minementina ang MetaMask Swaps. Bumalik sa ibang pagkakataon."
@@ -1068,9 +998,6 @@
   "newPassword": {
     "message": "Bagong password (min na 8 char)"
   },
-  "newToMetaMask": {
-    "message": "Bago ka ba sa MetaMask?"
-  },
   "next": {
     "message": "Susunod"
   },
@@ -1083,9 +1010,6 @@
   },
   "noAddressForName": {
     "message": "Walang naitakdang address para sa pangalang ito."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Hindi, may Secret Recovery Phrase na ako"
   },
   "noConversionRateAvailable": {
     "message": "Hindi Available ang Rate ng Conversion"
@@ -1186,10 +1110,6 @@
   },
   "on": {
     "message": "Naka-on"
-  },
-  "onboardingReturnNotice": {
-    "message": "Isasara ng \"$1\" ang tab na ito at ididirekta ka pabalik sa $2",
-    "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
     "message": "Magagawa ng nakakapinsalang network provider na magsinungaling tungkol sa status ng blockchain at itala ang aktibidad ng iyong network. Magdagdag lang ng mga custom na network na pinagkakatiwalaan mo."
@@ -1327,9 +1247,6 @@
   "rejected": {
     "message": "Tinanggihan"
   },
-  "remindMeLater": {
-    "message": "Paalalahanan ako mamaya"
-  },
   "remove": {
     "message": "Tanggalin"
   },
@@ -1405,15 +1322,6 @@
   "searchTokens": {
     "message": "Maghanap ng Mga Token"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Pinapadali ng iyong lihim na phrase sa pag-back up na i-back up at i-restore ang iyong account."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "BABALA: Huwag kailanman ipaalam ang iyong phrase sa pag-back up. Ang sinumang may phrase na ito ay puwedeng umangkin sa iyong Ether."
-  },
-  "secretPhrase": {
-    "message": "Ilagay ang iyong secret phrase dito para ma-restore ang iyong vault."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -1425,9 +1333,6 @@
   },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "Ilagay sa safe-deposit box."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Ilagay sa bank vault."
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Ang iyong recovery phrase ay ang iyong “pangunahing key” sa wallet at pondo mo."
@@ -1467,9 +1372,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Nakakonekta na ang account na ito sa MetaMask"
-  },
-  "selectEachPhrase": {
-    "message": "Pakipili ang bawat phrase para matiyak na tama ito."
   },
   "selectHdPath": {
     "message": "Pumili ng HD Path"
@@ -1605,9 +1507,6 @@
   "step2LedgerWalletMsg": {
     "message": "Direktang ikonekta ang iyong wallet sa computer mo.  I-unlock ang iyong Ledger at buksan ang Ethereum app. Para sa higit pang impormasyon tungkol sa paggamit ng iyong hardware wallet device, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "storePhrase": {
-    "message": "I-store ang phrase na ito sa isang password manager gaya ng 1Password."
   },
   "submit": {
     "message": "Isumite"
@@ -1926,9 +1825,6 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
-  "thisWillCreate": {
-    "message": "Gagawa ito ng bagong wallet at Secret Recovery Phrase"
-  },
   "tips": {
     "message": "Mga Tip"
   },
@@ -2111,9 +2007,6 @@
     "message": "Napansin naming sinubukang gamitin ng kasalukuyang website ang tinanggal na window.web3 API. Kung mukhang sira ang site, paki-click ang $1 para sa higit pang impormasyon.",
     "description": "$1 is a clickable link."
   },
-  "welcome": {
-    "message": "Welcome sa MetaMask"
-  },
   "welcomeBack": {
     "message": "Welcome back!"
   },
@@ -2123,9 +2016,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "writePhrase": {
-    "message": "Isulat ang phrase na ito sa papel at itabi sa ligtas na lugar. Kung gusto mo ng mas maigting na seguridad, isulat ito sa maraming piraso ng papel at itabi ang bawat isa sa 2 - 3 magkakaibang lokasyon."
   },
   "xOfY": {
     "message": "$1 ng $2",

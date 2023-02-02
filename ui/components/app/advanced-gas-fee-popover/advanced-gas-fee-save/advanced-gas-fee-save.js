@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
+import { PriorityLevels } from '../../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
@@ -20,7 +20,7 @@ const AdvancedGasFeeSaveButton = () => {
 
   const onSave = () => {
     updateTransaction({
-      estimateUsed: PRIORITY_LEVELS.CUSTOM,
+      estimateUsed: PriorityLevels.custom,
       maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
       maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
       gasLimit,

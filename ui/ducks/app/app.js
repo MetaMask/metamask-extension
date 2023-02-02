@@ -146,12 +146,6 @@ export default function reduceApp(state = {}, action) {
         accountDetail: {},
       };
 
-    case actionConstants.FORGOT_PASSWORD:
-      return {
-        ...appState,
-        forgottenPassword: action.value,
-      };
-
     case actionConstants.SHOW_SEND_TOKEN_PAGE:
       return {
         ...appState,
@@ -180,9 +174,6 @@ export default function reduceApp(state = {}, action) {
     case actionConstants.SHOW_ACCOUNT_DETAIL:
       return {
         ...appState,
-        forgottenPassword: appState.forgottenPassword
-          ? !appState.forgottenPassword
-          : null,
         accountDetail: {
           subview: 'transactions',
           accountExport: 'none',
@@ -196,7 +187,6 @@ export default function reduceApp(state = {}, action) {
         isLoading: false,
         warning: null,
         scrollToBottom: false,
-        forgottenPassword: false,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:
