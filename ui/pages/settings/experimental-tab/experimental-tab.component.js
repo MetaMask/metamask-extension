@@ -7,8 +7,10 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library';
 import {
   COLORS,
+  TEXT_COLORS,
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
@@ -96,13 +98,17 @@ export default class ExperimentalTab extends PureComponent {
           <div className="settings-page__content-item">
             <span>{t('useCollectibleDetection')}</span>
             <div className="settings-page__content-description">
-              {t('useCollectibleDetectionDescription')}
-              <br />
-              {t('useCollectibleDetectionDescriptionLine2')}
+              <Text color={TEXT_COLORS.TEXT_ALTERNATIVE}>
+                {t('useCollectibleDetectionDescription')}
+              </Text>
               <ul className="settings-page__content-unordered-list">
+                <li>{t('useCollectibleDetectionDescriptionLine2')}</li>
                 <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
                 <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
               </ul>
+              <Text color={TEXT_COLORS.TEXT_ALTERNATIVE} paddingTop={4}>
+                {t('useCollectibleDetectionDescriptionLine5')}
+              </Text>
             </div>
           </div>
           <div className="settings-page__content-item">
