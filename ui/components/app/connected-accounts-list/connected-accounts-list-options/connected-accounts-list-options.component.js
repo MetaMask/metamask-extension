@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Menu } from '../../../ui/menu';
 import { ButtonIcon, ICON_NAMES } from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const ConnectedAccountsListOptions = ({
   children,
@@ -10,6 +11,7 @@ const ConnectedAccountsListOptions = ({
   show,
 }) => {
   const ref = useRef(false);
+  const t = useContext(useI18nContext);
 
   return (
     <div ref={ref}>
@@ -17,6 +19,7 @@ const ConnectedAccountsListOptions = ({
         iconName={ICON_NAMES.MORE_VERTICAL}
         className="connected-accounts-options__button"
         onClick={onShowOptions}
+        ariaLabel={t('options')}
       />
       {show ? (
         <Menu

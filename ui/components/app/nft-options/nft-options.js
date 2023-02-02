@@ -19,6 +19,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
         data-testid="collectible-options__button"
         onClick={() => setCollectibleOptionsOpen(true)}
         color={COLORS.TEXT_DEFAULT}
+        ariaLabel={t('nftOptions')}
       />
 
       {collectibleOptionsOpen ? (
