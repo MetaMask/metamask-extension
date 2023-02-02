@@ -335,12 +335,6 @@ export function importNewAccount(strategy, args) {
     }
 
     dispatch(updateMetamaskState(newState));
-    if (newState.selectedAddress) {
-      dispatch({
-        type: actionConstants.SHOW_ACCOUNT_DETAIL,
-        value: newState.selectedAddress,
-      });
-    }
     return newState;
   };
 }
@@ -1574,7 +1568,7 @@ export function setSelectedAddress(address) {
   };
 }
 
-export function showAccountDetail(address) {
+export function setSelectedAccount(address) {
   return async (dispatch, getState) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setSelectedAddress`);
@@ -1606,10 +1600,6 @@ export function showAccountDetail(address) {
       dispatch(hideLoadingIndication());
     }
 
-    dispatch({
-      type: actionConstants.SHOW_ACCOUNT_DETAIL,
-      value: address,
-    });
     if (
       unconnectedAccountAccountAlertIsEnabled &&
       switchingToUnconnectedAddress
@@ -2076,16 +2066,7 @@ export function setProviderType(type) {
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
-      return;
     }
-    dispatch(updateProviderType(type));
-  };
-}
-
-export function updateProviderType(type) {
-  return {
-    type: actionConstants.SET_PROVIDER_TYPE,
-    value: type,
   };
 }
 
@@ -2112,13 +2093,7 @@ export function updateAndSetCustomRpc(
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
-      return;
     }
-
-    dispatch({
-      type: actionConstants.SET_RPC_TARGET,
-      value: newRpc,
-    });
   };
 }
 
@@ -2151,13 +2126,7 @@ export function editRpc(
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
-      return;
     }
-
-    dispatch({
-      type: actionConstants.SET_RPC_TARGET,
-      value: newRpc,
-    });
   };
 }
 
@@ -2516,19 +2485,11 @@ export function setFeatureFlag(feature, activated, notificationType) {
             reject(err);
             return;
           }
-          dispatch(updateFeatureFlags(updatedFeatureFlags));
           notificationType && dispatch(showModal({ name: notificationType }));
           resolve(updatedFeatureFlags);
         },
       );
     });
-  };
-}
-
-export function updateFeatureFlags(updatedFeatureFlags) {
-  return {
-    type: actionConstants.UPDATE_FEATURE_FLAGS,
-    value: updatedFeatureFlags,
   };
 }
 
@@ -2547,19 +2508,10 @@ export function setPreference(preference, value) {
             reject(err);
             return;
           }
-
-          dispatch(updatePreferences(updatedPreferences));
           resolve(updatedPreferences);
         },
       );
     });
-  };
-}
-
-export function updatePreferences(value) {
-  return {
-    type: actionConstants.UPDATE_PREFERENCES,
-    value,
   };
 }
 
@@ -2676,10 +2628,6 @@ export function setUseBlockie(val) {
         dispatch(displayWarning(err.message));
       }
     });
-    dispatch({
-      type: actionConstants.SET_USE_BLOCKIE,
-      value: val,
-    });
   };
 }
 
@@ -2693,10 +2641,6 @@ export function setUseNonceField(val) {
       dispatch(displayWarning(error.message));
     }
     dispatch(hideLoadingIndication());
-    dispatch({
-      type: actionConstants.SET_USE_NONCEFIELD,
-      value: val,
-    });
   };
 }
 
@@ -2819,11 +2763,6 @@ export function setIpfsGateway(val) {
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
-      } else {
-        dispatch({
-          type: actionConstants.SET_IPFS_GATEWAY,
-          value: val,
-        });
       }
     });
   };
@@ -3282,18 +3221,6 @@ export function setOutdatedBrowserWarningLastShown(lastShown) {
   };
 }
 
-export function loadingMethodDataStarted() {
-  return {
-    type: actionConstants.LOADING_METHOD_DATA_STARTED,
-  };
-}
-
-export function loadingMethodDataFinished() {
-  return {
-    type: actionConstants.LOADING_METHOD_DATA_FINISHED,
-  };
-}
-
 export function getContractMethodData(data = '') {
   return async (dispatch, getState) => {
     const prefixedData = addHexPrefix(data);
@@ -3310,12 +3237,10 @@ export function getContractMethodData(data = '') {
       return knownMethodData[fourBytePrefix];
     }
 
-    dispatch(loadingMethodDataStarted());
     log.debug(`loadingMethodData`);
 
     const { name, params } = await getMethodDataAsync(fourBytePrefix);
 
-    dispatch(loadingMethodDataFinished());
     callBackgroundMethod(
       'addKnownMethodData',
       [fourBytePrefix, { name, params }],
@@ -3326,18 +3251,6 @@ export function getContractMethodData(data = '') {
       },
     );
     return { name, params };
-  };
-}
-
-export function loadingTokenParamsStarted() {
-  return {
-    type: actionConstants.LOADING_TOKEN_PARAMS_STARTED,
-  };
-}
-
-export function loadingTokenParamsFinished() {
-  return {
-    type: actionConstants.LOADING_TOKEN_PARAMS_FINISHED,
   };
 }
 
