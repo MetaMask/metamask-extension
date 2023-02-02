@@ -43,6 +43,8 @@ export default function ApproveContentCard({
   isSetApproveForAll,
   isApprovalOrRejection,
   data,
+  userAcknowledgedGasMissing,
+  renderSimulationFailureWarning,
 }) {
   const t = useContext(I18nContext);
 
@@ -91,9 +93,14 @@ export default function ApproveContentCard({
               </Button>
             </Box>
           )}
-          {showEdit && showAdvanceGasFeeOptions && supportsEIP1559 && (
-            <EditGasFeeButton />
-          )}
+          {showEdit &&
+            showAdvanceGasFeeOptions &&
+            supportsEIP1559 &&
+            !renderSimulationFailureWarning && (
+              <EditGasFeeButton
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              />
+            )}
         </Box>
       )}
       <Box
@@ -102,8 +109,12 @@ export default function ApproveContentCard({
         className="approve-content-card-container__card-content"
       >
         {renderTransactionDetailsContent &&
-          (!isMultiLayerFeeNetwork && supportsEIP1559 ? (
-            <GasDetailsItem />
+          (!isMultiLayerFeeNetwork &&
+          supportsEIP1559 &&
+          !renderSimulationFailureWarning ? (
+            <GasDetailsItem
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            />
           ) : (
             <Box
               display={DISPLAY.FLEX}
@@ -301,4 +312,12 @@ ApproveContentCard.propTypes = {
    * Current transaction data
    */
   data: PropTypes.string,
+  /**
+   * User acknowledge gas is missing or not
+   */
+  userAcknowledgedGasMissing: PropTypes.bool,
+  /**
+   * Render simulation failure warning
+   */
+  renderSimulationFailureWarning: PropTypes.bool,
 };
