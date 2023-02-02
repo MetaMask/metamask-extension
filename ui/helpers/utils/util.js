@@ -520,12 +520,17 @@ export function isNullish(value) {
 
 /**
  * The method escape RTL character in string
+ *
  * @param {string} str
  * @returns {string} escaped string
  */
 export const sanitizeString = (str) => {
-  if (!str) return str;
-  if (!isString(str)) return str;
-  const regex = /\u202E/gi;
+  if (!str) {
+    return str;
+  }
+  if (!isString(str)) {
+    return str;
+  }
+  const regex = /\u202E/giu;
   return str.replaceAll(regex, '\\u202E');
 };
