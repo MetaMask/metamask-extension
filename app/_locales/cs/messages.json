@@ -213,9 +213,6 @@
   "message": {
     "message": "Zpráva"
   },
-  "metamaskDescription": {
-    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
-  },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
   },
@@ -409,9 +406,6 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "welcome": {
-    "message": "Vítejte v MetaMask"
   },
   "youSign": {
     "message": "Podepisujete"

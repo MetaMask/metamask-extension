@@ -46,6 +46,8 @@
  * @typedef {object} MetaMetricsEventPayload
  * @property {string} event - event name to track
  * @property {string} category - category to associate event to
+ * @property {number} [actionId] - Action id to deduplicate event requests from
+ * the UI
  * @property {string} [environmentType] - The type of environment this event
  *  occurred in. Defaults to the background process type
  * @property {object} [properties] - object of custom values to track, keys

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
-import Copy from '../../../components/ui/icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
@@ -13,6 +12,7 @@ import {
   TYPOGRAPHY,
   JUSTIFY_CONTENT,
   FONT_WEIGHT,
+  COLORS,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
@@ -20,6 +20,7 @@ import {
 } from '../../../components/app/step-progress-bar';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
@@ -115,9 +116,10 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                   handleCopy(secretRecoveryPhrase);
                 }}
                 icon={
-                  copied ? null : (
-                    <Copy size={20} color="var(--color-primary-default)" />
-                  )
+                  <Icon
+                    name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                    color={COLORS.PRIMARY_DEFAULT}
+                  />
                 }
                 className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__copy-to-clipboard"
                 type="link"
