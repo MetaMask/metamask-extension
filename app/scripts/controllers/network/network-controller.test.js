@@ -1034,13 +1034,7 @@ describe('NetworkController', () => {
                   },
                 },
               },
-              async ({ controller }) => {
-                const network1 = new NetworkCommunications({
-                  networkClientType: 'infura',
-                  networkClientOptions: {
-                    infuraNetwork: networkType,
-                  },
-                });
+              async ({ controller, network: network1 }) => {
                 network1.mockEssentialRpcCalls({
                   eth_blockNumber: {
                     response: {
@@ -1138,13 +1132,7 @@ describe('NetworkController', () => {
                   },
                 },
               },
-              async ({ controller }) => {
-                const network1 = new NetworkCommunications({
-                  networkClientType: 'infura',
-                  networkClientOptions: {
-                    infuraNetwork: networkType,
-                  },
-                });
+              async ({ controller, network: network1 }) => {
                 network1.mockEssentialRpcCalls({
                   eth_blockNumber: {
                     response: {
