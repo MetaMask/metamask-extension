@@ -58,6 +58,9 @@ describe('Signature Request', () => {
         },
       },
       cachedBalances: {},
+      unapprovedDecryptMsgs: {},
+      unapprovedEncryptionPublicKeyMsgs: {},
+      uncofirmedTransactions: {},
       selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     },
   };
@@ -71,12 +74,16 @@ describe('Signature Request', () => {
       push: sinon.spy(),
     },
     hardwareWalletRequiresConnection: false,
+    mostRecentOverviewPage: '/',
     clearConfirmTransaction: sinon.spy(),
     cancelMessage: sinon.spy(),
     cancel: sinon.stub().resolves(),
+    showRejectTransactionsConfirmationModal: sinon.stub().resolves(),
+    cancelAll: sinon.stub().resolves(),
     provider: {
       type: 'rpc',
     },
+    unapprovedMessagesCount: 2,
     sign: sinon.stub().resolves(),
     txData: {
       msgParams: {
@@ -118,6 +125,14 @@ describe('Signature Request', () => {
     fireEvent.click(signButton);
 
     expect(props.sign.calledOnce).toStrictEqual(true);
+  });
+
+  it('cancelAll', () => {
+    const cancelAll = screen.getByTestId('signature-request-reject-all');
+
+    fireEvent.click(cancelAll);
+
+    expect(props.cancelAll.calledOnce).toStrictEqual(false);
   });
 
   it('have user warning', () => {

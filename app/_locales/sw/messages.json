@@ -148,9 +148,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Unapaswa kutumia MetaMask kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
   },
-  "clickToRevealSeed": {
-    "message": "Bofya hapa ili uonyeshe maneno ya siri"
-  },
   "close": {
     "message": "Funga"
   },
@@ -160,14 +157,8 @@
   "confirmPassword": {
     "message": "Thibitisha Nenosiri"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Thibitisha Kirai chako cha Siri cha Kuhifadhi Data"
-  },
   "confirmed": {
     "message": "Imethibitishwa"
-  },
-  "congratulations": {
-    "message": "Hongera"
   },
   "connect": {
     "message": "Unganisha"
@@ -210,9 +201,6 @@
   },
   "create": {
     "message": "Unda"
-  },
-  "createAWallet": {
-    "message": "Fungua Waleti"
   },
   "createAccount": {
     "message": "Fungua Akaunti"
@@ -259,9 +247,6 @@
   "downloadGoogleChrome": {
     "message": "Pakua Google chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Pakuwa Kirai hiki cha Hifadhi Mbadala ya Siri na na kitunze kwa usalama kwenye kihifadhi cha nje chenye neneosiri au kifaa cha kuhifadhia."
-  },
   "downloadStateLogs": {
     "message": "Pakua Kumbukumbu za Hali"
   },
@@ -273,33 +258,6 @@
   },
   "editContact": {
     "message": "Hariri Mawasiliano"
-  },
-  "endOfFlowMessage1": {
-    "message": "Umefaulu jaribio - weka kirai chako cha kuanzia mahali salama, ni wajibu wako!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Yote Imekamilika"
-  },
-  "endOfFlowMessage2": {
-    "message": "Dondoo kuhusu kukihifadhi salama"
-  },
-  "endOfFlowMessage3": {
-    "message": "Hifadhi hifadhimbadala kwenye maeneo kadhaa."
-  },
-  "endOfFlowMessage4": {
-    "message": "Kamwe usimpatia mtu yeye kirai hicho."
-  },
-  "endOfFlowMessage5": {
-    "message": "Kuwa makini na walaghai! MetaMask kamwe haitakuomba kirai chako kianzio."
-  },
-  "endOfFlowMessage6": {
-    "message": "Ikiwa unataka kuhifadhi tena kwa njia mbadla kirai chako kianzio, unaweza kukipata kwenye Mipangilio -> Usalama."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask haiwezi kurejesha kirai chako kianzio. Pata maelezo ziadi."
-  },
-  "endOfFlowMessage9": {
-    "message": "Jifunze zaidi."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Jina la ENS halipatikani kwenye mtandao wa sasa. Jaribu kuhamia kwenye Mtandao Mkuu wa Ethereum."
@@ -375,14 +333,8 @@
     "message": "Pata Ether kutoka kwenye mfereji $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Anza"
-  },
   "goerli": {
     "message": "Mtandao wa Majaribio wa Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Tuna furaha kukuona"
   },
   "hardware": {
     "message": "programu maunzi"
@@ -418,12 +370,6 @@
   },
   "importAccountMsg": {
     "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Hamisha Akaunti kwa kutumia Kirai Kianzio"
-  },
-  "importWallet": {
-    "message": "Hamisha Waleti"
   },
   "imported": {
     "message": "Zilizoingizwa",
@@ -475,9 +421,6 @@
   "ledgerAccountRestriction": {
     "message": "Unapaswa kutumia akaunti yako ya mwisho kabla hujaongeza mpya."
   },
-  "letsGoSetUp": {
-    "message": "Ndiyo, hebu tuweke mipangilio!"
-  },
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
@@ -499,14 +442,8 @@
   "mainnet": {
     "message": "Mtandao Mkuu wa Ethereum"
   },
-  "memorizePhrase": {
-    "message": "Kariri kirai hiki"
-  },
   "message": {
     "message": "Ujumbe"
-  },
-  "metamaskDescription": {
-    "message": "Kukuunganisha kwenye Ethereum na Wavutiu Uliotawanywa."
   },
   "metamaskVersion": {
     "message": "Toleo la MetaMask"
@@ -549,17 +486,11 @@
   "newPassword": {
     "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"
   },
-  "newToMetaMask": {
-    "message": "MetaMask mpya?"
-  },
   "next": {
     "message": "Inayofuata"
   },
   "noAddressForName": {
     "message": "Hakuna anwani iliyoundwa kwa jina hili."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Hapana, tayari nini kirai cha kuanzia"
   },
   "noConversionRateAvailable": {
     "message": "Hakuna Kiwango cha Ubadilishaji"
@@ -668,9 +599,6 @@
   "rejected": {
     "message": "Imekataliwa"
   },
-  "remindMeLater": {
-    "message": "Nikumbushe baadaye"
-  },
   "remove": {
     "message": "Ondoa"
   },
@@ -734,12 +662,6 @@
   "searchTokens": {
     "message": "Tafuta Vianzio"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Kirai chako cha siri cha hifadhi mbadala kinafanya iwe rahisi kuhifadhi kwa njia mbadala na kurejesha akaunti yako."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ONYO: Kamwe usiweke wazi kirai chako cha hifadhi mbadala. Mtu yeyote mwenye kirai hiki anaweza kuchukua Ether yako daima."
-  },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
@@ -748,9 +670,6 @@
   },
   "selectAnAccount": {
     "message": "Chagua Akaunti"
-  },
-  "selectEachPhrase": {
-    "message": "Tafadhali chagua kila kirai ili kuhakikisha kuwa hii ni sahihi."
   },
   "selectHdPath": {
     "message": "Chagua Njia ya HD"
@@ -824,9 +743,6 @@
   "stateLogsDescription": {
     "message": "Kumbukumbu za hali zinajumusiha anwani zako za akaunti za umma na miamala iliyotumwa."
   },
-  "storePhrase": {
-    "message": "Hifadhi kirai hiki kwenye kidhibiti nenosiri kama vile 1Password."
-  },
   "submitted": {
     "message": "Imewasilishwa"
   },
@@ -868,9 +784,6 @@
   },
   "testFaucet": {
     "message": "Mfereji wa Jaribio"
-  },
-  "thisWillCreate": {
-    "message": "Hatua hiiitaunda waleti mpya na kirai kianzio"
   },
   "tips": {
     "message": "Michango"
@@ -999,14 +912,8 @@
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"
   },
-  "welcome": {
-    "message": "Karibu kwenye MetaMask"
-  },
   "welcomeBack": {
     "message": "Karibu Tena!"
-  },
-  "writePhrase": {
-    "message": "Andika kirai hiki kwenye karatasi na kihifadhi kwenye sehemu salama. Ikiwa unahitaji usalama zaidi, andika kwenye vipande kadhaa vya karatasi na tunza kila kimoja kwenye maeneo tofauti 2-3. "
   },
   "yesLetsTry": {
     "message": "Ndiyo, ngoja tujaribu"

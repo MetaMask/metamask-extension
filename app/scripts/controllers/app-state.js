@@ -5,6 +5,10 @@ import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { isBeta } from '../../../ui/helpers/utils/build-types';
+import {
+  ENVIRONMENT_TYPE_BACKGROUND,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+} from '../../../shared/constants/app';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -236,10 +240,15 @@ export default class AppStateController extends EventEmitter {
    * @param pollingTokenType
    */
   addPollingToken(pollingToken, pollingTokenType) {
-    const prevState = this.store.getState()[pollingTokenType];
-    this.store.updateState({
-      [pollingTokenType]: [...prevState, pollingToken],
-    });
+    if (
+      pollingTokenType !==
+      POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
+    ) {
+      const prevState = this.store.getState()[pollingTokenType];
+      this.store.updateState({
+        [pollingTokenType]: [...prevState, pollingToken],
+      });
+    }
   }
 
   /**
@@ -249,10 +258,15 @@ export default class AppStateController extends EventEmitter {
    * @param pollingTokenType
    */
   removePollingToken(pollingToken, pollingTokenType) {
-    const prevState = this.store.getState()[pollingTokenType];
-    this.store.updateState({
-      [pollingTokenType]: prevState.filter((token) => token !== pollingToken),
-    });
+    if (
+      pollingTokenType !==
+      POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
+    ) {
+      const prevState = this.store.getState()[pollingTokenType];
+      this.store.updateState({
+        [pollingTokenType]: prevState.filter((token) => token !== pollingToken),
+      });
+    }
   }
 
   /**
