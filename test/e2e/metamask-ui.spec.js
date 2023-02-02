@@ -393,7 +393,7 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
 
       await driver.switchToWindow(extension);
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
 
       await driver.findElements('.transaction-list__pending-transactions');
       await driver.waitForSelector(
