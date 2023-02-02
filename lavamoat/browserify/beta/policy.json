@@ -3521,7 +3521,8 @@
         "define": true,
         "document.cookie": true,
         "localStorage": true,
-        "log": "write"
+        "log": "write",
+        "navigator": true
       }
     },
     "luxon": {
