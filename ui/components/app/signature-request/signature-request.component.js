@@ -18,6 +18,7 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -67,6 +68,12 @@ export default class SignatureRequest extends PureComponent {
     nativeCurrency: PropTypes.string,
     provider: PropTypes.object,
     subjectMetadata: PropTypes.object,
+    unapprovedMessagesCount: PropTypes.number,
+    clearConfirmTransaction: PropTypes.func.isRequired,
+    history: PropTypes.object,
+    mostRecentOverviewPage: PropTypes.string,
+    showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
+    cancelAll: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -115,6 +122,26 @@ export default class SignatureRequest extends PureComponent {
     return { sanitizedMessage, domain, primaryType };
   });
 
+  handleCancelAll = () => {
+    const {
+      cancelAll,
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      showRejectTransactionsConfirmationModal,
+      unapprovedMessagesCount,
+    } = this.props;
+
+    showRejectTransactionsConfirmationModal({
+      unapprovedTxCount: unapprovedMessagesCount,
+      onSubmit: async () => {
+        await cancelAll();
+        clearConfirmTransaction();
+        history.push(mostRecentOverviewPage);
+      },
+    });
+  };
+
   render() {
     const {
       txData: {
@@ -133,13 +160,15 @@ export default class SignatureRequest extends PureComponent {
       subjectMetadata,
       conversionRate,
       nativeCurrency,
+      unapprovedMessagesCount,
     } = this.props;
-    const { trackEvent } = this.context;
+    const { t, trackEvent } = this.context;
     const {
       sanitizedMessage,
       domain: { verifyingContract },
       primaryType,
     } = this.memoizedParseMessage(data);
+    const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
     const currentNetwork = this.getNetworkName();
 
     const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
@@ -185,6 +214,7 @@ export default class SignatureRequest extends PureComponent {
 
     return (
       <div className="signature-request">
+        <ConfirmPageContainerNavigation />
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
@@ -274,6 +304,19 @@ export default class SignatureRequest extends PureComponent {
             isContractRequestingSignature
           />
         )}
+        {unapprovedMessagesCount > 1 ? (
+          <Button
+            type="link"
+            className="signature-request__reject-all-button"
+            data-testid="signature-request-reject-all"
+            onClick={(e) => {
+              e.preventDefault();
+              this.handleCancelAll();
+            }}
+          >
+            {rejectNText}
+          </Button>
+        ) : null}
       </div>
     );
   }

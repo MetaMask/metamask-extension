@@ -50,9 +50,6 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   renderOpenSeaEnabledToggle() {
-    if (!process.env.NFTS_V1) {
-      return null;
-    }
     const { t } = this.context;
     const {
       openSeaEnabled,
@@ -62,41 +59,77 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row--parent"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('enableOpenSeaAPI')}</span>
-          <div className="settings-page__content-description">
-            {t('enableOpenSeaAPIDescription')}
+      <>
+        <div ref={this.settingsRefs[0]} className="settings-page__content-row">
+          <div className="settings-page__content-item">
+            <span>{t('enableOpenSeaAPI')}</span>
+            <div className="settings-page__content-description">
+              {t('enableOpenSeaAPIDescription')}
+            </div>
+          </div>
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <ToggleButton
+                value={openSeaEnabled}
+                onToggle={(value) => {
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.SETTINGS,
+                    event: 'Enabled/Disable OpenSea',
+                    properties: {
+                      action: 'Enabled/Disable OpenSea',
+                      legacy_event: true,
+                    },
+                  });
+                  // value is positive when being toggled off
+                  if (value && useNftDetection) {
+                    setUseNftDetection(false);
+                  }
+                  setOpenSeaEnabled(!value);
+                }}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={openSeaEnabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable OpenSea',
-                  properties: {
-                    action: 'Enabled/Disable OpenSea',
-                    legacy_event: true,
-                  },
-                });
-                // value is positive when being toggled off
-                if (value && useNftDetection) {
-                  setUseNftDetection(false);
-                }
-                setOpenSeaEnabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
+        <div ref={this.settingsRefs[1]} className="settings-page__content-row">
+          <div className="settings-page__content-item">
+            <span>{t('useCollectibleDetection')}</span>
+            <div className="settings-page__content-description">
+              {t('useCollectibleDetectionDescription')}
+              <br />
+              {t('useCollectibleDetectionDescriptionLine2')}
+              <ul className="settings-page__content-unordered-list">
+                <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
+                <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
+              </ul>
+            </div>
+          </div>
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <ToggleButton
+                value={useNftDetection}
+                onToggle={(value) => {
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.SETTINGS,
+                    event: 'Collectible Detection',
+                    properties: {
+                      action: 'Collectible Detection',
+                      legacy_event: true,
+                    },
+                  });
+                  if (!value && !openSeaEnabled) {
+                    setOpenSeaEnabled(!value);
+                  }
+                  setUseNftDetection(!value);
+                }}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -190,7 +223,7 @@ export default class ExperimentalTab extends PureComponent {
       <div className="settings-page__body">
         {process.env.TRANSACTION_SECURITY_PROVIDER &&
           this.renderTransactionSecurityCheckToggle()}
-        {this.renderOpenSeaEnabledToggle()}
+        {process.env.NFTS_V1 && this.renderOpenSeaEnabledToggle()}
       </div>
     );
   }

@@ -20,7 +20,7 @@
     }
 
     @include screen-sm-min {
-      height: 620px;
+      height: 650px;
     }
 
     &__reject {
@@ -56,7 +56,8 @@
     z-index: 3;
   }
 
-  &__account {
+  &__account,
+  &__navigation {
     width: 100%;
   }
 

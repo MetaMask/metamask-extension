@@ -18,7 +18,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import { getCurrentLocale } from '../../../ducks/metamask/metamask';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import SkipSRPBackup from './skip-srp-backup-popover';
 

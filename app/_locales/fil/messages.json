@@ -133,9 +133,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome upang makakonekta sa iyong Hardware Wallet."
   },
-  "clickToRevealSeed": {
-    "message": "Mag-click dito para ipakita ang iyong secret words"
-  },
   "close": {
     "message": "Isara"
   },
@@ -145,14 +142,8 @@
   "confirmPassword": {
     "message": "Kumpirmahin ang Password"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Kumpirmahin ang iyong Secret Backup Phrase"
-  },
   "confirmed": {
     "message": "Nakumpirma"
-  },
-  "congratulations": {
-    "message": "Binabati kita"
   },
   "connect": {
     "message": "Kumonekta"
@@ -196,9 +187,6 @@
   "create": {
     "message": "Gumawa"
   },
-  "createAWallet": {
-    "message": "Gumawa ng Wallet"
-  },
   "createAccount": {
     "message": "Gumawa ng Account"
   },
@@ -241,9 +229,6 @@
   "downloadGoogleChrome": {
     "message": "I-download ang Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "I-download ang Secret Backup Phrase na ito at panatilhing itong nakatago nang ligtas sa isang external na encrypted hard drive o storage medium."
-  },
   "downloadStateLogs": {
     "message": "I-download ang mga State Log"
   },
@@ -255,33 +240,6 @@
   },
   "editContact": {
     "message": "I-edit ang Contact"
-  },
-  "endOfFlowMessage1": {
-    "message": "Pumasa ka sa test - panatilihing ligtas ang iyong seedphrase, responsibilidad mo ito!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Tapos na Lahat"
-  },
-  "endOfFlowMessage2": {
-    "message": "Mga tip sa pag-store dito ng ligtas"
-  },
-  "endOfFlowMessage3": {
-    "message": "Mag-save ng backup sa maraming lugar."
-  },
-  "endOfFlowMessage4": {
-    "message": "Huwag ibahagi ang parirala sa kahit sino."
-  },
-  "endOfFlowMessage5": {
-    "message": "Mag-ingat sa phishing! Hindi ka basta-basta hihilingin ng MetaMask ang iyong seed phrase."
-  },
-  "endOfFlowMessage6": {
-    "message": "Kung kailangan mong i-back up ulit ang iyong seed phrase, makikita mo ito sa Mga Setting -> Seguridad."
-  },
-  "endOfFlowMessage8": {
-    "message": "Hindi ma-recover ng MetaMask ang iyong seedphrase. Alamin pa."
-  },
-  "endOfFlowMessage9": {
-    "message": "Matuto pa."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
@@ -354,12 +312,6 @@
     "message": "Kumuha ng Ether mula sa isang faucet para sa $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Magsimula"
-  },
-  "happyToSeeYou": {
-    "message": "Masaya kaming makita ka."
-  },
   "hardwareWalletConnected": {
     "message": "Nakakonekta ang hardware wallet"
   },
@@ -388,12 +340,6 @@
   },
   "importAccountMsg": {
     "message": " Ang mga na-import na account ay hindi iuugnay sa orihinal na seedphrase na ginawa ng iyong MetaMask account. Matuto pa tungkol sa mga na-import na account "
-  },
-  "importAccountSeedPhrase": {
-    "message": "Mag-import ng Account gamit ang Seed Phrase"
-  },
-  "importWallet": {
-    "message": "Mag-import ng Wallet"
   },
   "imported": {
     "message": "Na-import",
@@ -441,9 +387,6 @@
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang iyong dating account bago ka makapagdagdag ng bago."
   },
-  "letsGoSetUp": {
-    "message": "Oo, i-set up natin ito!"
-  },
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
@@ -462,14 +405,8 @@
   "lock": {
     "message": "Mag-log out"
   },
-  "memorizePhrase": {
-    "message": "Tandaan ang pariralang ito."
-  },
   "message": {
     "message": "Mensahe"
-  },
-  "metamaskDescription": {
-    "message": "Kinokonekta ka sa Ethereum at sa Decentralized Web."
   },
   "metamaskVersion": {
     "message": "Bersyon ng MetaMask"
@@ -508,17 +445,11 @@
   "newPassword": {
     "message": "Bagong Password (min 8 char)"
   },
-  "newToMetaMask": {
-    "message": "Bago ka ba sa MetaMask?"
-  },
   "next": {
     "message": "Susunod"
   },
   "noAddressForName": {
     "message": "Walang address na na-set para sa pangalang ito."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Hindi, may seed phrase na ako"
   },
   "noConversionRateAvailable": {
     "message": "Walang Presyo ng Palitan na Available"
@@ -617,9 +548,6 @@
   "rejected": {
     "message": "Tinanggihan"
   },
-  "remindMeLater": {
-    "message": "Paalalahanan ako sa ibang pagkakataon"
-  },
   "remove": {
     "message": "Alisin"
   },
@@ -683,12 +611,6 @@
   "searchTokens": {
     "message": "Maghanap ng Mga Token"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Pinapadali ng iyong secret backup phrase na i-back up at i-restore ang iyong account."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "BABALA: Huwag ibunyag ang iyong backup phrase. Mananakaw ng kahit sinong may ganitong parirala ang iyong Ether at hindi na ito maibabalik."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -697,9 +619,6 @@
   },
   "selectAnAccount": {
     "message": "Pumili ng Account"
-  },
-  "selectEachPhrase": {
-    "message": "Pakipili ang bawat parirala para tiyaking tama ito."
   },
   "selectHdPath": {
     "message": "Piliin ang HD Path"
@@ -767,9 +686,6 @@
   "stateLogsDescription": {
     "message": "Ang mga state log ay naglalaman ng iyong mga pampublikong account address at mga ipinadalang transaksyon."
   },
-  "storePhrase": {
-    "message": "I-store ang pariralang ito sa isang password manager tulad ng 1Password."
-  },
   "submitted": {
     "message": "Isinumite"
   },
@@ -808,9 +724,6 @@
   },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"
-  },
-  "thisWillCreate": {
-    "message": "Gagawa ito ng bagong wallet at seed phrase"
   },
   "tips": {
     "message": "Mga Tip"
@@ -930,14 +843,8 @@
   "visitWebSite": {
     "message": "Bisitahin ang aming web site"
   },
-  "welcome": {
-    "message": "Welcome sa MetaMask"
-  },
   "welcomeBack": {
     "message": "Welcome Ulit!"
-  },
-  "writePhrase": {
-    "message": "Isulat ang pariralang ito sa isang piraso ng papel at itago ito sa isang secure na lokasyon. Kung gusto mo ng higit pang seguridad, isulat ito sa maraming piraso ng papel at itago ang bawat isa sa 2 - 3 iba't ibang lokasyon."
   },
   "yesLetsTry": {
     "message": "Oo, subukan natin"
