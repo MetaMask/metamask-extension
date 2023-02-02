@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
-import { COLORS } from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { getPreferences, getUseCurrencyRateCheck } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -39,7 +39,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     <TransactionDetailItem
       key="gas-item"
       detailTitle={<GasDetailsItemTitle />}
-      detailTitleColor={COLORS.TEXT_DEFAULT}
+      detailTitleColor={TextColor.textDefault}
       detailText={
         useCurrencyRateCheck && (
           <div className="gas-details-item__currency-container">

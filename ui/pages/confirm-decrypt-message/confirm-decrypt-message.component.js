@@ -13,7 +13,7 @@ import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Icon, ICON_NAMES } from '../../components/component-library';
-import { COLORS } from '../../helpers/constants/design-system';
+import { IconColor } from '../../helpers/constants/design-system';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -241,12 +241,12 @@ export default class ConfirmDecryptMessage extends Component {
               </div>
               <Icon
                 name={hasCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-                color={COLORS.PRIMARY_DEFAULT}
+                color={IconColor.primaryDefault}
               />
             </Tooltip>
           </div>
         ) : (
-          <div></div>
+          <div />
         )}
       </div>
     );

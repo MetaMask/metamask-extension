@@ -8,9 +8,9 @@ import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 
@@ -51,7 +51,7 @@ export default function ImportToken({
         paddingRight={6}
         paddingBottom={4}
         paddingLeft={4}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         display={DISPLAY.FLEX}
         className="import-token"
       >
@@ -63,16 +63,16 @@ export default function ImportToken({
           name={tokenForImport.symbol}
         />
         <Typography
-          ariant={TYPOGRAPHY.H4}
+          ariant={TypographyVariant.H4}
           fontWeight={FONT_WEIGHT.BOLD}
           boxProps={{ marginTop: 2, marginBottom: 3 }}
         >
           {tokenForImport.name || ''}
         </Typography>
-        <Typography variant={TYPOGRAPHY.H6}>{t('contract')}:</Typography>
+        <Typography variant={TypographyVariant.H6}>{t('contract')}:</Typography>
         <Typography
           className="import-token__contract-address"
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           boxProps={{ marginBottom: 6 }}
         >
           {tokenForImport.address || ''}

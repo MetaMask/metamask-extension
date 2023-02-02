@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 
 import { ButtonIcon } from '../button-icon';
 import { Icon, ICON_NAMES } from '../icon';
@@ -22,7 +22,7 @@ export const TextFieldSearch = ({
     value={value}
     onChange={onChange}
     type={TEXT_FIELD_BASE_TYPES.SEARCH}
-    leftAccessory={<Icon name={ICON_NAMES.SEARCH} size={SIZES.SM} />}
+    leftAccessory={<Icon name={ICON_NAMES.SEARCH} size={Size.SM} />}
     showClearButton
     clearButtonOnClick={clearButtonOnClick}
     clearButtonProps={clearButtonProps}

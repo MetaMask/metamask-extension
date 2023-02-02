@@ -4,7 +4,7 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   SEVERITIES,
-  SIZES,
+  Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES, ButtonLink, ButtonPrimary } from '..';
@@ -135,7 +135,7 @@ export const Children = (args) => {
   return (
     <Banner {...args}>
       {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-      <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
+      <ButtonLink size={Size.auto} href="https://metamask.io/" target="_blank">
         hyperlink.
       </ButtonLink>
     </Banner>

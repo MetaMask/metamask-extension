@@ -18,7 +18,7 @@ import {
 
 import Typography from '../../ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 
@@ -99,7 +99,7 @@ export default function GasTiming({
   ) {
     return (
       <Typography
-        variant={TYPOGRAPHY.H7}
+        variant={TypographyVariant.H7}
         fontWeight={FONT_WEIGHT.BOLD}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
@@ -165,7 +165,7 @@ export default function GasTiming({
 
   return (
     <Typography
-      variant={TYPOGRAPHY.H7}
+      variant={TypographyVariant.H7}
       className={classNames('gas-timing', {
         [`gas-timing--${attitude}`]: attitude,
       })}
