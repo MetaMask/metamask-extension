@@ -937,7 +937,9 @@ describe('NetworkController', () => {
 
             await controller.lookupNetwork();
 
-            expect(controller.store.getState()).toStrictEqual(stateAfterConstruction);
+            expect(controller.store.getState()).toStrictEqual(
+              stateAfterConstruction,
+            );
           },
         );
       });
