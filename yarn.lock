@@ -6902,6 +6902,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/currency-formatter@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@types/currency-formatter@npm:1.5.1"
+  checksum: dcbe69289bb1493092842f9d4cb97e54b1a0801769506ffb4e35c417863f0e35e8bf7f09445d91f9487cf31af3d4a9e65db1435c2987dd37da4e20d47a52dd63
+  languageName: node
+  linkType: hard
+
 "@types/debug@npm:^4.1.7":
   version: 4.1.7
   resolution: "@types/debug@npm:4.1.7"
@@ -24113,6 +24120,7 @@ __metadata:
     "@tsconfig/node16": ^1.0.3
     "@types/babelify": ^7.3.7
     "@types/browserify": ^12.0.37
+    "@types/currency-formatter": ^1.5.1
     "@types/end-of-stream": ^1.4.1
     "@types/fs-extra": ^9.0.13
     "@types/gulp": ^4.0.9
