@@ -472,6 +472,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.switchToWindow(extension);
         await driver.clickElement({ tag: 'button', text: 'Activity' });
 
+        await driver.waitForElementNotPresent('.loading-overlay');
         const pendingTxes = await driver.findElements('.transaction-list-item');
         pendingTxes[0].click();
         // set spending cap
@@ -486,7 +487,6 @@ describe('Create token, approve token and approve token without gas', function (
 
         await driver.delay(500);
         await driver.clickElement({ text: 'Approve', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay');
 
         // check transaction in Activity tab
         const approveTokenTask = await driver.waitForSelector({
