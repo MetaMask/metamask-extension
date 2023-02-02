@@ -816,81 +816,85 @@ describe('NetworkController', () => {
   });
 
   describe('getEIP1559Compatibility', () => {
-    it('returns true when baseFeePerGas is in the block header', async () => {
-      await withController(async ({ controller, network }) => {
-        network.mockEssentialRpcCalls({
-          latestBlock: POST_1559_BLOCK,
-        });
-        await controller.initializeProvider();
-
-        const supportsEIP1559 = await controller.getEIP1559Compatibility();
-
-        expect(supportsEIP1559).toBe(true);
-      });
-    });
-
-    it('persists to state that the network supports EIP-1559 when baseFeePerGas is in the block header', async () => {
-      await withController(
-        {
-          state: {
-            networkDetails: {
-              EIPS: {},
+    describe('when the latest block has a baseFeePerGas property', () => {
+      it('persists to state that the network supports EIP-1559', async () => {
+        await withController(
+          {
+            state: {
+              networkDetails: {
+                EIPS: {},
+              },
             },
           },
-        },
-        async ({ controller, network }) => {
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls({
+              latestBlock: POST_1559_BLOCK,
+            });
+            await controller.initializeProvider();
+
+            await controller.getEIP1559Compatibility();
+
+            expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
+              true,
+            );
+          },
+        );
+      });
+
+      it('returns true', async () => {
+        await withController(async ({ controller, network }) => {
           network.mockEssentialRpcCalls({
             latestBlock: POST_1559_BLOCK,
           });
           await controller.initializeProvider();
 
-          await controller.getEIP1559Compatibility();
+          const supportsEIP1559 = await controller.getEIP1559Compatibility();
 
-          expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
-            true,
-          );
-        },
-      );
-    });
-
-    it('returns false when baseFeePerGas is not in the block header', async () => {
-      await withController(async ({ controller, network }) => {
-        network.mockEssentialRpcCalls({
-          latestBlock: PRE_1559_BLOCK,
+          expect(supportsEIP1559).toBe(true);
         });
-        await controller.initializeProvider();
-
-        const supportsEIP1559 = await controller.getEIP1559Compatibility();
-
-        expect(supportsEIP1559).toBe(false);
       });
     });
 
-    it('persists to state that the network does not support EIP-1559 when baseFeePerGas is not in the block header', async () => {
-      await withController(
-        {
-          state: {
-            networkDetails: {
-              EIPS: {},
+    describe('when the latest block does not have a baseFeePerGas property', () => {
+      it('persists to state that the network does not support EIP-1559', async () => {
+        await withController(
+          {
+            state: {
+              networkDetails: {
+                EIPS: {},
+              },
             },
           },
-        },
-        async ({ controller, network }) => {
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls({
+              latestBlock: PRE_1559_BLOCK,
+            });
+            await controller.initializeProvider();
+
+            await controller.getEIP1559Compatibility();
+
+            expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
+              false,
+            );
+          },
+        );
+      });
+
+      it('returns false', async () => {
+        await withController(async ({ controller, network }) => {
           network.mockEssentialRpcCalls({
             latestBlock: PRE_1559_BLOCK,
           });
           await controller.initializeProvider();
 
-          await controller.getEIP1559Compatibility();
+          const supportsEIP1559 = await controller.getEIP1559Compatibility();
 
-          expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
-            false,
-          );
-        },
-      );
+          expect(supportsEIP1559).toBe(false);
+        });
+      });
     });
 
-    it('does not make multiple requests to eth_getBlockByNumber when called multiple times (as long as the request to eth_getBlockByNumber succeeded the first time)', async () => {
+    it('does not make multiple requests to eth_getBlockByNumber when called multiple times and the request to eth_getBlockByNumber succeeded the first time', async () => {
       await withController(async ({ controller, network }) => {
         // This mocks eth_getBlockByNumber once by default
         network.mockEssentialRpcCalls();
