@@ -23,39 +23,55 @@ import {
   hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
 
-export default function reduceMetamask(state = {}, action) {
-  const metamaskState = {
-    isInitialized: false,
-    isUnlocked: false,
-    isAccountMenuOpen: false,
-    identities: {},
-    unapprovedTxs: {},
-    frequentRpcList: [],
-    addressBook: [],
-    contractExchangeRates: {},
-    pendingTokens: {},
-    customNonceValue: '',
-    useBlockie: false,
-    featureFlags: {},
-    welcomeScreenSeen: false,
-    currentLocale: '',
-    currentBlockGasLimit: '',
-    preferences: {
-      autoLockTimeLimit: undefined,
-      showFiatInTestnets: false,
-      showTestNetworks: false,
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
-    firstTimeFlowType: null,
-    completedOnboarding: false,
-    knownMethodData: {},
-    participateInMetaMetrics: null,
-    nextNonce: null,
-    conversionRate: null,
-    nativeCurrency: 'ETH',
-    ...state,
-  };
+const initialState = {
+  isInitialized: false,
+  isUnlocked: false,
+  isAccountMenuOpen: false,
+  identities: {},
+  unapprovedTxs: {},
+  frequentRpcList: [],
+  addressBook: [],
+  contractExchangeRates: {},
+  pendingTokens: {},
+  customNonceValue: '',
+  useBlockie: false,
+  featureFlags: {},
+  welcomeScreenSeen: false,
+  currentLocale: '',
+  currentBlockGasLimit: '',
+  preferences: {
+    autoLockTimeLimit: undefined,
+    showFiatInTestnets: false,
+    showTestNetworks: false,
+    useNativeCurrencyAsPrimaryCurrency: true,
+  },
+  firstTimeFlowType: null,
+  completedOnboarding: false,
+  knownMethodData: {},
+  participateInMetaMetrics: null,
+  nextNonce: null,
+  conversionRate: null,
+  nativeCurrency: 'ETH',
+};
 
+/**
+ * Temporary types for this slice so that inferrence of MetaMask state tree can
+ * occur
+ *
+ * @param {typeof initialState} state - State
+ * @param {any} action
+ * @returns {typeof initialState}
+ */
+export default function reduceMetamask(state = initialState, action) {
+  // I don't think we should be spreading initialState into this. Once the
+  // state tree has begun by way of the first reduce call the initialState is
+  // set. The only time it should be used again is if we reset the state with a
+  // deliberate action. However, our tests are *relying upon the initialState
+  // tree above to be spread into the reducer as a way of hydrating the state
+  // for this slice*. I attempted to remove this and it caused nearly 40 test
+  // failures. We are going to refactor this slice anyways, possibly removing
+  // it so we will fix this issue when that time comes.
+  const metamaskState = { ...initialState, ...state };
   switch (action.type) {
     case actionConstants.UPDATE_METAMASK_STATE:
       return { ...metamaskState, ...action.value };
