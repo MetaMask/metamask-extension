@@ -263,17 +263,8 @@ export default function reduceApp(
       };
 
     case actionConstants.COMPLETED_TX:
-      if (action.value.unconfirmedActionsCount > 0) {
-        return {
-          ...appState,
-          txId: null,
-          warning: null,
-        };
-      }
       return {
         ...appState,
-        // indicate notification should close
-        shouldClose: true,
         warning: null,
         txId: null,
       };

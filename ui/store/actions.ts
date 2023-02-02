@@ -24,7 +24,6 @@ import {
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
-import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
@@ -77,12 +76,17 @@ import {
   TransactionMetaMetricsEvent,
   TransactionType,
 } from '../../shared/constants/transaction';
-import { NetworkType, RPCDefinition } from '../../shared/constants/network';
+import {
+  BUYABLE_CHAINS_MAP,
+  CurrencySymbol,
+  NetworkType,
+  RPCDefinition,
+} from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
   logErrorWithMessage,
-} from '../../shared/modules/Error';
+} from '../../shared/modules/error';
 import { TransactionMeta } from '../../app/scripts/controllers/incoming-transactions';
 import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
@@ -1249,32 +1253,11 @@ export async function getTransactions(
 export function completedTx(
   txId: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch, getState) => {
-    const state = getState();
-    const {
-      unapprovedTxs,
-      unapprovedMsgs,
-      unapprovedPersonalMsgs,
-      unapprovedTypedMessages,
-      network,
-      provider: { chainId },
-    } = state.metamask;
-    const unconfirmedActions = txHelper(
-      unapprovedTxs,
-      unapprovedMsgs,
-      unapprovedPersonalMsgs,
-      unapprovedTypedMessages,
-      network,
-      chainId,
-    );
-    const otherUnconfirmedActions = unconfirmedActions.filter(
-      (tx) => tx.id !== txId,
-    );
+  return (dispatch) => {
     dispatch({
       type: actionConstants.COMPLETED_TX,
       value: {
         id: txId,
-        unconfirmedActionsCount: otherUnconfirmedActions.length,
       },
     });
   };
@@ -2923,9 +2906,9 @@ export function showSendTokenPage(): Action {
 }
 
 export function buy(opts: {
-  chainId: string;
+  chainId: keyof typeof BUYABLE_CHAINS_MAP;
   address?: string;
-  symbol?: string;
+  symbol?: CurrencySymbol;
   service?: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
@@ -3892,7 +3875,7 @@ export function setRecoveryPhraseReminderLastShown(
   };
 }
 
-export function setOutdatedBrowserWarningLastShown(lastShown) {
+export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
       lastShown,
