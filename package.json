@@ -392,6 +392,7 @@
     "@tsconfig/node16": "^1.0.3",
     "@types/babelify": "^7.3.7",
     "@types/browserify": "^12.0.37",
+    "@types/currency-formatter": "^1.5.1",
     "@types/end-of-stream": "^1.4.1",
     "@types/fs-extra": "^9.0.13",
     "@types/gulp": "^4.0.9",

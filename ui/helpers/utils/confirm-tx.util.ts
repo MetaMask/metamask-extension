@@ -1,18 +1,19 @@
 import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { TransactionMeta } from '../../../shared/constants/transaction';
 
-export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }) {
+export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }): string {
   return new Numeric(gasLimit, 16)
     .times(new Numeric(gasPrice, 16))
     .toPrefixedHexString();
 }
 
-export function addEth(firstValue, ...otherValues) {
+export function addEth(firstValue: string, ...otherValues: string[]): string {
   return otherValues
     .reduce((numericAcc, ethAmount) => {
       return numericAcc.add(new Numeric(ethAmount, 10)).round(6);
@@ -20,7 +21,7 @@ export function addEth(firstValue, ...otherValues) {
     .toString();
 }
 
-export function addFiat(firstValue, ...otherValues) {
+export function addFiat(firstValue: string, ...otherValues: string[]): string {
   return otherValues
     .reduce((numericAcc, fiatAmount) => {
       return numericAcc.add(new Numeric(fiatAmount, 10)).round(2);
@@ -30,11 +31,17 @@ export function addFiat(firstValue, ...otherValues) {
 
 export function getTransactionFee({
   value,
-  fromCurrency = 'ETH',
+  fromCurrency = EtherDenomination.ETH,
   toCurrency,
   conversionRate,
   numberOfDecimals,
-}) {
+}: {
+  value: string;
+  fromCurrency: EtherDenomination;
+  toCurrency: string;
+  conversionRate: number;
+  numberOfDecimals: number;
+}): string {
   let fee = new Numeric(value, 16, EtherDenomination.WEI)
     .toDenomination(EtherDenomination.ETH)
     .toBase(10);
@@ -45,24 +52,29 @@ export function getTransactionFee({
   return fee.round(numberOfDecimals).toString();
 }
 
-export function formatCurrency(value, currencyCode) {
+export function formatCurrency(value: string, currencyCode: string): string {
   const upperCaseCurrencyCode = currencyCode.toUpperCase();
 
   return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), {
         code: upperCaseCurrencyCode,
-        style: 'currency',
       })
     : value;
 }
 
 export function convertTokenToFiat({
   value,
-  fromCurrency = 'ETH',
+  fromCurrency = EtherDenomination.ETH,
   toCurrency,
   conversionRate,
   contractExchangeRate,
-}) {
+}: {
+  value: string;
+  fromCurrency: EtherDenomination;
+  toCurrency: string;
+  conversionRate: number;
+  contractExchangeRate: number;
+}): string {
   const totalExchangeRate = conversionRate * contractExchangeRate;
 
   let tokenInFiat = new Numeric(value, 10);
@@ -74,18 +86,30 @@ export function convertTokenToFiat({
   return tokenInFiat.round(2).toString();
 }
 
-export function hasUnconfirmedTransactions(state) {
+/**
+ * This is a selector and probably doesn't belong here but its staying for now
+ * Note: I did not go so far as to type the entirety of the MetaMask state tree
+ * which definitely needs to be done for the full conversion of TypeScript to
+ * be successful and as useful as possible.
+ * TODO: Type the MetaMask state tree and use that type here.
+ *
+ * @param state - MetaMask state
+ * @returns true if there are unconfirmed transactions in state
+ */
+export function hasUnconfirmedTransactions(
+  state: Record<string, any>,
+): boolean {
   return unconfirmedTransactionsCountSelector(state) > 0;
 }
 
 /**
  * Rounds the given decimal string to 4 significant digits.
  *
- * @param {string} decimalString - The base-ten number to round.
- * @returns {string} The rounded number, or the original number if no
+ * @param decimalString - The base-ten number to round.
+ * @returns The rounded number, or the original number if no
  * rounding was necessary.
  */
-export function roundExponential(decimalString) {
+export function roundExponential(decimalString: string): string {
   const PRECISION = 4;
   const bigNumberValue = new BigNumber(decimalString);
 
@@ -95,8 +119,10 @@ export function roundExponential(decimalString) {
     : decimalString;
 }
 
-export function areDappSuggestedAndTxParamGasFeesTheSame(txData = {}) {
-  const { txParams, dappSuggestedGasFees } = txData;
+export function areDappSuggestedAndTxParamGasFeesTheSame(
+  txData: TransactionMeta,
+): boolean {
+  const { txParams, dappSuggestedGasFees } = txData ?? {};
   const {
     gasPrice: txParamsGasPrice,
     maxFeePerGas: txParamsMaxFeePerGas,
@@ -127,9 +153,9 @@ export function areDappSuggestedAndTxParamGasFeesTheSame(txData = {}) {
     txParamsMaxFeePerGas === dappMaxFeePerGas &&
     txParamsMaxPriorityFeePerGas === dappMaxPriorityFeePerGas;
 
-  return (
+  return Boolean(
     txParamsGasPriceMatchesDappSuggestedGasPrice ||
-    txParamsEIP1559FeesMatchDappSuggestedGasPrice ||
-    txParamsEIP1559FeesMatchDappSuggestedEIP1559Fees
+      txParamsEIP1559FeesMatchDappSuggestedGasPrice ||
+      txParamsEIP1559FeesMatchDappSuggestedEIP1559Fees,
   );
 }
