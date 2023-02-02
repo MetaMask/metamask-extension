@@ -2707,28 +2707,44 @@ describe('NetworkController', () => {
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls();
-              const { provider: providerBefore } =
-                controller.getProviderAndBlockTracker();
 
               controller.resetConnection();
 
-              const { provider: providerAfter } =
-                controller.getProviderAndBlockTracker();
-              expect(providerBefore).not.toBe(providerAfter);
-              const promisifiedSendAsync = promisify(
-                providerAfter.sendAsync,
-              ).bind(providerAfter);
-              const chainIdResult = await promisifiedSendAsync({
+              const { provider } = controller.getProviderAndBlockTracker();
+              const promisifiedSendAsync = promisify(provider.sendAsync).bind(
+                provider,
+              );
+              const chainIdResponse = await promisifiedSendAsync({
                 method: 'eth_chainId',
               });
-              expect(chainIdResult.result).toBe(chainId);
+              expect(chainIdResponse.result).toBe(chainId);
             },
           );
         });
 
-        it.todo(
-          'replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself',
-        );
+        it('replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: networkType,
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls();
+              controller.initializeProvider();
+
+              const { provider: providerBefore } =
+                controller.getProviderAndBlockTracker();
+              controller.resetConnection();
+              const { provider: providerAfter } =
+                controller.getProviderAndBlockTracker();
+
+              expect(providerBefore).toBe(providerAfter);
+            },
+          );
+        });
 
         it('emits networkDidChange', async () => {
           await withController(
@@ -2960,28 +2976,46 @@ describe('NetworkController', () => {
           },
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls();
-            const { provider: providerBefore } =
-              controller.getProviderAndBlockTracker();
 
             controller.resetConnection();
 
-            const { provider: providerAfter } =
-              controller.getProviderAndBlockTracker();
-            expect(providerBefore).not.toBe(providerAfter);
-            const promisifiedSendAsync = promisify(
-              providerAfter.sendAsync,
-            ).bind(providerAfter);
-            const chainIdResult = await promisifiedSendAsync({
+            const { provider } = controller.getProviderAndBlockTracker();
+            const promisifiedSendAsync = promisify(provider.sendAsync).bind(
+              provider,
+            );
+            const chainIdResponse = await promisifiedSendAsync({
               method: 'eth_chainId',
             });
-            expect(chainIdResult.result).toBe('0x1337');
+            expect(chainIdResponse.result).toBe('0x1337');
           },
         );
       });
 
-      it.todo(
-        'replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself',
-      );
+      it('replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: '0x1337',
+              },
+            },
+          },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
+            controller.initializeProvider();
+
+            const { provider: providerBefore } =
+              controller.getProviderAndBlockTracker();
+            controller.resetConnection();
+            const { provider: providerAfter } =
+              controller.getProviderAndBlockTracker();
+
+            expect(providerBefore).toBe(providerAfter);
+          },
+        );
+      });
 
       it('emits networkDidChange', async () => {
         await withController(
@@ -3351,17 +3385,54 @@ describe('NetworkController', () => {
               const promisifiedSendAsync = promisify(provider.sendAsync).bind(
                 provider,
               );
-              const chainIdResult = await promisifiedSendAsync({
+              const chainIdResponse = await promisifiedSendAsync({
                 method: 'eth_chainId',
               });
-              expect(chainIdResult.result).toBe(chainId);
+              expect(chainIdResponse.result).toBe(chainId);
             },
           );
         });
 
-        it.todo(
-          'replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself',
-        );
+        it('replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: networkType,
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls();
+              const network2 = network1.with({
+                networkClientType: 'custom',
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url',
+                },
+              });
+              network2.mockEssentialRpcCalls();
+              await waitForLookupNetworkToComplete({
+                controller,
+                operation: () => {
+                  controller.setRpcTarget('https://mock-rpc-url', '0x1337');
+                },
+              });
+
+              const { provider: providerBefore } =
+                controller.getProviderAndBlockTracker();
+              await waitForLookupNetworkToComplete({
+                controller,
+                operation: () => {
+                  controller.rollbackToPreviousProvider();
+                },
+              });
+              const { provider: providerAfter } =
+                controller.getProviderAndBlockTracker();
+
+              expect(providerBefore).toBe(providerAfter);
+            },
+          );
+        });
 
         it('emits networkDidChange', async () => {
           await withController(
@@ -3795,17 +3866,56 @@ describe('NetworkController', () => {
             const promisifiedSendAsync = promisify(provider.sendAsync).bind(
               provider,
             );
-            const chainIdResult = await promisifiedSendAsync({
+            const chainIdResponse = await promisifiedSendAsync({
               method: 'eth_chainId',
             });
-            expect(chainIdResult.result).toBe('0x1337');
+            expect(chainIdResponse.result).toBe('0x1337');
           },
         );
       });
 
-      it.todo(
-        'replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself',
-      );
+      it('replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: '0x1337',
+              },
+            },
+          },
+          async ({ controller, network: network1 }) => {
+            network1.mockEssentialRpcCalls();
+            const network2 = network1.with({
+              networkClientType: 'infura',
+              networkClientOptions: {
+                infuraNetwork: 'goerli',
+              },
+            });
+            network2.mockEssentialRpcCalls();
+            await waitForLookupNetworkToComplete({
+              controller,
+              operation: () => {
+                controller.setProviderType('goerli');
+              },
+            });
+
+            const { provider: providerBefore } =
+              controller.getProviderAndBlockTracker();
+            await waitForLookupNetworkToComplete({
+              controller,
+              operation: () => {
+                controller.rollbackToPreviousProvider();
+              },
+            });
+            const { provider: providerAfter } =
+              controller.getProviderAndBlockTracker();
+
+            expect(providerBefore).toBe(providerAfter);
+          },
+        );
+      });
 
       it('emits networkDidChange', async () => {
         await withController(
