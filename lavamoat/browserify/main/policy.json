@@ -2106,6 +2106,11 @@
         "browserify>browser-resolve": true
       }
     },
+    "bowser": {
+      "globals": {
+        "define": true
+      }
+    },
     "browserify>assert": {
       "globals": {
         "Buffer": true
