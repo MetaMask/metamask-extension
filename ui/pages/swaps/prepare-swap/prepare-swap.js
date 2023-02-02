@@ -118,6 +118,11 @@ import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils'
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import Mascot from '../../../components/ui/mascot';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../components/component-library';
 import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
 
@@ -821,19 +826,24 @@ export default function PrepareSwap({
               </Box>
             )}
           </Box>
-        </div>
-        <div className="prepare-swap__swap-arrows-row">
-          <button
-            className="prepare-swap__swap-arrows"
-            data-testid="prepare-swap__swap-arrows"
-            onClick={() => {
-              onToSelect(selectedFromToken);
-              onFromSelect(selectedToToken);
-            }}
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            height={0}
           >
-            <i className="fa fa-arrow-up" title={t('swapSwapSwitch')} />
-            <i className="fa fa-arrow-down" title={t('swapSwapSwitch')} />
-          </button>
+            <div className="prepare-swap__switch-tokens">
+              <Icon
+                name={ICON_NAMES.ARROW_2_DOWN}
+                size={ICON_SIZES.LG}
+                onClick={() => {
+                  onToSelect(selectedFromToken);
+                  onFromSelect(selectedToToken);
+                }}
+                style={{ cursor: 'pointer' }}
+                title={t('swapSwapSwitch')}
+              />
+            </div>
+          </Box>
         </div>
         <div className="prepare-swap__swap-to-content">
           <div className="dropdown-input-pair dropdown-input-pair__to">

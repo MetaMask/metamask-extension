@@ -33,9 +33,12 @@
     box-shadow: none;
     border: 1px solid var(--color-border-default);
     margin-top: 16px;
+    position: relative;
 
-    input {
-      text-align: right;
+    .dropdown-input-pair__input {
+      input {
+        text-align: right;
+      }
     }
 
     .MuiInputBase-root {
@@ -79,24 +82,15 @@
     margin-top: 3px;
   }
 
-  &__swap-arrows-row {
-    width: 100%;
-    display: none;
-    // display: flex;
-    justify-content: flex-end;
-    padding-right: 16px;
-    padding-top: 12px;
-    height: 24px;
-    position: relative;
-  }
-
-  &__swap-arrows {
+  &__switch-tokens {
+    position: absolute;
     display: flex;
-    flex: 0 0 auto;
-    height: 24px;
-    cursor: pointer;
-    background: unset;
-    color: var(--color-icon-muted);
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    padding: 8px;
+    background: var(--color-background-default-hover);
+    border: 1px solid var(--color-border-default);
   }
 
   &__max-button {
