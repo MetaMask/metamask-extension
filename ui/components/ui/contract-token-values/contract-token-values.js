@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import IconBlockExplorer from '../icon/icon-block-explorer';
 import Box from '../box/box';
 import Tooltip from '../tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -14,8 +13,8 @@ import {
   AlignItems,
   JustifyContent,
   TextColor,
+  Color,
 } from '../../../helpers/constants/design-system';
-import Button from '../button';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { ButtonIcon, ICON_NAMES } from '../../component-library';
 
@@ -56,13 +55,15 @@ export default function ContractTokenValues({
             iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
             className="contract-token-values__copy-address__button"
             onClick={() => handleCopy(address)}
+            ariaLabel={copied ? t('copiedExclamation') : t('copyToClipboard')}
           />
         </Tooltip>
       </Box>
       <Box className="contract-token-values__block-explorer">
         <Tooltip position="top" title={t('openInBlockExplorer')}>
-          <Button
-            type="link"
+          <ButtonIcon
+            iconName={ICON_NAMES.EXPORT}
+            color={Color.iconMuted}
             className="contract-token-values__block-explorer__button"
             onClick={() => {
               const blockExplorerTokenLink = getAccountLink(
@@ -77,9 +78,8 @@ export default function ContractTokenValues({
                 url: blockExplorerTokenLink,
               });
             }}
-          >
-            <IconBlockExplorer size={24} color="var(--color-icon-muted)" />
-          </Button>
+            ariaLabel={t('openInBlockExplorer')}
+          />
         </Tooltip>
       </Box>
     </Box>

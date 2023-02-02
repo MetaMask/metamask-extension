@@ -4,7 +4,6 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import Box from '../../../ui/box';
-import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -155,14 +154,21 @@ export default function ContractDetailsModal({
                       }
                       onClick={() => handleCopyTokenAddress(tokenAddress)}
                       color={Color.iconMuted}
+                      ariaLabel={
+                        copiedTokenAddress
+                          ? t('copiedExclamation')
+                          : t('copyToClipboard')
+                      }
                     />
                   </Tooltip>
                 </Box>
                 <Box marginTop={5} marginRight={5}>
                   <Tooltip position="top" title={t('openInBlockExplorer')}>
-                    <Button
+                    <ButtonIcon
+                      iconName={ICON_NAMES.EXPORT}
+                      color={Color.iconMuted}
                       className="contract-details-modal__content__contract__buttons__block-explorer"
-                      type="link"
+                      ariaLabel={t('openInBlockExplorer')}
                       onClick={() => {
                         const blockExplorerTokenLink = getAccountLink(
                           tokenAddress,
@@ -177,12 +183,7 @@ export default function ContractDetailsModal({
                           url: blockExplorerTokenLink,
                         });
                       }}
-                    >
-                      <IconBlockExplorer
-                        size={16}
-                        color="var(--color-icon-muted)"
-                      />
-                    </Button>
+                    />
                   </Tooltip>
                 </Box>
               </Box>
@@ -276,9 +277,10 @@ export default function ContractDetailsModal({
             </Box>
             <Box marginTop={5} marginRight={5}>
               <Tooltip position="top" title={t('openInBlockExplorer')}>
-                <Button
+                <ButtonIcon
+                  iconName={ICON_NAMES.EXPORT}
+                  color={Color.iconMuted}
                   className="contract-details-modal__content__contract__buttons__block-explorer"
-                  type="link"
                   onClick={() => {
                     const blockExplorerTokenLink = getAccountLink(
                       toAddress,
@@ -292,12 +294,7 @@ export default function ContractDetailsModal({
                       url: blockExplorerTokenLink,
                     });
                   }}
-                >
-                  <IconBlockExplorer
-                    size={16}
-                    color="var(--color-icon-muted)"
-                  />
-                </Button>
+                />
               </Tooltip>
             </Box>
           </Box>
