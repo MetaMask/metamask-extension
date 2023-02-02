@@ -1392,7 +1392,6 @@ export function markPasswordForgotten() {
     } finally {
       // TODO: handle errors
       dispatch(hideLoadingIndication());
-      dispatch(forgotPassword());
       await forceUpdateMetamaskState(dispatch);
     }
   };
@@ -1402,17 +1401,9 @@ export function unMarkPasswordForgotten() {
   return (dispatch) => {
     return new Promise((resolve) => {
       callBackgroundMethod('unMarkPasswordForgotten', [], () => {
-        dispatch(forgotPassword(false));
         resolve();
       });
     }).then(() => forceUpdateMetamaskState(dispatch));
-  };
-}
-
-export function forgotPassword(forgotPasswordState = true) {
-  return {
-    type: actionConstants.FORGOT_PASSWORD,
-    value: forgotPasswordState,
   };
 }
 

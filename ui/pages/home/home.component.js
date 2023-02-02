@@ -286,7 +286,11 @@ export default class Home extends PureComponent {
       setRpcTarget,
     } = this.props;
 
-    const onAutoHide = () => setNewCollectibleAddedMessage('');
+    const onAutoHide = () => {
+      setNewCollectibleAddedMessage('');
+      setRemoveCollectibleMessage('');
+    };
+
     const autoHideDelay = 5 * SECOND;
 
     return (
@@ -371,7 +375,7 @@ export default class Home extends PureComponent {
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
-                  onClick={() => setRemoveCollectibleMessage('')}
+                  onClick={onAutoHide}
                 />
               </Box>
             }

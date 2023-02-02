@@ -79,7 +79,7 @@ const mapStateToProps = (state) => {
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
-  const { forgottenPassword } = appState;
+  const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
