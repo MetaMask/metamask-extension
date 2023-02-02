@@ -4209,6 +4209,8 @@ export default class MetamaskController extends EventEmitter {
       };
     });
 
+    this.unMarkPasswordForgotten();
+
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
     // event of the MetaMaskController itself.
