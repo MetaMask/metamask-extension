@@ -17,6 +17,8 @@ export const BannerBase = ({
   className,
   title,
   titleProps,
+  description,
+  descriptionProps,
   children,
   actionButtonLabel,
   actionButtonOnClick,
@@ -34,7 +36,6 @@ export const BannerBase = ({
       backgroundColor={COLORS.BACKGROUND_DEFAULT}
       borderRadius={SIZES.SM}
       padding={3}
-      paddingLeft={2}
       {...props}
     >
       {startAccessory && <>{startAccessory}</>}
@@ -50,6 +51,7 @@ export const BannerBase = ({
             {title}
           </Text>
         )}
+        {description && <Text {...descriptionProps}>{description}</Text>}
         {children && typeof children === 'object' ? (
           children
         ) : (
@@ -90,7 +92,15 @@ BannerBase.propTypes = {
    */
   titleProps: PropTypes.shape(Text.PropTypes),
   /**
-   * The children is the description area of the BannerBase below the title
+   * The description is the content area below BannerBase title
+   */
+  description: PropTypes.string,
+  /**
+   * Additional props to pass to the `Text` component used for the `description` text
+   */
+  descriptionProps: PropTypes.shape(Text.PropTypes),
+  /**
+   * The children is an alternative to using the description prop for BannerBase content below the title
    */
   children: PropTypes.node,
   /**

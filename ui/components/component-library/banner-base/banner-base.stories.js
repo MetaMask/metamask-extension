@@ -106,11 +106,25 @@ Title.args = {
   children: 'Pass only a string through the title prop',
 };
 
+export const Description = (args) => {
+  return <BannerBase {...args} />;
+};
+
+Description.args = {
+  title: 'Description vs children',
+  description:
+    'Pass only a string through the description prop or you can use children if the contents require more',
+};
+
 export const Children = (args) => {
   return (
     <BannerBase {...args}>
       {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-      <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
+      <ButtonLink
+        size={SIZES.INHERIT}
+        href="https://metamask.io/"
+        target="_blank"
+      >
         hyperlink.
       </ButtonLink>
     </BannerBase>
