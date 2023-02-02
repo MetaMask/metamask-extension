@@ -8,8 +8,8 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
   TEXT_ALIGN,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  TypographyVariant,
+  JustifyContent,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import {
@@ -69,20 +69,23 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         marginBottom={4}
       />
       <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TypographyVariant.H2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('seedPhraseConfirm')}
         </Typography>
       </Box>
       <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography variant={TYPOGRAPHY.H4}>
+        <Typography variant={TypographyVariant.H4}>
           {t('seedPhraseEnterMissingWords')}
         </Typography>
       </Box>

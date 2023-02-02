@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { Color, Size } from '../../../helpers/constants/design-system';
 import ColorIndicator from './color-indicator';
 
 export default {
@@ -10,7 +10,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: SIZES,
+      options: Size,
     },
     type: {
       control: {
@@ -22,19 +22,19 @@ export default {
       control: {
         type: 'select',
       },
-      options: COLORS,
+      options: Color,
     },
     borderColor: {
       control: {
         type: 'select',
       },
-      options: { NONE: undefined, ...COLORS },
+      options: { NONE: undefined, ...Color },
     },
   },
   args: {
-    size: SIZES.LG,
+    size: Size.LG,
     type: ColorIndicator.TYPES.FILLED,
-    color: COLORS.PRIMARY_DEFAULT,
+    color: Color.primaryDefault,
   },
 };
 

@@ -23,56 +23,52 @@ The `ButtonLink` accepts all [ButtonBase](/docs/components-componentlibrary-butt
 
 ### Size
 
-Use the `size` prop and the `SIZES` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonLink`. Defaults to `SIZES.AUTO`.
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonLink`. Defaults to `SIZES.AUTO`.
 
 Optional: `BUTTON_LINK_SIZES` from `../../component-library` object can be used instead of `SIZES`
 
 Possible sizes include:
 
-- `SIZES.AUTO` sets the height to auto but retains `ButtonLink` font-size
-- `SIZES.SM` 32px
-- `SIZES.MD` 40px
-- `SIZES.LG` 48px
-- `SIZES.INHERIT` inherits the font-size of the parent element. Used for inline links in paragraphs.
+- `Size.auto` sets the height to auto but retains `ButtonLink` font-size
+- `Size.SM` 32px
+- `Size.MD` 40px
+- `Size.LG` 48px
+- `Size.inherit` inherits the font-size of the parent element. Used for inline links in paragraphs.
 
 <Canvas>
   <Story id="components-componentlibrary-buttonlink--size" />
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
-import { ButtonLink, Text, TEXT } from '../../component-library';
+import { Size } from '../../../helpers/constants/design-system';
+import { ButtonLink, Text, TextVariant } from '../../component-library';
 
-<ButtonLink size={SIZES.AUTO}>
+<ButtonLink size={Size.auto}>
   Auto (default)
 </ButtonLink>
-<ButtonLink size={SIZES.SM}>
+<ButtonLink size={Size.SM}>
   Small
 </ButtonLink>
-<ButtonLink size={SIZES.MD}>
+<ButtonLink size={Size.MD}>
   Medium
 </ButtonLink>
-<ButtonLink size={SIZES.LG}>
+<ButtonLink size={Size.LG}>
   Large
 </ButtonLink>
 
-<Text variant={TEXT.BODY_LG_MEDIUM}>
+<Text variant={TextVariant.bodyLgMedium}>
   Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
 </Text>
-<Text variant={TEXT.BODY_MD}>
+<Text variant={TextVariant.bodyMd}>
   Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
 </Text>
-<Text variant={TEXT.BODY_SM}>
+<Text variant={TextVariant.bodySm}>
   Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
 </Text>
-<Text variant={TEXT.BODY_XS}>
-    Inherits the font-size of the parent element and example with textProps override for a success color.
-    <ButtonLink
-      size={SIZES.INHERIT}
-      textProps={{ color: COLORS.SUCCESS_DEFAULT }}
-    >
-      Learn more
-    </ButtonLink>
+
+<Text variant={TextVariant.bodyXs}>
+  Inherits the font-size of the parent element and example with textProps override for a success color.
+   <ButtonLink size={Size.INHERIT}>Learn more</ButtonLink>
 </Text>
 ```
 
