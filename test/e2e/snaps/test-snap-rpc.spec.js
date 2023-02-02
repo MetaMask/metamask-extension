@@ -96,7 +96,7 @@ describe('Test Snap RPC', function () {
         });
 
         // wait for window to close
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
 
         // approve and install part two
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
