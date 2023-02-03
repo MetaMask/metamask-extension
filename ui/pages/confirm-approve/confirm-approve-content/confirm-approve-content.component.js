@@ -27,7 +27,11 @@ import LedgerInstructionField from '../../../components/app/ledger-instruction-f
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
-import { ICON_NAMES, ButtonIcon } from '../../../components/component-library';
+import {
+  ICON_NAMES,
+  ButtonIcon,
+  Icon,
+} from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -601,7 +605,7 @@ export default class ConfirmApproveContent extends Component {
             </Box>
           )}
           {this.renderApproveContentCard({
-            symbol: <i className="fa fa-tag" />,
+            symbol: <Icon name={ICON_NAMES.TAG} />,
             title: t('transactionFee'),
             showEdit: true,
             showAdvanceGasFeeOptions: true,
