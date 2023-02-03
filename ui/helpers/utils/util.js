@@ -522,7 +522,7 @@ export function isNullish(value) {
  * The method escape RTL character in string
  *
  * @param {string} str
- * @returns {string} escaped string
+ * @returns {(string|*)} escaped string or original param value
  */
 export const sanitizeString = (str) => {
   if (!str) {
