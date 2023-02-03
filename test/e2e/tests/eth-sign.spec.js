@@ -49,6 +49,11 @@ describe('Eth sign', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            disabledRpcMethodPreferences: {
+              eth_sign: true
+            }
+          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
@@ -58,15 +63,6 @@ describe('Eth sign', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
-        // Enable eth_sign
-        const currentUrl = await driver.getCurrentUrl();
-        await driver.openNewPage(
-          currentUrl.replace('home.html#unlock', 'home.html#settings/advanced'),
-        );
-        await driver.clickElement(
-          '[data-testid="advanced-setting-toggle-ethsign"] > div > div > .toggle-button',
-        );
 
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement('#ethSign');
