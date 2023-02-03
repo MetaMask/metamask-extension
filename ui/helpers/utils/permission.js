@@ -90,7 +90,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     if (friendlyName) {
       return {
-        label: t('permission_accessNamedSnap', [friendlyName]),
+        label: t('permission_accessNamedSnap', [
+          <span className="permission-label-item" key={snapId}>
+            {friendlyName}
+          </span>,
+        ]),
         leftIcon: 'fas fa-bolt',
         rightIcon: null,
       };
