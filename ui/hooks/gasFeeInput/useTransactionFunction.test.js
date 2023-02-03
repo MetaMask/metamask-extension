@@ -90,6 +90,31 @@ describe('useMaxPriorityFeePerGasInput', () => {
     });
   });
 
+  it('invokes action updateTransaction with 10% increased max priority fee and medium fee + 10% when updateTransactionToTenPercentIncreasedGasFee callback is invoked while original priority fee is 0', async () => {
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      transaction: {
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: { maxFeePerGas: '0x5028', maxPriorityFeePerGas: '0x0' },
+      },
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
+    expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
+      estimateSuggested: 'tenPercentIncreased',
+      estimateUsed: 'custom',
+      gas: '5208',
+      gasLimit: '5208',
+      maxFeePerGas: '0x582c',
+      maxPriorityFeePerGas: '0x1caf4ad00',
+      userEditedGasLimit: undefined,
+      userFeeLevel: 'custom',
+    });
+  });
+
   it('should invoke action updateTransaction with estimate gas values fee when updateTransactionUsingEstimate callback is invoked', async () => {
     const mockUpdateGasFees = jest
       .spyOn(Actions, 'updateTransactionGasFees')
