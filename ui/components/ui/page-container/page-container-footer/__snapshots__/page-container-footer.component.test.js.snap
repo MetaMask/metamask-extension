@@ -7,7 +7,7 @@ exports[`Page Footer should match snapshot 1`] = `
   >
     <footer>
       <button
-        class="button btn--rounded btn-secondary page-container__footer-button"
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
         data-testid="page-container-footer-cancel"
         role="button"
         tabindex="0"
@@ -34,7 +34,7 @@ exports[`Page Footer should render a secondary footer inside page-container__foo
   >
     <footer>
       <button
-        class="button btn--rounded btn-secondary page-container__footer-button"
+        class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
         data-testid="page-container-footer-cancel"
         role="button"
         tabindex="0"
