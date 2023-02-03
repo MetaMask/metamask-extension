@@ -11,7 +11,7 @@ jest.mock('../../../../app/_locales/index.json', () => {
   return [{ code: 'en', name: 'English' }];
 });
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   updateCurrentLocale: () => mockUpdateCurrentLocale,
 }));
 

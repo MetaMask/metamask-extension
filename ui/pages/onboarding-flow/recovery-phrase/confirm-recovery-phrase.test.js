@@ -6,8 +6,8 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import ConfirmRecoveryPhrase from './confirm-recovery-phrase';
 
-jest.mock('../../../store/actions.js', () => ({
-  ...jest.requireActual('../../../store/actions.js'),
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
   setSeedPhraseBackedUp: jest.fn().mockReturnValue(jest.fn()),
 }));
 

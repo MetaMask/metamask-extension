@@ -10,7 +10,7 @@ import {
 import { setParticipateInMetaMetrics } from '../../../store/actions';
 import OnboardingMetametrics from './metametrics';
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   setParticipateInMetaMetrics: jest
     .fn()
     .mockReturnValue(jest.fn((val) => Promise.resolve([val]))),

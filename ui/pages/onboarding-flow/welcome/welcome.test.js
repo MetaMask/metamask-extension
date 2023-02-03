@@ -15,7 +15,7 @@ import OnboardingWelcome from './welcome';
 const mockHistoryReplace = jest.fn();
 const mockHistoryPush = jest.fn();
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   setFirstTimeFlowType: jest.fn().mockReturnValue(
     jest.fn((type) => {
       return type;
