@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { inspect, isDeepStrictEqual, promisify } from 'util';
 import { isMatch } from 'lodash';
 import nock from 'nock';
@@ -1079,6 +1080,10 @@ describe('NetworkController', () => {
             const anotherNetwork = INFURA_NETWORKS.find(
               (network) => network.networkType !== networkType,
             );
+            assert(
+              anotherNetwork,
+              "Could not find another network to use. You've probably commented out all INFURA_NETWORKS but one. Please uncomment another one.",
+            );
 
             await withController(
               {
@@ -1113,7 +1118,9 @@ describe('NetworkController', () => {
                   },
                 });
                 const network2 = network1.with({
-                  networkType: anotherNetwork.networkType,
+                  networkClientOptions: {
+                    infuraNetwork: anotherNetwork.networkType,
+                  },
                 });
                 network2.mockEssentialRpcCalls();
                 await withoutCallingLookupNetwork({
@@ -1277,100 +1284,6 @@ describe('NetworkController', () => {
               },
             );
           });
-        });
-
-        it.only(`does not persist "${networkVersion}" to state as the network version of ${networkName} if the network state has changed after making the net_version request`, async () => {
-          const anotherNetwork = {
-            networkName: 'Goerli',
-            networkType: 'goerli',
-            chainId: '0x5',
-            networkVersion: '5',
-            ticker: 'GoerliETH',
-          };
-
-          await withController(
-            {
-              state: {
-                provider: {
-                  type: networkType,
-                },
-              },
-            },
-            async ({ controller }) => {
-              let netVersionCallCount = 0;
-              const fakeProvider = {
-                sendAsync(request, callback) {
-                  if (request.method === 'net_version') {
-                    netVersionCallCount += 1;
-                    if (netVersionCallCount === 1) {
-                      waitForStateChanges({
-                        controller,
-                        propertyPath: ['network'],
-                        operation: () => {
-                          controller.setProviderType(
-                            anotherNetwork.networkType,
-                          );
-                        },
-                      })
-                        .then(() => {
-                          callback(null, {
-                            id: request.id,
-                            jsonrpc: '2.0',
-                            result: networkVersion,
-                          });
-                        })
-                        .catch((error) => {
-                          throw error;
-                        });
-                      return;
-                    }
-
-                    callback(null, {
-                      id: request.id,
-                      jsonrpc: '2.0',
-                      result: anotherNetwork.networkVersion,
-                    });
-                    return;
-                  }
-
-                  if (request.method === 'eth_getBlockByNumber') {
-                    callback(null, {
-                      id: request.id,
-                      jsonrpc: '2.0',
-                      result: BLOCK,
-                    });
-                    return;
-                  }
-
-                  throw new Error(
-                    `Mock not found for method ${request.method}`,
-                  );
-                },
-              };
-              jest
-                .spyOn(ethJsonRpcMiddlewareModule, 'providerFromEngine')
-                .mockReturnValue(fakeProvider);
-              await withoutCallingLookupNetwork({
-                controller,
-                operation: async () => {
-                  await controller.initializeProvider();
-                },
-              });
-
-              await waitForStateChanges({
-                controller,
-                propertyPath: ['network'],
-                count: 1,
-                operation: async () => {
-                  await controller.lookupNetwork();
-                },
-              });
-
-              expect(controller.store.getState().network).toBe(
-                anotherNetwork.networkVersion,
-              );
-            },
-          );
         });
 
         it(`persists "${networkVersion}" to state as the network version of ${networkName}`, async () => {
@@ -1545,6 +1458,234 @@ describe('NetworkController', () => {
                 expect(
                   controller.store.getState().networkDetails.EIPS['1559'],
                 ).toBeUndefined();
+              },
+            );
+          });
+        });
+
+        describe('if the network was switched after the net_version request started but before it completed', () => {
+          it(`persists to state the network version of the newly switched network, not the initial one for ${networkName}`, async () => {
+            const oldNetworkVersion = networkVersion;
+            const newNetworkName = 'goerli';
+            const newNetworkVersion = '5';
+
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                  },
+                },
+              },
+              async ({ controller }) => {
+                let netVersionCallCount = 0;
+
+                const fakeProviders = [
+                  {
+                    sendAsync(request, callback) {
+                      if (request.method === 'net_version') {
+                        netVersionCallCount += 1;
+                        if (netVersionCallCount === 1) {
+                          waitForStateChanges({
+                            controller,
+                            propertyPath: ['network'],
+                            operation: () => {
+                              controller.setProviderType(newNetworkName);
+                            },
+                          })
+                            .then(() => {
+                              callback(null, {
+                                id: request.id,
+                                jsonrpc: '2.0',
+                                result: oldNetworkVersion,
+                              });
+                            })
+                            .catch((error) => {
+                              throw error;
+                            });
+                          return;
+                        }
+
+                        throw new Error(
+                          "net_version shouldn't be called more than once",
+                        );
+                      }
+
+                      if (request.method === 'eth_getBlockByNumber') {
+                        callback(null, {
+                          id: request.id,
+                          jsonrpc: '2.0',
+                          result: BLOCK,
+                        });
+                        return;
+                      }
+
+                      throw new Error(
+                        `Mock not found for method ${request.method}`,
+                      );
+                    },
+                  },
+                  {
+                    sendAsync(request, callback) {
+                      if (request.method === 'net_version') {
+                        callback(null, {
+                          id: request.id,
+                          jsonrpc: '2.0',
+                          result: newNetworkVersion,
+                        });
+                        return;
+                      }
+
+                      if (request.method === 'eth_getBlockByNumber') {
+                        callback(null, {
+                          id: request.id,
+                          jsonrpc: '2.0',
+                          result: BLOCK,
+                        });
+                        return;
+                      }
+
+                      throw new Error(
+                        `Mock not found for method ${request.method}`,
+                      );
+                    },
+                  },
+                ];
+                jest
+                  .spyOn(ethJsonRpcMiddlewareModule, 'providerFromEngine')
+                  .mockImplementationOnce(() => fakeProviders[0])
+                  .mockImplementationOnce(() => fakeProviders[1]);
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['network'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+
+                expect(controller.store.getState().network).toBe(
+                  newNetworkVersion,
+                );
+              },
+            );
+          });
+
+          it(`persists to state the EIP-1559 support for the newly switched network, not the initial one for ${networkName}`, async () => {
+            const oldNetworkVersion = networkVersion;
+            const newNetworkName = 'goerli';
+            const newNetworkVersion = '5';
+
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                  },
+                },
+              },
+              async ({ controller }) => {
+                let netVersionCallCount = 0;
+
+                const fakeProviders = [
+                  {
+                    sendAsync(request, callback) {
+                      if (request.method === 'net_version') {
+                        netVersionCallCount += 1;
+                        if (netVersionCallCount === 1) {
+                          waitForStateChanges({
+                            controller,
+                            propertyPath: ['network'],
+                            operation: () => {
+                              controller.setProviderType(newNetworkName);
+                            },
+                          })
+                            .then(() => {
+                              callback(null, {
+                                id: request.id,
+                                jsonrpc: '2.0',
+                                result: oldNetworkVersion,
+                              });
+                            })
+                            .catch((error) => {
+                              throw error;
+                            });
+                          return;
+                        }
+
+                        throw new Error(
+                          "net_version shouldn't be called more than once",
+                        );
+                      }
+
+                      if (request.method === 'eth_getBlockByNumber') {
+                        callback(null, {
+                          id: request.id,
+                          jsonrpc: '2.0',
+                          result: POST_1559_BLOCK,
+                        });
+                        return;
+                      }
+
+                      throw new Error(
+                        `Mock not found for method ${request.method}`,
+                      );
+                    },
+                  },
+                  {
+                    sendAsync(request, callback) {
+                      if (request.method === 'net_version') {
+                        callback(null, {
+                          id: request.id,
+                          jsonrpc: '2.0',
+                          result: newNetworkVersion,
+                        });
+                        return;
+                      }
+
+                      if (request.method === 'eth_getBlockByNumber') {
+                        callback(null, {
+                          id: request.id,
+                          jsonrpc: '2.0',
+                          result: PRE_1559_BLOCK,
+                        });
+                        return;
+                      }
+
+                      throw new Error(
+                        `Mock not found for method ${request.method}`,
+                      );
+                    },
+                  },
+                ];
+                jest
+                  .spyOn(ethJsonRpcMiddlewareModule, 'providerFromEngine')
+                  .mockImplementationOnce(() => fakeProviders[0])
+                  .mockImplementationOnce(() => fakeProviders[1]);
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkDetails'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+
+                expect(
+                  controller.store.getState().networkDetails.EIPS['1559'],
+                ).toBe(false);
               },
             );
           });
@@ -1884,6 +2025,146 @@ describe('NetworkController', () => {
                   1559: undefined,
                 },
               });
+            },
+          );
+        });
+      });
+
+      describe('if the network was switched after the net_version request started but before it completed', () => {
+        it('persists to state the network version of the newly switched network, not the initial network', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url-1',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                net_version: {
+                  response: {
+                    result: '111',
+                  },
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['network'],
+                      operation: () => {
+                        controller.setRpcTarget(
+                          'https://mock-rpc-url-2',
+                          '0x9999',
+                        );
+                      },
+                    });
+                  },
+                },
+              });
+              const network2 = network1.with({
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url-2',
+                },
+              });
+              network2.mockEssentialRpcCalls({
+                net_version: {
+                  response: {
+                    result: '222',
+                  },
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['network'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(controller.store.getState().network).toBe('222');
+            },
+          );
+        });
+
+        it('persists to state the EIP-1559 support for the newly switched network, not the initial one', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url-1',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                net_version: {
+                  response: {
+                    result: '111',
+                  },
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['network'],
+                      operation: () => {
+                        controller.setRpcTarget(
+                          'https://mock-rpc-url-2',
+                          '0x9999',
+                        );
+                      },
+                    });
+                  },
+                },
+                eth_getBlockByNumber: {
+                  response: {
+                    result: POST_1559_BLOCK,
+                  },
+                },
+              });
+              const network2 = network1.with({
+                networkClientOptions: {
+                  customRpcUrl: 'https://mock-rpc-url-2',
+                },
+              });
+              network2.mockEssentialRpcCalls({
+                net_version: {
+                  response: {
+                    result: '222',
+                  },
+                },
+                eth_getBlockByNumber: {
+                  response: {
+                    result: PRE_1559_BLOCK,
+                  },
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkDetails'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(
+                controller.store.getState().networkDetails.EIPS['1559'],
+              ).toBe(false);
             },
           );
         });

@@ -125,7 +125,9 @@ export default class NetworkController extends EventEmitter {
     }
     this._infuraProjectId = infuraProjectId;
 
-    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
+    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+      this.lookupNetwork();
+    });
   }
 
   /**
