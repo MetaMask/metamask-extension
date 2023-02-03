@@ -486,7 +486,7 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'button',
         });
 
-        await driver.waitForElementNotPresent('.loading-overlay');
+        await driver.delay(500);
         await driver.clickElement({ text: 'Approve', tag: 'button' });
         await driver.waitForElementNotPresent('.loading-overlay');
 
