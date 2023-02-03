@@ -88,9 +88,9 @@ An example of a form using the `FormTextField` component.
 import React, { useState, useEffect } from 'react';
 import {
   DISPLAY,
-  COLORS,
-  ALIGN_ITEMS,
-  TEXT,
+  TextColor,
+  AlignItems,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -225,7 +225,7 @@ return (
         error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
         helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
       />
-      <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} gap={1}>
+      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
         <ButtonPrimary type="submit">Submit</ButtonPrimary>
       </Box>
     </Box>
@@ -233,7 +233,11 @@ return (
       Clear form
     </ButtonSecondary>
     {submitted === FORM_STATE.SUCCESS && (
-      <Text variant={TEXT.BODY_LG} color={COLORS.SUCCESS_DEFAULT} marginTop={4}>
+      <Text
+        variant={TextVariant.bodyMd}
+        color={TextColor.successDefault}
+        marginTop={4}
+      >
         Form successfully submitted!
       </Text>
     )}
@@ -251,11 +255,11 @@ There will be times when you will want to use a custom `Label` or `HelpText`. Th
 
 ```jsx
 import {
-  SIZES,
+  Size,
   DISPLAY,
-  COLORS,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  IconColor,
+  AlignItems,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -277,10 +281,10 @@ import {
 </Text>
 <Box
   display={DISPLAY.FLEX}
-  justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-  alignItems={ALIGN_ITEMS.FLEX_END}
+  justifyContent={JustifyContent.spaceBetween}
+  alignItems={AlignItems.flexEnd}
 >
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
     {/**
       * If you need a custom label
       * or require adding some form of customization
@@ -291,9 +295,9 @@ import {
     </Label>
     <Icon
       name={ICON_NAMES.INFO}
-      size={SIZES.SM}
+      size={Size.SM}
       marginLeft={1}
-      color={COLORS.ICON_ALTERNATIVE}
+      color={IconColor.iconAlternative}
     />
   </Box>
   <ButtonLink>Use default</ButtonLink>
@@ -312,8 +316,8 @@ import {
 />
 <Box
   display={DISPLAY.FLEX}
-  alignItems={ALIGN_ITEMS.FLEX_START}
-  justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+  alignItems={AlignItems.flexStart}
+  justifyContent={JustifyContent.spaceBetween}
   marginTop={1}
 >
   {/**

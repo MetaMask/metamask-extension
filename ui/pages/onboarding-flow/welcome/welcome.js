@@ -7,7 +7,7 @@ import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
@@ -82,7 +82,7 @@ export default function OnboardingWelcome() {
       <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
           <Typography
-            variant={TYPOGRAPHY.H2}
+            variant={TypographyVariant.H2}
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
@@ -101,7 +101,7 @@ export default function OnboardingWelcome() {
         </div>
         <div>
           <Typography
-            variant={TYPOGRAPHY.H2}
+            variant={TypographyVariant.H2}
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
@@ -121,7 +121,7 @@ export default function OnboardingWelcome() {
         </div>
         <div>
           <Typography
-            variant={TYPOGRAPHY.H2}
+            variant={TypographyVariant.H2}
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >

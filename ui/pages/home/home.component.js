@@ -24,13 +24,13 @@ import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminde
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
-  COLORS,
   BLOCK_SIZES,
-  SIZES,
-  TEXT,
+  Size,
+  TextVariant,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import { ButtonLink, ICON_NAMES } from '../../components/component-library';
@@ -306,15 +306,15 @@ export default class Home extends PureComponent {
                     descriptionText={
                       <>
                         <Typography
-                          color={COLORS.TEXT_ALTERNATIVE}
-                          variant={TYPOGRAPHY.H5}
+                          color={TextColor.textAlternative}
+                          variant={TypographyVariant.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
                         </Typography>
                         <Typography
-                          color={COLORS.TEXT_ALTERNATIVE}
-                          variant={TYPOGRAPHY.H7}
+                          color={TextColor.textAlternative}
+                          variant={TypographyVariant.H7}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('snapError', [error.message, error.code])}
@@ -342,7 +342,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newCollectibleAddedMessage')}
@@ -367,7 +367,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('removeCollectibleMessage')}
@@ -389,7 +389,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newNetworkAdded', [newNetworkAdded])}
@@ -413,14 +413,14 @@ export default class Home extends PureComponent {
                 <Box>
                   <Typography
                     className="home__new-tokens-imported-notification-title"
-                    variant={TYPOGRAPHY.H6}
+                    variant={TypographyVariant.H6}
                     fontWeight={FONT_WEIGHT.BOLD}
                   >
                     {t('newTokensImportedTitle')}
                   </Typography>
                   <Typography
                     className="home__new-tokens-imported-notification-message"
-                    variant={TYPOGRAPHY.H7}
+                    variant={TypographyVariant.H7}
                     fontWeight={FONT_WEIGHT.NORMAL}
                   >
                     {t('newTokensImportedMessage', [newTokensImported])}
@@ -510,7 +510,7 @@ export default class Home extends PureComponent {
           <Popover className="home__new-network-added">
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
             <Typography
-              variant={TYPOGRAPHY.H4}
+              variant={TypographyVariant.H4}
               marginTop={5}
               marginRight={9}
               marginLeft={9}
@@ -534,9 +534,9 @@ export default class Home extends PureComponent {
                 }}
               >
                 <Typography
-                  variant={TYPOGRAPHY.H6}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.NORMAL}
-                  color={COLORS.PRIMARY_INVERSE}
+                  color={TextColor.primaryInverse}
                 >
                   {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
                 </Typography>
@@ -546,9 +546,9 @@ export default class Home extends PureComponent {
                 onClick={() => clearNewCustomNetworkAdded()}
               >
                 <Typography
-                  variant={TYPOGRAPHY.H6}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.NORMAL}
-                  color={COLORS.PRIMARY_DEFAULT}
+                  color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
                 </Typography>
@@ -734,8 +734,8 @@ export default class Home extends PureComponent {
                     }}
                     iconName={ICON_NAMES.DIAGRAM}
                     width={BLOCK_SIZES.FULL}
-                    size={SIZES.MD}
-                    textProps={{ variant: TEXT.BODY_SM }}
+                    size={Size.MD}
+                    textProps={{ variant: TextVariant.bodySm }}
                   >
                     {t('portfolioSite')}
                   </ButtonLink>

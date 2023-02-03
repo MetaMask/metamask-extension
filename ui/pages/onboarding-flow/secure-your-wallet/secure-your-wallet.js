@@ -6,8 +6,8 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
   TEXT_ALIGN,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  TypographyVariant,
+  JustifyContent,
   FONT_WEIGHT,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
@@ -81,17 +81,20 @@ export default function SecureYourWallet() {
         marginBottom={4}
       />
       <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TypographyVariant.H2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('seedPhraseIntroTitle')}
         </Typography>
       </Box>
-      <Box justifyContent={JUSTIFY_CONTENT.CENTER} marginBottom={6}>
+      <Box justifyContent={JustifyContent.center} marginBottom={6}>
         <Typography
-          variant={TYPOGRAPHY.H4}
+          variant={TypographyVariant.H4}
           className="secure-your-wallet__details"
         >
           {t('seedPhraseIntroTitleCopy')}
@@ -128,7 +131,7 @@ export default function SecureYourWallet() {
       </Box>
       <Box
         margin={8}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+        justifyContent={JustifyContent.spaceBetween}
         className="secure-your-wallet__actions"
       >
         <Button
@@ -154,20 +157,20 @@ export default function SecureYourWallet() {
         <Box marginBottom={4}>
           <Typography
             as="p"
-            variant={TYPOGRAPHY.H4}
+            variant={TypographyVariant.H4}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleOne')}
           </Typography>
-          <Typography as="p" variant={TYPOGRAPHY.H4}>
+          <Typography as="p" variant={TypographyVariant.H4}>
             {t('seedPhraseIntroSidebarCopyOne')}
           </Typography>
         </Box>
         <Box marginBottom={4}>
           <Typography
             as="p"
-            variant={TYPOGRAPHY.H4}
+            variant={TypographyVariant.H4}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
@@ -182,18 +185,18 @@ export default function SecureYourWallet() {
         <Box marginBottom={6}>
           <Typography
             as="p"
-            variant={TYPOGRAPHY.H4}
+            variant={TypographyVariant.H4}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleThree')}
           </Typography>
-          <Typography as="p" variant={TYPOGRAPHY.H4}>
+          <Typography as="p" variant={TypographyVariant.H4}>
             {t('seedPhraseIntroSidebarCopyTwo')}
           </Typography>
         </Box>
         <Box className="secure-your-wallet__highlighted" marginBottom={2}>
-          <Typography as="p" variant={TYPOGRAPHY.H4}>
+          <Typography as="p" variant={TypographyVariant.H4}>
             {t('seedPhraseIntroSidebarCopyThree')}
           </Typography>
         </Box>

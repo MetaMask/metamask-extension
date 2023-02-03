@@ -18,7 +18,6 @@ import {
   approvePermissionsRequest,
   rejectPermissionsRequest,
   showModal,
-  getCurrentWindowTab,
   getRequestAccountTabIds,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   resolvePendingApproval,
@@ -159,7 +158,6 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
     getRequestAccountTabIds: () => dispatch(getRequestAccountTabIds()),
-    getCurrentWindowTab: () => dispatch(getCurrentWindowTab()),
   };
 };
 

@@ -19,7 +19,10 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography';
-import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+import {
+  TypographyVariant,
+  FONT_WEIGHT,
+} from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -540,13 +543,13 @@ class ImportToken extends Component {
             message={
               <>
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
                   {t('tokenDecimalFetchFailed')}
                 </Typography>
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('verifyThisTokenDecimalOn', [

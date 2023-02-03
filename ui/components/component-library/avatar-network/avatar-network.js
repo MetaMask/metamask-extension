@@ -4,22 +4,24 @@ import classnames from 'classnames';
 import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
 import {
-  COLORS,
-  SIZES,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
 export const AvatarNetwork = ({
-  size = SIZES.MD,
+  size = Size.MD,
   name,
   src,
   showHalo,
-  color = COLORS.TEXT_DEFAULT,
-  backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
-  borderColor = COLORS.TRANSPARENT,
+  color = TextColor.textDefault,
+  backgroundColor = BackgroundColor.backgroundAlternative,
+  borderColor = BorderColor.transparent,
   className,
   ...props
 }) => {
@@ -39,8 +41,8 @@ export const AvatarNetwork = ({
     <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
       className={classnames(
         'mm-avatar-network',
         showHalo && 'mm-avatar-network--with-halo',
@@ -92,23 +94,23 @@ AvatarNetwork.propTypes = {
   showHalo: PropTypes.bool,
   /**
    * The size of the AvatarNetwork
-   * Possible values could be SIZES.XS(16px), SIZES.SM(24px), SIZES.MD(32px), SIZES.LG(40px), SIZES.XL(48px)
-   * Defaults to SIZES.MD
+   * Possible values could be Size.XS(16px), Size.SM(24px), Size.MD(32px), Size.LG(40px), Size.XL(48px)
+   * Defaults to Size.MD
    */
   size: PropTypes.oneOf(Object.values(AVATAR_NETWORK_SIZES)),
   /**
    * The background color of the AvatarNetwork
-   * Defaults to COLORS.BACKGROUND_ALTERNATIVE
+   * Defaults to BackgroundColor.backgroundAlternative
    */
   backgroundColor: Box.propTypes.backgroundColor,
   /**
    * The background color of the AvatarNetwork
-   * Defaults to COLORS.BORDER_DEFAULT
+   * Defaults to BorderColor.borderDefault
    */
   borderColor: Box.propTypes.borderColor,
   /**
    * The color of the text inside the AvatarNetwork
-   * Defaults to COLORS.TEXT_DEFAULT
+   * Defaults to TextColor.textDefault
    */
   color: Box.propTypes.color,
   /**

@@ -5,9 +5,9 @@ import TextField from '../../../ui/text-field';
 import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
   BLOCK_SIZES,
   DISPLAY,
 } from '../../../../helpers/constants/design-system';
@@ -47,7 +47,7 @@ const CustomizeNonce = ({
         <div className="customize-nonce-modal__main-header">
           <Typography
             className="customize-nonce-modal__main-title"
-            variant={TYPOGRAPHY.H4}
+            variant={TypographyVariant.H4}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('editNonceField')}
@@ -61,9 +61,12 @@ const CustomizeNonce = ({
         <Box
           marginTop={2}
           display={DISPLAY.INLINE_FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
+          alignItems={AlignItems.center}
         >
-          <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.NORMAL}>
+          <Typography
+            variant={TypographyVariant.H6}
+            fontWeight={FONT_WEIGHT.NORMAL}
+          >
             {t('editNonceMessage')}
             <Button
               type="link"
@@ -77,9 +80,9 @@ const CustomizeNonce = ({
           </Typography>
         </Box>
         <Box marginTop={3}>
-          <Box alignItems={ALIGN_ITEMS.CENTER} display={DISPLAY.FLEX}>
+          <Box alignItems={AlignItems.center} display={DISPLAY.FLEX}>
             <Typography
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{ width: BLOCK_SIZES.FIVE_SIXTHS }}
             >
