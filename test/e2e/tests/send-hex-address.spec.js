@@ -45,6 +45,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item',
@@ -90,6 +91,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item',
