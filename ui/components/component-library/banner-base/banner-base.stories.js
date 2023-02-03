@@ -39,6 +39,9 @@ export default {
     title: {
       control: 'text',
     },
+    description: {
+      control: 'text',
+    },
     children: {
       control: 'text',
     },
