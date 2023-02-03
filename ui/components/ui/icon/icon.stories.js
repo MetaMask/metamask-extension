@@ -35,9 +35,7 @@ import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
 import SearchIcon from './search-icon';
-import IconCopy from './icon-copy';
 import IconBlockExplorer from './icon-block-explorer';
-import IconCopied from './icon-copied';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -130,9 +128,7 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
-        <IconItem Component={<IconCopy {...args} />} />
         <IconItem Component={<IconBlockExplorer {...args} />} />
-        <IconItem Component={<IconCopied {...args} />} />
       </div>
     </Box>
     <Typography
@@ -286,12 +282,6 @@ PreloaderStory.args = {
   size: 40,
 };
 PreloaderStory.storyName = 'Preloader';
-
-export const IconCopyStory = (args) => <IconCopy {...args} />;
-IconCopyStory.args = {
-  size: 40,
-};
-IconCopyStory.storyName = 'IconCopy';
 
 export const IconBlockExplorerStory = (args) => <IconBlockExplorer {...args} />;
 IconBlockExplorerStory.args = {
