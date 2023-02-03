@@ -7,8 +7,9 @@ import { submittedPendingTransactionsSelector } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import SimulationErrorMessage from '../../ui/simulation-error-message';
 import Typography from '../../ui/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const TransactionAlerts = ({
@@ -23,19 +24,9 @@ const TransactionAlerts = ({
   return (
     <div className="transaction-alerts">
       {supportsEIP1559 && hasSimulationError && (
-        <ActionableMessage
-          message={t('simulationErrorMessageV2')}
-          useIcon
-          iconFillColor="var(--color-error-default)"
-          type="danger"
-          primaryActionV2={
-            userAcknowledgedGasMissing === true
-              ? undefined
-              : {
-                  label: t('proceedWithTransaction'),
-                  onClick: setUserAcknowledgedGasMissing,
-                }
-          }
+        <SimulationErrorMessage
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
         />
       )}
       {supportsEIP1559 && pendingTransactions?.length > 0 && (
@@ -45,8 +36,8 @@ const TransactionAlerts = ({
               align="left"
               className="transaction-alerts__pending-transactions"
               margin={0}
-              tag={TYPOGRAPHY.Paragraph}
-              variant={TYPOGRAPHY.H7}
+              tag={TypographyVariant.paragraph}
+              variant={TypographyVariant.H7}
             >
               <strong>
                 {pendingTransactions?.length === 1
@@ -80,8 +71,8 @@ const TransactionAlerts = ({
             <Typography
               align="left"
               margin={0}
-              tag={TYPOGRAPHY.Paragraph}
-              variant={TYPOGRAPHY.H7}
+              tag={TypographyVariant.paragraph}
+              variant={TypographyVariant.H7}
             >
               {t('lowPriorityMessage')}
             </Typography>
@@ -97,8 +88,8 @@ const TransactionAlerts = ({
             <Typography
               align="left"
               margin={0}
-              tag={TYPOGRAPHY.Paragraph}
-              variant={TYPOGRAPHY.H7}
+              tag={TypographyVariant.paragraph}
+              variant={TypographyVariant.H7}
             >
               {t('networkIsBusy')}
             </Typography>

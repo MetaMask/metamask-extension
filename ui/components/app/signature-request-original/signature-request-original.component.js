@@ -13,10 +13,10 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  COLORS,
   TEXT_ALIGN,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
@@ -149,15 +149,15 @@ export default class SignatureRequestOriginal extends Component {
 
         <Typography
           className="request-signature__content__title"
-          variant={TYPOGRAPHY.H3}
+          variant={TypographyVariant.H3}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {this.context.t('sigRequest')}
         </Typography>
         <Typography
           className="request-signature__content__subtitle"
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H7}
+          color={TextColor.textAlternative}
           align={TEXT_ALIGN.CENTER}
           margin={12}
           marginTop={3}

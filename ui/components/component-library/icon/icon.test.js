@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { Size, IconColor } from '../../../helpers/constants/design-system';
 import { ICON_NAMES } from './icon.constants';
 import { Icon } from './icon';
 
@@ -71,32 +71,32 @@ describe('Icon', () => {
       <>
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          size={SIZES.XS}
+          size={Size.XS}
           data-testid="icon-xs"
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          size={SIZES.SM}
+          size={Size.SM}
           data-testid="icon-sm"
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          size={SIZES.MD}
+          size={Size.MD}
           data-testid="icon-md"
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          size={SIZES.LG}
+          size={Size.LG}
           data-testid="icon-lg"
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          size={SIZES.XL}
+          size={Size.XL}
           data-testid="icon-xl"
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          size={SIZES.INHERIT}
+          size={Size.inherit}
           data-testid="icon-auto"
         />
       </>,
@@ -113,17 +113,17 @@ describe('Icon', () => {
       <>
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          color={COLORS.ICON_DEFAULT}
+          color={IconColor.iconDefault}
           data-testid="icon-color-default"
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          color={COLORS.ICON_ALTERNATIVE}
+          color={IconColor.iconAlternative}
           data-testid="icon-color-alternative"
         />
         <Icon
           name={ICON_NAMES.ADD_SQUARE}
-          color={COLORS.ICON_MUTED}
+          color={IconColor.iconMuted}
           data-testid="icon-color-muted"
         />
       </>,

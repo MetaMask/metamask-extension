@@ -11,7 +11,7 @@ import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
@@ -131,7 +131,7 @@ export default function SrpInput({ onChange, srpText }) {
       <label className="import-srp__srp-label">
         <Typography
           align={TEXT_ALIGN.LEFT}
-          variant={TYPOGRAPHY.H4}
+          variant={TypographyVariant.H4}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {srpText}

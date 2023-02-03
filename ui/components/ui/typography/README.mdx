@@ -29,18 +29,18 @@ Use the `variant` prop and the `TYPOGRAPHY` object from `./ui/helpers/constants/
 ```jsx
 // If importing from ui/components/app/[YOUR_COMPONENT]/ directory
 import Typography from '../../ui/typography';
-import { TYPOGRAPHY} from '../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
 
-<Typography variant="TYPOGRAPHY.H1">h1</Typography>
-<Typography variant="TYPOGRAPHY.H2">h2</Typography>
-<Typography variant="TYPOGRAPHY.H3">h3</Typography>
-<Typography variant="TYPOGRAPHY.H4">h4</Typography>
-<Typography variant="TYPOGRAPHY.H5">h5</Typography>
-<Typography variant="TYPOGRAPHY.H6">h6</Typography>
-<Typography variant="TYPOGRAPHY.H7">h7</Typography>
-<Typography variant="TYPOGRAPHY.H8">h8</Typography>
-<Typography variant="TYPOGRAPHY.H9">h9</Typography>
-<Typography variant="TYPOGRAPHY.Paragraph">p</Typography>
+<Typography variant="TypographyVariant.H1">h1</Typography>
+<Typography variant="TypographyVariant.H2">h2</Typography>
+<Typography variant="TypographyVariant.H3">h3</Typography>
+<Typography variant="TypographyVariant.H4">h4</Typography>
+<Typography variant="TypographyVariant.H5">h5</Typography>
+<Typography variant="TypographyVariant.H6">h6</Typography>
+<Typography variant="TypographyVariant.H7">h7</Typography>
+<Typography variant="TypographyVariant.H8">h8</Typography>
+<Typography variant="TypographyVariant.H9">h9</Typography>
+<Typography variant="TypographyVariant.paragraph">p</Typography>
 ```
 
 ### Color
@@ -59,45 +59,45 @@ Use the `color` prop and the `COLOR` object from `./ui/helpers/constants/design-
 ```jsx
 // If importing from ui/components/app/[YOUR_COMPONENT]/ directory
 import Typography from '../../ui/typography';
-import { COLORS} from '../../../helpers/constants/design-system';
+import { TextColor, Colors, BackgroundColor } from '../../../helpers/constants/design-system';
 
-<Typography color={COLORS.TEXT_DEFAULT}>
+<Typography color={TextColor.textDefault}>
   text-default
 </Typography>
-<Typography color={COLORS.TEXT_ALTERNATIVE}>
+<Typography color={TextColor.textAlternative}>
   text-alternative
 </Typography>
-<Typography color={COLORS.TEXT_MUTED}>
+<Typography color={TextColor.textMuted}>
   text-muted
 </Typography>
-<Typography color={COLORS.OVERLAY_INVERSE} boxProps={{backgroundColor:{COLORS.OVERLAY_DEFAULT}}}>
+<Typography color={Colors.overlayInverse} boxProps={{backgroundColor:{BackgroundColor.overlayDefault}}}>
   overlay-inverse
 </Typography>
-<Typography color={COLORS.PRIMARY_DEFAULT}>
+<Typography color={TextColor.primaryDefault}>
   primary-default
 </Typography>
-<Typography color={COLORS.PRIMARY_INVERSE} boxProps={{backgroundColor:{COLORS.PRIMARY_DEFAULT}}}>
+<Typography color={TextColor.primaryInverse} boxProps={{backgroundColor:{BackgroundColor.primaryDefault}}}>
   primary-inverse
 </Typography>
-<Typography color={COLORS.ERROR_DEFAULT}>
+<Typography color={TextColor.errorDefault}>
   error-default
 </Typography>
-<Typography color={COLORS.ERROR_INVERSE} boxProps={{backgroundColor:{COLORS.ERROR_DEFAULT}}}>
+<Typography color={TextColor.errorInverse} boxProps={{backgroundColor:{BackgroundColor.errorDefault}}}>
   error-inverse
 </Typography>
-<Typography color={COLORS.SUCCESS_DEFAULT}>
+<Typography color={TextColor.successDefault}>
   success-default
 </Typography>
-<Typography color={COLORS.SUCCESS_INVERSE} boxProps={{backgroundColor:{COLORS.SUCCESS_DEFAULT}}}>
+<Typography color={TextColor.successInverse} boxProps={{backgroundColor:{BackgroundColor.successDefault}}}>
   success-inverse
 </Typography>
-<Typography color={COLORS.WARNING_INVERSE} boxProps={{backgroundColor:{COLORS.WARNING_DEFAULT}}}>
+<Typography color={TextColor.warningInverse} boxProps={{backgroundColor:{BackgroundColor.warningDefault}}}>
   warning-inverse
 </Typography>
-<Typography color={COLORS.INFO_DEFAULT}>
+<Typography color={TextColor.infoDefault}>
   info-default
 </Typography>
-<Typography color={COLORS.INFO_INVERSE} boxProps={{backgroundColor:{COLORS.INFO_DEFAULT}}}>
+<Typography color={TextColor.infoInverse} boxProps={{backgroundColor:{BackgroundColor.infoDefault}}}>
   info-inverse
 </Typography>
 ```

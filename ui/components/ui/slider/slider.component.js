@@ -4,9 +4,9 @@ import MaterialSlider from '@material-ui/core/Slider';
 import { withStyles } from '@material-ui/core/styles';
 
 import {
-  COLORS,
+  Color,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 
 import InfoTooltip from '../info-tooltip/info-tooltip';
@@ -69,9 +69,9 @@ const Slider = ({
       <div className="slider__heading-title">
         {titleText && (
           <Typography
-            tag={TYPOGRAPHY.H6}
+            tag={TypographyVariant.H6}
             fontWeight={FONT_WEIGHT.BOLD}
-            variant={TYPOGRAPHY.H6}
+            variant={TypographyVariant.H6}
           >
             {titleText}
           </Typography>
@@ -81,8 +81,8 @@ const Slider = ({
         )}
         {valueText && (
           <Typography
-            tag={TYPOGRAPHY.Paragraph}
-            color={COLORS.TEXT_ALTERNATIVE}
+            tag={TypographyVariant.paragraph}
+            color={Color.textAlternative}
           >
             {valueText}
           </Typography>
@@ -91,8 +91,8 @@ const Slider = ({
       {titleDetail && (
         <div className="slider__heading-detail">
           <Typography
-            tag={TYPOGRAPHY.Paragraph}
-            color={COLORS.TEXT_ALTERNATIVE}
+            tag={TypographyVariant.paragraph}
+            color={Color.textAlternative}
           >
             {titleDetail}
           </Typography>
@@ -104,8 +104,8 @@ const Slider = ({
       <div className="slider__footer-info">
         {infoText && (
           <Typography
-            tag={TYPOGRAPHY.Paragraph}
-            color={COLORS.TEXT_ALTERNATIVE}
+            tag={TypographyVariant.paragraph}
+            color={Color.textAlternative}
           >
             {infoText}
           </Typography>

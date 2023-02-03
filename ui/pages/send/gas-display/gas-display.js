@@ -12,11 +12,11 @@ import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
   FLEX_DIRECTION,
   BLOCK_SIZES,
-  COLORS,
+  Color,
   FONT_STYLE,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
@@ -168,7 +168,7 @@ export default function GasDisplay({ gasError }) {
                   <Typography
                     as="span"
                     marginTop={0}
-                    color={COLORS.TEXT_MUTED}
+                    color={Color.textMuted}
                     fontStyle={FONT_STYLE.ITALIC}
                     fontWeight={FONT_WEIGHT.NORMAL}
                     className="gas-display__title__estimate"
@@ -178,15 +178,15 @@ export default function GasDisplay({ gasError }) {
                   <InfoTooltip
                     contentText={
                       <>
-                        <Typography variant={TYPOGRAPHY.H7}>
+                        <Typography variant={TypographyVariant.H7}>
                           {t('transactionDetailGasTooltipIntro', [
                             isMainnet ? t('networkNameEthereum') : '',
                           ])}
                         </Typography>
-                        <Typography variant={TYPOGRAPHY.H7}>
+                        <Typography variant={TypographyVariant.H7}>
                           {t('transactionDetailGasTooltipExplanation')}
                         </Typography>
-                        <Typography variant={TYPOGRAPHY.H7}>
+                        <Typography variant={TypographyVariant.H7}>
                           <a
                             href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                             target="_blank"
@@ -201,7 +201,7 @@ export default function GasDisplay({ gasError }) {
                   />
                 </Box>
               }
-              detailTitleColor={COLORS.TEXT_DEFAULT}
+              detailTitleColor={Color.textDefault}
               detailText={
                 showCurrencyRateCheck && (
                   <Box className="gas-display__currency-container">
@@ -330,7 +330,7 @@ export default function GasDisplay({ gasError }) {
             <ActionableMessage
               message={
                 isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       nativeCurrency,
                       currentNetworkName,
@@ -357,7 +357,7 @@ export default function GasDisplay({ gasError }) {
                     ])}
                   </Typography>
                 ) : (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       draftTransaction.asset.details?.symbol ?? nativeCurrency,
                       currentNetworkName,

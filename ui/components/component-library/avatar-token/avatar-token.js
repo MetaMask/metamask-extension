@@ -4,22 +4,24 @@ import PropTypes from 'prop-types';
 import Box from '../../ui/box/box';
 import { AvatarBase } from '../avatar-base';
 import {
-  SIZES,
-  COLORS,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
+  TextColor,
+  BorderColor,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
 export const AvatarToken = ({
-  size = SIZES.MD,
+  size = Size.MD,
   name,
   src,
   showHalo,
-  color = COLORS.TEXT_DEFAULT,
-  backgroundColor = COLORS.BACKGROUND_ALTERNATIVE,
-  borderColor = COLORS.TRANSPARENT,
+  color = TextColor.textDefault,
+  backgroundColor = BackgroundColor.backgroundAlternative,
+  borderColor = BorderColor.transparent,
   className,
   ...props
 }) => {
@@ -39,8 +41,8 @@ export const AvatarToken = ({
     <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
       className={classnames(
         'mm-avatar-token',
         showHalo && 'mm-avatar-token--with-halo',
