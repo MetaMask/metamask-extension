@@ -21,7 +21,7 @@ import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import Typography from '../../ui/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import DepositPopover from '../deposit-popover/deposit-popover';
@@ -230,7 +230,7 @@ const ConfirmPageContainer = (props) => {
             <ActionableMessage
               message={
                 isBuyableChain ? (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
@@ -245,7 +245,7 @@ const ConfirmPageContainer = (props) => {
                     ])}
                   </Typography>
                 ) : (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,

@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
@@ -98,8 +98,8 @@ const CancelSpeedupPopover = () => {
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
       <div className="cancel-speedup-popover__wrapper">
         <Typography
-          boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
-          variant={TYPOGRAPHY.H6}
+          boxProps={{ alignItems: AlignItems.center, display: DISPLAY.FLEX }}
+          variant={TypographyVariant.H6}
           marginTop={0}
           marginBottom={2}
         >
@@ -131,7 +131,7 @@ const CancelSpeedupPopover = () => {
         <div className="cancel-speedup-popover__separator" />
         <Box
           display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
+          alignItems={AlignItems.center}
           flexDirection={FLEX_DIRECTION.COLUMN}
           marginTop={4}
         >

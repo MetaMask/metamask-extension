@@ -37,6 +37,8 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
+      outdatedBrowserWarningLastShown: new Date().getTime(),
+      collectiblesDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showPortfolioTooltip: true,
       showBetaHeader: isBeta(),
@@ -158,6 +160,17 @@ export default class AppStateController extends EventEmitter {
   setRecoveryPhraseReminderLastShown(lastShown) {
     this.store.updateState({
       recoveryPhraseReminderLastShown: lastShown,
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has seen the outdated browser warning
+   *
+   * @param {number} lastShown - Timestamp (in milliseconds) of when the user was last shown the warning.
+   */
+  setOutdatedBrowserWarningLastShown(lastShown) {
+    this.store.updateState({
+      outdatedBrowserWarningLastShown: lastShown,
     });
   }
 

@@ -10,9 +10,9 @@ import Typography from '../../../ui/typography';
 import Tooltip from '../../../ui/tooltip';
 
 import {
-  COLORS,
   DISPLAY,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -23,12 +23,12 @@ const DetectedTokenAddress = ({ tokenAddress }) => {
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-address">
-      <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_DEFAULT}>
+      <Typography variant={TypographyVariant.H7} color={TextColor.textDefault}>
         {`${t('tokenAddress')}:`}
       </Typography>
       <Typography
-        variant={TYPOGRAPHY.H7}
-        color={COLORS.PRIMARY_DEFAULT}
+        variant={TypographyVariant.H7}
+        color={TextColor.primaryDefault}
         marginLeft={2}
         marginRight={2}
       >

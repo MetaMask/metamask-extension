@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  SIZES,
+  Size,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -38,7 +38,7 @@ export const FormTextField = ({
   readOnly,
   required,
   rightAccessory,
-  size = SIZES.MD,
+  size = Size.MD,
   textFieldProps,
   truncate,
   showClearButton,

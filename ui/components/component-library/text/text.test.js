@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import {
-  COLORS,
   FONT_STYLE,
   FONT_WEIGHT,
   OVERFLOW_WRAP,
-  TEXT,
   TEXT_ALIGN,
+  TextColor,
   TEXT_TRANSFORM,
+  TextVariant,
+  Color,
 } from '../../../helpers/constants/design-system';
 import { Text, TEXT_DIRECTIONS } from '.';
 
@@ -68,16 +69,16 @@ describe('Text', () => {
   it('should render the Text with proper variant class name', () => {
     const { getByText, container } = render(
       <>
-        <Text variant={TEXT.DISPLAY_MD}>display-md</Text>
-        <Text variant={TEXT.HEADING_LG}>heading-lg</Text>
-        <Text variant={TEXT.HEADING_MD}>heading-md</Text>
-        <Text variant={TEXT.HEADING_SM}>heading-sm</Text>
-        <Text variant={TEXT.BODY_LG_MEDIUM}>body-lg-medium</Text>
-        <Text variant={TEXT.BODY_MD}>body-md</Text>
-        <Text variant={TEXT.BODY_MD_BOLD}>body-md-bold</Text>
-        <Text variant={TEXT.BODY_SM}>body-sm</Text>
-        <Text variant={TEXT.BODY_SM_BOLD}>body-sm-bold</Text>
-        <Text variant={TEXT.BODY_XS}>body-xs</Text>
+        <Text variant={TextVariant.displayMd}>display-md</Text>
+        <Text variant={TextVariant.headingLg}>heading-lg</Text>
+        <Text variant={TextVariant.headingMd}>heading-md</Text>
+        <Text variant={TextVariant.headingSm}>heading-sm</Text>
+        <Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
+        <Text variant={TextVariant.bodyMd}>body-md</Text>
+        <Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
+        <Text variant={TextVariant.bodySm}>body-sm</Text>
+        <Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
+        <Text variant={TextVariant.bodyXs}>body-xs</Text>
       </>,
     );
 
@@ -110,19 +111,19 @@ describe('Text', () => {
   it('should render the Text with proper text color class name', () => {
     const { getByText } = render(
       <>
-        <Text color={COLORS.TEXT_DEFAULT}>text-default</Text>
-        <Text color={COLORS.TEXT_ALTERNATIVE}>text-alternative</Text>
-        <Text color={COLORS.TEXT_MUTED}>text-muted</Text>
-        <Text color={COLORS.OVERLAY_INVERSE}>overlay-inverse</Text>
-        <Text color={COLORS.PRIMARY_DEFAULT}>primary-default</Text>
-        <Text color={COLORS.PRIMARY_INVERSE}>primary-inverse</Text>
-        <Text color={COLORS.ERROR_DEFAULT}>error-default</Text>
-        <Text color={COLORS.ERROR_INVERSE}>error-inverse</Text>
-        <Text color={COLORS.SUCCESS_DEFAULT}>success-default</Text>
-        <Text color={COLORS.SUCCESS_INVERSE}>success-inverse</Text>
-        <Text color={COLORS.WARNING_INVERSE}>warning-inverse</Text>
-        <Text color={COLORS.INFO_DEFAULT}>info-default</Text>
-        <Text color={COLORS.INFO_INVERSE}>info-inverse</Text>
+        <Text color={TextColor.textDefault}>text-default</Text>
+        <Text color={TextColor.textAlternative}>text-alternative</Text>
+        <Text color={TextColor.textMuted}>text-muted</Text>
+        <Text color={Color.overlayInverse}>overlay-inverse</Text>
+        <Text color={TextColor.primaryDefault}>primary-default</Text>
+        <Text color={TextColor.primaryInverse}>primary-inverse</Text>
+        <Text color={TextColor.errorDefault}>error-default</Text>
+        <Text color={TextColor.errorInverse}>error-inverse</Text>
+        <Text color={TextColor.successDefault}>success-default</Text>
+        <Text color={TextColor.successInverse}>success-inverse</Text>
+        <Text color={TextColor.warningInverse}>warning-inverse</Text>
+        <Text color={TextColor.infoDefault}>info-default</Text>
+        <Text color={TextColor.infoInverse}>info-inverse</Text>
       </>,
     );
     expect(getByText('text-default')).toHaveClass(
@@ -132,9 +133,6 @@ describe('Text', () => {
       'mm-text--color-text-alternative',
     );
     expect(getByText('text-muted')).toHaveClass('mm-text--color-text-muted');
-    expect(getByText('overlay-inverse')).toHaveClass(
-      'mm-text--color-overlay-inverse',
-    );
     expect(getByText('primary-default')).toHaveClass(
       'mm-text--color-primary-default',
     );

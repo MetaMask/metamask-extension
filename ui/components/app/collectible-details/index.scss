@@ -10,10 +10,16 @@ $spacer-break-small: 16px;
     padding: 0 $spacer-break-large;
   }
 
+  &__tooltip-wrapper {
+    width: 100%;
+  }
+
   &__top-section {
     display: flex;
     flex-direction: column;
     margin-bottom: $spacer-break-small;
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    padding: $spacer-break-large;
 
     @include screen-sm-min {
       margin-bottom: $spacer-break-large;
@@ -79,7 +85,6 @@ $spacer-break-small: 16px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 332px;
   }
 
   &__image-source {

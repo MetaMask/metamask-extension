@@ -130,7 +130,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'FORGOT_PASSWORD', value: false },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -987,12 +986,12 @@ describe('Actions', () => {
     });
   });
 
-  describe('#showAccountDetail', () => {
+  describe('#setSelectedAccount', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('#showAccountDetail', async () => {
+    it('#setSelectedAccount', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
@@ -1006,7 +1005,7 @@ describe('Actions', () => {
 
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.showAccountDetail());
+      await store.dispatch(actions.setSelectedAccount());
       expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
     });
 
@@ -1032,7 +1031,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.showAccountDetail());
+      await store.dispatch(actions.setSelectedAccount());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1521,7 +1520,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'SET_USE_BLOCKIE', value: undefined },
       ];
 
       await store.dispatch(actions.setUseBlockie());
@@ -1674,11 +1672,6 @@ describe('Actions', () => {
 
       await store.dispatch(actions.markPasswordForgotten());
 
-      const resultantActions = store.getActions();
-      expect(resultantActions[1]).toStrictEqual({
-        type: 'FORGOT_PASSWORD',
-        value: true,
-      });
       expect(background.markPasswordForgotten.callCount).toStrictEqual(1);
     });
 
@@ -1693,7 +1686,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'FORGOT_PASSWORD', value: true },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -1718,11 +1710,6 @@ describe('Actions', () => {
 
       store.dispatch(actions.unMarkPasswordForgotten());
 
-      const resultantActions = store.getActions();
-      expect(resultantActions[0]).toStrictEqual({
-        type: 'FORGOT_PASSWORD',
-        value: false,
-      });
       expect(background.unMarkPasswordForgotten.callCount).toStrictEqual(1);
     });
   });

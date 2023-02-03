@@ -7,7 +7,7 @@ import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 class SelectedAccount extends Component {
   state = {
@@ -72,7 +72,7 @@ class SelectedAccount extends Component {
                       : ICON_NAMES.COPY
                   }
                   size={ICON_SIZES.SM}
-                  color={COLORS.ICON_ALTERNATIVE}
+                  color={IconColor.iconAlternative}
                 />
               </div>
             </div>

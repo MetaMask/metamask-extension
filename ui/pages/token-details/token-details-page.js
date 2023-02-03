@@ -16,12 +16,13 @@ import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import Typography from '../../components/ui/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
   TEXT_ALIGN,
   OVERFLOW_WRAP,
+  TextColor,
+  IconColor,
 } from '../../helpers/constants/design-system';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
@@ -72,8 +73,8 @@ export default function TokenDetailsPage() {
           fontWeight={FONT_WEIGHT.BOLD}
           margin={0}
           marginTop={4}
-          variant={TYPOGRAPHY.H6}
-          color={COLORS.TEXT_DEFAULT}
+          variant={TypographyVariant.H6}
+          color={TextColor.textDefault}
           className="token-details__title"
         >
           {t('tokenDetails')}
@@ -89,8 +90,8 @@ export default function TokenDetailsPage() {
             fontWeight={FONT_WEIGHT.BOLD}
             margin={0}
             marginRight={5}
-            variant={TYPOGRAPHY.H4}
-            color={COLORS.TEXT_DEFAULT}
+            variant={TypographyVariant.H4}
+            color={TextColor.textDefault}
             className="token-details__token-value"
           >
             {tokenBalance || ''}
@@ -106,26 +107,26 @@ export default function TokenDetailsPage() {
         <Typography
           margin={0}
           marginTop={4}
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H7}
+          color={TextColor.textAlternative}
         >
           {tokenCurrencyBalance || ''}
         </Typography>
         <Typography
           margin={0}
           marginTop={6}
-          variant={TYPOGRAPHY.H9}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H9}
+          color={TextColor.textAlternative}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenContractAddress')}
         </Typography>
         <Box display={DISPLAY.FLEX}>
           <Typography
-            variant={TYPOGRAPHY.H7}
+            variant={TypographyVariant.H7}
             margin={0}
             marginTop={2}
-            color={COLORS.TEXT_DEFAULT}
+            color={TextColor.textDefault}
             overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             className="token-details__token-address"
           >
@@ -137,45 +138,46 @@ export default function TokenDetailsPage() {
             containerClassName="token-details__copy-icon"
           >
             <ButtonIcon
+              ariaLabel="copy"
               name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
               className="token-details__copyIcon"
               onClick={() => handleCopy(token.address)}
-              color={COLORS.PRIMARY_DEFAULT}
+              color={IconColor.primaryDefault}
               size={ICON_SIZES.SM}
             />
           </Tooltip>
         </Box>
         <Typography
-          variant={TYPOGRAPHY.H9}
+          variant={TypographyVariant.H9}
           margin={0}
           marginTop={4}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenDecimalTitle')}
         </Typography>
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           margin={0}
           marginTop={1}
-          color={COLORS.TEXT_DEFAULT}
+          color={TextColor.textDefault}
         >
           {token.decimals}
         </Typography>
         <Typography
-          variant={TYPOGRAPHY.H9}
+          variant={TypographyVariant.H9}
           margin={0}
           marginTop={4}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('network')}
         </Typography>
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           margin={1}
           marginTop={0}
-          color={COLORS.TEXT_DEFAULT}
+          color={TextColor.textDefault}
         >
           {networkType === NETWORK_TYPES.RPC
             ? networkNickname ?? t('privateNetwork')
@@ -184,19 +186,19 @@ export default function TokenDetailsPage() {
         {aggregators && (
           <>
             <Typography
-              variant={TYPOGRAPHY.H9}
+              variant={TypographyVariant.H9}
               margin={0}
               marginTop={4}
-              color={COLORS.TEXT_ALTERNATIVE}
+              color={TextColor.textAlternative}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('tokenList')}
             </Typography>
             <Typography
-              variant={TYPOGRAPHY.H7}
+              variant={TypographyVariant.H7}
               margin={0}
               marginTop={1}
-              color={COLORS.TEXT_DEFAULT}
+              color={TextColor.textDefault}
             >
               {`${aggregators}.`}
             </Typography>
@@ -211,7 +213,10 @@ export default function TokenDetailsPage() {
             );
           }}
         >
-          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
+          <Typography
+            variant={TypographyVariant.H6}
+            color={TextColor.primaryDefault}
+          >
             {t('hideToken')}
           </Typography>
         </Button>

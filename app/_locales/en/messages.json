@@ -1759,6 +1759,12 @@
   "lastConnected": {
     "message": "Last connected"
   },
+  "lastPriceSold": {
+    "message": "Last price sold"
+  },
+  "lastSold": {
+    "message": "Last sold"
+  },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
@@ -2595,6 +2601,9 @@
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "outdatedBrowserNotification": {
+    "message": "Your browser is out of date. If you don't update your browser, you won't be able to get security patches and new features from MetaMask."
   },
   "padlock": {
     "message": "Padlock"
@@ -4240,16 +4249,19 @@
     "message": "Autodetect NFTs"
   },
   "useCollectibleDetectionDescription": {
-    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to their servers. Leave this feature off if you don't want the app to pull data from those services."
+    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature."
   },
   "useCollectibleDetectionDescriptionLine2": {
-    "message": "Additionally, be aware that:"
+    "message": "Your account address will be viewable to third-party APIs."
   },
   "useCollectibleDetectionDescriptionLine3": {
     "message": "NFT metadata may contain links to scams or phishing sites."
   },
   "useCollectibleDetectionDescriptionLine4": {
     "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
+  },
+  "useCollectibleDetectionDescriptionLine5": {
+    "message": "Leave this feature off if you don't want the app to pull data from those services."
   },
   "useDefault": {
     "message": "Use default"

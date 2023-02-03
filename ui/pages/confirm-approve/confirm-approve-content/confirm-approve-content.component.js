@@ -13,12 +13,13 @@ import SimulationErrorMessage from '../../../components/ui/simulation-error-mess
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   BLOCK_SIZES,
-  JUSTIFY_CONTENT,
-  COLORS,
+  JustifyContent,
   DISPLAY,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
@@ -26,7 +27,11 @@ import LedgerInstructionField from '../../../components/app/ledger-instruction-f
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
-import { ICON_NAMES, ButtonIcon } from '../../../components/component-library';
+import {
+  ICON_NAMES,
+  ButtonIcon,
+  Icon,
+} from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -235,7 +240,7 @@ export default class ConfirmApproveContent extends Component {
             <ButtonIcon
               ariaLabel="copy"
               onClick={() => copyToClipboard(toAddress)}
-              color={COLORS.ICON_DEFAULT}
+              color={IconColor.iconDefault}
               iconName={
                 this.state.copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
               }
@@ -320,10 +325,10 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__custom-nonce-content">
             <Box
               className="confirm-approve-content__custom-nonce-header"
-              justifyContent={JUSTIFY_CONTENT.FLEX_START}
+              justifyContent={JustifyContent.flexStart}
             >
               <Typography
-                variant={TYPOGRAPHY.H6}
+                variant={TypographyVariant.H6}
                 fontWeight={FONT_WEIGHT.NORMAL}
               >
                 {t('nonce')}
@@ -345,7 +350,7 @@ export default class ConfirmApproveContent extends Component {
             </Box>
             <Typography
               className="confirm-approve-content__custom-nonce-value"
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {customNonceValue || nextNonce}
@@ -543,9 +548,9 @@ export default class ConfirmApproveContent extends Component {
               url={siteImage}
             />
             <Typography
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.NORMAL}
-              color={COLORS.TEXT_ALTERNATIVE}
+              color={TextColor.textAlternative}
               boxProps={{ marginLeft: 1, marginTop: 2 }}
             >
               {origin}
@@ -600,7 +605,7 @@ export default class ConfirmApproveContent extends Component {
             </Box>
           )}
           {this.renderApproveContentCard({
-            symbol: <i className="fa fa-tag" />,
+            symbol: <Icon name={ICON_NAMES.TAG} />,
             title: t('transactionFee'),
             showEdit: true,
             showAdvanceGasFeeOptions: true,

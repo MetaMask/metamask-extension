@@ -25,9 +25,7 @@
       "name": "confTx",
       "context": 0
     },
-    "accountDetail": {
-      "subview": "transactions"
-    },
+    "accountDetail": {},
     "transForward": false,
     "isLoading": false,
     "warning": null,
