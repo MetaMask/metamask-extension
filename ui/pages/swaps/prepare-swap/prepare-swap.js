@@ -872,12 +872,10 @@ export default function PrepareSwap({
               defaultToAll
               shouldSearchForImports
             />
+            <Box>
+              <Typography variant={TYPOGRAPHY.H4}>{receiveToAmount}</Typography>
+            </Box>
           </div>
-          {/* <Box>
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
-              {receiveToAmount}
-            </Typography>
-          </Box> */}
         </div>
         {toTokenIsNotDefault && occurrences < 2 && (
           <ActionableMessage

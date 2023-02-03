@@ -46,7 +46,7 @@
     }
   }
 
-  &__swap-to-content {
+  &__swap-to-content {    
     padding: 28px 16px 36px 16px;
     border-radius: 0 0 6px 6px;
     box-shadow: none;
@@ -170,6 +170,10 @@
     }
 
     &__to {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
       .searchable-item-list {
         &__item--add-token {
           display: flex;
