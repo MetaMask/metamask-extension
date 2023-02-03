@@ -51,6 +51,9 @@ workflows:
       - prep-build-beta:
           requires:
             - prep-deps
+      - prep-build-desktop:
+          requires:
+            - prep-deps
       - prep-build-flask:
           requires:
             - prep-deps
@@ -130,6 +133,9 @@ workflows:
       - validate-source-maps-beta:
           requires:
             - prep-build-beta
+      - validate-source-maps-desktop:
+          requires:
+            - prep-build-desktop
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
@@ -141,6 +147,10 @@ workflows:
           requires:
             - prep-deps
             - prep-build-beta
+      - test-mozilla-lint-desktop:
+          requires:
+            - prep-deps
+            - prep-build-desktop
       - test-mozilla-lint-flask:
           requires:
             - prep-deps
@@ -159,9 +169,11 @@ workflows:
             - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
+            - validate-source-maps-desktop
             - validate-source-maps-flask
             - test-mozilla-lint
             - test-mozilla-lint-beta
+            - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
@@ -182,6 +194,7 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-beta
+            - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
@@ -198,6 +211,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-desktop
             - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
@@ -371,6 +385,46 @@ jobs:
           paths:
             - dist-beta
             - builds-beta
+
+  prep-build-desktop:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type desktop dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type desktop prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move desktop build to 'dist-desktop' to avoid conflict with production build
+          command: mv ./dist ./dist-desktop
+      - run:
+          name: Move desktop zips to 'builds-desktop' to avoid conflict with production build
+          command: mv ./builds ./builds-desktop
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-desktop
+            - builds-desktop
 
   prep-build-flask:
     executor: node-browsers-medium-plus
@@ -1118,6 +1172,22 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
+  validate-source-maps-desktop:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move desktop build to dist
+          command: mv ./dist-desktop ./dist
+      - run:
+          name: Move desktop zips to builds
+          command: mv ./builds-desktop ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
   validate-source-maps-flask:
     executor: node-browsers
     steps:
@@ -1156,6 +1226,22 @@ jobs:
       - run:
           name: Move beta zips to builds
           command: mv ./builds-beta ./builds
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+
+  test-mozilla-lint-desktop:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move desktop build to dist
+          command: mv ./dist-desktop ./dist
+      - run:
+          name: Move desktop zips to builds
+          command: mv ./builds-desktop ./builds
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
