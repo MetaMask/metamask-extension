@@ -6,14 +6,14 @@ import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
 import { BannerAlert, BANNER_ALERT_SEVERITIES } from '.';
 
-describe('Banner', () => {
-  it('should render banner element correctly', () => {
+describe('BannerAlert', () => {
+  it('should render BannerAlert element correctly', () => {
     const { getByTestId, container } = render(
-      <BannerAlert data-testid="banner" title="Banner test">
-        should render banner element correctly
+      <BannerAlert data-testid="bannerAlert" title="BannerAlert test">
+        should render BannerAlert element correctly
       </BannerAlert>,
     );
-    expect(getByTestId('banner')).toHaveClass('mm-banner-alert');
+    expect(getByTestId('bannerAlert')).toHaveClass('mm-banner-alert');
     expect(container).toMatchSnapshot();
   });
 
@@ -21,13 +21,13 @@ describe('Banner', () => {
     const { getByTestId } = render(
       <BannerAlert
         className="mm-banner-alert--test"
-        data-testid="banner"
-        title="Banner test"
+        data-testid="bannerAlert"
+        title="BannerAlert test"
       >
-        should render banner element correctly
+        should render BannerAlert element correctly
       </BannerAlert>,
     );
-    expect(getByTestId('banner')).toHaveClass('mm-banner-alert--test');
+    expect(getByTestId('bannerAlert')).toHaveClass('mm-banner-alert--test');
   });
 
   it('should render with different severity classnames', () => {
@@ -71,19 +71,23 @@ describe('Banner', () => {
     );
   });
 
-  it('should render banner title', () => {
-    const { getByText } = render(<BannerAlert title="Banner title test" />);
-    expect(getByText('Banner title test')).toHaveClass('mm-banner-base__title');
-  });
-
-  it('should render banner description', () => {
+  it('should render BannerAlert title', () => {
     const { getByText } = render(
-      <BannerAlert description="Banner description test" />,
+      <BannerAlert title="BannerAlert title test" />,
     );
-    expect(getByText('Banner description test')).toBeDefined();
+    expect(getByText('BannerAlert title test')).toHaveClass(
+      'mm-banner-base__title',
+    );
   });
 
-  it('should render banner action button', () => {
+  it('should render BannerAlert description', () => {
+    const { getByText } = render(
+      <BannerAlert description="BannerAlert description test" />,
+    );
+    expect(getByText('BannerAlert description test')).toBeDefined();
+  });
+
+  it('should render BannerAlert action button', () => {
     const { getByTestId } = render(
       <BannerAlert
         title="Action prop demo"
