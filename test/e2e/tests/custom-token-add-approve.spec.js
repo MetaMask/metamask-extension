@@ -385,6 +385,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.switchToWindow(extension);
         await driver.clickElement({ tag: 'button', text: 'Activity' });
 
+        await driver.waitForElementNotPresent('.loading-overlay');
         const pendingTxes = await driver.findElements(
           '.transaction-list__pending-transactions .transaction-list-item',
         );
@@ -424,6 +425,7 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'Approve',
         });
 
+        await driver.waitForElementNotPresent('.loading-overlay');
         const approveTokenTask = await driver.waitForSelector({
           // Select only the heading of the first entry in the transaction list.
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
