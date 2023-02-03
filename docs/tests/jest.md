@@ -1,6 +1,14 @@
-# Get Started Debugging
+# Getting Started
 
-## Debugging Jest in VS Code
+## Running a Jest test
+
+```bash
+> yarn jest <path>
+```
+
+## Debugging
+
+### Debugging Jest in VS Code
 
 1. Open **VS Code**
 2. Open the “Run and Debug” panel (⇧⌘D)
@@ -13,7 +21,7 @@
 
 Additional methods and information to debug in VS Code can be found [here](https://jestjs.io/docs/troubleshooting#debugging-in-vs-code)
 
-## Debugging Jest on Chrome DevTools
+### Debugging Jest on Chrome DevTools
 
 1. Run Jest using Node with the V8 Inspector
 
