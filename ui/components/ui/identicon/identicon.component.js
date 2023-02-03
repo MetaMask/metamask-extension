@@ -99,7 +99,6 @@ export default class Identicon extends Component {
         alt={alt}
         onError={() => {
           this.setState({ imageLoadingError: true });
-          this.forceUpdate();
         }}
       />
     );
@@ -137,9 +136,9 @@ export default class Identicon extends Component {
     return useBlockie ? this.renderBlockie() : this.renderJazzicon();
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     // We only want to re-render if props are different.
-    return !isEqual(nextProps, this.props);
+    return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
 
   render() {
