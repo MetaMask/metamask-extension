@@ -467,6 +467,7 @@ describe('MetaMask', function () {
         text: '7.5 TST',
       });
 
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({
         text: 'Activity',
         tag: 'button',
