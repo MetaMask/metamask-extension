@@ -1563,6 +1563,22 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapRemoved`,
+      (truncatedSnap) => {
+        const notificationIds = Object.values(
+          this.notificationController.state.notifications,
+        ).reduce((idList, notification) => {
+          if (notification.origin === truncatedSnap.id) {
+            idList.push(notification.id);
+          }
+          return idList;
+        }, []);
+
+        this.dismissNotifications(notificationIds);
+      },
+    );
+
     ///: END:ONLY_INCLUDE_IN
   }
 
@@ -1860,6 +1876,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setRecoveryPhraseReminderLastShown:
         appStateController.setRecoveryPhraseReminderLastShown.bind(
+          appStateController,
+        ),
+      setOutdatedBrowserWarningLastShown:
+        appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
         ),
       setShowTestnetMessageInDropdown:
@@ -4192,6 +4212,8 @@ export default class MetamaskController extends EventEmitter {
         },
       };
     });
+
+    this.unMarkPasswordForgotten();
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'

@@ -10,9 +10,9 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
-  TYPOGRAPHY,
-  ALIGN_ITEMS,
+  JustifyContent,
+  TypographyVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
@@ -25,7 +25,7 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
         <Box
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
-          justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+          justifyContent={JustifyContent.spaceBetween}
           className="confirmation-warning-modal__footer"
         >
           <Button
@@ -48,40 +48,43 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         padding={3}
         margin={0}
         className="confirmation-warning-modal__content__header"
       >
         <i className="fa fa-exclamation-triangle confirmation-warning-modal__content__header__warning-icon" />
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TypographyVariant.H4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('addEthereumChainWarningModalTitle')}
         </Typography>
       </Box>
       <Box marginLeft={6} marginRight={6} marginTop={0} marginBottom={3}>
-        <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
+        <Typography marginTop={4} variant={TypographyVariant.H6}>
           {t('addEthereumChainWarningModalHeader', [
             <strong key="part-2">
               {t('addEthereumChainWarningModalHeaderPartTwo')}
             </strong>,
           ])}
         </Typography>
-        <Typography marginTop={4} variant={TYPOGRAPHY.H6}>
+        <Typography marginTop={4} variant={TypographyVariant.H6}>
           {t('addEthereumChainWarningModalListHeader')}
         </Typography>
         <ul>
           <li>
-            <Typography marginTop={2} variant={TYPOGRAPHY.H6}>
+            <Typography marginTop={2} variant={TypographyVariant.H6}>
               {t('addEthereumChainWarningModalListPointOne')}
             </Typography>
           </li>
           <li>
-            <Typography marginTop={2} variant={TYPOGRAPHY.H6}>
+            <Typography marginTop={2} variant={TypographyVariant.H6}>
               {t('addEthereumChainWarningModalListPointTwo')}
             </Typography>
           </li>
           <li>
-            <Typography marginTop={2} variant={TYPOGRAPHY.H6}>
+            <Typography marginTop={2} variant={TypographyVariant.H6}>
               {t('addEthereumChainWarningModalListPointThree')}
             </Typography>
           </li>

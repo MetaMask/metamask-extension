@@ -38,7 +38,7 @@ exports[`Button should render with different button types 1`] = `
     </span>
   </button>
   <button
-    class="box mm-button-base mm-button-base--size-md mm-button-link box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent box--rounded-pill"
+    class="box mm-button-base mm-button-link mm-button-link--size-auto box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
     data-testid="link"
   >
     <span

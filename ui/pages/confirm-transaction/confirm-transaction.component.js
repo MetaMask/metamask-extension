@@ -32,6 +32,7 @@ import { usePrevious } from '../../hooks/usePrevious';
 import {
   getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
+  unconfirmedTransactionsHashSelector,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -41,8 +42,8 @@ import {
   removePollingTokenFromAppState,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
+import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
-import ConfTx from './conf-tx';
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
@@ -58,16 +59,20 @@ const ConfirmTransaction = () => {
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
   );
+  const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
 
   const totalUnapprovedCount = unconfirmedTransactions.length || 0;
   const transaction = useMemo(() => {
     return totalUnapprovedCount
-      ? unapprovedTxs[paramsTransactionId] || unconfirmedTransactions[0]
+      ? unapprovedTxs[paramsTransactionId] ||
+          unconfirmedMessages[paramsTransactionId] ||
+          unconfirmedTransactions[0]
       : {};
   }, [
     paramsTransactionId,
     totalUnapprovedCount,
     unapprovedTxs,
+    unconfirmedMessages,
     unconfirmedTransactions,
   ]);
 
@@ -190,7 +195,7 @@ const ConfirmTransaction = () => {
       <Route
         exact
         path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
-        component={ConfTx}
+        component={ConfirmSignatureRequest}
       />
       <Route
         exact

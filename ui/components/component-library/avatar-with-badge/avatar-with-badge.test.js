@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { AvatarNetwork } from '../avatar-network/avatar-network';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { BorderColor } from '../../../helpers/constants/design-system';
 import { AvatarWithBadge } from './avatar-with-badge';
 import { AVATAR_WITH_BADGE_POSTIONS } from './avatar-with-badge.constants';
 
@@ -74,7 +74,7 @@ describe('AvatarWithBadge', () => {
       <AvatarWithBadge
         data-testid="avatar-with-badge"
         badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
-        badgeWrapperProps={{ borderColor: COLORS.ERROR_DEFAULT }}
+        badgeWrapperProps={{ borderColor: BorderColor.errorDefault }}
         badge={
           <AvatarNetwork
             name="Arbitrum One"

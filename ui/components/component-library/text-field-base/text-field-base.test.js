@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
@@ -88,9 +88,9 @@ describe('TextFieldBase', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <TextFieldBase size={SIZES.SM} data-testid="sm" />
-        <TextFieldBase size={SIZES.MD} data-testid="md" />
-        <TextFieldBase size={SIZES.LG} data-testid="lg" />
+        <TextFieldBase size={Size.SM} data-testid="sm" />
+        <TextFieldBase size={Size.MD} data-testid="md" />
+        <TextFieldBase size={Size.LG} data-testid="lg" />
       </>,
     );
     expect(getByTestId('sm')).toHaveClass('mm-text-field-base--size-sm');

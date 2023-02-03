@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { TransactionEnvelopeType } from '../../../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../../../shared/modules/hexstring-utils';
-import { GAS_RECOMMENDATIONS } from '../../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../../shared/constants/gas';
 import * as txUtils from './util';
 
 describe('txUtils', function () {
@@ -27,6 +27,18 @@ describe('txUtils', function () {
       });
       assert.throws(() => txUtils.validateTxParams([]), {
         message: 'Invalid transaction params: must be an object.',
+      });
+    });
+
+    it('throws for data out of bounds buffer overrun', function () {
+      const sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        to: '0xfbb5595c18ca76bab52d66188e4ca50c7d95f77a',
+        data: '0xa9059cbb00000000000000000000000011b6A5fE2906F3354145613DB0d99CEB51f604C90000000000000000000000000000000000000000000000004563918244F400',
+      };
+      assert.throws(() => txUtils.validateTxParams(sample), {
+        message:
+          'Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.',
       });
     });
 
@@ -324,8 +336,8 @@ describe('txUtils', function () {
         gasPrice: '1',
         maxFeePerGas: '1',
         maxPriorityFeePerGas: '1',
-        estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
-        estimateUsed: GAS_RECOMMENDATIONS.HIGH,
+        estimateSuggested: GasRecommendations.medium,
+        estimateUsed: GasRecommendations.high,
         type: '1',
       };
 
@@ -383,12 +395,12 @@ describe('txUtils', function () {
 
       assert.equal(
         normalizedTxParams.estimateSuggested,
-        GAS_RECOMMENDATIONS.MEDIUM,
+        GasRecommendations.medium,
         'estimateSuggested should be the string originally provided',
       );
       assert.equal(
         normalizedTxParams.estimateUsed,
-        GAS_RECOMMENDATIONS.HIGH,
+        GasRecommendations.high,
         'estimateSuggested should be the string originally provided',
       );
     });

@@ -5,9 +5,10 @@ import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TypographyVariant,
   TEXT_ALIGN,
+  BackgroundColor,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -46,13 +47,13 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
           version && (
             <Box
               className="snaps-authorship-version"
-              backgroundColor={COLORS.PRIMARY_DEFAULT}
+              backgroundColor={BackgroundColor.primaryDefault}
               paddingLeft={2}
               paddingRight={2}
             >
               <Typography
-                color={COLORS.PRIMARY_INVERSE}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.primaryInverse}
+                variant={TypographyVariant.H7}
                 align={TEXT_ALIGN.CENTER}
                 as="span"
                 className="version"
@@ -62,13 +63,13 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
             </Box>
           )
         }
-        backgroundColor={COLORS.BACKGROUND_DEFAULT}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         <Typography
           className="chip__label"
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           as="span"
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           title={packageName}
         >
           {packageName}

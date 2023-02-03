@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
+import BigNumber from 'bignumber.js';
+import {
+  EditGasModes,
+  PriorityLevels,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import {
   addTenPercentAndRound,
   editGasModeIsSpeedUpOrCancel,
@@ -56,8 +61,8 @@ export const useTransactionFunctions = ({
 
   const getTxMeta = useCallback(() => {
     if (
-      (editGasMode !== EDIT_GAS_MODES.CANCEL &&
-        editGasMode !== EDIT_GAS_MODES.SPEED_UP) ||
+      (editGasMode !== EditGasModes.cancel &&
+        editGasMode !== EditGasModes.speedUp) ||
       transaction.previousGas
     ) {
       return {};
@@ -98,7 +103,7 @@ export const useTransactionFunctions = ({
 
       const updatedTxMeta = {
         ...transaction,
-        userFeeLevel: estimateUsed || PRIORITY_LEVELS.CUSTOM,
+        userFeeLevel: estimateUsed || PriorityLevels.custom,
         txParams: {
           ...transaction.txParams,
           ...newGasSettings,
@@ -106,9 +111,9 @@ export const useTransactionFunctions = ({
         ...txMeta,
       };
 
-      if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+      if (editGasMode === EditGasModes.swaps) {
         dispatch(
-          updateSwapsUserFeeLevel(estimateUsed || PRIORITY_LEVELS.CUSTOM),
+          updateSwapsUserFeeLevel(estimateUsed || PriorityLevels.custom),
         );
         dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
       } else if (editGasModeIsSpeedUpOrCancel(editGasMode)) {
@@ -164,17 +169,31 @@ export const useTransactionFunctions = ({
         maxPriorityFeePerGas,
       } = transaction.previousGas || transaction.txParams;
 
+      const newMaxPriorityFeePerGas = new BigNumber(
+        maxPriorityFeePerGas,
+        16,
+      ).isZero()
+        ? decGWEIToHexWEI(
+            gasFeeEstimates[defaultEstimateToUse].suggestedMaxPriorityFeePerGas,
+          )
+        : maxPriorityFeePerGas;
+
+      const estimateUsed =
+        maxPriorityFeePerGas === '0x0'
+          ? CUSTOM_GAS_ESTIMATE
+          : PriorityLevels.tenPercentIncreased;
+
       updateTransaction({
         estimateSuggested: initTransaction
           ? defaultEstimateToUse
-          : PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
-        estimateUsed: PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
+          : PriorityLevels.tenPercentIncreased,
+        estimateUsed,
         gasLimit,
         maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
-        maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
+        maxPriorityFeePerGas: addTenPercentAndRound(newMaxPriorityFeePerGas),
       });
     },
-    [defaultEstimateToUse, transaction, updateTransaction],
+    [defaultEstimateToUse, gasFeeEstimates, transaction, updateTransaction],
   );
 
   const updateTransactionUsingEstimate = useCallback(
@@ -197,7 +216,7 @@ export const useTransactionFunctions = ({
     const { maxFeePerGas, maxPriorityFeePerGas } =
       transaction?.dappSuggestedGasFees ?? {};
     updateTransaction({
-      estimateUsed: PRIORITY_LEVELS.DAPP_SUGGESTED,
+      estimateUsed: PriorityLevels.dAppSuggested,
       maxFeePerGas,
       maxPriorityFeePerGas,
     });

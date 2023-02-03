@@ -15,11 +15,11 @@ import {
 } from '../../../../test/jest';
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+  gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
     low: {
       minWaitTimeEstimate: 180000,

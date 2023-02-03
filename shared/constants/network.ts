@@ -17,7 +17,8 @@ export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
  * This type is non-exhaustive, and cannot be used for areas where the user
  * or dapp may supply their own symbol.
  */
-type CurrencySymbol = typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
+export type CurrencySymbol =
+  typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
 /**
  * A type that is a union type for the supported symbols on different onramp providers.
  */
@@ -41,7 +42,7 @@ type MoonPayNetworkAbbreviation = 'BSC' | 'CCHAIN' | 'POLYGON';
  * MoonPay requires some settings that are configured per network that it is
  * enabled on. This type describes those settings.
  */
-type MoonPayChainSettings = {
+export type MoonPayChainSettings = {
   /**
    * What should the default onramp currency be, for example 'eth' on 'mainnet'
    * This type matches a single SupportedCurrencySymbol or a
@@ -77,7 +78,7 @@ type RPCPreferences = {
 /**
  * An object that describes a network to be used inside of MetaMask
  */
-type RPCDefinition = {
+export type RPCDefinition = {
   /**
    * The hex encoded ChainId for the network
    */
@@ -104,7 +105,7 @@ type RPCDefinition = {
  * Wyre is a fiat onramp provider. We must provide some settings for networks
  * that support Wyre.
  */
-type WyreChainSettings = {
+export type WyreChainSettings = {
   /**
    * The network name
    */

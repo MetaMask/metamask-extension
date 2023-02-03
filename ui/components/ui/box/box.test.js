@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import {
-  BORDER_STYLE,
-  COLORS,
+  BorderStyle,
   DISPLAY,
   FLEX_DIRECTION,
   FLEX_WRAP,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
   TEXT_ALIGN,
   BLOCK_SIZES,
-  BORDER_RADIUS,
+  BorderRadius,
+  BorderColor,
+  BackgroundColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '.';
 
@@ -349,7 +351,7 @@ describe('Box', () => {
     });
     it('should render the Box with the borderColor class', () => {
       const { getByText } = render(
-        <Box borderColor={COLORS.BORDER_DEFAULT}>Box content</Box>,
+        <Box borderColor={BorderColor.borderDefault}>Box content</Box>,
       );
       expect(getByText('Box content')).toHaveClass(
         'box--border-color-border-default',
@@ -359,10 +361,10 @@ describe('Box', () => {
       const { getByText } = render(
         <Box
           borderColor={[
-            COLORS.BORDER_DEFAULT,
-            COLORS.ERROR_DEFAULT,
-            COLORS.INFO_DEFAULT,
-            COLORS.WARNING_DEFAULT,
+            BorderColor.borderDefault,
+            BorderColor.errorDefault,
+            BorderColor.infoDefault,
+            BorderColor.warningDefault,
           ]}
         >
           Box content
@@ -383,7 +385,7 @@ describe('Box', () => {
     });
     it('should render the Box with a borderStyle class', () => {
       const { getByText } = render(
-        <Box borderStyle={BORDER_STYLE.SOLID}>Box content</Box>,
+        <Box borderStyle={BorderStyle.solid}>Box content</Box>,
       );
       expect(getByText('Box content')).toHaveClass('box--border-style-solid');
     });
@@ -391,10 +393,10 @@ describe('Box', () => {
       const { getByText } = render(
         <Box
           borderStyle={[
-            BORDER_STYLE.SOLID,
-            BORDER_STYLE.DASHED,
-            BORDER_STYLE.NONE,
-            BORDER_STYLE.DOTTED,
+            BorderStyle.solid,
+            BorderStyle.dashed,
+            BorderStyle.none,
+            BorderStyle.dotted,
           ]}
         >
           Box content
@@ -413,14 +415,14 @@ describe('Box', () => {
     it('should render the Box with the borderRadius class', () => {
       const { getByText } = render(
         <>
-          <Box borderRadius={BORDER_RADIUS.XS}>border radius xs</Box>
-          <Box borderRadius={BORDER_RADIUS.SM}>border radius sm</Box>
-          <Box borderRadius={BORDER_RADIUS.MD}>border radius md</Box>
-          <Box borderRadius={BORDER_RADIUS.LG}>border radius lg</Box>
-          <Box borderRadius={BORDER_RADIUS.XL}>border radius xl</Box>
-          <Box borderRadius={BORDER_RADIUS.PILL}>border radius pill</Box>
-          <Box borderRadius={BORDER_RADIUS.FULL}>border radius full</Box>
-          <Box borderRadius={BORDER_RADIUS.NONE}>border radius none</Box>
+          <Box borderRadius={BorderRadius.XS}>border radius xs</Box>
+          <Box borderRadius={BorderRadius.SM}>border radius sm</Box>
+          <Box borderRadius={BorderRadius.MD}>border radius md</Box>
+          <Box borderRadius={BorderRadius.LG}>border radius lg</Box>
+          <Box borderRadius={BorderRadius.XL}>border radius xl</Box>
+          <Box borderRadius={BorderRadius.pill}>border radius pill</Box>
+          <Box borderRadius={BorderRadius.full}>border radius full</Box>
+          <Box borderRadius={BorderRadius.none}>border radius none</Box>
         </>,
       );
 
@@ -438,20 +440,20 @@ describe('Box', () => {
         <>
           <Box
             borderRadius={[
-              BORDER_RADIUS.XS,
-              BORDER_RADIUS.SM,
-              BORDER_RADIUS.MD,
-              BORDER_RADIUS.LG,
+              BorderRadius.XS,
+              BorderRadius.SM,
+              BorderRadius.MD,
+              BorderRadius.LG,
             ]}
           >
             Border radius set 1
           </Box>
           <Box
             borderRadius={[
-              BORDER_RADIUS.XL,
-              BORDER_RADIUS.PILL,
-              BORDER_RADIUS.NONE,
-              BORDER_RADIUS.FULL,
+              BorderRadius.XL,
+              BorderRadius.pill,
+              BorderRadius.none,
+              BorderRadius.full,
             ]}
           >
             Border radius set 2
@@ -643,13 +645,13 @@ describe('Box', () => {
     it('should render the Box with the alignItems classes', () => {
       const { getByText } = render(
         <>
-          <Box alignItems={ALIGN_ITEMS.FLEX_START}>
+          <Box alignItems={AlignItems.flexStart}>
             Box align-items-flex-start
           </Box>
-          <Box alignItems={ALIGN_ITEMS.FLEX_END}>Box align-items-flex-end</Box>
-          <Box alignItems={ALIGN_ITEMS.CENTER}>Box align-items-center</Box>
-          <Box alignItems={ALIGN_ITEMS.BASELINE}>Box align-items-baseline</Box>
-          <Box alignItems={ALIGN_ITEMS.STRETCH}>Box align-items-stretch</Box>
+          <Box alignItems={AlignItems.flexEnd}>Box align-items-flex-end</Box>
+          <Box alignItems={AlignItems.center}>Box align-items-center</Box>
+          <Box alignItems={AlignItems.baseline}>Box align-items-baseline</Box>
+          <Box alignItems={AlignItems.stretch}>Box align-items-stretch</Box>
         </>,
       );
 
@@ -674,10 +676,10 @@ describe('Box', () => {
         <>
           <Box
             alignItems={[
-              ALIGN_ITEMS.FLEX_START,
-              ALIGN_ITEMS.FLEX_END,
-              ALIGN_ITEMS.CENTER,
-              ALIGN_ITEMS.BASELINE,
+              AlignItems.flexStart,
+              AlignItems.flexEnd,
+              AlignItems.center,
+              AlignItems.baseline,
             ]}
           >
             Box content
@@ -700,22 +702,22 @@ describe('Box', () => {
     it('should render the Box with the justifyContent classes', () => {
       const { getByText } = render(
         <>
-          <Box justifyContent={JUSTIFY_CONTENT.FLEX_START}>
+          <Box justifyContent={JustifyContent.flexStart}>
             Box justify-content-flex-start
           </Box>
-          <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
+          <Box justifyContent={JustifyContent.flexEnd}>
             Box justify-content-flex-end
           </Box>
-          <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
+          <Box justifyContent={JustifyContent.center}>
             Box justify-content-center
           </Box>
-          <Box justifyContent={JUSTIFY_CONTENT.SPACE_AROUND}>
+          <Box justifyContent={JustifyContent.spaceAround}>
             Box justify-content-space-around
           </Box>
-          <Box justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}>
+          <Box justifyContent={JustifyContent.spaceBetween}>
             Box justify-content-space-between
           </Box>
-          <Box justifyContent={JUSTIFY_CONTENT.SPACE_EVENLY}>
+          <Box justifyContent={JustifyContent.spaceEvenly}>
             Box justify-content-space-evenly
           </Box>
         </>,
@@ -742,10 +744,10 @@ describe('Box', () => {
         <>
           <Box
             justifyContent={[
-              JUSTIFY_CONTENT.FLEX_START,
-              JUSTIFY_CONTENT.FLEX_END,
-              JUSTIFY_CONTENT.CENTER,
-              JUSTIFY_CONTENT.SPACE_AROUND,
+              JustifyContent.flexStart,
+              JustifyContent.flexEnd,
+              JustifyContent.center,
+              JustifyContent.spaceAround,
             ]}
           >
             Box content
@@ -809,7 +811,9 @@ describe('Box', () => {
   describe('background', () => {
     it('should render the Box with the backgroundColor class', () => {
       const { getByText } = render(
-        <Box backgroundColor={COLORS.BACKGROUND_DEFAULT}>Box content</Box>,
+        <Box backgroundColor={BackgroundColor.backgroundDefault}>
+          Box content
+        </Box>,
       );
       expect(getByText('Box content')).toHaveClass(
         'box--background-color-background-default',
@@ -819,10 +823,10 @@ describe('Box', () => {
       const { getByText } = render(
         <Box
           backgroundColor={[
-            COLORS.BACKGROUND_DEFAULT,
-            COLORS.ERROR_DEFAULT,
-            COLORS.INFO_DEFAULT,
-            COLORS.WARNING_DEFAULT,
+            BackgroundColor.backgroundDefault,
+            BackgroundColor.errorDefault,
+            BackgroundColor.infoDefault,
+            BackgroundColor.warningDefault,
           ]}
         >
           Box content
@@ -846,7 +850,7 @@ describe('Box', () => {
   describe('color', () => {
     it('should render the Box with the color class', () => {
       const { getByText } = render(
-        <Box color={COLORS.TEXT_DEFAULT}>Box content</Box>,
+        <Box color={TextColor.textDefault}>Box content</Box>,
       );
       expect(getByText('Box content')).toHaveClass('box--color-text-default');
     });
@@ -854,10 +858,10 @@ describe('Box', () => {
       const { getByText } = render(
         <Box
           color={[
-            COLORS.TEXT_DEFAULT,
-            COLORS.PRIMARY_DEFAULT,
-            COLORS.ERROR_DEFAULT,
-            COLORS.SUCCESS_DEFAULT,
+            TextColor.textDefault,
+            TextColor.primaryDefault,
+            TextColor.errorDefault,
+            TextColor.successDefault,
           ]}
         >
           Box content

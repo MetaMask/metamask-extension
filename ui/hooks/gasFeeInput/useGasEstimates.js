@@ -1,9 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import {
-  EDIT_GAS_MODES,
-  GAS_ESTIMATE_TYPES,
-} from '../../../shared/constants/gas';
+import { EditGasModes, GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
@@ -82,7 +79,7 @@ export function useGasEstimates({
     gasSettings = {
       ...gasSettings,
       gasPrice:
-        gasEstimateType === GAS_ESTIMATE_TYPES.NONE
+        gasEstimateType === GasEstimateTypes.none
           ? '0x0'
           : decGWEIToHexWEI(gasPrice),
     };
@@ -91,7 +88,7 @@ export function useGasEstimates({
   // The maximum amount this transaction will cost
   const maximumCostInHexWei = getMaximumGasTotalInHexWei(gasSettings);
 
-  if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+  if (editGasMode === EditGasModes.swaps) {
     gasSettings = { ...gasSettings, gasLimit: minimumGasLimit };
   }
 

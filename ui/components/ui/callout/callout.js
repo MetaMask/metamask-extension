@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
-import { SEVERITIES, COLORS } from '../../../helpers/constants/design-system';
+import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Typography from '../typography';
 
@@ -37,7 +37,7 @@ export default function Callout({
   return (
     <div className={calloutClassName}>
       <InfoIconInverted severity={severity} />
-      <Typography color={COLORS.TEXT_DEFAULT} className="callout__content">
+      <Typography color={Color.textDefault} className="callout__content">
         {children}
       </Typography>
       {dismiss && (

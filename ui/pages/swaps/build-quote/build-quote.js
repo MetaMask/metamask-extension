@@ -24,11 +24,11 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   VIEW_QUOTE_ROUTE,
@@ -590,7 +590,7 @@ export default function BuildQuote({
                   {t('enableSmartTransactions')}
                 </Button>
                 <Box marginTop={1}>
-                  <Typography variant={TYPOGRAPHY.H6}>
+                  <Typography variant={TypographyVariant.H6}>
                     <Button
                       type="link"
                       onClick={onCloseSmartTransactionsOptInPopover}
@@ -624,12 +624,12 @@ export default function BuildQuote({
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
+              <Typography variant={TypographyVariant.H7} marginTop={0}>
                 {t('stxDescription')}
               </Typography>
               <Typography
                 as="ul"
-                variant={TYPOGRAPHY.H7}
+                variant={TypographyVariant.H7}
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={3}
               >
@@ -641,23 +641,23 @@ export default function BuildQuote({
                   <Typography
                     as="span"
                     fontWeight={FONT_WEIGHT.NORMAL}
-                    variant={TYPOGRAPHY.H7}
+                    variant={TypographyVariant.H7}
                   >
                     {' *'}
                   </Typography>
                 </li>
               </Typography>
               <Typography
-                variant={TYPOGRAPHY.H8}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H8}
+                color={TextColor.textAlternative}
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
                 <Typography
                   as="span"
                   fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  variant={TypographyVariant.H8}
+                  color={TextColor.textAlternative}
                 >
                   {t('stxYouCanOptOut')}&nbsp;
                 </Typography>
