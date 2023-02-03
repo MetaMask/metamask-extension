@@ -74,7 +74,7 @@ function SignatureRequestData({ data }) {
                     />
                   </Typography>
                 ) : (
-                  value
+                  `${value}`
                 )}
               </Typography>
             )}
