@@ -45,6 +45,7 @@ export default function ApproveContentCard({
   data,
   userAcknowledgedGasMissing,
   renderSimulationFailureWarning,
+  useCurrencyRateCheck,
 }) {
   const t = useContext(I18nContext);
 
@@ -163,15 +164,20 @@ export default function ApproveContentCard({
                     alignItems={AlignItems.flexEnd}
                     textAlign={TEXT_ALIGN.RIGHT}
                   >
-                    <Box>
-                      <Typography
-                        variant={TypographyVariant.H4}
-                        fontWeight={FONT_WEIGHT.BOLD}
-                        color={TextColor.textDefault}
-                      >
-                        {formatCurrency(fiatTransactionTotal, currentCurrency)}
-                      </Typography>
-                    </Box>
+                    {useCurrencyRateCheck && (
+                      <Box>
+                        <Typography
+                          variant={TypographyVariant.H4}
+                          fontWeight={FONT_WEIGHT.BOLD}
+                          color={TextColor.TEXT_DEFAULT}
+                        >
+                          {formatCurrency(
+                            fiatTransactionTotal,
+                            currentCurrency,
+                          )}
+                        </Typography>
+                      </Box>
+                    )}
                     <Box>
                       <Typography
                         variant={TypographyVariant.H6}
@@ -320,4 +326,8 @@ ApproveContentCard.propTypes = {
    * Render simulation failure warning
    */
   renderSimulationFailureWarning: PropTypes.bool,
+  /**
+   * Fiat conversion control
+   */
+  useCurrencyRateCheck: PropTypes.bool,
 };
