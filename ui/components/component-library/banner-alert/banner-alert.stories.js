@@ -9,7 +9,7 @@ import {
 import Box from '../../ui/box/box';
 import { ICON_NAMES, ButtonLink, ButtonPrimary } from '..';
 import README from './README.mdx';
-import { Banner, BANNER_SEVERITIES } from '.';
+import { BannerAlert, BANNER_ALERT_SEVERITIES } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -30,8 +30,8 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/Banner',
-  component: Banner,
+  title: 'Components/ComponentLibrary/BannerAlert',
+  component: BannerAlert,
   parameters: {
     docs: {
       page: README,
@@ -40,13 +40,16 @@ export default {
   },
   argTypes: {
     severity: {
-      options: Object.values(BANNER_SEVERITIES),
+      options: Object.values(BANNER_ALERT_SEVERITIES),
       control: 'select',
     },
     className: {
       control: 'text',
     },
     title: {
+      control: 'text',
+    },
+    description: {
       control: 'text',
     },
     children: {
@@ -91,8 +94,8 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const onClose = () => console.log('Banner onClose trigger');
-  return <Banner {...args} onClose={onClose} />;
+  const onClose = () => console.log('BannerAlert onClose trigger');
+  return <BannerAlert {...args} onClose={onClose} />;
 };
 
 DefaultStory.args = {
@@ -106,24 +109,24 @@ DefaultStory.storyName = 'Default';
 export const Severity = (args) => {
   return (
     <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={3}>
-      <Banner {...args} severity={SEVERITIES.INFO} title="Info">
+      <BannerAlert {...args} severity={SEVERITIES.INFO} title="Info">
         This is a demo of severity Info.
-      </Banner>
-      <Banner {...args} severity={SEVERITIES.WARNING} title="Warning">
+      </BannerAlert>
+      <BannerAlert {...args} severity={SEVERITIES.WARNING} title="Warning">
         This is a demo of severity Warning.
-      </Banner>
-      <Banner {...args} severity={SEVERITIES.DANGER} title="Danger">
+      </BannerAlert>
+      <BannerAlert {...args} severity={SEVERITIES.DANGER} title="Danger">
         This is a demo of severity Danger.
-      </Banner>
-      <Banner {...args} severity={SEVERITIES.SUCCESS} title="Success">
+      </BannerAlert>
+      <BannerAlert {...args} severity={SEVERITIES.SUCCESS} title="Success">
         This is a demo of severity Success.
-      </Banner>
+      </BannerAlert>
     </Box>
   );
 };
 
 export const Title = (args) => {
-  return <Banner {...args} />;
+  return <BannerAlert {...args} />;
 };
 
 Title.args = {
@@ -131,19 +134,29 @@ Title.args = {
   children: 'Pass only a string through the title prop',
 };
 
+export const Description = (args) => {
+  return <BannerAlert {...args} />;
+};
+
+Description.args = {
+  title: 'Description vs children',
+  description:
+    'Pass only a string through the description prop or you can use children if the contents require more',
+};
+
 export const Children = (args) => {
   return (
-    <Banner {...args}>
+    <BannerAlert {...args}>
       {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
       <ButtonLink size={Size.auto} href="https://metamask.io/" target="_blank">
         hyperlink.
       </ButtonLink>
-    </Banner>
+    </BannerAlert>
   );
 };
 
 export const ActionButton = (args) => {
-  return <Banner {...args} />;
+  return <BannerAlert {...args} />;
 };
 
 ActionButton.args = {
@@ -160,7 +173,7 @@ ActionButton.args = {
 
 export const OnClose = (args) => {
   const [isShown, setShown] = useState(true);
-  const bannerToggle = () => {
+  const bannerAlertToggle = () => {
     if (isShown) {
       console.log('close button clicked');
     }
@@ -169,9 +182,11 @@ export const OnClose = (args) => {
   return (
     <>
       {isShown ? (
-        <Banner {...args} onClose={bannerToggle} />
+        <BannerAlert {...args} onClose={bannerAlertToggle} />
       ) : (
-        <ButtonPrimary onClick={bannerToggle}>View Banner</ButtonPrimary>
+        <ButtonPrimary onClick={bannerAlertToggle}>
+          View BannerAlert
+        </ButtonPrimary>
       )}
     </>
   );

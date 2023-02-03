@@ -10,9 +10,9 @@ import {
   SEVERITIES,
   Size,
 } from '../../../helpers/constants/design-system';
-import { BANNER_SEVERITIES } from './banner.constants';
+import { BANNER_ALERT_SEVERITIES } from './banner-alert.constants';
 
-export const Banner = ({
+export const BannerAlert = ({
   children,
   className,
   severity = SEVERITIES.INFO,
@@ -64,10 +64,11 @@ export const Banner = ({
       backgroundColor={severityBackground()}
       paddingLeft={2}
       className={classnames(
-        'mm-banner',
+        'mm-banner-alert',
         {
-          [`mm-banner--severity-${severity}`]:
-            Object.values(BANNER_SEVERITIES).includes(severity),
+          [`mm-banner-alert--severity-${severity}`]: Object.values(
+            BANNER_ALERT_SEVERITIES,
+          ).includes(severity),
         },
         className,
       )}
@@ -78,7 +79,7 @@ export const Banner = ({
   );
 };
 
-Banner.propTypes = {
+BannerAlert.propTypes = {
   /**
    * An additional className to apply to the Banner
    */
@@ -87,7 +88,7 @@ Banner.propTypes = {
    * Use the `severity` prop and the `SEVERITIES` object from `./ui/helpers/constants/design-system.js` to change the context of `Banner`.
    * Possible options: `SEVERITIES.INFO`(Default), `SEVERITIES.WARNING`, `SEVERITIES.DANGER`, `SEVERITIES.SUCCESS`
    */
-  severity: PropTypes.oneOf(Object.values(BANNER_SEVERITIES)),
+  severity: PropTypes.oneOf(Object.values(BANNER_ALERT_SEVERITIES)),
   /**
    * Banner accepts all the props from BannerBase
    */

@@ -4,14 +4,14 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { Banner, BANNER_SEVERITIES } from '.';
+import { BannerAlert, BANNER_SEVERITIES } from '.';
 
 describe('Banner', () => {
   it('should render banner element correctly', () => {
     const { getByTestId, container } = render(
-      <Banner data-testid="banner" title="Banner test">
+      <BannerAlert data-testid="banner" title="Banner test">
         should render banner element correctly
-      </Banner>,
+      </BannerAlert>,
     );
     expect(getByTestId('banner')).toHaveClass('mm-banner');
     expect(container).toMatchSnapshot();
@@ -19,65 +19,73 @@ describe('Banner', () => {
 
   it('should render with added classname', () => {
     const { getByTestId } = render(
-      <Banner
-        className="mm-banner--test"
+      <BannerAlert
+        className="mm-banner-alert--test"
         data-testid="banner"
         title="Banner test"
       >
         should render banner element correctly
-      </Banner>,
+      </BannerAlert>,
     );
-    expect(getByTestId('banner')).toHaveClass('mm-banner--test');
+    expect(getByTestId('banner')).toHaveClass('mm-banner-alert--test');
   });
 
   it('should render with different severity classnames', () => {
     const { getByTestId } = render(
       <>
-        <Banner data-testid="info" title="Info">
+        <BannerAlert data-testid="info" title="Info">
           This is a demo of severity Info.
-        </Banner>
-        <Banner
+        </BannerAlert>
+        <BannerAlert
           data-testid="warning"
           severity={BANNER_SEVERITIES.WARNING}
           title="Warning"
         >
           This is a demo of severity Warning.
-        </Banner>
-        <Banner
+        </BannerAlert>
+        <BannerAlert
           data-testid="danger"
           severity={BANNER_SEVERITIES.DANGER}
           title="Danger"
         >
           This is a demo of severity Danger.
-        </Banner>
-        <Banner
+        </BannerAlert>
+        <BannerAlert
           data-testid="success"
           severity={BANNER_SEVERITIES.SUCCESS}
           title="Success"
         >
           This is a demo of severity Success.
-        </Banner>
+        </BannerAlert>
       </>,
     );
-    expect(getByTestId('info')).toHaveClass('mm-banner--severity-info');
-    expect(getByTestId('warning')).toHaveClass('mm-banner--severity-warning');
-    expect(getByTestId('danger')).toHaveClass('mm-banner--severity-danger');
-    expect(getByTestId('success')).toHaveClass('mm-banner--severity-success');
+    expect(getByTestId('info')).toHaveClass('mm-banner-alert--severity-info');
+    expect(getByTestId('warning')).toHaveClass(
+      'mm-banner-alert--severity-warning',
+    );
+    expect(getByTestId('danger')).toHaveClass(
+      'mm-banner-alert--severity-danger',
+    );
+    expect(getByTestId('success')).toHaveClass(
+      'mm-banner-alert--severity-success',
+    );
   });
 
   it('should render banner title', () => {
-    const { getByText } = render(<Banner title="Banner title test" />);
+    const { getByText } = render(<BannerAlert title="Banner title test" />);
     expect(getByText('Banner title test')).toHaveClass('mm-banner-base__title');
   });
 
   it('should render banner description', () => {
-    const { getByText } = render(<Banner>Banner description test</Banner>);
+    const { getByText } = render(
+      <BannerAlert description="Banner description test" />,
+    );
     expect(getByText('Banner description test')).toBeDefined();
   });
 
   it('should render banner action button', () => {
     const { getByTestId } = render(
-      <Banner
+      <BannerAlert
         title="Action prop demo"
         actionButtonLabel="Action"
         actionButtonProps={{
@@ -91,7 +99,7 @@ describe('Banner', () => {
         Use actionButtonLabel for action text, actionButtonOnClick for the
         onClick handler, and actionButtonProps to pass any ButtonLink prop types
         such as iconName
-      </Banner>,
+      </BannerAlert>,
     );
     expect(getByTestId('action')).toHaveClass('mm-banner-base__action');
   });
@@ -99,7 +107,7 @@ describe('Banner', () => {
   it('should render and fire onClose event', async () => {
     const onClose = jest.fn();
     const { user, getByTestId } = renderWithUserEvent(
-      <Banner
+      <BannerAlert
         title="onClose Test"
         closeButtonProps={{ 'data-testid': 'close-button' }}
         onClose={onClose}
