@@ -41,7 +41,7 @@ import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { Icon, ICON_NAMES } from '../../component-library';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -461,7 +461,7 @@ export default class AccountMenu extends Component {
             global.platform.openTab({ url: supportLink });
           }}
           icon={
-            <Icon name={ICON_NAMES.MESSAGES} color={COLORS.ICON_ALTERNATIVE} />
+            <Icon name={ICON_NAMES.MESSAGES} color={Color.iconAlternative} />
           }
           text={supportText}
         />
