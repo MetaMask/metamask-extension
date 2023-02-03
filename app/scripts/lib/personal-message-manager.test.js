@@ -184,9 +184,9 @@ describe('Personal Message Manager', () => {
       const { host: siweDomain } = new URL(origin);
       const { host: browserDomain } = new URL(request.origin);
       const expectedError = `SIWE domain is not valid: "${browserDomain}" !== "${siweDomain}"`;
-      expect(async () => {
+      await expect(async () => {
         await messageManager.addUnapprovedMessage(msgParams, request);
-      }).toThrow(expectedError);
+      }).rejects.toThrow(expectedError);
     });
   });
 });
