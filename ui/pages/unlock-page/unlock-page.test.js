@@ -24,6 +24,8 @@ jest.mock('@metamask/logo', () => () => {
 });
 
 describe('Unlock Page', () => {
+  process.env.METAMASK_BUILD_TYPE = 'main';
+
   const mockState = {
     metamask: {},
   };

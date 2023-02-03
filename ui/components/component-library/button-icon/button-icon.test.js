@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import { ICON_NAMES } from '..';
 import { BUTTON_ICON_SIZES } from './button-icon.constants';
 import { ButtonIcon } from './button-icon';
@@ -78,22 +78,22 @@ describe('ButtonIcon', () => {
         <ButtonIcon
           iconName={ICON_NAMES.ADD_SQUARE}
           ariaLabel="add"
-          color={COLORS.ICON_DEFAULT}
-          data-testid={COLORS.ICON_DEFAULT}
+          color={IconColor.iconDefault}
+          data-testid={IconColor.iconDefault}
         />
         <ButtonIcon
           iconName={ICON_NAMES.ADD_SQUARE}
           ariaLabel="add"
-          color={COLORS.ERROR_DEFAULT}
-          data-testid={COLORS.ERROR_DEFAULT}
+          color={IconColor.errorDefault}
+          data-testid={IconColor.errorDefault}
         />
       </>,
     );
-    expect(getByTestId(COLORS.ICON_DEFAULT)).toHaveClass(
-      `box--color-${COLORS.ICON_DEFAULT}`,
+    expect(getByTestId(IconColor.iconDefault)).toHaveClass(
+      `box--color-${IconColor.iconDefault}`,
     );
-    expect(getByTestId(COLORS.ERROR_DEFAULT)).toHaveClass(
-      `box--color-${COLORS.ERROR_DEFAULT}`,
+    expect(getByTestId(IconColor.errorDefault)).toHaveClass(
+      `box--color-${IconColor.errorDefault}`,
     );
   });
 

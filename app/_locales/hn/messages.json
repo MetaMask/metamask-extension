@@ -196,9 +196,6 @@
   "message": {
     "message": "संदेश"
   },
-  "metamaskDescription": {
-    "message": "मेटामास्क इथीरियम के लिए एक सुरक्षित पहचान वॉल्ट है।"
-  },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
   },
@@ -365,9 +362,6 @@
   },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
-  },
-  "welcome": {
-    "message": "मेटामास्क बीटा में आपका स्वागत है"
   },
   "youSign": {
     "message": "आप हस्ताक्षर कर रहे हैं"

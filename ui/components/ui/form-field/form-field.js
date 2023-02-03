@@ -5,12 +5,12 @@ import classNames from 'classnames';
 import Typography from '../typography/typography';
 import Box from '../box/box';
 import {
-  COLORS,
   TEXT_ALIGN,
   DISPLAY,
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 
 import NumericInput from '../numeric-input/numeric-input.component';
@@ -54,7 +54,7 @@ export default function FormField({
           <Box
             className="form-field__heading-title"
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.BASELINE}
+            alignItems={AlignItems.baseline}
           >
             {TitleTextCustomComponent ||
               (titleText && (
@@ -63,7 +63,7 @@ export default function FormField({
                   htmlFor={id}
                   html
                   fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H6}
+                  variant={TypographyVariant.H6}
                   boxProps={{ display: DISPLAY.INLINE_BLOCK }}
                 >
                   {titleText}
@@ -72,9 +72,9 @@ export default function FormField({
             {TitleUnitCustomComponent ||
               (titleUnit && (
                 <Typography
-                  tag={TYPOGRAPHY.H6}
-                  variant={TYPOGRAPHY.H6}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  tag={TypographyVariant.H6}
+                  variant={TypographyVariant.H6}
+                  color={TextColor.textAlternative}
                   boxProps={{ display: DISPLAY.INLINE_BLOCK }}
                 >
                   {titleUnit}
@@ -128,8 +128,8 @@ export default function FormField({
         )}
         {error && (
           <Typography
-            color={COLORS.ERROR_DEFAULT}
-            variant={TYPOGRAPHY.H7}
+            color={TextColor.errorDefault}
+            variant={TypographyVariant.H7}
             className="form-field__error"
           >
             {error}
@@ -137,8 +137,8 @@ export default function FormField({
         )}
         {warning && (
           <Typography
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H7}
+            color={TextColor.textAlternative}
+            variant={TypographyVariant.H7}
             className="form-field__warning"
           >
             {warning}
@@ -146,8 +146,8 @@ export default function FormField({
         )}
         {passwordStrength && (
           <Typography
-            color={COLORS.TEXT_DEFAULT}
-            variant={TYPOGRAPHY.H7}
+            color={TextColor.textDefault}
+            variant={TypographyVariant.H7}
             className="form-field__password-strength"
           >
             {passwordStrength}
@@ -155,8 +155,8 @@ export default function FormField({
         )}
         {passwordStrengthText && (
           <Typography
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H8}
+            color={TextColor.textAlternative}
+            variant={TypographyVariant.H8}
             className="form-field__password-strength-text"
           >
             {passwordStrengthText}

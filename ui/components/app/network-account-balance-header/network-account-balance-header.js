@@ -5,12 +5,12 @@ import Identicon from '../../ui/identicon';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  TYPOGRAPHY,
-  COLORS,
+  TypographyVariant,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
   TEXT_ALIGN,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
@@ -37,19 +37,19 @@ export default function NetworkAccountBalanceHeader({
       flexDirection={FLEX_DIRECTION.ROW}
       padding={4}
       className="network-account-balance-header"
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.spaceBetween}
     >
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         gap={2}
       >
         <Box
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.ROW}
-          alignItems={ALIGN_ITEMS.CENTER}
+          alignItems={AlignItems.center}
         >
           <Identicon address={accountAddress} diameter={32} />
           <IconWithFallback
@@ -61,20 +61,20 @@ export default function NetworkAccountBalanceHeader({
         </Box>
         <Box
           display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.FLEX_START}
+          alignItems={AlignItems.flexStart}
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
           <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TypographyVariant.H6}
+            color={TextColor.textAlternative}
             marginBottom={0}
           >
             {networkName}
           </Typography>
 
           <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.TEXT_DEFAULT}
+            variant={TypographyVariant.H6}
+            color={TextColor.textDefault}
             fontWeight={FONT_WEIGHT.BOLD}
             marginTop={0}
           >
@@ -84,20 +84,20 @@ export default function NetworkAccountBalanceHeader({
       </Box>
       <Box
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.FLEX_END}
+        alignItems={AlignItems.flexEnd}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Typography
-          variant={TYPOGRAPHY.H6}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H6}
+          color={TextColor.textAlternative}
           marginBottom={0}
         >
           {t('balance')}
         </Typography>
 
         <Typography
-          variant={TYPOGRAPHY.H6}
-          color={COLORS.TEXT_DEFAULT}
+          variant={TypographyVariant.H6}
+          color={TextColor.textDefault}
           fontWeight={FONT_WEIGHT.BOLD}
           marginTop={0}
           align={TEXT_ALIGN.END}

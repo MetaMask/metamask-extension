@@ -23,14 +23,17 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
-import IconChart from '../../components/ui/icon/icon-chart';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
-  COLORS,
+  BLOCK_SIZES,
+  Size,
+  TextVariant,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
+import { ButtonLink, ICON_NAMES } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -119,6 +122,8 @@ export default class Home extends PureComponent {
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
+    showOutdatedBrowserWarning: PropTypes.bool.isRequired,
+    setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: (props) => {
       if (
         props.seedPhraseBackedUp !== null &&
@@ -246,6 +251,11 @@ export default class Home extends PureComponent {
     setRecoveryPhraseReminderLastShown(new Date().getTime());
   };
 
+  onOutdatedBrowserWarningClose = () => {
+    const { setOutdatedBrowserWarningLastShown } = this.props;
+    setOutdatedBrowserWarningLastShown(new Date().getTime());
+  };
+
   renderNotifications() {
     const { t } = this.context;
     const {
@@ -262,6 +272,7 @@ export default class Home extends PureComponent {
       shouldShowErrors,
       ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
+      showOutdatedBrowserWarning,
       newNetworkAdded,
       setNewNetworkAdded,
       newCollectibleAddedMessage,
@@ -275,7 +286,11 @@ export default class Home extends PureComponent {
       setRpcTarget,
     } = this.props;
 
-    const onAutoHide = () => setNewCollectibleAddedMessage('');
+    const onAutoHide = () => {
+      setNewCollectibleAddedMessage('');
+      setRemoveCollectibleMessage('');
+    };
+
     const autoHideDelay = 5 * SECOND;
 
     return (
@@ -291,15 +306,15 @@ export default class Home extends PureComponent {
                     descriptionText={
                       <>
                         <Typography
-                          color={COLORS.TEXT_ALTERNATIVE}
-                          variant={TYPOGRAPHY.H5}
+                          color={TextColor.textAlternative}
+                          variant={TypographyVariant.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
                         </Typography>
                         <Typography
-                          color={COLORS.TEXT_ALTERNATIVE}
-                          variant={TYPOGRAPHY.H7}
+                          color={TextColor.textAlternative}
+                          variant={TypographyVariant.H7}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('snapError', [error.message, error.code])}
@@ -327,7 +342,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newCollectibleAddedMessage')}
@@ -352,7 +367,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('removeCollectibleMessage')}
@@ -360,7 +375,7 @@ export default class Home extends PureComponent {
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
-                  onClick={() => setRemoveCollectibleMessage('')}
+                  onClick={onAutoHide}
                 />
               </Box>
             }
@@ -374,7 +389,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newNetworkAdded', [newNetworkAdded])}
@@ -398,14 +413,14 @@ export default class Home extends PureComponent {
                 <Box>
                   <Typography
                     className="home__new-tokens-imported-notification-title"
-                    variant={TYPOGRAPHY.H6}
+                    variant={TypographyVariant.H6}
                     fontWeight={FONT_WEIGHT.BOLD}
                   >
                     {t('newTokensImportedTitle')}
                   </Typography>
                   <Typography
                     className="home__new-tokens-imported-notification-message"
-                    variant={TYPOGRAPHY.H7}
+                    variant={TypographyVariant.H7}
                     fontWeight={FONT_WEIGHT.NORMAL}
                   >
                     {t('newTokensImportedMessage', [newTokensImported])}
@@ -483,11 +498,19 @@ export default class Home extends PureComponent {
             key="home-infuraBlockedNotification"
           />
         ) : null}
+        {showOutdatedBrowserWarning ? (
+          <HomeNotification
+            descriptionText={t('outdatedBrowserNotification')}
+            acceptText={t('gotIt')}
+            onAccept={this.onOutdatedBrowserWarningClose}
+            key="home-outdatedBrowserNotification"
+          />
+        ) : null}
         {Object.keys(newCustomNetworkAdded).length !== 0 && (
           <Popover className="home__new-network-added">
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
             <Typography
-              variant={TYPOGRAPHY.H4}
+              variant={TypographyVariant.H4}
               marginTop={5}
               marginRight={9}
               marginLeft={9}
@@ -511,9 +534,9 @@ export default class Home extends PureComponent {
                 }}
               >
                 <Typography
-                  variant={TYPOGRAPHY.H6}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.NORMAL}
-                  color={COLORS.PRIMARY_INVERSE}
+                  color={TextColor.primaryInverse}
                 >
                   {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
                 </Typography>
@@ -523,9 +546,9 @@ export default class Home extends PureComponent {
                 onClick={() => clearNewCustomNetworkAdded()}
               >
                 <Typography
-                  variant={TYPOGRAPHY.H6}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.NORMAL}
-                  color={COLORS.PRIMARY_DEFAULT}
+                  color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
                 </Typography>
@@ -686,8 +709,9 @@ export default class Home extends PureComponent {
                     </div>
                   }
                 >
-                  <div
+                  <ButtonLink
                     className="home__subheader-link"
+                    data-testid="home__portfolio-site"
                     onClick={async () => {
                       const portfolioUrl = process.env.PORTFOLIO_URL;
                       global.platform.openTab({
@@ -708,15 +732,13 @@ export default class Home extends PureComponent {
                         },
                       );
                     }}
+                    iconName={ICON_NAMES.DIAGRAM}
+                    width={BLOCK_SIZES.FULL}
+                    size={Size.MD}
+                    textProps={{ variant: TextVariant.bodySm }}
                   >
-                    <IconChart />
-                    <div
-                      className="home__subheader-link--text"
-                      data-testid="home__portfolio-site"
-                    >
-                      {t('portfolioSite')}
-                    </div>
-                  </div>
+                    {t('portfolioSite')}
+                  </ButtonLink>
                 </Tooltip>
               }
             >

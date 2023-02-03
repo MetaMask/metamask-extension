@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
-  SIZES,
-  ALIGN_ITEMS,
+  Size,
+  AlignItems,
   DISPLAY,
-  COLORS,
-  ICON_COLORS,
+  IconColor,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
-  TEXT,
+  JustifyContent,
+  TextVariant,
   FLEX_WRAP,
   TEXT_ALIGN,
+  BackgroundColor,
+  BorderColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -66,7 +68,7 @@ export default {
     },
     color: {
       control: 'select',
-      options: Object.values(ICON_COLORS),
+      options: Object.values(IconColor),
     },
     className: {
       control: 'text',
@@ -94,8 +96,8 @@ export default {
   },
   args: {
     name: ICON_NAMES.ADD_SQUARE,
-    color: COLORS.INHERIT,
-    size: SIZES.MD,
+    color: IconColor.inherit,
+    size: Size.MD,
   },
 };
 
@@ -119,7 +121,7 @@ export const DefaultStory = (args) => {
 
   return (
     <>
-      <Text as="h2" marginBottom={2} variant={TEXT.HEADING_MD}>
+      <Text as="h2" marginBottom={2} variant={TextVariant.headingMd}>
         Icon search
       </Text>
       <Box
@@ -157,12 +159,12 @@ export const DefaultStory = (args) => {
           {iconList.map((item) => {
             return (
               <Box
-                borderColor={COLORS.BORDER_MUTED}
-                borderRadius={SIZES.MD}
+                borderColor={BorderColor.borderMuted}
+                borderRadius={Size.MD}
                 display={DISPLAY.FLEX}
                 flexDirection={FLEX_DIRECTION.COLUMN}
-                alignItems={ALIGN_ITEMS.CENTER}
-                justifyContent={JUSTIFY_CONTENT.CENTER}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
                 padding={4}
                 key={item}
               >
@@ -171,17 +173,17 @@ export const DefaultStory = (args) => {
                   placeholder={item}
                   value={item}
                   readOnly
-                  size={SIZES.SM}
+                  size={Size.SM}
                   inputProps={{
-                    variant: TEXT.BODY_XS,
+                    variant: TextVariant.bodyXs,
                     textAlign: TEXT_ALIGN.CENTER,
                   }}
-                  backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+                  backgroundColor={BackgroundColor.backgroundAlternative}
                   rightAccessory={
                     <ButtonIcon
                       iconName={ICON_NAMES.COPY}
-                      size={SIZES.SM}
-                      color={COLORS.ICON_ALTERNATIVE}
+                      size={Size.SM}
+                      color={IconColor.iconAlternative}
                       ariaLabel="Copy to clipboard"
                       title="Copy to clipboard"
                       onClick={() => {
@@ -203,8 +205,8 @@ export const DefaultStory = (args) => {
         <Text>
           No matches. Please try again or ask in the{' '}
           <ButtonLink
-            size={SIZES.INHERIT}
-            color={COLORS.PRIMARY_DEFAULT}
+            size={Size.inherit}
+            color={Color.primaryDefault}
             href="https://consensys.slack.com/archives/C0354T27M5M"
             target="_blank"
           >
@@ -225,12 +227,12 @@ export const Name = (args) => (
         console.log('item:', item);
         return (
           <Box
-            borderColor={COLORS.BORDER_MUTED}
-            borderRadius={SIZES.MD}
+            borderColor={BorderColor.borderMuted}
+            borderRadius={Size.MD}
             display={DISPLAY.FLEX}
             flexDirection={FLEX_DIRECTION.COLUMN}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
             padding={4}
             key={item}
           >
@@ -242,104 +244,106 @@ export const Name = (args) => (
   </>
 );
 
-export const Size = (args) => (
+export const SizeStory = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.BASELINE}
+      alignItems={AlignItems.baseline}
       gap={1}
       marginBottom={4}
     >
-      <Icon {...args} size={SIZES.XXS} />
-      <Icon {...args} size={SIZES.XS} />
-      <Icon {...args} size={SIZES.SM} />
-      <Icon {...args} size={SIZES.MD} />
-      <Icon {...args} size={SIZES.LG} />
-      <Icon {...args} size={SIZES.XL} />
+      <Icon {...args} size={Size.XXS} />
+      <Icon {...args} size={Size.XS} />
+      <Icon {...args} size={Size.SM} />
+      <Icon {...args} size={Size.MD} />
+      <Icon {...args} size={Size.LG} />
+      <Icon {...args} size={Size.XL} />
     </Box>
-    <Text as="p" variant={TEXT.BODY_SM}>
-      <Icon {...args} size={SIZES.INHERIT} /> inherits the font-size of the
+    <Text as="p" variant={TextVariant.bodySm}>
+      <Icon {...args} size={Size.inherit} /> inherits the font-size of the
       parent element.
     </Text>
   </>
 );
+SizeStory.storyName = 'Size';
 
-export const Color = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE}>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.INHERIT} />
+export const ColorStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline}>
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.inherit} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ICON_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.iconDefault} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ICON_ALTERNATIVE} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.iconAlternative} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ICON_MUTED} />
-    </Box>
-    <Box
-      padding={1}
-      display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.OVERLAY_DEFAULT}
-    >
-      <Icon {...args} color={COLORS.OVERLAY_INVERSE} />
-    </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.PRIMARY_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.iconMuted} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.PRIMARY_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.overlayDefault}
     >
-      <Icon {...args} color={COLORS.PRIMARY_INVERSE} />
+      <Icon {...args} color={IconColor.overlayInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ERROR_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.primaryDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.ERROR_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.primaryDefault}
     >
-      <Icon {...args} color={COLORS.ERROR_INVERSE} />
+      <Icon {...args} color={IconColor.primaryInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.SUCCESS_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.errorDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.SUCCESS_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.errorDefault}
     >
-      <Icon {...args} color={COLORS.SUCCESS_INVERSE} />
+      <Icon {...args} color={IconColor.errorInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.WARNING_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.successDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.WARNING_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.successDefault}
     >
-      <Icon {...args} color={COLORS.WARNING_INVERSE} />
+      <Icon {...args} color={IconColor.successInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.INFO_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.warningDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.INFO_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.warningDefault}
     >
-      <Icon {...args} color={COLORS.INFO_INVERSE} />
+      <Icon {...args} color={IconColor.warningInverse} />
+    </Box>
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.infoDefault} />
+    </Box>
+    <Box
+      padding={1}
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.infoDefault}
+    >
+      <Icon {...args} color={IconColor.infoInverse} />
     </Box>
   </Box>
 );
+ColorStory.storyName = 'Color';
