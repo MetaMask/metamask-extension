@@ -10,9 +10,10 @@ import {
 import LoadingIndicator from '../../ui/loading-indicator';
 import ColorIndicator from '../../ui/color-indicator';
 import {
-  COLORS,
-  SIZES,
-  TYPOGRAPHY,
+  BorderColor,
+  IconColor,
+  Size,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Chip from '../../ui/chip/chip';
 import IconCaretDown from '../../ui/icon/icon-caret-down';
@@ -39,7 +40,9 @@ export default function NetworkDisplay({
   return (
     <Chip
       dataTestId="network-display"
-      borderColor={onClick ? COLORS.BORDER_DEFAULT : COLORS.BORDER_MUTED}
+      borderColor={
+        onClick ? BorderColor.borderDefault : BorderColor.borderMuted
+      }
       onClick={onClick}
       leftIcon={
         <LoadingIndicator
@@ -50,13 +53,13 @@ export default function NetworkDisplay({
           <ColorIndicator
             color={
               networkType === NETWORK_TYPES.RPC
-                ? COLORS.ICON_MUTED
+                ? IconColor.iconMuted
                 : networkType
             }
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={
-              networkType === NETWORK_TYPES.RPC && indicatorSize !== SIZES.XS
+              networkType === NETWORK_TYPES.RPC && indicatorSize !== Size.XS
                 ? 'fa fa-question'
                 : undefined
             }
@@ -78,7 +81,7 @@ export default function NetworkDisplay({
         'network-display--clickable': typeof onClick === 'function',
       })}
       labelProps={{
-        variant: TYPOGRAPHY.H7,
+        variant: TypographyVariant.H7,
         ...labelProps,
       }}
     />
@@ -88,7 +91,7 @@ NetworkDisplay.propTypes = {
   /**
    * The size of the indicator
    */
-  indicatorSize: PropTypes.oneOf(Object.values(SIZES)),
+  indicatorSize: PropTypes.oneOf(Object.values(Size)),
   /**
    * The label props of the label can use most of the Typography props
    */
@@ -117,5 +120,5 @@ NetworkDisplay.propTypes = {
 };
 
 NetworkDisplay.defaultProps = {
-  indicatorSize: SIZES.LG,
+  indicatorSize: Size.LG,
 };

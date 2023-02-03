@@ -6,7 +6,7 @@ import Typography from '../../../components/ui/typography/typography';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
@@ -52,7 +52,7 @@ export default function OnboardingPinExtension() {
       data-testid="onboarding-pin-extension"
     >
       <Typography
-        variant={TYPOGRAPHY.H2}
+        variant={TypographyVariant.H2}
         align={TEXT_ALIGN.CENTER}
         fontWeight={FONT_WEIGHT.BOLD}
       >

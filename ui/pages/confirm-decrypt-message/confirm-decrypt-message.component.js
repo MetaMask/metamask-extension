@@ -6,13 +6,14 @@ import classnames from 'classnames';
 import AccountListItem from '../../components/app/account-list-item';
 import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
-import Copy from '../../components/ui/icon/copy-icon.component';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { EVENT } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { Icon, ICON_NAMES } from '../../components/component-library';
+import { IconColor } from '../../helpers/constants/design-system';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -238,11 +239,14 @@ export default class ConfirmDecryptMessage extends Component {
               <div className="request-decrypt-message__message-copy-text">
                 {t('decryptCopy')}
               </div>
-              <Copy size={17} color="var(--color-primary-default)" />
+              <Icon
+                name={hasCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                color={IconColor.primaryDefault}
+              />
             </Tooltip>
           </div>
         ) : (
-          <div></div>
+          <div />
         )}
       </div>
     );

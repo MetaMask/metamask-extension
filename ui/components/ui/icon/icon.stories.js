@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
-  COLORS,
+  BackgroundColor,
   SEVERITIES,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Card from '../card';
 import Typography from '../typography';
@@ -12,7 +13,6 @@ import Box from '../box';
 import README from './README.mdx';
 
 import Approve from './approve-icon.component';
-import CopyIcon from './copy-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
 import Interaction from './interaction-icon.component';
@@ -85,7 +85,7 @@ const IconItem = ({ Component }) => {
       display="flex"
       flexDirection="column"
       textAlign="center"
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Box marginBottom={2}>{Component}</Box>
       <code>{`${Component.type.__docgenInfo.displayName}`}</code>
@@ -99,10 +99,13 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
-    <Typography variant={TYPOGRAPHY.H2} boxProps={{ marginBottom: 4 }}>
+    <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
     </Typography>
-    <Typography variant={TYPOGRAPHY.Paragraph} boxProps={{ marginBottom: 4 }}>
+    <Typography
+      variant={TypographyVariant.paragraph}
+      boxProps={{ marginBottom: 4 }}
+    >
       To ensure correct licensing we suggest you use an icon from the
       @fortawesome/fontawesome-free: ^5.13.0 package. If there is no icon to
       suit your needs and you need to create a new one. Ensure that it has the
@@ -135,8 +138,8 @@ export const DefaultStory = (args) => (
       </div>
     </Box>
     <Typography
-      variant={TYPOGRAPHY.H2}
-      color={COLORS.ERROR_DEFAULT}
+      variant={TypographyVariant.H2}
+      color={TextColor.errorDefault}
       boxProps={{ marginBottom: 4 }}
     >
       DEPRECATED
@@ -159,7 +162,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<InfoIconInverted {...args} />} />
         <IconItem Component={<SunCheck {...args} />} />
         <IconItem Component={<SunCheck {...args} reverseColors />} />
-        <IconItem Component={<CopyIcon {...args} />} />
         <IconItem Component={<Preloader {...args} />} />
         <IconItem Component={<IconEye {...args} />} />
         <IconItem Component={<IconEyeSlash {...args} />} />
@@ -280,13 +282,6 @@ SunCheckStory.argTypes = {
   },
 };
 SunCheckStory.storyName = 'SunCheck';
-
-export const CopyIconStory = (args) => <CopyIcon {...args} />;
-CopyIconStory.args = {
-  size: 40,
-  color: 'var(--color-icon-default)',
-};
-CopyIconStory.storyName = 'CopyIcon';
 
 export const PreloaderStory = (args) => <Preloader {...args} />;
 PreloaderStory.args = {

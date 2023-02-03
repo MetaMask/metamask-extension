@@ -54,16 +54,16 @@ Possible sizes include:
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size，TextVariant } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 
-<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.XS} />
-<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.SM} />
-<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.MD} />
-<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.LG} />
-<Icon name={ICON_NAMES.ADD_SQUARE} size={SIZES.XL} />
-<Text as="p" variant={TEXT.BODY_SM}>
-    <Icon size={SIZES.INHERIT} />  inherits the
+<Icon name={ICON_NAMES.ADD_SQUARE} size={Size.XS} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={Size.SM} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={Size.MD} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={Size.LG} />
+<Icon name={ICON_NAMES.ADD_SQUARE} size={Size.XL} />
+<Text as="p" variant={TextVariant.bodySm}>
+    <Icon size={Size.inherit} />  inherits the
     font-size of the parent element.
 </Text>
 ```
@@ -77,24 +77,24 @@ Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design
 </Canvas>
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.INHERIT} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ICON_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ICON_ALTERNATIVE} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ICON_MUTED} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.OVERLAY_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.PRIMARY_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.PRIMARY_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ERROR_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.ERROR_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.SUCCESS_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.SUCCESS_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.WARNING_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.WARNING_INVERSE} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.INFO_DEFAULT} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={COLORS.INFO_INVERSE} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.inherit} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.iconDefault} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.iconAlternative} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.iconMuted} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.overlayInverse} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.primaryDefault} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.primaryInverse} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.errorDefault />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.errorInverse} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.successDefault} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.successInverse} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.warningDefault} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.warningInverse} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.infoDefault} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.infoInvers} />
 ```
 
 ### Adding a new icon

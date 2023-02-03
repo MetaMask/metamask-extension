@@ -16,13 +16,15 @@ import Button from '../../../ui/button';
 import Tooltip from '../../../ui/tooltip';
 
 import {
-  COLORS,
-  TYPOGRAPHY,
+  Color,
+  TypographyVariant,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
   DISPLAY,
   TEXT_ALIGN,
+  TextColor,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 
 const STATUSES = {
@@ -33,10 +35,10 @@ const STATUSES = {
 };
 
 const STATUS_COLORS = {
-  [STATUSES.INSTALLING]: COLORS.WARNING_DEFAULT,
-  [STATUSES.RUNNING]: COLORS.SUCCESS_DEFAULT,
-  [STATUSES.STOPPED]: COLORS.ICON_MUTED,
-  [STATUSES.CRASHED]: COLORS.ERROR_DEFAULT,
+  [STATUSES.INSTALLING]: Color.warningDefault,
+  [STATUSES.RUNNING]: Color.successDefault,
+  [STATUSES.STOPPED]: Color.infoMuted,
+  [STATUSES.CRASHED]: Color.errorDefault,
 };
 
 const SnapSettingsCard = ({
@@ -65,7 +67,7 @@ const SnapSettingsCard = ({
     >
       <Box
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         marginBottom={4}
       >
         {(icon || name) && (
@@ -81,8 +83,8 @@ const SnapSettingsCard = ({
             marginTop: 0,
             marginBottom: 0,
           }}
-          color={COLORS.TEXT_DEFAULT}
-          variant={TYPOGRAPHY.H4}
+          color={TextColor.textDefault}
+          variant={TypographyVariant.H4}
           fontWeight={FONT_WEIGHT.BOLD}
           className="snap-settings-card__title"
         >
@@ -100,8 +102,8 @@ const SnapSettingsCard = ({
         </Box>
       </Box>
       <Typography
-        variant={TYPOGRAPHY.Paragraph}
-        color={COLORS.TEXT_ALTERNATIVE}
+        variant={TypographyVariant.paragraph}
+        color={TextColor.textAlternative}
         fontWeight={FONT_WEIGHT.NORMAL}
         className="snap-settings-card__body"
         boxProps={{
@@ -116,8 +118,8 @@ const SnapSettingsCard = ({
         <Box marginBottom={4}>
           <Box
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             marginBottom={4}
           >
             <Box>
@@ -141,25 +143,25 @@ const SnapSettingsCard = ({
                 }
                 label={status}
                 labelProps={{
-                  color: COLORS.TEXT_ALTERNATIVE,
+                  color: Color.textAlternative,
                   margin: [0, 1],
                 }}
-                backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+                backgroundColor={BackgroundColor.backgroundAlternative}
                 className="snap-settings-card__chip"
                 {...chipProps}
               />
             </Tooltip>
           </Box>
         </Box>
-        <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
           {(dateAdded || version) && (
             <>
               <Typography
                 boxProps={{
                   margin: [0, 0],
                 }}
-                color={COLORS.TEXT_MUTED}
-                variant={TYPOGRAPHY.H8}
+                color={TextColor.textMuted}
+                variant={TypographyVariant.H8}
                 fontWeight={FONT_WEIGHT.NORMAL}
                 as="span"
                 className="snap-settings-card__date-added"
@@ -173,8 +175,8 @@ const SnapSettingsCard = ({
                   paddingLeft: 2,
                   margin: [0, 0],
                 }}
-                color={COLORS.TEXT_MUTED}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.textMuted}
+                variant={TypographyVariant.H7}
                 fontWeight={FONT_WEIGHT.NORMAL}
                 align={TEXT_ALIGN.CENTER}
                 as="span"

@@ -4,9 +4,9 @@ import Box from '../../ui/box';
 import Typography from '../../ui/typography';
 import Tooltip from '../../ui/tooltip';
 import {
-  COLORS,
+  TextColor,
   DISPLAY,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 
 export const CustomSpendingCapTooltip = ({
@@ -19,9 +19,9 @@ export const CustomSpendingCapTooltip = ({
       position="top"
       html={
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           margin={3}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           className="form-field__heading-title__tooltip"
         >
           {tooltipContentText}

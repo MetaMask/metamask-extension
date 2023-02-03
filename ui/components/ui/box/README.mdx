@@ -44,9 +44,9 @@ Box is a utility component that can be used for layout or as a base for other UI
 | textAlign       | TEXT_ALIGN values or array of TEXT_ALIGN values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)               | -                  |
 | width           | BLOCK_SIZES values or array of BLOCK_SIZES values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)             | -                  |
 | height          | BLOCK_SIZES values or array of BLOCK_SIZES values for responsive props [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                  | -                  |
-| color           | COLORS values or array of COLORS values for responsive props [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                            | -                  |
-| backgroundColor | BACKGROUND_COLORS values or array of BACKGROUND_COLORS values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js) | -                  |
-| borderColor     | BORDER_COLORS values or array of BORDER_COLORS values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)         | -                  |
+| color           | Color values or array of Color values for responsive props [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                            | -                  |
+| backgroundColor | BackgroundColor values or array of BackgroundColor values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js) | -                  |
+| borderColor     | BorderColor values or array of BorderColor values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)         | -                  |
 | borderWidth     | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                           | -                  |
 | borderRadius    | BORDER_RADIUS values or array of BORDER_RADIUS values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)         | -                  |
 | borderStyle     | BORDER_STYLE values or array of BORDER_STYLE values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)           | -                  |
@@ -154,10 +154,10 @@ The `color` prop can be used to set the color of the content in Box component. T
 Example of importing `COLORS` object with `Box` component
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 import Box from '../ui/box';
 
-<Box color={COLORS.TEXT_DEFAULT}>Text goes here</Box>;
+<Box color={TextColor.textDefault}>Text goes here</Box>;
 ```
 
 ### Background Color
@@ -171,11 +171,11 @@ Use the `backgroundColor` prop along with the `COLORS` object from `ui/helpers/c
 Example of importing `COLORS` object with `Box` component
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { BackgroundColor, TextColor } from '../../../helpers/constants/design-system';
 import Box from '../ui/box';
 
-<Box backgroundColor={COLORS.BACKGROUND_DEFAULT}>
-  <Typography color={COLORS.TEXT_DEFAULT}>COLORS.BACKGROUND_DEFAULT</Typography>
+<Box backgroundColor={BackgroundColor.backgroundDefault}>
+  <Typography color={TextColor.textDefault}>COLORS.BACKGROUND_DEFAULT</Typography>
 </Box>;
 ```
 
@@ -187,17 +187,17 @@ Use the `borderColor` prop along with the `COLORS` object from `ui/helpers/const
   <Story id="components-ui-box--border-color" />
 </Canvas>
 
-Example of importing `COLORS` object with `Box` component
+Example of importing `BorderColor` object with `Box` component
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { BackgroundColor, BorderColor, TextColor } from '../../../helpers/constants/design-system';
 import Box from '../ui/box';
 
 <Box
-  backgroundColor={COLORS.BACKGROUND_DEFAULT}
-  borderColor={COLORS.BORDER_DEFAULT}
+  backgroundColor={BackgroundColor.backgroundDefault}
+  borderColor={BorderColor.borderDefault}
 >
-  <Typography color={COLORS.TEXT_DEFAULT}>COLORS.BORDER_DEFAULT</Typography>
+  <Typography color={TextColor.textDefault}>COLORS.BORDER_DEFAULT</Typography>
 </Box>;
 ```
 
@@ -212,17 +212,17 @@ Use the `borderRadius` prop along with the `BORDER_RADIUS` object from `ui/helpe
 Example of importing `BORDER_RADIUS` object with `Box` component
 
 ```jsx
-import { BORDER_RADIUS } from '../../../helpers/constants/design-system';
+import { BorderRadius } from '../../../helpers/constants/design-system';
 import Box from '../ui/box';
 
-<Box borderRadius={BORDER_RADIUS.NONE}>BORDER_RADIUS.NONE 0px</Box>
-<Box borderRadius={BORDER_RADIUS.XS}>BORDER_RADIUS.XS 2px</Box>
-<Box borderRadius={BORDER_RADIUS.SM}>BORDER_RADIUS.SM 4px</Box>
-<Box borderRadius={BORDER_RADIUS.MD}>BORDER_RADIUS.MD 6px</Box>
-<Box borderRadius={BORDER_RADIUS.LG}>BORDER_RADIUS.LG 8px</Box>
-<Box borderRadius={BORDER_RADIUS.XL}>BORDER_RADIUS.XL 12px</Box>
-<Box borderRadius={BORDER_RADIUS.PILL}>BORDER_RADIUS.PILL 9999px</Box>
-<Box borderRadius={BORDER_RADIUS.FULL}>BORDER_RADIUS.FULL 50%</Box>
+<Box borderRadius={BorderRadius.none}>BorderRadius.none 0px</Box>
+<Box borderRadius={BorderRadius.XS}>BorderRadius.XS 2px</Box>
+<Box borderRadius={BorderRadius.SM}>BorderRadius.SM 4px</Box>
+<Box borderRadius={BorderRadius.MD}>BorderRadius.MD 6px</Box>
+<Box borderRadius={BorderRadius.LG}>BorderRadius.LG 8px</Box>
+<Box borderRadius={BorderRadius.XL}>BorderRadius.XL 12px</Box>
+<Box borderRadius={BorderRadius.pill}>BorderRadius.pill 9999px</Box>
+<Box borderRadius={BorderRadius.full}>BorderRadius.full 50%</Box>
 ```
 
 ### Responsive Props
@@ -251,7 +251,7 @@ The box component provides a responsive props api in the form of array props. Ar
 </Canvas>
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { BorderColor, BackgroundColor } from '../../../helpers/constants/design-system';
 import Box from '../ui/box';
 
 <Box
@@ -259,26 +259,26 @@ import Box from '../ui/box';
   gap={[2, 4]}
   display={['flex']}
   flexDirection={['column', 'row']}
-  borderColor={COLORS.BORDER_DEFAULT}
+  borderColor={BorderColor.borderDefault}
 >
   <Box
     padding={[4, 8]}
-    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-    borderColor={COLORS.BORDER_MUTED}
+    backgroundColor={BackgroundColor.backgroundAlternative}
+    borderColor={BorderColor.borderMuted}
   >
     responsive
   </Box>
   <Box
     padding={[4, 8]}
-    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-    borderColor={COLORS.BORDER_MUTED}
+    backgroundColor={BackgroundColor.backgroundAlternative}
+    borderColor={BorderColor.borderMuted}
   >
     props
   </Box>
   <Box
     padding={[4, 8]}
-    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-    borderColor={COLORS.BORDER_MUTED}
+    backgroundColor={BackgroundColor.backgroundAlternative}
+    borderColor={BorderColor.borderMuted}
   >
     example
   </Box>

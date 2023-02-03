@@ -23,9 +23,9 @@ import Typography from '../../ui/typography/typography';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Dialog from '../../ui/dialog';
 import {
@@ -38,7 +38,7 @@ import { attemptLedgerTransportCreation } from '../../../store/actions';
 const renderInstructionStep = (
   text,
   show = true,
-  color = COLORS.TEXT_DEFAULT,
+  color = TextColor.textDefault,
 ) => {
   return (
     show && (
@@ -46,7 +46,7 @@ const renderInstructionStep = (
         boxProps={{ margin: 0 }}
         color={color}
         fontWeight={FONT_WEIGHT.BOLD}
-        variant={TYPOGRAPHY.H7}
+        variant={TypographyVariant.H7}
       >
         {text}
       </Typography>
@@ -204,7 +204,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
               </span>,
               usingWebHID &&
                 webHidConnectedStatus === WebHIDConnectedStatuses.notConnected,
-              COLORS.WARNING_DEFAULT,
+              TextColor.WARNING_DEFAULT,
             )}
           </div>
         </Dialog>

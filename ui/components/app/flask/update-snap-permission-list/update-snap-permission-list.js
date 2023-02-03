@@ -4,7 +4,7 @@ import { getPermissionDescription } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatDate } from '../../../../helpers/utils/util';
 import Typography from '../../../ui/typography/typography';
-import { COLORS } from '../../../../helpers/constants/design-system';
+import { TextColor } from '../../../../helpers/constants/design-system';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -29,7 +29,7 @@ export default function UpdateSnapPermissionList({
             <div className="permission-description">
               {label}
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={TextColor.textAlternative}
                 className="permission-description-subtext"
                 boxProps={{ paddingTop: 1 }}
               >
@@ -57,7 +57,7 @@ export default function UpdateSnapPermissionList({
             <div className="permission-description">
               {label}
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={TextColor.textAlternative}
                 boxProps={{ paddingTop: 1 }}
                 className="permission-description-subtext"
               >
@@ -85,7 +85,7 @@ export default function UpdateSnapPermissionList({
             <div className="permission-description">
               {label}
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={TextColor.textAlternative}
                 boxProps={{ paddingTop: 1 }}
                 className="permission-description-subtext"
               >
