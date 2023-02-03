@@ -30,7 +30,6 @@ import IconCheck from './icon-check';
 import IconCog from './icon-cog';
 import IconConnect from './icon-connect';
 import IconImport from './icon-import';
-import IconSpeechBubbles from './icon-speech-bubbles';
 import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
@@ -128,7 +127,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconPlus {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
         <IconItem Component={<IconConnect {...args} />} />
-        <IconItem Component={<IconSpeechBubbles {...args} />} />
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
