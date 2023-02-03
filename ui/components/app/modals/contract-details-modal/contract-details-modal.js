@@ -21,7 +21,7 @@ import {
   BorderStyle,
   BorderColor,
   TextColor,
-  Color
+  Color,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import UrlIcon from '../../../ui/url-icon/url-icon';
