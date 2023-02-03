@@ -60,6 +60,7 @@ import {
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
+import { Icon, ICON_NAMES } from '../../components/component-library';
 
 export default function TokenAllowance({
   origin,
@@ -418,7 +419,7 @@ export default function TokenAllowance({
             </Box>
           )}
           <ApproveContentCard
-            symbol={<i className="fa fa-tag" />}
+            symbol={<Icon name={ICON_NAMES.TAG} />}
             title={t('transactionFee')}
             showEdit
             showAdvanceGasFeeOptions
