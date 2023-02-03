@@ -8,12 +8,12 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
 import Box from '../../../../components/ui/box/box';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   BLOCK_SIZES,
-  BORDER_STYLE,
+  BorderStyle,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
-  TYPOGRAPHY,
+  JustifyContent,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
 import { getSnapInstallWarnings } from '../util';
@@ -52,14 +52,14 @@ export default function SnapInstall({
   return (
     <Box
       className="page-container snap-install"
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      justifyContent={JustifyContent.spaceBetween}
       height={BLOCK_SIZES.FULL}
-      borderStyle={BORDER_STYLE.NONE}
+      borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <Box
         className="headers"
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <PermissionConnectHeader
@@ -70,7 +70,7 @@ export default function SnapInstall({
           siteOrigin={targetSubjectMetadata.origin}
           isSnapInstallOrUpdate
           snapVersion={targetSubjectMetadata.version}
-          boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
+          boxProps={{ alignItems: AlignItems.center }}
         />
         {hasPermissions && (
           <>
@@ -78,7 +78,7 @@ export default function SnapInstall({
               boxProps={{
                 padding: [4, 4, 0, 4],
               }}
-              variant={TYPOGRAPHY.H7}
+              variant={TypographyVariant.H7}
               as="span"
             >
               {t('snapRequestsPermission')}
@@ -91,7 +91,7 @@ export default function SnapInstall({
       </Box>
       <Box
         className="footers"
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Box className="snap-install__footer--no-source-code" paddingTop={4}>

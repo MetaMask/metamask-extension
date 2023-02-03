@@ -28,6 +28,7 @@ const createProps = (customProps = {}) => {
 };
 
 describe('LoadingSwapsQuotes', () => {
+  process.env.METAMASK_BUILD_TYPE = 'main';
   it('renders the component with initial props', () => {
     const store = configureMockStore()(createSwapsMockStore());
     const { getByText } = renderWithProvider(

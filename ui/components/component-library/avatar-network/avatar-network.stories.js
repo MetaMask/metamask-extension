@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-  COLORS,
-  SIZES,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  TEXT_COLORS,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
+  Color,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -30,15 +30,15 @@ export default {
       options: Object.values(AVATAR_NETWORK_SIZES),
     },
     color: {
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
       control: 'select',
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
       control: 'select',
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
     },
     name: {
@@ -54,7 +54,7 @@ export default {
   args: {
     name: 'Arbitrum One',
     src: './images/arbitrum.svg',
-    size: SIZES.MD,
+    size: Size.MD,
     showHalo: false,
   },
 };
@@ -66,15 +66,16 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarNetwork {...args} size={SIZES.XS} />
-    <AvatarNetwork {...args} size={SIZES.SM} />
-    <AvatarNetwork {...args} size={SIZES.MD} />
-    <AvatarNetwork {...args} size={SIZES.LG} />
-    <AvatarNetwork {...args} size={SIZES.XL} />
+export const SizeStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+    <AvatarNetwork {...args} size={Size.XS} />
+    <AvatarNetwork {...args} size={Size.SM} />
+    <AvatarNetwork {...args} size={Size.MD} />
+    <AvatarNetwork {...args} size={Size.LG} />
+    <AvatarNetwork {...args} size={Size.XL} />
   </Box>
 );
+SizeStory.storyName = 'Size';
 
 export const Name = Template.bind({});
 Name.args = {
@@ -104,17 +105,17 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarNetwork
       {...args}
-      backgroundColor={COLORS.GOERLI}
-      borderColor={COLORS.GOERLI}
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
       name="G"
-      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
+      color={Color.goerliInverse}
     />
     <AvatarNetwork
       {...args}
-      backgroundColor={COLORS.SEPOLIA}
-      borderColor={COLORS.SEPOLIA}
+      backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
       name="S"
-      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
+      color={Color.goerliInverse}
     />
   </Box>
 );

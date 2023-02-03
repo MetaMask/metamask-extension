@@ -7,10 +7,11 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library';
 import {
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 
 export default class ExperimentalTab extends PureComponent {
@@ -96,13 +97,17 @@ export default class ExperimentalTab extends PureComponent {
           <div className="settings-page__content-item">
             <span>{t('useCollectibleDetection')}</span>
             <div className="settings-page__content-description">
-              {t('useCollectibleDetectionDescription')}
-              <br />
-              {t('useCollectibleDetectionDescriptionLine2')}
+              <Text color={TextColor.textAlternative}>
+                {t('useCollectibleDetectionDescription')}
+              </Text>
               <ul className="settings-page__content-unordered-list">
+                <li>{t('useCollectibleDetectionDescriptionLine2')}</li>
                 <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
                 <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
               </ul>
+              <Text color={TextColor.textAlternative} paddingTop={4}>
+                {t('useCollectibleDetectionDescriptionLine5')}
+              </Text>
             </div>
           </div>
           <div className="settings-page__content-item">
@@ -144,8 +149,8 @@ export default class ExperimentalTab extends PureComponent {
     return (
       <>
         <Typography
-          variant={TYPOGRAPHY.H4}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H4}
+          color={TextColor.textAlternative}
           marginBottom={2}
           fontWeight={FONT_WEIGHT.BOLD}
         >
@@ -159,23 +164,23 @@ export default class ExperimentalTab extends PureComponent {
             <span>{t('transactionSecurityCheck')}</span>
             <div className="settings-page__content-description">
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
               >
                 {t('transactionSecurityCheckDescription')}
               </Typography>
               <Typography
                 marginTop={3}
                 marginBottom={1}
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
               >
                 {t('selectProvider')}
               </Typography>
               <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
                 <Typography
-                  variant={TYPOGRAPHY.H5}
-                  color={COLORS.TEXT_DEFAULT}
+                  variant={TypographyVariant.H5}
+                  color={TextColor.textDefault}
                   fontWeight={FONT_WEIGHT.MEDIUM}
                   marginBottom={0}
                 >
@@ -197,15 +202,15 @@ export default class ExperimentalTab extends PureComponent {
                 />
               </div>
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
                 marginTop={0}
               >
                 {t('thisServiceIsExperimental')}
               </Typography>
               <Typography
-                variant={TYPOGRAPHY.H5}
-                color={COLORS.TEXT_MUTED}
+                variant={TypographyVariant.H5}
+                color={TextColor.textMuted}
                 fontWeight={FONT_WEIGHT.MEDIUM}
                 marginTop={2}
               >

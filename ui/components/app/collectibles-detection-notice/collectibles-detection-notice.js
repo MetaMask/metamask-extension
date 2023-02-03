@@ -4,11 +4,11 @@ import Box from '../../ui/box';
 import Dialog from '../../ui/dialog';
 import Typography from '../../ui/typography/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TypographyVariant,
   TEXT_ALIGN,
   FONT_WEIGHT,
   DISPLAY,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../ui/button';
@@ -33,17 +33,17 @@ export default function CollectiblesDetectionNotice() {
           </Box>
           <Box paddingLeft={2}>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
+              color={TextColor.textDefault}
               align={TEXT_ALIGN.LEFT}
-              variant={TYPOGRAPHY.H7}
+              variant={TypographyVariant.H7}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('newNFTsDetected')}
             </Typography>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
+              color={TextColor.textDefault}
               align={TEXT_ALIGN.LEFT}
-              variant={TYPOGRAPHY.H7}
+              variant={TypographyVariant.H7}
               boxProps={{ marginBottom: 4 }}
             >
               {t('newNFTDetectedMessage')}
