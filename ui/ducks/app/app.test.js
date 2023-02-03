@@ -42,7 +42,7 @@ describe('App State', () => {
   it('opens alert', () => {
     const state = reduceApp(metamaskState, {
       type: actions.ALERT_OPEN,
-      value: 'test message',
+      payload: 'test message',
     });
 
     expect(state.alertOpen).toStrictEqual(true);
@@ -243,7 +243,7 @@ describe('App State', () => {
     };
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-      value: {
+      payload: {
         device: HardwareDeviceNames.ledger,
         path: "m/44'/60'/0'",
       },
@@ -255,7 +255,7 @@ describe('App State', () => {
   it('shows loading message', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_LOADING,
-      value: 'loading',
+      payload: 'loading',
     });
 
     expect(state.isLoading).toStrictEqual(true);
@@ -276,7 +276,7 @@ describe('App State', () => {
   it('displays warning', () => {
     const state = reduceApp(metamaskState, {
       type: actions.DISPLAY_WARNING,
-      value: 'warning',
+      payload: 'warning',
     });
 
     expect(state.isLoading).toStrictEqual(false);
@@ -296,7 +296,7 @@ describe('App State', () => {
   it('shows private key', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_PRIVATE_KEY,
-      value: 'private key',
+      payload: 'private key',
     });
 
     expect(state.accountDetail.privateKey).toStrictEqual('private key');
@@ -305,7 +305,7 @@ describe('App State', () => {
   it('set mouse user state', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SET_MOUSE_USER_STATE,
-      value: true,
+      payload: true,
     });
 
     expect(state.isMouseUser).toStrictEqual(true);
