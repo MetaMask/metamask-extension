@@ -16,6 +16,7 @@ import {
   FONT_WEIGHT,
   AlignItems,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Text, TEXT_VARIANTS } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -147,7 +148,7 @@ export default function CollectiblesTab({ onAddNFT }) {
             </Button>
           </Box>
         </Box>
-        <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
+        <Box justifyContent={JustifyContent.flexEnd}>
           {useNftDetection ? null : (
             <SystemNotification
               descriptionText={
@@ -155,10 +156,10 @@ export default function CollectiblesTab({ onAddNFT }) {
                   {t('nftAutodetectionTurnedOffNotification1')}
 
                   <Text
-                    variant={TEXT_VARIANTS.BODY_XS}
+                    variant={TextVariant.bodyXs}
                     as="strong"
                     fontWeight={FONT_WEIGHT.BOLD}
-                    color={TEXT_COLORS.PRIMARY_INVERSE}
+                    color={TextColor.primaryInverse}
                   >
                     {t('nftAutodetectionTurnedOffNotification2')}
                   </Text>
@@ -166,10 +167,10 @@ export default function CollectiblesTab({ onAddNFT }) {
                   {t('nftAutodetectionTurnedOffNotification3')}
 
                   <Text
-                    variant={TEXT_VARIANTS.BODY_XS}
+                    variant={TextVariant.bodyXs}
                     as="strong"
                     fontWeight={FONT_WEIGHT.BOLD}
-                    color={TEXT_COLORS.PRIMARY_INVERSE}
+                    color={TextColor.primaryInverse}
                   >
                     {t('nftAutodetectionTurnedOffNotification4')}
                   </Text>

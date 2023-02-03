@@ -2180,10 +2180,10 @@
     "message": "OFF "
   },
   "nftAutodetectionTurnedOffNotification3": {
-    "message": "for all NFTs from now on. To change this settings, go to  "
+    "message": "for all NFTs from now on. To change this setting, go to  "
   },
   "nftAutodetectionTurnedOffNotification4": {
-    "message": "Settings > Privacy."
+    "message": "Settings > Experimental."
   },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
