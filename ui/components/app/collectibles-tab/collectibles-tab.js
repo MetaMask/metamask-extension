@@ -17,6 +17,7 @@ import {
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { Text, TEXT_VARIANTS } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsMainnet, getUseNftDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
@@ -146,12 +147,37 @@ export default function CollectiblesTab({ onAddNFT }) {
             </Button>
           </Box>
         </Box>
-        {true ? (
-          <SystemNotification
-            descriptionText={t('nftAutodetectionTurnedOffNotification')}
-            key="nft-autodetection-off-notification"
-          />
-        ) : null}
+        <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
+          {useNftDetection ? null : (
+            <SystemNotification
+              descriptionText={
+                <Text className="nft-autodetection-off-description">
+                  {t('nftAutodetectionTurnedOffNotification1')}
+
+                  <Text
+                    variant={TEXT_VARIANTS.BODY_XS}
+                    as="strong"
+                    fontWeight={FONT_WEIGHT.BOLD}
+                    color={TEXT_COLORS.PRIMARY_INVERSE}
+                  >
+                    {t('nftAutodetectionTurnedOffNotification2')}
+                  </Text>
+
+                  {t('nftAutodetectionTurnedOffNotification3')}
+
+                  <Text
+                    variant={TEXT_VARIANTS.BODY_XS}
+                    as="strong"
+                    fontWeight={FONT_WEIGHT.BOLD}
+                    color={TEXT_COLORS.PRIMARY_INVERSE}
+                  >
+                    {t('nftAutodetectionTurnedOffNotification4')}
+                  </Text>
+                </Text>
+              }
+            />
+          )}
+        </Box>
       </Box>
     </Box>
   );

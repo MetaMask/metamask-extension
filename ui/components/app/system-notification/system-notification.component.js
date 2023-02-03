@@ -6,15 +6,14 @@ const SystemNotification = ({ descriptionText }) => {
     <div className="system-notification">
       <div className="system-notification__description">{descriptionText}</div>
     </div>
-  )
-}
+  );
+};
 
 SystemNotification.propTypes = {
   /**
-
-  The notification description.
-  */
+   *
+   * The notification description.
+   */
   descriptionText: PropTypes.node.isRequired,
-  
-}
+};
 export default SystemNotification;

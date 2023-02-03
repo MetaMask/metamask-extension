@@ -14,3 +14,19 @@
     padding: 30px;
   }
 }
+
+.nft-autodetection-off-description {
+  color: #fff;
+  padding: 12px;
+  font-family: 'Euclid Circular B';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 140.62%;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}

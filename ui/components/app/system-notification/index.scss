@@ -3,48 +3,21 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-
-  //custom
   align-self: flex-end;
-  margin-top: 12px;
-  margin-left: 12px;
-  margin-right: 12px;
+  margin: 12px;
+  gap: 8px;
+  position: absolute;
+  bottom: 16px;
 
   /* modal background */
   background: rgba(58, 62, 66, 0.95);
-  /* modal drop shadow */
 
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.214);
+  /* modal drop shadow */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.214);
   border-radius: 8px;
 
   @include screen-sm-min {
-    max-width: 351px;
-    
-  }
-
-  &__description {
-    padding: 12px;
-    /* H7 - Normal 12px */
-
-    font-family: 'Euclid Circular B';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 140.62%;
-    /* or 17px */
-
-
-    /* White */
-
-    color: #FFFFFF;
-
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 0;
-    align-self: stretch;
-    flex-grow: 0;
+    max-width: 350px;
+    bottom: 10vh;
   }
 }
