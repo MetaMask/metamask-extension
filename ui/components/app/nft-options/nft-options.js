@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../ui/menu';
 import { ButtonIcon, ICON_NAMES } from '../../component-library';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 
 const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
   const t = useContext(I18nContext);
@@ -18,7 +18,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
         className="collectible-options__button"
         data-testid="collectible-options__button"
         onClick={() => setCollectibleOptionsOpen(true)}
-        color={COLORS.TEXT_DEFAULT}
+        color={Color.textDefault}
         ariaLabel={t('nftOptions')}
       />
 

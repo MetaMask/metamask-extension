@@ -8,7 +8,7 @@ import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { ButtonIcon, ICON_NAMES } from '../../../components/component-library';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 
 const AssetOptions = ({
   onRemove,
@@ -41,7 +41,7 @@ const AssetOptions = ({
         onClick={() => setAssetOptionsOpen(true)}
         ariaLabel={t('assetOptions')}
         iconName={ICON_NAMES.MORE_VERTICAL}
-        color={COLORS.TEXT_DEFAULT}
+        color={Color.textDefault}
       />
       {assetOptionsOpen ? (
         <Menu
