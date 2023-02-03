@@ -9,7 +9,7 @@ import Typography from '../../../ui/typography/typography';
 import {
   DISPLAY,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
 const NUMBER_OF_AGGREGATORS_TO_DISPLAY = 2;
@@ -22,11 +22,14 @@ const DetectedTokenAggregators = ({ aggregators }) => {
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-aggregators">
-      <Typography variant={TYPOGRAPHY.H7} fontWeight={FONT_WEIGHT.NORMAL}>
+      <Typography
+        variant={TypographyVariant.H7}
+        fontWeight={FONT_WEIGHT.NORMAL}
+      >
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
             <Typography
-              variant={TYPOGRAPHY.H7}
+              variant={TypographyVariant.H7}
               fontWeight={FONT_WEIGHT.NORMAL}
               key="detected-token-aggrgators-with-more"
             >
@@ -44,7 +47,7 @@ const DetectedTokenAggregators = ({ aggregators }) => {
             </Typography>
           ) : (
             <Typography
-              variant={TYPOGRAPHY.H7}
+              variant={TypographyVariant.H7}
               fontWeight={FONT_WEIGHT.NORMAL}
               key="detected-token-aggrgators-without-more"
             >

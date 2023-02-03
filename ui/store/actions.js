@@ -335,12 +335,6 @@ export function importNewAccount(strategy, args) {
     }
 
     dispatch(updateMetamaskState(newState));
-    if (newState.selectedAddress) {
-      dispatch({
-        type: actionConstants.SHOW_ACCOUNT_DETAIL,
-        value: newState.selectedAddress,
-      });
-    }
     return newState;
   };
 }
@@ -1392,7 +1386,6 @@ export function markPasswordForgotten() {
     } finally {
       // TODO: handle errors
       dispatch(hideLoadingIndication());
-      dispatch(forgotPassword());
       await forceUpdateMetamaskState(dispatch);
     }
   };
@@ -1402,17 +1395,9 @@ export function unMarkPasswordForgotten() {
   return (dispatch) => {
     return new Promise((resolve) => {
       callBackgroundMethod('unMarkPasswordForgotten', [], () => {
-        dispatch(forgotPassword(false));
         resolve();
       });
     }).then(() => forceUpdateMetamaskState(dispatch));
-  };
-}
-
-export function forgotPassword(forgotPasswordState = true) {
-  return {
-    type: actionConstants.FORGOT_PASSWORD,
-    value: forgotPasswordState,
   };
 }
 
@@ -1583,7 +1568,7 @@ export function setSelectedAddress(address) {
   };
 }
 
-export function showAccountDetail(address) {
+export function setSelectedAccount(address) {
   return async (dispatch, getState) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setSelectedAddress`);
@@ -1615,10 +1600,6 @@ export function showAccountDetail(address) {
       dispatch(hideLoadingIndication());
     }
 
-    dispatch({
-      type: actionConstants.SHOW_ACCOUNT_DETAIL,
-      value: address,
-    });
     if (
       unconnectedAccountAccountAlertIsEnabled &&
       switchingToUnconnectedAddress
@@ -2085,16 +2066,7 @@ export function setProviderType(type) {
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
-      return;
     }
-    dispatch(updateProviderType(type));
-  };
-}
-
-export function updateProviderType(type) {
-  return {
-    type: actionConstants.SET_PROVIDER_TYPE,
-    value: type,
   };
 }
 
@@ -2121,13 +2093,7 @@ export function updateAndSetCustomRpc(
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
-      return;
     }
-
-    dispatch({
-      type: actionConstants.SET_RPC_TARGET,
-      value: newRpc,
-    });
   };
 }
 
@@ -2160,13 +2126,7 @@ export function editRpc(
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem changing networks!'));
-      return;
     }
-
-    dispatch({
-      type: actionConstants.SET_RPC_TARGET,
-      value: newRpc,
-    });
   };
 }
 
@@ -2358,6 +2318,16 @@ export function hideLoadingIndication() {
   };
 }
 
+/**
+ * An action creator for display a warning to the user in various places in the
+ * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * is called.
+ *
+ * @deprecated This way of displaying a warning is confusing for users and
+ * should no longer be used.
+ * @param {string} text - The warning text to show.
+ * @returns The action to display the warning.
+ */
 export function displayWarning(text) {
   return {
     type: actionConstants.DISPLAY_WARNING,
@@ -2515,19 +2485,11 @@ export function setFeatureFlag(feature, activated, notificationType) {
             reject(err);
             return;
           }
-          dispatch(updateFeatureFlags(updatedFeatureFlags));
           notificationType && dispatch(showModal({ name: notificationType }));
           resolve(updatedFeatureFlags);
         },
       );
     });
-  };
-}
-
-export function updateFeatureFlags(updatedFeatureFlags) {
-  return {
-    type: actionConstants.UPDATE_FEATURE_FLAGS,
-    value: updatedFeatureFlags,
   };
 }
 
@@ -2546,19 +2508,10 @@ export function setPreference(preference, value) {
             reject(err);
             return;
           }
-
-          dispatch(updatePreferences(updatedPreferences));
           resolve(updatedPreferences);
         },
       );
     });
-  };
-}
-
-export function updatePreferences(value) {
-  return {
-    type: actionConstants.UPDATE_PREFERENCES,
-    value,
   };
 }
 
@@ -2675,10 +2628,6 @@ export function setUseBlockie(val) {
         dispatch(displayWarning(err.message));
       }
     });
-    dispatch({
-      type: actionConstants.SET_USE_BLOCKIE,
-      value: val,
-    });
   };
 }
 
@@ -2692,10 +2641,6 @@ export function setUseNonceField(val) {
       dispatch(displayWarning(error.message));
     }
     dispatch(hideLoadingIndication());
-    dispatch({
-      type: actionConstants.SET_USE_NONCEFIELD,
-      value: val,
-    });
   };
 }
 
@@ -2818,11 +2763,6 @@ export function setIpfsGateway(val) {
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
-      } else {
-        dispatch({
-          type: actionConstants.SET_IPFS_GATEWAY,
-          value: val,
-        });
       }
     });
   };
@@ -3273,15 +3213,11 @@ export function setRecoveryPhraseReminderLastShown(lastShown) {
   };
 }
 
-export function loadingMethodDataStarted() {
-  return {
-    type: actionConstants.LOADING_METHOD_DATA_STARTED,
-  };
-}
-
-export function loadingMethodDataFinished() {
-  return {
-    type: actionConstants.LOADING_METHOD_DATA_FINISHED,
+export function setOutdatedBrowserWarningLastShown(lastShown) {
+  return async () => {
+    await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
+      lastShown,
+    ]);
   };
 }
 
@@ -3301,12 +3237,10 @@ export function getContractMethodData(data = '') {
       return knownMethodData[fourBytePrefix];
     }
 
-    dispatch(loadingMethodDataStarted());
     log.debug(`loadingMethodData`);
 
     const { name, params } = await getMethodDataAsync(fourBytePrefix);
 
-    dispatch(loadingMethodDataFinished());
     callBackgroundMethod(
       'addKnownMethodData',
       [fourBytePrefix, { name, params }],
@@ -3317,18 +3251,6 @@ export function getContractMethodData(data = '') {
       },
     );
     return { name, params };
-  };
-}
-
-export function loadingTokenParamsStarted() {
-  return {
-    type: actionConstants.LOADING_TOKEN_PARAMS_STARTED,
-  };
-}
-
-export function loadingTokenParamsFinished() {
-  return {
-    type: actionConstants.LOADING_TOKEN_PARAMS_FINISHED,
   };
 }
 

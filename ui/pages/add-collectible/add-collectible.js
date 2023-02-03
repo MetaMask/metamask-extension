@@ -7,7 +7,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   DISPLAY,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../helpers/constants/design-system';
 
 import Box from '../../components/ui/box';
@@ -151,7 +151,7 @@ export default function AddCollectible() {
                 message={
                   <Box display={DISPLAY.INLINE_FLEX}>
                     <Typography
-                      variant={TYPOGRAPHY.H7}
+                      variant={TypographyVariant.H7}
                       fontWeight={FONT_WEIGHT.NORMAL}
                       margin={0}
                     >

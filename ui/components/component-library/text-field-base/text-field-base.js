@@ -4,11 +4,11 @@ import classnames from 'classnames';
 
 import {
   DISPLAY,
-  SIZES,
-  ALIGN_ITEMS,
-  TEXT,
-  COLORS,
-  BORDER_RADIUS,
+  Size,
+  AlignItems,
+  TextVariant,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -41,7 +41,7 @@ export const TextFieldBase = ({
   placeholder,
   readOnly,
   required,
-  size = SIZES.MD,
+  size = Size.MD,
   type = 'text',
   truncate = true,
   value,
@@ -105,10 +105,10 @@ export const TextFieldBase = ({
         className,
       )}
       display={DISPLAY.INLINE_FLEX}
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      alignItems={ALIGN_ITEMS.CENTER}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      alignItems={AlignItems.center}
       borderWidth={1}
-      borderRadius={BORDER_RADIUS.SM}
+      borderRadius={BorderRadius.SM}
       paddingLeft={leftAccessory ? 4 : 0}
       paddingRight={rightAccessory ? 4 : 0}
       onClick={handleClick}
@@ -120,7 +120,7 @@ export const TextFieldBase = ({
         as="input"
         autoComplete={autoComplete ? 'on' : 'off'}
         autoFocus={autoFocus}
-        backgroundColor={COLORS.TRANSPARENT}
+        backgroundColor={BackgroundColor.transparent}
         defaultValue={defaultValue}
         disabled={disabled}
         focused={focused.toString()}
@@ -139,7 +139,7 @@ export const TextFieldBase = ({
         ref={handleInputRef}
         required={required}
         value={value}
-        variant={TEXT.BODY_MD}
+        variant={TextVariant.bodyMd}
         type={type}
         {...inputProps} // before className so input className isn't overridden
         className={classnames(

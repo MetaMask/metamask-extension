@@ -37,11 +37,11 @@ Defaults to `md`
 ```jsx
 import { AvatarToken } from '../../component-library';
 
-<AvatarToken size={SIZES.XS} />
-<AvatarToken size={SIZES.SM} />
-<AvatarToken size={SIZES.MD} />
-<AvatarToken size={SIZES.LG} />
-<AvatarToken size={SIZES.XL} />
+<AvatarToken size={Size.XS} />
+<AvatarToken size={Size.SM} />
+<AvatarToken size={Size.MD} />
+<AvatarToken size={Size.LG} />
+<AvatarToken size={Size.XL} />
 ```
 
 ### Name
@@ -54,7 +54,7 @@ Use the `name` prop to set the initial letter of the `AvatarToken`. This will be
 
 ```jsx
 import { AvatarToken } from '../../component-library';
-<AvatarToken name="eth" />
+<AvatarToken name="eth" />;
 ```
 
 ### Src
@@ -88,8 +88,7 @@ Use the `showHalo` prop to display the component with halo effect. Only works if
 ```jsx
 import { AvatarToken } from '../../component-library';
 
-<AvatarToken src="./images/eth_logo.svg" showHalo/>
-
+<AvatarToken src="./images/eth_logo.svg" showHalo />;
 ```
 
 ### Color, Background Color And Border Color
@@ -101,22 +100,24 @@ Use the `color`, `backgroundColor` and `borderColor` props to set the text color
 </Canvas>
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import {   TextColor,
+           BackgroundColor,
+           BorderColor, } from '../../../helpers/constants/design-system';
 import { AvatarToken } from '../../component-library';
 
 <AvatarToken
-  backgroundColor={COLORS.GOERLI}
-  borderColor={COLORS.GOERLI}
-  name="G"
-  color={COLORS.PRIMARY_INVERSE}
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
+      name="G"
+      color={Color.primaryInverse}
 >
   G
 </AvatarToken>
 <AvatarToken
-  backgroundColor={COLORS.SEPOLIA}
-  borderColor={COLORS.SEPOLIA}
-  name="S"
-  color={COLORS.PRIMARY_INVERSE}
+    backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
+      name="S"
+      color={Color.primaryInverse}
 >
   S
 </AvatarToken>

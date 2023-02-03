@@ -4,10 +4,10 @@ import SiteIcon from '../../../components/ui/site-icon';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
-  JUSTIFY_CONTENT,
-  ALIGN_ITEMS,
+  JustifyContent,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -17,7 +17,10 @@ export default function PermissionsRedirect({ subjectMetadata }) {
   return (
     <div className="permissions-redirect">
       <div className="permissions-redirect__result">
-        <Typography boxProps={{ marginBottom: 4 }} variant={TYPOGRAPHY.H3}>
+        <Typography
+          boxProps={{ marginBottom: 4 }}
+          variant={TypographyVariant.H3}
+        >
           {t('connecting')}
         </Typography>
         <div className="permissions-redirect__icons">
@@ -30,8 +33,8 @@ export default function PermissionsRedirect({ subjectMetadata }) {
           <Box
             className="permissions-redirect__center-icon"
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
           >
             <i className="fa fa-check fa-lg permissions-redirect__check" />
             <div className="permissions-redirect__dashed-line" />

@@ -66,6 +66,6 @@ CurrencyDisplay.propTypes = {
   prefix: PropTypes.string,
   prefixComponent: PropTypes.node,
   style: PropTypes.object,
-  suffix: PropTypes.string,
+  suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   value: PropTypes.string,
 };

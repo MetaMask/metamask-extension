@@ -14,7 +14,7 @@ import {
 } from '../ducks/metamask/metamask';
 import { TransactionEnvelopeType } from '../../shared/constants/transaction';
 import {
-  GAS_ESTIMATE_TYPES,
+  GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
 } from '../../shared/constants/gas';
 import {
@@ -300,19 +300,19 @@ export const transactionFeeSelector = function (state, txData) {
     }
   } else {
     switch (gasEstimateType) {
-      case GAS_ESTIMATE_TYPES.NONE:
+      case GasEstimateTypes.none:
         gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
         break;
-      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+      case GasEstimateTypes.ethGasPrice:
         gasEstimationObject.gasPrice =
           txData.txParams?.gasPrice ??
           decGWEIToHexWEI(gasFeeEstimates.gasPrice);
         break;
-      case GAS_ESTIMATE_TYPES.LEGACY:
+      case GasEstimateTypes.legacy:
         gasEstimationObject.gasPrice =
           txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
         break;
-      case GAS_ESTIMATE_TYPES.FEE_MARKET:
+      case GasEstimateTypes.feeMarket:
         break;
       default:
         break;

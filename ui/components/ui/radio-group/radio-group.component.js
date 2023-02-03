@@ -4,9 +4,9 @@ import classNames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../typography/typography';
 import {
-  COLORS,
+  Color,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 
 function Connector({ isFirst, isLast }) {
@@ -48,9 +48,9 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
             <label className="radio-group__column-inner">
               {hasRecommendation && (
                 <Typography
-                  color={COLORS.SUCCESS_DEFAULT}
+                  color={Color.successDefault}
                   className="radio-group__column-recommended"
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                 >
                   {option.recommended ? t('recommendedGasLabel') : ''}
                 </Typography>
@@ -69,9 +69,9 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
                 isLast={index === options.length - 1}
               />
               <Typography
-                color={checked ? COLORS.TEXT_DEFAULT : COLORS.TEXT_MUTED}
+                color={checked ? Color.textDefault : Color.textMuted}
                 fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H7}
+                variant={TypographyVariant.H7}
                 className="radio-group__column-label"
               >
                 {option.label}

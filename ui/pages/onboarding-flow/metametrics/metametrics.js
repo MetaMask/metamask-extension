@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
-  COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -109,7 +109,7 @@ export default function OnboardingMetametrics() {
       data-testid="onboarding-metametrics"
     >
       <Typography
-        variant={TYPOGRAPHY.H2}
+        variant={TypographyVariant.H2}
         align={TEXT_ALIGN.CENTER}
         fontWeight={FONT_WEIGHT.BOLD}
       >
@@ -140,7 +140,7 @@ export default function OnboardingMetametrics() {
           <i className="fa fa-times" />
           {t('onboardingMetametricsNeverCollect', [
             <Typography
-              variant={TYPOGRAPHY.Span}
+              variant={TypographyVariant.Span}
               key="never"
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -152,7 +152,7 @@ export default function OnboardingMetametrics() {
           <i className="fa fa-times" />
           {t('onboardingMetametricsNeverCollectIP', [
             <Typography
-              variant={TYPOGRAPHY.Span}
+              variant={TypographyVariant.Span}
               key="never-collect"
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -164,7 +164,7 @@ export default function OnboardingMetametrics() {
           <i className="fa fa-times" />
           {t('onboardingMetametricsNeverSellData', [
             <Typography
-              variant={TYPOGRAPHY.Span}
+              variant={TypographyVariant.Span}
               key="never-sell"
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -174,17 +174,17 @@ export default function OnboardingMetametrics() {
         </li>
       </ul>
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsDataTerms')}
       </Typography>
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [

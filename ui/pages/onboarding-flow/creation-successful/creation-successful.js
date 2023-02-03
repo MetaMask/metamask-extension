@@ -8,8 +8,8 @@ import Button from '../../../components/ui/button';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
-  TYPOGRAPHY,
-  ALIGN_ITEMS,
+  TypographyVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -33,40 +33,40 @@ export default function CreationSuccessful() {
       <Box textAlign={TEXT_ALIGN.CENTER}>
         <img src="./images/tada.png" />
         <Typography
-          variant={TYPOGRAPHY.H2}
+          variant={TypographyVariant.H2}
           fontWeight={FONT_WEIGHT.BOLD}
           margin={6}
         >
           {t('walletCreationSuccessTitle')}
         </Typography>
-        <Typography variant={TYPOGRAPHY.H4}>
+        <Typography variant={TypographyVariant.H4}>
           {t('walletCreationSuccessDetail')}
         </Typography>
       </Box>
       <Typography
-        variant={TYPOGRAPHY.H4}
-        boxProps={{ align: ALIGN_ITEMS.LEFT }}
+        variant={TypographyVariant.H4}
+        boxProps={{ align: AlignItems.flexStart }}
         marginLeft={12}
       >
         {t('remember')}
       </Typography>
       <ul>
         <li>
-          <Typography variant={TYPOGRAPHY.H4}>
+          <Typography variant={TypographyVariant.H4}>
             {isBeta()
               ? t('betaWalletCreationSuccessReminder1')
               : t('walletCreationSuccessReminder1')}
           </Typography>
         </li>
         <li>
-          <Typography variant={TYPOGRAPHY.H4}>
+          <Typography variant={TypographyVariant.H4}>
             {isBeta()
               ? t('betaWalletCreationSuccessReminder2')
               : t('walletCreationSuccessReminder2')}
           </Typography>
         </li>
         <li>
-          <Typography variant={TYPOGRAPHY.H4}>
+          <Typography variant={TypographyVariant.H4}>
             {t('walletCreationSuccessReminder3', [
               <span
                 key="creation-successful__bold"

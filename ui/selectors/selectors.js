@@ -532,6 +532,20 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
+export function getTotalUnapprovedSignatureRequestCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedTypedMessagesCount
+  );
+}
+
 export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
@@ -830,8 +844,9 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
+    const checksumHexAddress = toChecksumHexAddress(address);
     const entry = Object.values(tokenList).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, checksumHexAddress),
     );
     return entry && entry.name !== '' ? entry.name : '';
   },
@@ -840,7 +855,7 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
-const getCurrentNetworkTransactionList = (state) =>
+export const getCurrentNetworkTransactionList = (state) =>
   state.metamask.currentNetworkTxList;
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -1049,6 +1064,15 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+export function getShowOutdatedBrowserWarning(state) {
+  const { outdatedBrowserWarningLastShown } = state.metamask;
+  if (!outdatedBrowserWarningLastShown) {
+    return true;
+  }
+  const currentTime = new Date().getTime();
+  return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
 export function getShowPortfolioTooltip(state) {

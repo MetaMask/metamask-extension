@@ -30,19 +30,19 @@ Optional: `TEXT_VARIANTS` from ./text object can also be used.
 
 ```jsx
 import { Text } from '../../component-library';
-import { TEXT } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
-<Text variant={TEXT.DISPLAY_MD}>display-md</Text>
-<Text variant={TEXT.HEADING_LG}>heading-lg</Text>
-<Text variant={TEXT.HEADING_MD}>heading-md</Text>
-<Text variant={TEXT.HEADING_SM}>heading-sm</Text>
-<Text variant={TEXT.BODY_LG_MEDIUM}>body-lg-medium</Text>
-<Text variant={TEXT.BODY_MD}>body-md</Text>
-<Text variant={TEXT.BODY_MD_BOLD}>body-md-bold</Text>
-<Text variant={TEXT.BODY_SM}>body-sm</Text>
-<Text variant={TEXT.BODY_SM_BOLD}>body-sm-bold</Text>
-<Text variant={TEXT.BODY_XS}>body-xs</Text>
-<Text variant={TEXT.INHERIT}>inherit</Text>
+<Text variant={TextVariant.displayMd}>display-md</Text>
+<Text variant={TextVariant.headingLg}>heading-lg</Text>
+<Text variant={TextVariant.headingMd}>heading-md</Text>
+<Text variant={TextVariant.headingSm}>heading-sm</Text>
+<Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
+<Text variant={TextVariant.bodyMd}>body-md</Text>
+<Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
+<Text variant={TextVariant.bodySm}>body-sm</Text>
+<Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
+<Text variant={TextVariant.bodyXs}>body-xs</Text>
+<Text variant={TextVariant.inherit}>inherit</Text>
 ```
 
 ### Color
@@ -55,45 +55,45 @@ Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design
 
 ```jsx
 import { Text } from '../../component-library';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { TextColor, BackgroundColor } from '../../../helpers/constants/design-system';
 
-<Text color={COLORS.TEXT_DEFAULT}>
+<Text color={TextColor.textDefault}>
   text-default
 </Text>
-<Text color={COLORS.TEXT_ALTERNATIVE}>
+<Text color={TextColor.textAlternative}>
   text-alternative
 </Text>
-<Text color={COLORS.TEXT_MUTED}>
+<Text color={TextColor.textMuted}>
   text-muted
 </Text>
-<Text color={COLORS.OVERLAY_INVERSE} backgroundColor={COLORS.OVERLAY_DEFAULT}>
-  overlay-inverse
-</Text>
-<Text color={COLORS.PRIMARY_DEFAULT}>
+<Text color={TextColor.primaryDefault}>
   primary-default
 </Text>
-<Text color={COLORS.PRIMARY_INVERSE} backgroundColor={COLORS.PRIMARY_DEFAULT}>
+<Text color={TextColor.primaryInverse} backgroundColor={BackgroundColor.primaryDefault}>
   primary-inverse
 </Text>
-<Text color={COLORS.ERROR_DEFAULT}>
+<Text color={TextColor.errorDefault}>
   error-default
 </Text>
-<Text color={COLORS.ERROR_INVERSE} backgroundColor={COLORS.ERROR_DEFAULT}>
+<Text color={TextColor.errorInverse} backgroundColor={BackgroundColor.errorDefault}>
   error-inverse
 </Text>
-<Text color={COLORS.SUCCESS_DEFAULT}>
+<Text color={TextColor.successDefault}>
   success-default
 </Text>
-<Text color={COLORS.SUCCESS_INVERSE} backgroundColor={COLORS.SUCCESS_DEFAULT}>
+<Text color={TextColor.successInverse} backgroundColor={BackgroundColor.successDefault}>
   success-inverse
 </Text>
-<Text color={COLORS.WARNING_INVERSE} backgroundColor={COLORS.WARNING_DEFAULT}>
+<Text color={TextColor.warningDefault}>
+  warning-default
+</Text>
+<Text color={TextColor.warningInverse} backgroundColor={BackgroundColor.warningDefault}>
   warning-inverse
 </Text>
-<Text color={COLORS.INFO_DEFAULT}>
+<Text color={TextColor.infoDefault}>
   info-default
 </Text>
-<Text color={COLORS.INFO_INVERSE} backgroundColor={COLORS.INFO_DEFAULT}>
+<Text color={TextColor.infoInverse} backgroundColor={BackgroundColor.infoDefault}>
   info-inverse
 </Text>
 ```

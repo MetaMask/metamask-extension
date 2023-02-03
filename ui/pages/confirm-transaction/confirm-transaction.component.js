@@ -33,6 +33,7 @@ import { usePrevious } from '../../hooks/usePrevious';
 import {
   getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
+  unconfirmedTransactionsHashSelector,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -42,8 +43,8 @@ import {
   removePollingTokenFromAppState,
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
+import ConfirmSignatureRequest from '../confirm-signature-request';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
-import ConfTx from './conf-tx';
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
@@ -57,14 +58,23 @@ const ConfirmTransaction = () => {
   const sendTo = useSelector(getSendTo);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
+  const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
 
   const totalUnapproved = unconfirmedTxs.length || 0;
 
   const transaction = useMemo(() => {
     return totalUnapproved
-      ? unapprovedTxs[paramsTransactionId] || unconfirmedTxs[0]
+      ? unapprovedTxs[paramsTransactionId] ||
+          unconfirmedMessages[paramsTransactionId] ||
+          unconfirmedTxs[0]
       : {};
-  }, [paramsTransactionId, totalUnapproved, unapprovedTxs, unconfirmedTxs]);
+  }, [
+    paramsTransactionId,
+    totalUnapproved,
+    unapprovedTxs,
+    unconfirmedMessages,
+    unconfirmedTxs,
+  ]);
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
@@ -100,7 +110,8 @@ const ConfirmTransaction = () => {
 
     window.addEventListener('beforeunload', _beforeUnload);
 
-    if (!totalUnapproved && !sendTo) {
+    if (!
+    && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
       const { txParams: { data } = {}, origin } = transaction;
@@ -185,7 +196,7 @@ const ConfirmTransaction = () => {
       <Route
         exact
         path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${SIGNATURE_REQUEST_PATH}`}
-        component={ConfTx}
+        component={ConfirmSignatureRequest}
       />
       <Route
         exact

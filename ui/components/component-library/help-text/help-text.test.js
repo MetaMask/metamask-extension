@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../icon';
 
 import { HelpText } from './help-text';
@@ -36,9 +36,9 @@ describe('HelpText', () => {
     const { getByText } = render(
       <>
         <HelpText>default</HelpText>
-        <HelpText color={COLORS.WARNING_DEFAULT}>warning</HelpText>
-        <HelpText color={COLORS.SUCCESS_DEFAULT}>success</HelpText>
-        <HelpText color={COLORS.INFO_DEFAULT}>info</HelpText>
+        <HelpText color={Color.warningDefault}>warning</HelpText>
+        <HelpText color={Color.successDefault}>success</HelpText>
+        <HelpText color={Color.infoDefault}>info</HelpText>
       </>,
     );
     expect(getByText('default')).toHaveClass('mm-text--color-text-default');

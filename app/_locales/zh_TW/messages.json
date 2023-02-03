@@ -245,9 +245,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包。"
   },
-  "clickToRevealSeed": {
-    "message": "點選顯示助憶詞"
-  },
   "close": {
     "message": "關閉"
   },
@@ -256,9 +253,6 @@
   },
   "confirmPassword": {
     "message": "確認密碼"
-  },
-  "confirmSecretBackupPhrase": {
-    "message": "確認您已經備份的助憶詞"
   },
   "confirmed": {
     "message": "已確認"
@@ -271,9 +265,6 @@
   },
   "confusingEnsDomain": {
     "message": "我們在 ENS 名稱中偵測到一些容易混淆的字元。請再次確認 ENS 名稱來避免被詐騙的可能。"
-  },
-  "congratulations": {
-    "message": "恭喜"
   },
   "connect": {
     "message": "連線"
@@ -384,9 +375,6 @@
   },
   "create": {
     "message": "建立"
-  },
-  "createAWallet": {
-    "message": "創建錢包"
   },
   "createAccount": {
     "message": "建立帳戶"
@@ -508,9 +496,6 @@
   "downloadGoogleChrome": {
     "message": "下載 Google Chrome 瀏覽器"
   },
-  "downloadSecretBackup": {
-    "message": "下載助憶詞文字檔案，並安全的保存在有加密功能的外接硬碟或其他儲存裝置。"
-  },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
   },
@@ -541,37 +526,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "請求加密公鑰"
-  },
-  "endOfFlowMessage1": {
-    "message": "您通過測試了—安全存放助憶詞，這是您的責任！"
-  },
-  "endOfFlowMessage10": {
-    "message": "都完成了"
-  },
-  "endOfFlowMessage2": {
-    "message": "安全儲存的小秘訣"
-  },
-  "endOfFlowMessage3": {
-    "message": "在多處儲存備份。"
-  },
-  "endOfFlowMessage4": {
-    "message": "不要分享此助憶詞給任何人。"
-  },
-  "endOfFlowMessage5": {
-    "message": "小心網路釣魚！MetaMask 永遠不會主動詢問你的助憶詞。"
-  },
-  "endOfFlowMessage6": {
-    "message": "如你需要再次備份助憶詞，可至「設定 -> 安全」。"
-  },
-  "endOfFlowMessage7": {
-    "message": "如果您有任何疑問或看到哪裡怪怪的，從$1聯絡我們尋求支援。",
-    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask 無法還原你的助憶詞。"
-  },
-  "endOfFlowMessage9": {
-    "message": "深入瞭解。"
   },
   "endpointReturnedDifferentChainId": {
     "message": "這個 RPC 端點回傳了一個不同的鏈 ID：$1",
@@ -738,17 +692,11 @@
     "message": "從水龍頭取得 $1 上的以太幣",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "開始使用"
-  },
   "goBack": {
     "message": "Go Back"
   },
   "goerli": {
     "message": "Goerli 測試網路"
-  },
-  "happyToSeeYou": {
-    "message": "我們很高興看到你。"
   },
   "hardware": {
     "message": "硬體"
@@ -802,20 +750,11 @@
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
-  "importAccountSeedPhrase": {
-    "message": "利用助憶詞還原"
-  },
   "importMyWallet": {
     "message": "Import My Wallet"
   },
   "importTokensCamelCase": {
     "message": "Import Tokens"
-  },
-  "importWallet": {
-    "message": "匯入錢包"
-  },
-  "importYourExisting": {
-    "message": "使用助憶詞匯入您既有的錢包"
   },
   "imported": {
     "message": "已匯入私鑰",
@@ -912,9 +851,6 @@
   "ledgerTimeout": {
     "message": "Ledger Live 花了太多時間回應，或連線逾時。請確定您的 Ledger Live 應用程式已開啟而且裝置已解鎖。"
   },
-  "letsGoSetUp": {
-    "message": "好，我們開始吧！"
-  },
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
@@ -948,9 +884,6 @@
   "memo": {
     "message": "備註"
   },
-  "memorizePhrase": {
-    "message": "絕對不要忘記您的助憶詞。"
-  },
   "message": {
     "message": "訊息"
   },
@@ -962,9 +895,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "連線狀態按鈕會顯示您正在造訪的網站是否已經連結到您目前選擇的帳戶。"
-  },
-  "metamaskDescription": {
-    "message": "MetaMask 是以太坊安全身份識別金庫"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps 正在維護。請晚點再來看看。"
@@ -1046,9 +976,6 @@
   "newPassword": {
     "message": "新密碼（至少8個字元）"
   },
-  "newToMetaMask": {
-    "message": "新來到 MetaMask？"
-  },
   "next": {
     "message": "下一頁"
   },
@@ -1064,9 +991,6 @@
   },
   "noAddressForName": {
     "message": "此 ENS 尚未指定位址。"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "不，我已經有助憶詞"
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
@@ -1115,10 +1039,6 @@
   },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full Access"
-  },
-  "onboardingReturnNotice": {
-    "message": "\"$1\" 將會關閉這個分頁並且導回到 $2",
-    "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
     "message": "惡意的網路提供者可以欺騙您區塊鏈上的狀態或記錄您的網路活動。請只新增您信任的自訂網路。"
@@ -1228,9 +1148,6 @@
   "rejected": {
     "message": "拒絕"
   },
-  "remindMeLater": {
-    "message": "稍後提醒我"
-  },
   "remove": {
     "message": "移除"
   },
@@ -1306,15 +1223,6 @@
   "searchTokens": {
     "message": "搜尋代幣"
   },
-  "secretBackupPhraseDescription": {
-    "message": "助憶詞將可協助您用更簡單的方式備份帳戶資訊。"
-  },
-  "secretBackupPhraseWarning": {
-    "message": "警告：絕對不要洩漏您的助憶詞。任何人只要得知助憶詞就能竊取您所有的以太幣和代幣。"
-  },
-  "secretPhrase": {
-    "message": "在輸入您的助憶詞來還原您的金庫。"
-  },
   "secureWallet": {
     "message": "Secure Wallet"
   },
@@ -1329,9 +1237,6 @@
   },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "存在安全保管箱裡。"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "存在銀行保險箱。"
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "您的助憶詞就是您的錢包與資金的「總鑰匙」。"
@@ -1371,9 +1276,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "這個帳戶已經連結到 MetaMask 了"
-  },
-  "selectEachPhrase": {
-    "message": "請依照正確順序點選助憶詞"
   },
   "selectHdPath": {
     "message": "選擇 HD Path"
@@ -1509,9 +1411,6 @@
   "step2LedgerWallet": {
     "message": "插入 Ledger 錢包"
   },
-  "storePhrase": {
-    "message": "您可以用密碼管理系統例如 1Password 等軟體儲存助憶詞。"
-  },
   "submit": {
     "message": "傳送"
   },
@@ -1580,9 +1479,6 @@
   },
   "testFaucet": {
     "message": "測試水龍頭"
-  },
-  "thisWillCreate": {
-    "message": "這將創建新的錢包與助憶詞"
   },
   "tips": {
     "message": "提示"
@@ -1777,17 +1673,11 @@
     "message": "我們注意到目前的網站試著要使用已經移除的 window.web3 API。如果網站看起來壞了，請$1了解更多資訊。",
     "description": "$1 is a clickable link."
   },
-  "welcome": {
-    "message": "歡迎來到 MetaMask"
-  },
   "welcomeBack": {
     "message": "歡迎回來!"
   },
   "whatsThis": {
     "message": "這是什麼？"
-  },
-  "writePhrase": {
-    "message": "將助憶詞寫在紙上，並保存在安全的場所。若想要更安全，將助憶詞分別寫在不同紙張上並存放在不同的地方。"
   },
   "xOfY": {
     "message": "$1 之 $2",
