@@ -2239,10 +2239,9 @@ export function showModal(payload) {
   };
 }
 
-export function hideModal(payload) {
+export function hideModal() {
   return {
     type: actionConstants.MODAL_CLOSE,
-    payload,
   };
 }
 

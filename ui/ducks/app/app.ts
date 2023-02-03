@@ -1,64 +1,142 @@
+import { AnyAction, Action } from 'redux';
+import { PayloadAction } from '@reduxjs/toolkit';
 import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,
 } from '../../../shared/constants/hardware-wallets';
+import { RPCDefinition } from '../../../shared/constants/network';
 import * as actionConstants from '../../store/actionConstants';
 
-export default function reduceApp(state = {}, action) {
-  // default state
-  const appState = {
-    shouldClose: false,
-    menuOpen: false,
-    modal: {
-      open: false,
-      modalState: {
-        name: null,
-        props: {},
-      },
-      previousModalState: {
-        name: null,
-      },
+interface AppState {
+  shouldClose: boolean;
+  menuOpen: boolean;
+  modal: {
+    open: boolean;
+    modalState: {
+      name: string | null;
+      props: Record<string, any>;
+    };
+    previousModalState: {
+      name: string | null;
+    };
+  };
+  alertOpen: boolean;
+  alertMessage: string | null;
+  qrCodeData: {
+    type?: string | null;
+    values?: { address?: string | null };
+  } | null;
+  networkDropdownOpen: boolean;
+  accountDetail: {
+    subview?: string;
+    accountExport?: string;
+    privateKey?: string;
+  };
+  isLoading: boolean;
+  loadingMessage: string | null;
+  scrollToBottom: boolean;
+  warning: string | null | undefined;
+  buyView: Record<string, any>;
+  isMouseUser: boolean;
+  defaultHdPaths: {
+    trezor: string;
+    ledger: string;
+    lattice: string;
+  };
+  networksTabSelectedRpcUrl: string | null;
+  requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
+  openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
+  currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
+  showWhatsNewPopup: boolean;
+  singleExceptions: {
+    testKey: string | null;
+  };
+  gasLoadingAnimationIsShowing: boolean;
+  smartTransactionsError: string | null;
+  smartTransactionsErrorMessageDismissed: boolean;
+  ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
+  ledgerTransportStatus: HardwareTransportStates;
+  newNetworkAdded: string;
+  newCollectibleAddedMessage: string;
+  removeCollectibleMessage: string;
+  portfolioTooltipWasShownInThisSession: boolean;
+  sendInputCurrencySwitched: boolean;
+  newTokensImported: string;
+  newCustomNetworkAdded: RPCDefinition | Record<string, any>;
+  onboardedInThisUISession: boolean;
+  customTokenAmount: string;
+  txId: number | null;
+}
+
+interface AppSliceState {
+  appState: AppState;
+}
+
+// default state
+const initialState: AppState = {
+  shouldClose: false,
+  menuOpen: false,
+  modal: {
+    open: false,
+    modalState: {
+      name: null,
+      props: {},
     },
-    alertOpen: false,
-    alertMessage: null,
-    qrCodeData: null,
-    networkDropdownOpen: false,
-    accountDetail: {
-      privateKey: '',
+    previousModalState: {
+      name: null,
     },
-    // Used to display loading indicator
-    isLoading: false,
-    // Used to display error text
-    warning: null,
-    buyView: {},
-    isMouseUser: false,
-    defaultHdPaths: {
-      trezor: `m/44'/60'/0'/0`,
-      ledger: `m/44'/60'/0'/0/0`,
-      lattice: `m/44'/60'/0'/0`,
-    },
-    networksTabSelectedRpcUrl: '',
-    requestAccountTabs: {},
-    openMetaMaskTabs: {},
-    currentWindowTab: {},
-    showWhatsNewPopup: true,
-    singleExceptions: {
-      testKey: null,
-    },
-    gasLoadingAnimationIsShowing: false,
-    smartTransactionsError: null,
-    smartTransactionsErrorMessageDismissed: false,
-    ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
-    ledgerTransportStatus: HardwareTransportStates.none,
-    newNetworkAdded: '',
-    newCollectibleAddedMessage: '',
-    removeCollectibleMessage: '',
-    portfolioTooltipWasShownInThisSession: false,
-    sendInputCurrencySwitched: false,
-    newTokensImported: '',
-    newCustomNetworkAdded: {},
-    onboardedInThisUISession: false,
-    customTokenAmount: '',
+  },
+  alertOpen: false,
+  alertMessage: null,
+  qrCodeData: null,
+  networkDropdownOpen: false,
+  accountDetail: {
+    privateKey: '',
+  },
+  // Used to display loading indicator
+  isLoading: false,
+  loadingMessage: null,
+  // Used to display error text
+  warning: null,
+  buyView: {},
+  isMouseUser: false,
+  defaultHdPaths: {
+    trezor: `m/44'/60'/0'/0`,
+    ledger: `m/44'/60'/0'/0/0`,
+    lattice: `m/44'/60'/0'/0`,
+  },
+  networksTabSelectedRpcUrl: '',
+  requestAccountTabs: {},
+  openMetaMaskTabs: {},
+  currentWindowTab: {},
+  showWhatsNewPopup: true,
+  singleExceptions: {
+    testKey: null,
+  },
+  gasLoadingAnimationIsShowing: false,
+  smartTransactionsError: null,
+  smartTransactionsErrorMessageDismissed: false,
+  ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
+  ledgerTransportStatus: HardwareTransportStates.none,
+  newNetworkAdded: '',
+  newCollectibleAddedMessage: '',
+  removeCollectibleMessage: '',
+  portfolioTooltipWasShownInThisSession: false,
+  sendInputCurrencySwitched: false,
+  newTokensImported: '',
+  newCustomNetworkAdded: {},
+  onboardedInThisUISession: false,
+  customTokenAmount: '',
+  scrollToBottom: true,
+  txId: null,
+};
+
+export default function reduceApp(
+  state: AppState,
+  action: AnyAction,
+): AppState {
+  const appState: AppState = {
+    ...initialState,
     ...state,
   };
 
@@ -146,7 +224,6 @@ export default function reduceApp(state = {}, action) {
           privateKey: '',
         },
       };
-
     case actionConstants.SHOW_SEND_TOKEN_PAGE:
       return {
         ...appState,
@@ -160,7 +237,6 @@ export default function reduceApp(state = {}, action) {
       };
 
     // accounts
-
     case actionConstants.GO_HOME:
       return {
         ...appState,
@@ -224,7 +300,7 @@ export default function reduceApp(state = {}, action) {
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.value;
-      const newDefaults = { ...appState.defaultHdPaths };
+      const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
 
       return {
@@ -347,19 +423,19 @@ export default function reduceApp(state = {}, action) {
     case actionConstants.TOGGLE_GAS_LOADING_ANIMATION:
       return {
         ...appState,
-        gasLoadingAnimationIsShowing: action.value,
+        gasLoadingAnimationIsShowing: action.payload,
       };
 
     case actionConstants.SET_WEBHID_CONNECTED_STATUS:
       return {
         ...appState,
-        ledgerWebHidConnectedStatus: action.value,
+        ledgerWebHidConnectedStatus: action.payload,
       };
 
     case actionConstants.SET_LEDGER_TRANSPORT_STATUS:
       return {
         ...appState,
-        ledgerTransportStatus: action.value,
+        ledgerTransportStatus: action.payload,
       };
     case actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH:
       return {
@@ -369,17 +445,17 @@ export default function reduceApp(state = {}, action) {
     case actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED:
       return {
         ...appState,
-        newCustomNetworkAdded: action.value,
+        newCustomNetworkAdded: action.payload,
       };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {
         ...appState,
-        onboardedInThisUISession: action.value,
+        onboardedInThisUISession: action.payload,
       };
     case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
       return {
         ...appState,
-        customTokenAmount: action.value,
+        customTokenAmount: action.payload,
       };
     default:
       return appState;
@@ -387,63 +463,81 @@ export default function reduceApp(state = {}, action) {
 }
 
 // Action Creators
-export function hideWhatsNewPopup() {
+export function hideWhatsNewPopup(): Action {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
   };
 }
 
-export function setPortfolioTooltipWasShownInThisSession() {
+export function setPortfolioTooltipWasShownInThisSession(): Action {
   return {
     type: actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION,
   };
 }
 
-export function toggleGasLoadingAnimation(value) {
-  return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
+export function toggleGasLoadingAnimation(
+  payload: boolean,
+): PayloadAction<boolean> {
+  return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, payload };
 }
 
-export function setLedgerWebHidConnectedStatus(value) {
-  return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, value };
+export function setLedgerWebHidConnectedStatus(
+  payload: WebHIDConnectedStatuses,
+): PayloadAction<WebHIDConnectedStatuses> {
+  return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, payload };
 }
 
-export function setLedgerTransportStatus(value) {
-  return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, value };
+export function setLedgerTransportStatus(
+  payload: HardwareTransportStates,
+): PayloadAction<HardwareTransportStates> {
+  return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, payload };
 }
 
-// Selectors
-export function getQrCodeData(state) {
-  return state.appState.qrCodeData;
-}
-
-export function getGasLoadingAnimationIsShowing(state) {
-  return state.appState.gasLoadingAnimationIsShowing;
-}
-
-export function getLedgerWebHidConnectedStatus(state) {
-  return state.appState.ledgerWebHidConnectedStatus;
-}
-
-export function getLedgerTransportStatus(state) {
-  return state.appState.ledgerTransportStatus;
-}
-
-export function getPortfolioTooltipWasShownInThisSession(state) {
-  return state.appState.portfolioTooltipWasShownInThisSession;
-}
-
-export function toggleCurrencySwitch() {
+export function toggleCurrencySwitch(): Action {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
 }
 
-export function setNewCustomNetworkAdded(value) {
-  return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, value };
+export function setNewCustomNetworkAdded(
+  // can pass in a valid network or empty one
+  payload: RPCDefinition | Record<string, never>,
+): PayloadAction<RPCDefinition | Record<string, never>> {
+  return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, payload };
 }
 
-export function setOnBoardedInThisUISession(value) {
-  return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, value };
+export function setOnBoardedInThisUISession(
+  payload: boolean,
+): PayloadAction<boolean> {
+  return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
 }
 
-export function setCustomTokenAmount(value) {
-  return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, value };
+export function setCustomTokenAmount(payload: string): PayloadAction<string> {
+  return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
+}
+
+// Selectors
+export function getQrCodeData(state: AppSliceState): {
+  type?: string | null;
+  values?: { address?: string | null };
+} | null {
+  return state.appState.qrCodeData;
+}
+
+export function getGasLoadingAnimationIsShowing(state: AppSliceState): boolean {
+  return state.appState.gasLoadingAnimationIsShowing;
+}
+
+export function getLedgerWebHidConnectedStatus(
+  state: AppSliceState,
+): string | null {
+  return state.appState.ledgerWebHidConnectedStatus;
+}
+
+export function getLedgerTransportStatus(state: AppSliceState): string | null {
+  return state.appState.ledgerTransportStatus;
+}
+
+export function getPortfolioTooltipWasShownInThisSession(
+  state: AppSliceState,
+): boolean {
+  return state.appState.portfolioTooltipWasShownInThisSession;
 }
