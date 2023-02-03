@@ -1,9 +1,16 @@
 import { inspect, isDeepStrictEqual, promisify } from 'util';
-import assert from 'assert';
 import { isMatch } from 'lodash';
 import nock from 'nock';
 import sinon from 'sinon';
+import * as ethJsonRpcMiddlewareModule from 'eth-json-rpc-middleware';
 import NetworkController from './network-controller';
+
+jest.mock('eth-json-rpc-middleware', () => {
+  return {
+    __esModule: true,
+    ...jest.requireActual('eth-json-rpc-middleware'),
+  };
+});
 
 // Store this up front so it doesn't get lost when it is stubbed
 const originalSetTimeout = global.setTimeout;
@@ -1069,7 +1076,7 @@ describe('NetworkController', () => {
           });
 
           it('does not emit infuraIsUnblocked if the network has changed by the time the request ends', async () => {
-            const anotherNetworkType = INFURA_NETWORKS.find(
+            const anotherNetwork = INFURA_NETWORKS.find(
               (network) => network.networkType !== networkType,
             );
 
@@ -1095,7 +1102,9 @@ describe('NetworkController', () => {
                           await withoutCallingLookupNetwork({
                             controller,
                             operation: () => {
-                              controller.setProviderType(anotherNetworkType);
+                              controller.setProviderType(
+                                anotherNetwork.networkType,
+                              );
                             },
                           });
                         },
@@ -1104,7 +1113,7 @@ describe('NetworkController', () => {
                   },
                 });
                 const network2 = network1.with({
-                  networkType: anotherNetworkType,
+                  networkType: anotherNetwork.networkType,
                 });
                 network2.mockEssentialRpcCalls();
                 await withoutCallingLookupNetwork({
@@ -1260,7 +1269,7 @@ describe('NetworkController', () => {
                   controller,
                   eventName: 'infuraIsUnblocked',
                   operation: async () => {
-                    await controller.initializeProvider();
+                    await controller.lookupNetwork();
                   },
                 });
 
@@ -1268,6 +1277,100 @@ describe('NetworkController', () => {
               },
             );
           });
+        });
+
+        it.only(`does not persist "${networkVersion}" to state as the network version of ${networkName} if the network state has changed after making the net_version request`, async () => {
+          const anotherNetwork = {
+            networkName: 'Goerli',
+            networkType: 'goerli',
+            chainId: '0x5',
+            networkVersion: '5',
+            ticker: 'GoerliETH',
+          };
+
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: networkType,
+                },
+              },
+            },
+            async ({ controller }) => {
+              let netVersionCallCount = 0;
+              const fakeProvider = {
+                sendAsync(request, callback) {
+                  if (request.method === 'net_version') {
+                    netVersionCallCount += 1;
+                    if (netVersionCallCount === 1) {
+                      waitForStateChanges({
+                        controller,
+                        propertyPath: ['network'],
+                        operation: () => {
+                          controller.setProviderType(
+                            anotherNetwork.networkType,
+                          );
+                        },
+                      })
+                        .then(() => {
+                          callback(null, {
+                            id: request.id,
+                            jsonrpc: '2.0',
+                            result: networkVersion,
+                          });
+                        })
+                        .catch((error) => {
+                          throw error;
+                        });
+                      return;
+                    }
+
+                    callback(null, {
+                      id: request.id,
+                      jsonrpc: '2.0',
+                      result: anotherNetwork.networkVersion,
+                    });
+                    return;
+                  }
+
+                  if (request.method === 'eth_getBlockByNumber') {
+                    callback(null, {
+                      id: request.id,
+                      jsonrpc: '2.0',
+                      result: BLOCK,
+                    });
+                    return;
+                  }
+
+                  throw new Error(
+                    `Mock not found for method ${request.method}`,
+                  );
+                },
+              };
+              jest
+                .spyOn(ethJsonRpcMiddlewareModule, 'providerFromEngine')
+                .mockReturnValue(fakeProvider);
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['network'],
+                count: 1,
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(controller.store.getState().network).toBe(
+                anotherNetwork.networkVersion,
+              );
+            },
+          );
         });
 
         it(`persists "${networkVersion}" to state as the network version of ${networkName}`, async () => {
@@ -1926,7 +2029,7 @@ describe('NetworkController', () => {
       );
     });
 
-    it.only('emits networkWillChange before making any changes to the network store', async () => {
+    it('emits networkWillChange before making any changes to the network store', async () => {
       await withController(
         {
           state: {
