@@ -87,7 +87,7 @@ export default class AccountMenu extends Component {
     keyrings: PropTypes.array,
     lockMetamask: PropTypes.func,
     selectedAddress: PropTypes.string,
-    showAccountDetail: PropTypes.func,
+    setSelectedAccount: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
@@ -173,7 +173,7 @@ export default class AccountMenu extends Component {
       accounts,
       selectedAddress,
       keyrings,
-      showAccountDetail,
+      setSelectedAccount,
       addressConnectedSubjectMap,
       originOfCurrentTab,
     } = this.props;
@@ -219,7 +219,7 @@ export default class AccountMenu extends Component {
                 location: 'Main Menu',
               },
             });
-            showAccountDetail(identity.address);
+            setSelectedAccount(identity.address);
           }}
           key={identity.address}
           data-testid="account-menu__account"

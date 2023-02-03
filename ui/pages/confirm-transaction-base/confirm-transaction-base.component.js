@@ -40,9 +40,9 @@ import LedgerInstructionField from '../../components/app/ledger-instruction-fiel
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 import Typography from '../../components/ui/typography/typography';
 import {
-  COLORS,
+  TextColor,
   FONT_STYLE,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
@@ -535,9 +535,9 @@ export default class ConfirmTransactionBase extends Component {
             <>
               {txData.dappSuggestedGasFees ? (
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontStyle={FONT_STYLE.ITALIC}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  color={TextColor.textAlternative}
                 >
                   {t('transactionDetailDappGasMoreInfo')}
                 </Typography>

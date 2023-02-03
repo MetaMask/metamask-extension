@@ -18,7 +18,7 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function getActionFunctionById(id, history) {
@@ -71,7 +71,9 @@ function getActionFunctionById(id, history) {
 const renderDescription = (description) => {
   if (!Array.isArray(description)) {
     return (
-      <Typography variant={TYPOGRAPHY.Paragraph}>{description}</Typography>
+      <Typography variant={TypographyVariant.paragraph}>
+        {description}
+      </Typography>
     );
   }
 
@@ -82,7 +84,7 @@ const renderDescription = (description) => {
         return (
           <Typography
             key={`item-${index}`}
-            variant={TYPOGRAPHY.Paragraph}
+            variant={TypographyVariant.paragraph}
             boxProps={{ marginBottom: isLast ? 0 : 2 }}
           >
             {piece}

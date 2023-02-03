@@ -12,7 +12,7 @@ import {
   ButtonIcon,
   ICON_NAMES,
 } from '../../../../components/component-library';
-import { COLORS } from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
   static contextTypes = {
@@ -165,7 +165,9 @@ export default class DomainInput extends Component {
                   userInput ? ICON_NAMES.CLOSE : ICON_NAMES.SCAN_BARCODE
                 }
                 ariaLabel={t(userInput ? 'close' : 'scanQrCode')}
-                color={userInput ? COLORS.ICON_DEFAULT : COLORS.PRIMARY_DEFAULT}
+                color={
+                  userInput ? IconColor.iconDefault : IconColor.primaryDefault
+                }
               />
             </>
           )}

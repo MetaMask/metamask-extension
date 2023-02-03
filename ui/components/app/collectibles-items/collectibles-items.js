@@ -7,11 +7,11 @@ import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
 import Card from '../../ui/card';
 import {
-  COLORS,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  Color,
+  TypographyVariant,
+  JustifyContent,
   FLEX_DIRECTION,
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
@@ -142,18 +142,18 @@ export default function CollectiblesItems({
           <Box
             marginBottom={2}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             className="collectibles-items__collection-accordion-title"
           >
             <Box
-              alignItems={ALIGN_ITEMS.CENTER}
+              alignItems={AlignItems.center}
               className="collectibles-items__collection-header"
             >
               {renderCollectionImage(collectionImage, collectionName)}
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H5}
+                color={Color.textDefault}
+                variant={TypographyVariant.H5}
                 margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${
@@ -161,7 +161,7 @@ export default function CollectiblesItems({
                 })`}
               </Typography>
             </Box>
-            <Box alignItems={ALIGN_ITEMS.FLEX_END}>
+            <Box alignItems={AlignItems.flexEnd}>
               <i
                 className={`collectibles-items__collection__icon-chevron fa fa-chevron-${
                   isExpanded ? 'down' : 'right'
@@ -189,7 +189,7 @@ export default function CollectiblesItems({
                 >
                   <Card
                     padding={0}
-                    justifyContent={JUSTIFY_CONTENT.CENTER}
+                    justifyContent={JustifyContent.center}
                     className="collectibles-items__item-wrapper__card"
                   >
                     {collectibleImage ? (

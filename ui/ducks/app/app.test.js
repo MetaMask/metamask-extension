@@ -121,27 +121,13 @@ describe('App State', () => {
       type: actions.GO_HOME,
     });
 
-    expect(state.accountDetail.subview).toStrictEqual('transactions');
-    expect(state.accountDetail.accountExport).toStrictEqual('none');
     expect(state.accountDetail.privateKey).toStrictEqual('');
     expect(state.warning).toBeNull();
-  });
-
-  it('shows account detail', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_ACCOUNT_DETAIL,
-      value: 'context address',
-    });
-    expect(state.accountDetail.subview).toStrictEqual('transactions'); // default
-    expect(state.accountDetail.accountExport).toStrictEqual('none'); // default
-    expect(state.accountDetail.privateKey).toStrictEqual(''); // default
   });
 
   it('clears account details', () => {
     const exportPrivKeyModal = {
       accountDetail: {
-        subview: 'export',
-        accountExport: 'completed',
         privateKey: 'a-priv-key',
       },
     };
@@ -151,10 +137,10 @@ describe('App State', () => {
       type: actions.CLEAR_ACCOUNT_DETAILS,
     });
 
-    expect(newState.accountDetail).toStrictEqual({});
+    expect(newState.accountDetail).toStrictEqual({ privateKey: '' });
   });
 
-  it('shoes account page', () => {
+  it('shows account page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_ACCOUNTS_PAGE,
     });
@@ -220,7 +206,6 @@ describe('App State', () => {
     });
 
     expect(state.warning).toBeNull();
-    expect(state.accountDetail.subview).toStrictEqual('transactions');
   });
 
   it('sets default warning when unlock fails', () => {
@@ -314,8 +299,6 @@ describe('App State', () => {
       value: 'private key',
     });
 
-    expect(state.accountDetail.subview).toStrictEqual('export');
-    expect(state.accountDetail.accountExport).toStrictEqual('completed');
     expect(state.accountDetail.privateKey).toStrictEqual('private key');
   });
 
