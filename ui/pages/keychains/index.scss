@@ -74,23 +74,6 @@
 }
 
 .reveal-seed {
-  &__content {
-    padding: 0 4px 0 4px;
-  }
-
-  &__label {
-    padding-bottom: 10px;
-    font-weight: 400;
-    display: inline-block;
-  }
-
-  &__error {
-    @include H6;
-
-    color: var(--color-error-default);
-    padding-top: 5px;
-  }
-
   &__tab {
     display: flex;
     flex: 1;
@@ -99,51 +82,4 @@
   &__active-tab {
     color: var(--color-primary-default);
   }
-
-  &__text-container {
-    margin-top: 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-
-  &__qr-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
-.srp {
-  &__header {
-    margin: 20px 16px 16px 16px;
-  }
-
-  &__content {
-    margin: 8px 16px 20px 16px;
-  }
-
-  &__inline-link {
-    display: initial;
-    padding: 0;
-    font-size: inherit;
-  }
-
-  &__footer {
-    border: 0;
-    flex-direction: row;
-  }
-
-  &__footer-revealed {
-    border: 0;
-  }
-
-  &__footer-button {
-    flex: 1;
-  }
-}
-
-.page-container__footer-single-button {
-  margin: 16px;
 }
