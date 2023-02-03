@@ -108,7 +108,7 @@ RecoveryPhraseChips.propTypes = {
   phraseRevealed: PropTypes.bool,
   confirmPhase: PropTypes.bool,
   setInputValue: PropTypes.func,
-  inputValue: PropTypes.string,
+  inputValue: PropTypes.object,
   indicesToCheck: PropTypes.array,
   hiddenPhrase: PropTypes.bool,
 };

@@ -5,7 +5,6 @@ import {
   GasEstimateTypes,
   NetworkCongestionThresholds,
 } from '../../../shared/constants/gas';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
@@ -82,31 +81,6 @@ export default function reduceMetamask(state = initialState, action) {
         isUnlocked: false,
       };
 
-    case actionConstants.SET_RPC_TARGET:
-      return {
-        ...metamaskState,
-        provider: {
-          type: NETWORK_TYPES.RPC,
-          rpcUrl: action.value,
-        },
-      };
-
-    case actionConstants.SET_PROVIDER_TYPE:
-      return {
-        ...metamaskState,
-        provider: {
-          type: action.value,
-        },
-      };
-
-    case actionConstants.SHOW_ACCOUNT_DETAIL:
-      return {
-        ...metamaskState,
-        isUnlocked: true,
-        isInitialized: true,
-        selectedAddress: action.value,
-      };
-
     case actionConstants.SET_ACCOUNT_LABEL: {
       const { account } = action.value;
       const name = action.value.label;
@@ -152,18 +126,6 @@ export default function reduceMetamask(state = initialState, action) {
         participateInMetaMetrics: action.value,
       };
 
-    case actionConstants.SET_USE_BLOCKIE:
-      return {
-        ...metamaskState,
-        useBlockie: action.value,
-      };
-
-    case actionConstants.UPDATE_FEATURE_FLAGS:
-      return {
-        ...metamaskState,
-        featureFlags: action.value,
-      };
-
     case actionConstants.CLOSE_WELCOME_SCREEN:
       return {
         ...metamaskState,
@@ -180,16 +142,6 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         pendingTokens: {},
-      };
-    }
-
-    case actionConstants.UPDATE_PREFERENCES: {
-      return {
-        ...metamaskState,
-        preferences: {
-          ...metamaskState.preferences,
-          ...action.payload,
-        },
       };
     }
 

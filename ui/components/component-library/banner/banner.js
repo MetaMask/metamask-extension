@@ -62,6 +62,7 @@ export const Banner = ({
     <BannerBase
       startAccessory={<Icon size={Size.LG} {...severityIcon()} />}
       backgroundColor={severityBackground()}
+      paddingLeft={2}
       className={classnames(
         'mm-banner',
         {
