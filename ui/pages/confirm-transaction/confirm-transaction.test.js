@@ -66,14 +66,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('./conf-tx', () => {
-  return {
-    __esModule: true,
-    default: () => {
-      return <div className="mock-conf-tx" />;
-    },
-  };
-});
 jest.mock('../confirm-contract-interaction', () => {
   return {
     __esModule: true,
@@ -111,6 +103,14 @@ jest.mock('../confirm-send-ether', () => {
     __esModule: true,
     default: () => {
       return <div className="mock-confirm-send-ether" />;
+    },
+  };
+});
+jest.mock('../confirm-signature-request', () => {
+  return {
+    __esModule: true,
+    default: () => {
+      return <div className="mock-confirm-signature-request" />;
     },
   };
 });
@@ -158,7 +158,7 @@ describe('Confirmation Transaction Page', () => {
     [CONFIRM_TOKEN_METHOD_PATH, '.mock-confirm-contract-interaction'],
     [DECRYPT_MESSAGE_REQUEST_PATH, '.mock-confirm-decrypt-message'],
     [ENCRYPTION_PUBLIC_KEY_REQUEST_PATH, '.mock-confirm-encryption-public-key'],
-    [SIGNATURE_REQUEST_PATH, '.mock-conf-tx'],
+    [SIGNATURE_REQUEST_PATH, '.mock-confirm-signature-request'],
   ].forEach(([componentPath, mockClassNameMatch]) => {
     it(`should render "${componentPath}" route`, () => {
       const mockStore = configureMockStore(middleware)(mockState);
