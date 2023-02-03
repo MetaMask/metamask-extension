@@ -2,13 +2,13 @@ import { inspect, isDeepStrictEqual, promisify } from 'util';
 import { isMatch } from 'lodash';
 import nock from 'nock';
 import sinon from 'sinon';
-import * as ethJsonRpcMiddlewareModule from 'eth-json-rpc-middleware';
+import * as ethJsonRpcMiddlewareModule from '@metamask/eth-json-rpc-middleware';
 import NetworkController from './network-controller';
 
-jest.mock('eth-json-rpc-middleware', () => {
+jest.mock('@metamask/eth-json-rpc-middleware', () => {
   return {
     __esModule: true,
-    ...jest.requireActual('eth-json-rpc-middleware'),
+    ...jest.requireActual('@metamask/eth-json-rpc-middleware'),
   };
 });
 

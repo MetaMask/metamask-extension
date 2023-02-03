@@ -5,7 +5,7 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import {
   providerFromEngine,
   providerFromMiddleware,
-} from 'eth-json-rpc-middleware';
+} from '@metamask/eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
