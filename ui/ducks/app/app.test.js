@@ -42,7 +42,7 @@ describe('App State', () => {
   it('opens alert', () => {
     const state = reduceApp(metamaskState, {
       type: actions.ALERT_OPEN,
-      payload: 'test message',
+      value: 'test message',
     });
 
     expect(state.alertOpen).toStrictEqual(true);
@@ -63,7 +63,7 @@ describe('App State', () => {
   it('detects qr code data', () => {
     const state = reduceApp(metamaskState, {
       type: actions.QR_CODE_DETECTED,
-      payload: 'qr data',
+      value: 'qr data',
     });
 
     expect(state.qrCodeData).toStrictEqual('qr data');
@@ -121,27 +121,13 @@ describe('App State', () => {
       type: actions.GO_HOME,
     });
 
-    expect(state.accountDetail.subview).toStrictEqual('transactions');
-    expect(state.accountDetail.accountExport).toStrictEqual('none');
     expect(state.accountDetail.privateKey).toStrictEqual('');
     expect(state.warning).toBeNull();
-  });
-
-  it('shows account detail', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SHOW_ACCOUNT_DETAIL,
-      payload: 'context address',
-    });
-    expect(state.accountDetail.subview).toStrictEqual('transactions'); // default
-    expect(state.accountDetail.accountExport).toStrictEqual('none'); // default
-    expect(state.accountDetail.privateKey).toStrictEqual(''); // default
   });
 
   it('clears account details', () => {
     const exportPrivKeyModal = {
       accountDetail: {
-        subview: 'export',
-        accountExport: 'completed',
         privateKey: 'a-priv-key',
       },
     };
@@ -151,10 +137,10 @@ describe('App State', () => {
       type: actions.CLEAR_ACCOUNT_DETAILS,
     });
 
-    expect(newState.accountDetail).toStrictEqual({});
+    expect(newState.accountDetail).toStrictEqual({ privateKey: '' });
   });
 
-  it('shoes account page', () => {
+  it('shows account page', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_ACCOUNTS_PAGE,
     });
@@ -202,7 +188,7 @@ describe('App State', () => {
 
     const state = reduceApp(oldState, {
       type: actions.COMPLETED_TX,
-      payload: {
+      value: {
         id: 1,
       },
     });
@@ -214,13 +200,12 @@ describe('App State', () => {
   it('returns to account detail page when no unconf actions completed tx', () => {
     const state = reduceApp(metamaskState, {
       type: actions.COMPLETED_TX,
-      payload: {
+      value: {
         unconfirmedActionsCount: 0,
       },
     });
 
     expect(state.warning).toBeNull();
-    expect(state.accountDetail.subview).toStrictEqual('transactions');
   });
 
   it('sets default warning when unlock fails', () => {
@@ -234,7 +219,7 @@ describe('App State', () => {
   it('sets errors when unlock fails', () => {
     const state = reduceApp(metamaskState, {
       type: actions.UNLOCK_FAILED,
-      payload: 'errors',
+      value: 'errors',
     });
 
     expect(state.warning).toStrictEqual('errors');
@@ -258,7 +243,7 @@ describe('App State', () => {
     };
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,
-      payload: {
+      value: {
         device: HardwareDeviceNames.ledger,
         path: "m/44'/60'/0'",
       },
@@ -270,7 +255,7 @@ describe('App State', () => {
   it('shows loading message', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_LOADING,
-      payload: 'loading',
+      value: 'loading',
     });
 
     expect(state.isLoading).toStrictEqual(true);
@@ -291,7 +276,7 @@ describe('App State', () => {
   it('displays warning', () => {
     const state = reduceApp(metamaskState, {
       type: actions.DISPLAY_WARNING,
-      payload: 'warning',
+      value: 'warning',
     });
 
     expect(state.isLoading).toStrictEqual(false);
@@ -311,18 +296,16 @@ describe('App State', () => {
   it('shows private key', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SHOW_PRIVATE_KEY,
-      payload: 'private key',
+      value: 'private key',
     });
 
-    expect(state.accountDetail.subview).toStrictEqual('export');
-    expect(state.accountDetail.accountExport).toStrictEqual('completed');
     expect(state.accountDetail.privateKey).toStrictEqual('private key');
   });
 
   it('set mouse user state', () => {
     const state = reduceApp(metamaskState, {
       type: actions.SET_MOUSE_USER_STATE,
-      payload: true,
+      value: true,
     });
 
     expect(state.isMouseUser).toStrictEqual(true);

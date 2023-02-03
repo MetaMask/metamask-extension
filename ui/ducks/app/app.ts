@@ -44,7 +44,6 @@ interface AppState {
     lattice: string;
   };
   networksTabSelectedRpcUrl: string | null;
-  loadingMethodData: boolean;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
@@ -92,7 +91,7 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   accountDetail: {
-    subview: 'transactions',
+    privateKey: '',
   },
   // Used to display loading indicator
   isLoading: false,
@@ -107,7 +106,6 @@ const initialState: AppState = {
     lattice: `m/44'/60'/0'/0`,
   },
   networksTabSelectedRpcUrl: '',
-  loadingMethodData: false,
   requestAccountTabs: {},
   openMetaMaskTabs: {},
   currentWindowTab: {},
@@ -161,7 +159,7 @@ export default function reduceApp(
       return {
         ...appState,
         alertOpen: true,
-        alertMessage: action.payload,
+        alertMessage: action.value,
       };
 
     case actionConstants.ALERT_CLOSE:
@@ -182,7 +180,7 @@ export default function reduceApp(
     case actionConstants.SET_SMART_TRANSACTIONS_ERROR:
       return {
         ...appState,
-        smartTransactionsError: action.value,
+        smartTransactionsError: action.payload,
       };
 
     case actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE:
@@ -193,7 +191,7 @@ export default function reduceApp(
 
     // modal methods:
     case actionConstants.MODAL_OPEN: {
-      const { name, ...modalProps } = action.value;
+      const { name, ...modalProps } = action.payload;
 
       return {
         ...appState,
@@ -222,7 +220,9 @@ export default function reduceApp(
     case actionConstants.CLEAR_ACCOUNT_DETAILS:
       return {
         ...appState,
-        accountDetail: {},
+        accountDetail: {
+          privateKey: '',
+        },
       };
     case actionConstants.SHOW_SEND_TOKEN_PAGE:
       return {
@@ -241,21 +241,9 @@ export default function reduceApp(
       return {
         ...appState,
         accountDetail: {
-          subview: 'transactions',
-          accountExport: 'none',
           privateKey: '',
         },
         warning: null,
-      };
-
-    case actionConstants.SHOW_ACCOUNT_DETAIL:
-      return {
-        ...appState,
-        accountDetail: {
-          subview: 'transactions',
-          accountExport: 'none',
-          privateKey: '',
-        },
       };
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
@@ -399,18 +387,6 @@ export default function reduceApp(
         portfolioTooltipWasShownInThisSession: true,
       };
 
-    case actionConstants.LOADING_METHOD_DATA_STARTED:
-      return {
-        ...appState,
-        loadingMethodData: true,
-      };
-
-    case actionConstants.LOADING_METHOD_DATA_FINISHED:
-      return {
-        ...appState,
-        loadingMethodData: false,
-      };
-
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
       return {
         ...appState,
@@ -440,26 +416,26 @@ export default function reduceApp(
         ...appState,
         singleExceptions: {
           ...appState.singleExceptions,
-          [action.payload]: null,
+          [action.value]: null,
         },
       };
 
     case actionConstants.TOGGLE_GAS_LOADING_ANIMATION:
       return {
         ...appState,
-        gasLoadingAnimationIsShowing: action.value,
+        gasLoadingAnimationIsShowing: action.payload,
       };
 
     case actionConstants.SET_WEBHID_CONNECTED_STATUS:
       return {
         ...appState,
-        ledgerWebHidConnectedStatus: action.value,
+        ledgerWebHidConnectedStatus: action.payload,
       };
 
     case actionConstants.SET_LEDGER_TRANSPORT_STATUS:
       return {
         ...appState,
-        ledgerTransportStatus: action.value,
+        ledgerTransportStatus: action.payload,
       };
     case actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH:
       return {
@@ -469,17 +445,17 @@ export default function reduceApp(
     case actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED:
       return {
         ...appState,
-        newCustomNetworkAdded: action.value,
+        newCustomNetworkAdded: action.payload,
       };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {
         ...appState,
-        onboardedInThisUISession: action.value,
+        onboardedInThisUISession: action.payload,
       };
     case actionConstants.SET_CUSTOM_TOKEN_AMOUNT:
       return {
         ...appState,
-        customTokenAmount: action.value,
+        customTokenAmount: action.payload,
       };
     default:
       return appState;
