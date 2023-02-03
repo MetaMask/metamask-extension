@@ -23,7 +23,6 @@ export default class PermissionConnect extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     getRequestAccountTabIds: PropTypes.func.isRequired,
-    getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
     currentAddress: PropTypes.string.isRequired,
     origin: PropTypes.string,
@@ -100,13 +99,11 @@ export default class PermissionConnect extends Component {
       snapUpdatePath,
       isSnap,
       ///: END:ONLY_INCLUDE_IN
-      getCurrentWindowTab,
       getRequestAccountTabIds,
       permissionsRequest,
       history,
       isRequestingAccounts,
     } = this.props;
-    getCurrentWindowTab();
     getRequestAccountTabIds();
 
     if (!permissionsRequest) {
