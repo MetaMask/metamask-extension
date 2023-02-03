@@ -825,6 +825,68 @@ describe('NetworkController', () => {
         expect(blockTracker).toBeNull();
       });
     });
+
+    for (const { networkName, networkType, chainId } of INFURA_NETWORKS) {
+      describe(`when the type in the provider configuration is changed to "${networkType}"`, () => {
+        it(`returns a provider that is pointed to the ${networkName} Infura network (chainId: ${chainId})`, async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls();
+              await controller.initializeProvider();
+
+              controller.setProviderType(networkType);
+
+              const { provider } = controller.getProviderAndBlockTracker();
+              const promisifiedSendAsync = promisify(provider.sendAsync).bind(
+                provider,
+              );
+              const chainIdResult = await promisifiedSendAsync({
+                method: 'eth_chainId',
+              });
+              expect(chainIdResult.result).toBe(chainId);
+            },
+          );
+        });
+      });
+    }
+
+    describe('when the type in the provider configuration is changed to "rpc"', () => {
+      it('returns a provider that is pointed to the new RPC URL and chain ID', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'goerli',
+              },
+            },
+          },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
+            await controller.initializeProvider();
+
+            controller.setRpcTarget('https://mock-rpc-url', '0x1337');
+
+            const { provider } = controller.getProviderAndBlockTracker();
+            const promisifiedSendAsync = promisify(provider.sendAsync).bind(
+              provider,
+            );
+            const chainIdResult = await promisifiedSendAsync({
+              method: 'eth_chainId',
+            });
+            expect(chainIdResult.result).toBe('0x1337');
+          },
+        );
+      });
+    });
   });
 
   describe('getEIP1559Compatibility', () => {
