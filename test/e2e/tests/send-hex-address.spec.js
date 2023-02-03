@@ -164,6 +164,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.switchToWindow(extension);
 
         // Send TST
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__asset-tab"]');
         await driver.clickElement('.token-cell');
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -249,6 +250,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.switchToWindow(extension);
 
         // Send TST
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__asset-tab"]');
         await driver.clickElement('.token-cell');
         await driver.clickElement('[data-testid="eth-overview-send"]');
