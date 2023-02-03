@@ -4,7 +4,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
-import createEngineStream from 'json-rpc-middleware-stream/engineStream';
+import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import {
   KeyringController,
