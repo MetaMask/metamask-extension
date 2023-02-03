@@ -4,7 +4,6 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import Box from '../../../ui/box';
-import IconCopy from '../../../ui/icon/icon-copy';
 import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
@@ -28,6 +27,7 @@ import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
+import { ButtonIcon, ICON_NAMES } from '../../../component-library';
 
 export default function ContractDetailsModal({
   onClose,
@@ -146,15 +146,15 @@ export default function ContractDetailsModal({
                         : t('copyToClipboard')
                     }
                   >
-                    <Button
-                      className="contract-details-modal__content__contract__buttons__copy"
-                      type="link"
-                      onClick={() => {
-                        handleCopyTokenAddress(tokenAddress);
-                      }}
-                    >
-                      <IconCopy color="var(--color-icon-muted)" />
-                    </Button>
+                    <ButtonIcon
+                      iconName={
+                        copiedTokenAddress
+                          ? ICON_NAMES.COPY_SUCCESS
+                          : ICON_NAMES.COPY
+                      }
+                      onClick={() => handleCopyTokenAddress(tokenAddress)}
+                      color={COLORS.ICON_MUTED}
+                    />
                   </Tooltip>
                 </Box>
                 <Box marginTop={5} marginRight={5}>
@@ -264,15 +264,13 @@ export default function ContractDetailsModal({
                     : t('copyToClipboard')
                 }
               >
-                <Button
-                  className="contract-details-modal__content__contract__buttons__copy"
-                  type="link"
-                  onClick={() => {
-                    handleCopyToAddress(toAddress);
-                  }}
-                >
-                  <IconCopy color="var(--color-icon-muted)" />
-                </Button>
+                <ButtonIcon
+                  iconName={
+                    copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                  }
+                  onClick={() => handleCopyToAddress(toAddress)}
+                  color={COLORS.ICON_MUTED}
+                />
               </Tooltip>
             </Box>
             <Box marginTop={5} marginRight={5}>
