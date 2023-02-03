@@ -9,7 +9,7 @@ import AdvancedTab from '.';
 const mockSetAutoLockTimeLimit = jest.fn();
 const mockSetShowTestNetworks = jest.fn();
 
-jest.mock('../../../store/actions.js', () => {
+jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
     setShowTestNetworks: () => mockSetShowTestNetworks,

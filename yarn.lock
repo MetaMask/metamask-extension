@@ -7567,6 +7567,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/w3c-web-hid@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@types/w3c-web-hid@npm:1.0.3"
+  checksum: 90ee1eeb2acf5d5ddf0b7acefd4f8aaa7d0175d991c3606a9ad62bdfa7a8de93665f5f6218dc4ecb34ea1d2f3e357813b315f46c1ea6b8aa1693e217e436c9b2
+  languageName: node
+  linkType: hard
+
 "@types/wait-on@npm:^5.2.0":
   version: 5.3.1
   resolution: "@types/wait-on@npm:5.3.1"
@@ -24143,6 +24150,7 @@ __metadata:
     "@types/react": ^16.9.53
     "@types/react-dom": ^17.0.11
     "@types/remote-redux-devtools": ^0.5.5
+    "@types/w3c-web-hid": ^1.0.3
     "@types/watchify": ^3.11.1
     "@types/yargs": ^17.0.8
     "@typescript-eslint/eslint-plugin": ^5.30.7

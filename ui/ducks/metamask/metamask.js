@@ -162,7 +162,7 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,
-        nextNonce: action.value,
+        nextNonce: action.payload,
       };
     }
 

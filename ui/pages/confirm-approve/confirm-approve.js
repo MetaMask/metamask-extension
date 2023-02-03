@@ -27,6 +27,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
@@ -81,6 +82,7 @@ export default function ConfirmApprove({
   const fromAddressIsLedger = useSelector(
     isAddressLedgerByFromAddress(userAddress),
   );
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
@@ -287,6 +289,7 @@ export default function ConfirmApprove({
               isContract={isContract}
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
               supportsEIP1559={supportsEIP1559}
+              useCurrencyRateCheck={useCurrencyRateCheck}
             />
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover

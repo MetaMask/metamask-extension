@@ -22,7 +22,7 @@ jest.mock('../../../ducks/send/index.js', () => ({
   resetSendState: () => mockResetSendState,
 }));
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   addToAddressBook: () => mockAddtoAddressBook,
   cancelTx: () => mockCancelTx,
 }));
