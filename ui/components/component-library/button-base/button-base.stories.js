@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  SIZES,
+  Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
@@ -96,26 +96,28 @@ export const DefaultStory = (args) => <ButtonBase {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
+export const SizeStory = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.BASELINE}
+      alignItems={AlignItems.baseline}
       gap={1}
       marginBottom={2}
     >
-      <ButtonBase {...args} size={SIZES.SM}>
+      <ButtonBase {...args} size={Size.SM}>
         Button SM
       </ButtonBase>
-      <ButtonBase {...args} size={SIZES.MD}>
+      <ButtonBase {...args} size={Size.MD}>
         Button MD
       </ButtonBase>
-      <ButtonBase {...args} size={SIZES.LG}>
+      <ButtonBase {...args} size={Size.LG}>
         Button LG
       </ButtonBase>
     </Box>
   </>
 );
+
+SizeStory.storyName = 'Size';
 
 export const Block = (args) => (
   <>

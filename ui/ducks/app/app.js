@@ -24,7 +24,7 @@ export default function reduceApp(state = {}, action) {
     qrCodeData: null,
     networkDropdownOpen: false,
     accountDetail: {
-      subview: 'transactions',
+      privateKey: '',
     },
     // Used to display loading indicator
     isLoading: false,
@@ -38,7 +38,6 @@ export default function reduceApp(state = {}, action) {
       lattice: `m/44'/60'/0'/0`,
     },
     networksTabSelectedRpcUrl: '',
-    loadingMethodData: false,
     requestAccountTabs: {},
     openMetaMaskTabs: {},
     currentWindowTab: {},
@@ -143,13 +142,9 @@ export default function reduceApp(state = {}, action) {
     case actionConstants.CLEAR_ACCOUNT_DETAILS:
       return {
         ...appState,
-        accountDetail: {},
-      };
-
-    case actionConstants.FORGOT_PASSWORD:
-      return {
-        ...appState,
-        forgottenPassword: action.value,
+        accountDetail: {
+          privateKey: '',
+        },
       };
 
     case actionConstants.SHOW_SEND_TOKEN_PAGE:
@@ -170,24 +165,9 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         accountDetail: {
-          subview: 'transactions',
-          accountExport: 'none',
           privateKey: '',
         },
         warning: null,
-      };
-
-    case actionConstants.SHOW_ACCOUNT_DETAIL:
-      return {
-        ...appState,
-        forgottenPassword: appState.forgottenPassword
-          ? !appState.forgottenPassword
-          : null,
-        accountDetail: {
-          subview: 'transactions',
-          accountExport: 'none',
-          privateKey: '',
-        },
       };
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
@@ -196,7 +176,6 @@ export default function reduceApp(state = {}, action) {
         isLoading: false,
         warning: null,
         scrollToBottom: false,
-        forgottenPassword: false,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:
@@ -330,18 +309,6 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         portfolioTooltipWasShownInThisSession: true,
-      };
-
-    case actionConstants.LOADING_METHOD_DATA_STARTED:
-      return {
-        ...appState,
-        loadingMethodData: true,
-      };
-
-    case actionConstants.LOADING_METHOD_DATA_FINISHED:
-      return {
-        ...appState,
-        loadingMethodData: false,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:

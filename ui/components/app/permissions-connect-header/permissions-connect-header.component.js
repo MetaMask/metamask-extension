@@ -5,7 +5,7 @@ import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
 import {
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
@@ -89,7 +89,7 @@ export default class PermissionsConnectHeader extends Component {
       <Box
         className={classnames('permissions-connect-header', className)}
         flexDirection={FLEX_DIRECTION.COLUMN}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         {...boxProps}
       >
         {this.renderHeaderIcon()}

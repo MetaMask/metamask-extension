@@ -4,8 +4,8 @@ import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  JUSTIFY_CONTENT,
-  TYPOGRAPHY,
+  JustifyContent,
+  TypographyVariant,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 
@@ -17,12 +17,15 @@ export const Setting = ({
   showToggle = true,
 }) => {
   return (
-    <Box justifyContent={JUSTIFY_CONTENT.CENTER} margin={3}>
+    <Box justifyContent={JustifyContent.center} margin={3}>
       <div className="privacy-settings__setting">
-        <Typography variant={TYPOGRAPHY.H5} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TypographyVariant.H5}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {title}
         </Typography>
-        <Typography variant={TYPOGRAPHY.H6}>{description}</Typography>
+        <Typography variant={TypographyVariant.H6}>{description}</Typography>
       </div>
       {showToggle ? (
         <div className="privacy-settings__setting__toggle">

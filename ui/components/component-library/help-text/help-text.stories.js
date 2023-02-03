@@ -2,9 +2,9 @@ import React from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  COLORS,
-  TEXT_COLORS,
-  SIZES,
+  Color,
+  TextColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -36,7 +36,7 @@ export default {
     },
     color: {
       control: 'select',
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
     },
   },
   args: {
@@ -56,9 +56,9 @@ export const Children = (args) => (
       Text and icon
       <Icon
         marginLeft={1}
-        color={COLORS.INHERIT}
+        color={Color.inherit}
         name={ICON_NAMES.WARNING}
-        size={SIZES.INHERIT}
+        size={Size.inherit}
       />
     </HelpText>
   </Box>
@@ -71,19 +71,20 @@ export const ErrorStory = (args) => (
 );
 ErrorStory.storyName = 'Error';
 
-export const Color = (args) => (
+export const ColorStory = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-    <HelpText color={COLORS.TEXT_DEFAULT} {...args}>
-      This HelpText default color is COLORS.TEXT_DEFAULT
+    <HelpText color={Color.textDefault} {...args}>
+      This HelpText default color is Color.textDefault
     </HelpText>
-    <HelpText color={COLORS.INFO_DEFAULT} {...args}>
-      This HelpText color is COLORS.INFO_DEFAULT
+    <HelpText color={Color.infoDefault} {...args}>
+      This HelpText color is Color.infoDefault
     </HelpText>
-    <HelpText color={COLORS.WARNING_DEFAULT} {...args}>
-      This HelpText color is COLORS.WARNING_DEFAULT
+    <HelpText color={Color.warningDefault} {...args}>
+      This HelpText color is Color.warningDefault
     </HelpText>
-    <HelpText color={COLORS.SUCCESS_DEFAULT} {...args}>
-      This HelpText color is COLORS.SUCCESS_DEFAULT
+    <HelpText color={Color.successDefault} {...args}>
+      This HelpText color is Color.successDefault
     </HelpText>
   </Box>
 );
+ColorStory.storyName = 'Color';

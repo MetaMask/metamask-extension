@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  SIZES,
+  Size,
   DISPLAY,
-  COLORS,
-  ALIGN_ITEMS,
-  TEXT,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  TextVariant,
+  JustifyContent,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -396,7 +397,7 @@ export const FormExample = () => {
           error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
           helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
         />
-        <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} gap={1}>
+        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
@@ -405,8 +406,8 @@ export const FormExample = () => {
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
         <Text
-          variant={TEXT.BODY_LG}
-          color={COLORS.SUCCESS_DEFAULT}
+          variant={TextVariant.bodyLgMedium}
+          color={TextColor.successDefault}
           marginTop={4}
         >
           Form successfully submitted!
@@ -424,10 +425,10 @@ export const CustomLabelOrHelpText = () => (
     </Text>
     <Box
       display={DISPLAY.FLEX}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-      alignItems={ALIGN_ITEMS.FLEX_END}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.flexEnd}
     >
-      <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
@@ -436,9 +437,9 @@ export const CustomLabelOrHelpText = () => (
         </Label>
         <Icon
           name={ICON_NAMES.INFO}
-          size={SIZES.SM}
+          size={Size.SM}
           marginLeft={1}
-          color={COLORS.ICON_ALTERNATIVE}
+          color={IconColor.iconAlternative}
         />
       </Box>
       <ButtonLink>Use default</ButtonLink>
@@ -457,8 +458,8 @@ export const CustomLabelOrHelpText = () => (
     />
     <Box
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.FLEX_START}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      alignItems={AlignItems.flexStart}
+      justifyContent={JustifyContent.spaceBetween}
     >
       {/* If you need a custom help text
        or require adding some form of customization

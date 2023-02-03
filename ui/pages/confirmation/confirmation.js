@@ -17,9 +17,9 @@ import MetaMaskTemplateRenderer from '../../components/app/metamask-template-ren
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
-  COLORS,
   FLEX_DIRECTION,
-  SIZES,
+  Size,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
@@ -303,8 +303,8 @@ export default function ConfirmationPage({
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
             <NetworkDisplay
-              indicatorSize={SIZES.XS}
-              labelProps={{ color: COLORS.TEXT_DEFAULT }}
+              indicatorSize={Size.XS}
+              labelProps={{ color: TextColor.textDefault }}
             />
           </Box>
         ) : null}

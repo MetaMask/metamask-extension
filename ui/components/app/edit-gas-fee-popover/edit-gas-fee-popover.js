@@ -8,7 +8,10 @@ import ErrorMessage from '../../ui/error-message';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography/typography';
 
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  TextColor,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import AppLoadingSpinner from '../app-loading-spinner';
@@ -84,9 +87,9 @@ const EditGasFeePopover = () => {
               <Typography
                 className="edit-gas-fee-popover__know-more"
                 align="center"
-                color={COLORS.TEXT_ALTERNATIVE}
-                tag={TYPOGRAPHY.Paragraph}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.textAlternative}
+                tag={TypographyVariant.paragraph}
+                variant={TypographyVariant.H7}
               >
                 {t('learnMoreAboutGas', [
                   <a

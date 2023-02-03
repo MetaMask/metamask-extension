@@ -3,7 +3,7 @@ import React from 'react';
 import Box from '../box';
 import Typography from '../typography';
 import {
-  COLORS,
+  Color,
   DISPLAY,
   FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
@@ -130,17 +130,17 @@ export const OnTopOfContent = (args) => {
   return (
     <div>
       <Box display={DISPLAY.FLEX} gap={4} flexWrap={FLEX_WRAP.WRAP}>
-        <Box padding={6} backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}>
+        <Box padding={6} backgroundColor={Color.backgroundAlternative}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </Typography>
         </Box>
-        <Box padding={6} backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}>
+        <Box padding={6} backgroundColor={Color.backgroundAlternative}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </Typography>
         </Box>
-        <Box padding={6} backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}>
+        <Box padding={6} backgroundColor={Color.backgroundAlternative}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </Typography>

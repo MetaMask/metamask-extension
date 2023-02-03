@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
+  BackgroundColor,
   BLOCK_SIZES,
-  BORDER_STYLE,
-  COLORS,
+  BorderColor,
+  BorderStyle,
   DISPLAY,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 
@@ -32,7 +33,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(BORDER_STYLE),
+      options: Object.values(BorderStyle),
     },
     borderWidth: {
       control: {
@@ -44,13 +45,13 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(COLORS),
+      options: Object.values(BorderColor),
     },
     backgroundColor: {
       control: {
         type: 'select',
       },
-      options: Object.values(COLORS),
+      options: Object.values(BackgroundColor),
     },
     width: {
       control: {
@@ -140,13 +141,13 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(JUSTIFY_CONTENT),
+      options: Object.values(JustifyContent),
     },
     alignItems: {
       control: {
         type: 'select',
       },
-      options: Object.values(ALIGN_ITEMS),
+      options: Object.values(AlignItems),
     },
   },
   args: {
@@ -162,8 +163,8 @@ DefaultStory.args = {
   padding: 4,
   border: true,
   borderWidth: 1,
-  borderColor: COLORS.BORDER_DEFAULT,
-  borderStyle: BORDER_STYLE.SOLID,
-  backgroundColor: COLORS.BACKGROUND_DEFAULT,
+  borderColor: BorderColor.borderDefault,
+  borderStyle: BorderStyle.solid,
+  backgroundColor: BackgroundColor.backgroundDefault,
   display: DISPLAY.BLOCK,
 };

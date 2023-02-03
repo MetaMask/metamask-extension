@@ -7,16 +7,19 @@ import { ButtonIcon, ButtonLink, ICON_NAMES, Text } from '..';
 import Box from '../../ui/box';
 
 import {
-  COLORS,
+  BackgroundColor,
+  BorderRadius,
   DISPLAY,
-  SIZES,
-  TEXT,
+  Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export const BannerBase = ({
   className,
   title,
   titleProps,
+  description,
+  descriptionProps,
   children,
   actionButtonLabel,
   actionButtonOnClick,
@@ -31,10 +34,9 @@ export const BannerBase = ({
       className={classnames('mm-banner-base', className)}
       display={DISPLAY.FLEX}
       gap={2}
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      borderRadius={SIZES.SM}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.SM}
       padding={3}
-      paddingLeft={2}
       {...props}
     >
       {startAccessory && <>{startAccessory}</>}
@@ -43,13 +45,14 @@ export const BannerBase = ({
         {title && (
           <Text
             className="mm-banner-base__title"
-            variant={TEXT.BODY_LG_MEDIUM}
+            variant={TextVariant.bodyLgMedium}
             as="h5"
             {...titleProps}
           >
             {title}
           </Text>
         )}
+        {description && <Text {...descriptionProps}>{description}</Text>}
         {children && typeof children === 'object' ? (
           children
         ) : (
@@ -57,7 +60,7 @@ export const BannerBase = ({
         )}
         {actionButtonLabel && (
           <ButtonLink
-            size={SIZES.AUTO}
+            size={Size.auto}
             onClick={actionButtonOnClick}
             {...actionButtonProps}
           >
@@ -70,7 +73,7 @@ export const BannerBase = ({
           className="mm-banner-base__close-button"
           marginLeft="auto"
           iconName={ICON_NAMES.CLOSE}
-          size={SIZES.SM}
+          size={Size.SM}
           ariaLabel="Close" // TODO: i18n
           onClick={onClose}
           {...closeButtonProps}
@@ -90,7 +93,15 @@ BannerBase.propTypes = {
    */
   titleProps: PropTypes.shape(Text.PropTypes),
   /**
-   * The children is the description area of the BannerBase below the title
+   * The description is the content area below BannerBase title
+   */
+  description: PropTypes.string,
+  /**
+   * Additional props to pass to the `Text` component used for the `description` text
+   */
+  descriptionProps: PropTypes.shape(Text.PropTypes),
+  /**
+   * The children is an alternative to using the description prop for BannerBase content below the title
    */
   children: PropTypes.node,
   /**

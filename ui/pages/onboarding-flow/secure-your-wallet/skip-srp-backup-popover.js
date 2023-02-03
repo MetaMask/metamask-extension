@@ -8,11 +8,11 @@ import Popover from '../../../components/ui/popover';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
-  TYPOGRAPHY,
+  JustifyContent,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import Checkbox from '../../../components/ui/check-box';
@@ -33,8 +33,8 @@ export default function SkipSRPBackup({ handleClose }) {
       footer={
         <Box
           className="skip-srp-backup-popover__footer"
-          justifyContent={JUSTIFY_CONTENT.CENTER}
-          alignItems={ALIGN_ITEMS.CENTER}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
         >
           <Button
             onClick={() => {
@@ -70,15 +70,18 @@ export default function SkipSRPBackup({ handleClose }) {
     >
       <Box
         flexDirection={FLEX_DIRECTION.COLUMN}
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
         margin={4}
       >
         <i className="fa fa-exclamation-triangle fa-2x skip-srp-backup-popover__icon" />
-        <Typography variant={TYPOGRAPHY.h3} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TypographyVariant.h3}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('skipAccountSecurity')}
         </Typography>
-        <Box justifyContent={JUSTIFY_CONTENT.CENTER} margin={3}>
+        <Box justifyContent={JustifyContent.center} margin={3}>
           <label className="skip-srp-backup-popover__label">
             <Checkbox
               className="skip-srp-backup-popover__checkbox"
@@ -88,7 +91,7 @@ export default function SkipSRPBackup({ handleClose }) {
             />
             <Typography
               className="skip-srp-backup-popover__details"
-              variant={TYPOGRAPHY.h7}
+              variant={TypographyVariant.h7}
             >
               {t('skipAccountSecurityDetails')}
             </Typography>
