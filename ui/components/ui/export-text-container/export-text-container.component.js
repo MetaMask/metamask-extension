@@ -39,6 +39,7 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
       </Text>
       <ButtonSecondary
         className="export-text-container__button"
+        block={true}
         onClick={() => {
           if (onClickCopy) {
             onClickCopy();
