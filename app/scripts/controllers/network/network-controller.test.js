@@ -1926,32 +1926,35 @@ describe('NetworkController', () => {
       );
     });
 
-    it('emits networkWillChange before emitting networkDidChange', async () => {
-      await withController(async ({ controller }) => {
-        const network = new NetworkCommunications({
-          networkClientType: 'custom',
-          networkClientOptions: {
-            customRpcUrl: 'https://mock-rpc-url',
+    it.only('emits networkWillChange before making any changes to the network store', async () => {
+      await withController(
+        {
+          state: {
+            provider: {
+              type: 'rpc',
+              rpcUrl: 'http://example-custom-rpc.metamask.io',
+              chainId: '0x9999',
+              nickname: 'Test initial state',
+            },
           },
-        });
-        network.mockEssentialRpcCalls();
+        },
+        async ({ controller, network }) => {
+          network.mockEssentialRpcCalls();
+          controller.initializeProvider();
+          const initialNetwork = controller.store.getState().network;
 
-        await waitForEvent({
-          controller,
-          eventName: 'networkDidChange',
-          operation: async () => {
-            const networkWillChange = await waitForEvent({
-              controller,
-              eventName: 'networkWillChange',
-              operation: () => {
-                controller.setRpcTarget('https://mock-rpc-url', '0x1337');
-              },
-            });
+          const networkWillChange = await waitForEvent({
+            controller,
+            eventName: 'networkWillChange',
+            operation: () => {
+              controller.setRpcTarget('https://mock-rpc-url', '0x1337');
+            },
+          });
 
-            expect(networkWillChange).toBe(true);
-          },
-        });
-      });
+          expect(networkWillChange).toBe(true);
+          expect(controller.store.getState().network).toBe(initialNetwork);
+        },
+      );
     });
 
     it('resets the network state to "loading" before emitting networkDidChange', async () => {
