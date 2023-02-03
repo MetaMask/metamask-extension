@@ -380,12 +380,6 @@ export default function reduceApp(
         openMetaMaskTabs: action.payload,
       };
 
-    case actionConstants.SET_CURRENT_WINDOW_TAB:
-      return {
-        ...appState,
-        currentWindowTab: action.value,
-      };
-
     case actionConstants.HIDE_WHATS_NEW_POPUP:
       return {
         ...appState,

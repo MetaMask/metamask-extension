@@ -315,7 +315,7 @@ export function tryReverseResolveAddress(
     return new Promise<void>((resolve) => {
       callBackgroundMethod('tryReverseResolveAddress', [address], (err) => {
         if (err) {
-          log.error(err);
+          logErrorWithMessage(err);
         }
         resolve();
       });
@@ -909,9 +909,7 @@ export function updatePreviousGasParams(
         [txId, previousGasParams],
       );
     } catch (error) {
-      if (isErrorWithMessage(error)) {
-        log.error(error.message);
-      }
+      logErrorWithMessage(error);
       throw error;
     }
 
@@ -1210,9 +1208,7 @@ export function updateAndApproveTx(
 
           if (err) {
             dispatch(goHome());
-            if (isErrorWithMessage(err)) {
-              log.error(err.message);
-            }
+            logErrorWithMessage(err);
             reject(err);
             return;
           }
@@ -1478,7 +1474,7 @@ export function cancelMsgs(
         dispatch(completedTx(id));
       });
     } catch (err) {
-      log.error(err);
+      logErrorWithMessage(err);
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
         closeNotificationPopup();
@@ -2051,7 +2047,7 @@ export function addImportedTokens(
     try {
       await submitRequestToBackground('addImportedTokens', [tokensToImport]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
     } finally {
       await forceUpdateMetamaskState(dispatch);
     }
@@ -2443,7 +2439,7 @@ export function setProviderType(
     try {
       await submitRequestToBackground('setProviderType', [type]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
@@ -2472,7 +2468,7 @@ export function updateAndSetCustomRpc(
         rpcPrefs,
       ]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
@@ -2491,7 +2487,7 @@ export function editRpc(
     try {
       submitRequestToBackground('delCustomRpc', [oldRpcUrl]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem removing network!'));
       return;
     }
@@ -2505,7 +2501,7 @@ export function editRpc(
         rpcPrefs,
       ]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
@@ -2530,7 +2526,7 @@ export function setRpcTarget(
         nickname || newRpcUrl,
       ]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
@@ -2546,7 +2542,7 @@ export function rollbackToPreviousProvider(): ThunkAction<
     try {
       await submitRequestToBackground('rollbackToPreviousProvider');
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
@@ -2560,7 +2556,7 @@ export function delRpcTarget(
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod('delCustomRpc', [oldRpcUrl], (err) => {
         if (err) {
-          log.error(err);
+          logErrorWithMessage(err);
           dispatch(displayWarning('Had a problem removing network!'));
           reject(err);
           return;
@@ -2591,7 +2587,7 @@ export function addToAddressBook(
         memo,
       ]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Address book failed to update'));
       throw error;
     }
@@ -4287,7 +4283,7 @@ export function fetchSmartTransactionFees(
       });
       return smartTransactionFees;
     } catch (err) {
-      log.error(err);
+      logErrorWithMessage(err);
       if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
         const errorObj = parseSmartTransactionsError(err.message);
         dispatch({
@@ -4447,7 +4443,7 @@ export function fetchSmartTransactionsLiveness() {
     try {
       await submitRequestToBackground('fetchSmartTransactionsLiveness');
     } catch (err) {
-      log.error(err);
+      logErrorWithMessage(err);
     }
   };
 }
@@ -4486,7 +4482,7 @@ export function setTransactionSecurityCheckEnabled(
         transactionSecurityCheckEnabled,
       ]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
     }
   };
 }
@@ -4546,7 +4542,7 @@ export function addCustomNetwork(
         generateActionId(),
       ]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
@@ -4563,7 +4559,7 @@ export function requestAddNetworkApproval(
         originIsMetaMask,
       ]);
     } catch (error) {
-      log.error(error);
+      logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
     }
   };
