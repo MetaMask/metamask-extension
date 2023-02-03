@@ -9,10 +9,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
   TEXT_ALIGN,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  TypographyVariant,
+  JustifyContent,
   FONT_WEIGHT,
-  COLORS,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
@@ -40,12 +40,12 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     <div className="recovery-phrase" data-testid="recovery-phrase">
       <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_REVIEW} />
       <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
         <Typography
-          variant={TYPOGRAPHY.H2}
+          variant={TypographyVariant.H2}
           fontWeight={FONT_WEIGHT.BOLD}
           className="recovery-phrase__header"
         >
@@ -53,11 +53,11 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         </Typography>
       </Box>
       <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography variant={TYPOGRAPHY.H4}>
+        <Typography variant={TypographyVariant.H4}>
           {t('seedPhraseWriteDownDetails')}
         </Typography>
       </Box>
@@ -66,22 +66,25 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         marginBottom={4}
         className="recovery-phrase__tips"
       >
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
+        <Typography
+          variant={TypographyVariant.H4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('tips')}:
         </Typography>
         <ul>
           <li>
-            <Typography variant={TYPOGRAPHY.H4}>
+            <Typography variant={TypographyVariant.H4}>
               {t('seedPhraseIntroSidebarBulletOne')}
             </Typography>
           </li>
           <li>
-            <Typography variant={TYPOGRAPHY.H4}>
+            <Typography variant={TypographyVariant.H4}>
               {t('seedPhraseIntroSidebarBulletThree')}
             </Typography>
           </li>
           <li>
-            <Typography variant={TYPOGRAPHY.H4}>
+            <Typography variant={TypographyVariant.H4}>
               {t('seedPhraseIntroSidebarBulletFour')}
             </Typography>
           </li>
@@ -118,7 +121,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 icon={
                   <Icon
                     name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-                    color={COLORS.PRIMARY_DEFAULT}
+                    color={IconColor.primaryDefault}
                   />
                 }
                 className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__copy-to-clipboard"

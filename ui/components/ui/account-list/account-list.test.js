@@ -38,6 +38,10 @@ const render = () => {
     },
     allAreSelected: () => true,
     nativeCurrency: 'USD',
+    selectNewAccountViaModal: jest.fn(),
+    deselectAll: jest.fn(),
+    selectAll: jest.fn(),
+    handleAccountClick: jest.fn(),
   };
   return renderWithProvider(<AccountList {...args} />, store);
 };

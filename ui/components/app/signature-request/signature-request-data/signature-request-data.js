@@ -15,9 +15,9 @@ import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import {
   DISPLAY,
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 
 function SignatureRequestData({ data }) {
@@ -36,7 +36,7 @@ function SignatureRequestData({ data }) {
         >
           <Typography
             as="span"
-            color={COLORS.TEXT_DEFAULT}
+            color={TextColor.textDefault}
             marginLeft={4}
             fontWeight={
               typeof value === 'object' ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL
@@ -49,7 +49,7 @@ function SignatureRequestData({ data }) {
           ) : (
             <Typography
               as="span"
-              color={COLORS.TEXT_DEFAULT}
+              color={TextColor.textDefault}
               marginLeft={4}
               className="signature-request-data__node__value"
             >
@@ -57,8 +57,8 @@ function SignatureRequestData({ data }) {
                 mixedCaseUseChecksum: true,
               }) ? (
                 <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.INFO_DEFAULT}
+                  variant={TypographyVariant.H7}
+                  color={TextColor.infoDefault}
                   className="signature-request-data__node__value__address"
                 >
                   <Address

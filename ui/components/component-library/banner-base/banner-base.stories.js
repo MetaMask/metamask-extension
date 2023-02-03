@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from '@storybook/addons';
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES, ButtonLink, ButtonPrimary } from '..';
 import { BannerBase } from './banner-base';
 import README from './README.mdx';
@@ -37,6 +37,9 @@ export default {
       control: 'text',
     },
     title: {
+      control: 'text',
+    },
+    description: {
       control: 'text',
     },
     children: {
@@ -92,7 +95,7 @@ DefaultStory.args = {
   title: 'Title is sentence case no period',
   children: "Description shouldn't repeat title. 1-3 lines.",
   actionButtonLabel: 'Action',
-  startAccessory: <Icon name={ICON_NAMES.INFO} size={SIZES.LG} />,
+  startAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
 };
 
 DefaultStory.storyName = 'Default';
@@ -106,11 +109,25 @@ Title.args = {
   children: 'Pass only a string through the title prop',
 };
 
+export const Description = (args) => {
+  return <BannerBase {...args} />;
+};
+
+Description.args = {
+  title: 'Description vs children',
+  description:
+    'Pass only a string through the description prop or you can use children if the contents require more',
+};
+
 export const Children = (args) => {
   return (
     <BannerBase {...args}>
       {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-      <ButtonLink size={SIZES.AUTO} href="https://metamask.io/" target="_blank">
+      <ButtonLink
+        size={Size.inherit}
+        href="https://metamask.io/"
+        target="_blank"
+      >
         hyperlink.
       </ButtonLink>
     </BannerBase>
@@ -165,5 +182,5 @@ StartAccessory.args = {
   title: 'Start accessory demo',
   children:
     'The info icon on the left is passed through the startAccessory prop',
-  startAccessory: <Icon name={ICON_NAMES.INFO} size={SIZES.LG} />,
+  startAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
 };

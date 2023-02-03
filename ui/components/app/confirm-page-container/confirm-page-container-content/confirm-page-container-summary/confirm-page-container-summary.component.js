@@ -15,7 +15,7 @@ import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Typography from '../../../../ui/typography';
-import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../../helpers/constants/design-system';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../ui/site-origin';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
@@ -134,7 +134,9 @@ const ConfirmPageContainerSummary = (props) => {
             <Typography
               className="confirm-page-container-summary__title-text"
               variant={
-                title && title.length < 10 ? TYPOGRAPHY.H1 : TYPOGRAPHY.H3
+                title && title.length < 10
+                  ? TypographyVariant.H1
+                  : TypographyVariant.H3
               }
               title={title}
             >

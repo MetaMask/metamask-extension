@@ -5,31 +5,31 @@ import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../box';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
+  BackgroundColor,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
   display: 'flex',
   flexDirection: FLEX_DIRECTION.COLUMN,
-  backgroundColor: COLORS.BACKGROUND_DEFAULT,
+  backgroundColor: BackgroundColor.backgroundDefault,
   borderRadius: 'xl',
 };
 
 const defaultContentProps = {
   display: 'flex',
   flexDirection: FLEX_DIRECTION.COLUMN,
-  justifyContent: JUSTIFY_CONTENT.FLEX_START,
-  alignItems: ALIGN_ITEMS.STRETCH,
+  justifyContent: JustifyContent.flexStart,
+  alignItems: AlignItems.stretch,
   borderRadius: 'xl',
 };
 
 const defaultFooterProps = {
   display: 'flex',
-  justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN,
+  justifyContent: JustifyContent.spaceBetween,
   padding: [4, 6, 6],
 };
 

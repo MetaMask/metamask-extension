@@ -6902,6 +6902,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/currency-formatter@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@types/currency-formatter@npm:1.5.1"
+  checksum: dcbe69289bb1493092842f9d4cb97e54b1a0801769506ffb4e35c417863f0e35e8bf7f09445d91f9487cf31af3d4a9e65db1435c2987dd37da4e20d47a52dd63
+  languageName: node
+  linkType: hard
+
 "@types/debug@npm:^4.1.7":
   version: 4.1.7
   resolution: "@types/debug@npm:4.1.7"
@@ -7422,6 +7429,15 @@ __metadata:
     "@types/prop-types": "*"
     csstype: ^3.0.2
   checksum: 858b53f1b9c09a8eb65826c9bef0d61cfab8befb968745777fe18a1b32eb707ffaa70fdb6c1a5697251a530dfe5b0b926e5d7a033fddcb6952bc67291eb175a8
+  languageName: node
+  linkType: hard
+
+"@types/remote-redux-devtools@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "@types/remote-redux-devtools@npm:0.5.5"
+  dependencies:
+    redux: ^4.0.0
+  checksum: 1ff59a41e194b8785ba358109a3b5cf30d91a868e04cce57d912344ec5f6e38b647fec7194f621abebac97492dfb344ac6e535654ea05da60c5f78704c108634
   languageName: node
   linkType: hard
 
@@ -19097,9 +19113,9 @@ __metadata:
   linkType: hard
 
 "http-cache-semantics@npm:^4.0.0, http-cache-semantics@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "http-cache-semantics@npm:4.1.0"
-  checksum: 974de94a81c5474be07f269f9fd8383e92ebb5a448208223bfb39e172a9dbc26feff250192ecc23b9593b3f92098e010406b0f24bd4d588d631f80214648ed42
+  version: 4.1.1
+  resolution: "http-cache-semantics@npm:4.1.1"
+  checksum: 83ac0bc60b17a3a36f9953e7be55e5c8f41acc61b22583060e8dedc9dd5e3607c823a88d0926f9150e571f90946835c7fe150732801010845c72cd8bbff1a236
   languageName: node
   linkType: hard
 
@@ -24113,6 +24129,7 @@ __metadata:
     "@tsconfig/node16": ^1.0.3
     "@types/babelify": ^7.3.7
     "@types/browserify": ^12.0.37
+    "@types/currency-formatter": ^1.5.1
     "@types/end-of-stream": ^1.4.1
     "@types/fs-extra": ^9.0.13
     "@types/gulp": ^4.0.9
@@ -24125,6 +24142,7 @@ __metadata:
     "@types/pump": ^1.1.1
     "@types/react": ^16.9.53
     "@types/react-dom": ^17.0.11
+    "@types/remote-redux-devtools": ^0.5.5
     "@types/watchify": ^3.11.1
     "@types/yargs": ^17.0.8
     "@typescript-eslint/eslint-plugin": ^5.30.7
@@ -24139,6 +24157,7 @@ __metadata:
     bify-module-groups: ^2.0.0
     bignumber.js: ^4.1.0
     bn.js: ^4.11.7
+    bowser: ^2.11.0
     brfs: ^2.0.2
     browser-util-inspect: ^0.2.0
     browserify: ^16.5.1
@@ -29145,12 +29164,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.0.5, redux@npm:^4.1.0":
-  version: 4.1.1
-  resolution: "redux@npm:4.1.1"
+"redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.1.0":
+  version: 4.2.1
+  resolution: "redux@npm:4.2.1"
   dependencies:
     "@babel/runtime": ^7.9.2
-  checksum: 99519438a5d20b69404ad3816307ccc189f16df04b64c50d82c415ec488ea68b656d7a2fc81b6345e8d90f095344dfea68246500f72613d76464986660bc0485
+  checksum: f63b9060c3a1d930ae775252bb6e579b42415aee7a23c4114e21a0b4ba7ec12f0ec76936c00f546893f06e139819f0e2855e0d55ebfce34ca9c026241a6950dd
   languageName: node
   linkType: hard
 

@@ -42,6 +42,8 @@ describe('Onboarding Flow', () => {
     },
   };
 
+  process.env.METAMASK_BUILD_TYPE = 'main';
+
   const store = configureMockStore()(mockState);
 
   it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', () => {

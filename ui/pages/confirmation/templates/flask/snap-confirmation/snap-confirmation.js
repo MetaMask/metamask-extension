@@ -1,4 +1,4 @@
-import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
 
 function getValues(pendingApproval, t, actions) {
@@ -32,7 +32,7 @@ function getValues(pendingApproval, t, actions) {
                   key: 'title',
                   children: title,
                   props: {
-                    variant: TYPOGRAPHY.H3,
+                    variant: TypographyVariant.H3,
                     fontWeight: 'bold',
                     boxProps: {
                       marginBottom: 4,
@@ -46,7 +46,7 @@ function getValues(pendingApproval, t, actions) {
                         key: 'subtitle',
                         children: description,
                         props: {
-                          variant: TYPOGRAPHY.H6,
+                          variant: TypographyVariant.H6,
                           boxProps: {
                             marginBottom: 4,
                           },

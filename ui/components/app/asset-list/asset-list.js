@@ -18,10 +18,10 @@ import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Typography from '../../ui/typography/typography';
 import Box from '../../ui/box/box';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  Color,
+  TypographyVariant,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -101,10 +101,10 @@ const AssetList = ({ onClickAsset }) => {
           <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
         )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
+        <Box justifyContent={JustifyContent.center}>
           <Typography
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H6}
+            color={Color.textAlternative}
+            variant={TypographyVariant.H6}
             fontWeight={FONT_WEIGHT.NORMAL}
           >
             {t('missingToken')}

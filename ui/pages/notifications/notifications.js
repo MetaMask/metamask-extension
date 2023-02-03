@@ -130,13 +130,13 @@ export default function Notifications() {
 }
 
 NotificationItem.propTypes = {
-  notification: {
+  notification: PropTypes.exact({
     id: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
     createdDate: PropTypes.number.isRequired,
-    readDate: PropTypes.number.isRequired,
-  },
+    readDate: PropTypes.number,
+  }),
   snaps: PropTypes.array.isRequired,
   onItemClick: PropTypes.func.isRequired,
 };
