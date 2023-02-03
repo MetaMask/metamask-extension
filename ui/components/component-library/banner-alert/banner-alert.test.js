@@ -4,7 +4,7 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { BannerAlert, BANNER_SEVERITIES } from '.';
+import { BannerAlert, BANNER_ALERT_SEVERITIES } from '.';
 
 describe('Banner', () => {
   it('should render banner element correctly', () => {
@@ -13,7 +13,7 @@ describe('Banner', () => {
         should render banner element correctly
       </BannerAlert>,
     );
-    expect(getByTestId('banner')).toHaveClass('mm-banner');
+    expect(getByTestId('banner')).toHaveClass('mm-banner-alert');
     expect(container).toMatchSnapshot();
   });
 
@@ -38,21 +38,21 @@ describe('Banner', () => {
         </BannerAlert>
         <BannerAlert
           data-testid="warning"
-          severity={BANNER_SEVERITIES.WARNING}
+          severity={BANNER_ALERT_SEVERITIES.WARNING}
           title="Warning"
         >
           This is a demo of severity Warning.
         </BannerAlert>
         <BannerAlert
           data-testid="danger"
-          severity={BANNER_SEVERITIES.DANGER}
+          severity={BANNER_ALERT_SEVERITIES.DANGER}
           title="Danger"
         >
           This is a demo of severity Danger.
         </BannerAlert>
         <BannerAlert
           data-testid="success"
-          severity={BANNER_SEVERITIES.SUCCESS}
+          severity={BANNER_ALERT_SEVERITIES.SUCCESS}
           title="Success"
         >
           This is a demo of severity Success.
