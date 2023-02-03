@@ -51,8 +51,8 @@ describe('Eth sign', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesController({
             disabledRpcMethodPreferences: {
-              eth_sign: true
-            }
+              eth_sign: true,
+            },
           })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
