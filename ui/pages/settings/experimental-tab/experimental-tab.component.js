@@ -117,9 +117,9 @@ export default class ExperimentalTab extends PureComponent {
                 onToggle={(value) => {
                   this.context.trackEvent({
                     category: EVENT.CATEGORIES.SETTINGS,
-                    event: 'Collectible Detection',
+                    event: 'NFT Detected',
                     properties: {
-                      action: 'Collectible Detection',
+                      action: 'NFT Detected',
                       legacy_event: true,
                     },
                   });
