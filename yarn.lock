@@ -9913,6 +9913,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-plugin-add-module-exports@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "babel-plugin-add-module-exports@npm:0.2.1"
+  checksum: 0d40e7b970161a10960fbbd0492565ae2f3f4872b4da089f8f5bb874cfac4e38e088e4d96bc33cef22a8963774abe84622feeebbbe049ad95c4ee33c907b277d
+  languageName: node
+  linkType: hard
+
 "babel-plugin-add-react-displayname@npm:^0.0.5":
   version: 0.0.5
   resolution: "babel-plugin-add-react-displayname@npm:0.0.5"
@@ -13247,6 +13254,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"current-git-branch@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "current-git-branch@npm:1.1.0"
+  dependencies:
+    babel-plugin-add-module-exports: ^0.2.1
+    execa: ^0.6.1
+    is-git-repository: ^1.0.0
+  checksum: 57042d5c9fc608a951e81310da1caa3bdf917d0fede06996bfd7eaab5bdee7d29ced3440c3c73e5d90e503e689e2084e1906b1a17723e35684b1579d1bb5a54f
+  languageName: node
+  linkType: hard
+
+"currently-unhandled@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "currently-unhandled@npm:0.4.1"
+  dependencies:
+    array-find-index: ^1.0.1
+  checksum: 1f59fe10b5339b54b1a1eee110022f663f3495cf7cf2f480686e89edc7fa8bfe42dbab4b54f85034bc8b092a76cc7becbc2dad4f9adad332ab5831bec39ad540
+  languageName: node
+  linkType: hard
+
 "cwd@npm:^0.10.0":
   version: 0.10.0
   resolution: "cwd@npm:0.10.0"
@@ -16170,6 +16197,21 @@ __metadata:
   version: 0.3.6
   resolution: "exec-sh@npm:0.3.6"
   checksum: 0be4f06929c8e4834ea4812f29fe59e2dfcc1bc3fc4b4bb71acb38a500c3b394628a05ef7ba432520bc6c5ec4fadab00cc9c513c4ff6a32104965af302e998e0
+  languageName: node
+  linkType: hard
+
+"execa@npm:^0.6.1":
+  version: 0.6.3
+  resolution: "execa@npm:0.6.3"
+  dependencies:
+    cross-spawn: ^5.0.1
+    get-stream: ^3.0.0
+    is-stream: ^1.1.0
+    npm-run-path: ^2.0.0
+    p-finally: ^1.0.0
+    signal-exit: ^3.0.0
+    strip-eof: ^1.0.0
+  checksum: 2c66177731273a7c0a4c031af81b486b67ec1eeeb8f353ebc68e0cfe7f63aca9ebc1e6fe03ba10f130f2bd179c0ac69b35668fe2bfc1ceb68fbf5291d0783457
   languageName: node
   linkType: hard
 
@@ -20033,6 +20075,16 @@ __metadata:
   dependencies:
     has-tostringtag: ^1.0.0
   checksum: d54644e7dbaccef15ceb1e5d91d680eb5068c9ee9f9eb0a9e04173eb5542c9b51b5ab52c5537f5703e48d5fddfd376817c1ca07a84a407b7115b769d4bdde72b
+  languageName: node
+  linkType: hard
+
+"is-git-repository@npm:^1.0.0":
+  version: 1.1.1
+  resolution: "is-git-repository@npm:1.1.1"
+  dependencies:
+    execa: ^0.6.1
+    path-is-absolute: ^1.0.1
+  checksum: 2873d41da9ae5771a9118bdd743f32fa868301c57e8e4d8e255d4e14c04267112294a29f2824531fa554696042d8d87185811cff2de2a06381cff7d61d9ac22d
   languageName: node
   linkType: hard
 
@@ -24280,6 +24332,7 @@ __metadata:
     unicode-confusables: ^0.1.1
     uuid: ^8.3.2
     valid-url: ^1.0.9
+    validate-branch-name: ^1.3.0
     vinyl: ^2.2.1
     vinyl-buffer: ^1.0.1
     vinyl-source-stream: ^2.0.0
@@ -33953,6 +34006,19 @@ __metadata:
   version: 1.0.9
   resolution: "valid-url@npm:1.0.9"
   checksum: 3ecb030559404441c2cf104cbabab8770efb0f36d117db03d1081052ef133015a68806148ce954bb4dd0b5c42c14b709a88783c93d66b0916cb67ba771c98702
+  languageName: node
+  linkType: hard
+
+"validate-branch-name@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "validate-branch-name@npm:1.3.0"
+  dependencies:
+    commander: ^8.3.0
+    cosmiconfig: ^7.0.1
+    current-git-branch: ^1.1.0
+  bin:
+    validate-branch-name: cli.js
+  checksum: be82c1e39bfe0519fa02f01670b5ef928903a19289249559c9148c0fd20df356f373f2490fbfd54d018868a6348cc2ceb82fb67d5f5c48c15ecb48735b9b87fb
   languageName: node
   linkType: hard
 
