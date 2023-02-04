@@ -28,7 +28,7 @@ function SignatureRequestData({ data }) {
     <Box className="signature-request-data__node">
       {Object.entries(data).map((args, i) => {
         const label = sanitizeString(args[0]);
-        const value = sanitizeString(args[1]);
+        const value = sanitizeString(`${args[1]}`);
         return (
           <Box
             className="signature-request-data__node"
@@ -74,7 +74,7 @@ function SignatureRequestData({ data }) {
                     />
                   </Typography>
                 ) : (
-                  `${value}`
+                  value
                 )}
               </Typography>
             )}
