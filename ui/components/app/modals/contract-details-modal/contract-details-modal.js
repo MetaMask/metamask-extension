@@ -21,6 +21,7 @@ import {
   BorderStyle,
   BorderColor,
   TextColor,
+  Color,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import UrlIcon from '../../../ui/url-icon/url-icon';
@@ -153,7 +154,7 @@ export default function ContractDetailsModal({
                           : ICON_NAMES.COPY
                       }
                       onClick={() => handleCopyTokenAddress(tokenAddress)}
-                      color={COLORS.ICON_MUTED}
+                      color={Color.iconMuted}
                     />
                   </Tooltip>
                 </Box>
@@ -269,7 +270,7 @@ export default function ContractDetailsModal({
                     copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
                   }
                   onClick={() => handleCopyToAddress(toAddress)}
-                  color={COLORS.ICON_MUTED}
+                  color={Color.iconMuted}
                 />
               </Tooltip>
             </Box>
