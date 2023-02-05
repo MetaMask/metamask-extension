@@ -4,7 +4,10 @@
   }
 
   &__footer {
-    flex-direction: column;
+    &.popover-footer {
+      // required additional specificity
+      flex-direction: column;
+    }
 
     > :only-child {
       margin: 0;
