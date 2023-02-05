@@ -2308,7 +2308,7 @@ describe('Send Slice', () => {
             },
           };
 
-          jest.mock('../../store/actions.js');
+          jest.mock('../../store/actions.ts');
 
           const store = mockStore(tokenTransferTxState);
 
@@ -2345,7 +2345,7 @@ describe('Send Slice', () => {
           },
         };
 
-        jest.mock('../../store/actions.js');
+        jest.mock('../../store/actions.ts');
 
         const store = mockStore(editStageSignTxState);
 

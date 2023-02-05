@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import Typography from '../../../ui/typography/typography';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
@@ -40,8 +40,8 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
       height="full"
       marginTop={hasNoData && 12}
       marginBottom={hasNoData && 12}
-      alignItems={hasNoData && ALIGN_ITEMS.CENTER}
-      justifyContent={hasNoData && JUSTIFY_CONTENT.CENTER}
+      alignItems={hasNoData && AlignItems.center}
+      justifyContent={hasNoData && JustifyContent.center}
       textAlign={hasNoData && TEXT_ALIGN.CENTER}
       className="snap-insight"
     >
@@ -54,7 +54,10 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
           {data && Object.keys(data).length > 0 ? (
             <SnapUIRenderer snapId={selectedSnap.id} data={data} />
           ) : (
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+            <Typography
+              color={TextColor.textAlternative}
+              variant={TypographyVariant.H6}
+            >
               {t('snapsNoInsight')}
             </Typography>
           )}
@@ -86,8 +89,8 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
           <Preloader size={40} />
           <Typography
             marginTop={3}
-            color={COLORS.TEXT_ALTERNATIVE}
-            variant={TYPOGRAPHY.H6}
+            color={TextColor.textAlternative}
+            variant={TypographyVariant.H6}
           >
             {t('snapsInsightLoading')}
           </Typography>

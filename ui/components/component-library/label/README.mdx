@@ -31,22 +31,22 @@ The `children` of the label can be text or a react node
 </Canvas>
 
 ```jsx
-import { DISPLAY, ALIGN_ITEMS, FLEX_DIRECTION, SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { DISPLAY, AlignItems, FLEX_DIRECTION, Size, IconColor } from '../../../helpers/constants/design-system';
 import { Label, TextField, Icon, ICON_NAMES } from '../../component-library';
 
 <Label>Plain text</Label>
-<Label display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START}>
+<Label display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>
   Text and icon
-  <Icon
-    color={COLORS.ICON_ALTERNATIVE}
-    name={ICON_NAMES.INFO}
-    size={SIZES.INHERIT}
-  />
+      <Icon
+        color={IconColor.iconAlternative}
+        name={ICON_NAMES.INFO}
+        size={Size.inherit}
+      />
 </Label>
 <Label
-  display={DISPLAY.INLINE_FLEX}
-  flexDirection={FLEX_DIRECTION.COLUMN}
-  alignItems={ALIGN_ITEMS.FLEX_START}
+      display={DISPLAY.INLINE_FLEX}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+      alignItems={AlignItems.flexStart}
 >
   Label that wraps an input
   <TextField placeholder="Click label to focus" />

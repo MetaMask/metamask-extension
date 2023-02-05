@@ -1,12 +1,15 @@
 import React from 'react';
 import {
-  COLORS,
   FONT_WEIGHT,
   FONT_STYLE,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
   OVERFLOW_WRAP,
   DISPLAY,
+  BackgroundColor,
+  Color as ColorEnum,
+  TextColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../box';
 
@@ -29,7 +32,7 @@ export default {
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: Object.values(TYPOGRAPHY),
+      options: Object.values(TypographyVariant),
     },
     color: {
       control: { type: 'select' },
@@ -74,23 +77,23 @@ export default {
 function renderBackgroundColor(color) {
   let bgColor;
   switch (color) {
-    case COLORS.OVERLAY_INVERSE:
-      bgColor = COLORS.OVERLAY_DEFAULT;
+    case ColorEnum.overlayInverse:
+      bgColor = BackgroundColor.overlayDefault;
       break;
-    case COLORS.PRIMARY_INVERSE:
-      bgColor = COLORS.PRIMARY_DEFAULT;
+    case ColorEnum.primaryInverse:
+      bgColor = BackgroundColor.primaryDefault;
       break;
-    case COLORS.ERROR_INVERSE:
-      bgColor = COLORS.ERROR_DEFAULT;
+    case ColorEnum.errorInverse:
+      bgColor = BackgroundColor.errorDefault;
       break;
-    case COLORS.WARNING_INVERSE:
-      bgColor = COLORS.WARNING_DEFAULT;
+    case ColorEnum.warningInverse:
+      bgColor = BackgroundColor.warningDefault;
       break;
-    case COLORS.SUCCESS_INVERSE:
-      bgColor = COLORS.SUCCESS_DEFAULT;
+    case ColorEnum.successInverse:
+      bgColor = BackgroundColor.successDefault;
       break;
-    case COLORS.INFO_INVERSE:
-      bgColor = COLORS.INFO_DEFAULT;
+    case ColorEnum.infoInverse:
+      bgColor = BackgroundColor.infoDefault;
       break;
     default:
       bgColor = null;
@@ -117,7 +120,7 @@ DefaultStory.args = {
 
 export const Variant = (args) => (
   <>
-    {Object.values(TYPOGRAPHY).map((variant) => (
+    {Object.values(TypographyVariant).map((variant) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
         {...args}
@@ -140,12 +143,12 @@ export const Color = (args) => {
           return (
             <React.Fragment key={color}>
               <Typography
-                color={COLORS.TEXT_DEFAULT}
+                color={TextColor.textDefault}
                 align={TEXT_ALIGN.CENTER}
                 boxProps={{
-                  backgroundColor: COLORS.WARNING_MUTED,
+                  backgroundColor: BackgroundColor.warningMuted,
                   padding: 4,
-                  borderColor: COLORS.WARNING_DEFAULT,
+                  borderColor: BorderColor.warningDefault,
                 }}
               >
                 DEPRECATED COLORS - DO NOT USE
@@ -287,10 +290,10 @@ export const BoxProps = (args) => (
 );
 
 BoxProps.args = {
-  color: COLORS.TEXT_DEFAULT,
+  color: TextColor.textDefault,
   boxProps: {
-    backgroundColor: COLORS.INFO_MUTED,
-    borderColor: COLORS.INFO_DEFAULT,
+    backgroundColor: BackgroundColor.infoMuted,
+    borderColor: BorderColor.infoDefault,
     padding: 4,
     borderRadius: 4,
   },

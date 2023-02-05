@@ -35,16 +35,16 @@ Defaults to `md`
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { AvatarNetwork } from '../../component-library';
-<AvatarNetwork size={SIZES.XS} />
-<AvatarNetwork size={SIZES.SM} />
-<AvatarNetwork size={SIZES.MD} />
-<AvatarNetwork size={SIZES.LG} />
-<AvatarNetwork size={SIZES.XL} />
+<AvatarNetwork size={Size.XS} />
+<AvatarNetwork size={Size.SM} />
+<AvatarNetwork size={Size.MD} />
+<AvatarNetwork size={Size.LG} />
+<AvatarNetwork size={Size.XL} />
 ```
 
-###  Name
+### Name
 
 Use the `name` prop to set the initial letter of the `AvatarNetwork`. This will be used as the fallback display if no image url is passed to the `src` prop.
 
@@ -54,10 +54,10 @@ Use the `name` prop to set the initial letter of the `AvatarNetwork`. This will 
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
-<AvatarNetwork name="Arbitrum One" />
+<AvatarNetwork name="Arbitrum One" />;
 ```
 
-###  Src
+### Src
 
 Use the `src` prop to set the image to be rendered of the `AvatarNetwork`.
 
@@ -88,7 +88,7 @@ Use the `showHalo` prop to display the component with halo effect. Only works if
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
-<AvatarNetwork src="./images/arbitrum.svg" showHalo/>
+<AvatarNetwork src="./images/arbitrum.svg" showHalo />;
 ```
 
 ### Color, Background Color And Border Color
@@ -100,21 +100,23 @@ Use the `color`, `backgroundColor` and `borderColor` props to set the text color
 </Canvas>
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { TextColor,
+           BackgroundColor,
+           BorderColor } from '../../../helpers/constants/design-system';
 import { AvatarNetwork } from '../../component-library';
 <AvatarNetwork
-  backgroundColor={COLORS.GOERLI}
-  borderColor={COLORS.GOERLI}
-  name="G"
-  color={COLORS.PRIMARY_INVERSE}
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
+      name="G"
+      color={Color.goerliInverse}
 >
   G
 </AvatarNetwork>
 <AvatarNetwork
-  backgroundColor={COLORS.SEPOLIA}
-  borderColor={COLORS.SEPOLIA}
-  name="S"
-  color={COLORS.PRIMARY_INVERSE}
+   backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
+      name="S"
+      color={Color.goerliInverse}
 >
   S
 </AvatarNetwork>

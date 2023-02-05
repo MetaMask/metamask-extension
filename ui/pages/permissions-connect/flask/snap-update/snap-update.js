@@ -7,12 +7,12 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
 import Box from '../../../../components/ui/box/box';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   BLOCK_SIZES,
-  BORDER_STYLE,
+  BorderStyle,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
-  TYPOGRAPHY,
+  JustifyContent,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../../components/ui/typography';
 import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
@@ -58,14 +58,14 @@ export default function SnapUpdate({
   return (
     <Box
       className="page-container snap-update"
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      justifyContent={JustifyContent.spaceBetween}
       height={BLOCK_SIZES.FULL}
-      borderStyle={BORDER_STYLE.NONE}
+      borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <Box
         className="headers"
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <PermissionConnectHeader
@@ -76,13 +76,13 @@ export default function SnapUpdate({
           siteOrigin={request.snapId}
           isSnapInstallOrUpdate
           snapVersion={request.newVersion}
-          boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
+          boxProps={{ alignItems: AlignItems.center }}
         />
         <Typography
           boxProps={{
             padding: [4, 4, 0, 4],
           }}
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           as="span"
         >
           {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
@@ -93,7 +93,7 @@ export default function SnapUpdate({
               boxProps={{
                 padding: [2, 4, 0, 4],
               }}
-              variant={TYPOGRAPHY.H7}
+              variant={TypographyVariant.H7}
               as="span"
             >
               {t('snapRequestsPermission')}
@@ -108,7 +108,7 @@ export default function SnapUpdate({
       </Box>
       <Box
         className="footers"
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Box className="snap-update__footer--no-source-code" paddingTop={4}>

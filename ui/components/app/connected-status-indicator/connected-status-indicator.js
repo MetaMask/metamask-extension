@@ -8,7 +8,7 @@ import {
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import ColorIndicator from '../../ui/color-indicator';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAddressConnectedSubjectMap,
@@ -37,13 +37,13 @@ export default function ConnectedStatusIndicator({ onClick }) {
   }
 
   let indicatorType = ColorIndicator.TYPES.OUTLINE;
-  let indicatorColor = COLORS.ICON_DEFAULT;
+  let indicatorColor = Color.iconDefault;
 
   if (status === STATUS_CONNECTED) {
-    indicatorColor = COLORS.SUCCESS_DEFAULT;
+    indicatorColor = Color.successDefault;
     indicatorType = ColorIndicator.TYPES.PARTIAL;
   } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
-    indicatorColor = COLORS.ERROR_DEFAULT;
+    indicatorColor = Color.errorDefault;
   }
 
   const text =

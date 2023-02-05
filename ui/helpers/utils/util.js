@@ -6,6 +6,7 @@ import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import { isString } from 'lodash';
+import bowser from 'bowser';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -17,6 +18,7 @@ import {
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -327,6 +329,12 @@ export function getURL(url) {
   } catch (err) {
     return '';
   }
+}
+
+export function getIsBrowserDeprecated(
+  browser = bowser.getParser(window.navigator.userAgent),
+) {
+  return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
 }
 
 export function getURLHost(url) {
