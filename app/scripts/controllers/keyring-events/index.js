@@ -48,11 +48,11 @@ export default class KeyringEventsController extends EventEmitter {
    * @private
    */
   _wrapKeyring = (Keyring) => {
-    const builder = (_args) => {
-      const builderArgs = processBuilderArgs(_args);
-      console.trace(`Constructing: ${Keyring.type}`, builderArgs);
+    const builder = (..._args) => {
+      const args = processBuilderArgs(_args);
+      console.trace(`Constructing: ${Keyring.type}`, args);
 
-      const keyring = new Keyring(...builderArgs);
+      const keyring = new Keyring(...args);
       const proxiedKeyring = this._getKeyringInstanceProxy(keyring);
 
       return proxiedKeyring;
