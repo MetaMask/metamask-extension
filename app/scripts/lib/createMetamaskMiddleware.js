@@ -4,6 +4,7 @@ import {
   createPendingNonceMiddleware,
   createPendingTxMiddleware,
 } from './middleware/pending';
+import { createGetPlumeSignatureMiddleware } from './middleware/plume';
 
 export default function createMetamaskMiddleware({
   version,
@@ -16,6 +17,7 @@ export default function createMetamaskMiddleware({
   processPersonalMessage,
   processDecryptMessage,
   processEncryptionPublicKey,
+  getPlumeSignature,
   getPendingNonce,
   getPendingTransactionByHash,
 }) {
@@ -37,6 +39,7 @@ export default function createMetamaskMiddleware({
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),
+    createGetPlumeSignatureMiddleware({ getPlumeSignature }),
   ]);
   return metamaskMiddleware;
 }

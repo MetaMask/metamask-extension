@@ -235,6 +235,7 @@ export const unrestrictedMethods = Object.freeze([
   'eth_getFilterChanges',
   'eth_getFilterLogs',
   'eth_getLogs',
+  'eth_getPlumeSignature',
   'eth_getProof',
   'eth_getStorageAt',
   'eth_getTransactionByBlockHashAndIndex',

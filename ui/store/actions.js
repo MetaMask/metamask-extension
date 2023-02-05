@@ -1178,6 +1178,17 @@ export function cancelMsgs(msgDataList) {
                   },
                 );
                 return;
+              case MESSAGE_TYPE.ETH_GET_PLUME_SIGNATURE:
+                // TODO: Remove
+                console.log('ETH_GET_PLUME_SIGNATURE');
+                callBackgroundMethod('cancelGetPlumeSignature', [id], (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+                return;
               case MESSAGE_TYPE.ETH_SIGN:
                 callBackgroundMethod('cancelMessage', [id], (err) => {
                   if (err) {
