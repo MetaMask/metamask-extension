@@ -1,17 +1,17 @@
 import EventEmitter from 'events';
 import { differenceWith, isFunction } from 'lodash';
 import nanoid from 'nanoid';
+import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import { HARDWARE_KEYRING_INIT_OPTS } from '../../../../shared/constants/hardware-wallets';
 import { getHardwareMethodHandler } from './handlers';
-import { isServiceWorkerMv3Error } from './utils';
+import { isServiceWorkerMv3Error, processBuilderArgs } from './utils';
 
 export default class KeyringEventsController extends EventEmitter {
-  constructor({ sendPromisifiedHardwareCall, keyringBuilders }) {
+  constructor({ sendPromisifiedHardwareCall, keyrings }) {
     super();
     this.eventPool = [];
     this.sendPromisifiedHardwareCall = sendPromisifiedHardwareCall;
-    this.keyrings = this._getKeyrings(keyringBuilders);
+    this.keyringBuilders = this._getKeyringBuilders(keyrings);
   }
 
   /**
@@ -20,16 +20,16 @@ export default class KeyringEventsController extends EventEmitter {
    * NOTE: If MV3, a function constructor (not a class) is returned in order
    * to pass data from this context to the HardwareKeyringWrapper instantiation.
    *
-   * @param keyringBuilders
+   * @param keyrings
    * @returns {[Proxy]|[Keyring]}
    */
-  _getKeyrings = (keyringBuilders) => {
+  _getKeyringBuilders = (keyrings) => {
     if (!isManifestV3) {
-      // if not MV3 then don't wrap keyrings
-      return keyringBuilders;
+      // if not MV3 then use the standard keyring builder factory
+      return keyrings.map((Keyring) => keyringBuilderFactory(Keyring));
     }
 
-    const wrappedKeyrings = keyringBuilders.map((Keyring) =>
+    const wrappedKeyrings = keyrings.map((Keyring) =>
       this._wrapKeyring(Keyring),
     );
 
@@ -44,29 +44,23 @@ export default class KeyringEventsController extends EventEmitter {
    * of the instance.
    *
    * @param Keyring
-   * @returns Proxy<Keyring>
+   * @returns function(*): KeyringBuilder
+   * @private
    */
   _wrapKeyring = (Keyring) => {
-    const proxy = new Proxy(Keyring, {
-      construct: (Target, args) => {
-        console.trace(`Constructing: ${Target.type}`, args);
+    const builder = (_args) => {
+      const builderArgs = processBuilderArgs(_args);
+      console.trace(`Constructing: ${Keyring.type}`, builderArgs);
 
-        // Attach arguments that prevent MV3 errors from being thrown immediately
-        const instance = new Target(
-          { ...args[0], ...HARDWARE_KEYRING_INIT_OPTS },
-          ...args.slice(1),
-        );
+      const keyring = new Keyring(...builderArgs);
+      const proxiedKeyring = this._getKeyringInstanceProxy(keyring);
 
-        // Create an additional proxy, this time for the instance
-        // Ensure that a new proxy is created upon every 'new' call
-        // of the Keyring's class (i.e., this execution context)
-        const instanceProxy = this._getKeyringInstanceProxy(instance);
+      return proxiedKeyring;
+    };
 
-        return instanceProxy;
-      },
-    });
+    builder.type = Keyring.type;
 
-    return proxy;
+    return builder;
   };
 
   /**

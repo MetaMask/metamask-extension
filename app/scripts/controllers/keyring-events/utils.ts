@@ -1,5 +1,6 @@
 import { has, isError } from 'lodash';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { HARDWARE_KEYRING_INIT_OPTS } from '../../../../shared/constants/hardware-wallets';
 
 /**
  * Returns true if text resembles MV3 error message.
@@ -43,4 +44,11 @@ export const isServiceWorkerMv3Error = (error: any): boolean => {
   const errorText = error.message || error.stack || error.toString();
 
   return isMv3ErrorMessage(errorText);
+};
+
+export const processBuilderArgs = (
+  args: any[],
+): [Record<string, unknown>, ...any] => {
+  // Attach arguments that prevent MV3 errors from being thrown immediately
+  return [{ ...args[0], ...HARDWARE_KEYRING_INIT_OPTS }, ...args.slice(1)];
 };

@@ -648,11 +648,11 @@ export default class MetamaskController extends EventEmitter {
     this._clientMessagePromises = {};
     this.hardwareKeyringController = new KeyringEventsController({
       sendPromisifiedHardwareCall: this.sendPromisifiedHardwareCall.bind(this),
-      keyringBuilders: this.getKeyringBuilders(),
+      keyrings: this.getAdditionalKeyrings(),
     });
 
     this.keyringController = new KeyringController({
-      keyringBuilders: this.hardwareKeyringController.keyrings,
+      keyringBuilders: this.hardwareKeyringController.keyringBuilders,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
@@ -4729,8 +4729,8 @@ export default class MetamaskController extends EventEmitter {
     return null;
   }
 
-  getKeyringBuilders = () => {
-    const additionalKeyrings = [QRKeyring];
+  getAdditionalKeyrings = () => {
+    const additionalSimpleKeyrings = [QRKeyring];
     const additionalHardwareKeyrings = [
       TrezorKeyring,
       LedgerBridgeKeyring,
@@ -4738,8 +4738,8 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     return [
-      ...additionalKeyrings,
+      ...additionalSimpleKeyrings,
       ...(this.canUseHardwareWallets() ? additionalHardwareKeyrings : []),
-    ].map((keyringType) => keyringBuilderFactory(keyringType));
+    ];
   };
 }

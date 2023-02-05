@@ -7,6 +7,7 @@ NFTS_V1=
 PUBNUB_PUB_KEY=
 PUBNUB_SUB_KEY=
 PORTFOLIO_URL=
+HARDWARE_WALLETS_MV3=true
 TRANSACTION_SECURITY_PROVIDER=
 
 ; Set this to '1' to enable support for Sign-In with Ethereum [EIP-4361](https://eips.ethereum.org/EIPS/eip-4361)
