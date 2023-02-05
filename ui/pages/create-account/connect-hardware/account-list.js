@@ -33,6 +33,10 @@ class AccountList extends Component {
     this.setState({ pathValue });
   }
 
+  isFirstPage() {
+    return this.props.accounts[0]?.index === 0;
+  }
+
   renderHdPathSelector() {
     const { device, selectedPath, hdPaths, onPathChange } = this.props;
     const { pathValue } = this.state;
@@ -170,6 +174,7 @@ class AccountList extends Component {
       <div className="hw-list-pagination">
         <button
           className="hw-list-pagination__button"
+          disabled={this.isFirstPage()}
           onClick={this.goToPreviousPage}
         >
           {`< ${this.context.t('prev')}`}
