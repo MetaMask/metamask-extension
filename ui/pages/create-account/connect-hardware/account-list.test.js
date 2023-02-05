@@ -56,6 +56,13 @@ const render = () => {
       lattice: LATTICE_HD_PATHS,
       trezor: TREZOR_HD_PATHS,
     },
+    onPathChange: jest.fn(),
+    onAccountChange: jest.fn(),
+    onForgetDevice: jest.fn(),
+    getPage: jest.fn(),
+    onUnlockAccounts: jest.fn(),
+    onCancel: jest.fn(),
+    onAccountRestriction: jest.fn(),
   };
   return renderWithProvider(<AccountList {...props} />, store);
 };
