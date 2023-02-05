@@ -9,8 +9,8 @@ export default function txHelper(
   decryptMsgs: Record<string, any> | null,
   encryptionPublicKeyMsgs: Record<string, any> | null,
   typedMessages: Record<string, any> | null,
-  network: string,
-  chainId: string,
+  network?: string,
+  chainId?: string,
 ): Record<string, any> {
   log.debug('tx-helper called with params:');
   log.debug({

@@ -3,7 +3,10 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { ICON_NAMES } from '..';
-import { COLORS } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  IconColor,
+} from '../../../helpers/constants/design-system';
 import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
 
 describe('AvatarIcon', () => {
@@ -91,8 +94,8 @@ describe('AvatarIcon', () => {
     const { getByTestId } = render(
       <AvatarIcon
         iconName={ICON_NAMES.SWAP_HORIZONTAL}
-        color={COLORS.SUCCESS_DEFAULT}
-        backgroundColor={COLORS.SUCCESS_MUTED}
+        color={IconColor.successDefault}
+        backgroundColor={BackgroundColor.successMuted}
         data-testid="success"
       />,
     );

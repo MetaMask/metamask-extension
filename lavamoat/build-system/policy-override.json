@@ -346,6 +346,11 @@
         "yargs>string-width": true
       }
     },
+    "chokidar": {
+      "packages": {
+        "chokidar>fsevents": true
+      }
+    },
     "gulp-watch>chokidar": {
       "builtin": {
         "events.EventEmitter": true,
@@ -525,6 +530,11 @@
         "process.platform": true
       },
       "native": true
+    },
+    "gulp>glob-watcher>chokidar": {
+      "packages": {
+        "gulp>glob-watcher>chokidar>fsevents": true
+      }
     },
     "gulp>glob-watcher>chokidar>fsevents": {
       "builtin": {

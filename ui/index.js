@@ -118,6 +118,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     appState: {},
 
     localeMessages: {
+      currentLocale: metamaskState.currentLocale,
       current: currentLocaleMessages,
       en: enLocaleMessages,
     },
