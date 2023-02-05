@@ -176,6 +176,7 @@ class AccountList extends Component {
           className="hw-list-pagination__button"
           disabled={this.isFirstPage()}
           onClick={this.goToPreviousPage}
+          data-testid="hw-list-pagination__prev-button"
         >
           {`< ${this.context.t('prev')}`}
         </button>
