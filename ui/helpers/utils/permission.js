@@ -9,7 +9,6 @@ import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
-  PermissionNamespaces,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -83,11 +82,16 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-download',
     rightIcon: null,
   }),
-  [RestrictedMethods['wallet_snap_*']]: (t, permissionName) => ({
-    label: t('permission_accessSnap', [permissionName.split('_').slice(-1)]),
-    leftIcon: 'fas fa-bolt',
-    rightIcon: null,
-  }),
+  [RestrictedMethods.wallet_snap]: (t, _, permissionValue) => {
+    const snaps = permissionValue.caveats[0].value;
+    return Object.keys(snaps).map((snapId) => {
+      return {
+        label: t('permission_accessSnap', [snapId]),
+        leftIcon: 'fas fa-bolt',
+        rightIcon: null,
+      };
+    });
+  },
   [EndowmentPermissions['endowment:network-access']]: (t) => ({
     label: t('permission_accessNetwork'),
     leftIcon: 'fas fa-wifi',
@@ -183,13 +187,6 @@ export const getPermissionDescription = (
   if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
     value = PERMISSION_DESCRIPTIONS[permissionName];
   }
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  for (const namespace of Object.keys(PermissionNamespaces)) {
-    if (permissionName.startsWith(namespace)) {
-      value = PERMISSION_DESCRIPTIONS[PermissionNamespaces[namespace]];
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   const result = value(t, permissionName, permissionValue);
   if (!Array.isArray(result)) {
