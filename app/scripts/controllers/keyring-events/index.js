@@ -2,74 +2,16 @@ import EventEmitter from 'events';
 import { differenceWith, isFunction } from 'lodash';
 import nanoid from 'nanoid';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import {
-  HARDWARE_KEYRING_INIT_OPTS,
-  HARDWARE_KEYRINGS,
-} from '../../../../shared/constants/hardware-wallets';
+import { HARDWARE_KEYRING_INIT_OPTS } from '../../../../shared/constants/hardware-wallets';
 import { getHardwareMethodHandler } from './handlers';
-
-/**
- * Returns methods contained in instanstiated classes
- * without the constructor method.
- *
- * @param classInstance
- * @returns {string[]}
- */
-const getClassInstanceMethods = (classInstance) =>
-  Object.getOwnPropertyNames(Object.getPrototypeOf(classInstance)).filter(
-    (method) => method !== 'constructor',
-  );
-
-/**
- * Returns true if text resembles MV3 error message.
- *
- * @param {string} _text
- * @returns {boolean}
- */
-const isMv3ErrorMessage = (_text) => {
-  const text = _text.toLowerCase();
-  const mv3ErrorText = [
-    'navigator.usb',
-    'navigator.hid',
-    'document is not defined',
-  ];
-
-  return mv3ErrorText.some((errorText) => text.includes(errorText));
-};
-
-/**
- * Determines if error is provoked by manifest v3 changes,
- * e.g. WebUSB incompatibility, WebHID incompatibility,
- * and general DOM access.
- *
- * @param {Error} error - The error to check.
- * @returns {boolean}
- */
-const isServiceWorkerMv3Error = (error) => {
-  console.error('isServiceWorkerMv3Error', { error });
-
-  const isFormOfError = error instanceof Error;
-  if (!isManifestV3 || !isFormOfError) {
-    return false;
-  }
-
-  const isUserSet = Boolean(error.cause);
-
-  if (isUserSet) {
-    return isMv3ErrorMessage(error.cause.message);
-  }
-
-  const errorText = error.message || error.stack || error.toString();
-
-  return isMv3ErrorMessage(errorText);
-};
+import { isServiceWorkerMv3Error } from './utils';
 
 export default class KeyringEventsController extends EventEmitter {
-  constructor({ sendPromisifiedHardwareCall }) {
+  constructor({ sendPromisifiedHardwareCall, keyringBuilders }) {
     super();
     this.eventPool = [];
     this.sendPromisifiedHardwareCall = sendPromisifiedHardwareCall;
-    this.keyrings = this._getKeyrings();
+    this.keyrings = this._getKeyrings(keyringBuilders);
   }
 
   /**
@@ -78,19 +20,16 @@ export default class KeyringEventsController extends EventEmitter {
    * NOTE: If MV3, a function constructor (not a class) is returned in order
    * to pass data from this context to the HardwareKeyringWrapper instantiation.
    *
+   * @param keyringBuilders
    * @returns {[Proxy]|[Keyring]}
    */
-  _getKeyrings = () => {
-    if (this.keyrings) {
-      return this.keyrings;
-    }
-
-    // ... otherwise, construct the keyrings
+  _getKeyrings = (keyringBuilders) => {
     if (!isManifestV3) {
-      return HARDWARE_KEYRINGS;
+      // if not MV3 then don't wrap keyrings
+      return keyringBuilders;
     }
 
-    const wrappedKeyrings = HARDWARE_KEYRINGS.map((Keyring) =>
+    const wrappedKeyrings = keyringBuilders.map((Keyring) =>
       this._wrapKeyring(Keyring),
     );
 

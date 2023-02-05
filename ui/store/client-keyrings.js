@@ -214,5 +214,9 @@ export const handleHardwareCall = (_params) => {
 
   initializeClientKeyringController();
 
+  if (callSettings.global) {
+    // @TODO, handle global calls
+  }
+
   clientKeyringController.handleMethodCall(params);
 };

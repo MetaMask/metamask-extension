@@ -1,7 +1,7 @@
 import { bufferToHex, toBuffer } from 'ethereumjs-util';
 import { isString, noop } from 'lodash';
 import { TransactionFactory } from '@ethereumjs/tx';
-import { HARDWARE_KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
 
 /**
  * Transaction need to be processed before being passed to client-side
@@ -61,7 +61,7 @@ const signTransactionClientResHandler = (response, args, keyring, method) => {
 };
 
 const METHOD_HANDLERS = {
-  [HARDWARE_KEYRING_TYPES.TREZOR]: {
+  [HardwareKeyringTypes.trezor]: {
     init: {
       skipBackground: true,
       backgroundSync: noop,
@@ -111,7 +111,7 @@ const METHOD_HANDLERS = {
       backgroundSync: noop,
     },
   },
-  [HARDWARE_KEYRING_TYPES.LEDGER]: {
+  [HardwareKeyringTypes.ledger]: {
     init: {
       skipBackground: true,
       backgroundSync: noop,
@@ -160,7 +160,7 @@ const METHOD_HANDLERS = {
       },
     },
   },
-  [HARDWARE_KEYRING_TYPES.LATTICE]: {
+  [HardwareKeyringTypes.lattice]: {
     isUnlocked: {
       skipBackground: true,
     },
@@ -198,7 +198,7 @@ const METHOD_HANDLERS = {
       },
     },
   },
-  [HARDWARE_KEYRING_TYPES.QR]: {},
+  [HardwareKeyringTypes.qr]: {},
 };
 
 const HANDLER_DEFAULTS = {

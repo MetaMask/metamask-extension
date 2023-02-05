@@ -7,8 +7,8 @@ import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import {
-  KeyringController,
   keyringBuilderFactory,
+  KeyringController,
 } from '@metamask/eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
@@ -20,7 +20,7 @@ import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { MetaMaskKeyring as QRKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import { captureException } from '@sentry/browser';
@@ -483,7 +483,7 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    this.qrHardwareKeyring = new QRHardwareKeyring();
+    this.qrHardwareKeyring = new QRKeyring();
 
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
@@ -645,22 +645,14 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
-
-    if (this.canUseHardwareWallets()) {
-      const additionalKeyringTypes = [
-        TrezorKeyring,
-        LedgerBridgeKeyring,
-        LatticeKeyring,
-        QRHardwareKeyring,
-      ];
-      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
-        keyringBuilderFactory(keyringType),
-      );
-    }
+    this._clientMessagePromises = {};
+    this.hardwareKeyringController = new KeyringEventsController({
+      sendPromisifiedHardwareCall: this.sendPromisifiedHardwareCall.bind(this),
+      keyringBuilders: this.getKeyringBuilders(),
+    });
 
     this.keyringController = new KeyringController({
-      keyringBuilders: additionalKeyrings,
+      keyringBuilders: this.hardwareKeyringController.keyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
@@ -2630,7 +2622,7 @@ export default class MetamaskController extends EventEmitter {
         keyringName = LedgerBridgeKeyring.type;
         break;
       case HardwareDeviceNames.qr:
-        keyringName = QRHardwareKeyring.type;
+        keyringName = QRKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
         keyringName = LatticeKeyring.type;
@@ -4730,4 +4722,18 @@ export default class MetamaskController extends EventEmitter {
 
     return null;
   }
+
+  getKeyringBuilders = () => {
+    const additionalKeyrings = [QRKeyring];
+    const additionalHardwareKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      LatticeKeyring,
+    ];
+
+    return [
+      ...additionalKeyrings,
+      ...(this.canUseHardwareWallets() ? additionalHardwareKeyrings : []),
+    ].map((keyringType) => keyringBuilderFactory(keyringType));
+  };
 }
