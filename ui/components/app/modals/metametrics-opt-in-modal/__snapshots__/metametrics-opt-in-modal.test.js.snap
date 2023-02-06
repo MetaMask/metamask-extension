@@ -261,8 +261,9 @@ exports[`MetaMetrics Opt In should match snapshot 1`] = `
             <div
               class="metametrics-opt-in__row metametrics-opt-in__break-row"
             >
-              <i
-                class="fa fa-times"
+              <div
+                class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
               />
               <div
                 class="metametrics-opt-in__row-description"
@@ -273,8 +274,9 @@ exports[`MetaMetrics Opt In should match snapshot 1`] = `
             <div
               class="metametrics-opt-in__row"
             >
-              <i
-                class="fa fa-times"
+              <div
+                class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
               />
               <div
                 class="metametrics-opt-in__row-description"
@@ -285,8 +287,9 @@ exports[`MetaMetrics Opt In should match snapshot 1`] = `
             <div
               class="metametrics-opt-in__row"
             >
-              <i
-                class="fa fa-times"
+              <div
+                class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
               />
               <div
                 class="metametrics-opt-in__row-description"

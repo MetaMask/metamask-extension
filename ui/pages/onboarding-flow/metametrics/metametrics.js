@@ -7,6 +7,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -138,7 +139,12 @@ export default function OnboardingMetametrics() {
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
-          <Icon name={ICON_NAMES.CLOSE} />
+          <Icon
+            name={ICON_NAMES.CLOSE}
+            as="span"
+            className="onboarding-metametrics__close"
+            size={Size.inherit}
+          />
           {t('onboardingMetametricsNeverCollect', [
             <Typography
               variant={TypographyVariant.Span}
@@ -150,7 +156,12 @@ export default function OnboardingMetametrics() {
           ])}
         </li>
         <li>
-          <Icon name={ICON_NAMES.CLOSE} />
+          <Icon
+            name={ICON_NAMES.CLOSE}
+            as="span"
+            className="onboarding-metametrics__close"
+            size={Size.inherit}
+          />
           {t('onboardingMetametricsNeverCollectIP', [
             <Typography
               variant={TypographyVariant.Span}
@@ -162,7 +173,12 @@ export default function OnboardingMetametrics() {
           ])}
         </li>
         <li>
-          <Icon name={ICON_NAMES.CLOSE} />
+          <Icon
+            as="span"
+            name={ICON_NAMES.CLOSE}
+            className="onboarding-metametrics__close"
+            size={Size.inherit}
+          />
           {t('onboardingMetametricsNeverSellData', [
             <Typography
               variant={TypographyVariant.Span}
