@@ -151,9 +151,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Da biste se povezali sa Vašim hardverskim novčanikom morate da koristite MetaMask na Google Chrome-u."
   },
-  "clickToRevealSeed": {
-    "message": "Kliknite ovde kako biste otkrili tajne reči"
-  },
   "close": {
     "message": "Затвори"
   },
@@ -163,14 +160,8 @@
   "confirmPassword": {
     "message": "Potvrdite lozinku"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Potvrdite svoju tajnu frazu za rezervnu kopiju"
-  },
   "confirmed": {
     "message": "Potvrđeno"
-  },
-  "congratulations": {
-    "message": "Čestitamo"
   },
   "connect": {
     "message": "Повезивање"
@@ -213,9 +204,6 @@
   },
   "create": {
     "message": "Направи"
-  },
-  "createAWallet": {
-    "message": "Napravi novčanik"
   },
   "createAccount": {
     "message": "Kreirajte nalog"
@@ -262,9 +250,6 @@
   "downloadGoogleChrome": {
     "message": "Preuzmi Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Preuzmi ovu tajnu rezervnu kopiju fraze i čuvaj je bezbedno skladištenu na eksternom šifrovanom čvrstom disku ili skladištu."
-  },
   "downloadStateLogs": {
     "message": "Preuzmite dnevnike stanja"
   },
@@ -276,33 +261,6 @@
   },
   "editContact": {
     "message": "Izmeni kontakt"
-  },
-  "endOfFlowMessage1": {
-    "message": "Prošli ste test - čuvajte svoju frazu početnih vrednosti, to je vaša odgovornost!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Sve je gotovo"
-  },
-  "endOfFlowMessage2": {
-    "message": "Saveti za sigurno skladištenje"
-  },
-  "endOfFlowMessage3": {
-    "message": "Sačuvajte rezervnu kopiju na više mesta."
-  },
-  "endOfFlowMessage4": {
-    "message": "Nikada ne delite frazu ni sa kim."
-  },
-  "endOfFlowMessage5": {
-    "message": "Čuvajte se pecanja (krađe podataka)! MetaMask nikad neće spontano tražiti vašu šifru za oporavak naloga (seed phrase)."
-  },
-  "endOfFlowMessage6": {
-    "message": "Ako treba ponovo da izradite rezervnu kopiju svoje početne fraze, možete je pronaći u Postavke -> Bezbednost."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask ne može da oporavi vašu početnu frazu. Saznajte više."
-  },
-  "endOfFlowMessage9": {
-    "message": "Saznajte više."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS ime nije nađeno na trenutnoj mreži. Probajte da se prebacite na glavnu Ethereum mrežu."
@@ -382,14 +340,8 @@
     "message": "Preuzmite Ether sa slavine za $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Започнимо"
-  },
   "goerli": {
     "message": "Test mreža Goerli "
-  },
-  "happyToSeeYou": {
-    "message": "Drago nam je da vas vidimo."
   },
   "hardware": {
     "message": "hardver"
@@ -428,12 +380,6 @@
   },
   "importAccountMsg": {
     "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za MetaMask nalog. Saznajte više o uvezenim nalozima."
-  },
-  "importAccountSeedPhrase": {
-    "message": "Uvezi račun sa frazom početnih vrednosti"
-  },
-  "importWallet": {
-    "message": "Uvezite novčanik"
   },
   "imported": {
     "message": "Увезени",
@@ -485,9 +431,6 @@
   "ledgerAccountRestriction": {
     "message": "Treba da koristite svoj poslednji nalog pre nego što budete mogli da dodate novi."
   },
-  "letsGoSetUp": {
-    "message": "Da, hajde da sve podesimo!"
-  },
   "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
   },
@@ -512,14 +455,8 @@
   "max": {
     "message": "Maksimum"
   },
-  "memorizePhrase": {
-    "message": "Zapamtite ovaj izraz."
-  },
   "message": {
     "message": "Poruka"
-  },
-  "metamaskDescription": {
-    "message": "Povezivanje na Ethereum i decentralizovani veb."
   },
   "metamaskVersion": {
     "message": "MetaMask verzija"
@@ -562,17 +499,11 @@
   "newPassword": {
     "message": "Nova lozinka (minimalno 8 karaktera)"
   },
-  "newToMetaMask": {
-    "message": "Novi ste u MetaMask-u?"
-  },
   "next": {
     "message": "Даље"
   },
   "noAddressForName": {
     "message": "Za ovo ime nije podešena adresa."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Ne, već imam frazu početnih vrednosti"
   },
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"
@@ -681,9 +612,6 @@
   "rejected": {
     "message": "Odbijeno"
   },
-  "remindMeLater": {
-    "message": "Podseti me kasnije"
-  },
   "remove": {
     "message": "Уклони"
   },
@@ -747,12 +675,6 @@
   "searchTokens": {
     "message": "Pretražite tokene"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Vaša tajna fraza za rezervnu kopiju olakšava pravljenje rezervne kopije i vraćanje naloga u prethodno stanje."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "UPOZORENJE: Nikada ne otkrivajte svoju rezervnu frazu. Svako sa ovom frazom može zauvek da Vam uzme Vaš Ether."
-  },
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"
   },
@@ -761,9 +683,6 @@
   },
   "selectAnAccount": {
     "message": "Izaberite nalog"
-  },
-  "selectEachPhrase": {
-    "message": "Molimo vas izaberite svaki izraz kako biste proverili da je tačan."
   },
   "selectHdPath": {
     "message": "Izaberite HD Path"
@@ -837,9 +756,6 @@
   "stateLogsDescription": {
     "message": "Dnevnici stanja sadrže adrese vaših javnih naloga i poslatih transakcija."
   },
-  "storePhrase": {
-    "message": "Čuvajte ovaj izraz u menadžeru šifri kao što je 1Password."
-  },
   "submitted": {
     "message": "Prosleđeno"
   },
@@ -878,9 +794,6 @@
   },
   "terms": {
     "message": "Uslovi korišćenja"
-  },
-  "thisWillCreate": {
-    "message": "Ovo će kreirati novi novčanik i seed frazu"
   },
   "tips": {
     "message": "Donacije"
@@ -1006,14 +919,8 @@
   "visitWebSite": {
     "message": "Posetite našu veb lokaciju"
   },
-  "welcome": {
-    "message": "Dobro došli na MetaMask"
-  },
   "welcomeBack": {
     "message": "Dobro došli nazad!"
-  },
-  "writePhrase": {
-    "message": "Napišite ovaj izraz na parčetu papira i stavite ga na bezbedno mesto. Ukoliko želite još više sigurnosti, zapišite ga na više komada papira i svaki stavite na 2-3 različita mesta."
   },
   "yesLetsTry": {
     "message": "Da, pokušajmo."

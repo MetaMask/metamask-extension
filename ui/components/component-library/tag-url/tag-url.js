@@ -4,12 +4,14 @@ import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
 import {
-  ALIGN_ITEMS,
-  BORDER_RADIUS,
-  COLORS,
+  AlignItems,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
   DISPLAY,
-  SIZES,
-  TEXT,
+  IconColor,
+  Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
 import { ButtonLink } from '../button-link';
@@ -30,14 +32,14 @@ export const TagUrl = ({
   return (
     <Box
       className={classnames('mm-tag-url', className)}
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      borderColor={COLORS.BORDER_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderColor={BorderColor.borderDefault}
       borderWidth={1}
-      alignItems={ALIGN_ITEMS.CENTER}
+      alignItems={AlignItems.center}
       paddingLeft={2}
       paddingRight={4}
       gap={2}
-      borderRadius={BORDER_RADIUS.PILL}
+      borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
       {...props}
     >
@@ -45,22 +47,22 @@ export const TagUrl = ({
       {showLockIcon && (
         <Icon
           className="mm-tag-url__lock-icon"
-          name={ICON_NAMES.LOCK_FILLED}
-          color={COLORS.ICON_ALTERNATIVE}
-          size={SIZES.SM}
+          name={ICON_NAMES.LOCK}
+          color={IconColor.iconAlternative}
+          size={Size.SM}
           aria-label="https://"
           role="img"
           {...lockIconProps}
         />
       )}
-      <Text variant={TEXT.BODY_MD} ellipsis {...labelProps}>
+      <Text variant={TextVariant.bodyMd} ellipsis {...labelProps}>
         {label}
       </Text>
 
       {actionButtonLabel && (
         <ButtonLink
           as="a"
-          size={SIZES.SM}
+          size={Size.SM}
           paddingLeft={0}
           paddingRight={0}
           marginLeft={2}

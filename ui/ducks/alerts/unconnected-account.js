@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { captureException } from '@sentry/browser';
 
-import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import { AlertTypes } from '../../../shared/constants/alerts';
 import * as actionConstants from '../../store/actionConstants';
 import {
   addPermittedAccount,
@@ -13,7 +13,7 @@ import { ALERT_STATE } from './enums';
 
 // Constants
 
-const name = ALERT_TYPES.unconnectedAccount;
+const name = AlertTypes.unconnectedAccount;
 
 const initialState = {
   state: ALERT_STATE.CLOSED,

@@ -1910,6 +1910,7 @@
       },
       "packages": {
         "chokidar>braces": true,
+        "chokidar>fsevents": true,
         "chokidar>glob-parent": true,
         "chokidar>is-binary-path": true,
         "chokidar>normalize-path": true,
@@ -5219,6 +5220,7 @@
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>chokidar>braces": true,
+        "gulp>glob-watcher>chokidar>fsevents": true,
         "gulp>glob-watcher>chokidar>glob-parent": true,
         "gulp>glob-watcher>chokidar>is-binary-path": true,
         "gulp>glob-watcher>chokidar>readdirp": true,

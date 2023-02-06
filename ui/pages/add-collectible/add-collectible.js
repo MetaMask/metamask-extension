@@ -7,7 +7,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   DISPLAY,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../helpers/constants/design-system';
 
 import Box from '../../components/ui/box';
@@ -28,10 +28,7 @@ import {
   getSelectedAddress,
   getUseNftDetection,
 } from '../../selectors';
-import {
-  getCollectiblesDetectionNoticeDismissed,
-  getCollectiblesDropdownState,
-} from '../../ducks/metamask/metamask';
+import { getCollectiblesDropdownState } from '../../ducks/metamask/metamask';
 import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
@@ -43,9 +40,6 @@ export default function AddCollectible() {
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const collectibleDetectionNoticeDismissed = useSelector(
-    getCollectiblesDetectionNoticeDismissed,
-  );
   const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
@@ -145,9 +139,7 @@ export default function AddCollectible() {
       disabled={disabled}
       contentComponent={
         <Box>
-          {isMainnet &&
-          !useNftDetection &&
-          !collectibleDetectionNoticeDismissed ? (
+          {isMainnet && !useNftDetection ? (
             <CollectiblesDetectionNotice />
           ) : null}
           {collectibleAddFailed && (
@@ -159,7 +151,7 @@ export default function AddCollectible() {
                 message={
                   <Box display={DISPLAY.INLINE_FLEX}>
                     <Typography
-                      variant={TYPOGRAPHY.H7}
+                      variant={TypographyVariant.H7}
                       fontWeight={FONT_WEIGHT.NORMAL}
                       margin={0}
                     >

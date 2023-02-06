@@ -154,9 +154,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸುವ ಸಲುವಾಗಿ Google Chrome ನಲ್ಲಿ ನಿಮಗೆ MetaMask ಅನ್ನು ಬಳಸುವ ಅಗತ್ಯವಿದೆ."
   },
-  "clickToRevealSeed": {
-    "message": "ರಹಸ್ಯ ಪದಗಳನ್ನು ಬಹಿರಂಗಪಡಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ"
-  },
   "close": {
     "message": "ಮುಚ್ಚಿ"
   },
@@ -166,14 +163,8 @@
   "confirmPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಖಚಿತಪಡಿಸಿ"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "ನಿಮ್ಮ ರಹಸ್ಯ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್ ಅನ್ನು ಖಚಿತಪಡಿಸಿ"
-  },
   "confirmed": {
     "message": "ಖಚಿತಪಡಿಸಲಾಗಿದೆ"
-  },
-  "congratulations": {
-    "message": "ಅಭಿನಂದನೆಗಳು"
   },
   "connect": {
     "message": "ಸಂಪರ್ಕಿಸು"
@@ -216,9 +207,6 @@
   },
   "create": {
     "message": "ರಚಿಸಿ"
-  },
-  "createAWallet": {
-    "message": "ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ರಚಿಸಿ"
   },
   "createAccount": {
     "message": "ಖಾತೆಯನ್ನು ರಚಿಸಿ"
@@ -265,9 +253,6 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
-  "downloadSecretBackup": {
-    "message": "ಈ ರಹಸ್ಯ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್‌ ಅನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಮತ್ತು ಬಾಹ್ಯ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಹಾರ್ಡ್ ಡ್ರೈವ್ ಅಥವಾ ಸಂಗ್ರಹಣೆ ಮಾಧ್ಯಮದಲ್ಲಿ ಅದನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಸಂಗ್ರಹಿಸಿಡಿ."
-  },
   "downloadStateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು  ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
@@ -279,33 +264,6 @@
   },
   "editContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ಸಂಪಾದಿಸಿ"
-  },
-  "endOfFlowMessage1": {
-    "message": "ನೀವು ಪರೀಕ್ಷೆಯನ್ನು ಪಾಸ್ ಮಾಡಿರುವಿರಿ - ನಿಮ್ಮ ಸೀಡ್‌ಫ್ರೇಸ್ ಸುರಕ್ಷಿತವಾಗಿರಿಸಿ, ಅದು ನಿಮ್ಮ ಜವಾಬ್ದಾರಿಯಾಗಿದೆ!"
-  },
-  "endOfFlowMessage10": {
-    "message": "ಎಲ್ಲಾ ಮುಗಿದಿದೆ"
-  },
-  "endOfFlowMessage2": {
-    "message": "ಅದನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಸಂಗ್ರಹಿಸುವ ಸಲಹೆಗಳು"
-  },
-  "endOfFlowMessage3": {
-    "message": "ಬಹು ಸ್ಥಳಗಳಲ್ಲಿ ಬ್ಯಾಕಪ್‌ ಉಳಿಸಿ"
-  },
-  "endOfFlowMessage4": {
-    "message": "ಯಾರೊಂದಿಗೂ ಫ್ರೇಸ್ ಅನ್ನು ಎಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ."
-  },
-  "endOfFlowMessage5": {
-    "message": "ಫಿಶಿಂಗ್ ಕುರಿತು ಜಾಗರೂಕರಾಗಿರಿ! MetaMask ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಎಂದಿಗೂ ಸ್ವಯಂಪ್ರೇರಿತವಾಗಿ ಕೇಳುವುದಿಲ್ಲ."
-  },
-  "endOfFlowMessage6": {
-    "message": "ನಿಮ್ಮ ಸೀಡ್ ಫ್ರೇಸ್‌ನಿಂದ ಮತ್ತೊಮ್ಮೆ ನೀವು ಮತ್ತೆ ಬ್ಯಾಕಪ್ ಮಾಡಬೇಕಾದರೆ, ನೀವು ಅದನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳು -> ಭದ್ರತೆಯಲ್ಲಿ ಕಾಣಬಹುದು."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask ಗೆ ನಿಮ್ಮ ಸೀಡ್‌ಫ್ರೇಸ್ ಮರಳಿಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ. ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ."
-  },
-  "endOfFlowMessage9": {
-    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ಪ್ರಸ್ತುತ ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ENS ಹೆಸರು ಕಂಡುಬಂದಿಲ್ಲ. ಮುಖ್ಯವಾಗಿರುವ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ."
@@ -385,14 +343,8 @@
     "message": "$1 ಗಾಗಿ ಫಾಸೆಟ್‌ನಿಂದ ಎಥರ್ ಅನ್ನು ಪಡೆಯಿರಿ",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "ಪ್ರಾರಂಭಗೊಂಡಿದೆ"
-  },
   "goerli": {
     "message": "Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
-  },
-  "happyToSeeYou": {
-    "message": "ನಿಮ್ಮನ್ನು ನೋಡಿ ನಮಗೆ ಸಂತೋಷವಾಗಿದೆ."
   },
   "hardware": {
     "message": "ಹಾರ್ಡ್‌ವೇರ್"
@@ -431,12 +383,6 @@
   },
   "importAccountMsg": {
     "message": "ನಿಮ್ಮ ಮೂಲ ರಚಿಸಿರುವ MetaMask ಖಾತೆಯ ಸೀಡ್‌ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಆಮದು ಮಾಡಲಾದ ಖಾತೆಗಳನ್ನು ಸಂಯೋಜನೆ ಮಾಡಲಾಗಿಲ್ಲ. ಆಮದು ಮಾಡಲಾಗಿರುವ ಖಾತೆಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
-  },
-  "importAccountSeedPhrase": {
-    "message": "ಸೀಡ್‌ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
-  },
-  "importWallet": {
-    "message": "ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
   },
   "imported": {
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
@@ -488,9 +434,6 @@
   "ledgerAccountRestriction": {
     "message": "ನೀವು ಹೊಸದನ್ನು ಸೇರಿಸುವುದರ ಮೊದಲು ನಿಮ್ಮ ಹಿಂದಿನ ಖಾತೆಯನ್ನು ನೀವು ಬಳಸಬೇಕು."
   },
-  "letsGoSetUp": {
-    "message": "ಹೌದು, ಹೊಂದಿಸೋಣ!"
-  },
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
@@ -521,14 +464,8 @@
   "memo": {
     "message": "ಮೆಮೊ"
   },
-  "memorizePhrase": {
-    "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ನೆನಪಿಡಿ."
-  },
   "message": {
     "message": "ಸಂದೇಶ"
-  },
-  "metamaskDescription": {
-    "message": "ನಿಮ್ಮನ್ನು ಎಥೆರಿಯಮ್ ಮತ್ತು ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ."
   },
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
@@ -571,17 +508,11 @@
   "newPassword": {
     "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
   },
-  "newToMetaMask": {
-    "message": "MetaMask ಗೆ ಹೊಸಬರೇ?"
-  },
   "next": {
     "message": "ಮುಂದೆ"
   },
   "noAddressForName": {
     "message": "ಈ ಹೆಸರಿಗೆ ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "ಇಲ್ಲ, ನಾನು ಈಗಾಗಲೇ ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ಹೊಂದಿದ್ದೇನೆ"
   },
   "noConversionRateAvailable": {
     "message": "ಯಾವುದೇ ಪರಿವರ್ತನೆ ದರ ಲಭ್ಯವಿಲ್ಲ"
@@ -690,9 +621,6 @@
   "rejected": {
     "message": "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
   },
-  "remindMeLater": {
-    "message": "ನನಗೆ ನಂತರ ನೆನಪಿಸು"
-  },
   "remove": {
     "message": "ತೆಗೆದುಹಾಕು"
   },
@@ -756,12 +684,6 @@
   "searchTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಹುಡುಕಿ"
   },
-  "secretBackupPhraseDescription": {
-    "message": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಬ್ಯಾಕ್ ಅಪ್ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸುವುದನ್ನು ನಿಮ್ಮ ರಹಸ್ಯ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್ ಸುಲಭವಾಗಿಸುತ್ತದೆ."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ಎಚ್ಚರಿಕೆ: ನಿಮ್ಮ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್ ಅನ್ನು ಎಂದಿಗೂ ಬಹಿರಗಪಡಿಸಬೇಡಿ. ಈ ಫ್ರೇಸ್ ಅನ್ನು ಹೊಂದಿರುವ ಯಾರಾದರೂ ನಿಮ್ಮ ಎಥರ್ ಅನ್ನು ಶಾಶ್ವತವಾಗಿ ತೆಗೆದುಕೊಳ್ಳಬಹುದು."
-  },
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
   },
@@ -770,9 +692,6 @@
   },
   "selectAnAccount": {
     "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "selectEachPhrase": {
-    "message": "ಅದು ಸರಿಯಾಗಿದೆಯೆ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ದಯವಿಟ್ಟು ಪ್ರತಿ ಫ್ರೇಸ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."
   },
   "selectHdPath": {
     "message": "HD ಪಾತ್ ಆಯ್ಕೆಮಾಡಿ"
@@ -846,9 +765,6 @@
   "stateLogsDescription": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳು ನಿಮ್ಮ ಸಾರ್ವಜನಿಕ ಖಾತೆಯ ವಿಳಾಸಗಳು ಮತ್ತು ಕಳುಹಿಸಲಾದ ವಹಿವಾಟುಗಳನ್ನು ಹೊಂದಿರುತ್ತವೆ."
   },
-  "storePhrase": {
-    "message": "ಈ ಫ್ರೇಸ್ ಅನ್ನು ಪಾಸ್‌ವರ್ಡ್ ನಿರ್ವಾಹಕದಲ್ಲಿ 1Password ರೂಪದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ."
-  },
   "submitted": {
     "message": "ಸಲ್ಲಿಸಲಾಗಿದೆ"
   },
@@ -890,9 +806,6 @@
   },
   "testFaucet": {
     "message": "ಫಾಸೆಟ್ ಪರೀಕ್ಷಿಸಿ"
-  },
-  "thisWillCreate": {
-    "message": "ಇದು ಹೊಸ ವ್ಯಾಲೆಟ್ ಮತ್ತು ಸೀಡ್ ಫ್ರೇಸ್ ಅನ್ನು ರಚಿಸುತ್ತದೆ"
   },
   "tips": {
     "message": "ಸಲಹೆಗಳು"
@@ -1021,14 +934,8 @@
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"
   },
-  "welcome": {
-    "message": "MetaMask ಗೆ ಸ್ವಾಗತ"
-  },
   "welcomeBack": {
     "message": "ಮರಳಿ ಸ್ವಾಗತ!"
-  },
-  "writePhrase": {
-    "message": "ಕಾಗದದ ತುಂಡಿನ ಮೇಲೆ ಈ ಫ್ರೇಸ್ ಅನ್ನು ಬರೆಯಿರಿ ಮತ್ತು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿರಿಸಿ. ನೀವು ಇನ್ನೂ ಹೆಚ್ಚಿನ ಸುರಕ್ಷತೆಯನ್ನು ಬಯಸಿದರೆ, ಹಲವು ಕಾಗದದ ತುಂಡುಗಳ ಮೇಲೆ ಬರೆಯಿರಿ ಮತ್ತು ಪ್ರತಿಯೊಂದನ್ನು 2 - 3 ವಿವಿಧ ಸ್ಥಳಗಳಲ್ಲಿ ಇರಿಸಿ."
   },
   "yesLetsTry": {
     "message": "ಹೌದು, ಪ್ರಯತ್ನಿಸೋಣ"

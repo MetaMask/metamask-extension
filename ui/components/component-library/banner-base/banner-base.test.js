@@ -40,9 +40,16 @@ describe('BannerBase', () => {
 
   it('should render bannerbase description', () => {
     const { getByText } = render(
-      <BannerBase>Bannerbase description test</BannerBase>,
+      <BannerBase description="Bannerbase description test" />,
     );
     expect(getByText('Bannerbase description test')).toBeDefined();
+  });
+
+  it('should render bannerbase children', () => {
+    const { getByText } = render(
+      <BannerBase>Bannerbase children test</BannerBase>,
+    );
+    expect(getByText('Bannerbase children test')).toBeDefined();
   });
 
   it('should render bannerbase action button', () => {
@@ -72,10 +79,7 @@ describe('BannerBase', () => {
     const { getByTestId } = render(
       <BannerBase
         startAccessory={
-          <Icon
-            data-testid="start-accessory"
-            name={ICON_NAMES.ADD_SQUARE_FILLED}
-          />
+          <Icon data-testid="start-accessory" name={ICON_NAMES.ADD_SQUARE} />
         }
       />,
     );

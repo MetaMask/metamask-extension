@@ -9,10 +9,7 @@ import {
   setIpfsGateway,
   setUseMultiAccountBalanceChecker,
   setUseCurrencyRateCheck,
-  setUseNftDetection,
-  setOpenSeaEnabled,
 } from '../../../store/actions';
-import { getOpenSeaEnabled, getUseNftDetection } from '../../../selectors';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -39,8 +36,6 @@ const mapStateToProps = (state) => {
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useCurrencyRateCheck,
-    useNftDetection: getUseNftDetection(state),
-    openSeaEnabled: getOpenSeaEnabled(state),
   };
 };
 
@@ -61,8 +56,6 @@ const mapDispatchToProps = (dispatch) => {
     setUseMultiAccountBalanceChecker: (value) => {
       return dispatch(setUseMultiAccountBalanceChecker(value));
     },
-    setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
-    setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
   };
 };
 

@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SubjectType } from '@metamask/subject-metadata-controller';
+///: END:ONLY_INCLUDE_IN
 import {
   createSelector,
   createSelectorCreator,
@@ -28,13 +31,7 @@ import {
   LedgerTransportTypes,
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
-
-import {
-  MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SUBJECT_TYPES,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../shared/constants/app';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -535,6 +532,20 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
+export function getTotalUnapprovedSignatureRequestCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedTypedMessagesCount
+  );
+}
+
 export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
@@ -632,7 +643,7 @@ export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  if (metadata?.subjectType === SUBJECT_TYPES.SNAP) {
+  if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
       ...remainingMetadata,
@@ -833,8 +844,9 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
+    const checksumHexAddress = toChecksumHexAddress(address);
     const entry = Object.values(tokenList).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, checksumHexAddress),
     );
     return entry && entry.name !== '' ? entry.name : '';
   },
@@ -843,7 +855,7 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
-const getCurrentNetworkTransactionList = (state) =>
+export const getCurrentNetworkTransactionList = (state) =>
   state.metamask.currentNetworkTxList;
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -1052,6 +1064,15 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+export function getShowOutdatedBrowserWarning(state) {
+  const { outdatedBrowserWarningLastShown } = state.metamask;
+  if (!outdatedBrowserWarningLastShown) {
+    return true;
+  }
+  const currentTime = new Date().getTime();
+  return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
 export function getShowPortfolioTooltip(state) {

@@ -7,11 +7,11 @@ import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
 import Card from '../../ui/card';
 import {
-  COLORS,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  Color,
+  TypographyVariant,
+  JustifyContent,
   FLEX_DIRECTION,
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
@@ -25,6 +25,7 @@ import {
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import { updateCollectibleDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
@@ -90,7 +91,8 @@ export default function CollectiblesItems({
     if (collectionImage) {
       return (
         <img
-          src={collectionImage}
+          alt={collectionName}
+          src={getAssetImageURL(collectionImage, ipfsGateway)}
           className="collectibles-items__collection-image"
         />
       );
@@ -140,18 +142,18 @@ export default function CollectiblesItems({
           <Box
             marginBottom={2}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             className="collectibles-items__collection-accordion-title"
           >
             <Box
-              alignItems={ALIGN_ITEMS.CENTER}
+              alignItems={AlignItems.center}
               className="collectibles-items__collection-header"
             >
               {renderCollectionImage(collectionImage, collectionName)}
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H5}
+                color={Color.textDefault}
+                variant={TypographyVariant.H5}
                 margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${
@@ -159,7 +161,7 @@ export default function CollectiblesItems({
                 })`}
               </Typography>
             </Box>
-            <Box alignItems={ALIGN_ITEMS.FLEX_END}>
+            <Box alignItems={AlignItems.flexEnd}>
               <i
                 className={`collectibles-items__collection__icon-chevron fa fa-chevron-${
                   isExpanded ? 'down' : 'right'
@@ -175,6 +177,7 @@ export default function CollectiblesItems({
               const { image, address, tokenId, backgroundColor, name } =
                 collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
+              const collectibleImageAlt = getCollectibleImageAlt(collectible);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
 
@@ -186,7 +189,7 @@ export default function CollectiblesItems({
                 >
                   <Card
                     padding={0}
-                    justifyContent={JUSTIFY_CONTENT.CENTER}
+                    justifyContent={JustifyContent.center}
                     className="collectibles-items__item-wrapper__card"
                   >
                     {collectibleImage ? (
@@ -200,6 +203,7 @@ export default function CollectiblesItems({
                         <img
                           className="collectibles-items__item-image"
                           src={collectibleImage}
+                          alt={collectibleImageAlt}
                         />
                       </button>
                     ) : (

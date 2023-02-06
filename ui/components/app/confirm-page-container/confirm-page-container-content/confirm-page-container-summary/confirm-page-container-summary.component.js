@@ -1,5 +1,7 @@
 /* eslint-disable no-negated-condition */
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -7,14 +9,16 @@ import { TransactionType } from '../../../../../../shared/constants/transaction'
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAddressDetails from '../../../../../hooks/useAddressDetails';
+import { getIpfsGateway } from '../../../../../selectors';
 
 import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Typography from '../../../../ui/typography';
-import { TYPOGRAPHY } from '../../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../../helpers/constants/design-system';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../ui/site-origin';
+import { getAssetImageURL } from '../../../../../helpers/utils/util';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -35,6 +39,7 @@ const ConfirmPageContainerSummary = (props) => {
 
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const t = useI18nContext();
+  const ipfsGateway = useSelector(getIpfsGateway);
 
   const contractInitiatedTransactionType = [
     TransactionType.contractInteraction,
@@ -62,12 +67,14 @@ const ConfirmPageContainerSummary = (props) => {
   const checksummedAddress = toChecksumHexAddress(contractAddress);
 
   const renderImage = () => {
+    const imagePath = getAssetImageURL(image, ipfsGateway);
+
     if (image) {
       return (
         <img
           className="confirm-page-container-summary__icon"
           width={36}
-          src={image}
+          src={imagePath}
         />
       );
     } else if (contractAddress) {
@@ -76,7 +83,6 @@ const ConfirmPageContainerSummary = (props) => {
           className="confirm-page-container-summary__icon"
           diameter={36}
           address={contractAddress}
-          image={image}
         />
       );
     }
@@ -128,7 +134,9 @@ const ConfirmPageContainerSummary = (props) => {
             <Typography
               className="confirm-page-container-summary__title-text"
               variant={
-                title && title.length < 10 ? TYPOGRAPHY.H1 : TYPOGRAPHY.H3
+                title && title.length < 10
+                  ? TypographyVariant.H1
+                  : TypographyVariant.H3
               }
               title={title}
             >

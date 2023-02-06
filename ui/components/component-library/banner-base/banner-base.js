@@ -7,16 +7,19 @@ import { ButtonIcon, ButtonLink, ICON_NAMES, Text } from '..';
 import Box from '../../ui/box';
 
 import {
-  COLORS,
+  BackgroundColor,
+  BorderRadius,
   DISPLAY,
-  SIZES,
-  TEXT,
+  Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export const BannerBase = ({
   className,
   title,
   titleProps,
+  description,
+  descriptionProps,
   children,
   actionButtonLabel,
   actionButtonOnClick,
@@ -29,10 +32,10 @@ export const BannerBase = ({
   return (
     <Box
       className={classnames('mm-banner-base', className)}
-      display={DISPLAY.INLINE_FLEX}
+      display={DISPLAY.FLEX}
       gap={2}
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      borderRadius={SIZES.SM}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.SM}
       padding={3}
       {...props}
     >
@@ -42,13 +45,14 @@ export const BannerBase = ({
         {title && (
           <Text
             className="mm-banner-base__title"
-            variant={TEXT.BODY_LG_MEDIUM}
+            variant={TextVariant.bodyLgMedium}
             as="h5"
             {...titleProps}
           >
             {title}
           </Text>
         )}
+        {description && <Text {...descriptionProps}>{description}</Text>}
         {children && typeof children === 'object' ? (
           children
         ) : (
@@ -56,8 +60,7 @@ export const BannerBase = ({
         )}
         {actionButtonLabel && (
           <ButtonLink
-            // noPadding TODO: Use noPadding option when released
-            size={SIZES.AUTO} // TODO: Remove when noPadding is added
+            size={Size.auto}
             onClick={actionButtonOnClick}
             {...actionButtonProps}
           >
@@ -68,8 +71,9 @@ export const BannerBase = ({
       {onClose && (
         <ButtonIcon
           className="mm-banner-base__close-button"
-          iconName={ICON_NAMES.CLOSE_OUTLINE}
-          size={SIZES.SM}
+          marginLeft="auto"
+          iconName={ICON_NAMES.CLOSE}
+          size={Size.SM}
           ariaLabel="Close" // TODO: i18n
           onClick={onClose}
           {...closeButtonProps}
@@ -89,13 +93,17 @@ BannerBase.propTypes = {
    */
   titleProps: PropTypes.shape(Text.PropTypes),
   /**
-   * The children is the description area of the BannerBase below the title
+   * The description is the content area below BannerBase title
+   */
+  description: PropTypes.string,
+  /**
+   * Additional props to pass to the `Text` component used for the `description` text
+   */
+  descriptionProps: PropTypes.shape(Text.PropTypes),
+  /**
+   * The children is an alternative to using the description prop for BannerBase content below the title
    */
   children: PropTypes.node,
-  /**
-   * The action of the BannerBase below the children
-   */
-  action: PropTypes.node,
   /**
    * Label for action button (ButtonLink) of the BannerBase below the children
    */
