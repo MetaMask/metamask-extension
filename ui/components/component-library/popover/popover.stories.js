@@ -1,9 +1,9 @@
 import React from 'react';
 import Box from '../../ui/box/box';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  JUSTIFY_CONTENT,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import { Popover } from '.';
@@ -72,8 +72,8 @@ export const DefaultStory = (args) => (
   <Box
     style={{ height: '200vh', width: '200vw' }}
     display={DISPLAY.FLEX}
-    justifyContent={JUSTIFY_CONTENT.CENTER}
-    alignItems={ALIGN_ITEMS.CENTER}
+    justifyContent={JustifyContent.center}
+    alignItems={AlignItems.center}
   >
     <Popover {...args}>Example</Popover>
   </Box>

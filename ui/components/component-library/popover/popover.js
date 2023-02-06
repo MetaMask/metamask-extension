@@ -1,70 +1,62 @@
-import React, { forwardRef, useState, forwardRef } from 'react';
+import React, { useState } from 'react';
 import { usePopper } from 'react-popper';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Box from '../../ui/box';
-import { Button } from '../button';
 
 import {
-  ALIGN_ITEMS,
-  BACKGROUND_COLORS,
-  BORDER_RADIUS,
-  COLORS,
+  AlignItems,
+  BorderRadius,
+  Color,
   DISPLAY,
-  JUSTIFY_CONTENT,
-  SIZES,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-export const Popover = forwardRef((props, ref) => {
+export const Popover = ({ children, className, ...props }) => {
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'auto',
-    modifiers: [
-      { name: 'arrow', options: { element: arrowElement } },
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 8],
-        },
-      },
-    ],
-  });
+  const { styles, attributes } = usePopper(
+    referenceElement,
+    popperElement,
+    { placement: 'auto' },
+    {
+      modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
+    },
+  );
   return (
     <>
-      <div style={{ backgroundColor: 'red' }} ref={setReferenceElement}>
-        <Button size={SIZES.LG}>Popper Trigger</Button>
-      </div>
+      <button type="button" ref={setReferenceElement}>
+        Popper Trigger
+      </button>
 
       <Box
-        className={classnames('mm-popover tooltip', className)}
+        className={classnames('mm-popover', className)}
         display={DISPLAY.INLINE_FLEX}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        alignItems={ALIGN_ITEMS.CENTER}
-        borderColor={COLORS.BORDER_DEFAULT}
-        backgroundColor={COLORS.BACKGROUND_DEFAULT}
-        borderRadius={BORDER_RADIUS.XL}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        borderColor={Color.borderDefault}
+        backgroundColor={Color.backgroundDefault}
+        borderRadius={BorderRadius.xl}
         padding={4}
         {...props}
-        // ref={ref}
+        id="tooltip"
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}
       >
         {children} - This is the popper content
         <Box
-          borderColor={COLORS.BORDER_DEFAULT}
-          className={classnames('arrow')}
+          borderColor={Color.borderDefault}
+          id="arrow"
           ref={setArrowElement}
           style={styles.arrow}
-          {...attributes.arrow}
         />
       </Box>
     </>
   );
-});
+};
 
 Popover.propTypes = {
   /**
@@ -80,3 +72,83 @@ Popover.propTypes = {
    */
   ...Box.propTypes,
 };
+
+// import React, { useState } from 'react';
+// import { usePopper } from 'react-popper';
+// import PropTypes from 'prop-types';
+// import classnames from 'classnames';
+
+// import Box from '../../ui/box';
+// import { Button } from '../button';
+
+// import {
+//   AlignItems,
+//   BorderRadius,
+//   Color,
+//   DISPLAY,
+//   JustifyContent,
+// } from '../../../helpers/constants/design-system';
+
+// export const Popover = (className, children, ...props) => {
+//   const [referenceElement, setReferenceElement] = useState(null);
+//   const [popperElement, setPopperElement] = useState(null);
+//   const [arrowElement, setArrowElement] = useState(null);
+//   const { styles, attributes } = usePopper(referenceElement, popperElement, {
+//     placement: 'auto',
+//     modifiers: [
+//       { name: 'arrow', options: { element: arrowElement } },
+//       {
+//         name: 'offset',
+//         options: {
+//           offset: [0, 8],
+//         },
+//       },
+//     ],
+//   });
+//   return (
+//     <>
+//       <div style={{ backgroundColor: 'red' }} ref={setReferenceElement}>
+//         <Button>Popper Trigger</Button>
+//       </div>
+
+//       <Box
+//         className={classnames('mm-popover tooltip', className)}
+//         display={DISPLAY.INLINE_FLEX}
+//         justifyContent={JustifyContent.center}
+//         AlignItems={AlignItems.center}
+//         borderColor={Color.borderDefault}
+//         backgroundColor={Color.backgroundDefault}
+//         BorderRadius={BorderRadius.xl}
+//         padding={4}
+//         {...props}
+//         ref={setPopperElement}
+//         style={styles.popper}
+//         {...attributes.popper}
+//       >
+//         {children} - This is the popper content
+//         <Box
+//           borderColor={Color.borderDefault}
+//           className={classnames('arrow')}
+//           ref={setArrowElement}
+//           style={styles.arrow}
+//           {...attributes.arrow}
+//         />
+//       </Box>
+//     </>
+//   );
+// };
+
+// Popover.propTypes = {
+//   /**
+//    * The children to be rendered inside the Popover
+//    */
+//   children: PropTypes.node,
+//   /**
+//    * An additional className to apply to the Popover.
+//    */
+//   className: PropTypes.string,
+//   /**
+//    * Popover accepts all the props from Box
+//    */
+//   ...Box.propTypes,
+// };
