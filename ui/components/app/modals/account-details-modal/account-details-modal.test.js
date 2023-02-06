@@ -12,7 +12,7 @@ import AccountDetailsModal from '.';
 
 const mockShowModal = jest.fn();
 
-jest.mock('../../../../store/actions.js', () => {
+jest.mock('../../../../store/actions.ts', () => {
   return {
     showModal: () => mockShowModal,
   };
