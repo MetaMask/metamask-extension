@@ -91,7 +91,7 @@ describe('Eth sign', function () {
           '.signature-request-warning__footer__sign-button',
         );
         // Switch to the Dapp
-        await driver.waitUntilXWindowHandles(3);
+        await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
 
