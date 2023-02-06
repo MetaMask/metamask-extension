@@ -1,4 +1,6 @@
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+import type { SupportedCurve } from '@metamask/key-tree';
+
 type SnapsMetadata = {
   [snapId: string]: {
     name: string;
@@ -40,4 +42,23 @@ export const SNAPS_METADATA: SnapsMetadata = {
     name: 'Cronjob Test Snap',
   },
 };
+
+type SnapsDerivationPath = {
+  path: ['m', ...string[]];
+  curve: SupportedCurve;
+  name: string;
+};
+
+export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
+  {
+    path: ['m', `44'`, `0'`],
+    curve: 'secp256k1',
+    name: 'Test BIP-32 Path (secp256k1)',
+  },
+  {
+    path: ['m', `44'`, `0'`],
+    curve: 'ed25519',
+    name: 'Test BIP-32 Path (ed25519)',
+  },
+];
 ///: END:ONLY_INCLUDE_IN
