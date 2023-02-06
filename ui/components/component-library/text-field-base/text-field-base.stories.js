@@ -3,12 +3,14 @@ import { useArgs } from '@storybook/client-api';
 import PropTypes from 'prop-types';
 
 import {
-  SIZES,
   DISPLAY,
-  COLORS,
   FLEX_DIRECTION,
-  ALIGN_ITEMS,
-  TEXT,
+  AlignItems,
+  TextVariant,
+  IconColor,
+  BackgroundColor,
+  TextColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 
@@ -163,7 +165,7 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => {
+export const SizeStory = (args) => {
   return (
     <Box
       display={DISPLAY.INLINE_FLEX}
@@ -172,22 +174,23 @@ export const Size = (args) => {
     >
       <TextFieldBase
         {...args}
-        placeholder="SIZES.SM (height: 32px)"
-        size={SIZES.SM}
+        placeholder="Size.SM (height: 32px)"
+        size={Size.SM}
       />
       <TextFieldBase
         {...args}
-        placeholder="SIZES.MD (height: 40px)"
-        size={SIZES.MD}
+        placeholder="Size.MD (height: 40px)"
+        size={Size.MD}
       />
       <TextFieldBase
         {...args}
-        placeholder="SIZES.LG (height: 48px)"
-        size={SIZES.LG}
+        placeholder="Size.LG (height: 48px)"
+        size={Size.LG}
       />
     </Box>
   );
 };
+SizeStory.storyName = 'Size';
 
 export const Type = (args) => (
   <Box
@@ -243,7 +246,7 @@ export const LeftAccessoryRightAccessory = (args) => {
         name="search"
         onChange={handleOnChange}
         leftAccessory={
-          <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.SEARCH} />
+          <Icon color={IconColor.iconAlternative} name={ICON_NAMES.SEARCH} />
         }
       />
       <TextFieldBase
@@ -256,7 +259,7 @@ export const LeftAccessoryRightAccessory = (args) => {
           <ButtonIcon
             iconName={ICON_NAMES.SCAN_BARCODE}
             ariaLabel="Scan QR code"
-            iconProps={{ color: COLORS.PRIMARY_DEFAULT }}
+            iconProps={{ color: IconColor.primaryDefault }}
           />
         }
       />
@@ -272,28 +275,28 @@ export const LeftAccessoryRightAccessory = (args) => {
           <Box
             as="button"
             style={{ padding: 0 }}
-            backgroundColor={COLORS.TRANSPARENT}
+            backgroundColor={BackgroundColor.transparent}
             gap={1}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
+            alignItems={AlignItems.center}
           >
             <AvatarToken
               tokenName="eth"
               tokenImageUrl="./images/eth_logo.svg"
-              size={SIZES.SM}
+              size={Size.SM}
             />
             <Text>ETH</Text>
             <Icon
               name={ICON_NAMES.ARROW_DOWN}
-              color={COLORS.ICON_DEFAULT}
-              size={SIZES.SM}
+              color={IconColor.iconDefault}
+              size={Size.SM}
             />
           </Box>
         }
         rightAccessory={
           <Text
-            variant={TEXT.BODY_SM}
-            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
             style={{ whiteSpace: 'nowrap' }}
           >
             = ${handleTokenPrice(value.amount, 1173.58)}
@@ -309,12 +312,12 @@ export const LeftAccessoryRightAccessory = (args) => {
         truncate
         leftAccessory={
           value.accountAddress && (
-            <AvatarAccount size={SIZES.SM} address={value.accountAddress} />
+            <AvatarAccount size={Size.SM} address={value.accountAddress} />
           )
         }
         rightAccessory={
           value.accountAddress.length === 42 && (
-            <Icon name={ICON_NAMES.CHECK} color={COLORS.SUCCESS_DEFAULT} />
+            <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
           )
         }
       />
@@ -412,11 +415,11 @@ const CustomInputComponent = React.forwardRef(
             ...inputProps,
           }}
         />
-        <Text variant={TEXT.BODY_XS} color={COLORS.TEXT_ALTERNATIVE}>
+        <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
           GoerliETH
         </Text>
       </Box>
-      <Text variant={TEXT.BODY_XS}>No conversion rate available</Text>
+      <Text variant={TextVariant.bodyXs}>No conversion rate available</Text>
     </Box>
   ),
 );
@@ -461,10 +464,10 @@ export const InputComponent = (args) => (
     {...args}
     placeholder="0"
     type="number"
-    size={SIZES.LG}
+    size={Size.LG}
     InputComponent={CustomInputComponent}
     leftAccessory={
-      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET} />
+      <Icon color={IconColor.iconAlternative} name={ICON_NAMES.WALLET} />
     }
   />
 );

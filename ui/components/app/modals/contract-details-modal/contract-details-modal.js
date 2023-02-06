@@ -4,7 +4,6 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import Box from '../../../ui/box';
-import IconCopy from '../../../ui/icon/icon-copy';
 import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
@@ -15,18 +14,21 @@ import Popover from '../../../ui/popover';
 import Typography from '../../../ui/typography';
 import {
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
-  COLORS,
-  JUSTIFY_CONTENT,
-  SIZES,
-  BORDER_STYLE,
+  JustifyContent,
+  Size,
+  BorderStyle,
+  BorderColor,
+  TextColor,
+  Color,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
+import { ButtonIcon, ICON_NAMES } from '../../../component-library';
 
 export default function ContractDetailsModal({
   onClose,
@@ -67,16 +69,16 @@ export default function ContractDetailsModal({
       >
         <Typography
           fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H5}
+          variant={TypographyVariant.H5}
           display={DISPLAY.FLEX}
           boxProps={{ marginTop: 0, marginBottom: 0 }}
         >
           {t('contractTitle')}
         </Typography>
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           display={DISPLAY.FLEX}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           boxProps={{ marginTop: 2, marginBottom: 0 }}
         >
           {t('contractDescription')}
@@ -84,7 +86,7 @@ export default function ContractDetailsModal({
         {!isContractRequestingSignature && (
           <>
             <Typography
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               display={DISPLAY.FLEX}
               marginTop={4}
               marginBottom={2}
@@ -93,9 +95,9 @@ export default function ContractDetailsModal({
             </Typography>
             <Box
               display={DISPLAY.FLEX}
-              borderRadius={SIZES.SM}
-              borderStyle={BORDER_STYLE.SOLID}
-              borderColor={COLORS.BORDER_DEFAULT}
+              borderRadius={Size.SM}
+              borderStyle={BorderStyle.solid}
+              borderColor={BorderColor.borderDefault}
               className="contract-details-modal__content__contract"
             >
               {nft ? (
@@ -115,16 +117,16 @@ export default function ContractDetailsModal({
               <Box data-testid="recipient">
                 <Typography
                   fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H5}
+                  variant={TypographyVariant.H5}
                   marginTop={4}
                 >
                   {tokenName || ellipsify(tokenAddress)}
                 </Typography>
                 {tokenName && (
                   <Typography
-                    variant={TYPOGRAPHY.H6}
+                    variant={TypographyVariant.H6}
                     display={DISPLAY.FLEX}
-                    color={COLORS.TEXT_ALTERNATIVE}
+                    color={TextColor.textAlternative}
                     marginTop={0}
                     marginBottom={4}
                   >
@@ -133,7 +135,7 @@ export default function ContractDetailsModal({
                 )}
               </Box>
               <Box
-                justifyContent={JUSTIFY_CONTENT.FLEX_END}
+                justifyContent={JustifyContent.flexEnd}
                 className="contract-details-modal__content__contract__buttons"
               >
                 <Box marginTop={4} marginRight={5}>
@@ -145,15 +147,15 @@ export default function ContractDetailsModal({
                         : t('copyToClipboard')
                     }
                   >
-                    <Button
-                      className="contract-details-modal__content__contract__buttons__copy"
-                      type="link"
-                      onClick={() => {
-                        handleCopyTokenAddress(tokenAddress);
-                      }}
-                    >
-                      <IconCopy color="var(--color-icon-muted)" />
-                    </Button>
+                    <ButtonIcon
+                      iconName={
+                        copiedTokenAddress
+                          ? ICON_NAMES.COPY_SUCCESS
+                          : ICON_NAMES.COPY
+                      }
+                      onClick={() => handleCopyTokenAddress(tokenAddress)}
+                      color={Color.iconMuted}
+                    />
                   </Tooltip>
                 </Box>
                 <Box marginTop={5} marginRight={5}>
@@ -188,7 +190,7 @@ export default function ContractDetailsModal({
           </>
         )}
         <Typography
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           display={DISPLAY.FLEX}
           marginTop={4}
           marginBottom={2}
@@ -201,9 +203,9 @@ export default function ContractDetailsModal({
         </Typography>
         <Box
           display={DISPLAY.FLEX}
-          borderRadius={SIZES.SM}
-          borderStyle={BORDER_STYLE.SOLID}
-          borderColor={COLORS.BORDER_DEFAULT}
+          borderRadius={Size.SM}
+          borderStyle={BorderStyle.solid}
+          borderColor={BorderColor.borderDefault}
           className="contract-details-modal__content__contract"
         >
           {nft ? (
@@ -233,16 +235,16 @@ export default function ContractDetailsModal({
           <Box data-testid="recipient">
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
-              variant={TYPOGRAPHY.H5}
+              variant={TypographyVariant.H5}
               marginTop={4}
             >
               {addressBookEntry?.data?.name || ellipsify(toAddress)}
             </Typography>
             {addressBookEntry?.data?.name && (
               <Typography
-                variant={TYPOGRAPHY.H6}
+                variant={TypographyVariant.H6}
                 display={DISPLAY.FLEX}
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={TextColor.textAlternative}
                 marginTop={0}
                 marginBottom={4}
               >
@@ -251,7 +253,7 @@ export default function ContractDetailsModal({
             )}
           </Box>
           <Box
-            justifyContent={JUSTIFY_CONTENT.FLEX_END}
+            justifyContent={JustifyContent.flexEnd}
             className="contract-details-modal__content__contract__buttons"
           >
             <Box marginTop={4} marginRight={5}>
@@ -263,15 +265,13 @@ export default function ContractDetailsModal({
                     : t('copyToClipboard')
                 }
               >
-                <Button
-                  className="contract-details-modal__content__contract__buttons__copy"
-                  type="link"
-                  onClick={() => {
-                    handleCopyToAddress(toAddress);
-                  }}
-                >
-                  <IconCopy color="var(--color-icon-muted)" />
-                </Button>
+                <ButtonIcon
+                  iconName={
+                    copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                  }
+                  onClick={() => handleCopyToAddress(toAddress)}
+                  color={Color.iconMuted}
+                />
               </Tooltip>
             </Box>
             <Box marginTop={5} marginRight={5}>

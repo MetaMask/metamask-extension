@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
-  COLORS,
+  BackgroundColor,
   SEVERITIES,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Card from '../card';
 import Typography from '../typography';
@@ -29,15 +30,12 @@ import IconCheck from './icon-check';
 import IconCog from './icon-cog';
 import IconConnect from './icon-connect';
 import IconImport from './icon-import';
-import IconSpeechBubbles from './icon-speech-bubbles';
 import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
 import SearchIcon from './search-icon';
-import IconCopy from './icon-copy';
 import IconBlockExplorer from './icon-block-explorer';
-import IconCopied from './icon-copied';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -84,7 +82,7 @@ const IconItem = ({ Component }) => {
       display="flex"
       flexDirection="column"
       textAlign="center"
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Box marginBottom={2}>{Component}</Box>
       <code>{`${Component.type.__docgenInfo.displayName}`}</code>
@@ -98,10 +96,13 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
-    <Typography variant={TYPOGRAPHY.H2} boxProps={{ marginBottom: 4 }}>
+    <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
     </Typography>
-    <Typography variant={TYPOGRAPHY.Paragraph} boxProps={{ marginBottom: 4 }}>
+    <Typography
+      variant={TypographyVariant.paragraph}
+      boxProps={{ marginBottom: 4 }}
+    >
       To ensure correct licensing we suggest you use an icon from the
       @fortawesome/fontawesome-free: ^5.13.0 package. If there is no icon to
       suit your needs and you need to create a new one. Ensure that it has the
@@ -124,18 +125,15 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconPlus {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
         <IconItem Component={<IconConnect {...args} />} />
-        <IconItem Component={<IconSpeechBubbles {...args} />} />
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
-        <IconItem Component={<IconCopy {...args} />} />
         <IconItem Component={<IconBlockExplorer {...args} />} />
-        <IconItem Component={<IconCopied {...args} />} />
       </div>
     </Box>
     <Typography
-      variant={TYPOGRAPHY.H2}
-      color={COLORS.ERROR_DEFAULT}
+      variant={TypographyVariant.H2}
+      color={TextColor.errorDefault}
       boxProps={{ marginBottom: 4 }}
     >
       DEPRECATED
@@ -284,12 +282,6 @@ PreloaderStory.args = {
   size: 40,
 };
 PreloaderStory.storyName = 'Preloader';
-
-export const IconCopyStory = (args) => <IconCopy {...args} />;
-IconCopyStory.args = {
-  size: 40,
-};
-IconCopyStory.storyName = 'IconCopy';
 
 export const IconBlockExplorerStory = (args) => <IconBlockExplorer {...args} />;
 IconBlockExplorerStory.args = {

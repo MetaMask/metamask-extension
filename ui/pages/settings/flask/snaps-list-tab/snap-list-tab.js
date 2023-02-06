@@ -5,11 +5,11 @@ import SnapSettingsCard from '../../../../components/app/flask/snap-settings-car
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
-  COLORS,
+  TypographyVariant,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
-  ALIGN_ITEMS,
+  JustifyContent,
+  AlignItems,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
@@ -43,12 +43,12 @@ const SnapListTab = () => {
       {Object.entries(snaps).length ? (
         <div className="snap-list-tab__body">
           <Box display="flex" flexDirection={FLEX_DIRECTION.COLUMN}>
-            <Typography variant={TYPOGRAPHY.H5} marginBottom={2}>
+            <Typography variant={TypographyVariant.H5} marginBottom={2}>
               {t('expandExperience')}
             </Typography>
             <Typography
-              variant={TYPOGRAPHY.H6}
-              color={COLORS.TEXT_ALTERNATIVE}
+              variant={TypographyVariant.H6}
+              color={TextColor.textAlternative}
               marginBottom={2}
             >
               {t('manageSnaps')}
@@ -82,10 +82,13 @@ const SnapListTab = () => {
           className="snap-list-tab__container--no-snaps"
           width="full"
           height="full"
-          justifyContent={JUSTIFY_CONTENT.CENTER}
-          alignItems={ALIGN_ITEMS.CENTER}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
         >
-          <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_ALTERNATIVE}>
+          <Typography
+            variant={TypographyVariant.H4}
+            color={TextColor.textAlternative}
+          >
             <span>{t('noSnaps')}</span>
           </Typography>
         </Box>

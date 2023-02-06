@@ -13,7 +13,7 @@ import {
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { COLORS } from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 function quadSplit(address) {
   return `0x${address
@@ -75,7 +75,7 @@ function ViewContact({
                 }}
                 iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
                 size={ICON_SIZES.LG}
-                color={COLORS.PRIMARY_DEFAULT}
+                color={IconColor.primaryDefault}
               />
             </Tooltip>
           </div>

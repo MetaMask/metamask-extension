@@ -703,15 +703,16 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
+        "@metamask/assets-controllers>@metamask/abi-utils": true,
+        "@metamask/assets-controllers>@metamask/controller-utils": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
-        "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/utils": true,
         "browserify>events": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
@@ -719,6 +720,27 @@
         "ethereumjs-util": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/utils>superstruct": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>isomorphic-fetch": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
@@ -1204,10 +1226,25 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
+        "@metamask/phishing-controller>@metamask/controller-utils": true,
         "@metamask/phishing-controller>eth-phishing-detect": true,
         "punycode": true
+      }
+    },
+    "@metamask/phishing-controller>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>isomorphic-fetch": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/phishing-controller>eth-phishing-detect": {
@@ -2032,7 +2069,7 @@
     },
     "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": {
       "packages": {
-        "react-dnd>shallowequal": true
+        "@storybook/addon-a11y>react-sizeme>shallowequal": true
       }
     },
     "@truffle/decoder>bn.js": {
@@ -2104,6 +2141,11 @@
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "bowser": {
+      "globals": {
+        "define": true
       }
     },
     "browserify>assert": {
@@ -3516,7 +3558,8 @@
         "define": true,
         "document.cookie": true,
         "localStorage": true,
-        "log": "write"
+        "log": "write",
+        "navigator": true
       }
     },
     "luxon": {
@@ -3672,50 +3715,11 @@
         "setTimeout": true
       }
     },
-    "react-dnd": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "lodash": true,
-        "prop-types": true,
-        "react": true,
-        "react-dnd>disposables": true,
-        "react-dnd>dnd-core": true,
-        "react-dnd>hoist-non-react-statics": true,
-        "react-dnd>invariant": true,
-        "react-dnd>shallowequal": true
-      }
-    },
     "react-dnd-html5-backend": {
       "globals": {
-        "Image": true,
         "addEventListener": true,
         "clearTimeout": true,
-        "console.warn": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "navigator.userAgent": true,
-        "removeEventListener": true,
-        "safari": true,
-        "setTimeout": true
-      }
-    },
-    "react-dnd>dnd-core": {
-      "packages": {
-        "lodash": true,
-        "react-dnd>dnd-core>asap": true,
-        "react-dnd>invariant": true,
-        "redux": true
-      }
-    },
-    "react-dnd>dnd-core>asap": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "document.createTextNode": true,
-        "setInterval": true,
-        "setTimeout": true
+        "removeEventListener": true
       }
     },
     "react-dom": {

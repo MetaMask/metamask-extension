@@ -9,16 +9,17 @@ import FormField from '../../ui/form-field';
 import Typography from '../../ui/typography';
 import { ButtonLink } from '../../component-library';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   TEXT_ALIGN,
   FONT_WEIGHT,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
-  SIZES,
+  TypographyVariant,
+  JustifyContent,
+  Size,
   BLOCK_SIZES,
+  BackgroundColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
@@ -72,7 +73,7 @@ export default function CustomSpendingCap({
         description: t('inputLogicEqualOrSmallerNumber', [
           <Typography
             key="custom-spending-cap"
-            variant={TYPOGRAPHY.H6}
+            variant={TypographyVariant.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             className="custom-spending-cap__input-value-and-token-name"
           >
@@ -146,9 +147,9 @@ export default function CustomSpendingCap({
     ? t('warningTooltipText', [
         <Typography
           key="tooltip-text"
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           fontWeight={FONT_WEIGHT.BOLD}
-          color={COLORS.ERROR_DEFAULT}
+          color={TextColor.errorDefault}
         >
           <i className="fa fa-exclamation-circle" /> {t('beCareful')}
         </Typography>,
@@ -159,18 +160,18 @@ export default function CustomSpendingCap({
     <>
       <Box
         className="custom-spending-cap"
-        borderRadius={SIZES.SM}
+        borderRadius={Size.SM}
         paddingTop={2}
         paddingRight={6}
         paddingLeft={6}
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.FLEX_START}
+        alignItems={AlignItems.flexStart}
         flexDirection={FLEX_DIRECTION.COLUMN}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        backgroundColor={BackgroundColor.backgroundAlternative}
         gap={2}
       >
         <Box
-          justifyContent={JUSTIFY_CONTENT.CENTER}
+          justifyContent={JustifyContent.center}
           display={DISPLAY.BLOCK}
           className="custom-spending-cap__input"
         >
@@ -210,7 +211,7 @@ export default function CustomSpendingCap({
               titleDetail={
                 showUseDefaultButton && (
                   <ButtonLink
-                    size={SIZES.AUTO}
+                    size={Size.auto}
                     onClick={(e) => {
                       e.preventDefault();
                       setShowUseDefaultButton(false);
@@ -234,7 +235,7 @@ export default function CustomSpendingCap({
               })}
             >
               <ButtonLink
-                size={SIZES.AUTO}
+                size={Size.auto}
                 onClick={(e) => {
                   e.preventDefault();
                   handleChange(currentTokenBalance);
@@ -249,8 +250,8 @@ export default function CustomSpendingCap({
               })}
             >
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H7}
                 boxProps={{ paddingTop: 2, paddingBottom: 2 }}
               >
                 {replaceCommaToDot(value)

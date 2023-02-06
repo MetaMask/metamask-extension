@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
 import { AvatarBase } from '../avatar-base';
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 
 import {
@@ -14,7 +14,7 @@ import {
 } from './avatar-account.constants';
 
 export const AvatarAccount = ({
-  size = SIZES.MD,
+  size = Size.MD,
   address,
   className,
   type,

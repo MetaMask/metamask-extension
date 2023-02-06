@@ -46,6 +46,8 @@
  * @typedef {object} MetaMetricsEventPayload
  * @property {string} event - event name to track
  * @property {string} category - category to associate event to
+ * @property {number} [actionId] - Action id to deduplicate event requests from
+ * the UI
  * @property {string} [environmentType] - The type of environment this event
  *  occurred in. Defaults to the background process type
  * @property {object} [properties] - object of custom values to track, keys
@@ -331,6 +333,7 @@ export const EVENT_NAMES = {
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PHISHING_PAGE_DISPLAYED: 'Phishing Page Displayed',
   PORTFOLIO_LINK_CLICKED: 'Portfolio Link Clicked',
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
@@ -391,6 +394,7 @@ export const EVENT = {
     NAVIGATION: 'Navigation',
     NETWORK: 'Network',
     ONBOARDING: 'Onboarding',
+    PHISHING: 'Phishing',
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
     SNAPS: 'Snaps',

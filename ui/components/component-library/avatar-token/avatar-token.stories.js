@@ -1,12 +1,11 @@
 import React from 'react';
 import {
-  COLORS,
-  SIZES,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  TEXT_COLORS,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
+  AlignItems,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -30,15 +29,15 @@ export default {
       options: Object.values(AVATAR_TOKEN_SIZES),
     },
     color: {
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
       control: 'select',
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
       control: 'select',
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
     },
     name: {
@@ -54,7 +53,7 @@ export default {
   args: {
     name: 'eth',
     src: './images/eth_logo.svg',
-    size: SIZES.MD,
+    size: Size.MD,
     showHalo: false,
   },
 };
@@ -66,15 +65,16 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarToken {...args} size={SIZES.XS} />
-    <AvatarToken {...args} size={SIZES.SM} />
-    <AvatarToken {...args} size={SIZES.MD} />
-    <AvatarToken {...args} size={SIZES.LG} />
-    <AvatarToken {...args} size={SIZES.XL} />
+export const SizeStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+    <AvatarToken {...args} size={Size.XS} />
+    <AvatarToken {...args} size={Size.SM} />
+    <AvatarToken {...args} size={Size.MD} />
+    <AvatarToken {...args} size={Size.LG} />
+    <AvatarToken {...args} size={Size.XL} />
   </Box>
 );
+SizeStory.storyName = 'Size';
 
 export const Name = Template.bind({});
 Name.args = {
@@ -114,17 +114,17 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarToken
       {...args}
-      backgroundColor={COLORS.GOERLI}
-      borderColor={COLORS.GOERLI}
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
       name="G"
-      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
+      color={TextColor.primaryInverse}
     />
     <AvatarToken
       {...args}
-      backgroundColor={COLORS.SEPOLIA}
-      borderColor={COLORS.SEPOLIA}
+      backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
       name="S"
-      color={COLORS.PRIMARY_INVERSE} // TODO: update it to COLORS.GOERLI_INVERSE
+      color={TextColor.primaryInverse}
     />
   </Box>
 );

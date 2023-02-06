@@ -7,11 +7,7 @@ export default function Initialized(props) {
   return props.completedOnboarding ? (
     <Route {...props} />
   ) : (
-    <Redirect
-      to={{
-        pathname: ONBOARDING_ROUTE,
-      }}
-    />
+    <Redirect to={{ pathname: ONBOARDING_ROUTE }} />
   );
 }
 

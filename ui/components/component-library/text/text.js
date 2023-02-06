@@ -5,11 +5,11 @@ import Box from '../../ui/box';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT,
+  TextVariant,
   TEXT_ALIGN,
   TEXT_TRANSFORM,
   OVERFLOW_WRAP,
-  TEXT_COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { TEXT_VARIANTS, TEXT_DIRECTIONS } from './text.constants';
 
@@ -36,8 +36,8 @@ export const ValidTags = [
 export const Text = React.forwardRef(
   (
     {
-      variant = TEXT.BODY_MD,
-      color = TEXT_COLORS.TEXT_DEFAULT,
+      variant = TextVariant.bodyMd,
+      color = TextColor.textDefault,
       fontWeight,
       fontStyle,
       textTransform,
@@ -120,7 +120,7 @@ Text.propTypes = {
    * The color of the Text component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js
    */
-  color: PropTypes.oneOf(Object.values(TEXT_COLORS)),
+  color: PropTypes.oneOf(Object.values(TextColor)),
   /**
    * The font-weight of the Text component. Should use the FONT_WEIGHT object from
    * ./ui/helpers/constants/design-system.js
