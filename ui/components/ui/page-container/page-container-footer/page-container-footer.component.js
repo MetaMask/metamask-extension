@@ -48,6 +48,7 @@ export default class PageContainerFooter extends Component {
               large={buttonSizeLarge}
               className={classnames(
                 'page-container__footer-button',
+                'page-container__footer-button__cancel',
                 footerButtonClassName,
               )}
               onClick={(e) => onCancel(e)}
