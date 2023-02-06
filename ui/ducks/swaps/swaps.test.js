@@ -10,7 +10,7 @@ import swapsReducer, * as swaps from './swaps';
 
 const middleware = [thunk];
 
-jest.mock('../../store/actions.js', () => ({
+jest.mock('../../store/actions.ts', () => ({
   setSwapsLiveness: jest.fn(),
   setSwapsFeatureFlags: jest.fn(),
   fetchSmartTransactionsLiveness: jest.fn(),
