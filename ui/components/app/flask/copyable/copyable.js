@@ -11,6 +11,7 @@ import {
   TypographyVariant,
   BackgroundColor,
   TextColor,
+  Color,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
@@ -48,13 +49,13 @@ export const Copyable = ({ text }) => {
           <Icon
             name={ICON_NAMES.COPY_SUCCESS}
             size={ICON_SIZES.LG}
-            color={COLORS.ICON_ALTERNATIVE}
+            color={Color.iconAlternative}
           />
         ) : (
           <Icon
             name={ICON_NAMES.COPY}
             size={ICON_SIZES.LG}
-            color={COLORS.ICON_ALTERNATIVE}
+            color={Color.iconAlternative}
             onClick={() => handleCopy(text)}
           />
         )}
