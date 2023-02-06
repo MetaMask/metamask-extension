@@ -56,6 +56,7 @@ describe('Collectibles', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
@@ -124,6 +125,7 @@ describe('Collectibles', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
@@ -194,6 +196,7 @@ describe('Collectibles', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
@@ -267,6 +270,7 @@ describe('Collectibles', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
