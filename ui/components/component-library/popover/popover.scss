@@ -33,7 +33,6 @@
 
   &::before {
     transform: rotate(180deg);
-    background-color: green;
   }
 }
 
@@ -46,7 +45,6 @@
 
   &::before {
     transform: rotate(135deg);
-    // background-color: yellow;
   }
 }
 
@@ -55,6 +53,11 @@
 
   &::before {
     transform: rotate(-90deg);
-    background-color: red;
   }
+}
+
+/* Hide the popper when the reference is hidden */
+#tooltip[data-popper-reference-hidden] {
+  visibility: hidden;
+  pointer-events: none;
 }

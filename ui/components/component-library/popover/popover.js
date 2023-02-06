@@ -3,6 +3,8 @@ import { usePopper } from 'react-popper';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { Button } from '../button';
+
 import Box from '../../ui/box';
 
 import {
@@ -20,28 +22,47 @@ export const Popover = ({ children, className, ...props }) => {
   const { styles, attributes } = usePopper(
     referenceElement,
     popperElement,
-    { placement: 'auto' },
+    { placement: 'bottom' },
     {
-      modifiers: [{ name: 'arrow', options: { element: arrowElement } }],
+      modifiers: [
+        { name: 'arrow', options: { element: arrowElement } },
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 8],
+          },
+        },
+        {
+          name: 'preventOverflow',
+          options: {
+            mainAxis: false, // true by default
+            altAxis: false,
+          },
+        },
+        {
+          name: 'flip',
+          options: {
+            flipVariations: false, // true by default
+          },
+        },
+      ],
     },
   );
   return (
     <>
-      <button type="button" ref={setReferenceElement}>
-        Popper Trigger
-      </button>
-
+      <div style={{ backgroundColor: 'red' }} ref={setReferenceElement}>
+        <Button>Popper Trigger</Button>
+      </div>
       <Box
-        className={classnames('mm-popover', className)}
+        className={classnames('mm-popover tooltip', className)}
         display={DISPLAY.INLINE_FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderColor={Color.borderDefault}
         backgroundColor={Color.backgroundDefault}
-        borderRadius={BorderRadius.xl}
+        borderRadius={BorderRadius.XL}
         padding={4}
         {...props}
-        id="tooltip"
         ref={setPopperElement}
         style={styles.popper}
         {...attributes.popper}
@@ -49,9 +70,10 @@ export const Popover = ({ children, className, ...props }) => {
         {children} - This is the popper content
         <Box
           borderColor={Color.borderDefault}
-          id="arrow"
+          className={classnames('arrow')}
           ref={setArrowElement}
           style={styles.arrow}
+          {...attributes.arrow}
         />
       </Box>
     </>
