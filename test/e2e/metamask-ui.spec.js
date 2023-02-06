@@ -457,6 +457,7 @@ describe('MetaMask', function () {
     });
 
     it('checks balance', async function () {
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({
         text: 'Assets',
         tag: 'button',
