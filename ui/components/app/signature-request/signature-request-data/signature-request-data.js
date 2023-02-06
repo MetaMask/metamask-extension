@@ -26,61 +26,55 @@ function SignatureRequestData({ data }) {
 
   return (
     <Box className="signature-request-data__node">
-      {Object.entries(data).map((args, i) => {
-        const label = sanitizeString(args[0]);
-        const value = sanitizeString(`${args[1]}`);
-        return (
-          <Box
-            className="signature-request-data__node"
-            key={`${label}-${i}`}
-            paddingLeft={2}
-            display={
-              typeof value !== 'object' || value === null ? DISPLAY.FLEX : null
+      {Object.entries(data).map(([label, value], i) => (
+        <Box
+          className="signature-request-data__node"
+          key={`${label}-${i}`}
+          paddingLeft={2}
+          display={
+            typeof value !== 'object' || value === null ? DISPLAY.FLEX : null
+          }
+        >
+          <Typography
+            as="span"
+            color={TextColor.textDefault}
+            marginLeft={4}
+            fontWeight={
+              typeof value === 'object' ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL
             }
           >
+            {sanitizeString(label.charAt(0).toUpperCase() + label.slice(1))}:{' '}
+          </Typography>
+          {typeof value === 'object' && value !== null ? (
+            <SignatureRequestData data={value} />
+          ) : (
             <Typography
               as="span"
               color={TextColor.textDefault}
               marginLeft={4}
-              fontWeight={
-                typeof value === 'object'
-                  ? FONT_WEIGHT.BOLD
-                  : FONT_WEIGHT.NORMAL
-              }
+              className="signature-request-data__node__value"
             >
-              {label.charAt(0).toUpperCase() + label.slice(1)}:{' '}
+              {isValidHexAddress(value, {
+                mixedCaseUseChecksum: true,
+              }) ? (
+                <Typography
+                  variant={TypographyVariant.H7}
+                  color={TextColor.infoDefault}
+                  className="signature-request-data__node__value__address"
+                >
+                  <Address
+                    addressOnly
+                    checksummedRecipientAddress={toChecksumHexAddress(value)}
+                    recipientName={getAccountName(identities, value)}
+                  />
+                </Typography>
+              ) : (
+                sanitizeString(`${value}`)
+              )}
             </Typography>
-            {typeof value === 'object' && value !== null ? (
-              <SignatureRequestData data={value} />
-            ) : (
-              <Typography
-                as="span"
-                color={TextColor.textDefault}
-                marginLeft={4}
-                className="signature-request-data__node__value"
-              >
-                {isValidHexAddress(value, {
-                  mixedCaseUseChecksum: true,
-                }) ? (
-                  <Typography
-                    variant={TypographyVariant.H7}
-                    color={TextColor.infoDefault}
-                    className="signature-request-data__node__value__address"
-                  >
-                    <Address
-                      addressOnly
-                      checksummedRecipientAddress={toChecksumHexAddress(value)}
-                      recipientName={getAccountName(identities, value)}
-                    />
-                  </Typography>
-                ) : (
-                  `${value}`
-                )}
-              </Typography>
-            )}
-          </Box>
-        );
-      })}
+          )}
+        </Box>
+      ))}
     </Box>
   );
 }
