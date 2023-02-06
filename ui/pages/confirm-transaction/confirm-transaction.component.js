@@ -110,8 +110,7 @@ const ConfirmTransaction = () => {
 
     window.addEventListener('beforeunload', _beforeUnload);
 
-    if (!
-    && !sendTo) {
+    if (!totalUnapproved && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
       const { txParams: { data } = {}, origin } = transaction;
