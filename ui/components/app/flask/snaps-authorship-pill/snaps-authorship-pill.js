@@ -11,11 +11,12 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
 
 const snapIdPrefixes = ['npm:', 'local:'];
 
 const SnapsAuthorshipPill = ({ snapId, version, className }) => {
-  // @todo Use getSnapPrefix from snaps-skunkworks when possible
+  // @todo Use getSnapPrefix from snaps-monorepo when possible
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata
@@ -30,6 +31,9 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
     : packageName;
   const icon = isNPM ? 'fab fa-npm fa-lg' : 'fas fa-code';
   const t = useI18nContext();
+
+  const friendlyName = SNAPS_METADATA[snapId]?.name ?? packageName;
+
   return (
     <a
       href={url}
@@ -70,9 +74,9 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
           variant={TypographyVariant.H7}
           as="span"
           color={TextColor.textAlternative}
-          title={packageName}
+          title={friendlyName}
         >
-          {packageName}
+          {friendlyName}
         </Typography>
       </Chip>
     </a>

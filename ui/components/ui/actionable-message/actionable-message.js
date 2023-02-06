@@ -49,7 +49,7 @@ export default function ActionableMessage({
         clearTimeout(timeout);
       };
     },
-    [autoHideTime],
+    [autoHideTime, onAutoHide],
   );
 
   const actionableMessageClassName = classnames(
