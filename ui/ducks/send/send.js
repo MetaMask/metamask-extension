@@ -571,6 +571,8 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  * the send slice. It returns the values that might change from this action and
  * those values are written to the slice in the `initializeSendState.fulfilled`
  * action handler.
+ *
+ * @type {import('@reduxjs/toolkit').AsyncThunk<any, { chainHasChanged: boolean }, {}>}
  */
 export const initializeSendState = createAsyncThunk(
   'send/initializeSendState',

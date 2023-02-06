@@ -10,7 +10,7 @@ const mockSetParticipateInMetaMetrics = jest.fn();
 const mockSetUsePhishDetect = jest.fn();
 const mockSetUseCurrencyRateCheck = jest.fn();
 
-jest.mock('../../../store/actions.js', () => {
+jest.mock('../../../store/actions.ts', () => {
   return {
     setFeatureFlag: () => mockSetFeatureFlag,
     setParticipateInMetaMetrics: () => mockSetParticipateInMetaMetrics,

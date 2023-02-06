@@ -2668,6 +2668,10 @@
   "permissionRevoked": {
     "message": "Revoked in this update"
   },
+  "permission_accessNamedSnap": {
+    "message": "Connect to $1.",
+    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the Snap."
+  },
   "permission_accessNetwork": {
     "message": "Access the internet.",
     "description": "The description of the `endowment:network-access` permission."

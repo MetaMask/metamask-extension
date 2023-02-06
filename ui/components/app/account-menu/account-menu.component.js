@@ -32,7 +32,6 @@ import {
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import IconCheck from '../../ui/icon/icon-check';
-import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
 import IconConnect from '../../ui/icon/icon-connect';
 import IconCog from '../../ui/icon/icon-cog';
 import IconPlus from '../../ui/icon/icon-plus';
@@ -41,6 +40,8 @@ import IconImport from '../../ui/icon/icon-import';
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { Icon, ICON_NAMES } from '../../component-library';
+import { Color } from '../../../helpers/constants/design-system';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -460,10 +461,7 @@ export default class AccountMenu extends Component {
             global.platform.openTab({ url: supportLink });
           }}
           icon={
-            <IconSpeechBubbles
-              color="var(--color-icon-alternative)"
-              ariaLabel={supportText}
-            />
+            <Icon name={ICON_NAMES.MESSAGES} color={Color.iconAlternative} />
           }
           text={supportText}
         />
