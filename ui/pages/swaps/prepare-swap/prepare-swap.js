@@ -768,16 +768,8 @@ export default function PrepareSwap({
             justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             alignItems={ALIGN_ITEMS.STRETCH}
           >
-            <div
-              className={classnames('prepare-swap__balance-message', {
-                'prepare-swap__balance-message--error':
-                  balanceError || fromTokenError,
-              })}
-            >
-              {!fromTokenError &&
-                !balanceError &&
-                fromTokenSymbol &&
-                swapYourTokenBalance}
+            <div className="prepare-swap__balance-message">
+              {fromTokenSymbol && swapYourTokenBalance}
               {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
                 <div
                   className="prepare-swap__max-button"
@@ -788,27 +780,6 @@ export default function PrepareSwap({
                 >
                   {t('max')}
                 </div>
-              )}
-              {!fromTokenError && balanceError && fromTokenSymbol && (
-                <div className="build-quite__insufficient-funds">
-                  <div className="build-quite__insufficient-funds-first">
-                    {t('swapsNotEnoughForTx', [fromTokenSymbol])}
-                  </div>
-                  <div className="build-quite__insufficient-funds-second">
-                    {swapYourTokenBalance}
-                  </div>
-                </div>
-              )}
-              {fromTokenError && (
-                <>
-                  <div className="prepare-swap__form-error">
-                    {t('swapTooManyDecimalsError', [
-                      fromTokenSymbol,
-                      fromTokenDecimals,
-                    ])}
-                  </div>
-                  <div>{swapYourTokenBalance}</div>
-                </>
               )}
             </div>
             {fromTokenInputValue && swapFromFiatValue && (
@@ -826,6 +797,39 @@ export default function PrepareSwap({
               </Box>
             )}
           </Box>
+          {!fromTokenError && balanceError && fromTokenSymbol && (
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.FLEX_START}
+            >
+              <Typography
+                color={COLORS.TEXT_ALTERNATIVE}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+                marginTop={0}
+              >
+                {t('swapsNotEnoughToken', [fromTokenSymbol])}
+              </Typography>
+            </Box>
+          )}
+          {fromTokenError && (
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JUSTIFY_CONTENT.FLEX_START}
+            >
+              <Typography
+                color={COLORS.TEXT_ALTERNATIVE}
+                fontWeight={FONT_WEIGHT.BOLD}
+                variant={TYPOGRAPHY.H7}
+                marginTop={0}
+              >
+                {t('swapTooManyDecimalsError', [
+                  fromTokenSymbol,
+                  fromTokenDecimals,
+                ])}
+              </Typography>
+            </Box>
+          )}
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JUSTIFY_CONTENT.CENTER}

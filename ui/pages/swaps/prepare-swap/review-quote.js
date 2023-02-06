@@ -91,7 +91,6 @@ import {
   hexWEIToDecGWEI,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
-import MainQuoteSummary from '../main-quote-summary';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
@@ -1219,19 +1218,6 @@ export default function ViewQuote({ setReceiveToAmount }) {
             className="main-quote-summary__exchange-rate-display"
           />
         </div> */}
-        {/* <MainQuoteSummary
-          sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
-          sourceDecimals={sourceTokenDecimals}
-          sourceSymbol={sourceTokenSymbol}
-          destinationValue={calcTokenValue(
-            destinationTokenValue,
-            destinationTokenDecimals,
-          )}
-          destinationDecimals={destinationTokenDecimals}
-          destinationSymbol={destinationTokenSymbol}
-          sourceIconUrl={sourceTokenIconUrl}
-          destinationIconUrl={destinationIconUrl}
-        /> */}
         {false &&
           currentSmartTransactionsEnabled &&
           smartTransactionsOptInStatus &&
