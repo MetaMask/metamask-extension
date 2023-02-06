@@ -3831,7 +3831,8 @@ export function setDismissSeedBackUpReminder(
 }
 
 export function setDisabledRpcMethodPreference(
-  methodName: string, value: number
+  methodName: string,
+  value: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -3843,7 +3844,12 @@ export function setDisabledRpcMethodPreference(
   };
 }
 
-export function getRpcMethodPreferences(): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function getRpcMethodPreferences(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('getRpcMethodPreferences', []);
