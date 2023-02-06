@@ -593,10 +593,10 @@ describe('NetworkController', () => {
               const promisifiedSendAsync = promisify(provider.sendAsync).bind(
                 provider,
               );
-              const chainIdResult = await promisifiedSendAsync({
+              const { result: chainIdResult } = await promisifiedSendAsync({
                 method: 'eth_chainId',
               });
-              expect(chainIdResult.result).toBe(chainId);
+              expect(chainIdResult).toBe(chainId);
             },
           );
         });
@@ -703,17 +703,17 @@ describe('NetworkController', () => {
             const promisifiedSendAsync = promisify(provider.sendAsync).bind(
               provider,
             );
-            const testResponse = await promisifiedSendAsync({
+            const { result: testResult } = await promisifiedSendAsync({
               id: 99999,
               jsonrpc: '2.0',
               method: 'test',
               params: [],
             });
-            expect(testResponse.result).toBe('test response');
-            const chainIdResponse = await promisifiedSendAsync({
+            expect(testResult).toBe('test response');
+            const { result: chainIdResult } = await promisifiedSendAsync({
               method: 'eth_chainId',
             });
-            expect(chainIdResponse.result).toBe('0x1337');
+            expect(chainIdResult).toBe('0x1337');
           },
         );
       });
@@ -828,7 +828,7 @@ describe('NetworkController', () => {
 
     for (const { networkName, networkType, chainId } of INFURA_NETWORKS) {
       describe(`when the type in the provider configuration is changed to "${networkType}"`, () => {
-        it(`returns a provider that is pointed to the ${networkName} Infura network (chainId: ${chainId})`, async () => {
+        it(`returns a provider object that was pointed to another network before the switch and is pointed to ${networkName} afterward`, async () => {
           await withController(
             {
               state: {
@@ -842,17 +842,24 @@ describe('NetworkController', () => {
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls();
               await controller.initializeProvider();
-
-              controller.setProviderType(networkType);
-
               const { provider } = controller.getProviderAndBlockTracker();
-              const promisifiedSendAsync = promisify(provider.sendAsync).bind(
+
+              const promisifiedSendAsync1 = promisify(provider.sendAsync).bind(
                 provider,
               );
-              const chainIdResult = await promisifiedSendAsync({
+              const { result: oldChainIdResult } = await promisifiedSendAsync1({
                 method: 'eth_chainId',
               });
-              expect(chainIdResult.result).toBe(chainId);
+              expect(oldChainIdResult).toBe('0x1337');
+
+              controller.setProviderType(networkType);
+              const promisifiedSendAsync2 = promisify(provider.sendAsync).bind(
+                provider,
+              );
+              const { result: newChainIdResult } = await promisifiedSendAsync2({
+                method: 'eth_chainId',
+              });
+              expect(newChainIdResult).toBe(chainId);
             },
           );
         });
@@ -860,7 +867,7 @@ describe('NetworkController', () => {
     }
 
     describe('when the type in the provider configuration is changed to "rpc"', () => {
-      it('returns a provider that is pointed to the new RPC URL and chain ID', async () => {
+      it('returns a provider object that was pointed to another network before the switch and is pointed to the new network', async () => {
         await withController(
           {
             state: {
@@ -872,17 +879,24 @@ describe('NetworkController', () => {
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls();
             await controller.initializeProvider();
-
-            controller.setRpcTarget('https://mock-rpc-url', '0x1337');
-
             const { provider } = controller.getProviderAndBlockTracker();
-            const promisifiedSendAsync = promisify(provider.sendAsync).bind(
+
+            const promisifiedSendAsync1 = promisify(provider.sendAsync).bind(
               provider,
             );
-            const chainIdResult = await promisifiedSendAsync({
+            const { result: oldChainIdResult } = await promisifiedSendAsync1({
               method: 'eth_chainId',
             });
-            expect(chainIdResult.result).toBe('0x1337');
+            expect(oldChainIdResult).toBe('0x5');
+
+            controller.setRpcTarget('https://mock-rpc-url', '0x1337');
+            const promisifiedSendAsync2 = promisify(provider.sendAsync).bind(
+              provider,
+            );
+            const { result: newChainIdResult } = await promisifiedSendAsync2({
+              method: 'eth_chainId',
+            });
+            expect(newChainIdResult).toBe('0x1337');
           },
         );
       });
@@ -2530,17 +2544,17 @@ describe('NetworkController', () => {
         const promisifiedSendAsync = promisify(provider.sendAsync).bind(
           provider,
         );
-        const testResponse = await promisifiedSendAsync({
+        const { result: testResult } = await promisifiedSendAsync({
           id: 99999,
           jsonrpc: '2.0',
           method: 'test',
           params: [],
         });
-        expect(testResponse.result).toBe('test response');
-        const chainIdResponse = await promisifiedSendAsync({
+        expect(testResult).toBe('test response');
+        const { result: chainIdResult } = await promisifiedSendAsync({
           method: 'eth_chainId',
         });
-        expect(chainIdResponse.result).toBe('0x1337');
+        expect(chainIdResult).toBe('0x1337');
       });
     });
 
@@ -2886,10 +2900,10 @@ describe('NetworkController', () => {
             const promisifiedSendAsync = promisify(provider.sendAsync).bind(
               provider,
             );
-            const chainIdResult = await promisifiedSendAsync({
+            const { result: chainIdResult } = await promisifiedSendAsync({
               method: 'eth_chainId',
             });
-            expect(chainIdResult.result).toBe(chainId);
+            expect(chainIdResult).toBe(chainId);
           });
         });
 
@@ -3169,10 +3183,10 @@ describe('NetworkController', () => {
               const promisifiedSendAsync = promisify(provider.sendAsync).bind(
                 provider,
               );
-              const chainIdResponse = await promisifiedSendAsync({
+              const { result: chainIdResult } = await promisifiedSendAsync({
                 method: 'eth_chainId',
               });
-              expect(chainIdResponse.result).toBe(chainId);
+              expect(chainIdResult).toBe(chainId);
             },
           );
         });
@@ -3438,10 +3452,10 @@ describe('NetworkController', () => {
             const promisifiedSendAsync = promisify(provider.sendAsync).bind(
               provider,
             );
-            const chainIdResponse = await promisifiedSendAsync({
+            const { result: chainIdResult } = await promisifiedSendAsync({
               method: 'eth_chainId',
             });
-            expect(chainIdResponse.result).toBe('0x1337');
+            expect(chainIdResult).toBe('0x1337');
           },
         );
       });
@@ -3840,10 +3854,10 @@ describe('NetworkController', () => {
               const promisifiedSendAsync = promisify(provider.sendAsync).bind(
                 provider,
               );
-              const chainIdResponse = await promisifiedSendAsync({
+              const { result: chainIdResult } = await promisifiedSendAsync({
                 method: 'eth_chainId',
               });
-              expect(chainIdResponse.result).toBe(chainId);
+              expect(chainIdResult).toBe(chainId);
             },
           );
         });
@@ -4321,10 +4335,10 @@ describe('NetworkController', () => {
             const promisifiedSendAsync = promisify(provider.sendAsync).bind(
               provider,
             );
-            const chainIdResponse = await promisifiedSendAsync({
+            const { result: chainIdResult } = await promisifiedSendAsync({
               method: 'eth_chainId',
             });
-            expect(chainIdResponse.result).toBe('0x1337');
+            expect(chainIdResult).toBe('0x1337');
           },
         );
       });
