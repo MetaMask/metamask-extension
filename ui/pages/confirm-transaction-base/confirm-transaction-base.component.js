@@ -24,6 +24,8 @@ import {
 } from '../../../shared/constants/transaction';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
+  checkIsContractTypeTransaction,
+  getContractAddress,
   getTransactionTypeTitle,
   isLegacyTransaction,
 } from '../../helpers/utils/transactions.util';
@@ -1113,6 +1115,16 @@ export default class ConfirmTransactionBase extends Component {
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
           txData={txData}
+          isContractTypeTransaction={checkIsContractTypeTransaction(
+            txData.type,
+            txData.txParams.value,
+          )}
+          contractAddress={getContractAddress(
+            txData.type,
+            txData.txParams.value,
+            tokenAddress,
+            toAddress,
+          )}
         />
       </TransactionModalContextProvider>
     );

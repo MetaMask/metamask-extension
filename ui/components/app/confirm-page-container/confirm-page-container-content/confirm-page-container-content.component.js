@@ -29,7 +29,6 @@ export default class ConfirmPageContainerContent extends Component {
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
     hideSubtitle: PropTypes.bool,
-    tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -52,9 +51,9 @@ export default class ConfirmPageContainerContent extends Component {
     hasTopBorder: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
-    toAddress: PropTypes.string,
-    transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    isContractTypeTransaction: PropTypes.bool,
+    contractAddress: PropTypes.string,
   };
 
   state = {
@@ -143,7 +142,6 @@ export default class ConfirmPageContainerContent extends Component {
       titleComponent,
       subtitleComponent,
       hideSubtitle,
-      tokenAddress,
       nonce,
       detailsComponent,
       dataComponent,
@@ -163,9 +161,9 @@ export default class ConfirmPageContainerContent extends Component {
       hasTopBorder,
       nativeCurrency,
       networkName,
-      toAddress,
-      transactionType,
       isBuyableChain,
+      isContractTypeTransaction,
+      contractAddress,
     } = this.props;
 
     const { t } = this.context;
@@ -198,12 +196,11 @@ export default class ConfirmPageContainerContent extends Component {
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
           hideSubtitle={hideSubtitle}
-          tokenAddress={tokenAddress}
           nonce={nonce}
           origin={origin}
           hideTitle={hideTitle}
-          toAddress={toAddress}
-          transactionType={transactionType}
+          isContractTypeTransaction={isContractTypeTransaction}
+          contractAddress={contractAddress}
         />
         {this.renderContent()}
         {!supportsEIP1559 && (errorKey || errorMessage) && (

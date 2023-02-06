@@ -8,6 +8,7 @@ export default class ConfirmSendToken extends Component {
     history: PropTypes.object,
     editExistingTransaction: PropTypes.func,
     tokenAmount: PropTypes.string,
+    tokenAddress: PropTypes.string,
   };
 
   handleEdit(confirmTransactionData) {
@@ -18,7 +19,7 @@ export default class ConfirmSendToken extends Component {
   }
 
   render() {
-    const { tokenAmount } = this.props;
+    const { tokenAmount, tokenAddress } = this.props;
 
     return (
       <ConfirmTokenTransactionBaseContainer
@@ -26,6 +27,7 @@ export default class ConfirmSendToken extends Component {
           this.handleEdit(confirmTransactionData)
         }
         tokenAmount={tokenAmount}
+        tokenAddress={tokenAddress}
       />
     );
   }

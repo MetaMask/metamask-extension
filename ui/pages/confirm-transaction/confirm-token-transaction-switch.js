@@ -40,7 +40,6 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
     hexTransactionTotal,
     hexMaximumTransactionFee,
   } = useSelector((state) => transactionFeeSelector(state, transaction));
-  console.log('-3-');
 
   return (
     <Switch>

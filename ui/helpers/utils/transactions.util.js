@@ -215,3 +215,30 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
   }
 }
+
+let contractInitiatedTransactionType = [
+  TransactionType.contractInteraction,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
+
+export const checkIsContractTypeTransaction = (type, value) =>
+  contractInitiatedTransactionType.includes(type) ||
+  (type === TransactionType.tokenMethodApprove && value && value !== '0x0');
+
+export const getContractAddress = (type, value, tokenAddress, toAddress) => {
+  if (!checkIsContractTypeTransaction(type, value)) {
+    return;
+  }
+  // If the transaction is TOKEN_METHOD_TRANSFER or TOKEN_METHOD_TRANSFER_FROM
+  // the contract address is passed down as tokenAddress, if it is anyother
+  // type of contract interaction it is passed as toAddress
+  return type === TransactionType.tokenMethodTransfer ||
+    type === TransactionType.tokenMethodTransferFrom ||
+    type === TransactionType.tokenMethodSafeTransferFrom ||
+    type === TransactionType.tokenMethodSetApprovalForAll ||
+    type === TransactionType.tokenMethodApprove
+    ? tokenAddress
+    : toAddress;
+};

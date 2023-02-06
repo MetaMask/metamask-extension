@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { TransactionType } from '../../../../../../shared/constants/transaction';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAddressDetails from '../../../../../hooks/useAddressDetails';
@@ -28,40 +27,17 @@ const ConfirmPageContainerSummary = (props) => {
     subtitleComponent,
     hideSubtitle,
     className,
-    tokenAddress,
-    toAddress,
     nonce,
     origin,
     hideTitle,
     image,
-    transactionType,
+    isContractTypeTransaction,
+    contractAddress,
   } = props;
 
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
-
-  const contractInitiatedTransactionType = [
-    TransactionType.contractInteraction,
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.tokenMethodSafeTransferFrom,
-  ];
-  const isContractTypeTransaction =
-    contractInitiatedTransactionType.includes(transactionType);
-  let contractAddress;
-  if (isContractTypeTransaction) {
-    // If the transaction is TOKEN_METHOD_TRANSFER or TOKEN_METHOD_TRANSFER_FROM
-    // the contract address is passed down as tokenAddress, if it is anyother
-    // type of contract interaction it is passed as toAddress
-    contractAddress =
-      transactionType === TransactionType.tokenMethodTransfer ||
-      transactionType === TransactionType.tokenMethodTransferFrom ||
-      transactionType === TransactionType.tokenMethodSafeTransferFrom ||
-      transactionType === TransactionType.tokenMethodSetApprovalForAll
-        ? tokenAddress
-        : toAddress;
-  }
 
   const { toName, isTrusted } = useAddressDetails(contractAddress);
   const checksummedAddress = toChecksumHexAddress(contractAddress);
@@ -130,7 +106,7 @@ const ConfirmPageContainerSummary = (props) => {
       <>
         <div className="confirm-page-container-summary__title">
           {renderImage()}
-          {!hideTitle ? (
+          {/* {!hideTitle ? (
             <Typography
               className="confirm-page-container-summary__title-text"
               variant={
@@ -142,7 +118,7 @@ const ConfirmPageContainerSummary = (props) => {
             >
               {titleComponent || title}
             </Typography>
-          ) : null}
+          ) : null} */}
         </div>
         {hideSubtitle ? null : (
           <div className="confirm-page-container-summary__subtitle">
@@ -168,12 +144,11 @@ ConfirmPageContainerSummary.propTypes = {
   subtitleComponent: PropTypes.node,
   hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
-  tokenAddress: PropTypes.string,
-  toAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
   hideTitle: PropTypes.bool,
-  transactionType: PropTypes.string,
+  isContractTypeTransaction: PropTypes.bool,
+  contractAddress: PropTypes.string,
 };
 
 export default ConfirmPageContainerSummary;

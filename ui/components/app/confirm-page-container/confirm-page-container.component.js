@@ -91,6 +91,8 @@ const ConfirmPageContainer = (props) => {
     ///: END:ONLY_INCLUDE_IN(flask)
     assetStandard,
     isApprovalOrRejection,
+    isContractTypeTransaction,
+    contractAddress,
   } = props;
 
   const t = useI18nContext();
@@ -149,7 +151,6 @@ const ConfirmPageContainer = (props) => {
     fetchCollectionBalance,
     collectionBalance,
   ]);
-
   return (
     <GasFeeContextProvider transaction={currentTransaction}>
       <div className="page-container" data-testid="page-container">
@@ -202,7 +203,6 @@ const ConfirmPageContainer = (props) => {
             ///: END:ONLY_INCLUDE_IN
             errorMessage={errorMessage}
             errorKey={errorKey}
-            tokenAddress={tokenAddress}
             nonce={nonce}
             warning={warning}
             onCancelAll={onCancelAll}
@@ -220,9 +220,9 @@ const ConfirmPageContainer = (props) => {
             currentTransaction={currentTransaction}
             nativeCurrency={nativeCurrency}
             networkName={networkName}
-            toAddress={toAddress}
-            transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            isContractTypeTransaction={isContractTypeTransaction}
+            contractAddress={contractAddress}
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -369,6 +369,8 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  isContractTypeTransaction: PropTypes.bool,
+  contractAddress: PropTypes.string,
 };
 
 export default ConfirmPageContainer;
