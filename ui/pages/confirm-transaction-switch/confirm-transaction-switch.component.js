@@ -46,7 +46,7 @@ export default class ConfirmTransactionSwitch extends Component {
         }
         case TransactionType.tokenMethodApprove: {
           if (value && value !== '0x0') {
-            const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_TOKEN_PATH}`;
+            const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`;
             return <Redirect to={{ pathname }} />;
           }
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_APPROVE_PATH}`;

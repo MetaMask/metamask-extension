@@ -106,7 +106,7 @@ const ConfirmPageContainerSummary = (props) => {
       <>
         <div className="confirm-page-container-summary__title">
           {renderImage()}
-          {/* {!hideTitle ? (
+          {!hideTitle ? (
             <Typography
               className="confirm-page-container-summary__title-text"
               variant={
@@ -118,7 +118,7 @@ const ConfirmPageContainerSummary = (props) => {
             >
               {titleComponent || title}
             </Typography>
-          ) : null} */}
+          ) : null}
         </div>
         {hideSubtitle ? null : (
           <div className="confirm-page-container-summary__subtitle">

@@ -159,7 +159,13 @@ export default class ConfirmTransaction extends Component {
       transactionId &&
       (!paramsTransactionId || paramsTransactionId === transactionId);
 
-    if (isTokenMethodAction && validTransactionId) {
+    const value = transaction?.txParams?.value;
+    if (
+      isTokenMethodAction &&
+      validTransactionId &&
+      !value &&
+      value === '0x0'
+    ) {
       return <ConfirmTokenTransactionSwitch transaction={transaction} />;
     }
     // Show routes when state.confirmTransaction has been set and when either the ID in the params

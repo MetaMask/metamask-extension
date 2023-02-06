@@ -28,6 +28,7 @@ export default class ConfirmSendEther extends Component {
 
   render() {
     const hideData = this.shouldHideData();
+    const { txParams: { to: tokenAddress } = {} } = this.props;
 
     return (
       <ConfirmTransactionBase
@@ -36,6 +37,7 @@ export default class ConfirmSendEther extends Component {
         onEdit={(confirmTransactionData) =>
           this.handleEdit(confirmTransactionData)
         }
+        tokenAddress={tokenAddress}
       />
     );
   }
