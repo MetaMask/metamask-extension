@@ -2143,6 +2143,14 @@
       "comment_id": 1415833358,
       "created_at": "2023-02-03T12:54:34Z",
       "repoId": 42009758
+    },
+    {
+      "id": 1970725,
+      "name": "bergarces",
+      "pullRequestNo": 17625,
+      "comment_id": 1419002126,
+      "created_at": "2023-02-06T12:26:27Z",
+      "repoId": 42009758
     }
   ]
 }
