@@ -215,8 +215,10 @@ export const handleHardwareCall = (_params) => {
   initializeClientKeyringController();
 
   if (callSettings.global) {
-    // @TODO, handle global calls
+    clientKeyringController.handleMethodCall(params);
+    return;
   }
 
+  // @TODO, handle responding to specific JSON-RPC messages
   clientKeyringController.handleMethodCall(params);
 };

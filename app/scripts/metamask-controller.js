@@ -3709,7 +3709,7 @@ export default class MetamaskController extends EventEmitter {
       outStream.write({
         method,
         jsonrpc: '2.0',
-        params: [params], // @TODO, allow for multiple params
+        params: [params],
       });
     };
 
