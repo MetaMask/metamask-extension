@@ -1167,6 +1167,44 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
+    "@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/key-tree>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/key-tree>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/key-tree>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/key-tree>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
     "@metamask/logo": {
       "globals": {
         "addEventListener": true,
@@ -1339,13 +1377,13 @@
         "console.warn": true
       },
       "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/rpc-methods>nanoid": true,
         "@metamask/snaps-ui": true,
         "@metamask/snaps-utils": true,
-        "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true,
         "eth-rpc-errors": true
@@ -1365,32 +1403,6 @@
         "browserify>buffer": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree": {
-      "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1401,8 +1413,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -1642,26 +1654,14 @@
         "document.createElement": true
       },
       "packages": {
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true,
         "semver": true
-      }
-    },
-    "@metamask/snaps-utils>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/snaps-utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {
@@ -3047,8 +3047,8 @@
     },
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/secp256k1": true
       }
     },
