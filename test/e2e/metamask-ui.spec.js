@@ -463,10 +463,18 @@ describe('MetaMask', function () {
         tag: 'button',
       });
 
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.waitForSelector({
         css: '.asset-list-item__token-button',
         text: '7.5 TST',
       });
+
+      
+      await driver.clickElement({
+        text: 'Activity',
+        tag: 'button',
+      });
+      await driver.waitForElementNotPresent('.loading-overlay');
     });
   });
 
