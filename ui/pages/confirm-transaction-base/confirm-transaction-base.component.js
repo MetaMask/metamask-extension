@@ -24,8 +24,6 @@ import {
 } from '../../../shared/constants/transaction';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
-  checkIsContractTypeTransaction,
-  getContractAddress,
   getTransactionTypeTitle,
   isLegacyTransaction,
 } from '../../helpers/utils/transactions.util';
@@ -149,6 +147,7 @@ export default class ConfirmTransactionBase extends Component {
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
+    isSendWithApproval: PropTypes.bool,
   };
 
   state = {
@@ -888,7 +887,8 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   renderTitleComponent() {
-    const { title, hexTransactionAmount, txData } = this.props;
+    const { title, hexTransactionAmount, txData, isSendWithApproval } =
+      this.props;
 
     // Title string passed in by props takes priority
     if (title) {
@@ -896,7 +896,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     const isContractInteraction =
-      txData.type === TransactionType.contractInteraction;
+      txData.type === TransactionType.contractInteraction || isSendWithApproval;
 
     return (
       <UserPreferencedCurrencyDisplay
@@ -1017,6 +1017,7 @@ export default class ConfirmTransactionBase extends Component {
       image,
       isApprovalOrRejection,
       assetStandard,
+      isSendWithApproval,
     } = this.props;
     const {
       submitting,
@@ -1114,17 +1115,7 @@ export default class ConfirmTransactionBase extends Component {
           nativeCurrency={nativeCurrency}
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
-          txData={txData}
-          isContractTypeTransaction={checkIsContractTypeTransaction(
-            txData.type,
-            txData.txParams.value,
-          )}
-          contractAddress={getContractAddress(
-            txData.type,
-            txData.txParams.value,
-            tokenAddress,
-            toAddress,
-          )}
+          isSendWithApproval={isSendWithApproval}
         />
       </TransactionModalContextProvider>
     );

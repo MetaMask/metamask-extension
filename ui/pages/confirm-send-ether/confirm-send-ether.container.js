@@ -8,11 +8,12 @@ import ConfirmSendEther from './confirm-send-ether.component';
 
 const mapStateToProps = (state) => {
   const {
-    confirmTransaction: { txData: { txParams } = {} },
+    confirmTransaction: { txData: { txParams, type } = {} },
   } = state;
 
   return {
     txParams,
+    type,
   };
 };
 
