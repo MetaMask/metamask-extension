@@ -30,13 +30,13 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  COLORS,
-  JUSTIFY_CONTENT,
-  ALIGN_ITEMS,
+  TextColor,
+  JustifyContent,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { SWAPS_ERROR_ROUTE } from '../../../helpers/constants/routes';
 
@@ -664,7 +664,7 @@ export default function PrepareSwap({
                   {t('enableSmartTransactions')}
                 </Button>
                 <Box marginTop={1}>
-                  <Typography variant={TYPOGRAPHY.H6}>
+                  <Typography variant={TypographyVariant.H6}>
                     <Button
                       type="link"
                       onClick={onCloseSmartTransactionsOptInPopover}
@@ -698,12 +698,12 @@ export default function PrepareSwap({
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
+              <Typography variant={TypographyVariant.H7} marginTop={0}>
                 {t('stxDescription')}
               </Typography>
               <Typography
                 as="ul"
-                variant={TYPOGRAPHY.H7}
+                variant={TypographyVariant.H7}
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={3}
               >
@@ -715,23 +715,23 @@ export default function PrepareSwap({
                   <Typography
                     as="span"
                     fontWeight={FONT_WEIGHT.NORMAL}
-                    variant={TYPOGRAPHY.H7}
+                    variant={TypographyVariant.H7}
                   >
                     {' *'}
                   </Typography>
                 </li>
               </Typography>
               <Typography
-                variant={TYPOGRAPHY.H8}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H8}
+                color={TextColor.textAlternative}
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
                 <Typography
                   as="span"
                   fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  variant={TypographyVariant.H8}
+                  color={TextColor.textAlternative}
                 >
                   {t('stxYouCanOptOut')}&nbsp;
                 </Typography>
@@ -765,8 +765,8 @@ export default function PrepareSwap({
           />
           <Box
             display={DISPLAY.FLEX}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-            alignItems={ALIGN_ITEMS.STRETCH}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
           >
             <div className="prepare-swap__balance-message">
               {fromTokenSymbol && swapYourTokenBalance}
@@ -785,12 +785,12 @@ export default function PrepareSwap({
             {fromTokenInputValue && swapFromFiatValue && (
               <Box
                 display={DISPLAY.FLEX}
-                justifyContent={JUSTIFY_CONTENT.FLEX_END}
-                alignItems={ALIGN_ITEMS.FLEX_END}
+                justifyContent={JustifyContent.flexEnd}
+                alignItems={AlignItems.flexEnd}
               >
                 <Typography
-                  color={COLORS.TEXT_ALTERNATIVE}
-                  variant={TYPOGRAPHY.H7}
+                  color={TextColor.textAlternative}
+                  variant={TypographyVariant.H7}
                 >
                   {swapFromFiatValue}
                 </Typography>
@@ -800,12 +800,12 @@ export default function PrepareSwap({
           {!fromTokenError && balanceError && fromTokenSymbol && (
             <Box
               display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.FLEX_START}
+              justifyContent={JustifyContent.flexStart}
             >
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={TextColor.textAlternative}
                 fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H7}
+                variant={TypographyVariant.H7}
                 marginTop={0}
               >
                 {t('swapsNotEnoughToken', [fromTokenSymbol])}
@@ -815,12 +815,12 @@ export default function PrepareSwap({
           {fromTokenError && (
             <Box
               display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.FLEX_START}
+              justifyContent={JustifyContent.flexStart}
             >
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={TextColor.textAlternative}
                 fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H7}
+                variant={TypographyVariant.H7}
                 marginTop={0}
               >
                 {t('swapTooManyDecimalsError', [
@@ -832,7 +832,7 @@ export default function PrepareSwap({
           )}
           <Box
             display={DISPLAY.FLEX}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            justifyContent={JustifyContent.center}
             height={0}
           >
             <div className="prepare-swap__switch-tokens">
@@ -877,7 +877,9 @@ export default function PrepareSwap({
               shouldSearchForImports
             />
             <Box>
-              <Typography variant={TYPOGRAPHY.H4}>{receiveToAmount}</Typography>
+              <Typography variant={TypographyVariant.H4}>
+                {receiveToAmount}
+              </Typography>
             </Box>
           </div>
         </div>
@@ -931,26 +933,26 @@ export default function PrepareSwap({
           <Box
             marginTop={4}
             display={DISPLAY.FLEX}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
-            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
             flexDirection={FLEX_DIRECTION.COLUMN}
           >
             <Box
               display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.CENTER}
-              alignItems={ALIGN_ITEMS.CENTER}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
             >
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H6}
                 boxProps={{ marginLeft: 1, marginRight: 1 }}
               >
                 {t('swapFetchingQuote')}
               </Typography>
               <Typography
                 fontWeight={FONT_WEIGHT.BOLD}
-                color={COLORS.TEXT_ALTERNATIVE}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H6}
               >
                 {t('swapQuoteNofM', [
                   Math.min(quoteCount + 1, numberOfAggregators),

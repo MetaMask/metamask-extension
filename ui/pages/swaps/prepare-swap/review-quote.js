@@ -108,12 +108,12 @@ import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace 
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  TextColor,
+  TypographyVariant,
+  JustifyContent,
   DISPLAY,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
   FLEX_DIRECTION,
   FONT_STYLE,
 } from '../../../helpers/constants/design-system';
@@ -1071,10 +1071,13 @@ export default function ViewQuote({ setReceiveToAmount }) {
         >
           <Box
             display={DISPLAY.FLEX}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
           >
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+            <Typography
+              color={TextColor.textAlternative}
+              variant={TypographyVariant.H6}
+            >
               {t('quoteRate')}
             </Typography>
             <ExchangeRateDisplay
@@ -1101,17 +1104,17 @@ export default function ViewQuote({ setReceiveToAmount }) {
           </Box>
           <Box
             display={DISPLAY.FLEX}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-            alignItems={ALIGN_ITEMS.STRETCH}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
           >
             <Box
               display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.CENTER}
-              alignItems={ALIGN_ITEMS.CENTER}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
             >
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H6}
                 marginRight={1}
               >
                 {t('transactionDetailGasHeading')}
@@ -1151,18 +1154,18 @@ export default function ViewQuote({ setReceiveToAmount }) {
             </Box>
             <Box
               display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.FLEX_END}
-              alignItems={ALIGN_ITEMS.FLEX_END}
+              justifyContent={JustifyContent.flexEnd}
+              alignItems={AlignItems.flexEnd}
             >
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H6}
               >
                 {feeInEth}
               </Typography>
               <Typography
-                color={COLORS.TEXT_ALTERNATIVE}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H6}
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginLeft={1}
               >
@@ -1171,14 +1174,11 @@ export default function ViewQuote({ setReceiveToAmount }) {
             </Box>
           </Box>
           {(maxFeeInFiat || maxFeeInEth) && (
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.FLEX_END}
-            >
+            <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.flexEnd}>
               <Typography
                 fontStyle={FONT_STYLE.ITALIC}
-                color={COLORS.TEXT_ALTERNATIVE}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H7}
               >
                 {t('maxFee')}
                 {`: ${maxFeeInFiat || maxFeeInEth}`}
@@ -1187,13 +1187,19 @@ export default function ViewQuote({ setReceiveToAmount }) {
           )}
           <Box
             display={DISPLAY.FLEX}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-            alignItems={ALIGN_ITEMS.STRETCH}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
           >
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+            <Typography
+              color={TextColor.textAlternative}
+              variant={TypographyVariant.H6}
+            >
               {t('swapMetaMaskFee')}
             </Typography>
-            <Typography color={COLORS.TEXT_ALTERNATIVE} variant={TYPOGRAPHY.H6}>
+            <Typography
+              color={TextColor.textAlternative}
+              variant={TypographyVariant.H6}
+            >
               {t('percentage', [metaMaskFee])}
             </Typography>
           </Box>

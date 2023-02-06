@@ -6,9 +6,9 @@ import { formatSwapsValueForDisplay } from '../swaps.util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import Box from '../../../components/ui/box';
 import {
-  JUSTIFY_CONTENT,
+  JustifyContent,
   DISPLAY,
-  ALIGN_ITEMS,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
@@ -73,8 +73,8 @@ export default function ExchangeRateDisplay({
     <div className={classnames('exchange-rate-display', className)}>
       <Box
         display={DISPLAY.FLEX}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        alignItems={ALIGN_ITEMS.CENTER}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
         onClick={onQuotesClick}
         className="exchange-rate-display__quote-rate"
       >
