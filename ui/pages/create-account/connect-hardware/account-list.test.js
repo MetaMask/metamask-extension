@@ -73,9 +73,13 @@ describe('AccountList', () => {
     expect(screen.getByText('Select HD path')).toBeInTheDocument();
   });
 
-  it('renders AccountList component and shows the first account text', () => {
+  it('renders AccountList component and has two accounts selected', () => {
     render();
-    expect(screen.getByText('0x5E')).toBeInTheDocument();
+    expect(
+      screen.getAllByTitle(
+        'This account has already been connected to MetaMask',
+      ),
+    ).toHaveLength(2);
   });
 
   it('disables the Prev button as the first account has an index of 0', () => {

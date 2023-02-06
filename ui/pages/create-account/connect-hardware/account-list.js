@@ -104,6 +104,7 @@ class AccountList extends Component {
             <div
               className="hw-account-list__item"
               key={account.address}
+              data-testid="hw-account-list__item"
               title={
                 accountAlreadyConnected
                   ? this.context.t('selectAnAccountAlreadyConnected')
