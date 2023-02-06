@@ -338,20 +338,23 @@ export default function ViewQuote({ setReceiveToAmount }) {
   const approveGas = approveTxParams?.gas;
 
   const renderablePopoverData = useMemo(() => {
-    return quotesToRenderableData(
+    return quotesToRenderableData({
       quotes,
-      networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : gasPrice,
+      gasPrice: networkAndAccountSupports1559
+        ? baseAndPriorityFeePerGas
+        : gasPrice,
       conversionRate,
       currentCurrency,
       approveGas,
-      memoizedTokenConversionRates,
+      tokenConversionRates: memoizedTokenConversionRates,
       chainId,
-      smartTransactionsEnabled &&
+      smartTransactionEstimatedGas:
+        smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
       multiLayerL1ApprovalFeeTotal,
-    );
+    });
   }, [
     quotes,
     gasPrice,
