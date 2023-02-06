@@ -45,6 +45,11 @@ const firstTimeState = {
       },
     },
   },
+  PreferencesController: {
+    disabledRpcMethodPreferences: {
+      eth_sign: true,
+    },
+  },
 };
 
 const ganacheServer = new Ganache();
