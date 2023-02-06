@@ -12,6 +12,7 @@ import {
   BackgroundColor,
   BorderColor,
   Color,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -347,3 +348,48 @@ export const ColorStory = (args) => (
   </Box>
 );
 ColorStory.storyName = 'Color';
+
+export const LayoutAndSpacing = () => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
+    <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon
+        name={ICON_NAMES.CHECK}
+        color={IconColor.successDefault}
+        marginRight={1}
+      />
+      <Text>Always allow you to opt-out via Settings</Text>
+    </Box>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      backgroundColor={BackgroundColor.primaryMuted}
+      marginRight="auto"
+    >
+      <Text color={Color.primaryDefault}>
+        0x79fAaFe7B6D5DB5D8c63FE88DFF0AF1Fe53358db
+      </Text>
+      <Icon
+        name={ICON_NAMES.COPY}
+        color={IconColor.primaryDefault}
+        marginLeft={1}
+      />
+    </Box>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      padding={4}
+      borderColor={BorderColor.borderMuted}
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
+      <Icon
+        name={ICON_NAMES.ADD}
+        color={IconColor.iconDefault}
+        marginRight={2}
+      />
+      <Text>Create account</Text>
+    </Box>
+  </Box>
+);
