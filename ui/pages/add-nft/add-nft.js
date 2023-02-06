@@ -33,6 +33,7 @@ import CollectiblesDetectionNotice from '../../components/app/nfts-detection-not
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import { ButtonIcon, ICON_NAMES } from '../../components/component-library';
 
 export default function AddCollectible() {
   const t = useI18nContext();
@@ -157,9 +158,9 @@ export default function AddCollectible() {
                     >
                       {t('nftAddFailedMessage')}
                     </Typography>
-                    <button
-                      className="fas fa-times add-collectible__close"
-                      title={t('close')}
+                    <ButtonIcon
+                      className="add-collectible__close"
+                      iconName={ICON_NAMES.CLOSE}
                       onClick={() => setCollectibleAddFailed(false)}
                     />
                   </Box>

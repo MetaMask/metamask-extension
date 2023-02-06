@@ -10,6 +10,7 @@ import {
   FLEX_DIRECTION,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
@@ -76,9 +77,9 @@ const Popover = ({
             {title}
           </h2>
           {onClose ? (
-            <button
-              className="fas fa-times popover-header__button"
-              title={t('close')}
+            <ButtonIcon
+              iconName={ICON_NAMES.CLOSE}
+              className="popover-header__button"
               data-testid="popover-close"
               onClick={onClose}
             />

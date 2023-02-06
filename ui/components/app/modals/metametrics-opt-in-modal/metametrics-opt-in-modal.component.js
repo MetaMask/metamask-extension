@@ -7,6 +7,7 @@ import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
+import { Icon, ICON_NAMES } from '../../../component-library';
 
 export default class MetaMetricsOptInModal extends Component {
   static propTypes = {
@@ -56,7 +57,7 @@ export default class MetaMetricsOptInModal extends Component {
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row metametrics-opt-in__break-row">
-                  <i className="fa fa-times" />
+                  <Icon name={ICON_NAMES.CLOSE} />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsNeverCollectKeysEtc', [
                       <span
@@ -69,7 +70,7 @@ export default class MetaMetricsOptInModal extends Component {
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
-                  <i className="fa fa-times" />
+                  <Icon name={ICON_NAMES.CLOSE} />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsNeverCollectIP', [
                       <span
@@ -82,7 +83,7 @@ export default class MetaMetricsOptInModal extends Component {
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
-                  <i className="fa fa-times" />
+                  <Icon name={ICON_NAMES.CLOSE} />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsNeverSellDataForProfit', [
                       <span

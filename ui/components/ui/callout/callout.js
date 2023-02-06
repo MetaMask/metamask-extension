@@ -5,6 +5,7 @@ import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Typography from '../typography';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 
 export default function Callout({
   severity,
@@ -41,7 +42,9 @@ export default function Callout({
         {children}
       </Typography>
       {dismiss && (
-        <i
+        <ButtonIcon
+          className="callout__close-button"
+          iconName={ICON_NAMES.CLOSE}
           onClick={() => {
             setRemoved(true);
           }}
@@ -50,9 +53,6 @@ export default function Callout({
               setRemoved(true);
             }
           }}
-          role="button"
-          tabIndex={0}
-          className="fas fa-times callout__close-button"
         />
       )}
     </div>

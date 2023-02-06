@@ -33,7 +33,12 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
-import { ButtonLink, ICON_NAMES } from '../../components/component-library';
+import {
+  ButtonIcon,
+  ButtonLink,
+  Icon,
+  ICON_NAMES,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -347,9 +352,9 @@ export default class Home extends PureComponent {
                 >
                   {t('newNftAddedMessage')}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  className="home__new-nft-notification-close"
                   onClick={onAutoHide}
                 />
               </Box>
@@ -372,9 +377,9 @@ export default class Home extends PureComponent {
                 >
                   {t('removeNftMessage')}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  className="home__new-nft-notification-close"
                   onClick={onAutoHide}
                 />
               </Box>
@@ -394,9 +399,9 @@ export default class Home extends PureComponent {
                 >
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-network-notification-close"
-                  title={t('close')}
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  className="home__new-network-notification-close"
                   onClick={() => setNewNetworkAdded('')}
                 />
               </Box>
@@ -426,9 +431,9 @@ export default class Home extends PureComponent {
                     {t('newTokensImportedMessage', [newTokensImported])}
                   </Typography>
                 </Box>
-                <button
-                  className="fas fa-times home__new-tokens-imported-notification-close"
-                  title={t('close')}
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  className="home__new-tokens-imported-notification-close"
                   onClick={() => setNewTokensImported('')}
                 />
               </Box>
@@ -696,7 +701,7 @@ export default class Home extends PureComponent {
                             hidePortfolioTooltip();
                           }}
                         >
-                          <i className="fa fa-times" />
+                          <Icon name={ICON_NAMES.CLOSE} />
                         </button>
                       </div>
                       <div>

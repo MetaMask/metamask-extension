@@ -12,6 +12,7 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -50,7 +51,7 @@ const BetaHeader = () => {
         }}
         aria-label={t('close')}
       >
-        <i className="fa fa-times" />
+        <Icon name={ICON_NAMES.CLOSE} />
       </button>
     </Box>
   );

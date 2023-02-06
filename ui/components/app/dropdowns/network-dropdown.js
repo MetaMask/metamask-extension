@@ -24,6 +24,7 @@ import {
 } from '../../../helpers/constants/routes';
 import IconCheck from '../../ui/icon/icon-check';
 
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -196,8 +197,9 @@ class NetworkDropdown extends Component {
             {nickname || rpcUrl}
           </span>
           {isCurrentRpcTarget ? null : (
-            <i
-              className="fa fa-times delete"
+            <ButtonIcon
+              iconName={ICON_NAMES.CLOSE}
+              className="delete"
               onClick={(e) => {
                 e.stopPropagation();
                 this.props.showConfirmDeleteNetworkModal({

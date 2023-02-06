@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-
+import { ICON_NAMES } from '../../../component-library';
 import {
   TRANSACTION_CREATED_EVENT,
   TRANSACTION_SUBMITTED_EVENT,
@@ -18,10 +18,10 @@ export const imageHash = {
   [TRANSACTION_SUBMITTED_EVENT]: 'fa-arrow-up',
   [TRANSACTION_RESUBMITTED_EVENT]: 'fa-retweet',
   [TRANSACTION_CONFIRMED_EVENT]: 'fa-check',
-  [TRANSACTION_DROPPED_EVENT]: 'fa-times',
+  [TRANSACTION_DROPPED_EVENT]: `${ICON_NAMES.CLOSE}`,
   [TRANSACTION_ERRORED_EVENT]: 'fa-exclamation',
-  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: 'fa-times',
-  [TRANSACTION_CANCEL_SUCCESS_EVENT]: 'fa-times',
+  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: `${ICON_NAMES.CLOSE}`,
+  [TRANSACTION_CANCEL_SUCCESS_EVENT]: `${ICON_NAMES.CLOSE}`,
 };
 
 export default class TransactionActivityLogIcon extends PureComponent {

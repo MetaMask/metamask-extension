@@ -10,6 +10,7 @@ import {
   calcTokenAmount,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../../shared/lib/transactions-controller-utils';
+import { ButtonIcon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
 
 const MAX_UNSIGNED_256_INT = new BigNumber(2).pow(256).minus(1).toString(10);
 
@@ -57,8 +58,10 @@ export default class EditApprovalPermission extends PureComponent {
           <div className="edit-approval-permission__title">
             {t('editPermission')}
           </div>
-          <i
-            className="fa fa-times fa-lg edit-approval-permission__header__close"
+          <ButtonIcon
+            iconName={ICON_NAMES.CLOSE}
+            className="edit-approval-permission__header__close"
+            size={ICON_SIZES.LG}
             onClick={() => hideModal()}
           />
         </div>
