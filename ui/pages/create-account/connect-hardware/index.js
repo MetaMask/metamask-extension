@@ -21,6 +21,7 @@ import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
 const U2F_ERROR = 'U2F';
+const LEDGER_LOCKED_ERROR_CODES = ['0x6b0c', '0x5515'];
 
 const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
 const MEW_PATH = `m/44'/60'/0'`;
@@ -183,7 +184,8 @@ class ConnectHardwareForm extends Component {
           this.setState({ error: U2F_ERROR });
         } else if (
           errorMessage === 'LEDGER_LOCKED' ||
-          errorMessage === 'LEDGER_WRONG_APP'
+          errorMessage === 'LEDGER_WRONG_APP' ||
+          LEDGER_LOCKED_ERROR_CODES.some((code) => errorMessage.includes(code))
         ) {
           this.setState({
             error: this.context.t('ledgerLocked'),
