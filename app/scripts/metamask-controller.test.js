@@ -872,6 +872,10 @@ describe('MetaMaskController', function () {
         data,
       };
 
+      metamaskController.preferencesController.setDisabledRpcMethodPreference(
+        'eth_sign',
+        true,
+      );
       const promise = metamaskController.newUnsignedMessage(msgParams);
       // handle the promise so it doesn't throw an unhandledRejection
       promise.then(noop).catch(noop);

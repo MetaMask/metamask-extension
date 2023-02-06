@@ -13,7 +13,8 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { coinTypeToProtocolName } from './util';
+import { SNAPS_METADATA } from '../../../shared/constants/snaps';
+import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
 ///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -41,27 +42,59 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
   }),
   [RestrictedMethods.snap_getBip32PublicKey]: (t, _, permissionValue) =>
-    permissionValue.caveats[0].value.map(({ path, curve }) => ({
-      label: t('permission_viewBip32PublicKeys', [
-        <span className="permission-label-item" key={path.join('/')}>
-          {path.join('/')}
-        </span>,
-        curve,
-      ]),
-      leftIcon: 'fas fa-eye',
-      rightIcon: null,
-    })),
+    permissionValue.caveats[0].value.map(({ path, curve }) => {
+      const friendlyName = getSnapDerivationPathName(path, curve);
+      if (friendlyName) {
+        return {
+          label: t('permission_viewNamedBip32PublicKeys', [
+            <span className="permission-label-item" key={path.join('/')}>
+              {friendlyName}
+            </span>,
+            path.join('/'),
+          ]),
+          leftIcon: 'fas fa-eye',
+          rightIcon: null,
+        };
+      }
+
+      return {
+        label: t('permission_viewBip32PublicKeys', [
+          <span className="permission-label-item" key={path.join('/')}>
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
+        leftIcon: 'fas fa-eye',
+        rightIcon: null,
+      };
+    }),
   [RestrictedMethods.snap_getBip32Entropy]: (t, _, permissionValue) =>
-    permissionValue.caveats[0].value.map(({ path, curve }) => ({
-      label: t('permission_manageBip32Keys', [
-        <span className="permission-label-item" key={path.join('/')}>
-          {path.join('/')}
-        </span>,
-        curve,
-      ]),
-      leftIcon: 'fas fa-door-open',
-      rightIcon: null,
-    })),
+    permissionValue.caveats[0].value.map(({ path, curve }) => {
+      const friendlyName = getSnapDerivationPathName(path, curve);
+      if (friendlyName) {
+        return {
+          label: t('permission_manageNamedBip32Keys', [
+            <span className="permission-label-item" key={path.join('/')}>
+              {friendlyName}
+            </span>,
+            path.join('/'),
+          ]),
+          leftIcon: 'fas fa-door-open',
+          rightIcon: null,
+        };
+      }
+
+      return {
+        label: t('permission_manageBip32Keys', [
+          <span className="permission-label-item" key={path.join('/')}>
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
+        leftIcon: 'fas fa-door-open',
+        rightIcon: null,
+      };
+    }),
   [RestrictedMethods.snap_getBip44Entropy]: (t, _, permissionValue) =>
     permissionValue.caveats[0].value.map(({ coinType }) => ({
       label: t('permission_manageBip44Keys', [
@@ -83,11 +116,28 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-download',
     rightIcon: null,
   }),
-  [RestrictedMethods['wallet_snap_*']]: (t, permissionName) => ({
-    label: t('permission_accessSnap', [permissionName.split('_').slice(-1)]),
-    leftIcon: 'fas fa-bolt',
-    rightIcon: null,
-  }),
+  [RestrictedMethods['wallet_snap_*']]: (t, permissionName) => {
+    const snapId = permissionName.split('_').slice(-1);
+    const friendlyName = SNAPS_METADATA[snapId]?.name;
+
+    if (friendlyName) {
+      return {
+        label: t('permission_accessNamedSnap', [
+          <span className="permission-label-item" key={snapId}>
+            {friendlyName}
+          </span>,
+        ]),
+        leftIcon: 'fas fa-bolt',
+        rightIcon: null,
+      };
+    }
+
+    return {
+      label: t('permission_accessSnap', [snapId]),
+      leftIcon: 'fas fa-bolt',
+      rightIcon: null,
+    };
+  },
   [EndowmentPermissions['endowment:network-access']]: (t) => ({
     label: t('permission_accessNetwork'),
     leftIcon: 'fas fa-wifi',

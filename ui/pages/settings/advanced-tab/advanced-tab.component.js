@@ -56,6 +56,10 @@ export default class AdvancedTab extends PureComponent {
     userHasALedgerAccount: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     restoreUserData: PropTypes.func.isRequired,
+    setDisabledRpcMethodPreference: PropTypes.func.isRequired,
+    disabledRpcMethodPreferences: PropTypes.shape({
+      eth_sign: PropTypes.bool.isRequired,
+    }),
   };
 
   state = {
@@ -580,6 +584,39 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderToggleEthSignControl() {
+    const { t } = this.context;
+    const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
+      this.props;
+
+    return (
+      <div
+        ref={this.settingsRefs[10]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-toggle-ethsign"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleEthSignField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleEthSignDescriptionField')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={disabledRpcMethodPreferences?.eth_sign || false}
+              onToggle={(value) =>
+                setDisabledRpcMethodPreference('eth_sign', !value)
+              }
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   handleLockChange(time) {
     const { t } = this.context;
     const autoLockTimeLimit = Math.max(Number(time), 0);
@@ -711,6 +748,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderRestoreUserData()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
+        {this.renderToggleEthSignControl()}
       </div>
     );
   }

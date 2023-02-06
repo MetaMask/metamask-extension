@@ -6,6 +6,9 @@ import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import bowser from 'bowser';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { isEqual } from 'lodash';
+///: END:ONLY_INCLUDE_IN
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -18,6 +21,9 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
+///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -524,3 +530,19 @@ export function coinTypeToProtocolName(coinType) {
 export function isNullish(value) {
   return value === null || value === undefined;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * @param {string[]} path
+ * @param {string} curve
+ * @returns {string | null}
+ */
+export function getSnapDerivationPathName(path, curve) {
+  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
+    (derivationPath) =>
+      derivationPath.curve === curve && isEqual(derivationPath.path, path),
+  );
+
+  return pathMetadata?.name ?? null;
+}
+///: END:ONLY_INCLUDE_IN
