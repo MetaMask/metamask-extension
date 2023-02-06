@@ -472,6 +472,7 @@ describe('MetaMask', function () {
         text: 'Activity',
         tag: 'button',
       });
+      await driver.waitForElementNotPresent('.loading-overlay');
     });
   });
 
