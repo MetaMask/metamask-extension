@@ -98,17 +98,18 @@ if (isManifestV3) {
 start().catch(log.error);
 
 async function start() {
+  console.log('test');
   // create platform global
   global.platform = new ExtensionPlatform();
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
 
-  let isUIInitialised = false;
-
   // setup stream to background
   extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
+
+  console.log('here');
 
   const activeTab = await queryCurrentActiveTab(windowType);
 
@@ -124,13 +125,9 @@ async function start() {
      */
     const messageListener = async (message) => {
       if (message?.data?.method === 'startUISync') {
-        if (isUIInitialised) {
-          // Currently when service worker is revived we create new streams
-          // in later version we might try to improve it by reviving same streams.
-          updateUiStreams();
-        } else {
-          initializeUiWithTab(activeTab);
-        }
+        // Currently when service worker is revived we create new streams
+        // in later version we might try to improve it by reviving same streams.
+        updateUiStreams();
         await loadPhishingWarningPage();
       }
     };
@@ -248,6 +245,7 @@ async function start() {
 
     extensionPort.onMessage.addListener(messageListener);
     extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
+    initializeUiWithTab(activeTab);
   } else {
     initializeUiWithTab(activeTab);
   }
@@ -259,7 +257,6 @@ async function start() {
         displayCriticalError('troubleStarting', err, store);
         return;
       }
-      isUIInitialised = true;
 
       const state = store.getState();
       const { metamask: { completedOnboarding } = {} } = state;
@@ -281,6 +278,8 @@ async function start() {
       updateBackgroundConnection(backgroundConnection);
     });
   }
+
+  console.log('here');
 }
 
 async function queryCurrentActiveTab(windowType) {

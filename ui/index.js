@@ -29,6 +29,8 @@ import { _setBackgroundConnection } from './store/action-queue';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
+const STORE_KEY = 'flatmap-v3';
+
 let reduxStore;
 
 /**
@@ -41,6 +43,9 @@ export const updateBackgroundConnection = (backgroundConnection) => {
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+      browser.storage.local.set({ [STORE_KEY]: data.params[0] }).then(() => {
+        console.log('successfully saved');
+      });
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
@@ -52,18 +57,39 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 };
 
 export default function launchMetamaskUi(opts, cb) {
+  console.log('launching');
   const { backgroundConnection } = opts;
-  // check if we are unlocked first
-  backgroundConnection.getState(function (err, metamaskState) {
-    if (err) {
-      cb(err, metamaskState);
-      return;
-    }
-    startApp(metamaskState, backgroundConnection, opts).then((store) => {
-      setupDebuggingHelpers(store);
-      cb(null, store);
+  browser.storage.local
+    .get(null)
+    .then((state) => {
+      if (!state[STORE_KEY]) {
+        throw new Error('No state yet');
+      }
+      console.log(state);
+      startApp(state[STORE_KEY], backgroundConnection, opts).then((store) => {
+        setupDebuggingHelpers(store);
+        cb(null, store);
+      });
+    })
+    .catch((error) => {
+      console.log('in the catch');
+      console.error(error);
+      // check if we are unlocked first
+      backgroundConnection.getState(function (err, metamaskState) {
+        if (err) {
+          cb(err, metamaskState);
+          return;
+        }
+        browser.storage.local.set({ [STORE_KEY]: metamaskState }).then(() => {
+          console.log('setting state', metamaskState);
+        });
+
+        startApp(metamaskState, backgroundConnection, opts).then((store) => {
+          setupDebuggingHelpers(store);
+          cb(null, store);
+        });
+      });
     });
-  });
 }
 
 async function startApp(metamaskState, backgroundConnection, opts) {
