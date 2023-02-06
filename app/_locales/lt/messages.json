@@ -652,7 +652,8 @@
     "message": "Atskleisti atkūrimo žodžius"
   },
   "revealSeedWordsWarning": {
-    "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti."
+    "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Naujas RPC URL"

@@ -2929,7 +2929,8 @@
     "message": "गुप्त रिकवरी फ्रेज प्रकट करें"
   },
   "revealSeedWordsWarning": {
-    "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।"
+    "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "सीड फ़्रेज़ दिखाएं"

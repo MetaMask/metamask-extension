@@ -648,7 +648,8 @@
     "message": "Разкрий думите зародиш"
   },
   "revealSeedWordsWarning": {
-    "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
+    "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Нов URL адрес за RPC"

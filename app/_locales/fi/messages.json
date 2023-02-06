@@ -649,7 +649,8 @@
     "message": "Paljasta salaussanat"
   },
   "revealSeedWordsWarning": {
-    "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
+    "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Uusi RPC:n URL"

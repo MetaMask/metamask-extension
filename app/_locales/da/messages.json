@@ -633,7 +633,8 @@
     "message": "Vis Seedord"
   },
   "revealSeedWordsWarning": {
-    "message": "Disse ord kan bruges til at stjæle alle dine konti."
+    "message": "Disse ord kan bruges til at stjæle alle dine konti.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"

@@ -1284,7 +1284,8 @@
     "message": "Ipakita ang Secret Recovery Phrase"
   },
   "revealSeedWordsWarning": {
-    "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account."
+    "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"

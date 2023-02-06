@@ -1997,7 +1997,8 @@
     "message": "Revelar Frase de Recuperação Secreta"
   },
   "revealSeedWordsWarning": {
-    "message": "Essas palavras podem ser usadas para roubar todas as suas contas."
+    "message": "Essas palavras podem ser usadas para roubar todas as suas contas.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Novo URL da RPC"

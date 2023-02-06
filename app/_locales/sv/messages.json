@@ -636,7 +636,8 @@
     "message": "Visa seed-ord"
   },
   "revealSeedWordsWarning": {
-    "message": "De här orden kan användas för att stjäla alla dina konton."
+    "message": "De här orden kan användas för att stjäla alla dina konton.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Ny RPC-URL"

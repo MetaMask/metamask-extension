@@ -646,7 +646,8 @@
     "message": "Pokaż słowa seed"
   },
   "revealSeedWordsWarning": {
-    "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
+    "message": "Te słowa mogą być użyte żeby ukraść Twoje konta.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nowy adres URL RPC"

@@ -652,7 +652,8 @@
     "message": "کلمات بازیاب را آشکار کنید"
   },
   "revealSeedWordsWarning": {
-    "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
+    "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "RPC URL جدید"

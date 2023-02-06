@@ -2929,7 +2929,8 @@
     "message": "Hiện Cụm mật khẩu khôi phục bí mật"
   },
   "revealSeedWordsWarning": {
-    "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn."
+    "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Hiện cụm từ khôi phục bí mật"

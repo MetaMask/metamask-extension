@@ -2929,7 +2929,8 @@
     "message": "Показать секретную фразу для восстановления"
   },
   "revealSeedWordsWarning": {
-    "message": "Эти слова можно использовать для кражи всех ваших счетов."
+    "message": "Эти слова можно использовать для кражи всех ваших счетов.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Показать сид-фразу"

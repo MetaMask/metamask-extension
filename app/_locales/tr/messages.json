@@ -2929,7 +2929,8 @@
     "message": "Gizli Kurtarma İfadesini Göster"
   },
   "revealSeedWordsWarning": {
-    "message": "Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
+    "message": "Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"

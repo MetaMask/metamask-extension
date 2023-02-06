@@ -632,7 +632,8 @@
     "message": "Dedahkan Ungkapan Benih"
   },
   "revealSeedWordsWarning": {
-    "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda."
+    "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "URL RPC baru"

@@ -2929,7 +2929,8 @@
     "message": "显示助记词"
   },
   "revealSeedWordsWarning": {
-    "message": "这些账户助记词可以用来窃取您的所有账户。"
+    "message": "这些账户助记词可以用来窃取您的所有账户。",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "显示助记词"

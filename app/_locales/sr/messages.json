@@ -643,7 +643,8 @@
     "message": "Otkrivanje početnih reči"
   },
   "revealSeedWordsWarning": {
-    "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga."
+    "message": "Ove reči se mogu iskoristiti za krađu svih vaših naloga.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Novi RPC URL"

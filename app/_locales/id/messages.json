@@ -2929,7 +2929,8 @@
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
   "revealSeedWordsWarning": {
-    "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
+    "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Ungkap frasa seed"

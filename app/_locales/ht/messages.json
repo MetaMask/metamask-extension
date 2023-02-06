@@ -465,7 +465,8 @@
     "message": "Revele Seed Mo Yo"
   },
   "revealSeedWordsWarning": {
-    "message": "Yo ka itilize mo sa pou vòlè kont ou."
+    "message": "Yo ka itilize mo sa pou vòlè kont ou.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "save": {
     "message": "Sove"

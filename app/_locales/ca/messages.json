@@ -630,7 +630,8 @@
     "message": "Revelar Paraules de Recuperació"
   },
   "revealSeedWordsWarning": {
-    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
+    "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nova URL de RPC"

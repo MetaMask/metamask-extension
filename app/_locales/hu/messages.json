@@ -645,7 +645,8 @@
     "message": "Seed szavak megjelenítése"
   },
   "revealSeedWordsWarning": {
-    "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
+    "message": "Ezekkel a szavakkal ellophatóak a fiókjai.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Új RPC URL"

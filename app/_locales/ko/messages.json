@@ -2929,7 +2929,8 @@
     "message": "비밀 복구 구문 공개"
   },
   "revealSeedWordsWarning": {
-    "message": "이 구문은 계정 전체를 도용하는 데 사용될 수 있습니다."
+    "message": "이 구문은 계정 전체를 도용하는 데 사용될 수 있습니다.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "시드 구문 보기"

@@ -648,7 +648,8 @@
     "message": "Parādīt atkopšanas vārdus"
   },
   "revealSeedWordsWarning": {
-    "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
+    "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Jauns RPC URL"

@@ -2929,7 +2929,8 @@
     "message": "Révéler la phrase secrète de récupération"
   },
   "revealSeedWordsWarning": {
-    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
+    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Révéler la phrase mnémonique"

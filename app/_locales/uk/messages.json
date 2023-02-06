@@ -652,7 +652,8 @@
     "message": "Показати мнемонічні слова"
   },
   "revealSeedWordsWarning": {
-    "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
+    "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Новий RPC URL"

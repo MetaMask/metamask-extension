@@ -579,7 +579,8 @@
     "message": "Ipakita ang Seed Words"
   },
   "revealSeedWordsWarning": {
-    "message": "Maaaring gamitin ang mga salitang ito para nakawin ang lahat ng iyong account."
+    "message": "Maaaring gamitin ang mga salitang ito para nakawin ang lahat ng iyong account.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"

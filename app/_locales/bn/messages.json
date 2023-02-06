@@ -652,7 +652,8 @@
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
   "revealSeedWordsWarning": {
-    "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।"
+    "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "নতুন RPC URL"

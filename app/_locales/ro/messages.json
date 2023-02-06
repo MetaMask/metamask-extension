@@ -639,7 +639,8 @@
     "message": "Arată cuvintele din seed"
   },
   "revealSeedWordsWarning": {
-    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
+    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "URL RPC nou"

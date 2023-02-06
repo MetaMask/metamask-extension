@@ -637,7 +637,8 @@
     "message": "የዘር ቃላትን ይግለጹ"
   },
   "revealSeedWordsWarning": {
-    "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
+    "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "አዲስ የ RPC URL"

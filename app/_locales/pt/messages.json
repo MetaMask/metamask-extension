@@ -2929,7 +2929,8 @@
     "message": "Revelar Palavras Seed"
   },
   "revealSeedWordsWarning": {
-    "message": "Não revele as palavras seed num espaço público! Estas palavras podem ser usadas para roubar todas as suas contas."
+    "message": "Não revele as palavras seed num espaço público! Estas palavras podem ser usadas para roubar todas as suas contas.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Revelar a frase de recuperação"

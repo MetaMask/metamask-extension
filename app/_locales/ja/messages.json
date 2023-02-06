@@ -2929,7 +2929,8 @@
     "message": "シークレットリカバリーフレーズを公開"
   },
   "revealSeedWordsWarning": {
-    "message": "これらの単語を使用すると、すべてのアカウントを窃取することができます。"
+    "message": "これらの単語を使用すると、すべてのアカウントを窃取することができます。",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"

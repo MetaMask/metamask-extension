@@ -640,7 +640,8 @@
     "message": "Razkrij seed words"
   },
   "revealSeedWordsWarning": {
-    "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune."
+    "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nov URL RPC"

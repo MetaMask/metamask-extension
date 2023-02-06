@@ -2929,7 +2929,8 @@
     "message": "Αποκάλυψη Λέξεων Μυστικής Φράσης Ανάκτησης"
   },
   "revealSeedWordsWarning": {
-    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
+    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Αποκάλυψη φράσης ανάκτησης"

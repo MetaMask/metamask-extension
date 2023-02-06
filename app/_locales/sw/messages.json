@@ -630,7 +630,8 @@
     "message": "Onyesha Maneno ya Kianzio"
   },
   "revealSeedWordsWarning": {
-    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
+    "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "RPC URL mpya"
