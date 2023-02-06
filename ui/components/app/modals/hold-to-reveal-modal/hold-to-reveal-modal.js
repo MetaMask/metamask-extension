@@ -10,12 +10,12 @@ import {
   ICON_NAMES,
 } from '../../../component-library';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
-  SIZES,
-  TEXT,
+  JustifyContent,
+  Size,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import HoldToRevealButton from '../../hold-to-reveal-button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -38,21 +38,21 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
       className="hold-to-reveal-modal"
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      justifyContent={JUSTIFY_CONTENT.FLEX_START}
+      justifyContent={JustifyContent.flexStart}
       padding={6}
     >
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
         marginBottom={6}
       >
-        <Text variant={TEXT.HEADING_SM}>{t('holdToRevealTitle')}</Text>
+        <Text variant={TextVariant.headingSm}>{t('holdToRevealTitle')}</Text>
         <ButtonIcon
           className="hold-to-reveal-modal__close"
           iconName={ICON_NAMES.CLOSE}
-          size={SIZES.SM}
+          size={Size.SM}
           onClick={handleCancel}
           ariaLabel={t('close')}
         />
@@ -63,18 +63,22 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
         gap={4}
         marginBottom={6}
       >
-        <Text variant={TEXT.BODY_MD}>
+        <Text variant={TextVariant.bodyMd}>
           {t('holdToRevealContent1', [
-            <Text key="hold-to-reveal-2" variant={TEXT.BODY_MD_BOLD} as="span">
+            <Text
+              key="hold-to-reveal-2"
+              variant={TextVariant.bodyMdBold}
+              as="span"
+            >
               {t('holdToRevealContent2')}
             </Text>,
           ])}
         </Text>
-        <Text variant={TEXT.BODY_MD_BOLD}>
+        <Text variant={TextVariant.bodyMdBold}>
           {t('holdToRevealContent3', [
             <Text
               key="hold-to-reveal-4"
-              variant={TEXT.BODY_MD}
+              variant={TextVariant.bodyMd}
               as="span"
               display={DISPLAY.INLINE}
             >
@@ -83,7 +87,7 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
             <Button
               key="hold-to-reveal-5"
               type={BUTTON_TYPES.LINK}
-              size={SIZES.AUTO}
+              size={Size.auto}
               href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               target="_blank"
               rel="noopener noreferrer"

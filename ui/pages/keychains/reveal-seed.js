@@ -7,12 +7,12 @@ import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import {
-  TEXT,
+  TextVariant,
   SEVERITIES,
-  SIZES,
+  Size,
   BLOCK_SIZES,
-  JUSTIFY_CONTENT,
-  ALIGN_ITEMS,
+  JustifyContent,
+  AlignItems,
   DISPLAY,
 } from '../../helpers/constants/design-system';
 
@@ -106,11 +106,11 @@ const RevealSeedPage = () => {
   const renderWarning = () => {
     return (
       <Banner severity={SEVERITIES.DANGER}>
-        <Text variant={TEXT.BODY_MD}>
+        <Text variant={TextVariant.bodyMd}>
           {t('revealSeedWordsWarning', [
             <Text
               key="reveal-seed-words-warning-2"
-              variant={TEXT.BODY_MD_BOLD}
+              variant={TextVariant.bodyMdBold}
               as="strong"
             >
               {t('revealSeedWordsWarning2')}
@@ -176,8 +176,8 @@ const RevealSeedPage = () => {
           >
             <Box
               display={DISPLAY.FLEX}
-              justifyContent={JUSTIFY_CONTENT.CENTER}
-              alignItems={ALIGN_ITEMS.CENTER}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
               paddingTop={4}
             >
               <div
@@ -197,7 +197,7 @@ const RevealSeedPage = () => {
       <Box display={DISPLAY.FLEX} marginTop="auto" gap={4}>
         <Button
           width={BLOCK_SIZES.FULL}
-          size={SIZES.LG}
+          size={Size.LG}
           type={BUTTON_TYPES.SECONDARY}
           onClick={() => {
             trackEvent({
@@ -214,7 +214,7 @@ const RevealSeedPage = () => {
         </Button>
         <Button
           width={BLOCK_SIZES.FULL}
-          size={SIZES.LG}
+          size={Size.LG}
           onClick={(event) => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
@@ -239,7 +239,7 @@ const RevealSeedPage = () => {
         <Button
           type={BUTTON_TYPES.SECONDARY}
           width={BLOCK_SIZES.FULL}
-          size={SIZES.LG}
+          size={Size.LG}
           onClick={() => history.push(mostRecentOverviewPage)}
         >
           {t('close')}
@@ -269,8 +269,8 @@ const RevealSeedPage = () => {
       paddingRight={4}
       gap={4}
     >
-      <Text variant={TEXT.HEADING_LG}>{t('secretRecoveryPhrase')}</Text>
-      <Text variant={TEXT.BODY_MD}>
+      <Text variant={TextVariant.headingLg}>{t('secretRecoveryPhrase')}</Text>
+      <Text variant={TextVariant.bodyMd}>
         {t('revealSeedWordsDescription1', [
           <Button
             key="srp-learn-srp"
@@ -285,14 +285,14 @@ const RevealSeedPage = () => {
           </Button>,
           <Text
             key="reveal-seed-word-part-3"
-            variant={TEXT.BODY_MD_BOLD}
+            variant={TextVariant.bodyMdBold}
             as="strong"
           >
             {t('revealSeedWordsDescription3')}
           </Text>,
         ])}
       </Text>
-      <Text variant={TEXT.BODY_MD}>
+      <Text variant={TextVariant.bodyMd}>
         {t('revealSeedWordsDescription2', [
           <Button
             key="srp-learn-more-non-custodial"

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
-  ALIGN_ITEMS,
-  BORDER_COLORS,
-  BORDER_RADIUS,
+  AlignItems,
+  BorderColor,
+  BorderRadius,
   DISPLAY,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import Box from '../box/box';
 import { ButtonSecondary, Text, TEXT_VARIANTS } from '../../component-library';
@@ -21,17 +21,17 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
   return (
     <Box
       display={DISPLAY.FLEX}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      justifyContent={JustifyContent.center}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      alignItems={ALIGN_ITEMS.CENTER}
-      borderColor={BORDER_COLORS.BORDER_DEFAULT}
-      borderRadius={BORDER_RADIUS.MD}
+      alignItems={AlignItems.center}
+      borderColor={BorderColor.borderDefault}
+      borderRadius={BorderRadius.MD}
       padding={4}
       gap={4}
     >
       <Text
         display={DISPLAY.FLEX}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.CENTER}
         className="notranslate"
         variant={TEXT_VARIANTS.BODY_LG}
       >
