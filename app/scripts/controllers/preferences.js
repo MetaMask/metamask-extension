@@ -63,7 +63,6 @@ export default class PreferencesController {
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
       ledgerTransportType: getInitLedgerTransportType(),
-      improvedTokenAllowanceEnabled: false,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
       ...opts.initState,
