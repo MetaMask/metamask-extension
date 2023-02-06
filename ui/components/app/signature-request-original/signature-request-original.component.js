@@ -177,9 +177,9 @@ export default class SignatureRequestOriginal extends Component {
                 className="request-signature__row"
                 key={`request-signature-row-${index}`}
               >
-                <div className="request-signature__row-title">{`${sanitizeString(
-                  name,
-                )}:`}</div>
+                <div className="request-signature__row-title">
+                  {sanitizeString(`${name}:`)}
+                </div>
                 <div className="request-signature__row-value">
                   {sanitizeString(value)}
                 </div>
