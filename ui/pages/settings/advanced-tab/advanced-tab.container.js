@@ -11,6 +11,7 @@ import {
   setUseNonceField,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
+  setDisabledRpcMethodPreference,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -25,6 +26,7 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
+    disabledRpcMethodPreferences,
     useNonceField,
     ledgerTransportType,
     dismissSeedBackUpReminder,
@@ -48,6 +50,7 @@ export const mapStateToProps = (state) => {
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
+    disabledRpcMethodPreferences,
   };
 };
 
@@ -77,6 +80,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
+    },
+    setDisabledRpcMethodPreference: (methodName, isEnabled) => {
+      return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
     },
   };
 };

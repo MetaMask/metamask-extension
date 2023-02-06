@@ -11,6 +11,7 @@ export default function TokenCell({
   address,
   decimals,
   balanceError,
+  image,
   symbol,
   string,
   onClick,
@@ -45,6 +46,7 @@ export default function TokenCell({
       tokenAddress={address}
       tokenSymbol={symbol}
       tokenDecimals={decimals}
+      tokenImage={image}
       warning={warning}
       primary={`${string || 0}`}
       secondary={formattedFiat}
@@ -61,6 +63,7 @@ TokenCell.propTypes = {
   string: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   isERC721: PropTypes.bool,
+  image: PropTypes.string,
 };
 
 TokenCell.defaultProps = {
