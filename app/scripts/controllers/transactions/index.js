@@ -1072,14 +1072,19 @@ export default class TransactionController extends EventEmitter {
     const chainId = this._getCurrentChainId();
     const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
     const chainType = getChainType(chainId);
-
-    if (txMeta.txParams.gas) {
+    const {
+      type,
+      txParams: { gas, value, data, to },
+    } = txMeta;
+    const isSendWithApprove =
+      type === TransactionType.tokenMethodApprove && value && value !== '0x0';
+    if (gas) {
       return {};
     } else if (
-      txMeta.txParams.to &&
-      txMeta.type === TransactionType.simpleSend &&
+      to &&
+      (type === TransactionType.simpleSend || isSendWithApprove) &&
       chainType !== 'custom' &&
-      !txMeta.txParams.data
+      (!data || isSendWithApprove)
     ) {
       // This is a standard ether simple send, gas requirement is exactly 21k
       return { gasLimit: GAS_LIMITS.SIMPLE };
