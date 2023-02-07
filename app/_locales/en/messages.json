@@ -3985,6 +3985,9 @@
     "message": "This will $1 for swapping",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
+  "swapEnterAmount": {
+    "message": "Enter an amount"
+  },
   "swapEstimatedNetworkFees": {
     "message": "Estimated network fees"
   },
@@ -4137,6 +4140,9 @@
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
+  },
+  "swapSelectToken": {
+    "message": "Select token"
   },
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"

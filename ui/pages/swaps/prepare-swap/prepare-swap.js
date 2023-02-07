@@ -123,6 +123,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../../components/component-library';
+import SwapsFooter from '../swaps-footer';
 import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
 
@@ -652,6 +653,15 @@ export default function PrepareSwap({
     smartTransactionsOptInStatus,
   ]);
 
+  let mainButtonText;
+  if (!isReviewSwapButtonDisabled) {
+    mainButtonText = t('swapFetchingQuotes');
+  } else if (!selectedToToken?.address || !fromTokenAddress) {
+    mainButtonText = t('swapSelectToken');
+  } else {
+    mainButtonText = t('swapEnterAmount');
+  }
+
   return (
     <div className="prepare-swap">
       <div className="prepare-swap__content">
@@ -929,7 +939,7 @@ export default function PrepareSwap({
             />
           </div>
         )}
-        {prefetchingQuotes && (
+        {!isReviewSwapButtonDisabled && !areQuotesPresent && (
           <Box
             marginTop={4}
             display={DISPLAY.FLEX}
@@ -973,7 +983,15 @@ export default function PrepareSwap({
             </div>
           </Box>
         )}
-        {!prefetchingQuotes && areQuotesPresent && (
+        {!areQuotesPresent && (
+          <SwapsFooter
+            submitText={mainButtonText}
+            disabled
+            hideCancel
+            showTermsOfService
+          />
+        )}
+        {!isReviewSwapButtonDisabled && areQuotesPresent && (
           <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
         )}
       </div>
