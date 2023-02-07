@@ -46,8 +46,8 @@ import {
   ICON_NAMES,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   ICON_SIZES,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
-///: END:ONLY_INCLUDE_IN
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
