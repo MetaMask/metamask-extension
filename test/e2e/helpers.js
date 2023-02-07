@@ -368,6 +368,27 @@ const completeCreateNewWalletOnboardingFlow = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
+const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
+  // welcome
+  await driver.clickElement('[data-testid="onboarding-import-wallet"]');
+
+  // metrics
+  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+  // import with recovery phrase
+  await driver.pasteIntoField(
+    '[data-testid="import-srp__srp-word-0"]',
+    seedPhrase,
+  );
+
+  const warningText = 'Invalid Secret Recovery Phrase';
+  const warning = await driver.clickElement({ text: 'Invalid Secret Recovery Phrase', tag: 'div' });
+  const confirmSeedPhrase = await driver.findElement('[data-testid="import-srp-confirm"]');
+
+  assert.equal(await warning.getText(), warningText);
+  assert.equal(await confirmSeedPhrase.isEnabled(), false);
+};
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -381,4 +402,5 @@ module.exports = {
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
   createDownloadFolder,
+  importWrongSRPOnboardingFlow,
 };
