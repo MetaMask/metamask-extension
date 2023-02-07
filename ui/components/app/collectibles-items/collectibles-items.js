@@ -134,10 +134,11 @@ export default function CollectiblesItems({
     return (
       <div className="collectibles-items__collection" key={`collection-${key}`}>
         <button
+          className="collectibles-items__collection-wrapper"
+          data-testid="collection-expander-button"
           onClick={() => {
             updateCollectibleDropDownStateKey(key, isExpanded);
           }}
-          className="collectibles-items__collection-wrapper"
         >
           <Box
             marginBottom={2}
@@ -183,6 +184,7 @@ export default function CollectiblesItems({
 
               return (
                 <Box
+                  data-testid="collectible-wrapper"
                   width={width}
                   key={`collectible-${i}`}
                   className="collectibles-items__item-wrapper"
@@ -202,6 +204,7 @@ export default function CollectiblesItems({
                       >
                         <img
                           className="collectibles-items__item-image"
+                          data-testid="collectible-image"
                           src={collectibleImage}
                           alt={collectibleImageAlt}
                         />
