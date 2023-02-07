@@ -271,6 +271,21 @@ describe('build/transforms/remove-fenced-code', () => {
       ).toStrictEqual(['', true]);
     });
 
+    it('keeps fences with inherited build types', () => {
+      // Desktop inherits from the flask build type
+      const minimalCode =
+        getMinimalFencedCode(BuildType.flask) +
+        getMinimalFencedCode(BuildType.desktop);
+
+      expect(
+        removeFencedCode(mockFileName, BuildType.desktop, minimalCode),
+      ).toStrictEqual([minimalCode, false]);
+
+      expect(
+        removeFencedCode(mockFileName, BuildType.flask, minimalCode),
+      ).toStrictEqual([getMinimalFencedCode(BuildType.flask), true]);
+    });
+
     it('ignores sentinels preceded by non-whitespace', () => {
       const validBeginDirective = '///: BEGIN:ONLY_INCLUDE_IN(flask)\n';
       const ignoredLines = [
