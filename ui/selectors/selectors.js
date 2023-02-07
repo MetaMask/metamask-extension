@@ -447,10 +447,11 @@ export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
     ({ address, name, balance }) => ({
       address,
-      addressLabel: `${name.length < TRUNCATED_NAME_CHAR_LIMIT
+      addressLabel: `${
+        name.length < TRUNCATED_NAME_CHAR_LIMIT
           ? name
           : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
-        } (${shortenAddress(address)})`,
+      } (${shortenAddress(address)})`,
       label: name,
       balance,
     }),
@@ -596,8 +597,8 @@ export function getShouldShowFiat(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return Boolean(
     (isMainNet || isCustomNetwork || showFiatInTestnets) &&
-    useCurrencyRateCheck &&
-    conversionRate,
+      useCurrencyRateCheck &&
+      conversionRate,
   );
 }
 
@@ -1296,20 +1297,20 @@ export function getBlockExplorerLinkText(
   if (rpcPrefs.blockExplorerUrl) {
     blockExplorerLinkText = accountDetailsModalComponent
       ? {
-        firstPart: 'blockExplorerView',
-        secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
-      }
+          firstPart: 'blockExplorerView',
+          secondPart: getURLHostName(rpcPrefs.blockExplorerUrl),
+        }
       : {
-        firstPart: 'viewinExplorer',
-        secondPart: 'blockExplorerAccountAction',
-      };
+          firstPart: 'viewinExplorer',
+          secondPart: 'blockExplorerAccountAction',
+        };
   } else if (isCustomNetwork === false) {
     blockExplorerLinkText = accountDetailsModalComponent
       ? { firstPart: 'etherscanViewOn', secondPart: '' }
       : {
-        firstPart: 'viewOnEtherscan',
-        secondPart: 'blockExplorerAccountAction',
-      };
+          firstPart: 'viewOnEtherscan',
+          secondPart: 'blockExplorerAccountAction',
+        };
   }
 
   return blockExplorerLinkText;
