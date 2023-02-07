@@ -233,6 +233,7 @@
     "@metamask/etherscan-link": "^2.2.0",
     "@metamask/gas-fee-controller": "^1.0.0",
     "@metamask/jazzicon": "^2.0.0",
+    "@metamask/key-tree": "^6.2.1",
     "@metamask/logo": "^3.1.1",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/notification-controller": "^1.0.0",
