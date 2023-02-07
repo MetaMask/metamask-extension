@@ -31,6 +31,9 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      disabledRpcMethodPreferences: {
+        eth_sign: false,
+      },
       useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
@@ -75,7 +78,7 @@ export default class PreferencesController {
     this.network = opts.network;
     this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
-    this.store.setMaxListeners(12);
+    this.store.setMaxListeners(13);
     this.openPopup = opts.openPopup;
     this.tokenListController = opts.tokenListController;
 
@@ -556,6 +559,29 @@ export default class PreferencesController {
     await this.store.updateState({
       dismissSeedBackUpReminder,
     });
+  }
+
+  /**
+   * A setter for the user preference to enable/disable rpc methods
+   *
+   * @param {string} methodName - The RPC method name to change the setting of
+   * @param {bool} isEnabled - true to enable the rpc method
+   */
+  async setDisabledRpcMethodPreference(methodName, isEnabled) {
+    const currentRpcMethodPreferences =
+      this.store.getState().disabledRpcMethodPreferences;
+    const updatedRpcMethodPreferences = {
+      ...currentRpcMethodPreferences,
+      [methodName]: isEnabled,
+    };
+
+    this.store.updateState({
+      disabledRpcMethodPreferences: updatedRpcMethodPreferences,
+    });
+  }
+
+  getRpcMethodPreferences() {
+    return this.store.getState().disabledRpcMethodPreferences;
   }
 
   //

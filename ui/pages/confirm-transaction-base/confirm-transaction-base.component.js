@@ -19,7 +19,7 @@ import CopyRawData from '../../components/app/transaction-decoding/components/ui
 
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
-import ActionableMessage from '../../components/ui/actionable-message';
+import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import Disclosure from '../../components/ui/disclosure';
 import { EVENT } from '../../../shared/constants/metametrics';
 import {
@@ -586,18 +586,10 @@ export default class ConfirmTransactionBase extends Component {
 
     const simulationFailureWarning = () => (
       <div className="confirm-page-container-content__error-container">
-        <ActionableMessage
-          message={t('simulationErrorMessageV2')}
-          useIcon
-          iconFillColor="var(--color-error-default)"
-          type="danger"
-          primaryActionV2={
-            userAcknowledgedGasMissing === true
-              ? undefined
-              : {
-                  label: t('proceedWithTransaction'),
-                  onClick: () => this.setUserAcknowledgedGasMissing(),
-                }
+        <SimulationErrorMessage
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          setUserAcknowledgedGasMissing={() =>
+            this.setUserAcknowledgedGasMissing()
           }
         />
       </div>

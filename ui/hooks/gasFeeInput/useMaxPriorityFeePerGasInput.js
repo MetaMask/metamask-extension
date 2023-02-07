@@ -7,6 +7,8 @@ import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { hexWEIToDecGWEI } from '../../../shared/lib/transactions-controller-utils';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
+const isNullOrUndefined = (value) => value === null || value === undefined;
+
 const getMaxPriorityFeePerGasFromTransaction = (
   transaction,
   gasFeeEstimates,
@@ -17,9 +19,8 @@ const getMaxPriorityFeePerGasFromTransaction = (
   }
   const { maxPriorityFeePerGas, maxFeePerGas, gasPrice } =
     transaction?.txParams || {};
-  return Number(
-    hexWEIToDecGWEI(maxPriorityFeePerGas || maxFeePerGas || gasPrice),
-  );
+  const feeInHexWei = maxPriorityFeePerGas || maxFeePerGas || gasPrice;
+  return feeInHexWei ? Number(hexWEIToDecGWEI(feeInHexWei)) : null;
 };
 
 /**
@@ -50,17 +51,20 @@ export function useMaxPriorityFeePerGasInput({
 
   const initialMaxPriorityFeePerGas = supportsEIP1559
     ? getMaxPriorityFeePerGasFromTransaction(transaction, gasFeeEstimates)
-    : 0;
+    : null;
 
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(() => {
-    if (initialMaxPriorityFeePerGas && feeParamsAreCustom(transaction)) {
+    if (
+      !isNullOrUndefined(initialMaxPriorityFeePerGas) &&
+      feeParamsAreCustom(transaction)
+    ) {
       return initialMaxPriorityFeePerGas;
     }
     return null;
   });
 
   useEffect(() => {
-    if (supportsEIP1559 && initialMaxPriorityFeePerGas) {
+    if (supportsEIP1559 && !isNullOrUndefined(initialMaxPriorityFeePerGas)) {
       setMaxPriorityFeePerGas(initialMaxPriorityFeePerGas);
     }
   }, [initialMaxPriorityFeePerGas, setMaxPriorityFeePerGas, supportsEIP1559]);

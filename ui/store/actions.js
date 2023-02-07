@@ -3229,6 +3229,25 @@ export function setDismissSeedBackUpReminder(value) {
   };
 }
 
+export function setDisabledRpcMethodPreference(methodName, value) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setDisabledRpcMethodPreference', [
+      methodName,
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function getRpcMethodPreferences() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('getRpcMethodPreferences', []);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function setConnectedStatusPopoverHasBeenShown() {
   return () => {
     callBackgroundMethod('setConnectedStatusPopoverHasBeenShown', [], (err) => {

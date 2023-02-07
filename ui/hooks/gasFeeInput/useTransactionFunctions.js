@@ -1,8 +1,12 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
-
-import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import {
   addTenPercentAndRound,
@@ -162,17 +166,31 @@ export const useTransactionFunctions = ({
         maxPriorityFeePerGas,
       } = transaction.previousGas || transaction.txParams;
 
+      const newMaxPriorityFeePerGas = new BigNumber(
+        maxPriorityFeePerGas,
+        16,
+      ).isZero()
+        ? decGWEIToHexWEI(
+            gasFeeEstimates[defaultEstimateToUse].suggestedMaxPriorityFeePerGas,
+          )
+        : maxPriorityFeePerGas;
+
+      const estimateUsed =
+        maxPriorityFeePerGas === '0x0'
+          ? CUSTOM_GAS_ESTIMATE
+          : PRIORITY_LEVELS.TEN_PERCENT_INCREASED;
+
       updateTransaction({
         estimateSuggested: initTransaction
           ? defaultEstimateToUse
           : PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
-        estimateUsed: PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
+        estimateUsed,
         gasLimit,
         maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
-        maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
+        maxPriorityFeePerGas: addTenPercentAndRound(newMaxPriorityFeePerGas),
       });
     },
-    [defaultEstimateToUse, transaction, updateTransaction],
+    [defaultEstimateToUse, gasFeeEstimates, transaction, updateTransaction],
   );
 
   const updateTransactionUsingEstimate = useCallback(
