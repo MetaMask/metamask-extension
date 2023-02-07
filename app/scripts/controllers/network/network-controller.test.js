@@ -1494,6 +1494,9 @@ describe('NetworkController', () => {
 
         describe('if the request for eth_getBlockByNumber responds with an error', () => {
           it('does not update the network details in any way', async () => {
+            const intentionalErrorMessage =
+              'intentional error from eth_getBlockByNumber';
+
             await withController(
               {
                 state: {
@@ -1509,7 +1512,7 @@ describe('NetworkController', () => {
                 network.mockEssentialRpcCalls({
                   eth_getBlockByNumber: {
                     response: {
-                      error: 'oops',
+                      error: intentionalErrorMessage,
                     },
                   },
                 });
@@ -1528,7 +1531,13 @@ describe('NetworkController', () => {
                   propertyPath: ['networkDetails'],
                   count: 0,
                   operation: async () => {
-                    await controller.getEIP1559Compatibility();
+                    try {
+                      await controller.getEIP1559Compatibility();
+                    } catch (error) {
+                      if (error !== intentionalErrorMessage) {
+                        console.error(error);
+                      }
+                    }
                   },
                 });
                 expect(
@@ -1963,6 +1972,9 @@ describe('NetworkController', () => {
 
         describe('if the request for eth_getBlockByNumber responds with an error', () => {
           it('does not update the network details in any way', async () => {
+            const intentionalErrorMessage =
+              'intentional error from eth_getBlockByNumber';
+
             await withController(
               {
                 state: {
@@ -1980,7 +1992,7 @@ describe('NetworkController', () => {
                 network.mockEssentialRpcCalls({
                   eth_getBlockByNumber: {
                     response: {
-                      error: 'oops',
+                      error: intentionalErrorMessage,
                     },
                   },
                 });
@@ -1999,7 +2011,16 @@ describe('NetworkController', () => {
                   propertyPath: ['networkDetails'],
                   count: 0,
                   operation: async () => {
-                    await controller.lookupNetwork();
+                    try {
+                      await controller.lookupNetwork();
+                    } catch (error) {
+                      if (
+                        !('data' in error) ||
+                        error.data !== intentionalErrorMessage
+                      ) {
+                        console.error(error);
+                      }
+                    }
                   },
                 });
                 expect(
@@ -2013,6 +2034,8 @@ describe('NetworkController', () => {
 
       describe('if the request for net_version responds with an error', () => {
         it('resets the network status to "loading"', async () => {
+          const intentionalErrorMessage = 'intentional error from net_version';
+
           await withController(
             {
               state: {
@@ -2033,7 +2056,7 @@ describe('NetworkController', () => {
                   },
                   {
                     response: {
-                      error: 'oops',
+                      error: intentionalErrorMessage,
                     },
                   },
                 ],
@@ -2045,7 +2068,13 @@ describe('NetworkController', () => {
                 controller,
                 propertyPath: ['network'],
                 operation: async () => {
-                  await controller.lookupNetwork();
+                  try {
+                    await controller.lookupNetwork();
+                  } catch (error) {
+                    if (error !== intentionalErrorMessage) {
+                      console.error(error);
+                    }
+                  }
                 },
               });
 
@@ -4811,11 +4840,7 @@ async function waitForStateChanges({
     resetTimer();
   });
 
-  try {
-    await operation();
-  } catch (error) {
-    // swallow errors since they're not useful here
-  }
+  await operation();
 
   return await promiseForStateChanges;
 }
