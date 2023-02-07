@@ -5,11 +5,8 @@ import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
-import { isString } from 'lodash';
+import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { isEqual } from 'lodash';
-///: END:ONLY_INCLUDE_IN
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -541,7 +538,8 @@ export function isNullish(value) {
 export function getSnapDerivationPathName(path, curve) {
   const pathMetadata = SNAPS_DERIVATION_PATHS.find(
     (derivationPath) =>
-      derivationPath.curve === curve && isEqual(derivationPath.path, path),
+      derivationPath.curve === curve &&
+      lodash.isEqual(derivationPath.path, path),
   );
 
   return pathMetadata?.name ?? null;
@@ -558,7 +556,7 @@ export const sanitizeString = (value) => {
   if (!value) {
     return value;
   }
-  if (!isString(value)) {
+  if (!lodash.isString(value)) {
     return value;
   }
   const regex = /\u202E/giu;
