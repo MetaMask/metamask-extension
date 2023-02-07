@@ -7,12 +7,12 @@ import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
 import mockState from '../../../test/data/mock-state.json';
 import TRANSACTIONS from '../../../test/mocks/transactions';
-
-import ConfirmTransaction from './confirm-transaction.container';
 import {
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../helpers/constants/routes';
+
+import ConfirmTransaction from './confirm-transaction.container';
 
 const middleware = [thunk];
 
