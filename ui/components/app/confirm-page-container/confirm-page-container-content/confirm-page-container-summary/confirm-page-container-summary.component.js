@@ -70,9 +70,6 @@ const ConfirmPageContainerSummary = (props) => {
   const checksummedAddress = toChecksumHexAddress(contractAddress);
 
   const renderImage = () => {
-    if (isSendWithApproval) {
-      return null;
-    }
     const imagePath = getAssetImageURL(image, ipfsGateway);
 
     if (image) {
