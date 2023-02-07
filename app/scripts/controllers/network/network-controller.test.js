@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { inspect, isDeepStrictEqual, promisify } from 'util';
 import { isMatch } from 'lodash';
 import nock from 'nock';
