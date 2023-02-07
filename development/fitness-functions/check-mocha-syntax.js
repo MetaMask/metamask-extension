@@ -1,3 +1,9 @@
+const {
+  filterDiffAdditions,
+  filterDiffByFilePath,
+  hasNumberOfCodeBlocksIncreased,
+} = require('./shared');
+
 function checkMochaSyntax(diff) {
   const ruleHeading = 'favor-jest-instead-of-mocha';
   const codeBlocks = [
@@ -11,8 +17,9 @@ function checkMochaSyntax(diff) {
 
   console.log(`Checking ${ruleHeading}...`);
 
-  const diffAdditions = filterDiffAdditions(diff);
-
+  const jsFilesExcludingE2ETests = '^(?!.*/test/e2e/).*.(js|ts|jsx)$';
+  const diffByFilePath = filterDiffByFilePath(diff, jsFilesExcludingE2ETests);
+  const diffAdditions = filterDiffAdditions(diffByFilePath);
   const hashmap = hasNumberOfCodeBlocksIncreased(diffAdditions, codeBlocks);
 
   Object.keys(hashmap).forEach((key) => {
@@ -32,35 +39,6 @@ function checkMochaSyntax(diff) {
     );
     process.exit(0);
   }
-}
-
-function filterDiffAdditions(diff) {
-  const diffLines = diff.split('\n');
-  const diffAdditionLines = diffLines.filter((line) => {
-    const isAdditionLine = line.startsWith('+') && !line.startsWith('+++');
-
-    return isAdditionLine;
-  });
-
-  return diffAdditionLines;
-}
-
-function hasNumberOfCodeBlocksIncreased(diffLines, codeBlocks) {
-  const codeBlockFound = {};
-
-  for (const codeBlock of codeBlocks) {
-    codeBlockFound[codeBlock] = false;
-
-    for (const diffLine of diffLines) {
-      if (diffLine.includes(codeBlock)) {
-        console.log(`Found code block: ${diffLine}`);
-        codeBlockFound[codeBlock] = true;
-        break;
-      }
-    }
-  }
-
-  return codeBlockFound;
 }
 
 module.exports = { checkMochaSyntax };
