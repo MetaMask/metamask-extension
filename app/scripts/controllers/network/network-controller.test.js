@@ -3327,14 +3327,15 @@ describe('NetworkController', () => {
                   type: networkType,
                 },
               },
-              networkDetails: {
-                EIPS: {},
-              },
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls({
                 latestBlock: POST_1559_BLOCK,
               });
+
+              expect(
+                controller.store.getState().networkDetails.EIPS['1559'],
+              ).toBeUndefined();
 
               controller.resetConnection();
 
@@ -3617,14 +3618,15 @@ describe('NetworkController', () => {
                 chainId: '0x1337',
               },
             },
-            networkDetails: {
-              EIPS: {},
-            },
           },
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls({
               latestBlock: POST_1559_BLOCK,
             });
+
+            expect(
+              controller.store.getState().networkDetails.EIPS['1559'],
+            ).toBeUndefined();
 
             controller.resetConnection();
 
