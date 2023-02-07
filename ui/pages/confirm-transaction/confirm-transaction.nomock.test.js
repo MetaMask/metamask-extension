@@ -8,6 +8,7 @@ import { setBackgroundConnection } from '../../../test/jest';
 import mockState from '../../../test/data/mock-state.json';
 import TRANSACTIONS from '../../../test/mocks/transactions';
 import {
+  CONFIRM_APPROVE_PATH,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../helpers/constants/routes';

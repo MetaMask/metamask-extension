@@ -217,6 +217,7 @@ export default function ConfirmApprove({
       </GasFeeContextProvider>
     );
   }
+  console.log('-----------------CA');
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
