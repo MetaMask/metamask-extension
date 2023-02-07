@@ -21,9 +21,6 @@ export const formatAccounts = (
   hardwareAccounts: HardwareAccount[],
   stateAccounts: StateAccounts,
 ): FormattedHardwareAccount[] => {
-  console.log('hardwareAccounts', hardwareAccounts);
-  console.log('stateAccounts', stateAccounts);
-
   return hardwareAccounts.map((a) => {
     const normalizedAddress = a.address.toLowerCase();
     // We rely on the prop accounts data for balances, instead of the state
