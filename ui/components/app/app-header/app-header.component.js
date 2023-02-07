@@ -99,7 +99,7 @@ export default class AppHeader extends PureComponent {
         >
           <Identicon address={selectedAddress} diameter={32} addBorder />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)sss
             unreadNotificationsCount > 0 && (
               <div className="account-menu__icon__notification-count">
                 {unreadNotificationsCount}
