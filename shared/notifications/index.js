@@ -82,6 +82,10 @@ export const UI_NOTIFICATIONS = {
     id: 17,
     date: null,
   },
+  18: {
+    id: 18,
+    date: null,
+  },
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -236,6 +240,17 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[17].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[17].date),
+          )
+        : '',
+    },
+    18: {
+      ...UI_NOTIFICATIONS[18],
+      title: t('notifications18Title'),
+      description: t('notifications18Description'),
+      actionText: t('notifications18ActionText'),
+      date: UI_NOTIFICATIONS[18].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[18].date),
           )
         : '',
     },
