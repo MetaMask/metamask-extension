@@ -2428,10 +2428,34 @@ describe('NetworkController', () => {
             },
           },
         },
-        async ({ controller, network }) => {
-          network.mockEssentialRpcCalls();
-          controller.initializeProvider();
+        async ({ controller, network: network1 }) => {
+          network1.mockEssentialRpcCalls({
+            net_version: {
+              response: {
+                result: '42',
+              },
+            },
+          });
+          const network2 = network1.with({
+            networkClientOptions: {
+              customRpcUrl: 'https://mock-rpc-url',
+            },
+          });
+          network2.mockEssentialRpcCalls({
+            net_version: {
+              response: {
+                result: '99',
+              },
+            },
+          });
+          await waitForLookupNetworkToComplete({
+            controller,
+            operation: async () => {
+              await controller.initializeProvider();
+            },
+          });
           const initialNetwork = controller.store.getState().network;
+          expect(initialNetwork).toBe('42');
 
           const networkWillChange = await waitForEvent({
             controller,
@@ -2439,10 +2463,11 @@ describe('NetworkController', () => {
             operation: () => {
               controller.setRpcTarget('https://mock-rpc-url', '0x1337');
             },
+            beforeResolving: () => {
+              expect(controller.store.getState().network).toBe(initialNetwork);
+            },
           });
-
           expect(networkWillChange).toBe(true);
-          expect(controller.store.getState().network).toBe(initialNetwork);
         },
       );
     });
@@ -2597,7 +2622,7 @@ describe('NetworkController', () => {
           },
         });
         network.mockEssentialRpcCalls();
-        controller.initializeProvider();
+        await controller.initializeProvider();
 
         const { provider: providerBefore } =
           controller.getProviderAndBlockTracker();
@@ -2946,7 +2971,7 @@ describe('NetworkController', () => {
               },
             });
             network.mockEssentialRpcCalls();
-            controller.initializeProvider();
+            await controller.initializeProvider();
 
             const { provider: providerBefore } =
               controller.getProviderAndBlockTracker();
@@ -3232,7 +3257,7 @@ describe('NetworkController', () => {
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls();
-              controller.initializeProvider();
+              await controller.initializeProvider();
 
               const { provider: providerBefore } =
                 controller.getProviderAndBlockTracker();
@@ -3504,7 +3529,7 @@ describe('NetworkController', () => {
           },
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls();
-            controller.initializeProvider();
+            await controller.initializeProvider();
 
             const { provider: providerBefore } =
               controller.getProviderAndBlockTracker();
@@ -4844,17 +4869,35 @@ async function waitForStateChanges({
 /**
  * Waits for an event to occur on the controller before proceeding.
  *
- * @param {object} args - The arguments.
+ * @param {{controller: NetworkController, eventName: string, operation: (() => void | Promise<void>), beforeResolving?: (() => void | Promise<void>)}} args - The arguments.
  * @param {NetworkController} args.controller - The network controller
  * @param {string} args.eventName - The name of the event.
  * @param {() => void | Promise<void>} args.operation - A function that will
  * presumably produce the event in question.
- * @returns {Promise<boolean>}
+ * @param {() => void | Promise<void>} [args.beforeResolving] - In some tests,
+ * state updates happen so fast, we need to make an assertion immediately after
+ * the event in question occurs. However, if we wait until the promise this
+ * function returns resolves to do so, some other state update to the same
+ * property may have happened. This option allows you to make an assertion
+ * _before_ the promise resolves. This has the added benefit of allowing you to
+ * maintain the "arrange, act, assert" ordering in your test, meaning that
+ * you can still call the method that kicks off the event and then make the
+ * assertion afterward instead of the other way around.
+ * @returns {Promise<true>}
  */
-async function waitForEvent({ controller, eventName, operation }) {
+async function waitForEvent({
+  controller,
+  eventName,
+  operation,
+  beforeResolving = async () => {
+    // do nothing
+  },
+}) {
   const promise = new Promise((resolve) => {
     controller.once(eventName, () => {
-      resolve(true);
+      Promise.resolve(beforeResolving()).then(() => {
+        resolve(true);
+      });
     });
   });
 
