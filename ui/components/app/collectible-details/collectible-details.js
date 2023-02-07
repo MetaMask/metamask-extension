@@ -150,6 +150,7 @@ export default function CollectibleDetails({ collectible }) {
           onClick={onSend}
           disabled={sendDisabled}
           className="collectible-details__send-button"
+          data-testid="collectible-send-button"
         >
           {t('send')}
         </Button>
@@ -416,6 +417,7 @@ export default function CollectibleDetails({ collectible }) {
                   ariaLabel="copy"
                   color={IconColor.iconAlternative}
                   className="collectible-details__contract-copy-button"
+                  data-testid="collectible-address-copy"
                   onClick={() => {
                     handleAddressCopy(address);
                   }}

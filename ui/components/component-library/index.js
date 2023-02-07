@@ -37,4 +37,4 @@ export { TextFieldSearch } from './text-field-search';
 
 // Molecules
 export { BannerBase } from './banner-base';
-export { Banner, BANNER_SEVERITIES } from './banner';
+export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
