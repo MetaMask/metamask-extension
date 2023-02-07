@@ -24,7 +24,6 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
 
       {collectibleOptionsOpen ? (
         <Menu
-          anchorElement={collectibleOptionsButtonElement}
           data-testid="close-collectible-options-menu"
           anchorElement={ref.current}
           onHide={() => setCollectibleOptionsOpen(false)}
