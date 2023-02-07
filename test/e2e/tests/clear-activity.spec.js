@@ -2,13 +2,13 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Reset account', function () {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // When user get stuck with pending transactions, one can reset the account by clicking the 'Reset account' //
-  // button in settings, advanced tab. This functionality will clear all the send transactions history.       //
-  // Note that the receive transactions history will be kept and it only only affects the current network.    //
-  // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-  it('User can reset account via the advanced setting tab, ', async function () {
+describe('Clear account activity', function () {
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // When user get stuck with pending transactions, one can reset the account by clicking the 'Clear activity tab data' //
+  // button in settings, advanced tab. This functionality will clear all the send transactions history.                 //
+  // Note that the receive transactions history will be kept and it only only affects the current network.              //
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  it('User can clear account activity via the advanced setting tab, ', async function () {
     const ganacheOptions = {
       accounts: [
         {
