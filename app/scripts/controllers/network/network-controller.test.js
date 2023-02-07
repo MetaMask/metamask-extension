@@ -4599,8 +4599,6 @@ describe('NetworkController', () => {
 
             await waitForLookupNetworkToComplete({
               controller,
-              // TODO: Necessary?
-              numberOfNetworkDetailsChanges: 2,
               operation: () => {
                 controller.rollbackToPreviousProvider();
               },
