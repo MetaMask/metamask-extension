@@ -62,7 +62,7 @@ describe('Import NFT', function () {
     );
   });
 
-  it('should not be able to import an NFT that dose not belong to user', async function () {
+  it('should not be able to import an NFT that does not belong to user', async function () {
     await withFixtures(
       {
         dapp: true,
