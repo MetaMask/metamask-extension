@@ -3830,6 +3830,33 @@ export function setDismissSeedBackUpReminder(
   };
 }
 
+export function setDisabledRpcMethodPreference(
+  methodName: string,
+  value: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setDisabledRpcMethodPreference', [
+      methodName,
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function getRpcMethodPreferences(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('getRpcMethodPreferences', []);
+    dispatch(hideLoadingIndication());
+  };
+}
+
 export function setConnectedStatusPopoverHasBeenShown(): ThunkAction<
   void,
   MetaMaskReduxState,
