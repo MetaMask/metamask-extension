@@ -1,4 +1,4 @@
-export default {
+const TRANSACTIONS = {
   SEND_WITH_APPROVE: {
     id: 5177046356058729,
     time: 1653457101080,
@@ -27,3 +27,5 @@ export default {
     type: 'approve',
   },
 };
+
+export default TRANSACTIONS;
