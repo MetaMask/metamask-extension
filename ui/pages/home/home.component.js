@@ -139,7 +139,7 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
-    newCollectibleAddedMessage: PropTypes.string,
+    newNftAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
     removeCollectibleMessage: PropTypes.string,
     setRemoveCollectibleMessage: PropTypes.func.isRequired,
@@ -275,7 +275,7 @@ export default class Home extends PureComponent {
       showOutdatedBrowserWarning,
       newNetworkAdded,
       setNewNetworkAdded,
-      newCollectibleAddedMessage,
+      newNftAddedMessage,
       setNewCollectibleAddedMessage,
       removeCollectibleMessage,
       setRemoveCollectibleMessage,
@@ -332,7 +332,7 @@ export default class Home extends PureComponent {
             : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {newCollectibleAddedMessage === 'success' ? (
+        {newNftAddedMessage === 'success' ? (
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
@@ -345,7 +345,7 @@ export default class Home extends PureComponent {
                   variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {t('newCollectibleAddedMessage')}
+                  {t('newNftAddedMessage')}
                 </Typography>
                 <button
                   className="fas fa-times home__new-nft-notification-close"

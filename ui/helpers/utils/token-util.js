@@ -234,7 +234,7 @@ export async function getAssetDetails(
 
   let tokenDetails;
 
-  // if a tokenId is present check if there is a collectible in state matching the address/tokenId
+  // if a tokenId is present check if there is  an NFT in state matching the address/tokenId
   // and avoid unnecessary network requests to query token details we already have
   if (existingCollectibles?.length && tokenId) {
     const existingCollectible = existingCollectibles.find(
@@ -277,7 +277,7 @@ export async function getAssetDetails(
     tokenId = undefined;
   }
 
-  // else if not a collectible already in state or standard === ERC20 return tokenDetails and tokenId
+  // else if not  an NFT already in state or standard === ERC20 return tokenDetails and tokenId
   return {
     tokenAmount,
     toAddress,

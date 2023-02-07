@@ -508,10 +508,10 @@
   "close": {
     "message": "Chiudi"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "Non è possibile aggiungere questo NFT poiché i dettagli della proprietà non corrispondono. Assicurati di aver inserito le informazioni corrette."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Questo token è un NFT. Aggiungilo su $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },

@@ -133,7 +133,7 @@ class ImportToken extends Component {
     customAddressError: null,
     customSymbolError: null,
     customDecimalsError: null,
-    collectibleAddressError: null,
+    nftAddressError: null,
     forceEditSymbol: false,
     symbolAutoFilled: false,
     decimalAutoFilled: false,
@@ -198,7 +198,7 @@ class ImportToken extends Component {
       customAddressError,
       customSymbolError,
       customDecimalsError,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     return (
@@ -206,7 +206,7 @@ class ImportToken extends Component {
       customAddressError ||
       customSymbolError ||
       customDecimalsError ||
-      collectibleAddressError
+      nftAddressError
     );
   }
 
@@ -265,7 +265,7 @@ class ImportToken extends Component {
     this.setState({
       customAddress,
       customAddressError: null,
-      collectibleAddressError: null,
+      nftAddressError: null,
       tokenSelectorError: null,
       symbolAutoFilled: false,
       decimalAutoFilled: false,
@@ -312,7 +312,7 @@ class ImportToken extends Component {
       case process.env.NFTS_V1 &&
         (standard === 'ERC1155' || standard === 'ERC721'):
         this.setState({
-          collectibleAddressError: this.context.t('collectibleAddressError', [
+          nftAddressError: this.context.t('nftAddressError', [
             <a
               className="import-token__collectible-address-error-link"
               onClick={() =>
@@ -323,7 +323,7 @@ class ImportToken extends Component {
                   },
                 })
               }
-              key="collectibleAddressError"
+              key="nftAddressError"
             >
               {this.context.t('importNFTPage')}
             </a>,
@@ -406,7 +406,7 @@ class ImportToken extends Component {
       symbolAutoFilled,
       decimalAutoFilled,
       mainnetTokenWarning,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     const {
@@ -494,7 +494,7 @@ class ImportToken extends Component {
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
           error={
-            customAddressError || mainnetTokenWarning || collectibleAddressError
+            customAddressError || mainnetTokenWarning || nftAddressError
           }
           fullWidth
           autoFocus

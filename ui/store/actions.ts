@@ -2106,10 +2106,10 @@ export function addNft(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add collectible without address');
+      throw new Error('MetaMask - Cannot add NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add collectible without tokenID');
+      throw new Error('MetaMask - Cannot add NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2133,10 +2133,10 @@ export function addNftVerifyOwnership(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add collectible without address');
+      throw new Error('MetaMask - Cannot add NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add collectible without tokenID');
+      throw new Error('MetaMask - Cannot add NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2171,10 +2171,10 @@ export function removeAndIgnoreNft(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot ignore collectible without address');
+      throw new Error('MetaMask - Cannot ignore NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
+      throw new Error('MetaMask - Cannot ignore NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2198,10 +2198,10 @@ export function removeNft(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot remove collectible without address');
+      throw new Error('MetaMask - Cannot remove NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot remove collectible without tokenID');
+      throw new Error('MetaMask - Cannot remove NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -3779,11 +3779,11 @@ export function setNewNetworkAdded(
 }
 
 export function setNewCollectibleAddedMessage(
-  newCollectibleAddedMessage: string,
+  newNftAddedMessage: string,
 ): PayloadAction<string> {
   return {
     type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
-    payload: newCollectibleAddedMessage,
+    payload: newNftAddedMessage,
   };
 }
 

@@ -984,7 +984,7 @@
     "description": "The next nonce according to MetaMask's internal logic"
   },
   "nftTokenIdPlaceholder": {
-    "message": "Enter the collectible ID"
+    "message": "Enter the NFT ID"
   },
   "noAccountsFound": {
     "message": "指定的搜尋條件找不到帳戶"

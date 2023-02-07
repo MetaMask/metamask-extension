@@ -1157,7 +1157,7 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
 }
 
 export function getNewCollectibleAddedMessage(state) {
-  return state.appState.newCollectibleAddedMessage;
+  return state.appState.newNftAddedMessage;
 }
 
 export function getRemoveCollectibleMessage(state) {

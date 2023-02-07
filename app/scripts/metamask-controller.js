@@ -954,8 +954,8 @@ export default class MetamaskController extends EventEmitter {
 
         const { txReceipt } = txMeta;
 
-        // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
-        // in which case we will want to check and update ownership status of the transferred collectible.
+        // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
+        // in which case we will want to check and update ownership status of the transferred NFT.
         if (
           txMeta.type === TransactionType.tokenMethodTransferFrom &&
           txMeta.txParams !== undefined
@@ -976,7 +976,7 @@ export default class MetamaskController extends EventEmitter {
           const { allNfts } = this.nftController.state;
 
           const chainIdAsDecimal = hexToDecimal(chainId);
-          // check if its a known collectible
+          // check if its a known NFT
           const knownCollectible = allNfts?.[userAddress]?.[
             chainIdAsDecimal
           ]?.find(

@@ -57,7 +57,7 @@ interface AppState {
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
   newNetworkAdded: string;
-  newCollectibleAddedMessage: string;
+  newNftAddedMessage: string;
   removeCollectibleMessage: string;
   portfolioTooltipWasShownInThisSession: boolean;
   sendInputCurrencySwitched: boolean;
@@ -119,7 +119,7 @@ const initialState: AppState = {
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
   newNetworkAdded: '',
-  newCollectibleAddedMessage: '',
+  newNftAddedMessage: '',
   removeCollectibleMessage: '',
   portfolioTooltipWasShownInThisSession: false,
   sendInputCurrencySwitched: false,
@@ -353,7 +353,7 @@ export default function reduceApp(
     case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
       return {
         ...appState,
-        newCollectibleAddedMessage: action.payload,
+        newNftAddedMessage: action.payload,
       };
 
     case actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE:
