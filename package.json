@@ -202,6 +202,7 @@
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^2.3.1",
     "@ethereumjs/tx": "^3.2.1",
+    "@ethersproject/abi": "^5.6.4",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@formatjs/intl-relativetimeformat": "^5.2.6",

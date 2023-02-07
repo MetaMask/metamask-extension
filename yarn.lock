@@ -2037,7 +2037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.7.0":
+"@ethersproject/abi@npm:5.7.0, @ethersproject/abi@npm:^5.6.4, @ethersproject/abi@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/abi@npm:5.7.0"
   dependencies:
@@ -22743,6 +22743,7 @@ __metadata:
     "@ensdomains/content-hash": ^2.5.6
     "@ethereumjs/common": ^2.3.1
     "@ethereumjs/tx": ^3.2.1
+    "@ethersproject/abi": ^5.6.4
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.2
