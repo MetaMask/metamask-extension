@@ -22,10 +22,18 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
         MUNK #1
       </span>
     </button>
-    <button
-      class="fas fa-ellipsis-v collectible-options__button"
-      data-testid="collectible-options__button"
-    />
+    <div>
+      <button
+        aria-label="NFT Options"
+        class="box mm-button-icon mm-button-icon--size-lg collectible-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
+        data-testid="collectible-options__button"
+      >
+        <div
+          class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/more-vertical.svg');"
+        />
+      </button>
+    </div>
   </div>
   <div
     class="box collectible-details box--flex-direction-row"
