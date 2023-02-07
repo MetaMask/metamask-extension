@@ -777,13 +777,13 @@ export default class ConfirmApproveContent extends Component {
             <Button
               type="link"
               className="confirm-approve-content__verify-contract-details"
-              onClick={() => this.setState({ setshowContractDetails: true })}
+              onClick={() => this.setState({ setShowContractDetails: true })}
             >
               {t('verifyContractDetails')}
             </Button>
-            {setshowContractDetails && (
+            {setShowContractDetails && (
               <ContractDetailsModal
-                onClose={() => this.setState({ setshowContractDetails: false })}
+                onClose={() => this.setState({ setShowContractDetails: false })}
                 tokenName={tokenSymbol}
                 tokenAddress={tokenAddress}
                 toAddress={toAddress}
