@@ -1,8 +1,17 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { useHistory } from 'react-router-dom';
 import { renderWithProvider } from '../../../test/jest/rendering';
-import * as Actions from '../../store/actions';
+import mockState from '../../../test/data/mock-state.json';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  addNftVerifyOwnership,
+  ignoreTokens,
+  setNewCollectibleAddedMessage,
+  updateCollectibleDropDownState,
+} from '../../store/actions';
 import AddCollectible from '.';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
@@ -10,9 +19,39 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(
+    jest.fn().mockReturnValue({
+      push: jest.fn(),
+      location: {
+        state: {
+          tokenAddress: '0xTokenAddress',
+        },
+      },
+    }),
+  ),
+}));
+
+jest.mock('../../store/actions.ts', () => ({
+  addNftVerifyOwnership: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
+  getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
+  ignoreTokens: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  setNewCollectibleAddedMessage: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
+  updateCollectibleDropDownState: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue()),
+}));
+
 describe('AddCollectible', () => {
-  const store = configureMockStore([])({
-    metamask: { provider: { chainId: '0x1' } },
+  const store = configureMockStore([thunk])(mockState);
+
+  beforeEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('should enable the "Add" button when valid entries are input into both Address and TokenId fields', () => {
@@ -53,7 +92,7 @@ describe('AddCollectible', () => {
     expect(getByText('Add')).not.toBeEnabled();
   });
 
-  it('should call addNftVerifyOwnership action with correct values (tokenId should not be in scientific notation)', () => {
+  it('should call addNftVerifyOwnership, updateCollectibleDropDownState, setNewCollectibleAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
     const { getByTestId, getByText } = renderWithProvider(
       <AddCollectible />,
       store,
@@ -65,15 +104,76 @@ describe('AddCollectible', () => {
     fireEvent.change(getByTestId('token-id'), {
       target: { value: LARGE_TOKEN_ID },
     });
-    const addCollectibleVerifyOwnershipSpy = jest.spyOn(
-      Actions,
-      'addNftVerifyOwnership',
-    );
 
     fireEvent.click(getByText('Add'));
-    expect(addCollectibleVerifyOwnershipSpy).toHaveBeenCalledWith(
-      '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9',
-      '9007199254740992',
+
+    await waitFor(() => {
+      expect(addNftVerifyOwnership).toHaveBeenCalledWith(
+        '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9',
+        '9007199254740992',
+      );
+
+      expect(updateCollectibleDropDownState).toHaveBeenCalledWith({
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          '0x5': {
+            '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9': true,
+            '0x495f947276749Ce646f68AC8c248420045cb7b5e': false,
+          },
+        },
+      });
+
+      expect(setNewCollectibleAddedMessage).toHaveBeenCalledWith('success');
+
+      expect(ignoreTokens).toHaveBeenCalledWith({
+        dontShowLoadingIndicator: true,
+        tokensToIgnore: '0xTokenAddress',
+      });
+    });
+  });
+
+  it('should throw error message and click close on failure message', async () => {
+    addNftVerifyOwnership.mockImplementation(() =>
+      jest.fn().mockRejectedValue(new Error('error')),
     );
+
+    const { getByTestId, getByText, queryByTitle } = renderWithProvider(
+      <AddCollectible />,
+      store,
+    );
+    fireEvent.change(getByTestId('address'), {
+      target: { value: VALID_ADDRESS },
+    });
+    const LARGE_TOKEN_ID = Number.MAX_SAFE_INTEGER + 1;
+    fireEvent.change(getByTestId('token-id'), {
+      target: { value: LARGE_TOKEN_ID },
+    });
+
+    fireEvent.click(getByText('Add'));
+
+    await waitFor(() => {
+      expect(setNewCollectibleAddedMessage).toHaveBeenCalledWith('error');
+    });
+
+    const addCollectibleClose = queryByTitle('Close');
+
+    fireEvent.click(addCollectibleClose);
+  });
+
+  it('should route to default route when cancel button is clicked', () => {
+    const { queryByTestId } = renderWithProvider(<AddCollectible />, store);
+
+    const cancelButton = queryByTestId('page-container-footer-cancel');
+    fireEvent.click(cancelButton);
+
+    expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('should route to default route when close button is clicked', () => {
+    const { queryByLabelText } = renderWithProvider(<AddCollectible />, store);
+
+    const closeButton = queryByLabelText('close');
+    fireEvent.click(closeButton);
+
+    expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });
