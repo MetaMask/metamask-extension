@@ -1156,10 +1156,12 @@ describe('NetworkController', () => {
             const anotherNetwork = INFURA_NETWORKS.find(
               (network) => network.networkType !== networkType,
             );
-            assert(
-              anotherNetwork,
-              "Could not find another network to use. You've probably commented out all INFURA_NETWORKS but one. Please uncomment another one.",
-            );
+            /* eslint-disable-next-line jest/no-if */
+            if (!anotherNetwork) {
+              throw new Error(
+                "Could not find another network to use. You've probably commented out all INFURA_NETWORKS but one. Please uncomment another one.",
+              );
+            }
 
             await withController(
               {
