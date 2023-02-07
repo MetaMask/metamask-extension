@@ -551,7 +551,7 @@ export function getSnapDerivationPathName(path, curve) {
 /**
  * The method escape RTL character in string
  *
- * @param {string} str
+ * @param {any} value
  * @returns {(string|*)} escaped string or original param value
  */
 export const sanitizeString = (value) => {
