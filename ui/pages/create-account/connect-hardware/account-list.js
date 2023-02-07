@@ -13,9 +13,11 @@ import { HardwareDeviceNames } from '../../../../shared/constants/hardware-walle
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   getCurrentChainId,
+  getMetaMaskAccounts,
   getMetaMaskAccountsConnected,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
+import { formatAccounts } from './utils';
 
 class AccountList extends Component {
   state = {
@@ -276,6 +278,7 @@ const mapStateToProps = (state, props) => {
     selectedPath: state.appState.defaultHdPaths[props.device],
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     connectedAccounts: getMetaMaskAccountsConnected(state),
+    accounts: formatAccounts(props.accounts, getMetaMaskAccounts(state)),
   };
 };
 

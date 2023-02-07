@@ -67,22 +67,6 @@ class ConnectHardwareForm extends Component {
     device: null,
   };
 
-  formattedAccounts() {
-    const { accounts } = this.state;
-
-    return accounts.map((a) => {
-      const normalizedAddress = a.address.toLowerCase();
-      // We rely on the prop accounts data for balances, instead of the state
-      const _balance = this.props.accounts[normalizedAddress]?.balance || null;
-      const balance = _balance ? formatBalance(_balance, 6) : '...';
-
-      return {
-        ...a,
-        balance,
-      };
-    });
-  }
-
   async unlockDevice(device) {
     const path = this.props.defaultHdPaths[device];
     const unlocked = await this.props.checkHardwareStatus(device, path);
@@ -299,7 +283,7 @@ class ConnectHardwareForm extends Component {
       <AccountList
         onPathChange={this.onPathChange}
         device={device}
-        accounts={this.formattedAccounts()}
+        accounts={accounts}
         selectedAccounts={selectedAccounts}
         onAccountChange={this.onAccountChange}
         getPage={this.getPage}
@@ -331,13 +315,11 @@ ConnectHardwareForm.propTypes = {
   unlockHardwareWalletAccounts: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
   history: PropTypes.object,
-  accounts: PropTypes.object,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  accounts: getMetaMaskAccounts(state),
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
