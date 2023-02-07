@@ -58,7 +58,7 @@ describe('ConfirmApproveContent Component', () => {
         'By granting permission, you are allowing the following contract to access your funds',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -108,14 +108,14 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Give permission to access your TST? ',
     );
     expect(
       queryByText(
-        'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
+        'By granting permission, you are allowing the following contract to access your funds',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -141,13 +141,13 @@ describe('ConfirmApproveContent Component', () => {
 
     const showViewTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission request')).not.toBeInTheDocument();
-    expect(queryByText('Approved asset:')).not.toBeInTheDocument();
+    expect(queryByText('Approved amount:')).not.toBeInTheDocument();
     expect(queryByText('Granted to:')).not.toBeInTheDocument();
     expect(queryByText('Data')).not.toBeInTheDocument();
     fireEvent.click(showViewTxDetails);
     expect(getByText('Hide full transaction details')).toBeInTheDocument();
     expect(getByText('Permission request')).toBeInTheDocument();
-    expect(getByText('Approved asset:')).toBeInTheDocument();
+    expect(getByText('Approved amount:')).toBeInTheDocument();
     expect(getByText('Granted to:')).toBeInTheDocument();
     expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
     expect(getByText('Data')).toBeInTheDocument();
@@ -168,14 +168,14 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Give permission to access your TST? ',
     );
     expect(
       queryByText(
-        'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
+        'By granting permission, you are allowing the following contract to access your funds',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
+    expect(queryByText('0x9bc5...fef4')).toBeInTheDocument();
     expect(
       queryByText(
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -207,7 +207,7 @@ describe('ConfirmApproveContent Component', () => {
     fireEvent.click(showViewTxDetails);
     expect(getByText('Hide full transaction details')).toBeInTheDocument();
     expect(getByText('Permission request')).toBeInTheDocument();
-    expect(getByText('Approved asset:')).toBeInTheDocument();
+    expect(getByText('Approved amount:')).toBeInTheDocument();
     expect(getByText('Granted to:')).toBeInTheDocument();
     expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
     expect(getByText('Data')).toBeInTheDocument();
