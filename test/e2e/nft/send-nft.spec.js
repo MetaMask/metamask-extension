@@ -27,7 +27,6 @@ describe('Send NFT', function () {
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        console.log(contractAddress);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
