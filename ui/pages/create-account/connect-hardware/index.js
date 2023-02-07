@@ -2,15 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
-import {
-  getMetaMaskAccounts,
-  getMetaMaskAccountsConnected,
-} from '../../../selectors';
-import { formatBalance } from '../../../helpers/utils/util';
+import { getMetaMaskAccountsConnected } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
-import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
