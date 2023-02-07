@@ -22,6 +22,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
       {collectibleOptionsOpen ? (
         <Menu
           anchorElement={collectibleOptionsButtonElement}
+          data-testid="close-collectible-options-menu"
           onHide={() => setCollectibleOptionsOpen(false)}
         >
           {onViewOnOpensea ? (
@@ -38,7 +39,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
           ) : null}
           <MenuItem
             iconName={ICON_NAMES.TRASH}
-            data-testid="collectible-options__hide"
+            data-testid="collectible-item-remove"
             onClick={() => {
               setCollectibleOptionsOpen(false);
               onRemove();
@@ -54,7 +55,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
 
 CollectibleOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
-  onViewOnOpensea: PropTypes.func.isRequired,
+  onViewOnOpensea: PropTypes.func,
 };
 
 export default CollectibleOptions;
