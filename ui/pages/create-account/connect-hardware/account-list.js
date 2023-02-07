@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 
+import { connect } from 'react-redux';
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
@@ -10,6 +11,11 @@ import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import {
+  getCurrentChainId,
+  getMetaMaskAccountsConnected,
+  getRpcPrefsForCurrentProvider,
+} from '../../../selectors';
 
 class AccountList extends Component {
   state = {
@@ -250,13 +256,13 @@ AccountList.propTypes = {
   onAccountChange: PropTypes.func.isRequired,
   onForgetDevice: PropTypes.func.isRequired,
   getPage: PropTypes.func.isRequired,
-  chainId: PropTypes.string,
-  rpcPrefs: PropTypes.object,
+  chainId: PropTypes.string.isRequired,
+  rpcPrefs: PropTypes.object.isRequired,
   selectedAccounts: PropTypes.array.isRequired,
-  onUnlockAccounts: PropTypes.func,
-  onCancel: PropTypes.func,
-  onAccountRestriction: PropTypes.func,
-  hdPaths: PropTypes.array.isRequired,
+  onUnlockAccounts: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onAccountRestriction: PropTypes.func.isRequired,
+  hdPaths: PropTypes.object.isRequired,
 };
 
 AccountList.contextTypes = {
@@ -264,4 +270,13 @@ AccountList.contextTypes = {
   trackEvent: PropTypes.func,
 };
 
-export default AccountList;
+const mapStateToProps = (state, props) => {
+  return {
+    chainId: getCurrentChainId(state),
+    selectedPath: state.appState.defaultHdPaths[props.device],
+    rpcPrefs: getRpcPrefsForCurrentProvider(state),
+    connectedAccounts: getMetaMaskAccountsConnected(state),
+  };
+};
+
+export default connect(mapStateToProps)(AccountList);

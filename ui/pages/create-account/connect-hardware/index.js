@@ -3,19 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
 import {
-  getCurrentChainId,
   getMetaMaskAccounts,
-  getRpcPrefsForCurrentProvider,
   getMetaMaskAccountsConnected,
 } from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-} from '../../../../shared/constants/hardware-wallets';
+import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
@@ -72,44 +67,32 @@ class ConnectHardwareForm extends Component {
     device: null,
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { accounts } = nextProps;
-    const newAccounts = this.state.accounts.map((a) => {
+  formattedAccounts() {
+    const { accounts } = this.state;
+
+    return accounts.map((a) => {
       const normalizedAddress = a.address.toLowerCase();
-      const balanceValue = accounts[normalizedAddress]?.balance || null;
-      a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...';
-      return a;
+      // We rely on the prop accounts data for balances, instead of the state
+      const _balance = this.props.accounts[normalizedAddress]?.balance || null;
+      const balance = _balance ? formatBalance(_balance, 6) : '...';
+
+      return {
+        ...a,
+        balance,
+      };
     });
-    this.setState({ accounts: newAccounts });
   }
 
-  componentDidMount() {
-    this.checkIfUnlocked();
-  }
-
-  async checkIfUnlocked() {
-    for (const device of [
-      HardwareDeviceNames.trezor,
-      HardwareDeviceNames.ledger,
-      HardwareDeviceNames.lattice,
-    ]) {
-      const path = this.props.defaultHdPaths[device];
-      const unlocked = await this.props.checkHardwareStatus(device, path);
-      if (unlocked) {
-        this.setState({ unlocked: true });
-        this.getPage(device, 0, path);
-      }
-    }
+  async unlockDevice(device) {
+    const path = this.props.defaultHdPaths[device];
+    const unlocked = await this.props.checkHardwareStatus(device, path);
+    this.setState({ unlocked });
+    this.getPage(device, 0, path);
   }
 
   connectToHardwareWallet = (device) => {
     this.setState({ device });
-    if (this.state.accounts.length) {
-      return;
-    }
-
-    // Default values
-    this.getPage(device, 0, this.props.defaultHdPaths[device]);
+    this.unlockDevice(device);
   };
 
   onPathChange = (path) => {
@@ -156,19 +139,8 @@ class ConnectHardwareForm extends Component {
             this.showTemporaryAlert();
           }
 
-          // Map accounts with balances
-          const newAccounts = accounts.map((account) => {
-            const normalizedAddress = account.address.toLowerCase();
-            const balanceValue =
-              this.props.accounts[normalizedAddress]?.balance || null;
-            account.balance = balanceValue
-              ? formatBalance(balanceValue, 6)
-              : '...';
-            return account;
-          });
-
           this.setState({
-            accounts: newAccounts,
+            accounts,
             unlocked: true,
             device,
             error: null,
@@ -308,12 +280,17 @@ class ConnectHardwareForm extends Component {
   }
 
   renderContent() {
-    if (!this.state.accounts.length) {
+    const { device, unlocked, accounts, selectedAccounts, browserSupported } =
+      this.state;
+
+    const deviceSelectedAndUnlocked = device && unlocked;
+    const showAccountList = deviceSelectedAndUnlocked && accounts.length;
+
+    if (!showAccountList) {
       return (
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
-          browserSupported={this.state.browserSupported}
-          ledgerTransportType={this.props.ledgerTransportType}
+          browserSupported={browserSupported}
         />
       );
     }
@@ -321,14 +298,10 @@ class ConnectHardwareForm extends Component {
     return (
       <AccountList
         onPathChange={this.onPathChange}
-        selectedPath={this.props.defaultHdPaths[this.state.device]}
-        device={this.state.device}
-        accounts={this.state.accounts}
-        connectedAccounts={this.props.connectedAccounts}
-        selectedAccounts={this.state.selectedAccounts}
+        device={device}
+        accounts={this.formattedAccounts()}
+        selectedAccounts={selectedAccounts}
         onAccountChange={this.onAccountChange}
-        chainId={this.props.chainId}
-        rpcPrefs={this.props.rpcPrefs}
         getPage={this.getPage}
         onUnlockAccounts={this.onUnlockAccounts}
         onForgetDevice={this.onForgetDevice}
@@ -358,23 +331,16 @@ ConnectHardwareForm.propTypes = {
   unlockHardwareWalletAccounts: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
   history: PropTypes.object,
-  chainId: PropTypes.string,
-  rpcPrefs: PropTypes.object,
   accounts: PropTypes.object,
-  connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-  ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
 };
 
 const mapStateToProps = (state) => ({
-  chainId: getCurrentChainId(state),
-  rpcPrefs: getRpcPrefsForCurrentProvider(state),
   accounts: getMetaMaskAccounts(state),
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  ledgerTransportType: state.metamask.ledgerTransportType,
 });
 
 const mapDispatchToProps = (dispatch) => {

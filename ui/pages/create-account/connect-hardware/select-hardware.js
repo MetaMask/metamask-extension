@@ -1,6 +1,8 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import React, { Component } from 'react';
+
 import Button from '../../../components/ui/button';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -8,16 +10,16 @@ import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
 import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
   HardwareAffiliateLinks,
   HardwareAffiliateTutorialLinks,
+  HardwareDeviceNames,
+  LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
-export default class SelectHardware extends Component {
+class SelectHardware extends Component {
   static contextTypes = {
     t: PropTypes.func,
     trackEvent: PropTypes.func,
@@ -608,3 +610,9 @@ export default class SelectHardware extends Component {
     return this.renderUnsupportedBrowser();
   }
 }
+
+const mapStateToProps = (state) => ({
+  ledgerTransportType: state.metamask.ledgerTransportType,
+});
+
+export default connect(mapStateToProps)(SelectHardware);
