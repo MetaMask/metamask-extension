@@ -22,7 +22,7 @@ import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
 import DropdownInputPair from '../dropdown-input-pair';
 import DropdownSearchList from '../dropdown-search-list';
-import SlippageButtons from '../slippage-buttons';
+import TransactionSettings from '../transaction-settings';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
@@ -924,8 +924,8 @@ export default function PrepareSwap({
         )}
         {(smartTransactionsEnabled ||
           (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
-          <div className="prepare-swap__slippage-buttons-container">
-            <SlippageButtons
+          <div className="prepare-swap__transaction-settings-container">
+            <TransactionSettings
               onSelect={(newSlippage) => {
                 dispatch(setMaxSlippage(newSlippage));
               }}
