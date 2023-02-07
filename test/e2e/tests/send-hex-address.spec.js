@@ -45,6 +45,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
@@ -88,6 +89,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
@@ -181,8 +183,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          { timeout: 10000 },
         );
         await driver.clickElement(
           '.transaction-list__completed-transactions .transaction-list-item',
@@ -263,6 +267,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.loading-overlay');
 
         await driver.clickElement(
           '.transaction-list__completed-transactions .transaction-list-item',
