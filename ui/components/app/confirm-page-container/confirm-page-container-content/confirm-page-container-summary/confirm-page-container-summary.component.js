@@ -180,7 +180,6 @@ ConfirmPageContainerSummary.propTypes = {
   origin: PropTypes.string.isRequired,
   hideTitle: PropTypes.bool,
   transactionType: PropTypes.string,
-  isContractTypeTransaction: PropTypes.bool,
   isSendWithApproval: PropTypes.bool,
 };
 
