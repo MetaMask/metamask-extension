@@ -738,8 +738,8 @@
   "symbol": {
     "message": "Simbolis"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbolis turi būti ne ilgesnis nei 11 simbolių."
+  "symbolBetweenZeroHundred": {
+    "message": "Simbolis turi būti ne ilgesnis nei 100 simbolių."
   },
   "terms": {
     "message": "Naudojimo sąlygos"

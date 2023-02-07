@@ -716,8 +716,8 @@
   "symbol": {
     "message": "Ishara"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Alama lazima iwe na herufi 11 au chache."
+  "symbolBetweenZeroHundred": {
+    "message": "Alama lazima iwe na herufi 100 au chache."
   },
   "terms": {
     "message": "Masharti ya Matumizi"

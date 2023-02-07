@@ -3890,7 +3890,7 @@
   "symbol": {
     "message": "기호"
   },
-  "symbolBetweenZeroTwelve": {
+  "symbolBetweenZeroHundred": {
     "message": "기호는 11자 이하여야 합니다."
   },
   "tenPercentIncreased": {

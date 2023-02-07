@@ -1708,8 +1708,8 @@
   "symbol": {
     "message": "Simbolo"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Dapat ay 11 character o mas kaunti ang simbolo."
+  "symbolBetweenZeroHundred": {
+    "message": "Dapat ay 100 character o mas kaunti ang simbolo."
   },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"

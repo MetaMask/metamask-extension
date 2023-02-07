@@ -734,8 +734,8 @@
   "symbol": {
     "message": "Simbols"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbolā nedrīkst būt vairāk par 11 rakstzīmēm."
+  "symbolBetweenZeroHundred": {
+    "message": "Simbolā nedrīkst būt vairāk par 100 rakstzīmēm."
   },
   "terms": {
     "message": "Lietošanas noteikumi"

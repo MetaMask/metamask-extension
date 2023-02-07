@@ -723,8 +723,8 @@
   "symbol": {
     "message": "ምልክት"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "ምልክቱ 11 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
+  "symbolBetweenZeroHundred": {
+    "message": "ምልክቱ 100 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
   },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"

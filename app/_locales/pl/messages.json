@@ -729,8 +729,8 @@
   "switchNetworks": {
     "message": "Zmień sieci"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbol musi mieć maksymalnie 11 znaków."
+  "symbolBetweenZeroHundred": {
+    "message": "Symbol musi mieć maksymalnie 100 znaków."
   },
   "terms": {
     "message": "Regulamin"

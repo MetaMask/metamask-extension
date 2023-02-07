@@ -374,8 +374,8 @@
   "symbol": {
     "message": "เครื่องหมาย"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "สัญลักษณ์จะต้องมีความยาว 11 ตัวอักษร"
+  "symbolBetweenZeroHundred": {
+    "message": "สัญลักษณ์จะต้องมีความยาว 100 ตัวอักษร"
   },
   "terms": {
     "message": "ข้อตกลงในการใช้งาน"

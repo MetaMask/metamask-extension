@@ -1384,8 +1384,8 @@
   "symbol": {
     "message": "符號"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "符號不得超過 11 個字元。"
+  "symbolBetweenZeroHundred": {
+    "message": "符號不得超過 100 個字元。"
   },
   "terms": {
     "message": "使用條款"

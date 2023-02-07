@@ -726,8 +726,8 @@
   "symbol": {
     "message": "Simbol"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Simbol mora biti največ 11 znakov ali manj."
+  "symbolBetweenZeroHundred": {
+    "message": "Simbol mora biti največ 100 znakov ali manj."
   },
   "terms": {
     "message": "Pogoji uporabe"

@@ -738,8 +738,8 @@
   "symbol": {
     "message": "سمبول"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "نماد باید 11 کاراکتر یا کمتر باشد."
+  "symbolBetweenZeroHundred": {
+    "message": "نماد باید 100 کاراکتر یا کمتر باشد."
   },
   "terms": {
     "message": "شرایط استفاده"

@@ -1763,7 +1763,7 @@
   "symbol": {
     "message": "Simbolo"
   },
-  "symbolBetweenZeroTwelve": {
+  "symbolBetweenZeroHundred": {
     "message": "Il simbolo deve essere lungo tra 0 e 12 caratteri."
   },
   "terms": {

@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "Символ"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Символ должен состоять из 11 или менее знаков."
+  "symbolBetweenZeroHundred": {
+    "message": "Символ должен состоять из 100 или менее знаков."
   },
   "tenPercentIncreased": {
     "message": "Увеличение на 10%"

@@ -735,8 +735,8 @@
   "symbol": {
     "message": "رمز"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
+  "symbolBetweenZeroHundred": {
+    "message": "يجب أن يكون الرمز 100 حرفًا أو أقل."
   },
   "terms": {
     "message": "شروط الاستخدام"

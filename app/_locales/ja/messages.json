@@ -3890,7 +3890,7 @@
   "symbol": {
     "message": "シンボル"
   },
-  "symbolBetweenZeroTwelve": {
+  "symbolBetweenZeroHundred": {
     "message": "シンボルは11文字以下にする必要があります。"
   },
   "tenPercentIncreased": {

@@ -367,8 +367,8 @@ class ImportToken extends Component {
     const symbolLength = customSymbol.length;
     let customSymbolError = null;
 
-    if (symbolLength == 0)
-      customSymbolError = this.context.t('symbolMustBeNonZero');
+    if (symbolLength == 0 || symbolLength >= 100)
+      customSymbolError = this.context.t('symbolBetweenZeroHundred');
 
     this.setState({ customSymbol, customSymbolError });
   }

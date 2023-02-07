@@ -3890,8 +3890,8 @@
   "symbol": {
     "message": "प्रतीक"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "प्रतीक 11 वर्ण या उससे कम का होना चाहिए।"
+  "symbolBetweenZeroHundred": {
+    "message": "प्रतीक 100 वर्ण या उससे कम का होना चाहिए।"
   },
   "tenPercentIncreased": {
     "message": "10% बढ़ोत्तरी"

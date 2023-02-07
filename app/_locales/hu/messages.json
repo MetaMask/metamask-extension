@@ -731,7 +731,7 @@
   "symbol": {
     "message": "Szimbólum"
   },
-  "symbolBetweenZeroTwelve": {
+  "symbolBetweenZeroHundred": {
     "message": "A szimbólum 0 és 12 karakter között kell legyen."
   },
   "terms": {
