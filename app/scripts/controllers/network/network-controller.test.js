@@ -4755,56 +4755,52 @@ async function waitForStateChanges({
     let timer;
     const allStates = [];
     const interestingStates = [];
-    let alreadyEnded = false;
-
-    const end = () => {
-      if (!alreadyEnded) {
-        controller.store.unsubscribe(eventListener);
-
-        const shouldEnd =
-          expectedInterestingStateCount === null
-            ? interestingStates.length > 0
-            : interestingStates.length === expectedInterestingStateCount;
-
-        if (shouldEnd) {
-          resolve(interestingStates);
-        } else {
-          // Using a string instead of an Error leads to better backtraces.
-          /* eslint-disable-next-line prefer-promise-reject-errors */
-          const expectedInterestingStateCountFragment =
-            expectedInterestingStateCount === null
-              ? 'any number of'
-              : expectedInterestingStateCount;
-          const propertyPathFragment =
-            propertyPath === undefined
-              ? ''
-              : ` on \`${propertyPath.join('.')}\``;
-          const actualInterestingStateCountFragment =
-            expectedInterestingStateCount === null
-              ? 'none'
-              : interestingStates.length;
-          const primaryMessage = `Expected to receive ${expectedInterestingStateCountFragment} state change(s)${propertyPathFragment}, but received ${actualInterestingStateCountFragment} after ${timeBeforeAssumingNoMoreStateChanges}ms.`;
-          reject(
-            [
-              primaryMessage,
-              'Initial state:',
-              inspect(initialState, { depth: null }),
-              'All state changes (without filtering):',
-              inspect(allStates, { depth: null }),
-              'Filtered state changes:',
-              inspect(interestingStates, { depth: null }),
-            ].join('\n\n'),
-          );
-        }
-        alreadyEnded = true;
-      }
-    };
 
     const stopTimer = () => {
       if (timer) {
         clearTimeout(timer);
       }
       isTimerRunning = false;
+    };
+
+    const end = () => {
+      stopTimer();
+
+      controller.store.unsubscribe(eventListener);
+
+      const shouldEnd =
+        expectedInterestingStateCount === null
+          ? interestingStates.length > 0
+          : interestingStates.length === expectedInterestingStateCount;
+
+      if (shouldEnd) {
+        resolve(interestingStates);
+      } else {
+        // Using a string instead of an Error leads to better backtraces.
+        /* eslint-disable-next-line prefer-promise-reject-errors */
+        const expectedInterestingStateCountFragment =
+          expectedInterestingStateCount === null
+            ? 'any number of'
+            : expectedInterestingStateCount;
+        const propertyPathFragment =
+          propertyPath === undefined ? '' : ` on \`${propertyPath.join('.')}\``;
+        const actualInterestingStateCountFragment =
+          expectedInterestingStateCount === null
+            ? 'none'
+            : interestingStates.length;
+        const primaryMessage = `Expected to receive ${expectedInterestingStateCountFragment} state change(s)${propertyPathFragment}, but received ${actualInterestingStateCountFragment} after ${timeBeforeAssumingNoMoreStateChanges}ms.`;
+        reject(
+          [
+            primaryMessage,
+            'Initial state:',
+            inspect(initialState, { depth: null }),
+            'All state changes (without filtering):',
+            inspect(allStates, { depth: null }),
+            'Filtered state changes:',
+            inspect(interestingStates, { depth: null }),
+          ].join('\n\n'),
+        );
+      }
     };
 
     const resetTimer = () => {
@@ -4828,7 +4824,6 @@ async function waitForStateChanges({
       if (isInteresting) {
         interestingStates.push(newState);
         if (interestingStates.length === expectedInterestingStateCount) {
-          stopTimer();
           end();
         } else {
           resetTimer();
