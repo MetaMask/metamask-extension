@@ -4422,6 +4422,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "symbolMustBeNonZero": {
+    "message": "Symbol length must be > 0."
+  },
   "tenPercentIncreased": {
     "message": "10% increase"
   },
