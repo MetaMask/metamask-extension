@@ -457,21 +457,23 @@ describe('MetaMask', function () {
     });
 
     it('checks balance', async function () {
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({
         text: 'Assets',
         tag: 'button',
       });
 
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.waitForSelector({
         css: '.asset-list-item__token-button',
         text: '7.5 TST',
       });
 
-      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({
         text: 'Activity',
         tag: 'button',
       });
+      await driver.waitForElementNotPresent('.loading-overlay');
     });
   });
 
