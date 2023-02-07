@@ -55,6 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    isSendWithApproval: PropTypes.bool,
   };
 
   state = {

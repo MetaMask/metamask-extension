@@ -8,7 +8,6 @@ export default class ConfirmSendToken extends Component {
     history: PropTypes.object,
     editExistingTransaction: PropTypes.func,
     tokenAmount: PropTypes.string,
-    tokenAddress: PropTypes.string,
   };
 
   handleEdit(confirmTransactionData) {

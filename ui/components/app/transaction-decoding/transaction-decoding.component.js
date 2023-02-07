@@ -33,8 +33,10 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const [loading, setLoading] = useState(false);
   const [hasError, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     (async () => {
       setLoading(true);
       try {
@@ -84,12 +86,19 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           blockNumber: null,
         });
 
+        if (!mounted) {
+          return;
+        }
+
         // transform tx decoding arguments into tree data
         const params = transformTxDecoding(decoding?.arguments);
         setTx(params);
 
         setLoading(false);
       } catch (error) {
+        if (!mounted) {
+          return;
+        }
         setLoading(false);
         setError(true);
         if (error?.message.match('400')) {
@@ -99,6 +108,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         }
       }
     })();
+    return () => setMounted(false);
   }, [t, from, to, network, data]);
 
   // ***********************************************************
