@@ -532,13 +532,13 @@ export function isNullish(value) {
  * @param {string} str
  * @returns {(string|*)} escaped string or original param value
  */
-export const sanitizeString = (str) => {
-  if (!str) {
-    return str;
+export const sanitizeString = (value) => {
+  if (!value) {
+    return value;
   }
-  if (!isString(str)) {
-    return str;
+  if (!isString(value)) {
+    return value;
   }
   const regex = /\u202E/giu;
-  return str.replaceAll(regex, '\\u202E');
+  return value.replaceAll(regex, '\\u202E');
 };
