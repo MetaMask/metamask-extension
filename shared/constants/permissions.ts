@@ -1,7 +1,3 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { isMain } from './environment';
-///: END:ONLY_INCLUDE_IN
-
 export const CaveatTypes = Object.freeze({
   restrictReturnedAccounts: 'restrictReturnedAccounts' as const,
 });
@@ -22,55 +18,31 @@ export const RestrictedMethods = Object.freeze({
 } as const);
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-
+/**
+ * Exclude permissions by code fencing them to avoid any potential usage of excluded permissions at runtime. See: https://github.com/MetaMask/metamask-extension/pull/17321#pullrequestreview-1287014285
+ * TODO: Disable endowment:long-running and eth_account in stable.
+ */
 export const PermissionNamespaces = Object.freeze({
   wallet_snap_: 'wallet_snap_*',
 } as const);
 
-const StableEndowmentPermissions = Object.freeze({
+export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
   'endowment:transaction-insight': 'endowment:transaction-insight',
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
-} as const);
-
-const FlaskEndowmentPermissions = Object.freeze({
-  ...StableEndowmentPermissions,
   'endowment:long-running': 'endowment:long-running',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
-const ExcludedFlaskSnapPermissions = Object.freeze({
+export const ExcludedSnapPermissions = Object.freeze({
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
 });
-const ExcludedStableSnapPermissions = Object.freeze({
-  eth_accounts:
-    'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
-});
-const ExcludedStableSnapEndowments = Object.freeze({
-  'endowment:keyring':
-    'This endowment is still in development therefore not available.',
-  'endowment:long-running':
-    'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945. ',
-});
 
-const ExcludedFlaskSnapEndowments = Object.freeze({
+export const ExcludedSnapEndowments = Object.freeze({
   'endowment:keyring':
     'This endowment is still in development therefore not available.',
 });
-
-export const EndowmentPermissions = isMain
-  ? StableEndowmentPermissions
-  : FlaskEndowmentPermissions;
-
-export const ExcludedSnapPermissions = isMain
-  ? ExcludedStableSnapPermissions
-  : ExcludedFlaskSnapPermissions;
-
-export const ExcludedSnapEndowments = isMain
-  ? ExcludedStableSnapEndowments
-  : ExcludedFlaskSnapEndowments;
-
 ///: END:ONLY_INCLUDE_IN
