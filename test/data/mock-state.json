@@ -22,6 +22,11 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
+    "knownMethodData": {
+      "0x095ea7b3": {
+        "name": "Approve"
+      }
+    },
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
