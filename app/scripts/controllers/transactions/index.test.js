@@ -24,7 +24,6 @@ import { SECOND } from '../../../../shared/constants/time';
 import {
   GasEstimateTypes,
   GasRecommendations,
-  GAS_LIMITS,
 } from '../../../../shared/constants/gas';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
