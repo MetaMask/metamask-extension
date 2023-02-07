@@ -66,7 +66,7 @@ function getActionFunctionById(id, history) {
     18: () => {
       updateViewedNotifications({ 18: true });
       history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
-    }
+    },
   };
 
   return actionFunctions[id];
