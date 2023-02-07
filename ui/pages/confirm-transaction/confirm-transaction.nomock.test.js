@@ -214,5 +214,6 @@ describe('Confirm Transaction', () => {
     expect(
       getByText(sendWithApproveTransaction.txParams.data),
     ).toBeInTheDocument();
+    expect(getAllByText('Approve')).toHaveLength(2);
   });
 });
