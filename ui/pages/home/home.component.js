@@ -7,7 +7,7 @@ import {
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-import CollectiblesTab from '../../components/app/collectibles-tab';
+import CollectiblesTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
