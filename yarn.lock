@@ -4467,6 +4467,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oozcitak/dom@npm:1.15.10":
+  version: 1.15.10
+  resolution: "@oozcitak/dom@npm:1.15.10"
+  dependencies:
+    "@oozcitak/infra": 1.0.8
+    "@oozcitak/url": 1.0.4
+    "@oozcitak/util": 8.3.8
+  checksum: c83f5dc778b12f8e52e35fac0aa741bfac074faf3f3b60345723de46cba4c8ef0dced2839379fb93e21007f52336f875cf9ddfff6c598020b0688cb7d6f03ec7
+  languageName: node
+  linkType: hard
+
+"@oozcitak/infra@npm:1.0.8":
+  version: 1.0.8
+  resolution: "@oozcitak/infra@npm:1.0.8"
+  dependencies:
+    "@oozcitak/util": 8.3.8
+  checksum: fc76a17187d67df39cf38ae8138ce1757d6b86e5d2ff3c90f5db12194380005b4e22fb6caec4bd40dce363fb8c89f6f945bb0577e6ecee59755773b7ff793164
+  languageName: node
+  linkType: hard
+
+"@oozcitak/url@npm:1.0.4":
+  version: 1.0.4
+  resolution: "@oozcitak/url@npm:1.0.4"
+  dependencies:
+    "@oozcitak/infra": 1.0.8
+    "@oozcitak/util": 8.3.8
+  checksum: ab4a9726b447910e093c0efcb92c4486e1bc314e0c9375f1a4082d1f0b2cc80bbfd433cc6953641b1ddaf73df21bd7002bb5cf581d8ff104a9eac5d21633b781
+  languageName: node
+  linkType: hard
+
+"@oozcitak/util@npm:8.3.8":
+  version: 8.3.8
+  resolution: "@oozcitak/util@npm:8.3.8"
+  checksum: 3aaa936fb3ba5a8561b54f41ef55cbba633b52f7f95c74e9c4a8068e3cbe893dc30865a24483d3887a0d8a201ee4584daf51f0a177fb8e5997c0bdd289c4f559
+  languageName: node
+  linkType: hard
+
 "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.3":
   version: 0.5.7
   resolution: "@pmmmwh/react-refresh-webpack-plugin@npm:0.5.7"
@@ -12265,6 +12302,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:~9.4.0":
+  version: 9.4.1
+  resolution: "commander@npm:9.4.1"
+  checksum: bfb18e325a5bdf772763c2213d5c7d9e77144d944124e988bcd8e5e65fb6d45d5d4e86b09155d0f2556c9a59c31e428720e57968bcd050b2306e910a0bf3cf13
+  languageName: node
+  linkType: hard
+
 "comment-parser@npm:1.3.1":
   version: 1.3.1
   resolution: "comment-parser@npm:1.3.1"
@@ -16575,16 +16619,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.2, fast-glob@npm:^3.2.4, fast-glob@npm:^3.2.9":
-  version: 3.2.11
-  resolution: "fast-glob@npm:3.2.11"
+"fast-glob@npm:^3.2.2, fast-glob@npm:^3.2.4, fast-glob@npm:^3.2.9, fast-glob@npm:~3.2.11":
+  version: 3.2.12
+  resolution: "fast-glob@npm:3.2.12"
   dependencies:
     "@nodelib/fs.stat": ^2.0.2
     "@nodelib/fs.walk": ^1.2.3
     glob-parent: ^5.1.2
     merge2: ^1.3.0
     micromatch: ^4.0.4
-  checksum: f473105324a7780a20c06de842e15ddbb41d3cb7e71d1e4fe6e8373204f22245d54f5ab9e2061e6a1c613047345954d29b022e0e76f5c28b1df9858179a0e6d7
+  checksum: 0b1990f6ce831c7e28c4d505edcdaad8e27e88ab9fa65eedadb730438cfc7cde4910d6c975d6b7b8dc8a73da4773702ebcfcd6e3518e73938bb1383badfe01c2
   languageName: node
   linkType: hard
 
@@ -21997,6 +22041,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-yaml@npm:3.14.0":
+  version: 3.14.0
+  resolution: "js-yaml@npm:3.14.0"
+  dependencies:
+    argparse: ^1.0.7
+    esprima: ^4.0.0
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: a1a47c912ba20956f96cb0998dea2e74c7f7129d831fe33d3c5a16f3f83712ce405172a8dd1c26bf2b3ad74b54016d432ff727928670ae5a50a57a677c387949
+  languageName: node
+  linkType: hard
+
 "js-yaml@npm:^3.10.0, js-yaml@npm:^3.13.1, js-yaml@npm:^3.14.0":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
@@ -22495,6 +22551,20 @@ __metadata:
     readable-stream: ~2.3.6
     setimmediate: ^1.0.5
   checksum: 80cc8e0e466467e9e21447f604f9262509b29a9c65170a3fee415ac0a403beb370840973cdc17f75d2b92ab3e60685f94d267706510d46bed2dd14858a38e459
+  languageName: node
+  linkType: hard
+
+"junit-report-merger@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "junit-report-merger@npm:4.0.0"
+  dependencies:
+    commander: ~9.4.0
+    fast-glob: ~3.2.11
+    xmlbuilder2: ~3.0.2
+  bin:
+    jrm: cli.js
+    junit-report-merger: cli.js
+  checksum: b471b94fa9a4c39e483f6d8dd384a924b4ba23f9ac992899eaaf0c2a6c3ca42a81748a27f66b346ff0bd20a09f8b0d7de0729a5cb43982415cace2ad943125cb
   languageName: node
   linkType: hard
 
@@ -24302,6 +24372,7 @@ __metadata:
     json-rpc-engine: ^6.1.0
     json-rpc-middleware-stream: ^2.1.1
     jsonschema: ^1.2.4
+    junit-report-merger: ^4.0.0
     koa: ^2.7.0
     labeled-stream-splicer: ^2.0.2
     lavamoat: ^6.3.0
@@ -35387,6 +35458,19 @@ __metadata:
   version: 1.0.1
   resolution: "xml@npm:1.0.1"
   checksum: 11b5545ef3f8fec3fa29ce251f50ad7b6c97c103ed4d851306ec23366f5fa4699dd6a942262df52313a0cd1840ab26256da253c023bad3309d8ce46fe6020ca0
+  languageName: node
+  linkType: hard
+
+"xmlbuilder2@npm:~3.0.2":
+  version: 3.0.2
+  resolution: "xmlbuilder2@npm:3.0.2"
+  dependencies:
+    "@oozcitak/dom": 1.15.10
+    "@oozcitak/infra": 1.0.8
+    "@oozcitak/util": 8.3.8
+    "@types/node": "*"
+    js-yaml: 3.14.0
+  checksum: dfc8aa94d5666517d74efbac0e36c0e4d86d44ed29f515846f30964ab9502124babd1bca6e0b5aa9468e8218b2dc4317b43519b8b1dd1594d33fda9e5a164d02
   languageName: node
   linkType: hard
 
