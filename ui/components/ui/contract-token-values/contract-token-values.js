@@ -29,14 +29,13 @@ export default function ContractTokenValues({
 
   return (
     <Box
+      className="contract-token-values"
       display={DISPLAY.FLEX}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
-      className="contract-token-values"
+      gap={2}
     >
-      <Box marginRight={2}>
-        <Identicon address={address} diameter={24} />
-      </Box>
+      <Identicon address={address} diameter={24} />
       <Typography
         variant={TypographyVariant.H2}
         fontWeight={FONT_WEIGHT.BOLD}
@@ -46,43 +45,38 @@ export default function ContractTokenValues({
       >
         {tokenName}
       </Typography>
-      <Box className="contract-token-values__copy-address">
-        <Tooltip
-          position="top"
-          title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-        >
-          <ButtonIcon
-            iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-            className="contract-token-values__copy-address__button"
-            onClick={() => handleCopy(address)}
-            ariaLabel={copied ? t('copiedExclamation') : t('copyToClipboard')}
-          />
-        </Tooltip>
-      </Box>
-      <Box className="contract-token-values__block-explorer">
-        <Tooltip position="top" title={t('openInBlockExplorer')}>
-          <ButtonIcon
-            display={DISPLAY.FLEX}
-            iconName={ICON_NAMES.EXPORT}
-            color={Color.iconMuted}
-            className="contract-token-values__block-explorer__button"
-            onClick={() => {
-              const blockExplorerTokenLink = getAccountLink(
-                address,
-                chainId,
-                {
-                  blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                },
-                null,
-              );
-              global.platform.openTab({
-                url: blockExplorerTokenLink,
-              });
-            }}
-            ariaLabel={t('openInBlockExplorer')}
-          />
-        </Tooltip>
-      </Box>
+      <Tooltip
+        position="top"
+        title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+      >
+        <ButtonIcon
+          iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+          color={Color.iconMuted}
+          onClick={() => handleCopy(address)}
+          ariaLabel={copied ? t('copiedExclamation') : t('copyToClipboard')}
+        />
+      </Tooltip>
+      <Tooltip position="top" title={t('openInBlockExplorer')}>
+        <ButtonIcon
+          display={DISPLAY.FLEX}
+          iconName={ICON_NAMES.EXPORT}
+          color={Color.iconMuted}
+          onClick={() => {
+            const blockExplorerTokenLink = getAccountLink(
+              address,
+              chainId,
+              {
+                blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+              },
+              null,
+            );
+            global.platform.openTab({
+              url: blockExplorerTokenLink,
+            });
+          }}
+          ariaLabel={t('openInBlockExplorer')}
+        />
+      </Tooltip>
     </Box>
   );
 }
