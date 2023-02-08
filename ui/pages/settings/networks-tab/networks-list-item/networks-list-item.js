@@ -74,7 +74,6 @@ const NetworksListItem = ({
     >
       {isCurrentRpcTarget ? (
         <>
-          <h1>Network List</h1>
           <Icon
             name={ICON_NAMES.CHECK}
             className="networks-tab__content__icon-check"
@@ -84,7 +83,6 @@ const NetworksListItem = ({
         </>
       ) : (
         <>
-          <h1>Network List</h1>
           <Icon
             name={ICON_NAMES.CHECK}
             className="networks-tab__content__icon-check"

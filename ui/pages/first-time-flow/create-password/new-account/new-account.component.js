@@ -195,9 +195,7 @@ export default class NewAccount extends PureComponent {
               aria-labelledby="ftf-chk1-label"
             >
               {termsChecked ? (
-                <>
-                  <Icon name={ICON_NAMES.CHECK} size={SIZES.XL} />
-                </>
+                <Icon name={ICON_NAMES.CHECK} size={SIZES.XL} />
               ) : null}
             </div>
             <span
