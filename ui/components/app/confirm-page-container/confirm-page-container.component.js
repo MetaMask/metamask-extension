@@ -345,9 +345,7 @@ ConfirmPageContainer.propTypes = {
   dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   txData: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN(flask)
   tokenAddress: PropTypes.string,
   nonce: PropTypes.string,
   warning: PropTypes.string,
