@@ -261,7 +261,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       ),
       preventPollingOnNetworkRestart: initState.TokenListController
         ? initState.TokenListController.preventPollingOnNetworkRestart
@@ -429,11 +429,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       getNetworkIdentifier: () => {
         const { type, rpcUrl } =
-          this.networkController.providerStore.getState();
+          this.networkController.store.getState().provider;
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       extension: this.extension,
@@ -473,13 +473,13 @@ export default class MetamaskController extends EventEmitter {
       legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
-        const { chainId } = this.networkController.providerStore.getState();
+        const { chainId } = this.networkController.store.getState().provider;
         return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
       },
       getChainId: () => {
         return process.env.IN_TEST
           ? CHAIN_IDS.MAINNET
-          : this.networkController.providerStore.getState().chainId;
+          : this.networkController.store.getState().provider.chainId;
       },
     });
 
@@ -572,7 +572,7 @@ export default class MetamaskController extends EventEmitter {
     this.ensController = new EnsController({
       provider: this.provider,
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       onNetworkDidChange: this.networkController.on.bind(
         this.networkController,
         NETWORK_EVENTS.NETWORK_DID_CHANGE,
@@ -590,7 +590,7 @@ export default class MetamaskController extends EventEmitter {
         NETWORK_EVENTS.NETWORK_DID_CHANGE,
       ),
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
       initState: initState.IncomingTransactionsController,
@@ -601,10 +601,10 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       getNetworkIdentifier: () => {
         const { type, rpcUrl } =
-          this.networkController.providerStore.getState();
+          this.networkController.store.getState().provider;
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       preferencesController: this.preferencesController,
@@ -635,7 +635,7 @@ export default class MetamaskController extends EventEmitter {
     this.cachedBalancesController = new CachedBalancesController({
       accountTracker: this.accountTracker,
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       initState: initState.CachedBalancesController,
     });
 
@@ -881,7 +881,7 @@ export default class MetamaskController extends EventEmitter {
       initState:
         initState.TransactionController || initState.TransactionManager,
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getProviderConfig: () => this.networkController.providerStore.getState(),
+      getProviderConfig: () => this.networkController.store.getState().provider,
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -892,7 +892,7 @@ export default class MetamaskController extends EventEmitter {
       onNetworkStateChange: (listener) =>
         this.networkController.networkStore.subscribe(listener),
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 60,
       signTransaction: this.keyringController.signTransaction.bind(
@@ -1016,7 +1016,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, async () => {
-      const { ticker } = this.networkController.providerStore.getState();
+      const { ticker } = this.networkController.store.getState().provider;
       try {
         await this.currencyRateController.setNativeCurrency(ticker);
       } catch (error) {
@@ -1050,7 +1050,7 @@ export default class MetamaskController extends EventEmitter {
     });
     this.typedMessageManager = new TypedMessageManager({
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -1063,10 +1063,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       networkController: this.networkController,
       provider: this.provider,
-      getProviderConfig: () => this.networkController.providerStore.getState(),
+      getProviderConfig: () => this.networkController.store.getState().provider,
       getTokenRatesState: () => this.tokenRatesController.state,
       getCurrentChainId: () =>
-        this.networkController.providerStore.getState().chainId,
+        this.networkController.store.getState().provider.chainId,
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
     });
@@ -1083,7 +1083,9 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           });
         },
-        getNetwork: () => this.networkController.networkStore.getState(),
+        getNetwork: this.networkController.getNetworkState.bind(
+          this.networkController,
+        ),
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
@@ -1589,7 +1591,7 @@ export default class MetamaskController extends EventEmitter {
     updatePublicConfigStore(this.getState());
 
     function updatePublicConfigStore(memState) {
-      const { chainId } = networkController.providerStore.getState();
+      const { chainId } = networkController.store.getState().provider;
       if (memState.network !== 'loading') {
         publicConfigStore.putState(selectPublicState(chainId, memState));
       }
@@ -1635,7 +1637,7 @@ export default class MetamaskController extends EventEmitter {
   getProviderNetworkState(memState) {
     const { network } = memState || this.getState();
     return {
-      chainId: this.networkController.providerStore.getState().chainId,
+      chainId: this.networkController.store.getState().provider.chainId,
       networkVersion: network,
     };
   }
@@ -2653,7 +2655,7 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.setTrezorModel(model);
     }
 
-    keyring.network = this.networkController.providerStore.getState().type;
+    keyring.network = this.networkController.store.getState().provider.type;
 
     return keyring;
   }
@@ -3964,9 +3966,9 @@ export default class MetamaskController extends EventEmitter {
         },
         findCustomRpcBy: this.findCustomRpcBy.bind(this),
         getCurrentChainId: () =>
-          this.networkController.providerStore.getState().chainId,
-        getCurrentRpcUrl: () =>
-          this.networkController.providerStore.getState().rpcUrl,
+          this.networkController.store.getState().provider.chainId,
+        getCurrentRpcUrl:
+          this.networkController.store.getState().provider.rpcUrl,
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
@@ -4629,7 +4631,7 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.store.getState();
 
     const chainId = Number(
-      hexToDecimal(this.networkController.providerStore.getState().chainId),
+      hexToDecimal(this.networkController.store.getState().provider.chainId),
     );
 
     if (transactionSecurityCheckEnabled) {
