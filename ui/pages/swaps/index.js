@@ -47,6 +47,7 @@ import {
   getCurrentSmartTransactionsError,
   navigateBackToBuildQuote,
   getSwapsRedesignEnabled,
+  setTransactionSettingsOpened,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -86,6 +87,13 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
+import Box from '../../components/ui/box';
+import { DISPLAY, JustifyContent } from '../../helpers/constants/design-system';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -394,6 +402,21 @@ export default function Swap() {
               !isSmartTransactionStatusRoute &&
               t('cancel')}
           </div>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.center}
+            marginRight={2}
+          >
+            <Icon
+              name={ICON_NAMES.SETTING}
+              size={ICON_SIZES.LG}
+              onClick={() => {
+                dispatch(setTransactionSettingsOpened(true));
+              }}
+              style={{ cursor: 'pointer' }}
+              title={t('swapsAdvancedOptions')}
+            />
+          </Box>
         </div>
         <div className="swaps__content">
           <Switch>

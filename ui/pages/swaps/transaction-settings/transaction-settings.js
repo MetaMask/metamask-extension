@@ -7,6 +7,7 @@ import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ToggleButton from '../../../components/ui/toggle-button';
 import Box from '../../../components/ui/box';
+import Popover from '../../../components/ui/popover';
 import Typography from '../../../components/ui/typography';
 import {
   TypographyVariant,
@@ -19,6 +20,7 @@ import { Slippage } from '../../../../shared/constants/swaps';
 
 export default function TransactionSettings({
   onSelect,
+  onModalClose,
   maxAllowedSlippage,
   currentSlippage,
   smartTransactionsEnabled,
@@ -47,9 +49,6 @@ export default function TransactionSettings({
       return 2; // Custom slippage.
     }
     return 0;
-  });
-  const [open, setOpen] = useState(() => {
-    return currentSlippage !== Slippage.default; // Only open Advanced options by default if it's not default slippage.
   });
   const [inputRef, setInputRef] = useState(null);
 
@@ -86,23 +85,8 @@ export default function TransactionSettings({
 
   return (
     <div className="transaction-settings">
-      <button
-        onClick={() => setOpen(!open)}
-        className={classnames('transaction-settings__header', {
-          'transaction-settings__header--open': open,
-        })}
-      >
-        <div className="transaction-settings__header-text">
-          {t('swapsAdvancedOptions')}
-        </div>
-        {open ? (
-          <i className="fa fa-angle-up" />
-        ) : (
-          <i className="fa fa-angle-down" />
-        )}
-      </button>
-      <div className="transaction-settings__content">
-        {open && (
+      <Popover title={t('transactionSettings')} onClose={() => onModalClose()}>
+        <div className="transaction-settings__content">
           <>
             {!isDirectWrappingEnabled && (
               <div className="transaction-settings__dropdown-content">
@@ -239,17 +223,18 @@ export default function TransactionSettings({
               </Box>
             )}
           </>
-        )}
-        {errorText && (
-          <div className="transaction-settings__error-text">{errorText}</div>
-        )}
-      </div>
+          {errorText && (
+            <div className="transaction-settings__error-text">{errorText}</div>
+          )}
+        </div>
+      </Popover>
     </div>
   );
 }
 
 TransactionSettings.propTypes = {
   onSelect: PropTypes.func.isRequired,
+  onModalClose: PropTypes.func.isRequired,
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
   smartTransactionsEnabled: PropTypes.bool.isRequired,

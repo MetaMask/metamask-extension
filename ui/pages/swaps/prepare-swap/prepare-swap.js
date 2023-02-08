@@ -66,6 +66,8 @@ import {
   getFetchingQuotes,
   getSwapsErrorKey,
   getAggregatorMetadata,
+  getTransactionSettingsOpened,
+  setTransactionSettingsOpened,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -178,6 +180,10 @@ export default function PrepareSwap({
   const areQuotesPresent = numberOfQuotes > 0;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
+  const transactionSettingsOpened = useSelector(
+    getTransactionSettingsOpened,
+    shallowEqual,
+  );
   const numberOfAggregators = aggregatorMetadata
     ? Object.keys(aggregatorMetadata).length
     : 0;
@@ -922,23 +928,29 @@ export default function PrepareSwap({
             }
           />
         )}
-        {(smartTransactionsEnabled ||
-          (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
-          <div className="prepare-swap__transaction-settings-container">
-            <TransactionSettings
-              onSelect={(newSlippage) => {
-                dispatch(setMaxSlippage(newSlippage));
-              }}
-              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-              currentSlippage={maxSlippage}
-              smartTransactionsEnabled={smartTransactionsEnabled}
-              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
-              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
-              currentSmartTransactionsError={currentSmartTransactionsError}
-              isDirectWrappingEnabled={isDirectWrappingEnabled}
-            />
-          </div>
-        )}
+        {transactionSettingsOpened &&
+          (smartTransactionsEnabled ||
+            (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
+            <div className="prepare-swap__transaction-settings-container">
+              <TransactionSettings
+                onSelect={(newSlippage) => {
+                  dispatch(setMaxSlippage(newSlippage));
+                }}
+                maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+                currentSlippage={maxSlippage}
+                smartTransactionsEnabled={smartTransactionsEnabled}
+                smartTransactionsOptInStatus={smartTransactionsOptInStatus}
+                setSmartTransactionsOptInStatus={
+                  setSmartTransactionsOptInStatus
+                }
+                currentSmartTransactionsError={currentSmartTransactionsError}
+                isDirectWrappingEnabled={isDirectWrappingEnabled}
+                onModalClose={() => {
+                  dispatch(setTransactionSettingsOpened(false));
+                }}
+              />
+            </div>
+          )}
         {!isReviewSwapButtonDisabled && !areQuotesPresent && (
           <Box
             marginTop={4}

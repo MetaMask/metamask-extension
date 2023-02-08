@@ -4526,6 +4526,9 @@
   "transactionSecurityCheckDescription": {
     "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
+  "transactionSettings": {
+    "message": "Transaction settings"
+  },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
