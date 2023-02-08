@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import React, { useState } from 'react';
+import { Icon, ICON_NAMES } from '../../component-library';
 import Typography from '../typography';
 import Tooltip from '../tooltip';
 import Box from '../box';
@@ -69,7 +70,7 @@ export const FormFieldWithTitleDetail = (args) => {
         Click Me
       </button>
     ),
-    checkmark: <i className="fas fa-check" />,
+    checkmark: <Icon name={ICON_NAMES.CHECK} />,
   };
 
   return <FormField {...args} titleDetail={detailOptions[args.titleDetail]} />;

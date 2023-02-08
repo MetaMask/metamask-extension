@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 import SiteIcon from '../../../components/ui/site-icon';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography/typography';
@@ -8,7 +9,8 @@ import {
   DISPLAY,
   JUSTIFY_CONTENT,
   ALIGN_ITEMS,
-} from '../../../helpers/constants/design-system';
+  SIZES,
+} from "../../../helpers/constants/design-system";
 import { I18nContext } from '../../../contexts/i18n';
 
 export default function PermissionsRedirect({ subjectMetadata }) {
@@ -33,7 +35,11 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             alignItems={ALIGN_ITEMS.CENTER}
             justifyContent={JUSTIFY_CONTENT.CENTER}
           >
-            <i className="fa fa-check fa-lg permissions-redirect__check" />
+            <Icon
+              name={ICON_NAMES.CONFIRMATION}
+              size={SIZES.XL}
+              className="permissions-redirect__check"
+            />
             <div className="permissions-redirect__dashed-line" />
           </Box>
           <SiteIcon

@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 import Typography from '../../../components/ui/typography/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   TEXT_ALIGN,
   COLORS,
+  ICON_COLORS,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -129,11 +131,19 @@ export default function OnboardingMetametrics() {
       </Typography>
       <ul>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={ICON_COLORS.SUCCESS_DEFAULT}
+            marginRight={2}
+          />
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={ICON_COLORS.SUCCESS_DEFAULT}
+            marginRight={2}
+          />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import {ICON_COLORS} from "../../../../helpers/constants/design-system";
+import { Icon, ICON_NAMES} from "../../../component-library";
 import MetaFoxLogo from '../../../ui/metafox-logo';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 import {
@@ -44,13 +45,21 @@ export default class MetaMetricsOptInModal extends Component {
 
               <div className="metametrics-opt-in__committments">
                 <div className="metametrics-opt-in__row">
-                  <i className="fa fa-check" />
+                  <Icon
+                    name={ICON_NAMES.CHECK}
+                    color={ICON_COLORS.SUCCESS_DEFAULT}
+                    marginRight={2}
+                  />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsAllowOptOut')}
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
-                  <i className="fa fa-check" />
+                  <Icon
+                    name={ICON_NAMES.CHECK}
+                    color={ICON_COLORS.SUCCESS_DEFAULT}
+                    marginRight={2}
+                  />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsSendAnonymizedEvents')}
                   </div>

@@ -5,6 +5,7 @@ import {
   SEVERITIES,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES } from '../../component-library';
 import Card from '../card';
 import Typography from '../typography';
 import Box from '../box';
@@ -29,7 +30,6 @@ import IconCaretLeft from './icon-caret-left';
 import IconCaretRight from './icon-caret-right';
 import IconCaretDown from './icon-caret-down';
 import IconCaretUp from './icon-caret-up';
-import IconCheck from './icon-check';
 import IconCog from './icon-cog';
 import IconConnect from './icon-connect';
 import IconImport from './icon-import';
@@ -124,7 +124,7 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconCaretRight {...args} />} />
         <IconItem Component={<IconCaretDown {...args} />} />
         <IconItem Component={<IconCaretUp {...args} />} />
-        <IconItem Component={<IconCheck {...args} />} />
+        <IconItem Component={<Icon name={ICON_NAMES.CHECK} {...args} />} />
         <IconItem Component={<IconPlus {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
         <IconItem Component={<IconConnect {...args} />} />

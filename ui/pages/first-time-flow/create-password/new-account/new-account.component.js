@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { Icon, ICON_NAMES } from '../../../../components/component-library';
+import { SIZES } from '../../../../helpers/constants/design-system';
 import Button from '../../../../components/ui/button';
 import {
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
@@ -192,7 +194,11 @@ export default class NewAccount extends PureComponent {
               aria-checked={termsChecked}
               aria-labelledby="ftf-chk1-label"
             >
-              {termsChecked ? <i className="fa fa-check fa-2x" /> : null}
+              {termsChecked ? (
+                <>
+                  <Icon name={ICON_NAMES.CHECK} size={SIZES.XL} />
+                </>
+              ) : null}
             </div>
             <span
               id="ftf-chk1-label"

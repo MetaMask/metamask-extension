@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { ICON_COLORS } from '../../../helpers/constants/design-system';
 import { INITIALIZE_SELECT_ACTION_ROUTE } from '../../../helpers/constants/routes';
 
 export default class MetaMetricsOptIn extends Component {
@@ -42,13 +44,21 @@ export default class MetaMetricsOptIn extends Component {
 
             <div className="metametrics-opt-in__committments">
               <div className="metametrics-opt-in__row">
-                <i className="fa fa-check" />
+                <Icon
+                  name={ICON_NAMES.CHECK}
+                  color={ICON_COLORS.SUCCESS_DEFAULT}
+                  marginRight={1}
+                />
                 <div className="metametrics-opt-in__row-description">
                   {t('metametricsCommitmentsAllowOptOut')}
                 </div>
               </div>
               <div className="metametrics-opt-in__row">
-                <i className="fa fa-check" />
+                <Icon
+                  name={ICON_NAMES.CHECK}
+                  color={ICON_COLORS.SUCCESS_DEFAULT}
+                  marginRight={1}
+                />
                 <div className="metametrics-opt-in__row-description">
                   {t('metametricsCommitmentsSendAnonymizedEvents')}
                 </div>

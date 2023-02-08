@@ -2,13 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
+import { Icon, ICON_NAMES } from '../../../../components/component-library';
+import { ICON_COLORS } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import LockIcon from '../../../../components/ui/lock-icon';
-import IconCheck from '../../../../components/ui/icon/icon-check';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -72,17 +73,25 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="var(--color-success-default)"
-          aria-label={t('active')}
-        />
+        <>
+          <h1>Network List</h1>
+          <Icon
+            name={ICON_NAMES.CHECK}
+            className="networks-tab__content__icon-check"
+            color={ICON_COLORS.SUCCESS_DEFAULT}
+            aria-label={t('active')}
+          />
+        </>
       ) : (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="transparent"
-          aria-hidden="true"
-        />
+        <>
+          <h1>Network List</h1>
+          <Icon
+            name={ICON_NAMES.CHECK}
+            className="networks-tab__content__icon-check"
+            color={ICON_COLORS.SUCCESS_DEFAULT}
+            aria-hidden="true"
+          />
+        </>
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon

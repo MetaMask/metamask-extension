@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
 import { useSelector } from 'react-redux';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
@@ -12,6 +13,7 @@ import {
   JUSTIFY_CONTENT,
   FONT_WEIGHT,
   ALIGN_ITEMS,
+  ICON_COLORS,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -220,7 +222,10 @@ export default function CreatePassword({
             titleDetail={
               isValid && (
                 <div className="create-password__form--checkmark">
-                  <i className="fas fa-check" />
+                  <Icon
+                    name={ICON_NAMES.CHECK}
+                    color={ICON_COLORS.SUCCESS_DEFAULT}
+                  />
                 </div>
               )
             }

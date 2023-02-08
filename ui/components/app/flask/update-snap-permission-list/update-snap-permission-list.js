@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { getPermissionDescription } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatDate } from '../../../../helpers/utils/util';
+import { Icon, ICON_NAMES } from '../../../component-library';
 import Typography from '../../../ui/typography/typography';
 import { COLORS } from '../../../../helpers/constants/design-system';
 
@@ -25,7 +26,7 @@ export default function UpdateSnapPermissionList({
         const formattedDate = formatDate(date, 'yyyy-MM-dd');
         return permissions.map(({ label, rightIcon }) => (
           <div className="approved-permission" key={permissionName}>
-            <i className="fas fa-check" />
+            <Icon name={ICON_NAMES.CHECK} />
             <div className="permission-description">
               {label}
               <Typography

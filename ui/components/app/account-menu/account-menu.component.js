@@ -11,6 +11,8 @@ import {
   CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ICON_COLORS } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES } from '../../component-library';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -31,7 +33,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import IconCheck from '../../ui/icon/icon-check';
 import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
 import IconConnect from '../../ui/icon/icon-connect';
 import IconCog from '../../ui/icon/icon-cog';
@@ -226,7 +227,10 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <IconCheck color="var(--color-success-default)" />
+              <Icon
+                name={ICON_NAMES.CHECK}
+                color={ICON_COLORS.SUCCESS_DEFAULT}
+              />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
