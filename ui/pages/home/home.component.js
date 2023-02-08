@@ -139,9 +139,9 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
-    newCollectibleAddedMessage: PropTypes.string,
+    newNftAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
-    removeCollectibleMessage: PropTypes.string,
+    removeNftMessage: PropTypes.string,
     setRemoveCollectibleMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
@@ -275,9 +275,9 @@ export default class Home extends PureComponent {
       showOutdatedBrowserWarning,
       newNetworkAdded,
       setNewNetworkAdded,
-      newCollectibleAddedMessage,
+      newNftAddedMessage,
       setNewCollectibleAddedMessage,
-      removeCollectibleMessage,
+      removeNftMessage,
       setRemoveCollectibleMessage,
       newTokensImported,
       setNewTokensImported,
@@ -332,7 +332,7 @@ export default class Home extends PureComponent {
             : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {newCollectibleAddedMessage === 'success' ? (
+        {newNftAddedMessage === 'success' ? (
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
@@ -357,7 +357,7 @@ export default class Home extends PureComponent {
           />
         ) : null}
 
-        {removeCollectibleMessage === 'success' ? (
+        {removeNftMessage === 'success' ? (
           <ActionableMessage
             type="danger"
             className="home__new-network-notification"
