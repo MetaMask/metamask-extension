@@ -15,6 +15,7 @@ export default function CollectibleDefaultImage({
   return (
     <Tag
       tabIndex={0}
+      data-testid="collectible-default-image"
       className={classnames('collectible-default', {
         'collectible-default--clickable': handleImageClick,
       })}

@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Banner should render banner element correctly 1`] = `
+exports[`BannerAlert should render BannerAlert element correctly 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner mm-banner--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
-    data-testid="banner"
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
+    data-testid="bannerAlert"
   >
     <div
       class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-primary-default"
@@ -14,12 +14,12 @@ exports[`Banner should render banner element correctly 1`] = `
       <h5
         class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
       >
-        Banner test
+        BannerAlert test
       </h5>
       <p
         class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
       >
-        should render banner element correctly
+        should render BannerAlert element correctly
       </p>
     </div>
   </div>
