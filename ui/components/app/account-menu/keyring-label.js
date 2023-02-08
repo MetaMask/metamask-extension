@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  KEYRING_NAMES,
-  KEYRING_TYPES,
+  HardwareKeyringNames,
+  HardwareKeyringTypes,
 } from '../../../../shared/constants/hardware-wallets';
 
 export default function KeyRingLabel({ keyring }) {
@@ -19,20 +19,20 @@ export default function KeyRingLabel({ keyring }) {
   const { type } = keyring;
 
   switch (type) {
-    case KEYRING_TYPES.QR:
-      label = KEYRING_NAMES.QR;
+    case HardwareKeyringTypes.qr:
+      label = HardwareKeyringNames.qr;
       break;
-    case KEYRING_TYPES.IMPORTED:
+    case HardwareKeyringTypes.imported:
       label = t('imported');
       break;
-    case KEYRING_TYPES.TREZOR:
-      label = KEYRING_NAMES.TREZOR;
+    case HardwareKeyringTypes.trezor:
+      label = HardwareKeyringNames.trezor;
       break;
-    case KEYRING_TYPES.LEDGER:
-      label = KEYRING_NAMES.LEDGER;
+    case HardwareKeyringTypes.ledger:
+      label = HardwareKeyringNames.ledger;
       break;
-    case KEYRING_TYPES.LATTICE:
-      label = KEYRING_NAMES.LATTICE;
+    case HardwareKeyringTypes.lattice:
+      label = HardwareKeyringNames.lattice;
       break;
     default:
       return null;

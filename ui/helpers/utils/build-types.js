@@ -1,8 +1,8 @@
-///: BEGIN:ONLY_INCLUDE_IN(beta)
-import betaJson from '../../../app/build-types/beta/images/beta-mascot.json';
-///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+import desktopJson from '../../../app/build-types/desktop/images/desktop-mascot.json';
 ///: END:ONLY_INCLUDE_IN
 
 const assetList = {
@@ -12,12 +12,17 @@ const assetList = {
   },
   ///: BEGIN:ONLY_INCLUDE_IN(beta)
   beta: {
-    foxMeshJson: betaJson,
+    foxMeshJson: undefined,
   },
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   flask: {
     foxMeshJson: flaskJson,
+  },
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  desktop: {
+    foxMeshJson: desktopJson,
   },
   ///: END:ONLY_INCLUDE_IN
 };

@@ -8,31 +8,27 @@ import Typography from '../../ui/typography/typography';
 import CollectiblesDetectionNotice from '../collectibles-detection-notice';
 import CollectiblesItems from '../collectibles-items';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TypographyVariant,
   TEXT_ALIGN,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCollectiblesDetectionNoticeDismissed } from '../../../ducks/metamask/metamask';
-import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
+import { getIsMainnet, getUseNftDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
-  checkAndUpdateAllCollectiblesOwnershipStatus,
-  detectCollectibles,
+  checkAndUpdateAllNftsOwnershipStatus,
+  detectNfts,
 } from '../../../store/actions';
 import { useCollectiblesCollections } from '../../../hooks/useCollectiblesCollections';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function CollectiblesTab({ onAddNFT }) {
-  const useCollectibleDetection = useSelector(getUseCollectibleDetection);
+  const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const collectibleDetectionNoticeDismissed = useSelector(
-    getCollectiblesDetectionNoticeDismissed,
-  );
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -46,9 +42,9 @@ export default function CollectiblesTab({ onAddNFT }) {
 
   const onRefresh = () => {
     if (isMainnet) {
-      dispatch(detectCollectibles());
+      dispatch(detectNfts());
     }
-    checkAndUpdateAllCollectiblesOwnershipStatus();
+    checkAndUpdateAllNftsOwnershipStatus();
   };
 
   if (collectiblesLoading) {
@@ -65,25 +61,23 @@ export default function CollectiblesTab({ onAddNFT }) {
         />
       ) : (
         <>
-          {isMainnet &&
-          !useCollectibleDetection &&
-          !collectibleDetectionNoticeDismissed ? (
+          {isMainnet && !useNftDetection ? (
             <CollectiblesDetectionNotice />
           ) : null}
           <Box padding={12}>
-            <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
+            <Box justifyContent={JustifyContent.center}>
               <img src="./images/no-nfts.svg" />
             </Box>
             <Box
               marginTop={4}
               marginBottom={12}
-              justifyContent={JUSTIFY_CONTENT.CENTER}
+              justifyContent={JustifyContent.center}
               flexDirection={FLEX_DIRECTION.COLUMN}
               className="collectibles-tab__link"
             >
               <Typography
-                color={COLORS.TEXT_MUTED}
-                variant={TYPOGRAPHY.H4}
+                color={TextColor.textMuted}
+                variant={TypographyVariant.H4}
                 align={TEXT_ALIGN.CENTER}
                 fontWeight={FONT_WEIGHT.BOLD}
               >
@@ -103,27 +97,27 @@ export default function CollectiblesTab({ onAddNFT }) {
       )}
       <Box
         marginBottom={4}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Typography
-          color={COLORS.TEXT_MUTED}
-          variant={TYPOGRAPHY.H5}
+          color={TextColor.textMuted}
+          variant={TypographyVariant.H5}
           align={TEXT_ALIGN.CENTER}
         >
           {t('missingNFT')}
         </Typography>
         <Box
-          alignItems={ALIGN_ITEMS.CENTER}
-          justifyContent={JUSTIFY_CONTENT.CENTER}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
         >
           {!isMainnet && Object.keys(collections).length < 1 ? null : (
             <>
               <Box
                 className="collectibles-tab__link"
-                justifyContent={JUSTIFY_CONTENT.FLEX_END}
+                justifyContent={JustifyContent.flexEnd}
               >
-                {isMainnet && !useCollectibleDetection ? (
+                {isMainnet && !useNftDetection ? (
                   <Button type="link" onClick={onEnableAutoDetect}>
                     {t('enableAutoDetect')}
                   </Button>
@@ -134,8 +128,8 @@ export default function CollectiblesTab({ onAddNFT }) {
                 )}
               </Box>
               <Typography
-                color={COLORS.TEXT_MUTED}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textMuted}
+                variant={TypographyVariant.H6}
                 align={TEXT_ALIGN.CENTER}
               >
                 {t('or')}
@@ -143,7 +137,7 @@ export default function CollectiblesTab({ onAddNFT }) {
             </>
           )}
           <Box
-            justifyContent={JUSTIFY_CONTENT.FLEX_START}
+            justifyContent={JustifyContent.flexStart}
             className="collectibles-tab__link"
           >
             <Button type="link" onClick={onAddNFT}>

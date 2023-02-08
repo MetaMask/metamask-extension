@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
 import AccountMenu from '.';
 
 describe('Account Menu', () => {
@@ -36,17 +37,17 @@ describe('Account Menu', () => {
     ],
     keyrings: [
       {
-        type: 'HD Key Tree',
+        type: HardwareKeyringTypes.hdKeyTree,
         accounts: ['0xAdress'],
       },
       {
-        type: 'Simple Key Pair',
+        type: HardwareKeyringTypes.imported,
         accounts: ['0x1'],
       },
     ],
     prevIsAccountMenuOpen: false,
     lockMetamask: sinon.spy(),
-    showAccountDetail: sinon.spy(),
+    setSelectedAccount: sinon.spy(),
     showRemoveAccountConfirmationModal: sinon.spy(),
     toggleAccountMenu: sinon.spy(),
     history: {
@@ -79,8 +80,8 @@ describe('Account Menu', () => {
       const click = screen.getAllByTestId('account-menu__account');
       fireEvent.click(click[0]);
 
-      expect(props.showAccountDetail.calledOnce).toStrictEqual(true);
-      expect(props.showAccountDetail.getCall(0).args[0]).toStrictEqual('0x00');
+      expect(props.setSelectedAccount.calledOnce).toStrictEqual(true);
+      expect(props.setSelectedAccount.getCall(0).args[0]).toStrictEqual('0x00');
     });
 
     it('render imported account label', () => {

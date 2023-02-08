@@ -13,13 +13,12 @@ import {
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
 import ColorIndicator from '../../ui/color-indicator';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { IconColor, Size } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
-  ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -50,7 +49,6 @@ function mapStateToProps(state) {
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
     showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
-    addPopularNetworkFeatureToggledOn: state.metamask.customNetworkListEnabled,
   };
 }
 
@@ -103,7 +101,9 @@ class NetworkDropdown extends Component {
     showTestnetMessageInDropdown: PropTypes.bool.isRequired,
     hideTestNetMessage: PropTypes.func.isRequired,
     history: PropTypes.object,
-    addPopularNetworkFeatureToggledOn: PropTypes.bool,
+    dropdownStyles: PropTypes.object,
+    hideElementsForOnboarding: PropTypes.bool,
+    onAddClick: PropTypes.func,
   };
 
   handleClick(newProviderType) {
@@ -125,17 +125,20 @@ class NetworkDropdown extends Component {
   }
 
   renderAddCustomButton() {
+    const { onAddClick } = this.props;
     return (
       <div className="network__add-network-button">
         <Button
           type="secondary"
           onClick={() => {
-            if (this.props.addPopularNetworkFeatureToggledOn) {
-              this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
+            if (onAddClick) {
+              onAddClick();
             } else {
               getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
-                : this.props.history.push(ADD_NETWORK_ROUTE);
+                ? global.platform.openExtensionInBrowser(
+                    ADD_POPULAR_CUSTOM_NETWORK,
+                  )
+                : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
             }
             this.props.hideNetworkDropdown();
           }}
@@ -177,8 +180,8 @@ class NetworkDropdown extends Component {
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.ICON_MUTED}
-            size={SIZES.LG}
+            color={opts.isLocalHost ? 'localhost' : IconColor.iconMuted}
+            size={Size.LG}
             type={ColorIndicator.TYPES.FILLED}
           />
           <span
@@ -246,7 +249,7 @@ class NetworkDropdown extends Component {
         )}
         <ColorIndicator
           color={network}
-          size={SIZES.LG}
+          size={Size.LG}
           type={ColorIndicator.TYPES.FILLED}
         />
         <span
@@ -268,6 +271,7 @@ class NetworkDropdown extends Component {
   render() {
     const {
       history,
+      hideElementsForOnboarding,
       hideNetworkDropdown,
       shouldShowTestNetworks,
       showTestnetMessageInDropdown,
@@ -299,20 +303,26 @@ class NetworkDropdown extends Component {
         }}
         containerClassName="network-droppo"
         zIndex={55}
-        style={{
-          position: 'absolute',
-          top: '58px',
-          width: '309px',
-          zIndex: '55px',
-        }}
+        style={
+          this.props.dropdownStyles || {
+            position: 'absolute',
+            top: '58px',
+            width: '309px',
+            zIndex: '55',
+          }
+        }
         innerStyle={{
           padding: '16px 0',
         }}
       >
         <div className="network-dropdown-header">
-          <div className="network-dropdown-title">{t('networks')}</div>
-          <div className="network-dropdown-divider" />
-          {showTestnetMessageInDropdown ? (
+          {hideElementsForOnboarding ? null : (
+            <div className="network-dropdown-title">{t('networks')}</div>
+          )}
+          {hideElementsForOnboarding ? null : (
+            <div className="network-dropdown-divider" />
+          )}
+          {showTestnetMessageInDropdown && !hideElementsForOnboarding ? (
             <div className="network-dropdown-content">
               {t('toggleTestNetworks', [
                 <a

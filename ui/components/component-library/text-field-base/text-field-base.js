@@ -4,10 +4,11 @@ import classnames from 'classnames';
 
 import {
   DISPLAY,
-  SIZES,
-  ALIGN_ITEMS,
-  TEXT,
-  COLORS,
+  Size,
+  AlignItems,
+  TextVariant,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -40,10 +41,11 @@ export const TextFieldBase = ({
   placeholder,
   readOnly,
   required,
-  size = SIZES.MD,
+  size = Size.MD,
   type = 'text',
-  truncate,
+  truncate = true,
   value,
+  InputComponent = Text,
   ...props
 }) => {
   const internalInputRef = useRef(null);
@@ -65,7 +67,7 @@ export const TextFieldBase = ({
       setFocused(true);
     }
 
-    if (onClick) {
+    if (onClick && !disabled) {
       onClick(event);
     }
   };
@@ -103,22 +105,22 @@ export const TextFieldBase = ({
         className,
       )}
       display={DISPLAY.INLINE_FLEX}
-      backgroundColor={COLORS.BACKGROUND_DEFAULT}
-      alignItems={ALIGN_ITEMS.CENTER}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      alignItems={AlignItems.center}
       borderWidth={1}
-      borderRadius={SIZES.SM}
-      paddingLeft={4}
-      paddingRight={4}
+      borderRadius={BorderRadius.SM}
+      paddingLeft={leftAccessory ? 4 : 0}
+      paddingRight={rightAccessory ? 4 : 0}
       onClick={handleClick}
       {...props}
     >
       {leftAccessory}
-      <Text
+      <InputComponent
         aria-invalid={error}
         as="input"
         autoComplete={autoComplete ? 'on' : 'off'}
         autoFocus={autoFocus}
-        backgroundColor={COLORS.TRANSPARENT}
+        backgroundColor={BackgroundColor.transparent}
         defaultValue={defaultValue}
         disabled={disabled}
         focused={focused.toString()}
@@ -130,14 +132,14 @@ export const TextFieldBase = ({
         onChange={onChange}
         onFocus={handleFocus}
         padding={0}
-        paddingLeft={leftAccessory ? 2 : null}
-        paddingRight={leftAccessory ? 2 : null}
+        paddingLeft={leftAccessory ? 2 : 4}
+        paddingRight={rightAccessory ? 2 : 4}
         placeholder={placeholder}
         readOnly={readOnly}
         ref={handleInputRef}
         required={required}
         value={value}
-        variant={TEXT.BODY_MD}
+        variant={TextVariant.bodyMd}
         type={type}
         {...inputProps} // before className so input className isn't overridden
         className={classnames(
@@ -154,7 +156,7 @@ TextFieldBase.propTypes = {
   /**
    * Autocomplete allows the browser to predict the value based on earlier typed values
    */
-  autoComplete: PropTypes.string,
+  autoComplete: PropTypes.bool,
   /**
    * If `true`, the input will be focused during the first mount.
    */
@@ -179,6 +181,11 @@ TextFieldBase.propTypes = {
    * The id of the `input` element.
    */
   id: PropTypes.string,
+  /**
+   * The the component that is rendered as the input
+   * Defaults to the Text component
+   */
+  InputComponent: PropTypes.elementType,
   /**
    * Attributes applied to the `input` element.
    */
@@ -212,6 +219,10 @@ TextFieldBase.propTypes = {
    */
   onChange: PropTypes.func,
   /**
+   * Callback fired when the TextField is clicked on
+   */
+  onClick: PropTypes.func,
+  /**
    * Callback fired on focus
    */
   onFocus: PropTypes.func,
@@ -237,6 +248,11 @@ TextFieldBase.propTypes = {
    * Defaults to TEXT_FIELD_BASE_TYPES.TEXT ('text')
    */
   type: PropTypes.oneOf(Object.values(TEXT_FIELD_BASE_TYPES)),
+  /**
+   * If true will ellipse the text of the input
+   * Defaults to true
+   */
+  truncate: PropTypes.bool,
   /**
    * The input value, required for a controlled component.
    */

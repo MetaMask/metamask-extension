@@ -4,14 +4,16 @@ import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
 
 import AccountListItem from '../../components/app/account-list-item';
-import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
-import Copy from '../../components/ui/icon/copy-icon.component';
+import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { EVENT } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { conversionUtil } from '../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { Icon, ICON_NAMES } from '../../components/component-library';
+import { IconColor } from '../../helpers/constants/design-system';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -98,13 +100,14 @@ export default class ConfirmDecryptMessage extends Component {
     } = this.state;
     const { t } = this.context;
 
-    const nativeCurrencyBalance = conversionUtil(balance, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromDenomination: 'WEI',
-      numberOfDecimals: 6,
-      conversionRate,
-    });
+    const nativeCurrencyBalance = new Numeric(
+      balance,
+      16,
+      EtherDenomination.WEI,
+    )
+      .applyConversionRate(conversionRate)
+      .round(6)
+      .toBase(10);
 
     return (
       <div className="request-decrypt-message__balance">
@@ -236,11 +239,14 @@ export default class ConfirmDecryptMessage extends Component {
               <div className="request-decrypt-message__message-copy-text">
                 {t('decryptCopy')}
               </div>
-              <Copy size={17} color="var(--color-primary-default)" />
+              <Icon
+                name={hasCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                color={IconColor.primaryDefault}
+              />
             </Tooltip>
           </div>
         ) : (
-          <div></div>
+          <div />
         )}
       </div>
     );
@@ -258,48 +264,36 @@ export default class ConfirmDecryptMessage extends Component {
     const { trackEvent, t } = this.context;
 
     return (
-      <div className="request-decrypt-message__footer">
-        <Button
-          type="secondary"
-          large
-          className="request-decrypt-message__footer__cancel-button"
-          onClick={async (event) => {
-            await cancelDecryptMessage(txData, event);
-            trackEvent({
-              category: EVENT.CATEGORIES.MESSAGES,
-              event: 'Cancel',
-              properties: {
-                action: 'Decrypt Message Request',
-                legacy_event: true,
-              },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
-          }}
-        >
-          {t('cancel')}
-        </Button>
-        <Button
-          type="primary"
-          large
-          className="request-decrypt-message__footer__sign-button"
-          onClick={async (event) => {
-            await decryptMessage(txData, event);
-            trackEvent({
-              category: EVENT.CATEGORIES.MESSAGES,
-              event: 'Confirm',
-              properties: {
-                action: 'Decrypt Message Request',
-                legacy_event: true,
-              },
-            });
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
-          }}
-        >
-          {t('decrypt')}
-        </Button>
-      </div>
+      <PageContainerFooter
+        cancelText={t('cancel')}
+        submitText={t('decrypt')}
+        onCancel={async (event) => {
+          await cancelDecryptMessage(txData, event);
+          trackEvent({
+            category: EVENT.CATEGORIES.MESSAGES,
+            event: 'Cancel',
+            properties: {
+              action: 'Decrypt Message Request',
+              legacy_event: true,
+            },
+          });
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
+        }}
+        onSubmit={async (event) => {
+          await decryptMessage(txData, event);
+          trackEvent({
+            category: EVENT.CATEGORIES.MESSAGES,
+            event: 'Confirm',
+            properties: {
+              action: 'Decrypt Message Request',
+              legacy_event: true,
+            },
+          });
+          clearConfirmTransaction();
+          history.push(mostRecentOverviewPage);
+        }}
+      />
     );
   };
 

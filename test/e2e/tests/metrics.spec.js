@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Segment metrics', function () {
   async function mockSegment(mockServer) {
@@ -27,7 +28,12 @@ describe('Segment metrics', function () {
   it('should send first three Page metric events upon fullscreen page load', async function () {
     await withFixtures(
       {
-        fixtures: 'metrics-enabled',
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,

@@ -1,19 +1,17 @@
-import { useSelector } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../../shared/modules/gas.utils';
-import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
-import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
+import {
+  decGWEIToHexWEI,
+  decimalToHex,
+} from '../../../shared/modules/conversion.utils';
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
   configureEIP1559,
   configureLegacy,
-  convertFromHexToETH,
-  convertFromHexToFiat,
-  generateUseSelectorRouter,
 } from './test-utils';
 import { useGasEstimates } from './useGasEstimates';
 
@@ -71,12 +69,6 @@ describe('useGasEstimates', () => {
       });
 
       expect(result.current.minimumCostInHexWei).toBe(minimumHexValue);
-      expect(result.current.estimatedMinimumFiat).toBe(
-        convertFromHexToFiat(minimumHexValue),
-      );
-      expect(result.current.estimatedMinimumNative).toBe(
-        convertFromHexToETH(minimumHexValue),
-      );
     });
 
     it('uses new EIP-1559 gas fields to calculate maximum values', () => {
@@ -89,38 +81,7 @@ describe('useGasEstimates', () => {
         gasLimit: decimalToHex(gasLimit),
         maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
       });
-      expect(result.current.estimatedMaximumFiat).toBe(
-        convertFromHexToFiat(maximumHexValue),
-      );
-      expect(result.current.estimatedMaximumNative).toBe(
-        convertFromHexToETH(maximumHexValue),
-      );
-    });
-
-    it('does not  return fiat values if showFiat is false', () => {
-      const gasLimit = '21000';
-      const maxFeePerGas = '100';
-      useSelector.mockImplementation(
-        generateUseSelectorRouter({
-          checkNetworkAndAccountSupports1559Response: true,
-          shouldShowFiat: false,
-        }),
-      );
-      const { result } = renderHook(() =>
-        useGasEstimatesHook({ gasLimit, maxFeePerGas }),
-      );
-
-      expect(result.current.estimatedMaximumFiat).toBe('');
-      expect(result.current.estimatedMinimumFiat).toBe('');
-    });
-
-    it('uses gasFeeEstimates.estimatedBaseFee prop to calculate estimatedBaseFee', () => {
-      const { estimatedBaseFee } =
-        FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates;
-      const { result } = renderHook(() => useGasEstimatesHook());
-      expect(result.current.estimatedBaseFee).toBe(
-        decGWEIToHexWEI(estimatedBaseFee),
-      );
+      expect(result.current.maximumCostInHexWei).toBe(maximumHexValue);
     });
   });
 
@@ -146,12 +107,6 @@ describe('useGasEstimates', () => {
       });
 
       expect(result.current.minimumCostInHexWei).toBe(minimumHexValue);
-      expect(result.current.estimatedMinimumFiat).toBe(
-        convertFromHexToFiat(minimumHexValue),
-      );
-      expect(result.current.estimatedMinimumNative).toBe(
-        convertFromHexToETH(minimumHexValue),
-      );
     });
 
     it('uses legacy gas fields to calculate maximum values', () => {
@@ -169,12 +124,7 @@ describe('useGasEstimates', () => {
         gasLimit: decimalToHex(gasLimit),
         gasPrice: decGWEIToHexWEI(gasPrice),
       });
-      expect(result.current.estimatedMaximumFiat).toBe(
-        convertFromHexToFiat(maximumHexValue),
-      );
-      expect(result.current.estimatedMaximumNative).toBe(
-        convertFromHexToETH(maximumHexValue),
-      );
+      expect(result.current.maximumCostInHexWei).toBe(maximumHexValue);
     });
 
     it('estimatedBaseFee is undefined', () => {

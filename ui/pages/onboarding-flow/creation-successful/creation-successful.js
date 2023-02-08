@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
@@ -8,60 +8,65 @@ import Button from '../../../components/ui/button';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
-  TYPOGRAPHY,
-  ALIGN_ITEMS,
+  TypographyVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setCompletedOnboarding } from '../../../store/actions';
+import { isBeta } from '../../../helpers/utils/build-types';
+import { getFirstTimeFlowType } from '../../../selectors';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
-  const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const onComplete = async () => {
-    await dispatch(setCompletedOnboarding());
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-  };
   return (
     <div className="creation-successful" data-testid="creation-successful">
       <Box textAlign={TEXT_ALIGN.CENTER}>
         <img src="./images/tada.png" />
         <Typography
-          variant={TYPOGRAPHY.H2}
+          variant={TypographyVariant.H2}
           fontWeight={FONT_WEIGHT.BOLD}
           margin={6}
         >
           {t('walletCreationSuccessTitle')}
         </Typography>
-        <Typography variant={TYPOGRAPHY.H4}>
+        <Typography variant={TypographyVariant.H4}>
           {t('walletCreationSuccessDetail')}
         </Typography>
       </Box>
       <Typography
-        variant={TYPOGRAPHY.H4}
-        boxProps={{ align: ALIGN_ITEMS.LEFT }}
+        variant={TypographyVariant.H4}
+        boxProps={{ align: AlignItems.flexStart }}
         marginLeft={12}
       >
         {t('remember')}
       </Typography>
       <ul>
         <li>
-          <Typography variant={TYPOGRAPHY.H4}>
-            {t('walletCreationSuccessReminder1')}
+          <Typography variant={TypographyVariant.H4}>
+            {isBeta()
+              ? t('betaWalletCreationSuccessReminder1')
+              : t('walletCreationSuccessReminder1')}
           </Typography>
         </li>
         <li>
-          <Typography variant={TYPOGRAPHY.H4}>
-            {t('walletCreationSuccessReminder2')}
+          <Typography variant={TypographyVariant.H4}>
+            {isBeta()
+              ? t('betaWalletCreationSuccessReminder2')
+              : t('walletCreationSuccessReminder2')}
           </Typography>
         </li>
         <li>
-          <Typography variant={TYPOGRAPHY.H4}>
+          <Typography variant={TypographyVariant.H4}>
             {t('walletCreationSuccessReminder3', [
               <span
                 key="creation-successful__bold"
@@ -88,14 +93,26 @@ export default function CreationSuccessful() {
           type="link"
           onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
         >
-          {t('setAdvancedPrivacySettings')}
+          {t('advancedConfiguration')}
         </Button>
         <Button
           data-testid="onboarding-complete-done"
           type="primary"
           large
           rounded
-          onClick={onComplete}
+          onClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.ONBOARDING,
+              event:
+                firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
+                  ? EVENT_NAMES.ONBOARDING_WALLET_IMPORT_COMPLETE
+                  : EVENT_NAMES.ONBOARDING_WALLET_CREATION_COMPLETE,
+              properties: {
+                method: firstTimeFlowType,
+              },
+            });
+            history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+          }}
         >
           {t('gotIt')}
         </Button>

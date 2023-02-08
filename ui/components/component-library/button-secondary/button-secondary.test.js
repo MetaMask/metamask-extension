@@ -13,14 +13,15 @@ describe('ButtonSecondary', () => {
     );
     expect(getByText('Button Secondary')).toBeDefined();
     expect(container.querySelector('button')).toBeDefined();
-    expect(getByTestId('button-secondary')).toHaveClass('mm-button');
+    expect(getByTestId('button-secondary')).toHaveClass('mm-button-base');
+    expect(container).toMatchSnapshot();
   });
 
   it('should render anchor element correctly', () => {
     const { getByTestId, container } = render(
       <ButtonSecondary as="a" data-testid="button-secondary" />,
     );
-    expect(getByTestId('button-secondary')).toHaveClass('mm-button');
+    expect(getByTestId('button-secondary')).toHaveClass('mm-button-base');
     const anchor = container.getElementsByTagName('a').length;
     expect(anchor).toBe(1);
   });
@@ -29,7 +30,7 @@ describe('ButtonSecondary', () => {
     const { getByTestId } = render(
       <ButtonSecondary block data-testid="block" />,
     );
-    expect(getByTestId('block')).toHaveClass(`mm-button--block`);
+    expect(getByTestId('block')).toHaveClass(`mm-button-base--block`);
   });
 
   it('should render with added classname', () => {
@@ -58,17 +59,17 @@ describe('ButtonSecondary', () => {
     );
 
     expect(getByTestId(BUTTON_SECONDARY_SIZES.SM)).toHaveClass(
-      `mm-button--size-${BUTTON_SECONDARY_SIZES.SM}`,
+      `mm-button-base--size-${BUTTON_SECONDARY_SIZES.SM}`,
     );
     expect(getByTestId(BUTTON_SECONDARY_SIZES.MD)).toHaveClass(
-      `mm-button--size-${BUTTON_SECONDARY_SIZES.MD}`,
+      `mm-button-base--size-${BUTTON_SECONDARY_SIZES.MD}`,
     );
     expect(getByTestId(BUTTON_SECONDARY_SIZES.LG)).toHaveClass(
-      `mm-button--size-${BUTTON_SECONDARY_SIZES.LG}`,
+      `mm-button-base--size-${BUTTON_SECONDARY_SIZES.LG}`,
     );
   });
 
-  it('should render with different types', () => {
+  it('should render as danger', () => {
     const { getByTestId } = render(
       <>
         <ButtonSecondary danger data-testid="danger" />
@@ -87,15 +88,15 @@ describe('ButtonSecondary', () => {
         <ButtonSecondary disabled data-testid="disabled" />
       </>,
     );
-    expect(getByTestId('loading')).toHaveClass(`mm-button--loading`);
-    expect(getByTestId('disabled')).toHaveClass(`mm-button--disabled`);
+    expect(getByTestId('loading')).toHaveClass(`mm-button-base--loading`);
+    expect(getByTestId('disabled')).toHaveClass(`mm-button-base--disabled`);
   });
   it('should render with icon', () => {
     const { container } = render(
-      <ButtonSecondary data-testid="icon" icon="add-square-filled" />,
+      <ButtonSecondary data-testid="icon" iconName="add-square" />,
     );
 
-    const icons = container.getElementsByClassName('icon').length;
+    const icons = container.getElementsByClassName('mm-icon').length;
     expect(icons).toBe(1);
   });
 });

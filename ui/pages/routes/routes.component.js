@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-import FirstTimeFlow from '../first-time-flow';
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -45,7 +44,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
-  INITIALIZE_UNLOCK_ROUTE,
   LOCK_ROUTE,
   MOBILE_SYNC_ROUTE,
   NEW_ACCOUNT_ROUTE,
@@ -58,9 +56,9 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
-  INITIALIZE_ROUTE,
   ONBOARDING_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
@@ -77,9 +75,9 @@ import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
-import { THEME_TYPE } from '../settings/settings-tab/settings-tab.constant';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
+import { ThemeType } from '../../../shared/constants/preferences';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -114,6 +112,8 @@ export default class Routes extends Component {
     shouldShowSeedPhraseReminder: PropTypes.bool,
     portfolioTooltipIsBeingShown: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
+    isCurrentProviderCustom: PropTypes.bool,
+    completedOnboarding: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -123,8 +123,8 @@ export default class Routes extends Component {
 
   handleOsTheme() {
     const osTheme = window?.matchMedia('(prefers-color-scheme: dark)')?.matches
-      ? THEME_TYPE.DARK
-      : THEME_TYPE.LIGHT;
+      ? ThemeType.dark
+      : ThemeType.light;
 
     document.documentElement.setAttribute('data-theme', osTheme);
   }
@@ -133,7 +133,7 @@ export default class Routes extends Component {
     const { theme } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === THEME_TYPE.OS) {
+      if (theme === ThemeType.OS) {
         this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
@@ -158,7 +158,7 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
-    if (theme === THEME_TYPE.OS) {
+    if (theme === ThemeType.os) {
       this.handleOsTheme();
     } else {
       document.documentElement.setAttribute('data-theme', theme);
@@ -172,11 +172,8 @@ export default class Routes extends Component {
 
     const routes = (
       <Switch>
-        {process.env.ONBOARDING_V2 && (
-          <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
-        )}
+        <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
-        <Route path={INITIALIZE_ROUTE} component={FirstTimeFlow} />
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
@@ -219,7 +216,7 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        {process.env.COLLECTIBLES_V1 ? (
+        {process.env.NFTS_V1 ? (
           <Authenticated
             path={ADD_COLLECTIBLE_ROUTE}
             component={AddCollectiblePage}
@@ -266,7 +263,7 @@ export default class Routes extends Component {
     const { location } = this.props;
     return Boolean(
       matchPath(location.pathname, {
-        path: INITIALIZE_UNLOCK_ROUTE,
+        path: ONBOARDING_UNLOCK_ROUTE,
         exact: true,
       }),
     );
@@ -305,7 +302,7 @@ export default class Routes extends Component {
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
-        path: process.env.ONBOARDING_V2 ? ONBOARDING_ROUTE : INITIALIZE_ROUTE,
+        path: ONBOARDING_ROUTE,
         exact: false,
       }),
     );
@@ -377,6 +374,8 @@ export default class Routes extends Component {
       currentChainId,
       shouldShowSeedPhraseReminder,
       portfolioTooltipIsBeingShown,
+      isCurrentProviderCustom,
+      completedOnboarding,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -388,6 +387,8 @@ export default class Routes extends Component {
       currentChainId &&
       !isTestNet &&
       !isNetworkUsed &&
+      !isCurrentProviderCustom &&
+      completedOnboarding &&
       allAccountsOnNetworkAreEmpty;
 
     const windowType = getEnvironmentType();
@@ -430,10 +431,8 @@ export default class Routes extends Component {
             }
           />
         )}
-        {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
-          <OnboardingAppHeader />
-        )}
-        <NetworkDropdown />
+        {this.showOnboardingHeader() && <OnboardingAppHeader />}
+        {completedOnboarding ? <NetworkDropdown /> : null}
         <AccountMenu />
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

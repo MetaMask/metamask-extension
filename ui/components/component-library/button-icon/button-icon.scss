@@ -1,0 +1,32 @@
+.mm-button-icon {
+  --button-icon-size: var(--size, 24px);
+  --button-icon-opacity-hover: 0.5; // TODO: replace with design tokens
+  --button-icon-opacity-disabled: 0.3; // TODO: replace with design tokens
+
+  height: var(--button-icon-size);
+  width: var(--button-icon-size);
+  padding: 0;
+  cursor: pointer;
+
+  // ButtonIcon default states
+  &:active,
+  &:hover {
+    opacity: var(--button-icon-opacity-hover);
+  }
+
+  &--disabled,
+  &:disabled {
+    opacity: var(--button-icon-opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  // ButtonIcon Sizes
+  &--size-sm {
+    --button-icon-size: 24px;
+  }
+
+  &--size-lg {
+    --button-icon-size: 32px;
+  }
+}
+

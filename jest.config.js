@@ -1,33 +1,19 @@
 module.exports = {
   collectCoverageFrom: [
+    '<rootDir>/app/scripts/constants/error-utils.js',
+    '<rootDir>/app/scripts/controllers/network/**/*.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
+    '<rootDir>/app/scripts/flask/**/*.js',
+    '<rootDir>/app/scripts/lib/**/*.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.js',
-    '<rootDir>/shared/**/*.js',
-    '<rootDir>/ui/**/*.js',
+    '<rootDir>/app/scripts/migrations/*.js',
+    '<rootDir>/app/scripts/platforms/*.js',
+    '<rootDir>/shared/**/*.(js|ts|tsx)',
+    '<rootDir>/ui/**/*.(js|ts|tsx)',
   ],
-  coverageDirectory: './jest-coverage/main',
+  coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
-  coverageReporters: ['html', 'text-summary', 'json-summary'],
-  coverageThreshold: {
-    global: {
-      branches: 44,
-      functions: 46,
-      lines: 52,
-      statements: 52,
-    },
-    './app/scripts/controllers/permissions/**/*.js': {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-    './app/scripts/lib/createRPCMethodTrackingMiddleware.js': {
-      branches: 95.65,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-  },
+  coverageReporters: ['json'],
   reporters: [
     'default',
     [
@@ -41,19 +27,24 @@ module.exports = {
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
-  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
+  setupFiles: [
+    '<rootDir>/test/setup.js',
+    '<rootDir>/test/env.js',
+    '<rootDir>/test/jest/env.js', // jest specific env vars that break mocha tests
+  ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
-    '<rootDir>/ui/**/*.test.js',
-    '<rootDir>/shared/**/*.test.js',
-    '<rootDir>/app/scripts/lib/**/*.test.js',
-    '<rootDir>/app/scripts/migrations/*.test.js',
-    '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>/app/scripts/constants/error-utils.test.js',
+    '<rootDir>/app/scripts/controllers/app-state.test.js',
     '<rootDir>/app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/flask/**/*.test.js',
+    '<rootDir>/app/scripts/lib/**/*.test.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
-    '<rootDir>/app/scripts/constants/error-utils.test.js',
+    '<rootDir>/app/scripts/migrations/*.test.js',
+    '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>/shared/**/*.test.(js|ts)',
+    '<rootDir>/ui/**/*.test.(js|ts|tsx)',
   ],
   testTimeout: 2500,
   // We have to specify the environment we are running in, which is jsdom. The

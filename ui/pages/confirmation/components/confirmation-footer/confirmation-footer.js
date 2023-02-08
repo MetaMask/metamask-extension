@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Button from '../../../../components/ui/button';
 
 export default function ConfirmationFooter({
-  onApprove,
+  onSubmit,
   onCancel,
-  approveText,
+  submitText,
   cancelText,
   alerts,
 }) {
@@ -13,11 +14,19 @@ export default function ConfirmationFooter({
     <div className="confirmation-footer">
       {alerts}
       <div className="confirmation-footer__actions">
-        <Button type="secondary" onClick={onCancel}>
-          {cancelText}
-        </Button>
-        <Button type="primary" onClick={onApprove}>
-          {approveText}
+        {onCancel ? (
+          <Button type="secondary" onClick={onCancel}>
+            {cancelText}
+          </Button>
+        ) : null}
+        <Button
+          type="primary"
+          onClick={onSubmit}
+          className={classnames({
+            centered: !onCancel,
+          })}
+        >
+          {submitText}
         </Button>
       </div>
     </div>
@@ -26,8 +35,8 @@ export default function ConfirmationFooter({
 
 ConfirmationFooter.propTypes = {
   alerts: PropTypes.node,
-  onApprove: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  approveText: PropTypes.string.isRequired,
-  cancelText: PropTypes.string.isRequired,
+  onCancel: PropTypes.func,
+  cancelText: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
+  submitText: PropTypes.string.isRequired,
 };

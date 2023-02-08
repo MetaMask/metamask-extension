@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
+import { captureException } from '@sentry/browser';
 
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
@@ -47,10 +48,10 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
-  getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -63,9 +64,9 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
+  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
-
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
@@ -81,11 +82,6 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  decGWEIToHexWEI,
-  addHexes,
-  decWEIToDecETH,
-} from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
@@ -96,7 +92,7 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
@@ -108,11 +104,19 @@ import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-u
 import {
   calcGasTotal,
   calcTokenAmount,
-  decimalToHex,
-  hexWEIToDecGWEI,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
+import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
+import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
+import {
+  addHexes,
+  decGWEIToHexWEI,
+  decimalToHex,
+  decWEIToDecETH,
+  hexWEIToDecGWEI,
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -128,14 +132,17 @@ export default function ViewQuote() {
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
+  const [multiLayerL1FeeTotal, setMultiLayerL1FeeTotal] = useState(null);
+  const [multiLayerL1ApprovalFeeTotal, setMultiLayerL1ApprovalFeeTotal] =
+    useState(null);
   // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
 
   const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
     useState(false);
   const priceDifferenceRiskyBuckets = [
-    GAS_RECOMMENDATIONS.HIGH,
-    GAS_RECOMMENDATIONS.MEDIUM,
+    GasRecommendations.high,
+    GasRecommendations.medium,
   ];
 
   const routeState = useSelector(getBackgroundSwapRouteState);
@@ -161,6 +168,7 @@ export default function ViewQuote() {
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const USDConversionRate = useSelector(getUSDConversionRate);
+  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
@@ -187,17 +195,10 @@ export default function ViewQuote() {
     getCurrentSmartTransactionsError,
   );
   const smartTransactionsError = useSelector(getSmartTransactionsError);
-  const currentSmartTransactionsErrorMessageDismissed = useSelector(
-    getCurrentSmartTransactionsErrorMessageDismissed,
-  );
-  const currentSmartTransactionsEnabled =
-    smartTransactionsEnabled &&
-    !(
-      currentSmartTransactionsError &&
-      (currentSmartTransactionsError !== 'not_enough_funds' ||
-        currentSmartTransactionsErrorMessageDismissed)
-    );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
 
@@ -205,8 +206,8 @@ export default function ViewQuote() {
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs(GAS_RECOMMENDATIONS.HIGH, {
-      userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
+    gasFeeInputs = useGasFeeInputs(GasRecommendations.high, {
+      userFeeLevel: swapsUserFeeLevel || GasRecommendations.high,
     });
   }
 
@@ -261,8 +262,13 @@ export default function ViewQuote() {
       maxPriorityFeePerGas,
     );
   }
-
-  const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
+  let gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
+  if (multiLayerL1FeeTotal !== null) {
+    gasTotalInWeiHex = sumHexes(
+      gasTotalInWeiHex || '0x0',
+      multiLayerL1FeeTotal || '0x0',
+    );
+  }
 
   const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
   const balanceToken =
@@ -291,19 +297,23 @@ export default function ViewQuote() {
   const approveGas = approveTxParams?.gas;
 
   const renderablePopoverData = useMemo(() => {
-    return quotesToRenderableData(
+    return quotesToRenderableData({
       quotes,
-      networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : gasPrice,
+      gasPrice: networkAndAccountSupports1559
+        ? baseAndPriorityFeePerGas
+        : gasPrice,
       conversionRate,
       currentCurrency,
       approveGas,
-      memoizedTokenConversionRates,
+      tokenConversionRates: memoizedTokenConversionRates,
       chainId,
-      smartTransactionsEnabled &&
+      smartTransactionEstimatedGas:
+        smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
-    );
+      multiLayerL1ApprovalFeeTotal,
+    });
   }, [
     quotes,
     gasPrice,
@@ -318,6 +328,7 @@ export default function ViewQuote() {
     nativeCurrencySymbol,
     smartTransactionsEnabled,
     smartTransactionsOptInStatus,
+    multiLayerL1ApprovalFeeTotal,
   ]);
 
   const renderableDataForUsedQuote = renderablePopoverData.find(
@@ -351,6 +362,7 @@ export default function ViewQuote() {
       sourceAmount: usedQuote.sourceAmount,
       chainId,
       nativeCurrencySymbol,
+      multiLayerL1FeeTotal,
     });
   additionalTrackingParams.reg_tx_fee_in_usd = Number(feeInUsd);
   additionalTrackingParams.reg_tx_fee_in_eth = Number(rawEthFee);
@@ -367,6 +379,7 @@ export default function ViewQuote() {
     sourceAmount: usedQuote.sourceAmount,
     chainId,
     nativeCurrencySymbol,
+    multiLayerL1FeeTotal,
   });
   let {
     feeInFiat: maxFeeInFiat,
@@ -715,8 +728,8 @@ export default function ViewQuote() {
   useEffect(() => {
     if (
       acknowledgedPriceDifference &&
-      lastPriceDifferenceBucket === GAS_RECOMMENDATIONS.MEDIUM &&
-      priceSlippageBucket === GAS_RECOMMENDATIONS.HIGH
+      lastPriceDifferenceBucket === GasRecommendations.medium &&
+      priceSlippageBucket === GasRecommendations.high
     ) {
       setAcknowledgedPriceDifference(false);
     }
@@ -741,7 +754,7 @@ export default function ViewQuote() {
   const priceSlippageUnknownFiatValue =
     !priceSlippageFromSource ||
     !priceSlippageFromDestination ||
-    usedQuote?.priceSlippage?.calculationError;
+    Boolean(usedQuote?.priceSlippage?.calculationError);
 
   let priceDifferencePercentage = 0;
   if (usedQuote?.priceSlippage?.ratio) {
@@ -873,6 +886,44 @@ export default function ViewQuote() {
     currentSmartTransactionsEnabled,
     currentSmartTransactionsError,
     submitClicked,
+  ]);
+
+  useEffect(() => {
+    if (!isMultiLayerFeeNetwork || !usedQuote?.multiLayerL1TradeFeeTotal) {
+      return;
+    }
+    const getEstimatedL1Fees = async () => {
+      try {
+        let l1ApprovalFeeTotal = '0x0';
+        if (approveTxParams) {
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
+            txParams: {
+              ...approveTxParams,
+              gasPrice: addHexPrefix(approveTxParams.gasPrice),
+              value: '0x0', // For approval txs we need to use "0x0" here.
+            },
+            chainId,
+          });
+          setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
+        }
+        const l1FeeTotal = sumHexes(
+          usedQuote.multiLayerL1TradeFeeTotal,
+          l1ApprovalFeeTotal,
+        );
+        setMultiLayerL1FeeTotal(l1FeeTotal);
+      } catch (e) {
+        captureException(e);
+        setMultiLayerL1FeeTotal(null);
+        setMultiLayerL1ApprovalFeeTotal(null);
+      }
+    };
+    getEstimatedL1Fees();
+  }, [
+    unsignedTransaction,
+    approveTxParams,
+    isMultiLayerFeeNetwork,
+    chainId,
+    usedQuote,
   ]);
 
   useEffect(() => {
@@ -1038,7 +1089,7 @@ export default function ViewQuote() {
         }
         hideCancel
         disabled={isSwapButtonDisabled}
-        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
+        className={isShowingWarning ? 'view-quote__thin-swaps-footer' : ''}
         showTopBorder
       />
     </div>

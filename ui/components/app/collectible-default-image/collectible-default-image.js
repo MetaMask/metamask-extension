@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Typography from '../../ui/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function CollectibleDefaultImage({
@@ -11,17 +11,23 @@ export default function CollectibleDefaultImage({
   handleImageClick,
 }) {
   const t = useI18nContext();
+  const Tag = handleImageClick ? 'button' : 'div';
   return (
-    <div
+    <Tag
+      tabIndex={0}
+      data-testid="collectible-default-image"
       className={classnames('collectible-default', {
         'collectible-default--clickable': handleImageClick,
       })}
       onClick={handleImageClick}
     >
-      <Typography variant={TYPOGRAPHY.H6} className="collectible-default__text">
+      <Typography
+        variant={TypographyVariant.H6}
+        className="collectible-default__text"
+      >
         {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Typography>
-    </div>
+    </Tag>
   );
 }
 

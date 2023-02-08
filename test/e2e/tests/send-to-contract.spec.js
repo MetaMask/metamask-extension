@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Send ERC20 token to contract address', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -17,7 +18,9 @@ describe('Send ERC20 token to contract address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,

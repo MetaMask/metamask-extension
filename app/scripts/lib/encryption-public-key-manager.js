@@ -36,6 +36,14 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
       unapprovedEncryptionPublicKeyMsgs: {},
       unapprovedEncryptionPublicKeyMsgCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedEncryptionPublicKeyMsgs: {},
+        unapprovedEncryptionPublicKeyMsgCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = opts.metricsEvent;
   }
@@ -202,9 +210,9 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
-  prepMsgForEncryptionPublicKey(msgParams) {
+  async prepMsgForEncryptionPublicKey(msgParams) {
     delete msgParams.metamaskId;
-    return Promise.resolve(msgParams);
+    return msgParams;
   }
 
   /**

@@ -5,7 +5,7 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 import { showSendTokenPage } from '../../store/actions';
 import { editExistingTransaction } from '../../ducks/send';
 import { sendTokenTokenAmountAndToAddressSelector } from '../../selectors';
-import { ASSET_TYPES } from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 import ConfirmSendToken from './confirm-send-token.component';
 
 const mapStateToProps = (state) => {
@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     editExistingTransaction: async ({ txData }) => {
       const { id } = txData;
-      await dispatch(editExistingTransaction(ASSET_TYPES.TOKEN, id.toString()));
+      await dispatch(editExistingTransaction(AssetType.token, id.toString()));
       await dispatch(clearConfirmTransaction());
       await dispatch(showSendTokenPage());
     },

@@ -1,19 +1,33 @@
 import React, { useState } from 'react';
 import {
-  SIZES,
-  ALIGN_ITEMS,
+  Size,
+  AlignItems,
   DISPLAY,
-  COLORS,
-  ICON_COLORS,
+  IconColor,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
-  TEXT,
+  JustifyContent,
+  TextVariant,
+  FLEX_WRAP,
+  TEXT_ALIGN,
+  BackgroundColor,
+  BorderColor,
+  Color,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
-import { Text } from '../text';
 
-import { Icon } from './icon';
-import { ICON_NAMES } from './icon.constants';
+import Box from '../../ui/box/box';
+
+import {
+  ButtonIcon,
+  ButtonLink,
+  ICON_NAMES,
+  ICON_SIZES,
+  Icon,
+  Label,
+  Text,
+  TextField,
+  TextFieldSearch,
+} from '..';
 
 import README from './README.mdx';
 
@@ -37,7 +51,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Icon',
-  id: __filename,
+
   component: Icon,
   parameters: {
     docs: {
@@ -51,11 +65,11 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(SIZES),
+      options: Object.values(ICON_SIZES),
     },
     color: {
       control: 'select',
-      options: Object.values(ICON_COLORS),
+      options: Object.values(IconColor),
     },
     className: {
       control: 'text',
@@ -82,17 +96,13 @@ export default {
     },
   },
   args: {
-    name: ICON_NAMES.ADD_SQUARE_FILLED,
-    color: COLORS.INHERIT,
-    size: SIZES.MD,
+    name: ICON_NAMES.ADD_SQUARE,
+    color: IconColor.inherit,
+    size: Size.MD,
   },
 };
 
-export const DefaultStory = (args) => <Icon {...args} />;
-
-DefaultStory.storyName = 'Default';
-
-export const Name = (args) => {
+export const DefaultStory = (args) => {
   const [search, setSearch] = useState('');
   const iconList = Object.keys(ICON_NAMES)
     .filter(
@@ -106,196 +116,280 @@ export const Name = (args) => {
     setSearch(e.target.value);
   };
 
+  const handleOnClear = () => {
+    setSearch('');
+  };
+
   return (
     <>
-      <Text as="h2" marginBottom={2} variant={TEXT.HEADING_MD}>
+      <Text as="h2" marginBottom={2} variant={TextVariant.headingMd}>
         Icon search
       </Text>
-      <Box display={DISPLAY.FLEX}>
-        <Box
-          marginBottom={4}
-          borderColor={COLORS.BORDER_DEFAULT}
-          borderRadius={SIZES.SM}
-          as="input"
-          type="text"
-          onChange={handleSearch}
-          value={search}
-          placeholder="Search"
-          paddingLeft={2}
-          paddingRight={2}
-          style={{
-            height: '40px',
-            width: '100%',
-            maxWidth: '300px',
-            fontSize: 'var(--typography-l-body-md-font-size)',
-          }}
-        />
-      </Box>
-
       <Box
         display={DISPLAY.GRID}
         gap={2}
-        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}
+        style={{
+          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+        }}
       >
-        {iconList.length > 0 ? (
-          <>
-            {iconList.map((item) => {
-              return (
-                <Box
-                  borderColor={COLORS.BORDER_MUTED}
-                  borderRadius={SIZES.MD}
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.COLUMN}
-                  alignItems={ALIGN_ITEMS.CENTER}
-                  justifyContent={JUSTIFY_CONTENT.CENTER}
-                  padding={4}
-                  key={item}
-                >
-                  <Box>
-                    <Icon marginBottom={2} {...args} name={ICON_NAMES[item]} />
-                  </Box>
-                  <Text
-                    variant={TEXT.BODY_XS}
-                    as="pre"
-                    style={{ cursor: 'pointer' }}
-                    backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-                    paddingLeft={2}
-                    paddingRight={2}
-                    paddingTop={1}
-                    paddingBottom={1}
-                    borderRadius={SIZES.SM}
-                    title="Copy to clipboard"
-                    onClick={() => {
-                      const tempEl = document.createElement('textarea');
-                      tempEl.value = item;
-                      document.body.appendChild(tempEl);
-                      tempEl.select();
-                      document.execCommand('copy');
-                      document.body.removeChild(tempEl);
-                    }}
-                  >
-                    {item}
-                  </Text>
-                </Box>
-              );
-            })}
-          </>
-        ) : (
-          <Text>
-            No matches. Please try again or ask in the{' '}
-            <Text
-              as="a"
-              color={COLORS.PRIMARY_DEFAULT}
-              href="https://consensys.slack.com/archives/C0354T27M5M"
-              target="_blank"
-            >
-              #metamask-design-system
-            </Text>{' '}
-            channel on slack.
-          </Text>
-        )}
+        <Box
+          style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+        >
+          {/* TODO replace with FormTextField */}
+          <Label htmlFor="icon-search">Name</Label>
+          <TextFieldSearch
+            id="icon-search"
+            marginBottom={4}
+            onChange={handleSearch}
+            clearButtonOnClick={handleOnClear}
+            value={search}
+            placeholder="Search icon name"
+          />
+        </Box>
       </Box>
+      {iconList.length > 0 ? (
+        <Box
+          display={DISPLAY.GRID}
+          gap={2}
+          style={{
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+          }}
+        >
+          {iconList.map((item) => {
+            return (
+              <Box
+                borderColor={BorderColor.borderMuted}
+                borderRadius={Size.MD}
+                display={DISPLAY.FLEX}
+                flexDirection={FLEX_DIRECTION.COLUMN}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                padding={4}
+                key={item}
+              >
+                <Icon marginBottom={2} {...args} name={ICON_NAMES[item]} />
+                <TextField
+                  placeholder={item}
+                  value={item}
+                  readOnly
+                  size={Size.SM}
+                  inputProps={{
+                    variant: TextVariant.bodyXs,
+                    textAlign: TEXT_ALIGN.CENTER,
+                  }}
+                  backgroundColor={BackgroundColor.backgroundAlternative}
+                  rightAccessory={
+                    <ButtonIcon
+                      iconName={ICON_NAMES.COPY}
+                      size={Size.SM}
+                      color={IconColor.iconAlternative}
+                      ariaLabel="Copy to clipboard"
+                      title="Copy to clipboard"
+                      onClick={() => {
+                        const tempEl = document.createElement('textarea');
+                        tempEl.value = item;
+                        document.body.appendChild(tempEl);
+                        tempEl.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempEl);
+                      }}
+                    />
+                  }
+                />
+              </Box>
+            );
+          })}
+        </Box>
+      ) : (
+        <Text>
+          No matches. Please try again or ask in the{' '}
+          <ButtonLink
+            size={Size.inherit}
+            color={Color.primaryDefault}
+            href="https://consensys.slack.com/archives/C0354T27M5M"
+            target="_blank"
+          >
+            #metamask-design-system
+          </ButtonLink>{' '}
+          channel on slack.
+        </Text>
+      )}
     </>
   );
 };
+DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
+export const Name = (args) => (
+  <>
+    <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={2}>
+      {Object.keys(ICON_NAMES).map((item) => {
+        console.log('item:', item);
+        return (
+          <Box
+            borderColor={BorderColor.borderMuted}
+            borderRadius={Size.MD}
+            display={DISPLAY.FLEX}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            padding={4}
+            key={item}
+          >
+            <Icon {...args} name={ICON_NAMES[item]} />
+          </Box>
+        );
+      })}
+    </Box>
+  </>
+);
+
+export const SizeStory = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.BASELINE}
+      alignItems={AlignItems.baseline}
       gap={1}
       marginBottom={4}
     >
-      <Icon {...args} size={SIZES.XXS} />
-      <Icon {...args} size={SIZES.XS} />
-      <Icon {...args} size={SIZES.SM} />
-      <Icon {...args} size={SIZES.MD} />
-      <Icon {...args} size={SIZES.LG} />
-      <Icon {...args} size={SIZES.XL} />
+      <Icon {...args} size={Size.XXS} />
+      <Icon {...args} size={Size.XS} />
+      <Icon {...args} size={Size.SM} />
+      <Icon {...args} size={Size.MD} />
+      <Icon {...args} size={Size.LG} />
+      <Icon {...args} size={Size.XL} />
     </Box>
-    <Text as="p" variant={TEXT.BODY_SM}>
-      <Icon {...args} size={SIZES.AUTO} /> Auto also exists and inherits the
-      font-size of the parent element.
+    <Text as="p" variant={TextVariant.bodySm}>
+      <Icon {...args} size={Size.inherit} /> inherits the font-size of the
+      parent element.
     </Text>
   </>
 );
-export const Color = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE}>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.INHERIT} />
+SizeStory.storyName = 'Size';
+
+export const ColorStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline}>
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.inherit} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ICON_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.iconDefault} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ICON_ALTERNATIVE} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.iconAlternative} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ICON_MUTED} />
-    </Box>
-    <Box
-      padding={1}
-      display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.OVERLAY_DEFAULT}
-    >
-      <Icon {...args} color={COLORS.OVERLAY_INVERSE} />
-    </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.PRIMARY_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.iconMuted} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.PRIMARY_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.overlayDefault}
     >
-      <Icon {...args} color={COLORS.PRIMARY_INVERSE} />
+      <Icon {...args} color={IconColor.overlayInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.ERROR_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.primaryDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.ERROR_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.primaryDefault}
     >
-      <Icon {...args} color={COLORS.ERROR_INVERSE} />
+      <Icon {...args} color={IconColor.primaryInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.SUCCESS_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.errorDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.SUCCESS_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.errorDefault}
     >
-      <Icon {...args} color={COLORS.SUCCESS_INVERSE} />
+      <Icon {...args} color={IconColor.errorInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.WARNING_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.successDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.WARNING_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.successDefault}
     >
-      <Icon {...args} color={COLORS.WARNING_INVERSE} />
+      <Icon {...args} color={IconColor.successInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-      <Icon {...args} color={COLORS.INFO_DEFAULT} />
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.warningDefault} />
     </Box>
     <Box
       padding={1}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.INFO_DEFAULT}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.warningDefault}
     >
-      <Icon {...args} color={COLORS.INFO_INVERSE} />
+      <Icon {...args} color={IconColor.warningInverse} />
+    </Box>
+    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon {...args} color={IconColor.infoDefault} />
+    </Box>
+    <Box
+      padding={1}
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.infoDefault}
+    >
+      <Icon {...args} color={IconColor.infoInverse} />
+    </Box>
+  </Box>
+);
+ColorStory.storyName = 'Color';
+
+export const LayoutAndSpacing = () => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
+    <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon
+        name={ICON_NAMES.CHECK}
+        color={IconColor.successDefault}
+        marginRight={1}
+      />
+      <Text>Always allow you to opt-out via Settings</Text>
+    </Box>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      backgroundColor={BackgroundColor.primaryMuted}
+      marginRight="auto"
+    >
+      <Text color={Color.primaryDefault}>
+        0x79fAaFe7B6D5DB5D8c63FE88DFF0AF1Fe53358db
+      </Text>
+      <Icon
+        name={ICON_NAMES.COPY}
+        color={IconColor.primaryDefault}
+        marginLeft={1}
+      />
+    </Box>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      padding={4}
+      borderColor={BorderColor.borderMuted}
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
+      <Icon
+        name={ICON_NAMES.ADD}
+        color={IconColor.iconDefault}
+        marginRight={2}
+      />
+      <Text>Create account</Text>
     </Box>
   </Box>
 );

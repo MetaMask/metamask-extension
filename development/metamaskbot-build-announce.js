@@ -23,6 +23,8 @@ async function start() {
   console.log('CIRCLE_BUILD_NUM', CIRCLE_BUILD_NUM);
   const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
   console.log('CIRCLE_WORKFLOW_JOB_ID', CIRCLE_WORKFLOW_JOB_ID);
+  const { PARENT_COMMIT } = process.env;
+  console.log('PARENT_COMMIT', PARENT_COMMIT);
 
   if (!CIRCLE_PULL_REQUEST) {
     console.warn(`No pull request detected for commit "${CIRCLE_SHA1}"`);
@@ -36,7 +38,7 @@ async function start() {
   // build the github comment content
 
   // links to extension builds
-  const platforms = ['chrome', 'firefox', 'opera'];
+  const platforms = ['chrome', 'firefox'];
   const buildLinks = platforms
     .map((platform) => {
       const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
@@ -86,6 +88,9 @@ async function start() {
   const bundleMarkup = `<ul>${Object.keys(bundles)
     .map((key) => `<li>${key}: ${bundles[key].join(', ')}</li>`)
     .join('')}</ul>`;
+
+  const bundleSizeDataUrl =
+    'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
   const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
   const coverageLink = `<a href="${coverageUrl}">Report</a>`;
@@ -241,6 +246,67 @@ async function start() {
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
+  }
+
+  try {
+    const prBundleSizeStats = JSON.parse(
+      await fs.readFile(
+        path.resolve(
+          __dirname,
+          '..',
+          path.join('test-artifacts', 'chrome', 'mv3', 'bundle_size.json'),
+        ),
+        'utf-8',
+      ),
+    );
+
+    const devBundleSizeStats = await (
+      await fetch(bundleSizeDataUrl, {
+        method: 'GET',
+      })
+    ).json();
+
+    const prSizes = {
+      background: prBundleSizeStats.background.size,
+      ui: prBundleSizeStats.ui.size,
+      common: prBundleSizeStats.common.size,
+    };
+
+    const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
+      sizes[part] = devBundleSizeStats[PARENT_COMMIT][part] || 0;
+      return sizes;
+    }, {});
+
+    const diffs = Object.keys(prSizes).reduce((output, part) => {
+      output[part] = prSizes[part] - devSizes[part];
+      return output;
+    }, {});
+
+    const sizeDiffRows = Object.keys(diffs).map(
+      (part) => `${part}: ${diffs[part]} bytes`,
+    );
+
+    const sizeDiffHiddenContent = `<ul>${sizeDiffRows
+      .map((row) => `<li>${row}</li>`)
+      .join('\n')}</ul>`;
+
+    const sizeDiff = diffs.background + diffs.common;
+
+    const sizeDiffWarning =
+      sizeDiff > 0
+        ? `🚨 Warning! Bundle size has increased!`
+        : `🚀 Bundle size reduced!`;
+
+    const sizeDiffExposedContent =
+      sizeDiff === 0
+        ? `Bundle size diffs`
+        : `Bundle size diffs [${sizeDiffWarning}]`;
+
+    const sizeDiffBody = `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
+
+    commentBody += sizeDiffBody;
+  } catch (error) {
+    console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
   try {

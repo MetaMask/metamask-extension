@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Failing contract interaction ', function () {
   const smartContract = SMART_CONTRACTS.FAILING;
@@ -18,7 +19,9 @@ describe('Failing contract interaction ', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -75,7 +78,7 @@ describe('Failing contract interaction ', function () {
 
         // display the transaction status
         const transactionStatus = await driver.findElement(
-          '.transaction-list-item:nth-of-type(1) .transaction-status',
+          '.transaction-list-item:nth-of-type(1) .transaction-status-label',
         );
         assert.equal(await transactionStatus.getText(), 'Failed');
       },

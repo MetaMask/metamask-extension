@@ -17,6 +17,8 @@ const renderAdornment = () => (
   </InputAdornment>
 );
 
+let timeoutIdForSearch;
+
 export default function ListItemSearch({
   onSearch,
   error,
@@ -37,7 +39,6 @@ export default function ListItemSearch({
    * @param {string} contractAddress
    */
   const handleSearchTokenForImport = async (contractAddress) => {
-    setSearchQuery(contractAddress);
     try {
       const token = await fetchToken(contractAddress, chainId);
       if (token) {
@@ -60,21 +61,31 @@ export default function ListItemSearch({
   };
 
   const handleSearch = async (newSearchQuery) => {
-    const trimmedNewSearchQuery = newSearchQuery.trim();
-    const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
-    const fuseSearchResult = fuseRef.current.search(newSearchQuery);
-    const results =
-      defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult;
-    if (shouldSearchForImports && results.length === 0 && validHexAddress) {
-      await handleSearchTokenForImport(trimmedNewSearchQuery);
-      return;
-    }
     setSearchQuery(newSearchQuery);
-    onSearch({
-      searchQuery: newSearchQuery,
-      results,
-    });
+    if (timeoutIdForSearch) {
+      clearTimeout(timeoutIdForSearch);
+    }
+    timeoutIdForSearch = setTimeout(async () => {
+      timeoutIdForSearch = null;
+      const trimmedNewSearchQuery = newSearchQuery.trim();
+      const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
+      const fuseSearchResult = fuseRef.current.search(newSearchQuery);
+      const results =
+        defaultToAll && newSearchQuery === '' ? listToSearch : fuseSearchResult;
+      if (shouldSearchForImports && results.length === 0 && validHexAddress) {
+        await handleSearchTokenForImport(trimmedNewSearchQuery);
+        return;
+      }
+      onSearch({
+        searchQuery: newSearchQuery,
+        results,
+      });
+    }, 350);
   };
+
+  useEffect(() => {
+    return () => clearTimeout(timeoutIdForSearch);
+  }, []);
 
   useEffect(() => {
     if (!fuseRef.current) {
@@ -128,6 +139,6 @@ ListItemSearch.propTypes = {
   searchPlaceholderText: PropTypes.string,
   defaultToAll: PropTypes.bool,
   shouldSearchForImports: PropTypes.bool,
-  searchQuery: PropTypes.func,
+  searchQuery: PropTypes.string,
   setSearchQuery: PropTypes.func,
 };

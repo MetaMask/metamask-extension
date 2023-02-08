@@ -1,29 +1,20 @@
 import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
-import {
-  conversionLessThan,
-  conversionGreaterThan,
-} from '../../../shared/modules/conversion.utils';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getSelectedAccount,
 } from '../../selectors';
-import { addHexes } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
-import {
-  bnGreaterThan,
-  bnLessThan,
-  bnLessThanEqualTo,
-} from '../../helpers/utils/util';
+import { bnGreaterThan, bnLessThan } from '../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+import { Numeric } from '../../../shared/modules/Numeric';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
 const validateGasLimit = (gasLimit, minimumGasLimit) => {
-  const gasLimitTooLow = conversionLessThan(
-    { value: gasLimit, fromNumericBase: 'dec' },
-    { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
+  const gasLimitTooLow = new Numeric(gasLimit, 10).lessThan(
+    new Numeric(minimumGasLimit || GAS_LIMITS.SIMPLE, 16),
   );
 
   if (gasLimitTooLow) {
@@ -36,7 +27,7 @@ const validateMaxPriorityFee = (maxPriorityFeePerGas, supportsEIP1559) => {
   if (!supportsEIP1559) {
     return undefined;
   }
-  if (bnLessThanEqualTo(maxPriorityFeePerGas, 0)) {
+  if (bnLessThan(maxPriorityFeePerGas, 0)) {
     return GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
   }
   return undefined;
@@ -68,7 +59,7 @@ const validateGasPrice = (
   }
   if (
     (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
-    bnLessThanEqualTo(gasPrice, 0)
+    bnLessThan(gasPrice, 0)
   ) {
     return GAS_FORM_ERRORS.GAS_PRICE_TOO_LOW;
   }
@@ -143,25 +134,20 @@ const hasBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
   if (minimumCostInHexWei === undefined || ethBalance === undefined) {
     return false;
   }
-  const minimumTxCostInHexWei = addHexes(
-    minimumCostInHexWei,
-    transaction?.txParams?.value || '0x0',
+  const minimumTxCostInHexWei = new Numeric(minimumCostInHexWei, 16).add(
+    new Numeric(transaction?.txParams?.value || '0x0', 16),
   );
+  const ethBalanceInHexWei = new Numeric(ethBalance, 16);
 
-  return conversionGreaterThan(
-    { value: minimumTxCostInHexWei, fromNumericBase: 'hex' },
-    { value: ethBalance, fromNumericBase: 'hex' },
-  );
+  return minimumTxCostInHexWei.greaterThan(ethBalanceInHexWei);
 };
 
 /**
  * @typedef {object} GasFeeErrorsReturnType
  * @property {object} [gasErrors] - combined map of errors and warnings.
  * @property {boolean} [hasGasErrors] - true if there are errors that can block submission.
- * @property {object} gasWarnings - map of gas warnings for EIP-1559 fields.
  * @property {boolean} [balanceError] - true if user balance is less than transaction value.
- * @property {boolean} [estimatesUnavailableWarning] - true if supportsEIP1559 is true and
- * estimate is not of type fee-market.
+ * @property {boolean} [hasSimulationError] - true if simulation error exists.
  */
 
 /**
@@ -194,8 +180,7 @@ export function useGasFeeErrors({
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const isFeeMarketGasEstimate =
-    gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET;
+  const isFeeMarketGasEstimate = gasEstimateType === GasEstimateTypes.feeMarket;
 
   // Get all errors
   const gasLimitError = validateGasLimit(gasLimit, minimumGasLimit);
@@ -269,9 +254,6 @@ export function useGasFeeErrors({
     return warnings;
   }, [maxPriorityFeeWarning, maxFeeWarning]);
 
-  const estimatesUnavailableWarning =
-    supportsEIP1559 && !isFeeMarketGasEstimate;
-
   // Determine if we have any errors which should block submission
   const hasGasErrors = Boolean(Object.keys(gasErrors).length);
 
@@ -295,9 +277,7 @@ export function useGasFeeErrors({
   return {
     gasErrors: errorsAndWarnings,
     hasGasErrors,
-    gasWarnings,
     balanceError,
-    estimatesUnavailableWarning,
     hasSimulationError: Boolean(transaction?.simulationFails),
   };
 }

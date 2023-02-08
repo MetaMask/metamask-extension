@@ -1,5 +1,9 @@
 import React from 'react';
-import { ALIGN_ITEMS, DISPLAY } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  DISPLAY,
+  Size,
+} from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
 import { ButtonSecondary } from './button-secondary';
@@ -26,7 +30,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/ButtonSecondary',
-  id: __filename,
+
   component: ButtonSecondary,
   parameters: {
     docs: {
@@ -56,7 +60,7 @@ export default {
       control: 'boolean',
       table: { category: 'button base props' },
     },
-    icon: {
+    iconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
@@ -69,7 +73,6 @@ export default {
       control: 'object',
       table: { category: 'button base props' },
     },
-
     loading: {
       control: 'boolean',
       table: { category: 'button base props' },
@@ -108,21 +111,22 @@ export const DefaultStory = (args) => <ButtonSecondary {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.SM}>
+export const SizeStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+    <ButtonSecondary {...args} size={Size.SM}>
       Small Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.MD}>
+    <ButtonSecondary {...args} size={Size.MD}>
       Medium (Default) Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={BUTTON_SECONDARY_SIZES.LG}>
+    <ButtonSecondary {...args} size={Size.LG}>
       Large Button
     </ButtonSecondary>
   </Box>
 );
+SizeStory.storyName = 'Size';
 
-export const Type = (args) => (
+export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <ButtonSecondary {...args}>Normal</ButtonSecondary>
     {/* Test Anchor tag to match exactly as button */}

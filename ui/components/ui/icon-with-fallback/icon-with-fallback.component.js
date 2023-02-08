@@ -8,6 +8,7 @@ const IconWithFallback = ({
   size,
   className,
   fallbackClassName,
+  wrapperClassName,
   ...props
 }) => {
   const [iconError, setIconError] = useState(false);
@@ -17,21 +18,28 @@ const IconWithFallback = ({
     setIconError(true);
   };
 
-  return !iconError && icon ? (
-    <img
-      onError={handleOnError}
-      src={icon}
-      style={style}
-      className={className}
-      alt={name || 'icon'}
-      {...props}
-    />
-  ) : (
-    <span
-      className={classnames('icon-with-fallback__fallback', fallbackClassName)}
-    >
-      {name && name.length ? name.charAt(0).toUpperCase() : ''}
-    </span>
+  return (
+    <div className={classnames(wrapperClassName)}>
+      {!iconError && icon ? (
+        <img
+          onError={handleOnError}
+          src={icon}
+          style={style}
+          className={className}
+          alt={name || 'icon'}
+          {...props}
+        />
+      ) : (
+        <span
+          className={classnames(
+            'icon-with-fallback__fallback',
+            fallbackClassName,
+          )}
+        >
+          {name?.charAt(0).toUpperCase() || ''}
+        </span>
+      )}
+    </div>
   );
 };
 
@@ -52,6 +60,10 @@ IconWithFallback.propTypes = {
    * className to apply to the image tag
    */
   className: PropTypes.string,
+  /**
+   * className to apply to the div that wraps the icon
+   */
+  wrapperClassName: PropTypes.string,
   /**
    * Additional className to apply to the fallback span tag
    */

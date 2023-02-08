@@ -190,9 +190,6 @@
   "message": {
     "message": "Bericht"
   },
-  "metamaskDescription": {
-    "message": "MetaMask is een veilige identiteitskluis voor Ethereum."
-  },
   "mustSelectOne": {
     "message": "Moet ten minste één token selecteren."
   },
@@ -298,9 +295,6 @@
   "sign": {
     "message": "Teken"
   },
-  "signNotice": {
-    "message": "Het ondertekenen van dit bericht kan hebben \ngevaarlijke bijwerkingen. Meld alleen berichten van \nsites die u volledig vertrouwt met uw volledige account.\n Deze gevaarlijke methode wordt in een toekomstige versie verwijderd."
-  },
   "signatureRequest": {
     "message": "Ondertekeningsverzoek"
   },
@@ -358,9 +352,6 @@
   },
   "visitWebSite": {
     "message": "Bezoek onze website"
-  },
-  "welcome": {
-    "message": "Welkom bij MetaMask"
   },
   "youSign": {
     "message": "U ondertekent"

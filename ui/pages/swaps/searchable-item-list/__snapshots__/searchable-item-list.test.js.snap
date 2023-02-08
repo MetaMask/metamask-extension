@@ -42,11 +42,15 @@ exports[`SearchableItemList renders the component with initial props 2`] = `
   data-testid="searchable-item-list__item"
   tabindex="0"
 >
-  <img
-    alt="primaryLabel"
-    class="url-icon"
-    src="iconUrl"
-  />
+  <div
+    class=""
+  >
+    <img
+      alt="primaryLabel"
+      class="url-icon"
+      src="iconUrl"
+    />
+  </div>
   <div
     class="searchable-item-list__labels"
   >

@@ -1,6 +1,10 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
+
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
+import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
+import nock from 'nock';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -17,6 +21,12 @@ const browserPolyfillMock = {
       addListener: () => undefined,
     },
     getPlatformInfo: async () => 'mac',
+  },
+  storage: {
+    local: {
+      get: sinon.stub().resolves({}),
+      set: sinon.stub().resolves(),
+    },
   },
 };
 
@@ -50,6 +60,21 @@ describe('MetaMaskController', function () {
   });
 
   beforeEach(function () {
+    nock('https://static.metafi.codefi.network')
+      .persist()
+      .get('/api/v1/lists/eth_phishing_detect_config.json')
+      .reply(
+        200,
+        JSON.stringify({
+          version: 2,
+          tolerance: 2,
+          fuzzylist: [],
+          whitelist: [],
+          blacklist: ['127.0.0.1'],
+        }),
+      )
+      .get('/api/v1/lists/phishfort_hotlist.json')
+      .reply(200, JSON.stringify(['127.0.0.1']));
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: {
@@ -73,6 +98,7 @@ describe('MetaMaskController', function () {
 
   afterEach(function () {
     sandbox.restore();
+    nock.cleanAll();
   });
 
   after(async function () {
@@ -218,6 +244,7 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const accounts = await metamaskController.keyringController.getAccounts();
       const txMeta = await metamaskController.getApi().addUnapprovedTransaction(
+        undefined,
         {
           from: accounts[0],
           to: recipientAddress,
@@ -236,6 +263,139 @@ describe('MetaMaskController', function () {
         ),
       ]);
       assert.deepEqual(transaction1, transaction2);
+    });
+  });
+
+  describe('#removePermissionsFor', function () {
+    it('should not propagate PermissionsRequestNotFoundError', function () {
+      const error = new PermissionsRequestNotFoundError('123');
+      metamaskController.permissionController = {
+        revokePermissions: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.removePermissionsFor({ subject: 'test_subject' });
+    });
+
+    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.permissionController = {
+        revokePermissions: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.removePermissionsFor({ subject: 'test_subject' });
+      }, error);
+    });
+  });
+
+  describe('#rejectPermissionsRequest', function () {
+    it('should not propagate PermissionsRequestNotFoundError', function () {
+      const error = new PermissionsRequestNotFoundError('123');
+      metamaskController.permissionController = {
+        rejectPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.rejectPermissionsRequest('DUMMY_ID');
+    });
+
+    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.permissionController = {
+        rejectPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.rejectPermissionsRequest('DUMMY_ID');
+      }, error);
+    });
+  });
+
+  describe('#acceptPermissionsRequest', function () {
+    it('should not propagate PermissionsRequestNotFoundError', function () {
+      const error = new PermissionsRequestNotFoundError('123');
+      metamaskController.permissionController = {
+        acceptPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.acceptPermissionsRequest('DUMMY_ID');
+    });
+
+    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.permissionController = {
+        acceptPermissionsRequest: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.acceptPermissionsRequest('DUMMY_ID');
+      }, error);
+    });
+  });
+
+  describe('#resolvePendingApproval', function () {
+    it('should not propagate ApprovalRequestNotFoundError', function () {
+      const error = new ApprovalRequestNotFoundError('123');
+      metamaskController.approvalController = {
+        accept: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+    });
+
+    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.approvalController = {
+        accept: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+      }, error);
+    });
+  });
+
+  describe('#rejectPendingApproval', function () {
+    it('should not propagate ApprovalRequestNotFoundError', function () {
+      const error = new ApprovalRequestNotFoundError('123');
+      metamaskController.approvalController = {
+        reject: () => {
+          throw error;
+        },
+      };
+      // Line below will not throw error, in case it throws this test case will fail.
+      metamaskController.rejectPendingApproval('DUMMY_ID', {
+        code: 1,
+        message: 'DUMMY_MESSAGE',
+        data: 'DUMMY_DATA',
+      });
+    });
+
+    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
+      const error = new Error();
+      metamaskController.approvalController = {
+        reject: () => {
+          throw error;
+        },
+      };
+      assert.throws(() => {
+        metamaskController.rejectPendingApproval('DUMMY_ID', {
+          code: 1,
+          message: 'DUMMY_MESSAGE',
+          data: 'DUMMY_DATA',
+        });
+      }, error);
     });
   });
 });

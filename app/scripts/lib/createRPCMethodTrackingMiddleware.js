@@ -104,7 +104,7 @@ const rateLimitTimeouts = {};
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
-  rateLimitSeconds = 60,
+  rateLimitSeconds = 60 * 5,
 }) {
   return function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,

@@ -7,11 +7,11 @@ import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
 import Card from '../../ui/card';
 import {
-  COLORS,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  Color,
+  TypographyVariant,
+  JustifyContent,
   FLEX_DIRECTION,
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   BLOCK_SIZES,
   FLEX_WRAP,
@@ -25,6 +25,7 @@ import {
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import { updateCollectibleDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
@@ -86,18 +87,12 @@ export default function CollectiblesItems({
   const ipfsGateway = useSelector(getIpfsGateway);
   const history = useHistory();
 
-  const renderCollectionImage = (
-    isPreviouslyOwnedCollection,
-    collectionImage,
-    collectionName,
-  ) => {
-    if (isPreviouslyOwnedCollection) {
-      return null;
-    }
+  const renderCollectionImage = (collectionImage, collectionName) => {
     if (collectionImage) {
       return (
         <img
-          src={collectionImage}
+          alt={collectionName}
+          src={getAssetImageURL(collectionImage, ipfsGateway)}
           className="collectibles-items__collection-image"
         />
       );
@@ -129,7 +124,6 @@ export default function CollectiblesItems({
     collectionName,
     collectionImage,
     key,
-    isPreviouslyOwnedCollection,
   }) => {
     if (!collectibles.length) {
       return null;
@@ -140,39 +134,35 @@ export default function CollectiblesItems({
     return (
       <div className="collectibles-items__collection" key={`collection-${key}`}>
         <button
+          className="collectibles-items__collection-wrapper"
+          data-testid="collection-expander-button"
           onClick={() => {
             updateCollectibleDropDownStateKey(key, isExpanded);
           }}
-          className="collectibles-items__collection-wrapper"
         >
           <Box
             marginBottom={2}
             display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             className="collectibles-items__collection-accordion-title"
           >
             <Box
-              alignItems={ALIGN_ITEMS.CENTER}
+              alignItems={AlignItems.center}
               className="collectibles-items__collection-header"
             >
-              {renderCollectionImage(
-                isPreviouslyOwnedCollection,
-                collectionImage,
-                collectionName,
-              )}
+              {renderCollectionImage(collectionImage, collectionName)}
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H5}
-                marginTop={0}
-                marginBottom={2}
+                color={Color.textDefault}
+                variant={TypographyVariant.H5}
+                margin={2}
               >
                 {`${collectionName ?? t('unknownCollection')} (${
                   collectibles.length
                 })`}
               </Typography>
             </Box>
-            <Box alignItems={ALIGN_ITEMS.FLEX_END}>
+            <Box alignItems={AlignItems.flexEnd}>
               <i
                 className={`collectibles-items__collection__icon-chevron fa fa-chevron-${
                   isExpanded ? 'down' : 'right'
@@ -188,33 +178,37 @@ export default function CollectiblesItems({
               const { image, address, tokenId, backgroundColor, name } =
                 collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
+              const collectibleImageAlt = getCollectibleImageAlt(collectible);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
 
               return (
                 <Box
+                  data-testid="collectible-wrapper"
                   width={width}
                   key={`collectible-${i}`}
                   className="collectibles-items__item-wrapper"
                 >
                   <Card
                     padding={0}
-                    justifyContent={JUSTIFY_CONTENT.CENTER}
+                    justifyContent={JustifyContent.center}
                     className="collectibles-items__item-wrapper__card"
                   >
                     {collectibleImage ? (
-                      <div
+                      <button
                         className="collectibles-items__item"
                         style={{
                           backgroundColor,
                         }}
+                        onClick={handleImageClick}
                       >
                         <img
-                          onClick={handleImageClick}
                           className="collectibles-items__item-image"
+                          data-testid="collectible-image"
                           src={collectibleImage}
+                          alt={collectibleImageAlt}
                         />
-                      </div>
+                      </button>
                     ) : (
                       <CollectibleDefaultImage
                         name={name}
@@ -257,6 +251,7 @@ export default function CollectiblesItems({
           {renderCollection({
             collectibles: previouslyOwnedCollection.collectibles,
             collectionName: previouslyOwnedCollection.collectionName,
+            collectionImage: previouslyOwnedCollection.collectibles[0]?.image,
             isPreviouslyOwnedCollection: true,
             key: PREVIOUSLY_OWNED_KEY,
           })}
@@ -286,6 +281,7 @@ CollectiblesItems.propTypes = {
       }),
     ),
     collectionName: PropTypes.string,
+    collectionImage: PropTypes.string,
   }),
   collections: PropTypes.shape({
     collectibles: PropTypes.arrayOf(

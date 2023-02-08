@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Deploy contract and call contract methods', function () {
   const ganacheOptions = {
@@ -17,7 +18,9 @@ describe('Deploy contract and call contract methods', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -79,10 +82,6 @@ describe('Deploy contract and call contract methods', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
-          text: 'Deposit',
-        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);

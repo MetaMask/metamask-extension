@@ -35,16 +35,26 @@ export default class TypedMessageManager extends EventEmitter {
    * @param options
    * @param options.getCurrentChainId
    * @param options.metricsEvent
+   * @param options.securityProviderRequest
    */
-  constructor({ getCurrentChainId, metricsEvent }) {
+  constructor({ getCurrentChainId, metricsEvent, securityProviderRequest }) {
     super();
     this._getCurrentChainId = getCurrentChainId;
     this.memStore = new ObservableStore({
       unapprovedTypedMessages: {},
       unapprovedTypedMessagesCount: 0,
     });
+
+    this.resetState = () => {
+      this.memStore.updateState({
+        unapprovedTypedMessages: {},
+        unapprovedTypedMessagesCount: 0,
+      });
+    };
+
     this.messages = [];
     this.metricsEvent = metricsEvent;
+    this.securityProviderRequest = securityProviderRequest;
   }
 
   /**
@@ -81,32 +91,33 @@ export default class TypedMessageManager extends EventEmitter {
    * @param version
    * @returns {promise} When the message has been signed or rejected
    */
-  addUnapprovedMessageAsync(msgParams, req, version) {
+  async addUnapprovedMessageAsync(msgParams, req, version) {
     return new Promise((resolve, reject) => {
-      const msgId = this.addUnapprovedMessage(msgParams, req, version);
-      this.once(`${msgId}:finished`, (data) => {
-        switch (data.status) {
-          case 'signed':
-            return resolve(data.rawSig);
-          case 'rejected':
-            return reject(
-              ethErrors.provider.userRejectedRequest(
-                'MetaMask Message Signature: User denied message signature.',
-              ),
-            );
-          case 'errored':
-            return reject(
-              new Error(`MetaMask Message Signature: ${data.error}`),
-            );
-          default:
-            return reject(
-              new Error(
-                `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
-                  msgParams,
-                )}`,
-              ),
-            );
-        }
+      this.addUnapprovedMessage(msgParams, req, version).then((msgId) => {
+        this.once(`${msgId}:finished`, (data) => {
+          switch (data.status) {
+            case 'signed':
+              return resolve(data.rawSig);
+            case 'rejected':
+              return reject(
+                ethErrors.provider.userRejectedRequest(
+                  'MetaMask Message Signature: User denied message signature.',
+                ),
+              );
+            case 'errored':
+              return reject(
+                new Error(`MetaMask Message Signature: ${data.error}`),
+              );
+            default:
+              return reject(
+                new Error(
+                  `MetaMask Message Signature: Unknown problem: ${JSON.stringify(
+                    msgParams,
+                  )}`,
+                ),
+              );
+          }
+        });
       });
     });
   }
@@ -121,7 +132,7 @@ export default class TypedMessageManager extends EventEmitter {
    * @param version
    * @returns {number} The id of the newly created TypedMessage.
    */
-  addUnapprovedMessage(msgParams, req, version) {
+  async addUnapprovedMessage(msgParams, req, version) {
     msgParams.version = version;
     if (req) {
       msgParams.origin = req.origin;
@@ -143,6 +154,13 @@ export default class TypedMessageManager extends EventEmitter {
       type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
     };
     this.addMsg(msgData);
+
+    const securityProviderResponse = await this.securityProviderRequest(
+      msgData,
+      msgData.type,
+    );
+
+    msgData.securityProviderResponse = securityProviderResponse;
 
     // signal update
     this.emit('update');
@@ -189,10 +207,6 @@ export default class TypedMessageManager extends EventEmitter {
           data = JSON.parse(params.data);
         }, '"data" must be a valid JSON string.');
         const validation = jsonschema.validate(data, TYPED_MESSAGE_SCHEMA);
-        assert.ok(
-          data.primaryType in data.types,
-          `Primary type of "${data.primaryType}" has no type definition.`,
-        );
         if (validation.errors.length !== 0) {
           throw ethErrors.rpc.invalidParams({
             message:
@@ -200,6 +214,10 @@ export default class TypedMessageManager extends EventEmitter {
             data: validation.errors.map((v) => v.message.toString()),
           });
         }
+        assert.ok(
+          data.primaryType in data.types,
+          `Primary type of "${data.primaryType}" has no type definition.`,
+        );
         let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);
@@ -287,10 +305,10 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
    */
-  prepMsgForSigning(msgParams) {
+  async prepMsgForSigning(msgParams) {
     delete msgParams.metamaskId;
     delete msgParams.version;
-    return Promise.resolve(msgParams);
+    return msgParams;
   }
 
   /**

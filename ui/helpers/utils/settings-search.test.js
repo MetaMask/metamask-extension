@@ -57,10 +57,6 @@ const t = (key) => {
       return 'Auto-lock timer (minutes)';
     case 'autoLockTimeLimitDescription':
       return 'Set the idle time in minutes before MetaMask will become locked.';
-    case 'syncWithThreeBox':
-      return 'Sync data with 3Box (experimental)';
-    case 'syncWithThreeBoxDescription':
-      return 'Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk.';
     case 'ipfsGateway':
       return 'IPFS Gateway';
     case 'ipfsGatewayDescription':
@@ -107,14 +103,10 @@ const t = (key) => {
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    case 'enhancedTokenDetection':
-      return 'Enhanced token detection';
-    case 'enhancedTokenDetectionDescription':
-      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet.";
-    case 'enableEIP1559V2':
-      return 'Enable enhanced gas fee UI';
-    case 'enableEIP1559V2Description':
-      return "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. Learn more";
+    case 'autoDetectTokens':
+      return 'Autodetect tokens';
+    case 'autoDetectTokensDescription':
+      return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services.';
     case 'enableOpenSeaAPI':
       return 'Enable OpenSea API';
     case 'enableOpenSeaAPIDescription':
@@ -145,6 +137,10 @@ const t = (key) => {
       return 'Contact us';
     case 'snaps':
       return 'Snaps';
+    case 'currencyRateCheckToggle':
+      return 'Show balance and token price checker';
+    case 'currencyRateCheckToggleDescription':
+      return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
     default:
       return '';
   }
@@ -163,7 +159,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(16);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(14);
     });
 
     it('should get good contact section number', () => {
@@ -173,7 +169,7 @@ describe('Settings Search Utils', () => {
     it('should get good security & privacy section number', () => {
       expect(
         getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(4);
+      ).toStrictEqual(9);
     });
 
     it('should get good alerts section number', () => {
@@ -186,12 +182,12 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        2,
+        1,
       );
     });
 
     it('should get good about section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(8);
+      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
     });
   });
 

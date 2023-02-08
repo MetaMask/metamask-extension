@@ -8,7 +8,7 @@ const containerStyle = {
 
 export default {
   title: 'Pages/Swaps/FeeCard',
-  id: __filename,
+
   component: FeeCard,
   argTypes: {
     primaryFee: {
@@ -76,11 +76,6 @@ export default {
       },
     },
     isBestQuote: {
-      control: {
-        type: 'boolean',
-      },
-    },
-    supportsEIP1559V2: {
       control: {
         type: 'boolean',
       },

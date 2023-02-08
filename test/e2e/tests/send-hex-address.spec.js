@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
+const FixtureBuilder = require('../fixture-builder');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
@@ -18,7 +19,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -40,12 +41,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
@@ -56,7 +51,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -69,7 +64,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
@@ -91,12 +86,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
@@ -107,7 +96,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -134,7 +123,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -184,12 +175,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -209,7 +194,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(
@@ -223,7 +208,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -272,12 +259,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.wait(async () => {
-          const sendDialogMsgs = await driver.findElements(
-            '.send-v2__form div.dialog',
-          );
-          return sendDialogMsgs.length === 1;
-        }, 10000);
         await driver.delay(2000);
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -297,7 +278,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('.sender-to-recipient__name:nth-of-type(2)');
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         // Verify address in activity log
         const publicAddress = await driver.findElement(

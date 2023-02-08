@@ -174,9 +174,6 @@
     "message": "$ 1 க்கு ஒரு குழாய் இருந்து ஈதர் கிடைக்கும்$1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "தொடங்குக"
-  },
   "here": {
     "message": "இங்கே",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -259,9 +256,6 @@
   "message": {
     "message": "செய்தி"
   },
-  "metamaskDescription": {
-    "message": "மேடமஸ்க் என்பது ஒரு பாதுகாப்பான அடையாள வால்ட் எதெரியும்"
-  },
   "mustSelectOne": {
     "message": "குறைந்தது 1 டோக்கனை தேர்ந்தெடுக்க வேண்டும்."
   },
@@ -282,7 +276,7 @@
     "message": "புதிய கணக்கு"
   },
   "newAccountNumberName": {
-    "message": "கணக்கு $ 1",
+    "message": "கணக்கு $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
@@ -410,9 +404,6 @@
   "sign": {
     "message": "உள்நுழை"
   },
-  "signNotice": {
-    "message": "இந்த செய்தியில் கையொப்பமிடலாம் \nஆபத்தான பக்க விளைவுகள் இருக்கலாம். \n உங்கள் மொத்த கணக்கில் முழுமையாக நம்பக்கூடிய தளங்களில் செய்திகளை மட்டுமே கையொப்பமிடுங்கள். \n இந்த ஆபத்தான முறை எதிர்கால பதிப்பில் அகற்றப்படும்."
-  },
   "signed": {
     "message": "கையொப்பமிடப்பட்ட"
   },
@@ -491,9 +482,6 @@
   },
   "visitWebSite": {
     "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
-  },
-  "welcome": {
-    "message": "மெட்டாமாஸ்க் பீட்டாவுக்கு வருக"
   },
   "youSign": {
     "message": "நீங்கள் கையெழுத்திடுகிறீர்கள்"

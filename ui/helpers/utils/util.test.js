@@ -1,3 +1,4 @@
+import Bowser from 'bowser';
 import { BN } from 'ethereumjs-util';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
@@ -194,6 +195,77 @@ describe('util', () => {
     });
   });
 
+  describe('#getIsBrowserDeprecated', () => {
+    it('should call Bowser.getParser when no parameter is passed', () => {
+      const spy = jest.spyOn(Bowser, 'getParser');
+      util.getIsBrowserDeprecated();
+      expect(spy).toHaveBeenCalled();
+    });
+    it('should return false when given a modern chrome browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.2623.112 Safari/537.36',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated chrome browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.2623.112 Safari/537.36',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 OPR/68.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 OPR/58.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 Edg/81.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 Edge/71.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given an unknown browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/609.4 (KHTML, like Gecko) NF/6.0.2.21.3 NintendoBrowser/5.1.0.22474',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+  });
+
   describe('normalizing values', function () {
     describe('#getRandomFileName', () => {
       it('should only return a string containing alphanumeric characters', () => {
@@ -365,6 +437,10 @@ describe('util', () => {
             ],
           },
         ],
+        nestArray: [
+          [12, 34, 56],
+          [56, 78, 89],
+        ],
       };
       primaryType = 'Mail';
       types = {
@@ -378,6 +454,8 @@ describe('util', () => {
           { name: 'from', type: 'Person' },
           { name: 'to', type: 'Person[]' },
           { name: 'contents', type: 'string' },
+          { name: 'nestArray', type: 'uint256[2][2]' },
+          { name: 'nestedPeople', type: 'Person[][]' },
         ],
         Person: [
           { name: 'name', type: 'string' },
@@ -406,6 +484,67 @@ describe('util', () => {
       expect(result.to).toHaveLength(1);
       expect(result.to[0].name).toStrictEqual('Bob');
       expect(result.to[0].wallets).toHaveLength(3);
+    });
+
+    it('should return parsed nested array if defined', () => {
+      const result = util.sanitizeMessage(
+        {
+          nestArray: [
+            [12, 34, 56],
+            [56, 78, 89],
+          ],
+        },
+        primaryType,
+        types,
+      );
+      expect(result.nestArray).toHaveLength(2);
+      expect(result.nestArray[0]).toHaveLength(3);
+      expect(result.nestArray[0][0]).toStrictEqual(12);
+      expect(result.nestArray[0][2]).toStrictEqual(56);
+    });
+
+    it('should return parsed nested array with struct if defined', () => {
+      const msg = {
+        nestedPeople: [
+          [
+            {
+              name: 'Bob',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+          [
+            {
+              name: 'Ben',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+            {
+              name: 'Brandon',
+              wallets: [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+        ],
+      };
+      const result = util.sanitizeMessage(msg, primaryType, types);
+      expect(result.nestedPeople).toHaveLength(2);
+      expect(result.nestedPeople[0]).toHaveLength(1);
+      expect(result.nestedPeople[0][0].name).toStrictEqual('Bob');
+      expect(result.nestedPeople[0][0].wallets).toHaveLength(3);
+      expect(result.nestedPeople[0][0].wallets[0]).toStrictEqual(
+        '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+      );
+      expect(result.nestedPeople[1][1].name).toStrictEqual('Brandon');
     });
 
     it('should return ignore message data with unknown types', () => {

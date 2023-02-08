@@ -1,23 +1,19 @@
-import React, { Component } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import {
-  ERC1155,
-  ERC20,
-  ERC721,
-  TRANSACTION_TYPES,
+  TokenStandard,
+  TransactionType,
 } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
-import Dialog from '../../ui/dialog';
 import Button from '../../ui/button';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
-
-import NicknamePopovers from '../modals/nickname-popovers';
 
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
@@ -25,375 +21,354 @@ import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import Typography from '../../ui/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
+import DepositPopover from '../deposit-popover/deposit-popover';
+import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
+import SetApproveForAllWarning from '../set-approval-for-all-warning';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import useTransactionInsights from '../../../hooks/useTransactionInsights';
+///: END:ONLY_INCLUDE_IN(flask)
+import {
+  getAccountName,
+  getAddressBookEntry,
+  getIsBuyableChain,
+  getMetadataContractName,
+  getMetaMaskIdentities,
+  getNetworkIdentifier,
+  getSwapsDefaultToken,
+} from '../../../selectors';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
 
-export default class ConfirmPageContainer extends Component {
-  state = {
-    showNicknamePopovers: false,
-  };
-
-  static contextTypes = {
-    t: PropTypes.func,
-  };
-
-  static propTypes = {
-    // Header
-    action: PropTypes.string,
-    hideSubtitle: PropTypes.bool,
-    onEdit: PropTypes.func,
-    showEdit: PropTypes.bool,
-    subtitleComponent: PropTypes.node,
-    title: PropTypes.string,
-    image: PropTypes.string,
-    titleComponent: PropTypes.node,
-    hideSenderToRecipient: PropTypes.bool,
-    showAccountInHeader: PropTypes.bool,
-    accountBalance: PropTypes.string,
-    assetStandard: PropTypes.string,
-    // Sender to Recipient
-    fromAddress: PropTypes.string,
-    fromName: PropTypes.string,
-    toAddress: PropTypes.string,
-    toName: PropTypes.string,
-    toEns: PropTypes.string,
-    toNickname: PropTypes.string,
-    // Content
-    contentComponent: PropTypes.node,
-    errorKey: PropTypes.string,
-    errorMessage: PropTypes.string,
-    dataComponent: PropTypes.node,
-    dataHexComponent: PropTypes.node,
-    detailsComponent: PropTypes.node,
+const ConfirmPageContainer = (props) => {
+  const {
+    showEdit,
+    onEdit,
+    fromName,
+    fromAddress,
+    toEns,
+    toNickname,
+    toAddress,
+    disabled,
+    errorKey,
+    errorMessage,
+    contentComponent,
+    action,
+    title,
+    image,
+    titleComponent,
+    subtitleComponent,
+    hideSubtitle,
+    detailsComponent,
+    dataComponent,
+    dataHexComponent,
+    onCancelAll,
+    onCancel,
+    onSubmit,
+    onSetApprovalForAll,
+    showWarningModal,
+    tokenAddress,
+    nonce,
+    unapprovedTxCount,
+    warning,
+    hideSenderToRecipient,
+    showAccountInHeader,
+    origin,
+    ethGasPriceWarning,
+    editingGas,
+    handleCloseEditGas,
+    currentTransaction,
+    supportsEIP1559,
+    nativeCurrency,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    insightComponent: PropTypes.node,
-    ///: END:ONLY_INCLUDE_IN
-    tokenAddress: PropTypes.string,
-    nonce: PropTypes.string,
-    warning: PropTypes.string,
-    unapprovedTxCount: PropTypes.number,
-    origin: PropTypes.string.isRequired,
-    ethGasPriceWarning: PropTypes.string,
-    networkIdentifier: PropTypes.string,
-    // Navigation
-    totalTx: PropTypes.number,
-    positionOfCurrentTx: PropTypes.number,
-    nextTxId: PropTypes.string,
-    prevTxId: PropTypes.string,
-    showNavigation: PropTypes.bool,
-    onNextTx: PropTypes.func,
-    firstTx: PropTypes.string,
-    lastTx: PropTypes.string,
-    ofText: PropTypes.string,
-    requestsWaitingText: PropTypes.string,
-    // Footer
-    onCancelAll: PropTypes.func,
-    onCancel: PropTypes.func,
-    onSubmit: PropTypes.func,
-    disabled: PropTypes.bool,
-    editingGas: PropTypes.bool,
-    handleCloseEditGas: PropTypes.func,
-    // Gas Popover
-    currentTransaction: PropTypes.object.isRequired,
-    contact: PropTypes.object,
-    isOwnedAccount: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
-    nativeCurrency: PropTypes.string,
-    showBuyModal: PropTypes.func,
-    isBuyableChain: PropTypes.bool,
-    isApprovalOrRejection: PropTypes.bool,
-  };
+    txData,
+    ///: END:ONLY_INCLUDE_IN(flask)
+    assetStandard,
+    isApprovalOrRejection,
+  } = props;
 
-  render() {
-    const {
-      showEdit,
-      onEdit,
-      fromName,
-      fromAddress,
-      toName,
-      toEns,
-      toNickname,
-      toAddress,
-      disabled,
-      errorKey,
-      errorMessage,
-      contentComponent,
-      action,
-      title,
-      image,
-      titleComponent,
-      subtitleComponent,
-      hideSubtitle,
-      detailsComponent,
-      dataComponent,
-      dataHexComponent,
-      onCancelAll,
-      onCancel,
-      onSubmit,
-      tokenAddress,
-      nonce,
-      unapprovedTxCount,
-      warning,
-      totalTx,
-      positionOfCurrentTx,
-      nextTxId,
-      prevTxId,
-      showNavigation,
-      onNextTx,
-      firstTx,
-      lastTx,
-      ofText,
-      requestsWaitingText,
-      hideSenderToRecipient,
-      showAccountInHeader,
-      origin,
-      ethGasPriceWarning,
-      editingGas,
-      handleCloseEditGas,
-      currentTransaction,
-      contact = {},
-      isOwnedAccount,
-      supportsEIP1559V2,
-      nativeCurrency,
-      showBuyModal,
-      isBuyableChain,
-      networkIdentifier,
-      isApprovalOrRejection,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      insightComponent,
-      ///: END:ONLY_INCLUDE_IN
-      accountBalance,
-      assetStandard,
-    } = this.props;
+  const t = useI18nContext();
 
-    const showAddToAddressDialog =
-      !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
+  const [showDepositPopover, setShowDepositPopover] = useState(false);
+  const [collectionBalance, setCollectionBalance] = useState(0);
 
-    const shouldDisplayWarning =
-      contentComponent && disabled && (errorKey || errorMessage);
+  const isBuyableChain = useSelector(getIsBuyableChain);
+  const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
+  const networkIdentifier = useSelector(getNetworkIdentifier);
+  const defaultToken = useSelector(getSwapsDefaultToken);
+  const accountBalance = defaultToken.string;
+  const identities = useSelector(getMetaMaskIdentities);
+  const ownedAccountName = getAccountName(identities, toAddress);
+  const toName = ownedAccountName || contact?.name;
+  const recipientIsOwnedAccount = Boolean(ownedAccountName);
+  const toMetadataName = useSelector((state) =>
+    getMetadataContractName(state, toAddress),
+  );
 
-    const hideTitle =
-      (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
-        currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
-      currentTransaction.txParams?.value === '0x0';
+  const isSetApproveForAll =
+    currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
 
-    const networkName =
-      NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
+  const shouldDisplayWarning =
+    contentComponent && disabled && (errorKey || errorMessage);
 
-    const isSetApproveForAll =
-      currentTransaction.type ===
-      TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL;
+  const hideTitle =
+    (currentTransaction.type === TransactionType.contractInteraction ||
+      currentTransaction.type === TransactionType.deployContract) &&
+    currentTransaction.txParams?.value === '0x0';
 
-    const { t } = this.context;
+  const networkName =
+    NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
-    return (
-      <GasFeeContextProvider transaction={currentTransaction}>
-        <div className="page-container" data-testid="page-container">
-          <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
-            nextTxId={nextTxId}
-            prevTxId={prevTxId}
-            showNavigation={showNavigation}
-            onNextTx={(txId) => onNextTx(txId)}
-            firstTx={firstTx}
-            lastTx={lastTx}
-            ofText={ofText}
-            requestsWaitingText={requestsWaitingText}
+  const fetchCollectionBalance = useCallback(async () => {
+    const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+    setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
+  }, [fromAddress, tokenAddress]);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  // As confirm-transction-base is converted to functional component
+  // this code can bemoved to it.
+  const insightComponent = useTransactionInsights({
+    txData,
+  });
+  ///: END:ONLY_INCLUDE_IN
+
+  useEffect(() => {
+    if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
+      fetchCollectionBalance();
+    }
+  }, [
+    currentTransaction,
+    assetStandard,
+    isSetApproveForAll,
+    fetchCollectionBalance,
+    collectionBalance,
+  ]);
+
+  return (
+    <GasFeeContextProvider transaction={currentTransaction}>
+      <div className="page-container" data-testid="page-container">
+        <ConfirmPageContainerNavigation />
+        {assetStandard === TokenStandard.ERC20 ||
+        assetStandard === TokenStandard.ERC721 ||
+        assetStandard === TokenStandard.ERC1155 ? (
+          <NetworkAccountBalanceHeader
+            accountName={fromName}
+            accountBalance={accountBalance}
+            tokenName={nativeCurrency}
+            accountAddress={fromAddress}
+            networkName={networkName}
+            chainId={currentTransaction.chainId}
           />
-          {assetStandard === ERC20 ||
-          assetStandard === ERC721 ||
-          assetStandard === ERC1155 ? (
-            <NetworkAccountBalanceHeader
-              accountName={fromName}
-              accountBalance={accountBalance}
-              tokenName={nativeCurrency}
-              accountAddress={fromAddress}
-              networkName={networkName}
-            />
-          ) : (
-            <ConfirmPageContainerHeader
-              showEdit={showEdit}
-              onEdit={() => onEdit()}
-              showAccountInHeader={showAccountInHeader}
-              accountAddress={fromAddress}
-            >
-              {hideSenderToRecipient ? null : (
-                <SenderToRecipient
-                  senderName={fromName}
-                  senderAddress={fromAddress}
-                  recipientName={toName}
-                  recipientAddress={toAddress}
-                  recipientEns={toEns}
-                  recipientNickname={toNickname}
-                />
-              )}
-            </ConfirmPageContainerHeader>
-          )}
-          <div>
-            {showAddToAddressDialog && (
-              <>
-                <Dialog
-                  type="message"
-                  className="send__dialog"
-                  onClick={() => this.setState({ showNicknamePopovers: true })}
-                >
-                  {t('newAccountDetectedDialogMessage')}
-                </Dialog>
-                {this.state.showNicknamePopovers ? (
-                  <NicknamePopovers
-                    onClose={() =>
-                      this.setState({ showNicknamePopovers: false })
-                    }
-                    address={toAddress}
-                  />
-                ) : null}
-              </>
-            )}
-          </div>
-          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
-          {contentComponent || (
-            <ConfirmPageContainerContent
-              action={action}
-              title={title}
-              image={image}
-              titleComponent={titleComponent}
-              subtitleComponent={subtitleComponent}
-              hideSubtitle={hideSubtitle}
-              detailsComponent={detailsComponent}
-              dataComponent={dataComponent}
-              dataHexComponent={dataHexComponent}
-              ///: BEGIN:ONLY_INCLUDE_IN(flask)
-              insightComponent={insightComponent}
-              ///: END:ONLY_INCLUDE_IN
-              errorMessage={errorMessage}
-              errorKey={errorKey}
-              tokenAddress={tokenAddress}
-              nonce={nonce}
-              warning={warning}
-              onCancelAll={onCancelAll}
-              onCancel={onCancel}
-              cancelText={t('reject')}
-              onSubmit={onSubmit}
-              submitText={t('confirm')}
-              disabled={disabled}
-              unapprovedTxCount={unapprovedTxCount}
-              rejectNText={t('rejectTxsN', [unapprovedTxCount])}
-              origin={origin}
-              ethGasPriceWarning={ethGasPriceWarning}
-              hideTitle={hideTitle}
-              supportsEIP1559V2={supportsEIP1559V2}
-              hasTopBorder={showAddToAddressDialog}
-              currentTransaction={currentTransaction}
-              nativeCurrency={nativeCurrency}
-              networkName={networkName}
-              showBuyModal={showBuyModal}
-              toAddress={toAddress}
-              transactionType={currentTransaction.type}
-              isBuyableChain={isBuyableChain}
-            />
-          )}
-          {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
-            <div className="confirm-approve-content__warning">
-              <ActionableMessage
-                message={
-                  isBuyableChain ? (
-                    <Typography variant={TYPOGRAPHY.H7} align="left">
-                      {t('insufficientCurrencyBuyOrDeposit', [
-                        nativeCurrency,
-                        networkName,
-                        <Button
-                          type="inline"
-                          className="confirm-page-container-content__link"
-                          onClick={showBuyModal}
-                          key={`${nativeCurrency}-buy-button`}
-                        >
-                          {t('buyAsset', [nativeCurrency])}
-                        </Button>,
-                      ])}
-                    </Typography>
-                  ) : (
-                    <Typography variant={TYPOGRAPHY.H7} align="left">
-                      {t('insufficientCurrencyDeposit', [
-                        nativeCurrency,
-                        networkName,
-                      ])}
-                    </Typography>
-                  )
-                }
-                useIcon
-                iconFillColor="var(--color-error-default)"
-                type="danger"
+        ) : (
+          <ConfirmPageContainerHeader
+            showEdit={showEdit}
+            onEdit={() => onEdit()}
+            showAccountInHeader={showAccountInHeader}
+            accountAddress={fromAddress}
+          >
+            {hideSenderToRecipient ? null : (
+              <SenderToRecipient
+                senderName={fromName}
+                senderAddress={fromAddress}
+                recipientName={toName}
+                recipientMetadataName={toMetadataName}
+                recipientAddress={toAddress}
+                recipientEns={toEns}
+                recipientNickname={toNickname}
+                recipientIsOwnedAccount={recipientIsOwnedAccount}
               />
-            </div>
-          )}
-          {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
-            <div className="confirm-approve-content__warning">
-              <ErrorMessage errorKey={errorKey} />
-            </div>
-          )}
-          {isSetApproveForAll && isApprovalOrRejection && (
-            <Dialog type="error" className="confirm-page-container__dialog">
-              {/*
-                TODO: https://github.com/MetaMask/metamask-extension/issues/15745
-                style={{ fontWeight: 'bold' }} because reset.scss removes font-weight from b. We should fix this.
-              */}
-              {t('confirmPageDialogSetApprovalForAll', [
-                <b
-                  key="confirm-page-container__dialog-placeholder-1"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder1')}
-                </b>,
-                <b
-                  key="confirm-page-container__dialog-placeholder-2"
-                  style={{ fontWeight: 'bold' }}
-                >
-                  {t('confirmPageDialogSetApprovalForAllPlaceholder2')}
-                </b>,
-              ])}
-            </Dialog>
-          )}
-          {contentComponent && (
-            <PageContainerFooter
-              onCancel={onCancel}
-              cancelText={t('reject')}
-              onSubmit={onSubmit}
-              submitText={t('confirm')}
-              submitButtonType={
-                isSetApproveForAll ? 'danger-primary' : 'primary'
+            )}
+          </ConfirmPageContainerHeader>
+        )}
+        {contentComponent || (
+          <ConfirmPageContainerContent
+            action={action}
+            title={title}
+            image={image}
+            titleComponent={titleComponent}
+            subtitleComponent={subtitleComponent}
+            hideSubtitle={hideSubtitle}
+            detailsComponent={detailsComponent}
+            dataComponent={dataComponent}
+            dataHexComponent={dataHexComponent}
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            insightComponent={insightComponent}
+            ///: END:ONLY_INCLUDE_IN
+            errorMessage={errorMessage}
+            errorKey={errorKey}
+            tokenAddress={tokenAddress}
+            nonce={nonce}
+            warning={warning}
+            onCancelAll={onCancelAll}
+            onCancel={onCancel}
+            cancelText={t('reject')}
+            onSubmit={onSubmit}
+            submitText={t('confirm')}
+            disabled={disabled}
+            unapprovedTxCount={unapprovedTxCount}
+            rejectNText={t('rejectTxsN', [unapprovedTxCount])}
+            origin={origin}
+            ethGasPriceWarning={ethGasPriceWarning}
+            hideTitle={hideTitle}
+            supportsEIP1559={supportsEIP1559}
+            currentTransaction={currentTransaction}
+            nativeCurrency={nativeCurrency}
+            networkName={networkName}
+            toAddress={toAddress}
+            transactionType={currentTransaction.type}
+            isBuyableChain={isBuyableChain}
+          />
+        )}
+        {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
+          <div className="confirm-approve-content__warning">
+            <ActionableMessage
+              message={
+                isBuyableChain ? (
+                  <Typography variant={TypographyVariant.H7} align="left">
+                    {t('insufficientCurrencyBuyOrDeposit', [
+                      nativeCurrency,
+                      networkName,
+                      <Button
+                        type="inline"
+                        className="confirm-page-container-content__link"
+                        onClick={() => setShowDepositPopover(true)}
+                        key={`${nativeCurrency}-buy-button`}
+                      >
+                        {t('buyAsset', [nativeCurrency])}
+                      </Button>,
+                    ])}
+                  </Typography>
+                ) : (
+                  <Typography variant={TypographyVariant.H7} align="left">
+                    {t('insufficientCurrencyDeposit', [
+                      nativeCurrency,
+                      networkName,
+                    ])}
+                  </Typography>
+                )
               }
-              disabled={disabled}
-            >
-              {unapprovedTxCount > 1 && (
-                <a onClick={onCancelAll}>
-                  {t('rejectTxsN', [unapprovedTxCount])}
-                </a>
-              )}
-            </PageContainerFooter>
-          )}
-          {editingGas && !supportsEIP1559V2 && (
-            <EditGasPopover
-              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
-              onClose={handleCloseEditGas}
-              transaction={currentTransaction}
+              useIcon
+              iconFillColor="var(--color-error-default)"
+              type="danger"
             />
-          )}
-          {supportsEIP1559V2 && (
-            <>
-              <EditGasFeePopover />
-              <AdvancedGasFeePopover />
-            </>
-          )}
-        </div>
-      </GasFeeContextProvider>
-    );
-  }
-}
+          </div>
+        )}
+        {showDepositPopover && (
+          <DepositPopover onClose={() => setShowDepositPopover(false)} />
+        )}
+        {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
+          <div className="confirm-approve-content__warning">
+            <ErrorMessage errorKey={errorKey} />
+          </div>
+        )}
+        {showWarningModal && (
+          <SetApproveForAllWarning
+            collectionName={title}
+            senderAddress={fromAddress}
+            name={fromName}
+            isERC721={assetStandard === TokenStandard.ERC20}
+            total={collectionBalance}
+            onSubmit={onSubmit}
+            onCancel={onCancel}
+          />
+        )}
+        {contentComponent && (
+          <PageContainerFooter
+            onCancel={onCancel}
+            cancelText={t('reject')}
+            onSubmit={
+              isSetApproveForAll && isApprovalOrRejection
+                ? onSetApprovalForAll
+                : onSubmit
+            }
+            submitText={t('confirm')}
+            submitButtonType={
+              isSetApproveForAll && isApprovalOrRejection
+                ? 'danger-primary'
+                : 'primary'
+            }
+            disabled={disabled}
+          >
+            {unapprovedTxCount > 1 && (
+              <a onClick={onCancelAll}>
+                {t('rejectTxsN', [unapprovedTxCount])}
+              </a>
+            )}
+          </PageContainerFooter>
+        )}
+        {editingGas && !supportsEIP1559 && (
+          <EditGasPopover
+            mode={EditGasModes.modifyInPlace}
+            onClose={handleCloseEditGas}
+            transaction={currentTransaction}
+          />
+        )}
+        {supportsEIP1559 && (
+          <>
+            <EditGasFeePopover />
+            <AdvancedGasFeePopover />
+          </>
+        )}
+      </div>
+    </GasFeeContextProvider>
+  );
+};
+
+ConfirmPageContainer.propTypes = {
+  // Header
+  action: PropTypes.string,
+  hideSubtitle: PropTypes.bool,
+  onEdit: PropTypes.func,
+  showEdit: PropTypes.bool,
+  subtitleComponent: PropTypes.node,
+  title: PropTypes.string,
+  image: PropTypes.string,
+  titleComponent: PropTypes.node,
+  hideSenderToRecipient: PropTypes.bool,
+  showAccountInHeader: PropTypes.bool,
+  assetStandard: PropTypes.string,
+  // Sender to Recipient
+  fromAddress: PropTypes.string,
+  fromName: PropTypes.string,
+  toAddress: PropTypes.string,
+  toEns: PropTypes.string,
+  toNickname: PropTypes.string,
+  // Content
+  contentComponent: PropTypes.node,
+  errorKey: PropTypes.string,
+  errorMessage: PropTypes.string,
+  dataComponent: PropTypes.node,
+  dataHexComponent: PropTypes.node,
+  detailsComponent: PropTypes.node,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  txData: PropTypes.object,
+  ///: END:ONLY_INCLUDE_IN(flask)
+  tokenAddress: PropTypes.string,
+  nonce: PropTypes.string,
+  warning: PropTypes.string,
+  unapprovedTxCount: PropTypes.number,
+  origin: PropTypes.string.isRequired,
+  ethGasPriceWarning: PropTypes.string,
+  // Footer
+  onCancelAll: PropTypes.func,
+  onCancel: PropTypes.func,
+  onSubmit: PropTypes.func,
+  onSetApprovalForAll: PropTypes.func,
+  showWarningModal: PropTypes.bool,
+  disabled: PropTypes.bool,
+  editingGas: PropTypes.bool,
+  handleCloseEditGas: PropTypes.func,
+  // Gas Popover
+  currentTransaction: PropTypes.object.isRequired,
+  supportsEIP1559: PropTypes.bool,
+  nativeCurrency: PropTypes.string,
+  isApprovalOrRejection: PropTypes.bool,
+};
+
+export default ConfirmPageContainer;

@@ -3,8 +3,12 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-import { getFormattedIpfsUrl } from '@metamask/controllers/dist/util';
+import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
+import bowser from 'bowser';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { isEqual } from 'lodash';
+///: END:ONLY_INCLUDE_IN
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -15,7 +19,11 @@ import {
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { toBigNumber } from '../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
+///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -328,6 +336,12 @@ export function getURL(url) {
   }
 }
 
+export function getIsBrowserDeprecated(
+  browser = bowser.getParser(window.navigator.userAgent),
+) {
+  return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
+}
+
 export function getURLHost(url) {
   return getURL(url)?.host || '';
 }
@@ -411,10 +425,36 @@ const solidityTypes = () => {
   ];
 };
 
-export const sanitizeMessage = (msg, baseType, types) => {
+const SOLIDITY_TYPES = solidityTypes();
+
+const stripArrayType = (potentialArrayType) =>
+  potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
+
+const stripOneLayerofNesting = (potentialArrayType) =>
+  potentialArrayType.replace(/\[[[0-9]*\]/u, '');
+
+const isArrayType = (potentialArrayType) =>
+  potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;
+
+const isSolidityType = (type) => SOLIDITY_TYPES.includes(type);
+
+export const sanitizeMessage = (msg, primaryType, types) => {
   if (!types) {
     throw new Error(`Invalid types definition`);
   }
+
+  // Primary type can be an array.
+  const isArray = primaryType && isArrayType(primaryType);
+  if (isArray) {
+    return msg.map((value) =>
+      sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
+    );
+  } else if (isSolidityType(primaryType)) {
+    return msg;
+  }
+
+  // If not, assume to be struct
+  const baseType = isArray ? stripArrayType(primaryType) : primaryType;
 
   const baseTypeDefinitions = types[baseType];
   if (!baseTypeDefinitions) {
@@ -432,31 +472,11 @@ export const sanitizeMessage = (msg, baseType, types) => {
       return;
     }
 
-    // key has a type. check if the definedType is also a type
-    const nestedType = definedType.type.replace(/\[\]$/u, '');
-    const nestedTypeDefinition = types[nestedType];
-
-    if (nestedTypeDefinition) {
-      if (definedType.type.endsWith('[]') > 0) {
-        // nested array
-        sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
-          sanitizeMessage(value, nestedType, types),
-        );
-      } else {
-        // nested object
-        sanitizedMessage[msgKey] = sanitizeMessage(
-          msg[msgKey],
-          definedType.type,
-          types,
-        );
-      }
-    } else {
-      // check if it's a valid solidity type
-      const isSolidityType = solidityTypes().includes(nestedType);
-      if (isSolidityType) {
-        sanitizedMessage[msgKey] = msg[msgKey];
-      }
-    }
+    sanitizedMessage[msgKey] = sanitizeMessage(
+      msg[msgKey],
+      definedType.type,
+      types,
+    );
   });
   return sanitizedMessage;
 };
@@ -479,9 +499,10 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
   if (numberish === undefined || numberish === null) {
     return '';
   }
-  return toBigNumber
-    .dec(toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces))
-    .toNumber();
+  return new Numeric(
+    new Numeric(numberish, 10).toFixed(numberOfDecimalPlaces),
+    10,
+  ).toNumber();
 }
 
 /**
@@ -509,3 +530,19 @@ export function coinTypeToProtocolName(coinType) {
 export function isNullish(value) {
   return value === null || value === undefined;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * @param {string[]} path
+ * @param {string} curve
+ * @returns {string | null}
+ */
+export function getSnapDerivationPathName(path, curve) {
+  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
+    (derivationPath) =>
+      derivationPath.curve === curve && isEqual(derivationPath.path, path),
+  );
+
+  return pathMetadata?.name ?? null;
+}
+///: END:ONLY_INCLUDE_IN

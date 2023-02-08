@@ -13,7 +13,7 @@ import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { TransactionType } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -41,6 +41,8 @@ export default class TransactionListItemDetails extends PureComponent {
     onClose: PropTypes.func.isRequired,
     recipientEns: PropTypes.string,
     recipientAddress: PropTypes.string,
+    recipientName: PropTypes.string,
+    recipientMetadataName: PropTypes.string,
     rpcPrefs: PropTypes.object,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
@@ -139,6 +141,8 @@ export default class TransactionListItemDetails extends PureComponent {
       showRetry,
       recipientEns,
       recipientAddress,
+      recipientName,
+      recipientMetadataName,
       senderAddress,
       isEarliestNonce,
       senderNickname,
@@ -165,6 +169,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   type="primary"
                   onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button-rounded-button"
+                  data-testid="speedup-button"
                 >
                   {t('speedUp')}
                 </Button>
@@ -182,6 +187,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     type="raised"
                     onClick={this.handleRetry}
                     className="transaction-list-item-details__header-button"
+                    data-testid="rety-button"
                   >
                     <i className="fa fa-sync"></i>
                   </Button>
@@ -238,6 +244,8 @@ export default class TransactionListItemDetails extends PureComponent {
                 recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
                 recipientNickname={recipientNickname}
+                recipientName={recipientName}
+                recipientMetadataName={recipientMetadataName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 onRecipientClick={() => {
@@ -266,15 +274,15 @@ export default class TransactionListItemDetails extends PureComponent {
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
                 isTokenApprove={
-                  type === TRANSACTION_TYPES.TOKEN_METHOD_APPROVE ||
-                  type === TRANSACTION_TYPES.TOKEN_METHOD_SET_APPROVAL_FOR_ALL
+                  type === TransactionType.tokenMethodApprove ||
+                  type === TransactionType.tokenMethodSetApprovalForAll
                 }
                 transaction={transaction}
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
               {transactionGroup.initialTransaction.type !==
-                TRANSACTION_TYPES.INCOMING && (
+                TransactionType.incoming && (
                 <Disclosure title={t('activityLog')} size="small">
                   <TransactionActivityLog
                     transactionGroup={transactionGroup}

@@ -3,7 +3,7 @@ import SendHexDataRow from './send-hex-data-row.component';
 
 export default {
   title: 'Pages/Send/SendContent/SendHexDataRow',
-  id: __filename,
+
   argTypes: {
     inError: { control: 'boolean' },
     updateSendHexData: { action: 'updateSendHexData' },

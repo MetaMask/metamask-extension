@@ -8,6 +8,7 @@ const {
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
 const { convertToHexValue, withFixtures } = require('./helpers');
+const FixtureBuilder = require('./fixture-builder');
 
 const ganacheOptions = {
   accounts: [
@@ -24,7 +25,7 @@ async function loadNewAccount() {
 
   await withFixtures(
     {
-      fixtures: 'imported-account',
+      fixtures: new FixtureBuilder().build(),
       ganacheOptions,
     },
     async ({ driver }) => {
@@ -52,7 +53,7 @@ async function confirmTx() {
   let loadingTimes;
   await withFixtures(
     {
-      fixtures: 'imported-account',
+      fixtures: new FixtureBuilder().build(),
       ganacheOptions,
     },
     async ({ driver }) => {
@@ -82,7 +83,7 @@ async function confirmTx() {
         return confirmedTxes.length === 1;
       }, 10000);
 
-      await driver.waitForSelector('.transaction-status--confirmed');
+      await driver.waitForSelector('.transaction-status-label--confirmed');
       const timestampAfterAction = new Date();
       loadingTimes = timestampAfterAction - timestampBeforeAction;
     },

@@ -1,21 +1,23 @@
 import React from 'react';
 import {
-  COLORS,
   DISPLAY,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
+  BackgroundColor,
+  BorderColor,
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT_COLORS,
+  TextColor,
   TEXT_ALIGN,
-  TEXT,
   OVERFLOW_WRAP,
   TEXT_TRANSFORM,
   FRACTIONS,
+  FLEX_DIRECTION,
+  TextVariant,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 import { ValidTags, Text } from './text';
+import { TEXT_DIRECTIONS } from './text.constants';
 
 import README from './README.mdx';
 
@@ -24,7 +26,7 @@ const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
 
 export default {
   title: 'Components/ComponentLibrary/Text',
-  id: __filename,
+
   parameters: {
     docs: {
       page: README,
@@ -33,11 +35,11 @@ export default {
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: Object.values(TEXT),
+      options: Object.values(TextVariant),
     },
     color: {
       control: { type: 'select' },
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
     },
     fontWeight: {
       control: { type: 'select' },
@@ -66,6 +68,10 @@ export default {
       control: { type: 'select' },
       options: ValidTags,
     },
+    textDirection: {
+      control: { type: 'select' },
+      options: Object.values(TEXT_DIRECTIONS),
+    },
     className: {
       control: { type: 'text' },
     },
@@ -78,12 +84,12 @@ export default {
       table: { category: 'box props' },
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
       control: 'select',
       table: { category: 'box props' },
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
       table: { category: 'box props' },
     },
@@ -123,23 +129,23 @@ export default {
 function renderBackgroundColor(color) {
   let bgColor;
   switch (color) {
-    case COLORS.OVERLAY_INVERSE:
-      bgColor = COLORS.OVERLAY_DEFAULT;
+    case Color.overlayInverse:
+      bgColor = BackgroundColor.overlayDefault;
       break;
-    case COLORS.PRIMARY_INVERSE:
-      bgColor = COLORS.PRIMARY_DEFAULT;
+    case Color.primaryInverse:
+      bgColor = BackgroundColor.primaryDefault;
       break;
-    case COLORS.ERROR_INVERSE:
-      bgColor = COLORS.ERROR_DEFAULT;
+    case Color.errorInverse:
+      bgColor = BackgroundColor.errorDefault;
       break;
-    case COLORS.WARNING_INVERSE:
-      bgColor = COLORS.WARNING_DEFAULT;
+    case Color.warningInverse:
+      bgColor = BackgroundColor.warningDefault;
       break;
-    case COLORS.SUCCESS_INVERSE:
-      bgColor = COLORS.SUCCESS_DEFAULT;
+    case Color.successInverse:
+      bgColor = BackgroundColor.successDefault;
       break;
-    case COLORS.INFO_INVERSE:
-      bgColor = COLORS.INFO_DEFAULT;
+    case Color.infoInverse:
+      bgColor = BackgroundColor.infoDefault;
       break;
     default:
       bgColor = null;
@@ -159,7 +165,7 @@ DefaultStory.args = {
 
 export const Variant = (args) => (
   <>
-    {Object.values(TEXT).map((variant) => (
+    {Object.values(TextVariant).map((variant) => (
       <Text {...args} variant={variant} key={variant}>
         {args.children || variant}
       </Text>
@@ -167,11 +173,11 @@ export const Variant = (args) => (
   </>
 );
 
-export const Color = (args) => {
-  // Index of last valid color in TEXT_COLORS array
+export const ColorStory = (args) => {
+  // Index of last valid color in TextColor array
   return (
     <>
-      {Object.values(TEXT_COLORS).map((color) => {
+      {Object.values(TextColor).map((color) => {
         return (
           <Text
             {...args}
@@ -186,6 +192,7 @@ export const Color = (args) => {
     </>
   );
 };
+ColorStory.storyName = 'Color';
 
 export const FontWeight = (args) => (
   <>
@@ -229,7 +236,7 @@ export const TextAlign = (args) => (
 
 export const OverflowWrap = (args) => (
   <Box
-    borderColor={COLORS.WARNING_DEFAULT}
+    borderColor={BorderColor.warningDefault}
     display={DISPLAY.BLOCK}
     width={FRACTIONS.ONE_THIRD}
   >
@@ -244,7 +251,7 @@ export const OverflowWrap = (args) => (
 
 export const Ellipsis = (args) => (
   <Box
-    borderColor={COLORS.PRIMARY_DEFAULT}
+    borderColor={BorderColor.primaryDefault}
     display={DISPLAY.BLOCK}
     width={FRACTIONS.ONE_THIRD}
   >
@@ -259,12 +266,37 @@ export const Ellipsis = (args) => (
 
 export const As = (args) => (
   <>
-    {Object.values(ValidTags).map((tag) => (
-      <div key={tag}>
-        <Text {...args} as={tag}>
-          {tag}
-        </Text>
-      </div>
-    ))}
+    {ValidTags.map((tag) => {
+      if (tag === 'input') {
+        return <Text key={tag} {...args} as={tag} placeholder={tag} />;
+      }
+      return (
+        <div key={tag}>
+          <Text {...args} as={tag}>
+            {tag}
+          </Text>
+        </div>
+      );
+    })}
   </>
+);
+
+export const TextDirection = (args) => (
+  <Box
+    style={{ maxWidth: 300 }}
+    display={DISPLAY.FLEX}
+    flexDirection={FLEX_DIRECTION.COLUMN}
+    gap={4}
+  >
+    <Text {...args} textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>
+      This is left to right (ltr) for English and most languages
+    </Text>
+    <Text {...args} textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>
+      This is right to left (rtl) for use with other laguanges such as Arabic.
+      This Enlgish example is incorrect usage.
+    </Text>
+    <Text {...args} textDirection={TEXT_DIRECTIONS.AUTO}>
+      Let the user agent decide with the auto option
+    </Text>
+  </Box>
 );

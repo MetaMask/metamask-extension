@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AvatarWithBadge should render correctly 1`] = `
+<div>
+  <div
+    class="box mm-avatar-with-badge box--flex-direction-row"
+    data-testid="avatar-with-badge"
+  >
+    <div
+      class="box mm-avatar-with-badge__badge-wrapper--position-bottom box--flex-direction-row"
+    >
+      <div
+        class="box mm-avatar-base mm-avatar-base--size-md mm-avatar-network box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+        data-testid="badge"
+      >
+        <img
+          alt="Arbitrum One logo"
+          class="mm-avatar-network__network-image"
+          src="./images/arbitrum.svg"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

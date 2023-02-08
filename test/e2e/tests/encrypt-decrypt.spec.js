@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Encrypt Decrypt', function () {
   const ganacheOptions = {
@@ -17,7 +18,9 @@ describe('Encrypt Decrypt', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: 'connected-state',
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
@@ -71,10 +74,11 @@ describe('Encrypt Decrypt', function () {
 
         // Verify message in MetaMask Notification
         await driver.clickElement({ text: 'Decrypt message', tag: 'div' });
-        const notificationMessage = await driver.findElement(
-          '.request-decrypt-message__message-text',
-        );
-        assert.equal(await notificationMessage.getText(), message);
+        const notificationMessage = await driver.isElementPresent({
+          text: message,
+          tag: 'div',
+        });
+        assert.equal(notificationMessage, true);
         await driver.clickElement({ text: 'Decrypt', tag: 'button' });
 
         // Verify message in Test Dapp

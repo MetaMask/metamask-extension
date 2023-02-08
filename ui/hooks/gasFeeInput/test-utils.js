@@ -1,10 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
-import {
-  conversionUtil,
-  multiplyCurrencies,
-} from '../../../shared/modules/conversion.utils';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
 import {
   getConversionRate,
   getNativeCurrency,
@@ -12,7 +8,6 @@ import {
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentCurrency,
-  getEIP1559V2Enabled,
   getSelectedAccount,
   getShouldShowFiat,
   getPreferences,
@@ -20,13 +15,14 @@ import {
   getCurrentKeyring,
   getTokenExchangeRates,
 } from '../../selectors';
-import { ETH } from '../../helpers/constants/common';
 
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import {
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
 } from '../../ducks/swaps/swaps';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei
@@ -35,7 +31,7 @@ import {
 export const MOCK_ETH_USD_CONVERSION_RATE = 100000;
 
 export const LEGACY_GAS_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+  gasEstimateType: GasEstimateTypes.legacy,
   gasFeeEstimates: {
     low: '10',
     medium: '20',
@@ -45,7 +41,7 @@ export const LEGACY_GAS_ESTIMATE_RETURN_VALUE = {
 };
 
 export const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+  gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
     low: {
       minWaitTimeEstimate: 180000,
@@ -71,7 +67,7 @@ export const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
 };
 
 export const HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+  gasEstimateType: GasEstimateTypes.feeMarket,
   gasFeeEstimates: {
     low: {
       minWaitTimeEstimate: 180000,
@@ -100,14 +96,13 @@ export const generateUseSelectorRouter =
   ({
     checkNetworkAndAccountSupports1559Response,
     shouldShowFiat = true,
-    eip1559V2Enabled = false,
   } = {}) =>
   (selector) => {
     if (selector === getConversionRate) {
       return MOCK_ETH_USD_CONVERSION_RATE;
     }
     if (selector === getNativeCurrency) {
-      return ETH;
+      return EtherDenomination.ETH;
     }
     if (selector === getPreferences) {
       return {
@@ -141,9 +136,6 @@ export const generateUseSelectorRouter =
     if (selector === checkNetworkAndAccountSupports1559) {
       return checkNetworkAndAccountSupports1559Response;
     }
-    if (selector === getEIP1559V2Enabled) {
-      return eip1559V2Enabled;
-    }
     if (selector === getCurrentKeyring) {
       return { type: '' };
     }
@@ -153,30 +145,15 @@ export const generateUseSelectorRouter =
     return undefined;
   };
 
-export function getTotalCostInETH(gwei, gasLimit) {
-  return multiplyCurrencies(gwei, gasLimit, {
-    fromDenomination: 'GWEI',
-    toDenomination: 'ETH',
-    multiplicandBase: 10,
-    multiplierBase: 10,
-  });
-}
-
 export function convertFromHexToFiat(value) {
-  const val = conversionUtil(value, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-  });
+  const val = new Numeric(value, 16).toBase(10).toString();
   return `$${(val * MOCK_ETH_USD_CONVERSION_RATE).toFixed(2)}`;
 }
 
 export function convertFromHexToETH(value) {
-  const val = conversionUtil(value, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-  });
+  const val = new Numeric(value, 16, EtherDenomination.WEI)
+    .toBase(10)
+    .toDenomination(EtherDenomination.ETH);
   return `${val} ETH`;
 }
 

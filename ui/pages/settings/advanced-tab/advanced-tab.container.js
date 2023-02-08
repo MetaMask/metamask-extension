@@ -8,13 +8,10 @@ import {
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
   setAutoLockTimeLimit,
-  setThreeBoxSyncingPermission,
-  turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
-  setIpfsGateway,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
-  setUseTokenDetection,
+  setDisabledRpcMethodPreference,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -29,13 +26,10 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
-    threeBoxSyncingAllowed,
-    threeBoxDisabled,
+    disabledRpcMethodPreferences,
     useNonceField,
-    ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
-    useTokenDetection,
   } = metamask;
   const {
     showFiatInTestnets,
@@ -52,14 +46,11 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     autoLockTimeLimit,
-    threeBoxSyncingAllowed,
-    threeBoxDisabled,
     useNonceField,
-    ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
-    useTokenDetection,
+    disabledRpcMethodPreferences,
   };
 };
 
@@ -84,24 +75,14 @@ export const mapDispatchToProps = (dispatch) => {
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
-    setThreeBoxSyncingPermission: (newThreeBoxSyncingState) => {
-      if (newThreeBoxSyncingState) {
-        dispatch(turnThreeBoxSyncingOnAndInitialize());
-      } else {
-        dispatch(setThreeBoxSyncingPermission(newThreeBoxSyncingState));
-      }
-    },
-    setIpfsGateway: (value) => {
-      return dispatch(setIpfsGateway(value));
-    },
     setLedgerTransportPreference: (value) => {
       return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setUseTokenDetection: (value) => {
-      return dispatch(setUseTokenDetection(value));
+    setDisabledRpcMethodPreference: (methodName, isEnabled) => {
+      return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
     },
   };
 };

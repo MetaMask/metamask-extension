@@ -69,7 +69,7 @@ else
   } > bundle_size_stats.temp.json
 fi
 
-jq < bundle_size_stats.temp.json > temp/stats/bundle_size_data.json
+jq . bundle_size_stats.temp.json > temp/stats/bundle_size_data.json
 rm bundle_size_stats.temp.json
 
 cd temp

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../ui/menu';
+import { ICON_NAMES } from '../../component-library';
 
 const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
   const t = useContext(I18nContext);
@@ -21,11 +22,12 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
       {collectibleOptionsOpen ? (
         <Menu
           anchorElement={collectibleOptionsButtonElement}
+          data-testid="close-collectible-options-menu"
           onHide={() => setCollectibleOptionsOpen(false)}
         >
           {onViewOnOpensea ? (
             <MenuItem
-              iconClassName="fas fa-qrcode"
+              iconName={ICON_NAMES.EXPORT}
               data-testid="collectible-options__view-on-opensea"
               onClick={() => {
                 setCollectibleOptionsOpen(false);
@@ -36,8 +38,8 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
             </MenuItem>
           ) : null}
           <MenuItem
-            iconClassName="fas fa-trash-alt collectible-options__icon"
-            data-testid="collectible-options__hide"
+            iconName={ICON_NAMES.TRASH}
+            data-testid="collectible-item-remove"
             onClick={() => {
               setCollectibleOptionsOpen(false);
               onRemove();
@@ -53,7 +55,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
 
 CollectibleOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
-  onViewOnOpensea: PropTypes.func.isRequired,
+  onViewOnOpensea: PropTypes.func,
 };
 
 export default CollectibleOptions;

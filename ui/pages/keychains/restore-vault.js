@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import {
   createNewVaultAndRestore,
   unMarkPasswordForgotten,
-  initializeThreeBox,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
@@ -12,7 +11,10 @@ import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import Typography from '../../components/ui/typography';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { TYPOGRAPHY, COLORS } from '../../helpers/constants/design-system';
+import {
+  TextColor,
+  TypographyVariant,
+} from '../../helpers/constants/design-system';
 import { EVENT } from '../../../shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
@@ -26,7 +28,6 @@ class RestoreVaultPage extends Component {
     leaveImportSeedScreenState: PropTypes.func,
     history: PropTypes.object,
     isLoading: PropTypes.bool,
-    initializeThreeBox: PropTypes.func,
   };
 
   handleImport = async (password, seedPhrase) => {
@@ -35,8 +36,6 @@ class RestoreVaultPage extends Component {
       createNewVaultAndRestore,
       leaveImportSeedScreenState,
       history,
-      // eslint-disable-next-line no-shadow
-      initializeThreeBox,
     } = this.props;
 
     leaveImportSeedScreenState();
@@ -49,7 +48,6 @@ class RestoreVaultPage extends Component {
         legacy_event: true,
       },
     });
-    initializeThreeBox();
     history.push(DEFAULT_ROUTE);
   };
 
@@ -66,20 +64,23 @@ class RestoreVaultPage extends Component {
               onClick={(e) => {
                 e.preventDefault();
                 this.props.leaveImportSeedScreenState();
-                this.props.history.goBack();
+                this.props.history.push(DEFAULT_ROUTE);
               }}
               href="#"
             >
               {`< ${t('back')}`}
             </a>
-            <Typography variant={TYPOGRAPHY.H1} color={COLORS.TEXT_DEFAULT}>
+            <Typography
+              variant={TypographyVariant.H1}
+              color={TextColor.textDefault}
+            >
               {t('resetWallet')}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT}>
+            <Typography color={TextColor.textDefault}>
               {t('resetWalletSubHeader')}
             </Typography>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
+              color={TextColor.textDefault}
               marginTop={4}
               marginBottom={4}
             >
@@ -116,7 +117,11 @@ class RestoreVaultPage extends Component {
                 </Button>,
               ])}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT} margin={0} marginBottom={4}>
+            <Typography
+              color={TextColor.textDefault}
+              margin={0}
+              marginBottom={4}
+            >
               {t('resetWalletWarning')}
             </Typography>
             <CreateNewVault
@@ -139,6 +144,5 @@ export default connect(
     },
     createNewVaultAndRestore: (pw, seed) =>
       dispatch(createNewVaultAndRestore(pw, seed)),
-    initializeThreeBox: () => dispatch(initializeThreeBox()),
   }),
 )(RestoreVaultPage);

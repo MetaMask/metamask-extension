@@ -1,3 +1,5 @@
+/* eslint-disable-next-line */
+import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
@@ -5,6 +7,7 @@ import log from 'loglevel';
 import { JSDOM } from 'jsdom';
 
 process.env.IN_TEST = true;
+process.env.METAMASK_BUILD_TYPE = 'main';
 
 global.chrome = {
   runtime: { id: 'testid', getManifest: () => ({ manifest_version: 2 }) },
@@ -101,6 +104,10 @@ if (!window.crypto.getRandomValues) {
   // eslint-disable-next-line node/global-require
   window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues');
 }
+
+// TextEncoder/TextDecoder
+window.TextEncoder = TextEncoder;
+window.TextDecoder = TextDecoder;
 
 // Used to test `clearClipboard` function
 if (!window.navigator.clipboard) {

@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Token Details', function () {
   const ganacheOptions = {
@@ -14,7 +15,7 @@ describe('Token Details', function () {
   it('should show token details for an imported token', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },

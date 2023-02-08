@@ -8,9 +8,10 @@ const Dropdown = ({
   disabled = false,
   onChange,
   options,
-  selectedOption = null,
+  selectedOption = '',
   style,
   title,
+  'data-testid': dataTestId,
 }) => {
   const _onChange = useCallback(
     (event) => {
@@ -25,6 +26,7 @@ const Dropdown = ({
     <div className={classnames('dropdown', className)}>
       <select
         className="dropdown__select"
+        data-testid={dataTestId}
         disabled={disabled}
         title={title}
         onChange={_onChange}
@@ -78,6 +80,10 @@ Dropdown.propTypes = {
    * Add inline style for the component
    */
   style: PropTypes.object,
+  /**
+   * Unit testing test id
+   */
+  'data-testid': PropTypes.string,
 };
 
 export default Dropdown;

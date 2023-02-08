@@ -2,6 +2,7 @@
 
 Steps to mark a full pass of QA complete.
 * Browsers: Opera, Chrome, Firefox, Edge.
+  * Use the Chrome build for all Chromium-derived browsers (e.g. Opera and Edge)
 * OS: Ubuntu, Mac OSX, Windows
 * Load older version of MetaMask and attempt to simulate updating the extension.
 * Open Developer Console in background and popup, inspect errors.

@@ -7,41 +7,45 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('./helpers');
+const FixtureBuilder = require('./fixture-builder');
 
 async function measurePage() {
   let metrics;
   try {
-    await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
-      await driver.delay(tinyDelayMs);
-      await driver.navigate();
-      await driver.findElement('#password');
-      await driver.delay(1000);
-      const logs = await driver.checkBrowserForLavamoatLogs();
+    await withFixtures(
+      { fixtures: new FixtureBuilder().build() },
+      async ({ driver }) => {
+        await driver.delay(tinyDelayMs);
+        await driver.navigate();
+        await driver.findElement('#password');
+        await driver.delay(1000);
+        const logs = await driver.checkBrowserForLavamoatLogs();
 
-      let logString = '';
-      let inObject = false;
+        let logString = '';
+        let inObject = false;
 
-      const parsedLogs = [];
+        const parsedLogs = [];
 
-      logs.forEach((log) => {
-        if (log.indexOf('"version": 1') >= 0) {
-          logString += log;
-          parsedLogs.push(`{${logString}}`);
-          logString = '';
-          inObject = false;
-        } else if (inObject) {
-          logString += log;
-        } else if (
-          log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0 ||
-          log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0
-        ) {
-          logString += log;
-          inObject = true;
-        }
-      });
+        logs.forEach((log) => {
+          if (log.indexOf('"version": 1') >= 0) {
+            logString += log;
+            parsedLogs.push(`{${logString}}`);
+            logString = '';
+            inObject = false;
+          } else if (inObject) {
+            logString += log;
+          } else if (
+            log.search(/"name": ".*app\/scripts\/background.js",/u) >= 0 ||
+            log.search(/"name": ".*app\/scripts\/ui.js",/u) >= 0
+          ) {
+            logString += log;
+            inObject = true;
+          }
+        });
 
-      metrics = parsedLogs.map((pl) => JSON.parse(pl));
-    });
+        metrics = parsedLogs.map((pl) => JSON.parse(pl));
+      },
+    );
   } catch (error) {
     // do nothing
   }

@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
-  COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -43,10 +43,9 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.METRICS_OPT_IN,
+            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
             properties: {
-              action: 'Metrics Option',
-              legacy_event: true,
+              is_metrics_enabled: true,
             },
           },
           {
@@ -88,10 +87,9 @@ export default function OnboardingMetametrics() {
         trackEvent(
           {
             category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.METRICS_OPT_OUT,
+            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
             properties: {
-              action: 'Metrics Option',
-              legacy_event: true,
+              is_metrics_enabled: false,
             },
           },
           {
@@ -111,71 +109,120 @@ export default function OnboardingMetametrics() {
       data-testid="onboarding-metametrics"
     >
       <Typography
-        variant={TYPOGRAPHY.H2}
+        variant={TypographyVariant.H2}
         align={TEXT_ALIGN.CENTER}
         fontWeight={FONT_WEIGHT.BOLD}
       >
-        {t('metametricsTitle')}
+        {t('onboardingMetametricsTitle')}
       </Typography>
       <Typography
         className="onboarding-metametrics__desc"
         align={TEXT_ALIGN.CENTER}
       >
-        {t('metametricsOptInDescription2')}
+        {t('onboardingMetametricsDescription')}
+      </Typography>
+      <Typography
+        className="onboarding-metametrics__desc"
+        align={TEXT_ALIGN.CENTER}
+      >
+        {t('onboardingMetametricsDescription2')}
       </Typography>
       <ul>
         <li>
           <i className="fa fa-check" />
-          {t('metametricsCommitmentsAllowOptOut2')}
+          {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
           <i className="fa fa-check" />
-          {t('metametricsCommitmentsSendAnonymizedEvents')}
+          {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
           <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverCollect')}
+          {t('onboardingMetametricsNeverCollect', [
+            <Typography
+              variant={TypographyVariant.Span}
+              key="never"
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('onboardingMetametricsNeverEmphasis')}
+            </Typography>,
+          ])}
         </li>
         <li>
           <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverIP')}
+          {t('onboardingMetametricsNeverCollectIP', [
+            <Typography
+              variant={TypographyVariant.Span}
+              key="never-collect"
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('onboardingMetametricsNeverEmphasis')}
+            </Typography>,
+          ])}
         </li>
         <li>
           <i className="fa fa-times" />
-          {t('metametricsCommitmentsNeverSell')}
+          {t('onboardingMetametricsNeverSellData', [
+            <Typography
+              variant={TypographyVariant.Span}
+              key="never-sell"
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('onboardingMetametricsNeverEmphasis')}
+            </Typography>,
+          ])}
         </li>
       </ul>
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
-        {t('gdprMessage', [
+        {t('onboardingMetametricsDataTerms')}
+      </Typography>
+      <Typography
+        color={TextColor.textAlternative}
+        align={TEXT_ALIGN.CENTER}
+        variant={TypographyVariant.H6}
+        className="onboarding-metametrics__terms"
+      >
+        {t('onboardingMetametricsInfuraTerms', [
           <a
-            key="metametrics-bottom-text-wrapper"
+            href="https://consensys.net/blog/news/consensys-data-retention-update/"
+            target="_blank"
+            rel="noopener noreferrer"
+            key="retention-link"
+          >
+            {t('onboardingMetametricsInfuraTermsPolicyLink')}
+          </a>,
+          <a
             href="https://metamask.io/privacy.html"
             target="_blank"
             rel="noopener noreferrer"
+            key="privacy-link"
           >
-            {t('gdprMessagePrivacyPolicy')}
+            {t('onboardingMetametricsInfuraTermsPolicy')}
           </a>,
         ])}
       </Typography>
+
       <div className="onboarding-metametrics__buttons">
-        <Button
-          data-testid="metametrics-no-thanks"
-          type="secondary"
-          onClick={onCancel}
-        >
-          {t('noThanks')}
-        </Button>
         <Button
           data-testid="metametrics-i-agree"
           type="primary"
+          large
           onClick={onConfirm}
         >
-          {t('affirmAgree')}
+          {t('onboardingMetametricsAgree')}
+        </Button>
+        <Button
+          data-testid="metametrics-no-thanks"
+          type="secondary"
+          large
+          onClick={onCancel}
+        >
+          {t('onboardingMetametricsDisagree')}
         </Button>
       </div>
     </div>

@@ -2,36 +2,40 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TextColor,
+  IconColor,
+  TypographyVariant,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   FLEX_DIRECTION,
   OVERFLOW_WRAP,
   DISPLAY,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
+import {
+  formatDate,
+  getAssetImageURL,
+  shortenAddress,
+} from '../../../helpers/utils/util';
+import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
 import {
   getCurrentChainId,
   getIpfsGateway,
-  getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
-import Copy from '../../ui/icon/copy-icon.component';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
-  checkAndUpdateSingleCollectibleOwnershipStatus,
-  removeAndIgnoreCollectible,
+  checkAndUpdateSingleNftOwnershipStatus,
+  removeAndIgnoreNft,
+  setRemoveCollectibleMessage,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -43,8 +47,13 @@ import InfoTooltip from '../../ui/info-tooltip';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { ASSET_TYPES, ERC721 } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import CollectibleDefaultImage from '../collectible-default-image';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import Tooltip from '../../ui/tooltip';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -56,15 +65,16 @@ export default function CollectibleDetails({ collectible }) {
     tokenId,
     standard,
     isCurrentlyOwned,
+    lastSale,
+    imageThumbnail,
   } = collectible;
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const ipfsGateway = useSelector(getIpfsGateway);
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -73,20 +83,27 @@ export default function CollectibleDetails({ collectible }) {
   const selectedAccountName = useSelector(
     (state) => getSelectedIdentity(state).name,
   );
+  const collectibleImageAlt = getCollectibleImageAlt(collectible);
   const collectibleImageURL = getAssetImageURL(
     imageOriginal ?? image,
     ipfsGateway,
   );
+  const isDataURI = collectibleImageURL.startsWith('data:');
+  const formattedTimestamp = formatDate(
+    new Date(lastSale?.event_timestamp).getTime(),
+    'M/d/y',
+  );
 
   const onRemove = () => {
-    dispatch(removeAndIgnoreCollectible(address, tokenId));
+    dispatch(removeAndIgnoreNft(address, tokenId));
+    dispatch(setRemoveCollectibleMessage('success'));
     history.push(DEFAULT_ROUTE);
   };
 
   const prevCollectible = usePrevious(collectible);
   useEffect(() => {
     if (!isEqual(prevCollectible, collectible)) {
-      checkAndUpdateSingleCollectibleOwnershipStatus(collectible);
+      checkAndUpdateSingleNftOwnershipStatus(collectible);
     }
   }, [collectible, prevCollectible]);
 
@@ -105,13 +122,13 @@ export default function CollectibleDetails({ collectible }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== ERC721;
+  const sendDisabled = standard !== TokenStandard.ERC721;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
     await dispatch(
       startNewDraftTransaction({
-        type: ASSET_TYPES.COLLECTIBLE,
+        type: AssetType.NFT,
         details: collectible,
       }),
     );
@@ -133,6 +150,7 @@ export default function CollectibleDetails({ collectible }) {
           onClick={onSend}
           disabled={sendDisabled}
           className="collectible-details__send-button"
+          data-testid="collectible-send-button"
         >
           {t('send')}
         </Button>
@@ -164,11 +182,15 @@ export default function CollectibleDetails({ collectible }) {
         <div className="collectible-details__top-section">
           <Card
             padding={0}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
+            justifyContent={JustifyContent.center}
             className="collectible-details__card"
           >
             {image ? (
-              <img className="collectible-details__image" src={image} />
+              <img
+                className="collectible-details__image"
+                src={collectibleImageURL}
+                alt={collectibleImageAlt}
+              />
             ) : (
               <CollectibleDefaultImage name={name} tokenId={tokenId} />
             )}
@@ -176,20 +198,20 @@ export default function CollectibleDetails({ collectible }) {
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
             className="collectible-details__info"
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            justifyContent={JustifyContent.spaceBetween}
           >
             <div>
               <Typography
-                color={COLORS.TEXT_DEFAULT}
-                variant={TYPOGRAPHY.H4}
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H4}
                 fontWeight={FONT_WEIGHT.BOLD}
                 boxProps={{ margin: 0, marginBottom: 2 }}
               >
                 {name}
               </Typography>
               <Typography
-                color={COLORS.TEXT_MUTED}
-                variant={TYPOGRAPHY.H5}
+                color={TextColor.textMuted}
+                variant={TypographyVariant.H5}
                 boxProps={{ margin: 0, marginBottom: 4 }}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
               >
@@ -199,8 +221,8 @@ export default function CollectibleDetails({ collectible }) {
             {description ? (
               <div>
                 <Typography
-                  color={COLORS.TEXT_DEFAULT}
-                  variant={TYPOGRAPHY.H6}
+                  color={TextColor.textDefault}
+                  variant={TypographyVariant.H6}
                   fontWeight={FONT_WEIGHT.BOLD}
                   className="collectible-details__description"
                   boxProps={{ margin: 0, marginBottom: 2 }}
@@ -208,8 +230,8 @@ export default function CollectibleDetails({ collectible }) {
                   {t('description')}
                 </Typography>
                 <Typography
-                  color={COLORS.TEXT_ALTERNATIVE}
-                  variant={TYPOGRAPHY.H6}
+                  color={TextColor.textAlternative}
+                  variant={TypographyVariant.H6}
                   overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
                   boxProps={{ margin: 0, marginBottom: 4 }}
                 >
@@ -221,10 +243,72 @@ export default function CollectibleDetails({ collectible }) {
           </Box>
         </div>
         <Box marginBottom={2}>
+          {lastSale ? (
+            <>
+              <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+                <Typography
+                  color={TextColor.textDefault}
+                  variant={TypographyVariant.H6}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  boxProps={{
+                    margin: 0,
+                    marginBottom: 4,
+                    marginRight: 2,
+                  }}
+                  className="collectible-details__link-title"
+                >
+                  {t('lastSold')}
+                </Typography>
+                <Box
+                  display={DISPLAY.FLEX}
+                  flexDirection={FLEX_DIRECTION.ROW}
+                  className="collectible-details__contract-wrapper"
+                >
+                  <Typography
+                    color={TextColor.textAlternative}
+                    variant={TypographyVariant.H6}
+                    overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+                    boxProps={{ margin: 0, marginBottom: 4 }}
+                  >
+                    {formattedTimestamp}
+                  </Typography>
+                </Box>
+              </Box>
+              <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+                <Typography
+                  color={TextColor.textDefault}
+                  variant={TypographyVariant.H6}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  boxProps={{
+                    margin: 0,
+                    marginBottom: 4,
+                    marginRight: 2,
+                  }}
+                  className="collectible-details__link-title"
+                >
+                  {t('lastPriceSold')}
+                </Typography>
+                <Box
+                  display={DISPLAY.FLEX}
+                  flexDirection={FLEX_DIRECTION.ROW}
+                  className="collectible-details__contract-wrapper"
+                >
+                  <Typography
+                    color={TextColor.textAlternative}
+                    variant={TypographyVariant.H6}
+                    overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+                    boxProps={{ margin: 0, marginBottom: 4 }}
+                  >
+                    {lastSale.total_price}
+                  </Typography>
+                </Box>
+              </Box>
+            </>
+          ) : null}
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H6}
+              color={TextColor.textDefault}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{
                 margin: 0,
@@ -236,13 +320,54 @@ export default function CollectibleDetails({ collectible }) {
               {t('source')}
             </Typography>
             <Typography
-              color={COLORS.PRIMARY_DEFAULT}
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
-              className="collectible-details__image-link"
+              className="collectible-details__image-source"
+              color={
+                isDataURI ? TextColor.textDefault : TextColor.primaryDefault
+              }
+            >
+              {isDataURI ? (
+                <>{collectibleImageURL}</>
+              ) : (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={collectibleImageURL}
+                  title={collectibleImageURL}
+                >
+                  {collectibleImageURL}
+                </a>
+              )}
+            </Typography>
+          </Box>
+          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+            <Typography
+              color={TextColor.textDefault}
+              variant={TypographyVariant.H6}
+              fontWeight={FONT_WEIGHT.BOLD}
+              boxProps={{
+                margin: 0,
+                marginBottom: 4,
+                marginRight: 2,
+              }}
+              className="collectible-details__link-title"
+            >
+              {t('link')}
+            </Typography>
+            <Typography
+              variant={TypographyVariant.H6}
+              boxProps={{
+                margin: 0,
+                marginBottom: 4,
+              }}
+              className="collectible-details__image-source"
+              color={
+                isDataURI ? TextColor.textDefault : TextColor.primaryDefault
+              }
             >
               <a
                 target="_blank"
@@ -250,14 +375,14 @@ export default function CollectibleDetails({ collectible }) {
                 href={collectibleImageURL}
                 title={collectibleImageURL}
               >
-                {collectibleImageURL}
+                {imageThumbnail}
               </a>
             </Typography>
           </Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H6}
+              color={TextColor.textDefault}
+              variant={TypographyVariant.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{
                 margin: 0,
@@ -274,45 +399,42 @@ export default function CollectibleDetails({ collectible }) {
               className="collectible-details__contract-wrapper"
             >
               <Typography
-                color={COLORS.PRIMARY_DEFAULT}
-                variant={TYPOGRAPHY.H6}
+                color={TextColor.textAlternative}
+                variant={TypographyVariant.H6}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                boxProps={{
-                  margin: 0,
-                  marginBottom: 4,
-                }}
-                className="collectible-details__contract-link"
+                boxProps={{ margin: 0, marginBottom: 4 }}
               >
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={getTokenTrackerLink(
-                    address,
-                    currentNetwork,
-                    null,
-                    null,
-                    rpcPrefs,
-                  )}
-                  title={address}
-                >
-                  {inPopUp ? shortenAddress(address) : address}
-                </a>
+                {shortenAddress(address)}
               </Typography>
-              <button
-                className="collectible-details__contract-copy-button"
-                onClick={() => {
-                  handleCopy(address);
-                }}
+              <Tooltip
+                wrapperClassName="collectible-details__tooltip-wrapper"
+                position="bottom"
+                title={
+                  addressCopied ? t('copiedExclamation') : t('copyToClipboard')
+                }
               >
-                {copied ? (
-                  t('copiedExclamation')
-                ) : (
-                  <Copy size={15} color="var(--color-icon-alternative)" />
-                )}
-              </button>
+                <ButtonIcon
+                  ariaLabel="copy"
+                  color={IconColor.iconAlternative}
+                  className="collectible-details__contract-copy-button"
+                  data-testid="collectible-address-copy"
+                  onClick={() => {
+                    handleAddressCopy(address);
+                  }}
+                  iconName={
+                    addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                  }
+                />
+              </Tooltip>
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
+          <Typography
+            color={TextColor.textAlternative}
+            variant={TypographyVariant.H7}
+          >
+            {t('nftDisclaimer')}
+          </Typography>
         </Box>
       </Box>
     </>
@@ -335,6 +457,10 @@ CollectibleDetails.propTypes = {
       address: PropTypes.string,
       config: PropTypes.string,
       profile_img_url: PropTypes.string,
+    }),
+    lastSale: PropTypes.shape({
+      event_timestamp: PropTypes.string,
+      total_price: PropTypes.string,
     }),
   }),
 };

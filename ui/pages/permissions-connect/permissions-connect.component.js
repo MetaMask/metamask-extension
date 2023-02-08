@@ -23,7 +23,6 @@ export default class PermissionConnect extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     getRequestAccountTabIds: PropTypes.func.isRequired,
-    getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
     currentAddress: PropTypes.string.isRequired,
     origin: PropTypes.string,
@@ -100,13 +99,11 @@ export default class PermissionConnect extends Component {
       snapUpdatePath,
       isSnap,
       ///: END:ONLY_INCLUDE_IN
-      getCurrentWindowTab,
       getRequestAccountTabIds,
       permissionsRequest,
       history,
       isRequestingAccounts,
     } = this.props;
-    getCurrentWindowTab();
     getRequestAccountTabIds();
 
     if (!permissionsRequest) {
@@ -164,11 +161,33 @@ export default class PermissionConnect extends Component {
   }
 
   selectAccounts = (addresses) => {
+    const {
+      confirmPermissionPath,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      snapInstallPath,
+      snapUpdatePath,
+      isSnap,
+      permissionsRequest,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
     this.setState(
       {
         selectedAccountAddresses: addresses,
       },
-      () => this.props.history.push(this.props.confirmPermissionPath),
+      ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+      () => this.props.history.push(confirmPermissionPath),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      () =>
+        this.props.history.push(
+          // eslint-disable-next-line no-nested-ternary
+          isSnap
+            ? permissionsRequest.newPermissions
+              ? snapUpdatePath
+              : snapInstallPath
+            : confirmPermissionPath,
+        ),
+      ///: END:ONLY_INCLUDE_IN
     );
   };
 
@@ -315,7 +334,7 @@ export default class PermissionConnect extends Component {
                   approveSnapInstall={(requestId) => {
                     approvePendingApproval(requestId, {
                       ...permissionsRequest,
-                      approvedAccounts: selectedAccountAddresses,
+                      approvedAccounts: [...selectedAccountAddresses],
                     });
                     this.redirect(true);
                   }}
@@ -345,7 +364,7 @@ export default class PermissionConnect extends Component {
                   approveSnapUpdate={(requestId) => {
                     approvePendingApproval(requestId, {
                       ...permissionsRequest,
-                      approvedAccounts: selectedAccountAddresses,
+                      approvedAccounts: [...selectedAccountAddresses],
                     });
                     this.redirect(true);
                   }}

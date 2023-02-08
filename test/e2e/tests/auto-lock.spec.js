@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 describe('Auto-Lock Timer', function () {
   const ganacheOptions = {
@@ -15,7 +16,7 @@ describe('Auto-Lock Timer', function () {
   it('should automatically lock the wallet once the idle time has elapsed', async function () {
     await withFixtures(
       {
-        fixtures: 'imported-account',
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
       },

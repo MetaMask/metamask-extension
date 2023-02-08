@@ -4,6 +4,11 @@ import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { isBeta } from '../../../ui/helpers/utils/build-types';
+import {
+  ENVIRONMENT_TYPE_BACKGROUND,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+} from '../../../shared/constants/app';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -32,10 +37,11 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
+      outdatedBrowserWarningLastShown: new Date().getTime(),
       collectiblesDetectionNoticeDismissed: false,
-      enableEIP1559V2NoticeDismissed: false,
       showTestnetMessageInDropdown: true,
       showPortfolioTooltip: true,
+      showBetaHeader: isBeta(),
       trezorModel: null,
       ...initState,
       qrHardware: {},
@@ -158,6 +164,17 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Record the timestamp of the last time the user has seen the outdated browser warning
+   *
+   * @param {number} lastShown - Timestamp (in milliseconds) of when the user was last shown the warning.
+   */
+  setOutdatedBrowserWarningLastShown(lastShown) {
+    this.store.updateState({
+      outdatedBrowserWarningLastShown: lastShown,
+    });
+  }
+
+  /**
    * Sets the last active time to the current time.
    */
   setLastActiveTime() {
@@ -191,11 +208,9 @@ export default class AppStateController extends EventEmitter {
     const { timeoutMinutes } = this.store.getState();
 
     if (this.timer) {
-      if (isManifestV3) {
-        chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-      } else {
-        clearTimeout(this.timer);
-      }
+      clearTimeout(this.timer);
+    } else if (isManifestV3) {
+      chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
@@ -207,16 +222,11 @@ export default class AppStateController extends EventEmitter {
         delayInMinutes: timeoutMinutes,
         periodInMinutes: timeoutMinutes,
       });
-      chrome.alarms.onAlarm.addListener(() => {
-        chrome.alarms.getAll((alarms) => {
-          const hasAlarm = alarms.find(
-            (alarm) => alarm.name === AUTO_LOCK_TIMEOUT_ALARM,
-          );
-          if (hasAlarm) {
-            this.onInactiveTimeout();
-            chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
-          }
-        });
+      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+        if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
+          this.onInactiveTimeout();
+          chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+        }
       });
     } else {
       this.timer = setTimeout(
@@ -243,10 +253,15 @@ export default class AppStateController extends EventEmitter {
    * @param pollingTokenType
    */
   addPollingToken(pollingToken, pollingTokenType) {
-    const prevState = this.store.getState()[pollingTokenType];
-    this.store.updateState({
-      [pollingTokenType]: [...prevState, pollingToken],
-    });
+    if (
+      pollingTokenType !==
+      POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
+    ) {
+      const prevState = this.store.getState()[pollingTokenType];
+      this.store.updateState({
+        [pollingTokenType]: [...prevState, pollingToken],
+      });
+    }
   }
 
   /**
@@ -256,10 +271,15 @@ export default class AppStateController extends EventEmitter {
    * @param pollingTokenType
    */
   removePollingToken(pollingToken, pollingTokenType) {
-    const prevState = this.store.getState()[pollingTokenType];
-    this.store.updateState({
-      [pollingTokenType]: prevState.filter((token) => token !== pollingToken),
-    });
+    if (
+      pollingTokenType !==
+      POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
+    ) {
+      const prevState = this.store.getState()[pollingTokenType];
+      this.store.updateState({
+        [pollingTokenType]: prevState.filter((token) => token !== pollingToken),
+      });
+    }
   }
 
   /**
@@ -292,36 +312,21 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the beta notification heading on the home page
+   *
+   * @param showBetaHeader
+   */
+  setShowBetaHeader(showBetaHeader) {
+    this.store.updateState({ showBetaHeader });
+  }
+
+  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
    */
   setTrezorModel(trezorModel) {
     this.store.updateState({ trezorModel });
-  }
-
-  /**
-   * A setter for the `collectiblesDetectionNoticeDismissed` property
-   *
-   * @param collectiblesDetectionNoticeDismissed
-   */
-  setCollectiblesDetectionNoticeDismissed(
-    collectiblesDetectionNoticeDismissed,
-  ) {
-    this.store.updateState({
-      collectiblesDetectionNoticeDismissed,
-    });
-  }
-
-  /**
-   * A setter for the `enableEIP1559V2NoticeDismissed` property
-   *
-   * @param enableEIP1559V2NoticeDismissed
-   */
-  setEnableEIP1559V2NoticeDismissed(enableEIP1559V2NoticeDismissed) {
-    this.store.updateState({
-      enableEIP1559V2NoticeDismissed,
-    });
   }
 
   /**
