@@ -1,8 +1,12 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import { decimalToHex } from '../../../shared/lib/transactions-controller-utils';
-
-import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import {
   addTenPercentAndRound,
@@ -17,6 +21,29 @@ import {
   updateTransactionGasFees,
 } from '../../store/actions';
 
+/**
+ * @typedef {object} TransactionFunctionsReturnType
+ * @property {() => void} cancelTransaction - cancel the transaction.
+ * @property {() => void} speedUpTransaction - speed up the transaction.
+ * @property {(string, number, number, number, string) => void} updateTransaction - update the transaction.
+ * @property {(boolean) => void} updateTransactionToTenPercentIncreasedGasFee - update the cancel / speed transaction to
+ * gas fee which is equal to current gas fee +10 percent.
+ * @property {(string) => void} updateTransactionUsingDAPPSuggestedValues - update the transaction to DAPP suggested gas value.
+ * @property {(string) => void} updateTransactionUsingEstimate - update the transaction using the estimate passed.
+ */
+
+/**
+ * @param options
+ * @param options.defaultEstimateToUse
+ * @param options.editGasMode
+ * @param options.estimatedBaseFee
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.maxPriorityFeePerGas
+ * @param options.transaction
+ * @param options.setRetryTxMeta
+ * @returns {TransactionFunctionsReturnType}
+ */
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
   editGasMode,
@@ -139,17 +166,31 @@ export const useTransactionFunctions = ({
         maxPriorityFeePerGas,
       } = transaction.previousGas || transaction.txParams;
 
+      const newMaxPriorityFeePerGas = new BigNumber(
+        maxPriorityFeePerGas,
+        16,
+      ).isZero()
+        ? decGWEIToHexWEI(
+            gasFeeEstimates[defaultEstimateToUse].suggestedMaxPriorityFeePerGas,
+          )
+        : maxPriorityFeePerGas;
+
+      const estimateUsed =
+        maxPriorityFeePerGas === '0x0'
+          ? CUSTOM_GAS_ESTIMATE
+          : PRIORITY_LEVELS.TEN_PERCENT_INCREASED;
+
       updateTransaction({
         estimateSuggested: initTransaction
           ? defaultEstimateToUse
           : PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
-        estimateUsed: PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
+        estimateUsed,
         gasLimit,
         maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
-        maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
+        maxPriorityFeePerGas: addTenPercentAndRound(newMaxPriorityFeePerGas),
       });
     },
-    [defaultEstimateToUse, transaction, updateTransaction],
+    [defaultEstimateToUse, gasFeeEstimates, transaction, updateTransaction],
   );
 
   const updateTransactionUsingEstimate = useCallback(

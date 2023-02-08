@@ -13,7 +13,6 @@
 @import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
 @import 'confirmation-warning-modal/index';
-@import 'confirm-page-container/enableEIP1559V2-notice';
 @import 'collectibles-items/index';
 @import 'collectibles-tab/index';
 @import 'collectible-details/index';
@@ -28,7 +27,6 @@
 @import 'custom-spending-cap/index';
 @import 'deposit-popover/index';
 @import 'edit-gas-display/index';
-@import 'edit-gas-display-education/index';
 @import 'edit-gas-fee-button/index';
 @import 'edit-gas-fee-popover/index';
 @import 'edit-gas-fee-popover/edit-gas-item/index';
@@ -40,6 +38,8 @@
 @import 'flask/snap-content-footer/index';
 @import 'flask/snap-install-warning/index';
 @import 'flask/snap-remove-warning/index';
+@import 'flask/snap-ui-renderer/index';
+@import 'flask/snap-ui-markdown/index';
 @import 'flask/snap-delineator/index';
 @import 'flask/snap-settings-card/index';
 @import 'flask/update-snap-permission-list/index';
@@ -81,8 +81,7 @@
 @import 'transaction-list-item-details/index';
 @import 'transaction-list-item/index';
 @import 'transaction-list/index';
-@import 'transaction-status/index';
-@import 'transaction-total-banner/index';
+@import 'transaction-status-label/index';
 @import 'wallet-overview/index';
 @import 'whats-new-popup/index';
 @import 'loading-network-screen/index';
@@ -104,3 +103,4 @@
 @import 'detected-token/detected-token-selection-popover/index';
 @import 'network-account-balance-header/index';
 @import 'approve-content-card/index';
+@import 'transaction-alerts/transaction-alerts'

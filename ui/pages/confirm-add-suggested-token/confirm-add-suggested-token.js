@@ -15,8 +15,8 @@ import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
+  AssetType,
+  TokenStandard,
 } from '../../../shared/constants/transaction';
 
 function getTokenName(name, symbol) {
@@ -125,8 +125,8 @@ const ConfirmAddSuggestedToken = () => {
             token_decimal_precision: asset.decimals,
             unlisted: asset.unlisted,
             source: EVENT.SOURCE.TOKEN.DAPP,
-            token_standard: TOKEN_STANDARDS.ERC20,
-            asset_type: ASSET_TYPES.TOKEN,
+            token_standard: TokenStandard.ERC20,
+            asset_type: AssetType.token,
           },
         });
       }),

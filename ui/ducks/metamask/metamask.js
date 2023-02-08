@@ -272,10 +272,6 @@ export function getCollectiblesDropdownState(state) {
   return state.metamask.collectiblesDropdownState;
 }
 
-export function getEnableEIP1559V2NoticeDismissed(state) {
-  return state.metamask.enableEIP1559V2NoticeDismissed;
-}
-
 export const getCollectibles = (state) => {
   const {
     metamask: {

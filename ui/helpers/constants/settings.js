@@ -133,6 +133,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
   },
   {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('toggleEthSignField'),
+    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
+    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
+    icon: 'fas fa-sliders-h',
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
@@ -210,7 +217,7 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
     route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
-    featureFlag: 'COLLECTIBLES_V1',
+    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
@@ -330,18 +337,11 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('enableEIP1559V2'),
-    descriptionMessage: (t) => t('enableEIP1559V2Description'),
-    route: `${EXPERIMENTAL_ROUTE}#enable-advanced-gas`,
-    icon: 'fa fa-flask',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('enableOpenSeaAPI'),
     descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
     route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
     icon: 'fa fa-flask',
-    featureFlag: 'COLLECTIBLES_V1',
+    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('advanced'),

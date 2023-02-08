@@ -5,10 +5,58 @@ const { withFixtures } = require('../helpers');
 const { withFixturesOptions, loadSwaps, buildQuote } = require('./shared');
 
 describe('Swaps - notifications', function () {
+  async function mockTradesApiPriceSlippageError(mockServer) {
+    await mockServer
+      .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [
+            {
+              trade: {
+                data: '0x0',
+                from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                value: '2000000000000000000',
+                to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
+              },
+              hasRoute: false,
+              sourceAmount: '2000000000000000000',
+              destinationAmount: '16521445264052765704984287606833',
+              error: null,
+              sourceToken: '0x0000000000000000000000000000000000000000',
+              destinationToken: '0xc6bdb96e29c38dc43f014eed44de4106a6a8eb5f',
+              maxGas: 1000000,
+              averageGas: 560305,
+              estimatedRefund: 0,
+              approvalNeeded: null,
+              fetchTime: 312,
+              aggregator: 'oneInch',
+              aggType: 'AGG',
+              fee: 0.875,
+              quoteRefreshSeconds: 30,
+              gasMultiplier: 1.06,
+              sourceTokenRate: 1,
+              destinationTokenRate: 3,
+              priceSlippage: {
+                ratio: -1.14736836569258,
+                calculationError: 'error',
+                bucket: 'low',
+                sourceAmountInETH: 2,
+                destinationAmountInETH: 6,
+                sourceAmountInNativeCurrency: 2,
+                destinationAmountInNativeCurrency: 6,
+              },
+            },
+          ],
+        };
+      });
+  }
+
   it('tests notifications for verified token on 1 source and price difference', async function () {
     await withFixtures(
       {
         ...withFixturesOptions,
+        testSpecificMock: mockTradesApiPriceSlippageError,
         title: this.test.title,
       },
       async ({ driver }) => {

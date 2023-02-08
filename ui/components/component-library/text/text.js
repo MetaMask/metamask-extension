@@ -11,7 +11,7 @@ import {
   OVERFLOW_WRAP,
   TEXT_COLORS,
 } from '../../../helpers/constants/design-system';
-import { TEXT_VARIANTS } from './text.constants';
+import { TEXT_VARIANTS, TEXT_DIRECTIONS } from './text.constants';
 
 export const ValidTags = [
   'dd',
@@ -42,6 +42,7 @@ export const Text = React.forwardRef(
       fontStyle,
       textTransform,
       textAlign,
+      textDirection,
       overflowWrap,
       ellipsis,
       as,
@@ -89,6 +90,7 @@ export const Text = React.forwardRef(
         ref={ref}
         className={classnames(computedClassName)}
         as={Tag}
+        dir={textDirection}
         {...props}
       >
         {children}
@@ -139,6 +141,11 @@ Text.propTypes = {
    * ./ui/helpers/constants/design-system.js
    */
   textAlign: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
+  /**
+   * Change the dir (direction) global attribute of text to support the direction a language is written
+   * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
+   */
+  textDirection: PropTypes.oneOf(Object.values(TEXT_DIRECTIONS)),
   /**
    * The overflow-wrap of the Text component. Should use the OVERFLOW_WRAP object from
    * ./ui/helpers/constants/design-system.js

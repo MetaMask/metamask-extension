@@ -181,6 +181,7 @@ export default class SelectHardware extends Component {
     const steps = [];
     if (this.props.ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE) {
       steps.push({
+        renderButtons: false,
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
           <a
@@ -197,6 +198,7 @@ export default class SelectHardware extends Component {
     }
 
     steps.push({
+      renderButtons: true,
       asset: 'plug-in-wallet',
       dimensions: { width: '225px', height: '75px' },
       title: this.context.t('step2LedgerWallet'),
@@ -218,32 +220,36 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
-            <Button
-              className="hw-connect__external-btn-first"
-              type="secondary"
-              onClick={() => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: 'Clicked Ledger Buy Now',
-                });
-                window.open(AFFILIATE_LINKS.LEDGER, '_blank');
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              type="secondary"
-              onClick={() => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: 'Clicked Ledger Tutorial',
-                });
-                window.open(AFFILIATE_TUTORIAL_LINKS.LEDGER, '_blank');
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
+            {step.renderButtons ? (
+              <>
+                <Button
+                  className="hw-connect__external-btn-first"
+                  type="secondary"
+                  onClick={() => {
+                    this.context.trackEvent({
+                      category: EVENT.CATEGORIES.NAVIGATION,
+                      event: 'Clicked Ledger Buy Now',
+                    });
+                    window.open(AFFILIATE_LINKS.LEDGER, '_blank');
+                  }}
+                >
+                  {this.context.t('buyNow')}
+                </Button>
+                <Button
+                  className="hw-connect__external-btn"
+                  type="secondary"
+                  onClick={() => {
+                    this.context.trackEvent({
+                      category: EVENT.CATEGORIES.NAVIGATION,
+                      event: 'Clicked Ledger Tutorial',
+                    });
+                    window.open(AFFILIATE_TUTORIAL_LINKS.LEDGER, '_blank');
+                  }}
+                >
+                  {this.context.t('tutorial')}
+                </Button>
+              </>
+            ) : null}
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img
@@ -549,7 +555,7 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
-            <p className="hw-connect__msg">{step.message}</p>
+            <div className="hw-connect__msg">{step.message}</div>
             {step.asset && (
               <img
                 className="hw-connect__step-asset"

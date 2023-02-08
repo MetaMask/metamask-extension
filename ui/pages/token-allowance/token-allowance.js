@@ -52,8 +52,13 @@ import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
 import { valuesFor } from '../../helpers/utils/util';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { MAX_TOKEN_ALLOWANCE_AMOUNT } from '../../../shared/constants/tokens';
+import {
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
+} from '../../../shared/constants/tokens';
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
+import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
+import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 
 export default function TokenAllowance({
   origin,
@@ -67,7 +72,7 @@ export default function TokenAllowance({
   hexTransactionTotal,
   txData,
   isMultiLayerFeeNetwork,
-  supportsEIP1559V2,
+  supportsEIP1559,
   userAddress,
   tokenAddress,
   data,
@@ -90,7 +95,12 @@ export default function TokenAllowance({
     dappProposedTokenAmount !== '0',
   );
   const [errorText, setErrorText] = useState('');
+  const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
+    useState(false);
 
+  const renderSimulationFailureWarning = useSimulationFailureWarning(
+    userAcknowledgedGasMissing,
+  );
   const currentAccount = useSelector(getCurrentAccountWithSendEtherInfo);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
@@ -102,7 +112,11 @@ export default function TokenAllowance({
     return inputValue.replace(/,/gu, '.');
   };
 
-  let customPermissionAmount = replaceCommaToDot(customTokenAmount).toString();
+  let customPermissionAmount = NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(
+    customTokenAmount,
+  )
+    ? replaceCommaToDot(customTokenAmount).toString()
+    : '0';
 
   const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
   if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
@@ -384,6 +398,21 @@ export default function TokenAllowance({
       )}
       {!isFirstPage && (
         <Box className="token-allowance-container__card-wrapper">
+          {renderSimulationFailureWarning && (
+            <Box
+              paddingTop={0}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingLeft={4}
+            >
+              <SimulationErrorMessage
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                setUserAcknowledgedGasMissing={() =>
+                  setUserAcknowledgedGasMissing(true)
+                }
+              />
+            </Box>
+          )}
           <ApproveContentCard
             symbol={<i className="fa fa-tag" />}
             title={t('transactionFee')}
@@ -392,11 +421,13 @@ export default function TokenAllowance({
             onEditClick={showCustomizeGasModal}
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
             fullTxData={fullTxData}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            renderSimulationFailureWarning={renderSimulationFailureWarning}
             hexTransactionTotal={hexTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             currentCurrency={currentCurrency}
@@ -440,8 +471,11 @@ export default function TokenAllowance({
               title={t('data')}
               renderDataContent
               noBorder
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
               isSetApproveForAll={isSetApproveForAll}
+              fullTxData={fullTxData}
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              renderSimulationFailureWarning={renderSimulationFailureWarning}
               isApprovalOrRejection={isApprovalOrRejection}
               data={customTxParamsData || data}
             />
@@ -531,7 +565,7 @@ TokenAllowance.propTypes = {
   /**
    * Is the enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * User's address
    */

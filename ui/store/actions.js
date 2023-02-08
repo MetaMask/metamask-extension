@@ -884,7 +884,7 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @param {Array<{event: string, timestamp: number}>} sendFlowHistory - The
  *  history of the send flow at time of creation.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
@@ -923,7 +923,7 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  *  The transaction parameters
  * @param {import(
  *  '../../shared/constants/transaction'
- * ).TransactionTypeString} type - The type of the transaction being added.
+ * ).TransactionType} type - The type of the transaction being added.
  * @returns {import('../../shared/constants/transaction').TransactionMeta}
  */
 export async function addUnapprovedTransaction(txParams, type) {
@@ -1826,8 +1826,8 @@ export function addNftVerifyOwnership(
       ]);
     } catch (error) {
       if (
-        error.message.includes('This collectible is not owned by the user') ||
-        error.message.includes('Unable to verify ownership.')
+        error.message.includes('This NFT is not owned by the user') ||
+        error.message.includes('Unable to verify ownership')
       ) {
         throw error;
       } else {
@@ -1979,7 +1979,7 @@ export function clearPendingTokens() {
   };
 }
 
-export function createCancelTransaction(txId, customGasSettings, options) {
+export function createCancelTransaction(txId, customGasSettings, options = {}) {
   log.debug('background.cancelTransaction');
   let newTxId;
 
@@ -2009,7 +2009,11 @@ export function createCancelTransaction(txId, customGasSettings, options) {
   };
 }
 
-export function createSpeedUpTransaction(txId, customGasSettings, options) {
+export function createSpeedUpTransaction(
+  txId,
+  customGasSettings,
+  options = {},
+) {
   log.debug('background.createSpeedUpTransaction');
   let newTx;
 
@@ -2381,7 +2385,7 @@ export function exportAccount(password, address) {
         log.debug(`background.exportAccount`);
         callBackgroundMethod(
           'exportAccount',
-          [address],
+          [address, password],
           function (err2, result) {
             dispatch(hideLoadingIndication());
 
@@ -2417,7 +2421,7 @@ export function exportAccounts(password, addresses) {
             new Promise((resolve2, reject2) =>
               callBackgroundMethod(
                 'exportAccount',
-                [address],
+                [address, password],
                 function (err2, result) {
                   if (err2) {
                     log.error(err2);
@@ -2790,18 +2794,6 @@ export function setAdvancedGasFee(val) {
         dispatch(displayWarning(err.message));
       }
     });
-  };
-}
-
-export function setEIP1559V2Enabled(val) {
-  return async (dispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setEIP1559V2Enabled`);
-    try {
-      await submitRequestToBackground('setEIP1559V2Enabled', [val]);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
   };
 }
 
@@ -3233,6 +3225,25 @@ export function setDismissSeedBackUpReminder(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function setDisabledRpcMethodPreference(methodName, value) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setDisabledRpcMethodPreference', [
+      methodName,
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function getRpcMethodPreferences() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('getRpcMethodPreferences', []);
     dispatch(hideLoadingIndication());
   };
 }
@@ -3807,10 +3818,6 @@ export function setCollectiblesDetectionNoticeDismissed() {
   return submitRequestToBackground('setCollectiblesDetectionNoticeDismissed', [
     true,
   ]);
-}
-
-export function setEnableEIP1559V2NoticeDismissed() {
-  return submitRequestToBackground('setEnableEIP1559V2NoticeDismissed', [true]);
 }
 
 export function setImprovedTokenAllowanceEnabled(

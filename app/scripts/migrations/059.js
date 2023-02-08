@@ -6,7 +6,7 @@ import {
   pickBy,
   isPlainObject,
 } from 'lodash';
-import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { TransactionType } from '../../../shared/constants/transaction';
 
 const version = 59;
 
@@ -38,8 +38,8 @@ function transformState(state) {
     const withoutOrphans = pickBy(nonceNetworkGroupedObject, (group) => {
       return group.some(
         (tx) =>
-          tx.type !== TRANSACTION_TYPES.CANCEL &&
-          tx.type !== TRANSACTION_TYPES.RETRY,
+          tx.type !== TransactionType.cancel &&
+          tx.type !== TransactionType.retry,
       );
     });
     state.TransactionController.transactions = keyBy(

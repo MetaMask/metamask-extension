@@ -81,9 +81,6 @@
   "advanced": {
     "message": "進階"
   },
-  "advancedOptions": {
-    "message": "進階選項"
-  },
   "affirmAgree": {
     "message": "我同意"
   },
@@ -1044,9 +1041,6 @@
   "newAccount": {
     "message": "新帳戶"
   },
-  "newAccountDetectedDialogMessage": {
-    "message": "偵測到新位址！點擊此處將其新增到你的位址簿。"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
@@ -1453,9 +1447,6 @@
   },
   "signatureRequest": {
     "message": "請求簽署"
-  },
-  "signatureRequest1": {
-    "message": "訊息"
   },
   "signed": {
     "message": "已簽署"

@@ -30,7 +30,7 @@ module.exports = {
     return {
       ...config,
       // Creates the icon names environment variable for the component-library/icon/icon.js component
-      ICON_NAMES: await generateIconNames(),
+      ICON_NAMES: generateIconNames(),
     };
   },
   webpackFinal: async (config) => {
@@ -96,7 +96,7 @@ module.exports = {
       new ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
       }),
-    )
+    );
     return config;
   },
 };

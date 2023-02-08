@@ -15,9 +15,9 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
-  TRANSACTION_ENVELOPE_TYPES,
+  AssetType,
+  TokenStandard,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
 import { setBackgroundConnection } from '../../../test/jest';
@@ -186,7 +186,7 @@ describe('Send Slice', () => {
               maxFeePerGas: '0x2',
               gasLimit: GAS_LIMITS.SIMPLE,
             },
-            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+            transactionType: TransactionEnvelopeType.feeMarket,
           }),
           action,
         );
@@ -299,7 +299,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateGasFees',
           payload: {
-            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+            transactionType: TransactionEnvelopeType.feeMarket,
             maxFeePerGas: '0x2',
             maxPriorityFeePerGas: '0x1',
           },
@@ -320,7 +320,7 @@ describe('Send Slice', () => {
         );
 
         expect(draftTransaction.transactionType).toBe(
-          TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          TransactionEnvelopeType.feeMarket,
         );
       });
 
@@ -328,7 +328,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateGasFees',
           payload: {
-            transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+            transactionType: TransactionEnvelopeType.legacy,
             gasPrice: '0x1',
           },
         };
@@ -343,7 +343,7 @@ describe('Send Slice', () => {
           action.payload.gasPrice,
         );
         expect(draftTransaction.transactionType).toBe(
-          TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          TransactionEnvelopeType.legacy,
         );
       });
     });
@@ -482,7 +482,7 @@ describe('Send Slice', () => {
             error: CONTRACT_ADDRESS_ERROR,
           },
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
           },
         });
 
@@ -510,7 +510,7 @@ describe('Send Slice', () => {
           type: 'send/updateAsset',
           payload: {
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {
                 address: '0xTokenAddress',
                 decimals: 0,
@@ -713,7 +713,7 @@ describe('Send Slice', () => {
         const tokenAssetTypeState = {
           ...getInitialSendStateWithExistingTxState({
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {
                 address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               },
@@ -840,7 +840,7 @@ describe('Send Slice', () => {
             value: '0x6fc23ac0', // 1875000000
           },
           asset: {
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
             balance: '0x77359400', // 2000000000
           },
           gas: {
@@ -867,7 +867,7 @@ describe('Send Slice', () => {
             value: '0x77359400', // 2000000000
           },
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
             balance: '0x6fc23ac0', // 1875000000
             details: {
               decimals: 0,
@@ -994,7 +994,7 @@ describe('Send Slice', () => {
       it('should set `INVALID` send state status when asset type is `TOKEN` without token details present', () => {
         const assetErrorState = getInitialSendStateWithExistingTxState({
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
           },
         });
 
@@ -1032,7 +1032,7 @@ describe('Send Slice', () => {
         const validSendStatusState = {
           ...getInitialSendStateWithExistingTxState({
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {
                 address: '0x000',
               },
@@ -1410,7 +1410,7 @@ describe('Send Slice', () => {
             payload: {
               gasPrice: '0x0',
               manuallyEdited: true,
-              transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+              transactionType: TransactionEnvelopeType.legacy,
             },
           },
         ];
@@ -1536,7 +1536,7 @@ describe('Send Slice', () => {
           },
           send: getInitialSendStateWithExistingTxState({
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {},
             },
             gas: {
@@ -1616,7 +1616,7 @@ describe('Send Slice', () => {
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
-          type: ASSET_TYPES.NATIVE,
+          type: AssetType.native,
         };
 
         await store.dispatch(updateSendAsset(newSendAsset));
@@ -1632,7 +1632,7 @@ describe('Send Slice', () => {
         expect(actionResult[1].type).toStrictEqual('send/updateAsset');
         expect(actionResult[1].payload).toStrictEqual({
           asset: {
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
             balance: '0x0',
             error: null,
             details: null,
@@ -1667,7 +1667,7 @@ describe('Send Slice', () => {
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
-          type: ASSET_TYPES.TOKEN,
+          type: AssetType.token,
           details: {
             address: 'tokenAddress',
             symbol: 'tokenSymbol',
@@ -1688,7 +1688,7 @@ describe('Send Slice', () => {
         });
         expect(actionResult[3].payload).toStrictEqual({
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
             details: {
               address: 'tokenAddress',
               symbol: 'TokenSymbol',
@@ -1711,14 +1711,14 @@ describe('Send Slice', () => {
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
-        process.env.COLLECTIBLES_V1 = true;
+        process.env.NFTS_V1 = true;
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({ standard: 'ERC1155', balance: '0x1' }),
         );
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
-          type: ASSET_TYPES.TOKEN,
+          type: AssetType.token,
           details: {
             address: 'tokenAddress',
             symbol: 'tokenSymbol',
@@ -1740,7 +1740,7 @@ describe('Send Slice', () => {
           },
           type: 'UI_MODAL_OPEN',
         });
-        process.env.COLLECTIBLES_V1 = false;
+        process.env.NFTS_V1 = false;
       });
     });
 
@@ -2003,7 +2003,7 @@ describe('Send Slice', () => {
               balance: '',
             },
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {},
             },
             gas: {
@@ -2151,7 +2151,7 @@ describe('Send Slice', () => {
         const sendMaxModeState = {
           send: {
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {},
             },
             gas: {
@@ -2199,7 +2199,7 @@ describe('Send Slice', () => {
           send: {
             ...getInitialSendStateWithExistingTxState({
               asset: {
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
                 details: {},
               },
               gas: {
@@ -2424,7 +2424,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editTransactionState);
 
-        await store.dispatch(editExistingTransaction(ASSET_TYPES.NATIVE, 1));
+        await store.dispatch(editExistingTransaction(AssetType.native, 1));
         const actionResult = store.getActions();
 
         expect(actionResult).toHaveLength(7);
@@ -2442,7 +2442,7 @@ describe('Send Slice', () => {
               balance: '0x0',
               details: null,
               error: null,
-              type: ASSET_TYPES.NATIVE,
+              type: AssetType.native,
             },
             fromAccount: {
               address: '0xAddress',
@@ -2568,7 +2568,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editTransactionState);
 
-        await store.dispatch(editExistingTransaction(ASSET_TYPES.NFT, 1));
+        await store.dispatch(editExistingTransaction(AssetType.NFT, 1));
         const actionResult = store.getActions();
         expect(actionResult).toHaveLength(9);
         expect(actionResult[0]).toMatchObject({
@@ -2585,7 +2585,7 @@ describe('Send Slice', () => {
               balance: '0x0',
               details: null,
               error: null,
-              type: ASSET_TYPES.NATIVE,
+              type: AssetType.native,
             },
             fromAccount: {
               address: '0xAddress',
@@ -2631,11 +2631,11 @@ describe('Send Slice', () => {
               details: {
                 address: '0xCollectibleAddress',
                 balance: '0x1',
-                standard: TOKEN_STANDARDS.ERC721,
+                standard: TokenStandard.ERC721,
                 tokenId: '15000',
               },
               error: null,
-              type: ASSET_TYPES.NFT,
+              type: AssetType.NFT,
             },
             initialAssetSet: true,
           },
@@ -2760,7 +2760,7 @@ describe('Send Slice', () => {
 
       const store = mockStore(editTransactionState);
 
-      await store.dispatch(editExistingTransaction(ASSET_TYPES.TOKEN, 1));
+      await store.dispatch(editExistingTransaction(AssetType.token, 1));
       const actionResult = store.getActions();
 
       expect(actionResult).toHaveLength(9);
@@ -2776,7 +2776,7 @@ describe('Send Slice', () => {
             balance: '0x0',
             details: null,
             error: null,
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
           },
           fromAccount: {
             address: '0xAddress',
@@ -2819,7 +2819,7 @@ describe('Send Slice', () => {
         payload: {
           asset: {
             balance: '0x0',
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
             error: null,
             details: {
               balance: '0x0',
@@ -3007,7 +3007,7 @@ describe('Send Slice', () => {
               asset: {
                 balance: '0x0',
                 details: { address: '0x0' },
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
               },
             }),
           }),
@@ -3022,7 +3022,7 @@ describe('Send Slice', () => {
           getIsAssetSendable({
             send: getInitialSendStateWithExistingTxState({
               asset: {
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
                 details: { isERC721: true },
               },
             }),

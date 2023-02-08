@@ -8,6 +8,7 @@ const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
+const { PAGES } = require('./webdriver/driver');
 const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 
@@ -118,8 +119,28 @@ async function withFixtures(options, testSuite) {
       await driver.checkBrowserForExceptions();
     }
 
+    let driverProxy;
+    if (process.env.E2E_DEBUG === 'true') {
+      driverProxy = new Proxy(driver, {
+        get(target, prop, receiver) {
+          const originalProperty = target[prop];
+          if (typeof originalProperty === 'function') {
+            return (...args) => {
+              console.log(
+                `[driver] Called '${prop}' with arguments ${JSON.stringify(
+                  args,
+                )}`,
+              );
+              return originalProperty.bind(target)(...args);
+            };
+          }
+          return Reflect.get(target, prop, receiver);
+        },
+      });
+    }
+
     await testSuite({
-      driver,
+      driver: driverProxy ?? driver,
       mockServer,
       contractRegistry,
     });
@@ -151,7 +172,13 @@ async function withFixtures(options, testSuite) {
         driver.exceptions.length > 0 &&
         failOnConsoleError
       ) {
-        const errorMessage = `Errors found in browser console:\n${driver.exceptions.join(
+        /**
+         * Navigate to the background
+         * forcing background exceptions to be captured
+         * proving more helpful context
+         */
+        await driver.navigate(PAGES.BACKGROUND);
+        const errorMessage = `Errors found in browser console including the background:\n${driver.exceptions.join(
           '\n',
         )}`;
         throw Error(errorMessage);
@@ -232,11 +259,8 @@ const completeImportSRPOnboardingFlow = async (
   await driver.clickElement('[data-testid="import-srp-confirm"]');
 
   // create password
-  await driver.pasteIntoField('[data-testid="create-password-new"]', password);
-  await driver.pasteIntoField(
-    '[data-testid="create-password-confirm"]',
-    password,
-  );
+  await driver.fill('[data-testid="create-password-new"]', password);
+  await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
 

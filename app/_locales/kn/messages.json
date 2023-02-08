@@ -47,9 +47,6 @@
   "advanced": {
     "message": "ಸುಧಾರಿತ"
   },
-  "advancedOptions": {
-    "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
-  },
   "amount": {
     "message": "ಮೊತ್ತ"
   },
@@ -560,9 +557,6 @@
   },
   "newAccount": {
     "message": "ಹೊಸ ಖಾತೆ"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "ಹೊಸ ವಿಳಾಸ ಪತ್ತೆಯಾಗಿದೆ! ನಿಮ್ಮ ವಿಳಾಸ ಪುಸ್ತಕಕ್ಕೆ ಸೇರಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
   },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",

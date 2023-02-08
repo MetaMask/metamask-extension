@@ -10,6 +10,7 @@ import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import Identicon from '../../../components/ui/identicon';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
@@ -26,11 +27,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 
@@ -71,19 +68,22 @@ export default class ConfirmApproveContent extends Component {
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     assetName: PropTypes.string,
     tokenId: PropTypes.string,
     assetStandard: PropTypes.string,
     isSetApproveForAll: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     userAddress: PropTypes.string,
+    userAcknowledgedGasMissing: PropTypes.bool,
+    setUserAcknowledgedGasMissing: PropTypes.func,
+    renderSimulationFailureWarning: PropTypes.bool,
   };
 
   state = {
     showFullTxDetails: false,
     copied: false,
-    setshowContractDetails: false,
+    setShowContractDetails: false,
   };
 
   renderApproveContentCard({
@@ -97,7 +97,11 @@ export default class ConfirmApproveContent extends Component {
     footer,
     noBorder,
   }) {
-    const { supportsEIP1559V2 } = this.props;
+    const {
+      supportsEIP1559,
+      renderSimulationFailureWarning,
+      userAcknowledgedGasMissing,
+    } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -108,7 +112,7 @@ export default class ConfirmApproveContent extends Component {
       >
         {showHeader && (
           <div className="confirm-approve-content__card-header">
-            {supportsEIP1559V2 && title === t('transactionFee') ? null : (
+            {supportsEIP1559 && title === t('transactionFee') ? null : (
               <>
                 <div className="confirm-approve-content__card-header__symbol">
                   {symbol}
@@ -118,7 +122,7 @@ export default class ConfirmApproveContent extends Component {
                 </div>
               </>
             )}
-            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
+            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
               <Box width={BLOCK_SIZES.ONE_SIXTH}>
                 <Button
                   type="link"
@@ -129,9 +133,14 @@ export default class ConfirmApproveContent extends Component {
                 </Button>
               </Box>
             )}
-            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
-              <EditGasFeeButton />
-            )}
+            {showEdit &&
+              showAdvanceGasFeeOptions &&
+              supportsEIP1559 &&
+              !renderSimulationFailureWarning && (
+                <EditGasFeeButton
+                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                />
+              )}
           </div>
         )}
         <div className="confirm-approve-content__card-content">{content}</div>
@@ -151,10 +160,20 @@ export default class ConfirmApproveContent extends Component {
       hexTransactionTotal,
       txData,
       isMultiLayerFeeNetwork,
-      supportsEIP1559V2,
+      supportsEIP1559,
+      userAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
-    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
-      return <GasDetailsItem />;
+    if (
+      !isMultiLayerFeeNetwork &&
+      supportsEIP1559 &&
+      !renderSimulationFailureWarning
+    ) {
+      return (
+        <GasDetailsItem
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        />
+      );
     }
     return (
       <div className="confirm-approve-content__transaction-details-content">
@@ -342,7 +361,7 @@ export default class ConfirmApproveContent extends Component {
       tokenSymbol,
       tokenBalance,
     } = this.props;
-    if (assetStandard === ERC20) {
+    if (assetStandard === TokenStandard.ERC20) {
       return (
         <div className="confirm-approve-content__full-tx-content">
           <div className="confirm-approve-content__permission">
@@ -373,7 +392,10 @@ export default class ConfirmApproveContent extends Component {
           </div>
         </div>
       );
-    } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+    } else if (
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155
+    ) {
       return (
         <div className="confirm-approve-content__full-tx-content">
           <div className="confirm-approve-content__permission">
@@ -462,13 +484,13 @@ export default class ConfirmApproveContent extends Component {
 
     let titleTokenDescription = t('token');
     if (
-      assetStandard === ERC20 ||
+      assetStandard === TokenStandard.ERC20 ||
       (tokenSymbol && !tokenId && !isSetApproveForAll)
     ) {
       titleTokenDescription = tokenSymbol;
     } else if (
-      assetStandard === ERC721 ||
-      assetStandard === ERC1155 ||
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155 ||
       // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
@@ -556,8 +578,8 @@ export default class ConfirmApproveContent extends Component {
         title = t('revokeAllTokensTitle', [titleTokenDescription]);
       }
     } else if (
-      assetStandard === ERC721 ||
-      assetStandard === ERC1155 ||
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155 ||
       // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
@@ -591,8 +613,8 @@ export default class ConfirmApproveContent extends Component {
       ]);
     } else if (
       isSetApproveForAll ||
-      assetStandard === ERC721 ||
-      assetStandard === ERC1155 ||
+      assetStandard === TokenStandard.ERC721 ||
+      assetStandard === TokenStandard.ERC1155 ||
       // if we don't have an asset standard but we do have either both an assetname and a tokenID or both a tokenSymbol and tokenId we assume its an NFT
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
@@ -629,8 +651,11 @@ export default class ConfirmApproveContent extends Component {
       tokenAddress,
       assetName,
       isSetApproveForAll,
+      userAcknowledgedGasMissing,
+      setUserAcknowledgedGasMissing,
+      renderSimulationFailureWarning,
     } = this.props;
-    const { showFullTxDetails, setshowContractDetails } = this.state;
+    const { showFullTxDetails, setShowContractDetails } = this.state;
 
     return (
       <div
@@ -673,7 +698,7 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__description">
           {this.renderDescription()}
         </div>
-        {assetStandard === ERC20 ||
+        {assetStandard === TokenStandard.ERC20 ||
         (tokenSymbol && !tokenId && !isSetApproveForAll) ? (
           <Box className="confirm-approve-content__address-display-content">
             <Box display={DISPLAY.FLEX}>
@@ -752,13 +777,13 @@ export default class ConfirmApproveContent extends Component {
             <Button
               type="link"
               className="confirm-approve-content__verify-contract-details"
-              onClick={() => this.setState({ setshowContractDetails: true })}
+              onClick={() => this.setState({ setShowContractDetails: true })}
             >
               {t('verifyContractDetails')}
             </Button>
-            {setshowContractDetails && (
+            {setShowContractDetails && (
               <ContractDetailsModal
-                onClose={() => this.setState({ setshowContractDetails: false })}
+                onClose={() => this.setState({ setShowContractDetails: false })}
                 tokenName={tokenSymbol}
                 tokenAddress={tokenAddress}
                 toAddress={toAddress}
@@ -771,7 +796,7 @@ export default class ConfirmApproveContent extends Component {
             )}
           </Box>
         )}
-        {assetStandard === ERC20 ? (
+        {assetStandard === TokenStandard.ERC20 ? (
           <div className="confirm-approve-content__edit-submission-button-container">
             <div
               className="confirm-approve-content__medium-link-text cursor-pointer"
@@ -792,6 +817,21 @@ export default class ConfirmApproveContent extends Component {
           </div>
         ) : null}
         <div className="confirm-approve-content__card-wrapper">
+          {renderSimulationFailureWarning && (
+            <Box
+              paddingTop={0}
+              paddingRight={6}
+              paddingBottom={4}
+              paddingLeft={6}
+            >
+              <SimulationErrorMessage
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                setUserAcknowledgedGasMissing={() =>
+                  setUserAcknowledgedGasMissing(true)
+                }
+              />
+            </Box>
+          )}
           {this.renderApproveContentCard({
             symbol: <i className="fa fa-tag" />,
             title: t('transactionFee'),

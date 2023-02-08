@@ -47,9 +47,6 @@
   "advanced": {
     "message": "Avanceret"
   },
-  "advancedOptions": {
-    "message": "Avancerede Valgmuligheder"
-  },
   "amount": {
     "message": "Beløb"
   },
@@ -544,9 +541,6 @@
   },
   "newAccount": {
     "message": "Ny konto"
-  },
-  "newAccountDetectedDialogMessage": {
-    "message": "Ny adresse fundet! Klik her for at tilføje til din adressebog."
   },
   "newAccountNumberName": {
     "message": "Konto $1",

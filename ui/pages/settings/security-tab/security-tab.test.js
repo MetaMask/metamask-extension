@@ -77,7 +77,7 @@ describe('Security Tab', () => {
     const checkboxes = queryAllByRole('checkbox');
 
     let index = 4;
-    if (process.env.COLLECTIBLES_V1) {
+    if (process.env.NFTS_V1) {
       index = 5;
     }
     const toggleMetaMetricsCheckbox = checkboxes[index];

@@ -30,10 +30,12 @@ describe('Test Snap Error', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
         const snapButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectErrorSnap');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -67,13 +69,13 @@ describe('Test Snap Error', function () {
           tag: 'button',
         });
 
+        // delay for npm installation
+        await driver.delay(2000);
+
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.waitForSelector({
-          css: '#connectErrorSnap',
-          text: 'Reconnect to Error Snap',
-        });
+        await driver.delay(1000);
 
         // find and click on send error
         await driver.clickElement('#sendError');

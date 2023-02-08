@@ -27,16 +27,16 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
-  getEIP1559V2Enabled,
   getIsImprovedTokenAllowanceEnabled,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
+import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
 import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
 import { getCustomTxParamsData } from './confirm-approve.util';
@@ -85,9 +85,10 @@ export default function ConfirmApprove({
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
+  const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
+    useState(false);
 
-  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
-  const supportsEIP1559V2 = eip1559V2Enabled && networkAndAccountSupports1559;
+  const supportsEIP1559 = networkAndAccountSupports1559;
 
   const improvedTokenAllowanceEnabled = useSelector(
     getIsImprovedTokenAllowanceEnabled,
@@ -99,6 +100,9 @@ export default function ConfirmApprove({
     showCustomizeGasPopover,
     closeCustomizeGasPopover,
   } = useApproveTransaction();
+  const renderSimulationFailureWarning = useSimulationFailureWarning(
+    userAcknowledgedGasMissing,
+  );
 
   useEffect(() => {
     if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
@@ -144,9 +148,12 @@ export default function ConfirmApprove({
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
   let tokensText;
-  if (assetStandard === ERC20) {
+  if (assetStandard === TokenStandard.ERC20) {
     tokensText = `${Number(tokenAmount)} ${tokenSymbol}`;
-  } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+  } else if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
     tokensText = assetName;
   }
 
@@ -170,7 +177,7 @@ export default function ConfirmApprove({
   if (assetStandard === undefined) {
     return <ConfirmContractInteraction />;
   }
-  if (improvedTokenAllowanceEnabled && assetStandard === ERC20) {
+  if (improvedTokenAllowanceEnabled && assetStandard === TokenStandard.ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -186,7 +193,7 @@ export default function ConfirmApprove({
             hexTransactionTotal={hexTransactionTotal}
             txData={transaction}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-            supportsEIP1559V2={supportsEIP1559V2}
+            supportsEIP1559={supportsEIP1559}
             userAddress={userAddress}
             tokenAddress={tokenAddress}
             data={transactionData}
@@ -198,14 +205,14 @@ export default function ConfirmApprove({
             tokenSymbol={tokenSymbol}
             decimals={decimals}
           />
-          {showCustomizeGasPopover && !supportsEIP1559V2 && (
+          {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
               onClose={closeCustomizeGasPopover}
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               transaction={transaction}
             />
           )}
-          {supportsEIP1559V2 && (
+          {supportsEIP1559 && (
             <>
               <EditGasFeePopover />
               <AdvancedGasFeePopover />
@@ -283,6 +290,9 @@ export default function ConfirmApprove({
               useNonceField={useNonceField}
               nextNonce={nextNonce}
               customNonceValue={customNonceValue}
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
+              renderSimulationFailureWarning={renderSimulationFailureWarning}
               updateCustomNonce={(value) => {
                 dispatch(updateCustomNonce(value));
               }}
@@ -314,16 +324,16 @@ export default function ConfirmApprove({
               rpcPrefs={rpcPrefs}
               isContract={isContract}
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-              supportsEIP1559V2={supportsEIP1559V2}
+              supportsEIP1559={supportsEIP1559}
             />
-            {showCustomizeGasPopover && !supportsEIP1559V2 && (
+            {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
                 onClose={closeCustomizeGasPopover}
                 mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
                 transaction={transaction}
               />
             )}
-            {supportsEIP1559V2 && (
+            {supportsEIP1559 && (
               <>
                 <EditGasFeePopover />
                 <AdvancedGasFeePopover />

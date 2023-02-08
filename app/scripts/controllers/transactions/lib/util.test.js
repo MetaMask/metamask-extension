@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../../../../shared/constants/transaction';
+import { TransactionEnvelopeType } from '../../../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../../../shared/modules/hexstring-utils';
 import { GAS_RECOMMENDATIONS } from '../../../../../shared/constants/gas';
 import * as txUtils from './util';
@@ -30,6 +30,18 @@ describe('txUtils', function () {
       });
     });
 
+    it('throws for data out of bounds buffer overrun', function () {
+      const sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+        to: '0xfbb5595c18ca76bab52d66188e4ca50c7d95f77a',
+        data: '0xa9059cbb00000000000000000000000011b6A5fE2906F3354145613DB0d99CEB51f604C90000000000000000000000000000000000000000000000004563918244F400',
+      };
+      assert.throws(() => txUtils.validateTxParams(sample), {
+        message:
+          'Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.',
+      });
+    });
+
     it('throws for missing "to" and "data"', function () {
       const sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -56,7 +68,7 @@ describe('txUtils', function () {
       it('should error when specifying incorrect type', function () {
         const txParams = {
           gasPrice: '0x1',
-          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          type: TransactionEnvelopeType.feeMarket,
           to: BURN_ADDRESS,
         };
 
@@ -134,7 +146,7 @@ describe('txUtils', function () {
       it('should validate if gasPrice is set with a type of "0x0"', function () {
         const txParams = {
           gasPrice: '0x1',
-          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          type: TransactionEnvelopeType.legacy,
           to: BURN_ADDRESS,
         };
         assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
@@ -145,7 +157,7 @@ describe('txUtils', function () {
       it('should error when specifying incorrect type', function () {
         const txParams = {
           maxFeePerGas: '0x1',
-          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          type: TransactionEnvelopeType.legacy,
           to: BURN_ADDRESS,
         };
 
@@ -206,7 +218,7 @@ describe('txUtils', function () {
       it('should validate if maxFeePerGas is set with a type of "0x2"', function () {
         const txParams = {
           maxFeePerGas: '0x1',
-          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          type: TransactionEnvelopeType.feeMarket,
           to: BURN_ADDRESS,
         };
         assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
@@ -217,7 +229,7 @@ describe('txUtils', function () {
       it('should error when specifying incorrect type', function () {
         const txParams = {
           maxPriorityFeePerGas: '0x1',
-          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          type: TransactionEnvelopeType.legacy,
           to: BURN_ADDRESS,
         };
 
@@ -278,7 +290,7 @@ describe('txUtils', function () {
       it('should validate if maxPriorityFeePerGas is set with a type of "0x2"', function () {
         const txParams = {
           maxPriorityFeePerGas: '0x1',
-          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          type: TransactionEnvelopeType.feeMarket,
           to: BURN_ADDRESS,
         };
         assert.doesNotThrow(() => txUtils.validateTxParams(txParams));
