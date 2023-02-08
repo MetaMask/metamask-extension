@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Menu } from '../../../ui/menu';
 import { ButtonIcon, ICON_NAMES } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -11,7 +11,7 @@ const ConnectedAccountsListOptions = ({
   show,
 }) => {
   const ref = useRef(false);
-  const t = useContext(useI18nContext);
+  const t = useI18nContext();
 
   return (
     <div ref={ref}>
