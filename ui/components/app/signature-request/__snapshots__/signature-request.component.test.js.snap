@@ -171,6 +171,42 @@ exports[`Signature Request Component render should match snapshot 1`] = `
       class="signature-request-content"
     >
       <div
+        class="box mm-banner-base mm-banner mm-banner--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+      >
+        <div
+          class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-warning-default"
+          style="mask-image: url('./images/icons/warning.svg');"
+        />
+        <div>
+          <h5
+            class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
+          >
+            Request not verified
+          </h5>
+          <h6
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+          >
+            Because of an error, this request was not verified by the security provider. Proceed with caution.
+          </h6>
+          <h6
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          >
+            This is based on information from 
+            <a
+              class="box mm-button-base mm-button-link mm-button-link--size-inherit box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+              href="https://opensea.io/"
+              target="_blank"
+            >
+              <span
+                class="box mm-text mm-button-base__content mm-text--inherit mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+              >
+                OpenSea
+              </span>
+            </a>
+          </h6>
+        </div>
+      </div>
+      <div
         class="signature-request__origin"
       >
         <div

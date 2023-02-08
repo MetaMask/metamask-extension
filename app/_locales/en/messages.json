@@ -2621,6 +2621,9 @@
   "openSea": {
     "message": "OpenSea (Beta)"
   },
+  "openSeaNew": {
+    "message": "OpenSea"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -2967,6 +2970,18 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "requestMayNotBeSafe": {
+    "message": "Request may not be safe"
+  },
+  "requestMayNotBeSafeError": {
+    "message": "The security provider didn't detect any known malicious activity, but it still may not be safe to continue."
+  },
+  "requestNotVerified": {
+    "message": "Request not verified"
+  },
+  "requestNotVerifiedError": {
+    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -4016,6 +4031,9 @@
   },
   "thingsToKeep": {
     "message": "Things to keep in mind:"
+  },
+  "thisIsBasedOn": {
+    "message": "This is based on information from "
   },
   "thisServiceIsExperimental": {
     "message": "This service is experimental"

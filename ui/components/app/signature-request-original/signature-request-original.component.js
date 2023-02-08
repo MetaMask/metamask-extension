@@ -22,6 +22,7 @@ import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -135,6 +136,11 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
+        {txData?.securityProviderResponse?.flagAsDangerous !== 0 && (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData?.securityProviderResponse}
+          />
+        )}
         <div className="request-signature__origin">
           <SiteOrigin
             siteOrigin={txData.msgParams.origin}
