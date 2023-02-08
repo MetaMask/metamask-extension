@@ -825,39 +825,6 @@ describe('Transaction Controller', function () {
       stub1.restore();
       stub2.restore();
     });
-
-    it('should return gasLimit for send with approve without simulation error', async function () {
-      txController.txStateManager._addTransactionsToState([
-        {
-          id: 1,
-          status: TransactionStatus.unapproved,
-          metamaskNetworkId: currentNetworkId,
-          txParams: {
-            to: VALID_ADDRESS,
-            from: VALID_ADDRESS_TWO,
-            value: '0x5af3107a4000',
-            data: '0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000011170',
-          },
-          history: [{}],
-        },
-      ]);
-      const txMeta = {
-        id: 1,
-        txParams: {
-          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
-          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
-          value: '0x5af3107a4000',
-          data: '0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000011170',
-        },
-        history: [{}],
-      };
-      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
-      assert.equal(txMetaWithDefaults.simulationFails, undefined);
-      assert.ok(
-        txMetaWithDefaults.txParams.gas,
-        'should have added the gas field',
-      );
-    });
   });
 
   describe('_getDefaultGasFees', function () {
