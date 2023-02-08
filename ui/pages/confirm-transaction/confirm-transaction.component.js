@@ -9,7 +9,6 @@ import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
 
-import { TransactionType } from '../../../shared/constants/transaction';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
 import {
@@ -28,7 +27,10 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
+import {
+  isSendWithApprove,
+  isTokenMethodAction,
+} from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
 import {
   getUnapprovedTransactions,
@@ -170,17 +172,11 @@ const ConfirmTransaction = () => {
     transactionId &&
     (!paramsTransactionId || paramsTransactionId === transactionId);
 
-  let isSendWithApprove = false;
-  if (transaction?.txParams) {
-    const {
-      type,
-      txParams: { value },
-    } = transaction;
-    isSendWithApprove =
-      type === TransactionType.tokenMethodApprove && value && value !== '0x0';
-  }
-
-  if (isTokenMethodAction && validTransactionId && !isSendWithApprove) {
+  if (
+    isTokenMethodAction &&
+    validTransactionId &&
+    !isSendWithApprove(transaction)
+  ) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params

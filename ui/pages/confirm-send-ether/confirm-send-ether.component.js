@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import { SEND_ROUTE } from '../../helpers/constants/routes';
-import { TransactionType } from '../../../shared/constants/transaction';
+import { isSendWithApprove } from '../../helpers/utils/transactions.util';
 
 export default class ConfirmSendEther extends Component {
   static contextTypes = {
@@ -30,7 +30,7 @@ export default class ConfirmSendEther extends Component {
 
   render() {
     const hideData = this.shouldHideData();
-    const { txParams: { to: tokenAddress, value } = {}, type } = this.props;
+    const { txParams: { to: tokenAddress } = {}, type } = this.props;
 
     return (
       <ConfirmTransactionBase
@@ -40,11 +40,7 @@ export default class ConfirmSendEther extends Component {
           this.handleEdit(confirmTransactionData)
         }
         tokenAddress={tokenAddress}
-        isSendWithApproval={
-          type === TransactionType.tokenMethodApprove &&
-          value &&
-          value !== '0x0'
-        }
+        isSendWithApproval={isSendWithApprove({ type, txParams })}
       />
     );
   }

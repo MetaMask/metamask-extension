@@ -4,6 +4,7 @@ import {
   TransactionGroupStatus,
   TransactionStatus,
   TransactionEnvelopeType,
+  TransactionType,
 } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 
@@ -91,6 +92,32 @@ describe('Transactions utils', () => {
         name: 'Set Approval For All',
         params: [{ type: 'address' }, { type: 'bool' }],
       });
+    });
+  });
+  describe('isSendWithApprove', () => {
+    it('should return true if transaction is type approve with a defined non-zero value', () => {
+      expect(
+        isSendWithApprove({
+          type: TransactionType.isSendWithApprove,
+          txParams: { value: '0x5' },
+        }),
+      ).toStrictEqual(true);
+    });
+    it('should return false if transaction is not type approve', () => {
+      expect(
+        isSendWithApprove({
+          type: TransactionType.swapApproval,
+          txParams: { value: '0x5' },
+        }),
+      ).toStrictEqual(false);
+    });
+    it('should return false if transaction is type approve but value is zero', () => {
+      expect(
+        isSendWithApprove({
+          type: TransactionType.swapApproval,
+          txParams: { value: '0x0' },
+        }),
+      ).toStrictEqual(false);
     });
   });
 });
