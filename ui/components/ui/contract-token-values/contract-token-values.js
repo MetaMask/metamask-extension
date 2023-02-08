@@ -62,6 +62,7 @@ export default function ContractTokenValues({
       <Box className="contract-token-values__block-explorer">
         <Tooltip position="top" title={t('openInBlockExplorer')}>
           <ButtonIcon
+            display={DISPLAY.FLEX}
             iconName={ICON_NAMES.EXPORT}
             color={Color.iconMuted}
             className="contract-token-values__block-explorer__button"
