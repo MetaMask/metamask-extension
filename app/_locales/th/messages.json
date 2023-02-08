@@ -69,12 +69,6 @@
   "confirmPassword": {
     "message": "ยืนยันรหัสผ่าน"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "ยืนยัน Phrase แบ็คอัพลับของคุณ"
-  },
-  "congratulations": {
-    "message": "ยินดีด้วย"
-  },
   "connectingTo": {
     "message": "เชื่อมต่อกับ $1"
   },
@@ -98,9 +92,6 @@
   },
   "create": {
     "message": "สร้าง"
-  },
-  "createAWallet": {
-    "message": "สร้าง Wallet"
   },
   "createAccount": {
     "message": "สร้างบัญชี"
@@ -126,9 +117,6 @@
   "done": {
     "message": "เสร็จสิ้น"
   },
-  "downloadSecretBackup": {
-    "message": "ดาวน์โหลด Phrase แบ็คอัพลับนี้และเก็บรักษาไว้ให้ปลอดภัยในฮาร์ดดิสก์หรืออุปกรณ์เก็บข้อมูลภายนอกที่มีการเข้ารหัส"
-  },
   "downloadStateLogs": {
     "message": "ดาวน์โหลดล็อกสถานะ"
   },
@@ -137,15 +125,6 @@
   },
   "editContact": {
     "message": "แก้ไขผู้ติดต่อ"
-  },
-  "endOfFlowMessage1": {
-    "message": "คุณผ่านการทดสอบแล้ว กรุณารับผิดชอบในการรักษา Seed Phrase ให้ปลอดภัย"
-  },
-  "endOfFlowMessage5": {
-    "message": "โปรดระวังฟิชชิ่ง MetaMask จะไม่ขอ Seed Phrase ของคุณโดยไม่มีการแจ้งล่วงหน้าเลย"
-  },
-  "endOfFlowMessage9": {
-    "message": "เรียนรู้เพิ่มเติม"
   },
   "enterPassword": {
     "message": "ใส่รหัสผ่าน"
@@ -268,9 +247,6 @@
   "message": {
     "message": "ข้อความ"
   },
-  "metamaskDescription": {
-    "message": "MetaMask คือที่เก็บตัวตนนิรภัยสำหรับอีเธอเรียม"
-  },
   "mustSelectOne": {
     "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
   },
@@ -299,9 +275,6 @@
   },
   "newPassword": {
     "message": "รหัสผ่านใหม่(ขั้นต่ำ 8 ตัวอักษร)"
-  },
-  "newToMetaMask": {
-    "message": "เพิ่งเริ่มใช้ MetaMask?"
   },
   "next": {
     "message": "ถัดไป"
@@ -346,9 +319,6 @@
   },
   "rejected": {
     "message": "ถูกปฏิเสธ"
-  },
-  "remindMeLater": {
-    "message": "เตือนฉันภายหลัง"
   },
   "required": {
     "message": "จำเป็น"
@@ -413,9 +383,6 @@
   "stateLogsDescription": {
     "message": "บันทึกของสถานะประกอบด้วยแอดแดรสสาธารณะและธุรกรรมที่ส่ง"
   },
-  "storePhrase": {
-    "message": "เก็บ Phrase นี้ในตัวจัดการรหัสผ่าน เช่น 1Password"
-  },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
   },
@@ -436,9 +403,6 @@
   },
   "testFaucet": {
     "message": "ตัวแจกจ่ายเพื่อการทดสอบ"
-  },
-  "thisWillCreate": {
-    "message": "สิ่งนี้จะสร้าง Wallet และ Seed Phrase ใหม่"
   },
   "to": {
     "message": "ถึง"
@@ -491,9 +455,6 @@
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
-  },
-  "welcome": {
-    "message": "ยินดีต้อนรับสู่ MetaMask เบต้า"
   },
   "youSign": {
     "message": "คุณกำลังเซ็นชื่อ"

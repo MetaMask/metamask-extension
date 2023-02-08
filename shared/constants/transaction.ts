@@ -290,6 +290,21 @@ export interface TxError {
 }
 
 /**
+ * We attach an object to transactions proposed by dapps to show the values
+ * that the dapp suggested for gas fees. This is used to compare to what our
+ * internal gas price logic would have the transaction priced at for metrics
+ * with the aim of improving our suggestions as well as giving the user the
+ * option to return to the defaults suggested by the dapp if they have edited
+ * the gas fees on the confirmation screen.
+ */
+interface DappSuggestedGasFees {
+  gasPrice?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
+  gas?: string;
+}
+
+/**
  * An object representing a transaction, in whatever state it is in.
  */
 export interface TransactionMeta {
@@ -308,6 +323,8 @@ export interface TransactionMeta {
   customTokenAmount: string;
   /** The dapp proposed token amount */
   dappProposedTokenAmount: string;
+  /** The original gas fees suggested by the dapp that proposed this transaction */
+  dappSuggestedGasFees?: DappSuggestedGasFees;
   /** The balance of the token that is being sent */
   currentTokenBalance: string;
   /** The original dapp proposed token approval amount before edit by user */

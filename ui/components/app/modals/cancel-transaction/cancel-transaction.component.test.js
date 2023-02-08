@@ -14,7 +14,7 @@ const mockCreateCancelTransaction = jest.fn();
 const mockShowModal = jest.fn();
 const mockHideModal = jest.fn();
 
-jest.mock('../../../../store/actions.js', () => {
+jest.mock('../../../../store/actions.ts', () => {
   return {
     createCancelTransaction: () => mockCreateCancelTransaction,
     showModal: () => mockShowModal,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { bnGreaterThan, bnLessThan } from '../../../../helpers/utils/util';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MAX_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import Button from '../../../ui/button';
@@ -59,8 +59,8 @@ const AdvancedGasFeeGasLimit = () => {
 
   return (
     <Typography
-      tag={TYPOGRAPHY.Paragraph}
-      variant={TYPOGRAPHY.H7}
+      tag={TypographyVariant.paragraph}
+      variant={TypographyVariant.H7}
       className="advanced-gas-fee-gas-limit"
       marginTop={4}
       marginLeft={2}

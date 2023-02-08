@@ -22,13 +22,14 @@ jest.mock('../../../ducks/send/index.js', () => ({
   resetSendState: () => mockResetSendState,
 }));
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   addToAddressBook: () => mockAddtoAddressBook,
   cancelTx: () => mockCancelTx,
 }));
 
 describe('SendFooter Component', () => {
   const props = {
+    disabled: false,
     history: {
       push: jest.fn(),
     },
@@ -119,10 +120,15 @@ describe('SendFooter Component', () => {
   describe('Component Update', () => {
     it('should match snapshot when component updated with errors', () => {
       const { container, rerender } = renderWithProvider(
-        <SendFooter.WrappedComponent />,
+        <SendFooter.WrappedComponent
+          disabled={false}
+          mostRecentOverviewPage="text"
+        />,
       );
 
       const sendErrorProps = {
+        disabled: false,
+        mostRecentOverviewPage: 'text',
         sendErrors: {
           gasFee: 'gas fee error',
           amount: 'amount error',

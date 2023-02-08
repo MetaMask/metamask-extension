@@ -5,11 +5,11 @@ import Button from '../../ui/button';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   FLEX_WRAP,
   BLOCK_SIZES,
-  JUSTIFY_CONTENT,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 
 const OnRampItem = ({
@@ -35,16 +35,16 @@ const OnRampItem = ({
         paddingTop={6}
         paddingBottom={6}
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         flexWrap={FLEX_WRAP.WRAP}
       >
         <Box
           width={[BLOCK_SIZES.HALF, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_FIFTH]}
           display={DISPLAY.FLEX}
           justifyContent={[
-            JUSTIFY_CONTENT.FLEX_START,
-            JUSTIFY_CONTENT.FLEX_START,
-            JUSTIFY_CONTENT.CENTER,
+            JustifyContent.flexStart,
+            JustifyContent.flexStart,
+            JustifyContent.center,
           ]}
           paddingLeft={[0, 0, 4]}
           paddingRight={[0, 0, 4]}
