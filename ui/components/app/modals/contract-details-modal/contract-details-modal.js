@@ -135,7 +135,6 @@ export default function ContractDetailsModal({
               </Box>
               <Box
                 alignItems={AlignItems.center}
-                className="contract-details-modal__content__contract__buttons"
                 marginLeft="auto"
                 marginRight={4}
                 gap={2}
@@ -254,7 +253,6 @@ export default function ContractDetailsModal({
           </Box>
           <Box
             alignItems={AlignItems.center}
-            className="contract-details-modal__content__contract__buttons"
             marginLeft="auto"
             marginRight={4}
             gap={2}
