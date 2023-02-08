@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "L’envoi de jetons collectibles (ERC-721) n’est pas pris en charge actuellement",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Nous ne pouvons pas vérifier ce contrat. Assurez-vous que vous faites confiance à cette adresse."

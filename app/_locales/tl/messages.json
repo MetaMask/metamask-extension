@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "Ang pagpapadala ng collectible (ERC-721) token ay kasalukuyang hindi magagamit",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Hindi namin ma-verify ang kontratang ito. Tiyaking pinagkakatiwalaan mo ang address na ito."

@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "수집 가능한(ERC-721) 토큰 전송은 현재 지원되지 않습니다.",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "이 계약을 확인할 수 없습니다. 믿을 수 있는 주소인지 확인하세요."
