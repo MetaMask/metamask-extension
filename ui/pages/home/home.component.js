@@ -345,7 +345,7 @@ export default class Home extends PureComponent {
                   variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {t('newCollectibleAddedMessage')}
+                  {t('newNftAddedMessage')}
                 </Typography>
                 <button
                   className="fas fa-times home__new-nft-notification-close"
@@ -370,7 +370,7 @@ export default class Home extends PureComponent {
                   variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {t('removeCollectibleMessage')}
+                  {t('removeNftMessage')}
                 </Typography>
                 <button
                   className="fas fa-times home__new-nft-notification-close"
