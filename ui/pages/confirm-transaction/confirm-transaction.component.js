@@ -9,6 +9,7 @@ import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
 
+import { TransactionType } from '../../../shared/constants/transaction';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_DEPLOY_CONTRACT_PATH,
@@ -159,12 +160,16 @@ export default class ConfirmTransaction extends Component {
       transactionId &&
       (!paramsTransactionId || paramsTransactionId === transactionId);
 
-    const value = transaction?.txParams?.value;
-    if (
-      isTokenMethodAction &&
-      validTransactionId &&
-      (!value || value === '0x0')
-    ) {
+    let isSendWithApprove = false;
+    if (transaction?.txParams) {
+      const {
+        type,
+        txParams: { value },
+      } = transaction;
+      isSendWithApprove =
+        type === TransactionType.tokenMethodApprove && value && value !== '0x0';
+    }
+    if (isTokenMethodAction && validTransactionId && !isSendWithApprove) {
       return <ConfirmTokenTransactionSwitch transaction={transaction} />;
     }
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
