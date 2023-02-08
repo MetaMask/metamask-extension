@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Color } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 export default class EditableLabel extends Component {
   static propTypes = {
@@ -62,7 +62,7 @@ export default class EditableLabel extends Component {
           className="editable-label__icon-button"
           onClick={() => this.handleSubmit(isValidAccountName)}
         >
-          <i className="fa fa-check editable-label__icon" />
+          <Icon name={ICON_NAMES.CHECK} className="editable-label__icon" />
         </button>
         <div className="editable-label__error editable-label__error-amount">
           {errorMessage}

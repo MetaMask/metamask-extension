@@ -6,6 +6,7 @@ import {
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES } from '../../component-library';
 import Card from '../card';
 import Typography from '../typography';
 import Box from '../box';
@@ -22,7 +23,6 @@ import SendIcon from './send-icon.component';
 import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
-import IconCheck from './icon-check';
 import IconCog from './icon-cog';
 import IconImport from './icon-import';
 import IconEye from './icon-eye';
@@ -117,7 +117,6 @@ export const DefaultStory = (args) => (
           gridTemplateColumns: 'repeat(auto-fill, 176px)',
         }}
       >
-        <IconItem Component={<IconCheck {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import { Icon, ICON_NAMES } from '../../component-library';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
@@ -14,6 +15,7 @@ import { isPrefixedFormattedHexString } from '../../../../shared/modules/network
 
 import ColorIndicator from '../../ui/color-indicator';
 import { IconColor, Size } from '../../../helpers/constants/design-system';
+import { ICON_COLORS } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -22,7 +24,6 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import IconCheck from '../../ui/icon/icon-check';
 
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
@@ -175,7 +176,7 @@ class NetworkDropdown extends Component {
           }}
         >
           {isCurrentRpcTarget ? (
-            <IconCheck color="var(--color-success-default)" />
+            <Icon name={ICON_NAMES.CHECK} color={ICON_COLORS.SUCCESS_DEFAULT} />
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
@@ -243,7 +244,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <IconCheck color="var(--color-success-default)" />
+          <Icon name={ICON_NAMES.CHECK} color={ICON_COLORS.SUCCESS_DEFAULT} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}
