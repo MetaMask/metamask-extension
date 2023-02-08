@@ -5,7 +5,7 @@ import Box from '../box';
 import { Color, TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
-import { useCollectiblesCollections } from '../../../hooks/useCollectiblesCollections';
+import { useCollectiblesCollections } from '../../../hooks/useNftsCollections';
 
 export default function NftCollectionImage({ assetName, tokenAddress }) {
   const { collections } = useCollectiblesCollections();

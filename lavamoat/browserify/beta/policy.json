@@ -3498,7 +3498,12 @@
       }
     },
     "json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
       "packages": {
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
         "readable-stream": true
       }
     },
