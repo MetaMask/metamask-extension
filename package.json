@@ -231,6 +231,7 @@
     "@metamask/contract-metadata": "^2.2.0",
     "@metamask/controller-utils": "^1.0.0",
     "@metamask/design-tokens": "^1.9.0",
+    "@metamask/desktop": "^0.2.0",
     "@metamask/eth-json-rpc-infura": "^7.0.0",
     "@metamask/eth-keyring-controller": "^10.0.0",
     "@metamask/eth-ledger-bridge-keyring": "^0.13.0",
