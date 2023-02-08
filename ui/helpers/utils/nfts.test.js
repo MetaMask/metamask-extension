@@ -1,4 +1,4 @@
-import { getCollectibleImageAlt } from './collectibles';
+import { getCollectibleImageAlt } from './nfts';
 
 describe('Collectibles Utils', () => {
   describe('getCollectibleImageAlt', () => {

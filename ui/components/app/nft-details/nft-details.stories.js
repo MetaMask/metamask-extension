@@ -1,5 +1,5 @@
 import React from 'react';
-import CollectibleDetails from './collectible-details';
+import CollectibleDetails from './nft-details';
 
 const collectible = {
   name: 'Catnip Spicywright',

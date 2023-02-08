@@ -25,12 +25,12 @@ import {
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
-import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
+import { getCollectibleImageAlt } from '../../../helpers/utils/nfts';
 import { updateCollectibleDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import CollectibleDefaultImage from '../collectible-default-image';
+import CollectibleDefaultImage from '../nft-default-image';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP

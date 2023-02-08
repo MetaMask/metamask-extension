@@ -12,7 +12,7 @@ import {
   removeAndIgnoreNft,
   setRemoveCollectibleMessage,
 } from '../../../store/actions';
-import CollectibleDetails from './collectible-details';
+import CollectibleDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');
 

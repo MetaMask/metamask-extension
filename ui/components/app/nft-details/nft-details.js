@@ -23,7 +23,7 @@ import {
   getAssetImageURL,
   shortenAddress,
 } from '../../../helpers/utils/util';
-import { getCollectibleImageAlt } from '../../../helpers/utils/collectibles';
+import { getCollectibleImageAlt } from '../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
   getIpfsGateway,
@@ -40,7 +40,7 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import CollectibleOptions from '../collectible-options/collectible-options';
+import CollectibleOptions from '../nft-options/nft-options';
 import Button from '../../ui/button';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
@@ -51,7 +51,7 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import CollectibleDefaultImage from '../collectible-default-image';
+import CollectibleDefaultImage from '../nft-default-image';
 import { ButtonIcon, ICON_NAMES } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 

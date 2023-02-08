@@ -5,8 +5,8 @@ import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
-import CollectiblesDetectionNotice from '../collectibles-detection-notice';
-import CollectiblesItems from '../collectibles-items';
+import CollectiblesDetectionNotice from '../nfts-detection-notice';
+import CollectiblesItems from '../nfts-items';
 import {
   TypographyVariant,
   TEXT_ALIGN,
@@ -23,7 +23,7 @@ import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
 } from '../../../store/actions';
-import { useCollectiblesCollections } from '../../../hooks/useCollectiblesCollections';
+import { useCollectiblesCollections } from '../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function CollectiblesTab({ onAddNFT }) {

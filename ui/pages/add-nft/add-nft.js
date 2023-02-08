@@ -29,7 +29,7 @@ import {
   getUseNftDetection,
 } from '../../selectors';
 import { getCollectiblesDropdownState } from '../../ducks/metamask/metamask';
-import CollectiblesDetectionNotice from '../../components/app/collectibles-detection-notice';
+import CollectiblesDetectionNotice from '../../components/app/nfts-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
