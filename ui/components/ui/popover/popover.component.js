@@ -9,7 +9,9 @@ import {
   BackgroundColor,
   FLEX_DIRECTION,
   JustifyContent,
+  Color,
 } from '../../../helpers/constants/design-system';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
@@ -67,10 +69,11 @@ const Popover = ({
         >
           <h2 title="popover">
             {onBack ? (
-              <button
-                className="fas fa-chevron-left popover-header__button"
-                title={t('back')}
+              <ButtonIcon
+                iconName={ICON_NAMES.ARROW_LEFT}
+                ariaLabel={t('back')}
                 onClick={onBack}
+                color={Color.iconDefault}
               />
             ) : null}
             {title}
