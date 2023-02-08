@@ -140,12 +140,14 @@
     "incomingTransactions": {},
     "unapprovedTxs": {
       "8393540981007587": {
+        "chainId": "0x5",
         "id": 8393540981007587,
         "time": 1536268017676,
         "status": "unapproved",
         "metamaskNetworkId": "4",
         "loadingDefaults": false,
         "txParams": {
+          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
           "value": "0x0",
@@ -185,7 +187,7 @@
             }
           ]
         ],
-        "origin": "MetaMask"
+        "origin": "metamask"
       }
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
