@@ -1,7 +1,7 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import CollectibleOptions from './collectible-options';
+import CollectibleOptions from './nft-options';
 
 describe('Collectible Options Component', () => {
   const props = {
