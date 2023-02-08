@@ -44,6 +44,12 @@ module.exports = function createStaticAssetTasks({
         dest: `images`,
       },
     ],
+    [BuildType.desktop]: [
+      {
+        src: './app/build-types/desktop/images/',
+        dest: `images`,
+      },
+    ],
   };
 
   if (Object.keys(additionalBuildTargets).includes(buildType)) {
