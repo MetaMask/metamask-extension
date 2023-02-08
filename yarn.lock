@@ -22260,16 +22260,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "json-rpc-middleware-stream@npm:2.1.1"
-  dependencies:
-    readable-stream: ^2.3.3
-    safe-event-emitter: ^1.0.1
-  checksum: e3c1c25c4b46b25e3c5a577e751ad3cabe3f1a387b5a8f345618563cb0ca24bc26eb25f170cf7ccb1e2c36d759947861cca0debb913b672ddf352b0f8add4ecf
-  languageName: node
-  linkType: hard
-
 "json-rpc-middleware-stream@npm:^4.2.0, json-rpc-middleware-stream@npm:^4.2.1":
   version: 4.2.1
   resolution: "json-rpc-middleware-stream@npm:4.2.1"
@@ -24370,7 +24360,7 @@ __metadata:
     js-yaml: ^4.1.0
     jsdom: ^11.2.0
     json-rpc-engine: ^6.1.0
-    json-rpc-middleware-stream: ^2.1.1
+    json-rpc-middleware-stream: ^4.2.1
     jsonschema: ^1.2.4
     junit-report-merger: ^4.0.0
     koa: ^2.7.0

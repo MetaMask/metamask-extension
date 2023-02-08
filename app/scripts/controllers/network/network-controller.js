@@ -125,7 +125,9 @@ export default class NetworkController extends EventEmitter {
     }
     this._infuraProjectId = infuraProjectId;
 
-    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
+    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+      this.lookupNetwork();
+    });
   }
 
   /**
@@ -158,6 +160,8 @@ export default class NetworkController extends EventEmitter {
    */
   async getEIP1559Compatibility() {
     const { EIPS } = this.networkDetails.getState();
+    // NOTE: This isn't necessary anymore because the block cache middleware
+    // already prevents duplicate requests from taking place
     if (EIPS[1559] !== undefined) {
       return EIPS[1559];
     }
@@ -185,6 +189,9 @@ export default class NetworkController extends EventEmitter {
       return;
     }
 
+    // NOTE: This will never happen in practice because you can't pass null or
+    // undefined for chainId to setRpcTarget, and all of the known networks have
+    // a chain ID
     const chainId = this.getCurrentChainId();
     if (!chainId) {
       log.warn(
