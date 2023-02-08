@@ -896,7 +896,6 @@
   "ui/components/ui/icon/icon-eye.js",
   "ui/components/ui/icon/icon-import.js",
   "ui/components/ui/icon/icon-plus.js",
-  "ui/components/ui/icon/icon-speech-bubbles.js",
   "ui/components/ui/icon/icon-token-search.js",
   "ui/components/ui/icon/icon.stories.js",
   "ui/components/ui/icon/info-icon-inverted.component.js",

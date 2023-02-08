@@ -2668,6 +2668,10 @@
   "permissionRevoked": {
     "message": "Revoked in this update"
   },
+  "permission_accessNamedSnap": {
+    "message": "Connect to $1.",
+    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the Snap."
+  },
   "permission_accessNetwork": {
     "message": "Access the internet.",
     "description": "The description of the `endowment:network-access` permission."
@@ -2712,6 +2716,10 @@
     "message": "Control your \"$1\" accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
+  "permission_manageNamedBip32Keys": {
+    "message": "Control your $1 accounts and assets.",
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
+  },
   "permission_manageState": {
     "message": "Store and manage its data on your device.",
     "description": "The description for the `snap_manageState` permission"
@@ -2739,6 +2747,10 @@
   "permission_viewBip32PublicKeys": {
     "message": "View your public key for $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+  },
+  "permission_viewNamedBip32PublicKeys": {
+    "message": "View your public key for $1.",
+    "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
   "permissions": {
     "message": "Permissions"
@@ -3966,6 +3978,12 @@
   "toAddress": {
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleEthSignDescriptionField": {
+    "message": "Turn this on to let dapps request your signature using eth_sign requests. eth_sign is an open-ended signing method that lets you sign an arbitrary hash, making it a dangerous phishing risk. Only sign eth_sign requests if you can read what you are signing and trust the origin of the request."
+  },
+  "toggleEthSignField": {
+    "message": "Toggle eth_sign requests"
   },
   "toggleTestNetworks": {
     "message": "$1 test networks",

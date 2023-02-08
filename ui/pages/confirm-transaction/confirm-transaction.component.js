@@ -138,7 +138,7 @@ const ConfirmTransaction = () => {
       transactionId &&
       prevParamsTransactionId !== paramsTransactionId
     ) {
-      const { txParams: { data } = {}, origin } = transaction;
+      const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
 
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
@@ -171,7 +171,6 @@ const ConfirmTransaction = () => {
   if (isValidERC20TokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
-
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>

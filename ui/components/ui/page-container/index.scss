@@ -91,6 +91,11 @@
     &:last-of-type {
       margin-right: 0;
     }
+
+    &__cancel {
+      border-color: var(--color-primary-alternative) !important;
+      color: var(--color-primary-alternative);
+    }
   }
 
   &__back-button {
