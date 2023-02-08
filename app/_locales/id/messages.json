@@ -642,13 +642,6 @@
   "close": {
     "message": "Tutup"
   },
-  "nftAddFailedMessage": {
-    "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
-  },
-  "nftAddressError": {
-    "message": "Token ini merupakan NFT. Tambahkan ke $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Konfirmasikan"
   },
@@ -2103,9 +2096,6 @@
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "Koleksi berhasil ditambahkan!"
-  },
   "newContact": {
     "message": "Kontak baru"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
+  },
+  "newNftAddedMessage": {
+    "message": "Koleksi berhasil ditambahkan!"
   },
   "newPassword": {
     "message": "Kata sandi baru (min 8 karakter)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
+  },
+  "nftAddressError": {
+    "message": "Token ini merupakan NFT. Tambahkan ke $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Masukkan id token"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "URL ini saat ini digunakan oleh jaringan $1."
   },
+  "useDefault": {
+    "message": "Gunakan default"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Kelompokkan permintaan saldo akun"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Kami mengelompokkan akun dan meminta Infura untuk menunjukkan saldo Anda secara responsif. Jika Anda menonaktifkannya, hanya akun aktif yang akan diminta. Beberapa aplikasi terdesentralisasi (dapp) tidak akan berfungsi kecuali dompet Anda terhubung."
+  },
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
-  },
-  "useDefault": {
-    "message": "Gunakan default"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Kelompokkan permintaan saldo akun"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Kami mengelompokkan akun dan meminta Infura untuk menunjukkan saldo Anda secara responsif. Jika Anda menonaktifkannya, hanya akun aktif yang akan diminta. Beberapa aplikasi terdesentralisasi (dapp) tidak akan berfungsi kecuali dompet Anda terhubung."
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi pengelabuan"

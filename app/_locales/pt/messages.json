@@ -642,13 +642,6 @@
   "close": {
     "message": "Fechar"
   },
-  "nftAddFailedMessage": {
-    "message": "O NFT não pôde ser adicionado, pois os dados de propriedade não coincidem. Certifique-se de ter inserido as informações corretas."
-  },
-  "nftAddressError": {
-    "message": "Esse token é um NFT. Adicione-o na $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Confirmar"
   },
@@ -2103,9 +2096,6 @@
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "O colecionável foi adicionado com sucesso!"
-  },
   "newContact": {
     "message": "Novo contato"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
+  },
+  "newNftAddedMessage": {
+    "message": "O colecionável foi adicionado com sucesso!"
   },
   "newPassword": {
     "message": "Nova Palavra-passe (min 8 caracteres)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "O NFT não pôde ser adicionado, pois os dados de propriedade não coincidem. Certifique-se de ter inserido as informações corretas."
+  },
+  "nftAddressError": {
+    "message": "Esse token é um NFT. Adicione-o na $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Insira o ID do token"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "O ID da cadeia está sendo usado pela rede $1."
   },
+  "useDefault": {
+    "message": "Usar padrão"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Agrupar solicitações de saldo de contas"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Agrupamos as contas e consultamos a Infura para exibir seus saldos de forma responsiva. Se isso for desativado, somente contas ativas serão consultadas. Alguns dapps só funcionam se você conecta a sua carteira."
+  },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
-  },
-  "useDefault": {
-    "message": "Usar padrão"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Agrupar solicitações de saldo de contas"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Agrupamos as contas e consultamos a Infura para exibir seus saldos de forma responsiva. Se isso for desativado, somente contas ativas serão consultadas. Alguns dapps só funcionam se você conecta a sua carteira."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"

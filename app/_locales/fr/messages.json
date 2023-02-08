@@ -642,13 +642,6 @@
   "close": {
     "message": "Fermer"
   },
-  "nftAddFailedMessage": {
-    "message": "Ce NFT ne peut pas être ajouté, car les informations de propriété ne correspondent pas. Vérifiez que votre saisie est correcte."
-  },
-  "nftAddressError": {
-    "message": "Ce token est un NFT. Ajouter sur la $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Confirmer"
   },
@@ -2103,9 +2096,6 @@
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "Le collectible a été ajouté avec succès !"
-  },
   "newContact": {
     "message": "Nouveau contact"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "« $1 » a été ajouté avec succès !"
+  },
+  "newNftAddedMessage": {
+    "message": "Le collectible a été ajouté avec succès !"
   },
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Ce NFT ne peut pas être ajouté, car les informations de propriété ne correspondent pas. Vérifiez que votre saisie est correcte."
+  },
+  "nftAddressError": {
+    "message": "Ce token est un NFT. Ajouter sur la $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Saisissez l’identifiant du jeton"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "Cette URL est actuellement utilisée par le réseau $1."
   },
+  "useDefault": {
+    "message": "Utiliser par défaut"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Demandes d’informations concernant le solde de plusieurs comptes"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Nous regroupons vos comptes et demandons à Infura de fournir des informations sur le solde de chacun de vos comptes. Si vous désactivez cette fonction, Infura ne fournira que des informations sur le solde des comptes actifs. Certaines applications décentralisées (dapps) ne fonctionneront pas si vous ne connectez pas votre portefeuille."
+  },
   "useNftDetection": {
     "message": "Détection automatique des NFT"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "N’importe qui peut déposer des NFT sur votre compte. Les NFT peuvent contenir du contenu offensant qui pourrait s’afficher automatiquement dans votre portefeuille."
-  },
-  "useDefault": {
-    "message": "Utiliser par défaut"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Demandes d’informations concernant le solde de plusieurs comptes"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Nous regroupons vos comptes et demandons à Infura de fournir des informations sur le solde de chacun de vos comptes. Si vous désactivez cette fonction, Infura ne fournira que des informations sur le solde des comptes actifs. Certaines applications décentralisées (dapps) ne fonctionneront pas si vous ne connectez pas votre portefeuille."
   },
   "usePhishingDetection": {
     "message": "Utiliser la fonction anti-hameçonnage"

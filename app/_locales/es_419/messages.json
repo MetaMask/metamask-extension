@@ -1528,9 +1528,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "¡El coleccionable fue añadido con éxito!"
-  },
   "newContact": {
     "message": "Contacto nuevo"
   },
@@ -1542,6 +1539,9 @@
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
+  },
+  "newNftAddedMessage": {
+    "message": "¡El coleccionable fue añadido con éxito!"
   },
   "newPassword": {
     "message": "Contraseña nueva (mín. de 8 caracteres)"

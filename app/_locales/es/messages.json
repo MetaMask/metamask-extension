@@ -642,13 +642,6 @@
   "close": {
     "message": "Cerrar"
   },
-  "nftAddFailedMessage": {
-    "message": "No se puede agregar NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
-  },
-  "nftAddressError": {
-    "message": "Este token es un NFT. Añadir a $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Confirmar"
   },
@@ -2103,9 +2096,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "¡El coleccionable fue añadido con éxito!"
-  },
   "newContact": {
     "message": "Contacto nuevo"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
+  },
+  "newNftAddedMessage": {
+    "message": "¡El coleccionable fue añadido con éxito!"
   },
   "newPassword": {
     "message": "Contraseña nueva (mín. de 8 caracteres)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "No se puede agregar NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
+  },
+  "nftAddressError": {
+    "message": "Este token es un NFT. Añadir a $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Ingrese el id del token"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
+  "useDefault": {
+    "message": "Uso por defecto"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Solicitudes de saldo de cuenta por lotes"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Procesamos cuentas por lotes y consultamos a Infura para mostrar sus saldos de manera receptiva. Si desactiva esta opción, solo se consultarán las cuentas activas. Algunas dapps no funcionarán a menos que conecte su biletera."
+  },
   "useNftDetection": {
     "message": "Detectar NFTs automáticamente"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Cualquiera puede enviar NFT a su cuenta. Esto puede incluir contenido ofensivo que podría mostrarse automáticamente en su billetera."
-  },
-  "useDefault": {
-    "message": "Uso por defecto"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Solicitudes de saldo de cuenta por lotes"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Procesamos cuentas por lotes y consultamos a Infura para mostrar sus saldos de manera receptiva. Si desactiva esta opción, solo se consultarán las cuentas activas. Algunas dapps no funcionarán a menos que conecte su biletera."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"

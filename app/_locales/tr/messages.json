@@ -642,13 +642,6 @@
   "close": {
     "message": "Kapat"
   },
-  "nftAddFailedMessage": {
-    "message": "Sahiplik bilgileri eşleşmediğinden NFT eklenemez. Doğru bilgileri girdiğinden emin ol."
-  },
-  "nftAddressError": {
-    "message": "Bu token bir NFT'dir. $1 üzerine ekle",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Onayla"
   },
@@ -2103,9 +2096,6 @@
     "message": "Hesap $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "Tahsil edilebilir tutar başarılı bir şekilde eklendi!"
-  },
   "newContact": {
     "message": "Yeni kişi"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
+  },
+  "newNftAddedMessage": {
+    "message": "Tahsil edilebilir tutar başarılı bir şekilde eklendi!"
   },
   "newPassword": {
     "message": "Yeni Parola (min 8 karakter)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Sahiplik bilgileri eşleşmediğinden NFT eklenemez. Doğru bilgileri girdiğinden emin ol."
+  },
+  "nftAddressError": {
+    "message": "Bu token bir NFT'dir. $1 üzerine ekle",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Token kimliğini gir"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "Bu URL şu anda $1 ağı tarafından kullanılıyor."
   },
+  "useDefault": {
+    "message": "Varsayılanı kullan"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Toplu hesap bakiyesi talepleri"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Hesapları toplarız ve bakiyelerinizi göstermek için Infura'yı sorgularız. Bunu kapattığınız takdirde sadece aktif hesaplar sorgulanır. Bazı merkeziyetsiz uygulamalar siz cüzdanınızı bağlamadığınız sürece çalışmaz."
+  },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Hesabınıza herkes NFT atabilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
-  },
-  "useDefault": {
-    "message": "Varsayılanı kullan"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Toplu hesap bakiyesi talepleri"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Hesapları toplarız ve bakiyelerinizi göstermek için Infura'yı sorgularız. Bunu kapattığınız takdirde sadece aktif hesaplar sorgulanır. Bazı merkeziyetsiz uygulamalar siz cüzdanınızı bağlamadığınız sürece çalışmaz."
   },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"

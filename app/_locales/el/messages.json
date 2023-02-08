@@ -642,13 +642,6 @@
   "close": {
     "message": "Κλείσιμο"
   },
-  "nftAddFailedMessage": {
-    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
-  },
-  "nftAddressError": {
-    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Επιβεβαίωση"
   },
@@ -2103,9 +2096,6 @@
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "Το Collectible προστέθηκε με επιτυχία!"
-  },
   "newContact": {
     "message": "Νέα Επαφή"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
+  },
+  "newNftAddedMessage": {
+    "message": "Το Collectible προστέθηκε με επιτυχία!"
   },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
+  },
+  "nftAddressError": {
+    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Εισάγετε το συλλεκτικό αναγνωριστικό"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "Αυτό το URL χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
   },
+  "useDefault": {
+    "message": "Χρήση προκαθορισμένου"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Μαζικά αιτήματα υπολοίπου λογαριασμού"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Συγκεντρώνουμε τους λογαριασμούς και ζητάμε από την Infura να εμφανίσει το υπόλοιπό σας. Αν το απενεργοποιήσετε αυτό, θα ζητηθούν μόνο οι ενεργοί λογαριασμοί. Ορισμένες αποκεντρωμένες εφαρμογές δεν θα λειτουργούν αν δεν συνδέσετε το πορτοφόλι σας."
+  },
   "useNftDetection": {
     "message": "Αυτόματη Ανίχνευση NFT"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Οποιοσδήποτε μπορεί να στείλει NFT στον λογαριασμό σας. Αυτό μπορεί να περιλαμβάνει προσβλητικό περιεχόμενο που μπορεί να εμφανίζεται αυτόματα στο πορτοφόλι σας."
-  },
-  "useDefault": {
-    "message": "Χρήση προκαθορισμένου"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Μαζικά αιτήματα υπολοίπου λογαριασμού"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Συγκεντρώνουμε τους λογαριασμούς και ζητάμε από την Infura να εμφανίσει το υπόλοιπό σας. Αν το απενεργοποιήσετε αυτό, θα ζητηθούν μόνο οι ενεργοί λογαριασμοί. Ορισμένες αποκεντρωμένες εφαρμογές δεν θα λειτουργούν αν δεν συνδέσετε το πορτοφόλι σας."
   },
   "usePhishingDetection": {
     "message": "Χρήση Ανίχνευσης Απάτης Ηλεκτρονικού Ψαρέματος"

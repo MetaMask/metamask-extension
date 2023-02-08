@@ -642,13 +642,6 @@
   "close": {
     "message": "Đóng"
   },
-  "nftAddFailedMessage": {
-    "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
-  },
-  "nftAddressError": {
-    "message": "Token này là một NFT. Thêm vào $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Xác nhận"
   },
@@ -2103,9 +2096,6 @@
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "Bộ sưu tập đã được thêm thành công!"
-  },
   "newContact": {
     "message": "Địa chỉ liên hệ mới"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
+  },
+  "newNftAddedMessage": {
+    "message": "Bộ sưu tập đã được thêm thành công!"
   },
   "newPassword": {
     "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
+  },
+  "nftAddressError": {
+    "message": "Token này là một NFT. Thêm vào $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Nhập mã token"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng URL này."
   },
+  "useDefault": {
+    "message": "Sử dụng mặc định"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Xử lý hàng loạt yêu cầu số dư tài khoản"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Chúng tôi xử lý hàng loạt tài khoản và kiểm tra với Infura để hiển thị các số dư tài khoản của bạn một cách nhanh chóng. Nếu bạn tắt tính năng này, chỉ những tài khoản đang hoạt động mới được truy vấn. Một số dapp sẽ không hoạt động trừ khi bạn kết nối với ví của mình."
+  },
   "useNftDetection": {
     "message": "Tự động phát hiện NFT"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Bất kỳ ai cũng có thể gửi NFT vào tài khoản của bạn. Điều này có thể khiến nội dung xúc phạm tự động hiển thị trong ví của bạn."
-  },
-  "useDefault": {
-    "message": "Sử dụng mặc định"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Xử lý hàng loạt yêu cầu số dư tài khoản"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Chúng tôi xử lý hàng loạt tài khoản và kiểm tra với Infura để hiển thị các số dư tài khoản của bạn một cách nhanh chóng. Nếu bạn tắt tính năng này, chỉ những tài khoản đang hoạt động mới được truy vấn. Một số dapp sẽ không hoạt động trừ khi bạn kết nối với ví của mình."
   },
   "usePhishingDetection": {
     "message": "Sử dụng tính năng phát hiện lừa đảo"

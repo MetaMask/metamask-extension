@@ -642,13 +642,6 @@
   "close": {
     "message": "Закрыть"
   },
-  "nftAddFailedMessage": {
-    "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
-  },
-  "nftAddressError": {
-    "message": "Этот токен является NFT. Добавьте на $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Подтвердить"
   },
@@ -2103,9 +2096,6 @@
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "Коллекционный актив успешно добавлен!"
-  },
   "newContact": {
     "message": "Новый контакт"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
+  },
+  "newNftAddedMessage": {
+    "message": "Коллекционный актив успешно добавлен!"
   },
   "newPassword": {
     "message": "Новый пароль (мин. 8 знаков)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
+  },
+  "nftAddressError": {
+    "message": "Этот токен является NFT. Добавьте на $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Введите ид. коллекционного актива"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "Это URL-адрес в настоящее время используется сетью $1."
   },
+  "useDefault": {
+    "message": "Использовать значения по умолчанию"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Пакетные запросы баланса счета"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Мы создаем пакет счетов и запрашиваем Infura, чтобы оперативно отображать ваши остатки. Если вы отключите это, запрос будет отправляться только в отношении активных счетов. Некоторые dapps не будут работать, пока вы не подключите свой кошелек."
+  },
   "useNftDetection": {
     "message": "Автообнаружение NFT"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Любой может эйрдропнуть NFT на ваш счет. Они могут включать оскорбительный контент, который может автоматически отображаться в вашем кошельке."
-  },
-  "useDefault": {
-    "message": "Использовать значения по умолчанию"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Пакетные запросы баланса счета"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Мы создаем пакет счетов и запрашиваем Infura, чтобы оперативно отображать ваши остатки. Если вы отключите это, запрос будет отправляться только в отношении активных счетов. Некоторые dapps не будут работать, пока вы не подключите свой кошелек."
   },
   "usePhishingDetection": {
     "message": "Использовать обнаружение фишинга"

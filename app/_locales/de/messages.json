@@ -642,13 +642,6 @@
   "close": {
     "message": "Schließen"
   },
-  "nftAddFailedMessage": {
-    "message": "NFT kann nicht hinzugefügt werden, da die Eigentumsangaben nicht übereinstimmen. Stellen Sie sicher, dass Sie die richtigen Informationen eingegeben haben."
-  },
-  "nftAddressError": {
-    "message": "Dieses Token ist ein NFT. Bei $1 hinzufügen",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Bestätigen"
   },
@@ -2103,9 +2096,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newNftAddedMessage": {
-    "message": "Sammelobjekt wurde erfolgreich hinzugefügt!"
-  },
   "newContact": {
     "message": "Neuer Kontakt"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” wurde erfolgreich hinzugefügt!"
+  },
+  "newNftAddedMessage": {
+    "message": "Sammelobjekt wurde erfolgreich hinzugefügt!"
   },
   "newPassword": {
     "message": "Neues Passwort (min. 8 Zeichen)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "NFT kann nicht hinzugefügt werden, da die Eigentumsangaben nicht übereinstimmen. Stellen Sie sicher, dass Sie die richtigen Informationen eingegeben haben."
+  },
+  "nftAddressError": {
+    "message": "Dieses Token ist ein NFT. Bei $1 hinzufügen",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Token-ID eingeben"
@@ -4192,6 +4192,15 @@
   "urlExistsErrorMsg": {
     "message": "Diese URL wird derzeit vom $1-Netzwerk verwendet."
   },
+  "useDefault": {
+    "message": "Standardeinstellungen verwenden"
+  },
+  "useMultiAccountBalanceChecker": {
+    "message": "Kontoguthaben-Anfragen sammeln"
+  },
+  "useMultiAccountBalanceCheckerDescription": {
+    "message": "Wir sammeln Konten und fragen bei Infura an, um Ihr Guthaben anzuzeigen. Wenn Sie dies deaktivieren, werden nur aktive Konten abgefragt. Einige Dapps funktionieren nicht, wenn Sie Ihr Wallet nicht verbinden."
+  },
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"
   },
@@ -4206,15 +4215,6 @@
   },
   "useNftDetectionDescriptionLine4": {
     "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrem Wallet angezeigt werden könnten."
-  },
-  "useDefault": {
-    "message": "Standardeinstellungen verwenden"
-  },
-  "useMultiAccountBalanceChecker": {
-    "message": "Kontoguthaben-Anfragen sammeln"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Wir sammeln Konten und fragen bei Infura an, um Ihr Guthaben anzuzeigen. Wenn Sie dies deaktivieren, werden nur aktive Konten abgefragt. Einige Dapps funktionieren nicht, wenn Sie Ihr Wallet nicht verbinden."
   },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"
