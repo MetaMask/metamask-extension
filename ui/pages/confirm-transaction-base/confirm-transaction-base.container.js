@@ -36,9 +36,7 @@ import {
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
   getFullTxData,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getInsightSnaps,
-  ///: END:ONLY_INCLUDE_IN
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -59,8 +57,8 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
@@ -120,7 +118,7 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
   let toAddress = txParamsToAddress;
-  if (type !== TRANSACTION_TYPES.SIMPLE_SEND) {
+  if (type !== TransactionType.simpleSend) {
     toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
   }
 
@@ -169,7 +167,7 @@ const mapStateToProps = (state, ownProps) => {
   const fullTxData = getFullTxData(
     state,
     txId,
-    TRANSACTION_STATUSES.UNAPPROVED,
+    TransactionStatus.unapproved,
     customTxParamsData,
   );
 
@@ -194,10 +192,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const insightSnaps = getInsightSnaps(state);
-  ///: END:ONLY_INCLUDE_IN
-
   return {
     balance,
     fromAddress,
@@ -219,7 +213,6 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
     unapprovedTxs,
     unapprovedTxCount,
-    currentNetworkUnapprovedTxs,
     customGas: {
       gasLimit,
       gasPrice,
@@ -249,9 +242,7 @@ const mapStateToProps = (state, ownProps) => {
     isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    insightSnaps,
-    ///: END:ONLY_INCLUDE_IN
+    useCurrencyRateCheck: getUseCurrencyRateCheck(state),
   };
 };
 

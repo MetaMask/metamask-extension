@@ -1,7 +1,7 @@
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../../../shared/constants/transaction';
 import {
   combineTransactionHistories,
@@ -22,7 +22,7 @@ describe('TransactionActivityLog utils', () => {
             {
               id: 6400627574331058,
               time: 1543958845581,
-              status: TRANSACTION_STATUSES.UNAPPROVED,
+              status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
               chainId: '0x5',
               loadingDefaults: true,
@@ -33,13 +33,13 @@ describe('TransactionActivityLog utils', () => {
                 gas: GAS_LIMITS.SIMPLE,
                 gasPrice: '0x3b9aca00',
               },
-              type: TRANSACTION_TYPES.STANDARD,
+              type: TransactionType.simpleSend,
             },
             [
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.APPROVED,
+                value: TransactionStatus.approved,
                 note: 'txStateManager: setting status to approved',
                 timestamp: 1543958847813,
               },
@@ -48,7 +48,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.SUBMITTED,
+                value: TransactionStatus.submitted,
                 note: 'txStateManager: setting status to submitted',
                 timestamp: 1543958848147,
               },
@@ -57,7 +57,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.DROPPED,
+                value: TransactionStatus.dropped,
                 note: 'txStateManager: setting status to dropped',
                 timestamp: 1543958897181,
               },
@@ -73,7 +73,7 @@ describe('TransactionActivityLog utils', () => {
           loadingDefaults: false,
           metamaskNetworkId: '5',
           chainId: '0x5',
-          status: TRANSACTION_STATUSES.DROPPED,
+          status: TransactionStatus.dropped,
           submittedTime: 1543958848135,
           time: 1543958845581,
           txParams: {
@@ -84,7 +84,7 @@ describe('TransactionActivityLog utils', () => {
             to: '0xc5ae6383e126f901dcb06131d97a88745bfa88d6',
             value: '0x2386f26fc10000',
           },
-          type: TRANSACTION_TYPES.STANDARD,
+          type: TransactionType.simpleSend,
         },
         {
           hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
@@ -92,7 +92,7 @@ describe('TransactionActivityLog utils', () => {
             {
               id: 6400627574331060,
               time: 1543958857697,
-              status: TRANSACTION_STATUSES.UNAPPROVED,
+              status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
               chainId: '0x5',
               loadingDefaults: false,
@@ -105,7 +105,7 @@ describe('TransactionActivityLog utils', () => {
                 nonce: '0x32',
               },
               lastGasPrice: '0x4190ab00',
-              type: TRANSACTION_TYPES.RETRY,
+              type: TransactionType.retry,
             },
             [
               {
@@ -120,7 +120,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.APPROVED,
+                value: TransactionStatus.approved,
                 note: 'txStateManager: setting status to approved',
                 timestamp: 1543958859485,
               },
@@ -129,7 +129,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.SIGNED,
+                value: TransactionStatus.signed,
                 note: 'transactions#publishTransaction',
                 timestamp: 1543958859889,
               },
@@ -138,7 +138,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.SUBMITTED,
+                value: TransactionStatus.submitted,
                 note: 'txStateManager: setting status to submitted',
                 timestamp: 1543958860061,
               },
@@ -156,7 +156,7 @@ describe('TransactionActivityLog utils', () => {
               {
                 op: 'replace',
                 path: '/status',
-                value: TRANSACTION_STATUSES.CONFIRMED,
+                value: TransactionStatus.confirmed,
                 timestamp: 1543958897165,
               },
             ],
@@ -166,7 +166,7 @@ describe('TransactionActivityLog utils', () => {
           loadingDefaults: false,
           metamaskNetworkId: '5',
           chainId: '0x5',
-          status: TRANSACTION_STATUSES.CONFIRMED,
+          status: TransactionStatus.confirmed,
           submittedTime: 1543958860054,
           time: 1543958857697,
           txParams: {
@@ -180,7 +180,7 @@ describe('TransactionActivityLog utils', () => {
           txReceipt: {
             status: '0x1',
           },
-          type: TRANSACTION_TYPES.RETRY,
+          type: TransactionType.retry,
         },
       ];
 
@@ -232,7 +232,7 @@ describe('TransactionActivityLog utils', () => {
       const transaction = {
         history: [],
         id: 1,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         txParams: {
           from: '0x1',
           gas: GAS_LIMITS.SIMPLE,
@@ -254,7 +254,7 @@ describe('TransactionActivityLog utils', () => {
             loadingDefaults: true,
             metamaskNetworkId: '5',
             chainId: '0x5',
-            status: TRANSACTION_STATUSES.UNAPPROVED,
+            status: TransactionStatus.unapproved,
             time: 1535507561452,
             txParams: {
               from: '0x1',
@@ -298,7 +298,7 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507564302,
-              value: TRANSACTION_STATUSES.APPROVED,
+              value: TransactionStatus.approved,
             },
           ],
           [
@@ -325,7 +325,7 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507564518,
-              value: TRANSACTION_STATUSES.SIGNED,
+              value: TransactionStatus.signed,
             },
             {
               op: 'add',
@@ -360,7 +360,7 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507564665,
-              value: TRANSACTION_STATUSES.SUBMITTED,
+              value: TransactionStatus.submitted,
             },
           ],
           [
@@ -378,12 +378,12 @@ describe('TransactionActivityLog utils', () => {
               op: 'replace',
               path: '/status',
               timestamp: 1535507615993,
-              value: TRANSACTION_STATUSES.CONFIRMED,
+              value: TransactionStatus.confirmed,
             },
           ],
         ],
         id: 1,
-        status: TRANSACTION_STATUSES.CONFIRMED,
+        status: TransactionStatus.confirmed,
         txParams: {
           from: '0x1',
           gas: GAS_LIMITS.SIMPLE,

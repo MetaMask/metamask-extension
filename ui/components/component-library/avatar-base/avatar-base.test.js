@@ -2,7 +2,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 
 import { AvatarBase } from './avatar-base';
 
@@ -63,20 +63,20 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          color={COLORS.SUCCESS_DEFAULT}
-          data-testid={COLORS.SUCCESS_DEFAULT}
+          color={Color.successDefault}
+          data-testid={Color.successDefault}
         />
         <AvatarBase
-          color={COLORS.ERROR_DEFAULT}
-          data-testid={COLORS.ERROR_DEFAULT}
+          color={Color.errorDefault}
+          data-testid={Color.errorDefault}
         />
       </>,
     );
-    expect(getByTestId(COLORS.SUCCESS_DEFAULT)).toHaveClass(
-      `box--color-${COLORS.SUCCESS_DEFAULT}`,
+    expect(getByTestId(Color.successDefault)).toHaveClass(
+      `box--color-${Color.successDefault}`,
     );
-    expect(getByTestId(COLORS.ERROR_DEFAULT)).toHaveClass(
-      `box--color-${COLORS.ERROR_DEFAULT}`,
+    expect(getByTestId(Color.errorDefault)).toHaveClass(
+      `box--color-${Color.errorDefault}`,
     );
   });
   // background color
@@ -84,20 +84,20 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          backgroundColor={COLORS.SUCCESS_DEFAULT}
-          data-testid={COLORS.SUCCESS_DEFAULT}
+          backgroundColor={Color.successDefault}
+          data-testid={Color.successDefault}
         />
         <AvatarBase
-          backgroundColor={COLORS.ERROR_DEFAULT}
-          data-testid={COLORS.ERROR_DEFAULT}
+          backgroundColor={Color.errorDefault}
+          data-testid={Color.errorDefault}
         />
       </>,
     );
-    expect(getByTestId(COLORS.SUCCESS_DEFAULT)).toHaveClass(
-      `box--background-color-${COLORS.SUCCESS_DEFAULT}`,
+    expect(getByTestId(Color.successDefault)).toHaveClass(
+      `box--background-color-${Color.successDefault}`,
     );
-    expect(getByTestId(COLORS.ERROR_DEFAULT)).toHaveClass(
-      `box--background-color-${COLORS.ERROR_DEFAULT}`,
+    expect(getByTestId(Color.errorDefault)).toHaveClass(
+      `box--background-color-${Color.errorDefault}`,
     );
   });
   // border color
@@ -105,20 +105,20 @@ describe('AvatarBase', () => {
     const { getByTestId } = render(
       <>
         <AvatarBase
-          borderColor={COLORS.SUCCESS_DEFAULT}
-          data-testid={COLORS.SUCCESS_DEFAULT}
+          borderColor={Color.successDefault}
+          data-testid={Color.successDefault}
         />
         <AvatarBase
-          borderColor={COLORS.ERROR_DEFAULT}
-          data-testid={COLORS.ERROR_DEFAULT}
+          borderColor={Color.errorDefault}
+          data-testid={Color.errorDefault}
         />
       </>,
     );
-    expect(getByTestId(COLORS.SUCCESS_DEFAULT)).toHaveClass(
-      `box--border-color-${COLORS.SUCCESS_DEFAULT}`,
+    expect(getByTestId(Color.successDefault)).toHaveClass(
+      `box--border-color-${Color.successDefault}`,
     );
-    expect(getByTestId(COLORS.ERROR_DEFAULT)).toHaveClass(
-      `box--border-color-${COLORS.ERROR_DEFAULT}`,
+    expect(getByTestId(Color.errorDefault)).toHaveClass(
+      `box--border-color-${Color.errorDefault}`,
     );
   });
 });

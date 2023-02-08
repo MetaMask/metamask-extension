@@ -8,7 +8,7 @@ import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../helpers/constants/design-system';
 import DepositPopover from '../../deposit-popover/deposit-popover';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
@@ -101,11 +101,16 @@ export default class ConfirmPageContainerContent extends Component {
         <Tab
           className="confirm-page-container-content__tab"
           name={t('details')}
+          tabKey="details"
         >
           {detailsComponent}
         </Tab>
         {dataComponent && (
-          <Tab className="confirm-page-container-content__tab" name={t('data')}>
+          <Tab
+            className="confirm-page-container-content__tab"
+            name={t('data')}
+            tabKey="data"
+          >
             {dataComponent}
           </Tab>
         )}
@@ -113,6 +118,7 @@ export default class ConfirmPageContainerContent extends Component {
           <Tab
             className="confirm-page-container-content__tab"
             name={t('dataHex')}
+            tabKey="dataHex"
           >
             {dataHexComponent}
           </Tab>
@@ -211,11 +217,10 @@ export default class ConfirmPageContainerContent extends Component {
               className="actionable-message--warning"
               message={
                 isBuyableChain ? (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
-
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -229,7 +234,7 @@ export default class ConfirmPageContainerContent extends Component {
                     ])}
                   </Typography>
                 ) : (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,

@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
@@ -7,11 +7,13 @@ import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
@@ -40,23 +42,47 @@ export default function OnboardingWelcome() {
       }
     }
   }, [currentKeyring, history, firstTimeFlowType]);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onCreateClick = () => {
     dispatch(setFirstTimeFlowType('create'));
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_STARTED,
+      properties: {
+        account_type: 'metamask',
+      },
+    });
     history.push(ONBOARDING_METAMETRICS);
   };
 
   const onImportClick = () => {
     dispatch(setFirstTimeFlowType('import'));
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_IMPORT_STARTED,
+      properties: {
+        account_type: 'imported',
+      },
+    });
     history.push(ONBOARDING_METAMETRICS);
   };
+
+  trackEvent({
+    category: EVENT.CATEGORIES.ONBOARDING,
+    event: EVENT_NAMES.ONBOARDING_WELCOME,
+    properties: {
+      message_title: t('welcomeToMetaMask'),
+      app_version: global?.platform?.getVersion(),
+    },
+  });
 
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
       <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
           <Typography
-            variant={TYPOGRAPHY.H2}
+            variant={TypographyVariant.H2}
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
@@ -75,7 +101,7 @@ export default function OnboardingWelcome() {
         </div>
         <div>
           <Typography
-            variant={TYPOGRAPHY.H2}
+            variant={TypographyVariant.H2}
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >
@@ -95,7 +121,7 @@ export default function OnboardingWelcome() {
         </div>
         <div>
           <Typography
-            variant={TYPOGRAPHY.H2}
+            variant={TypographyVariant.H2}
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
           >

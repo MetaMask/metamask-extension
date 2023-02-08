@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import ConfirmTransactionBase from '../confirm-transaction-base';
-import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
+import { EditGasModes } from '../../../shared/constants/gas';
 import {
   showModal,
   updateCustomNonce,
@@ -27,15 +27,16 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
-  getIsImprovedTokenAllowanceEnabled,
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
+import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
 import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
-import { ERC1155, ERC20, ERC721 } from '../../../shared/constants/transaction';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import TokenAllowance from '../token-allowance/token-allowance';
 import { getCustomTxParamsData } from './confirm-approve.util';
@@ -81,15 +82,14 @@ export default function ConfirmApprove({
   const fromAddressIsLedger = useSelector(
     isAddressLedgerByFromAddress(userAddress),
   );
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
+  const [userAcknowledgedGasMissing, setUserAcknowledgedGasMissing] =
+    useState(false);
 
   const supportsEIP1559 = networkAndAccountSupports1559;
-
-  const improvedTokenAllowanceEnabled = useSelector(
-    getIsImprovedTokenAllowanceEnabled,
-  );
 
   const previousTokenAmount = useRef(tokenAmount);
   const {
@@ -97,6 +97,9 @@ export default function ConfirmApprove({
     showCustomizeGasPopover,
     closeCustomizeGasPopover,
   } = useApproveTransaction();
+  const renderSimulationFailureWarning = useSimulationFailureWarning(
+    userAcknowledgedGasMissing,
+  );
 
   useEffect(() => {
     if (customPermissionAmount && previousTokenAmount.current !== tokenAmount) {
@@ -142,9 +145,10 @@ export default function ConfirmApprove({
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
   let tokensText;
-  if (assetStandard === ERC20) {
-    tokensText = `${Number(tokenAmount)} ${tokenSymbol}`;
-  } else if (assetStandard === ERC721 || assetStandard === ERC1155) {
+  if (
+    assetStandard === TokenStandard.ERC721 ||
+    assetStandard === TokenStandard.ERC1155
+  ) {
     tokensText = assetName;
   }
 
@@ -168,7 +172,7 @@ export default function ConfirmApprove({
   if (assetStandard === undefined) {
     return <ConfirmContractInteraction />;
   }
-  if (improvedTokenAllowanceEnabled && assetStandard === ERC20) {
+  if (assetStandard === TokenStandard.ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -199,7 +203,7 @@ export default function ConfirmApprove({
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
               onClose={closeCustomizeGasPopover}
-              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              mode={EditGasModes.modifyInPlace}
               transaction={transaction}
             />
           )}
@@ -231,46 +235,15 @@ export default function ConfirmApprove({
               userAddress={userAddress}
               isSetApproveForAll={isSetApproveForAll}
               isApprovalOrRejection={isApprovalOrRejection}
-              decimals={decimals}
               siteImage={siteImage}
-              setCustomAmount={setCustomPermissionAmount}
-              customTokenAmount={String(customPermissionAmount)}
-              tokenAmount={tokenAmount}
               origin={formattedOrigin}
               tokenSymbol={tokenSymbol}
               tokenImage={tokenImage}
-              tokenBalance={tokenBalance}
               tokenId={tokenId}
               assetName={assetName}
               assetStandard={assetStandard}
               tokenAddress={tokenAddress}
               showCustomizeGasModal={approveTransaction}
-              showEditApprovalPermissionModal={({
-                /* eslint-disable no-shadow */
-                customTokenAmount,
-                decimals,
-                origin,
-                setCustomAmount,
-                tokenAmount,
-                tokenBalance,
-                tokenSymbol,
-                /* eslint-enable no-shadow */
-              }) =>
-                dispatch(
-                  showModal({
-                    name: 'EDIT_APPROVAL_PERMISSION',
-                    customTokenAmount,
-                    decimals,
-                    origin,
-                    setCustomAmount,
-                    tokenAmount,
-                    tokenBalance,
-                    tokenSymbol,
-                    tokenId,
-                    assetStandard,
-                  }),
-                )
-              }
               data={customData || transactionData}
               toAddress={toAddress}
               currentCurrency={currentCurrency}
@@ -281,6 +254,9 @@ export default function ConfirmApprove({
               useNonceField={useNonceField}
               nextNonce={nextNonce}
               customNonceValue={customNonceValue}
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
+              renderSimulationFailureWarning={renderSimulationFailureWarning}
               updateCustomNonce={(value) => {
                 dispatch(updateCustomNonce(value));
               }}
@@ -313,11 +289,12 @@ export default function ConfirmApprove({
               isContract={isContract}
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
               supportsEIP1559={supportsEIP1559}
+              useCurrencyRateCheck={useCurrencyRateCheck}
             />
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
                 onClose={closeCustomizeGasPopover}
-                mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+                mode={EditGasModes.modifyInPlace}
                 transaction={transaction}
               />
             )}

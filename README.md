@@ -59,6 +59,8 @@ Run unit tests and the linter with `yarn test`. To run just unit tests, run `yar
 
 You can run the linter by itself with `yarn lint`, and you can automatically fix some lint problems with `yarn lint:fix`. You can also run these two commands just on your local changes to save time with `yarn lint:changed` and `yarn lint:changed:fix` respectively.
 
+For Jest debugging guide using Node.js, see [docs/tests/jest.md](docs/tests/jest.md).
+
 ### Running E2E Tests
 
 Our e2e test suite can be run on either Firefox or Chrome.

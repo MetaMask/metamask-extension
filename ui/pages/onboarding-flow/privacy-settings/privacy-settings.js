@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,9 +7,9 @@ import Box from '../../../components/ui/box/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
@@ -22,11 +22,20 @@ import {
   showModal,
   setIpfsGateway,
   showNetworkDropdown,
+  setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { Icon, TextField } from '../../../components/component-library';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
+import {
+  COINGECKO_LINK,
+  CRYPTOCOMPARE_LINK,
+  PRIVACY_POLICY_LINK,
+} from '../../../../shared/lib/ui-utils';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -35,6 +44,7 @@ export default function PrivacySettings() {
   const history = useHistory();
   const [usePhishingDetection, setUsePhishingDetection] = useState(true);
   const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
+  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] = useState(true);
   const [showIncomingTransactions, setShowIncomingTransactions] =
     useState(true);
   const [
@@ -43,6 +53,7 @@ export default function PrivacySettings() {
   ] = useState(true);
   const [ipfsURL, setIPFSURL] = useState('');
   const [ipfsError, setIPFSError] = useState(null);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const networks = useSelector(
     (state) => state.metamask.frequentRpcListDetail || [],
@@ -57,12 +68,23 @@ export default function PrivacySettings() {
     dispatch(
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
     );
+    dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
       dispatch(setIpfsGateway(host));
     }
+
+    trackEvent({
+      category: EVENT.CATEGORIES.ONBOARDING,
+      event: EVENT_NAMES.ONBOARDING_WALLET_ADVANCED_SETTINGS,
+      properties: {
+        show_incoming_tx: showIncomingTransactions,
+        use_phising_detection: usePhishingDetection,
+        turnon_token_detection: turnOnTokenDetection,
+      },
+    });
 
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
@@ -84,10 +106,13 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
-          <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+          <Typography
+            variant={TypographyVariant.H2}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
             {t('advancedConfiguration')}
           </Typography>
-          <Typography variant={TYPOGRAPHY.H4}>
+          <Typography variant={TypographyVariant.H4}>
             {t('setAdvancedPrivacySettingsDetails')}
           </Typography>
         </div>
@@ -203,7 +228,7 @@ export default function PrivacySettings() {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                       }}
-                      icon={<Icon name="add-outline" marginRight={2} />}
+                      icon={<Icon name="add" marginRight={2} />}
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
                     </Button>
@@ -227,11 +252,11 @@ export default function PrivacySettings() {
                   />
                   {ipfsURL ? (
                     <Typography
-                      variant={TYPOGRAPHY.H7}
+                      variant={TypographyVariant.H7}
                       color={
                         ipfsError
-                          ? COLORS.ERROR_DEFAULT
-                          : COLORS.SUCCESS_DEFAULT
+                          ? TextColor.errorDefault
+                          : TextColor.successDefault
                       }
                     >
                       {ipfsError || t('onboardingAdvancedPrivacyIPFSValid')}
@@ -240,6 +265,37 @@ export default function PrivacySettings() {
                 </Box>
               </>
             }
+          />
+          <Setting
+            value={turnOnCurrencyRateCheck}
+            setValue={setTurnOnCurrencyRateCheck}
+            title={t('currencyRateCheckToggle')}
+            description={t('currencyRateCheckToggleDescription', [
+              <a
+                key="coingecko_link"
+                href={COINGECKO_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('coingecko')}
+              </a>,
+              <a
+                key="cryptocompare_link"
+                href={CRYPTOCOMPARE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('cryptoCompare')}
+              </a>,
+              <a
+                key="privacy_policy_link"
+                href={PRIVACY_POLICY_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           />
         </div>
         <Button type="primary" rounded onClick={handleSubmit}>

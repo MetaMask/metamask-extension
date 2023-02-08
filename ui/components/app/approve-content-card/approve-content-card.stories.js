@@ -1,9 +1,10 @@
 import React from 'react';
+import { Icon, ICON_NAMES } from '../../component-library';
 import ApproveContentCard from './approve-content-card';
 
 export default {
   title: 'Components/App/ApproveContentCard',
-  id: __filename,
+
   argTypes: {
     showHeader: {
       control: 'boolean',
@@ -71,7 +72,7 @@ export default {
   },
   args: {
     showHeader: true,
-    symbol: <i className="fa fa-tag" />,
+    symbol: <Icon name={ICON_NAMES.TAG} />,
     title: 'Transaction fee',
     showEdit: true,
     showAdvanceGasFeeOptions: true,

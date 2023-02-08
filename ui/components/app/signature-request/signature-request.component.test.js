@@ -1,9 +1,13 @@
 import React from 'react';
-import { shallowWithContext } from '../../../../test/lib/render-helpers';
+import { fireEvent } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SignatureRequest from './signature-request.component';
-import Message from './signature-request-message';
 
 describe('Signature Request Component', () => {
+  const store = configureMockStore()(mockState);
+
   describe('render', () => {
     let fromAddress;
     let messageData;
@@ -58,17 +62,21 @@ describe('Signature Request Component', () => {
       };
     });
 
-    it('should render a div message parsed', () => {
+    it('should match snapshot', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
       };
-      const wrapper = shallowWithContext(
+      const { container } = renderWithProvider(
         <SignatureRequest
           hardwareWalletRequiresConnection={false}
           clearConfirmTransaction={() => undefined}
           cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
           sign={() => undefined}
           txData={{
             msgParams,
@@ -76,22 +84,38 @@ describe('Signature Request Component', () => {
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
         />,
+        store,
       );
 
-      expect(wrapper.is('div')).toStrictEqual(true);
-      expect(wrapper).toHaveLength(1);
-      expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
-      const messageWrapper = wrapper.find(Message);
-      expect(messageWrapper).toHaveLength(1);
-      const { data } = messageWrapper.props();
-      expect(data.contents).toStrictEqual('Hello, Bob!');
-      expect(data.from.name).toStrictEqual('Cow');
-      expect(data.from.wallets).toBeDefined();
-      expect(data.from.wallets).toHaveLength(2);
-      expect(data.to).toBeDefined();
-      const dataTo = data.to;
-      expect(dataTo[0].name).toStrictEqual('Bob');
-      expect(dataTo[0].wallets).toHaveLength(3);
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should render navigation', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { queryByTestId } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+        />,
+        store,
+      );
+
+      expect(queryByTestId('navigation-container')).toBeInTheDocument();
     });
 
     it('should render a div message parsed without typeless data', () => {
@@ -104,11 +128,15 @@ describe('Signature Request Component', () => {
         version: 'V4',
         origin: 'test',
       };
-      const wrapper = shallowWithContext(
+      const { queryByText } = renderWithProvider(
         <SignatureRequest
           hardwareWalletRequiresConnection={false}
           clearConfirmTransaction={() => undefined}
           cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
           sign={() => undefined}
           txData={{
             msgParams,
@@ -116,25 +144,136 @@ describe('Signature Request Component', () => {
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
         />,
+        store,
       );
 
-      expect(wrapper.is('div')).toStrictEqual(true);
-      expect(wrapper).toHaveLength(1);
-      expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
-      const messageWrapper = wrapper.find(Message);
-      expect(messageWrapper).toHaveLength(1);
-      const { data } = messageWrapper.props();
-      expect(data.contents).toStrictEqual('Hello, Bob!');
-      expect(data.from.name).toStrictEqual('Cow');
-      expect(data.from.wallets).toBeDefined();
-      expect(data.from.wallets).toHaveLength(2);
-      expect(data.to).toBeDefined();
-      const dataTo = data.to;
-      expect(dataTo[0].name).toStrictEqual('Bob');
-      expect(dataTo[0].wallets).toHaveLength(3);
+      expect(queryByText('do_not_display')).not.toBeInTheDocument();
+      expect(queryByText('one')).not.toBeInTheDocument();
+      expect(queryByText('do_not_display_2')).not.toBeInTheDocument();
+      expect(queryByText('two')).not.toBeInTheDocument();
+    });
 
-      expect(data.do_not_display).toBeUndefined();
-      expect(data.do_not_display2).toBeUndefined();
+    it('should not render a reject multiple requests link if there is not multiple requests', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+        />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.signature-request__reject-all-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should render a reject multiple requests link if there is multiple requests (greater than 1)', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.signature-request__reject-all-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('should call reject all button when button is clicked', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      const rejectRequestsLink = container.querySelector(
+        '.signature-request__reject-all-button',
+      );
+      fireEvent.click(rejectRequestsLink);
+      expect(rejectRequestsLink).toBeDefined();
+    });
+
+    it('should render text of reject all button', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { getByText } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(getByText('Reject 2 requests')).toBeInTheDocument();
     });
   });
 });

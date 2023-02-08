@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  SIZES,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  COLORS,
-  BACKGROUND_COLORS,
+  AlignItems,
+  BackgroundColor,
+  IconColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -34,7 +35,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon',
-  id: __filename,
+
   component: AvatarIcon,
   parameters: {
     docs: {
@@ -52,11 +53,11 @@ export default {
     },
     backgroundColor: {
       control: 'select',
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
     },
     color: {
       control: 'select',
-      options: Object.values(COLORS),
+      options: Object.values(Color),
     },
     className: {
       control: 'text',
@@ -83,61 +84,62 @@ export default {
     },
   },
   args: {
-    size: SIZES.MD,
+    size: Size.MD,
   },
 };
 
 const Template = (args) => {
-  return <AvatarIcon iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE} {...args} />;
+  return <AvatarIcon iconName={ICON_NAMES.SWAP_HORIZONTAL} {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarIcon {...args} size={SIZES.XS} />
-    <AvatarIcon {...args} size={SIZES.SM} />
-    <AvatarIcon {...args} size={SIZES.MD} />
-    <AvatarIcon {...args} size={SIZES.LG} />
-    <AvatarIcon {...args} size={SIZES.XL} />
+export const SizeStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+    <AvatarIcon {...args} size={Size.XS} />
+    <AvatarIcon {...args} size={Size.SM} />
+    <AvatarIcon {...args} size={Size.MD} />
+    <AvatarIcon {...args} size={Size.LG} />
+    <AvatarIcon {...args} size={Size.XL} />
   </Box>
 );
+SizeStory.storyName = 'Size';
 
 Size.args = {
-  iconName: ICON_NAMES.CHECK_CIRCLE_ON_FILLED,
+  iconName: ICON_NAMES.CONFIRMATION,
 };
 
 export const IconName = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarIcon
-      color={COLORS.PRIMARY_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.PRIMARY_MUTED}
-      iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+      color={IconColor.primaryDefault}
+      backgroundColor={BackgroundColor.primaryMuted}
+      iconName={ICON_NAMES.SWAP_HORIZONTAL}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.SUCCESS_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.SUCCESS_MUTED}
-      iconName={ICON_NAMES.CHECK_CIRCLE_ON_FILLED}
+      color={IconColor.successDefault}
+      backgroundColor={BackgroundColor.successMuted}
+      iconName={ICON_NAMES.CONFIRMATION}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.INFO_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.INFO_MUTED}
-      iconName={ICON_NAMES.INFO_FILLED}
+      color={IconColor.infoDefault}
+      backgroundColor={BackgroundColor.infoMuted}
+      iconName={ICON_NAMES.INFO}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.WARNING_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.WARNING_MUTED}
-      iconName={ICON_NAMES.WARNING_FILLED}
+      color={IconColor.warningDefault}
+      backgroundColor={BackgroundColor.warningMuted}
+      iconName={ICON_NAMES.WARNING}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.ERROR_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.ERROR_MUTED}
-      iconName={ICON_NAMES.DANGER_FILLED}
+      color={IconColor.errorDefault}
+      backgroundColor={BackgroundColor.errorMuted}
+      iconName={ICON_NAMES.DANGER}
       {...args}
     />
   </Box>
@@ -146,39 +148,39 @@ export const IconName = (args) => (
 export const ColorAndBackgroundColor = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
     <AvatarIcon
-      color={COLORS.PRIMARY_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.PRIMARY_MUTED}
-      iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+      color={IconColor.primaryDefault}
+      backgroundColor={BackgroundColor.primaryMuted}
+      iconName={ICON_NAMES.SWAP_HORIZONTAL}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.PRIMARY_INVERSE}
-      backgroundColor={BACKGROUND_COLORS.PRIMARY_DEFAULT}
-      iconName={ICON_NAMES.SWAP_HORIZONTAL_OUTLINE}
+      color={IconColor.primaryInverse}
+      backgroundColor={BackgroundColor.primaryDefault}
+      iconName={ICON_NAMES.SWAP_HORIZONTAL}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.SUCCESS_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.SUCCESS_MUTED}
-      iconName={ICON_NAMES.CHECK_CIRCLE_ON_FILLED}
+      color={IconColor.successDefault}
+      backgroundColor={BackgroundColor.successMuted}
+      iconName={ICON_NAMES.CONFIRMATION}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.INFO_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.INFO_MUTED}
-      iconName={ICON_NAMES.INFO_FILLED}
+      color={IconColor.infoDefault}
+      backgroundColor={BackgroundColor.infoMuted}
+      iconName={ICON_NAMES.INFO}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.WARNING_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.WARNING_MUTED}
-      iconName={ICON_NAMES.WARNING_FILLED}
+      color={IconColor.warningDefault}
+      backgroundColor={BackgroundColor.warningMuted}
+      iconName={ICON_NAMES.WARNING}
       {...args}
     />
     <AvatarIcon
-      color={COLORS.ERROR_DEFAULT}
-      backgroundColor={BACKGROUND_COLORS.ERROR_MUTED}
-      iconName={ICON_NAMES.DANGER_FILLED}
+      color={IconColor.errorDefault}
+      backgroundColor={BackgroundColor.errorMuted}
+      iconName={ICON_NAMES.DANGER}
       {...args}
     />
   </Box>

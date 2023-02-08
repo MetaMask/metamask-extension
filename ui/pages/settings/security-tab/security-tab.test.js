@@ -8,12 +8,14 @@ import SecurityTab from './security-tab.container';
 const mockSetFeatureFlag = jest.fn();
 const mockSetParticipateInMetaMetrics = jest.fn();
 const mockSetUsePhishDetect = jest.fn();
+const mockSetUseCurrencyRateCheck = jest.fn();
 
-jest.mock('../../../store/actions.js', () => {
+jest.mock('../../../store/actions.ts', () => {
   return {
     setFeatureFlag: () => mockSetFeatureFlag,
     setParticipateInMetaMetrics: () => mockSetParticipateInMetaMetrics,
     setUsePhishDetect: () => mockSetUsePhishDetect,
+    setUseCurrencyRateCheck: () => mockSetUseCurrencyRateCheck,
   };
 });
 
@@ -75,7 +77,7 @@ describe('Security Tab', () => {
     const checkboxes = queryAllByRole('checkbox');
 
     let index = 4;
-    if (process.env.COLLECTIBLES_V1) {
+    if (process.env.NFTS_V1) {
       index = 5;
     }
     const toggleMetaMetricsCheckbox = checkboxes[index];

@@ -9,16 +9,16 @@ import { HelpText } from './help-text';
 The `HelpText` is intended to be used as the help or error text under a form element
 
 <Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--default-story" />
+  <Story id="components-componentlibrary-helptext--default-story" />
 </Canvas>
 
 ## Props
 
-The `HelpText` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+The `HelpText` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={HelpText} />
 
-`HelpText` accepts all [Text](/docs/ui-components-component-library-text-text-stories-js--default-story#props) component props
+`HelpText` accepts all [Text](/docs/components-componentlibrary-text--default-story#props) component props
 
 <ArgsTable of={Text} />
 
@@ -27,22 +27,22 @@ The `HelpText` accepts all props below as well as all [Box](/docs/ui-components-
 The `children` of the `HelpText` can be plain text or react nodes
 
 <Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--children" />
+  <Story id="components-componentlibrary-helptext--children" />
 </Canvas>
 
 ```jsx
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { Size, IconColor } from '../../../helpers/constants/design-system';
 import { HelpText, Icon, ICON_NAMES } from '../../component-library';
 
 <HelpText>Plain text</HelpText>
 <HelpText>
   Text and icon
-  <Icon
-    marginLeft={1}
-    color={COLORS.INHERIT}
-    name={ICON_NAMES.WARNING_FILLED}
-    size={SIZES.AUTO}
-  />
+      <Icon
+        marginLeft={1}
+        color={IconColor.inherit}
+        name={ICON_NAMES.WARNING}
+        size={Size.inherit}
+      />
 </HelpText>
 ```
 
@@ -51,7 +51,7 @@ import { HelpText, Icon, ICON_NAMES } from '../../component-library';
 Use the `error` prop to show the `HelpText` in error state
 
 <Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--error-story" />
+  <Story id="components-componentlibrary-helptext--error-story" />
 </Canvas>
 
 ```jsx
@@ -65,25 +65,25 @@ import { HelpText } from '../../component-library';
 It may be useful to change the color of the `HelpText`. Use the `color` prop and the `COLORS` object to change the color of the `HelpText`. Defaults to `COLORS.TEXT_DEFAULT`.
 
 <Canvas>
-  <Story id="ui-components-component-library-help-text-help-text-stories-js--color" />
+  <Story id="components-componentlibrary-helptext--color" />
 </Canvas>
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 import { HelpText } from '../../component-library';
 
 <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-  <HelpText color={COLORS.TEXT_DEFAULT}>
-    The HelpText default color is COLORS.TEXT_DEFAULT
+  <HelpText color={Color.textDefault} {...args}>
+    This HelpText default color is Color.textDefault
   </HelpText>
-  <HelpText color={COLORS.INFO_DEFAULT}>
-    This HelpText color is COLORS.INFO_DEFAULT
+  <HelpText color={Color.infoDefault} {...args}>
+    This HelpText color is Color.infoDefault
   </HelpText>
-  <HelpText color={COLORS.WARNING_DEFAULT}>
-    This HelpText color is COLORS.WARNING_DEFAULT
+  <HelpText color={Color.warningDefault} {...args}>
+    This HelpText color is Color.warningDefault
   </HelpText>
-  <HelpText color={COLORS.SUCCESS_DEFAULT}>
-    This HelpText color is COLORS.SUCCESS_DEFAULT
+  <HelpText color={Color.successDefault} {...args}>
+    This HelpText color is Color.successDefault
   </HelpText>
 </Box>;
 ```

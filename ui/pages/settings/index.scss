@@ -171,6 +171,11 @@
 
   &__subheader--break {
     margin-inline-start: 4px;
+    white-space: nowrap;
+    width: 100%;
+    max-width: calc(100% - 125px - 85px);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__sub-header {
@@ -274,15 +279,6 @@
     display: flex;
     flex-direction: column;
     padding: 10px 0 20px;
-
-    &--parent {
-      padding: 10px 0 10px;
-    }
-
-    &--dependent {
-      margin-left: 48px;
-      padding: 0 0 20px;
-    }
   }
 
   &__content-item {
@@ -360,7 +356,7 @@
 
   &__content-unordered-list {
     padding-left: 2.5rem;
-    margin-top: 2.5rem;
+    margin-top: 1rem;
     list-style: disc;
   }
 

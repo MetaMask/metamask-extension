@@ -1,4 +1,3 @@
-@import 'signature-request-footer/index';
 @import 'signature-request-header/index';
 @import 'signature-request-message/index';
 @import 'signature-request-data/index';
@@ -9,16 +8,21 @@
   flex-direction: column;
   min-width: 0;
   width: 408px;
+  height: max-content;
   background-color: var(--color-background-default);
   box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   border-radius: 8px;
 
   @include screen-sm-min {
-    max-height: 55vh;
+    max-height: 80vh;
     min-height: 570px;
     flex: 0 0 auto;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  &__reject-all-button {
+    margin-top: -15px;
   }
 }
 

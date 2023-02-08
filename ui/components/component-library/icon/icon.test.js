@@ -1,14 +1,14 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { SIZES, COLORS } from '../../../helpers/constants/design-system';
+import { Size, IconColor } from '../../../helpers/constants/design-system';
 import { ICON_NAMES } from './icon.constants';
 import { Icon } from './icon';
 
 describe('Icon', () => {
   it('should render correctly', () => {
     const { getByTestId, container } = render(
-      <Icon name={ICON_NAMES.ADD_SQUARE_FILLED} data-testid="icon" />,
+      <Icon name={ICON_NAMES.ADD_SQUARE} data-testid="icon" />,
     );
     expect(getByTestId('icon')).toBeDefined();
     expect(container.querySelector('svg')).toBeDefined();
@@ -17,7 +17,7 @@ describe('Icon', () => {
   it('should render with a custom class', () => {
     const { getByTestId } = render(
       <Icon
-        name={ICON_NAMES.ADD_SQUARE_FILLED}
+        name={ICON_NAMES.ADD_SQUARE}
         data-testid="icon"
         className="test-class"
       />,
@@ -34,7 +34,7 @@ describe('Icon', () => {
      */
     const { getByTestId } = render(
       <Icon
-        name={ICON_NAMES.ADD_SQUARE_FILLED}
+        name={ICON_NAMES.ADD_SQUARE}
         data-testid="icon"
         aria-label="test aria label"
       />,
@@ -47,98 +47,83 @@ describe('Icon', () => {
   it('should render with different icons using mask-image and image urls', () => {
     const { getByTestId } = render(
       <>
-        <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          data-testid="icon-add-square-filled"
-        />
-        <Icon name={ICON_NAMES.BANK_FILLED} data-testid="icon-bank-filled" />
-        <Icon
-          name={ICON_NAMES.BOOKMARK_FILLED}
-          data-testid="icon-bookmark-filled"
-        />
-        <Icon
-          name={ICON_NAMES.CALCULATOR_FILLED}
-          data-testid="icon-calculator-filled"
-        />
+        <Icon name={ICON_NAMES.ADD_SQUARE} data-testid="add-square" />
+        <Icon name={ICON_NAMES.BANK} data-testid="bank" />
+        <Icon name={ICON_NAMES.BOOKMARK} data-testid="bookmark" />
+        <Icon name={ICON_NAMES.CALCULATOR} data-testid="calculator" />
       </>,
     );
-    expect(
-      window.getComputedStyle(getByTestId('icon-add-square-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-add-square-filled.svg')`);
-    expect(
-      window.getComputedStyle(getByTestId('icon-bank-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-bank-filled.svg')`);
-    expect(
-      window.getComputedStyle(getByTestId('icon-bookmark-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-bookmark-filled.svg')`);
-    expect(
-      window.getComputedStyle(getByTestId('icon-calculator-filled')).maskImage,
-    ).toBe(`url('./images/icons/icon-calculator-filled.svg')`);
+    expect(window.getComputedStyle(getByTestId('add-square')).maskImage).toBe(
+      `url('./images/icons/add-square.svg')`,
+    );
+    expect(window.getComputedStyle(getByTestId('bank')).maskImage).toBe(
+      `url('./images/icons/bank.svg')`,
+    );
+    expect(window.getComputedStyle(getByTestId('bookmark')).maskImage).toBe(
+      `url('./images/icons/bookmark.svg')`,
+    );
+    expect(window.getComputedStyle(getByTestId('calculator')).maskImage).toBe(
+      `url('./images/icons/calculator.svg')`,
+    );
   });
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.XXS}
-          data-testid="icon-xxs"
-        />
-        <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.XS}
+          name={ICON_NAMES.ADD_SQUARE}
+          size={Size.XS}
           data-testid="icon-xs"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.SM}
+          name={ICON_NAMES.ADD_SQUARE}
+          size={Size.SM}
           data-testid="icon-sm"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.MD}
+          name={ICON_NAMES.ADD_SQUARE}
+          size={Size.MD}
           data-testid="icon-md"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.LG}
+          name={ICON_NAMES.ADD_SQUARE}
+          size={Size.LG}
           data-testid="icon-lg"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.XL}
+          name={ICON_NAMES.ADD_SQUARE}
+          size={Size.XL}
           data-testid="icon-xl"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          size={SIZES.AUTO}
+          name={ICON_NAMES.ADD_SQUARE}
+          size={Size.inherit}
           data-testid="icon-auto"
         />
       </>,
     );
-    expect(getByTestId('icon-xxs')).toHaveClass('mm-icon--size-xxs');
     expect(getByTestId('icon-xs')).toHaveClass('mm-icon--size-xs');
     expect(getByTestId('icon-sm')).toHaveClass('mm-icon--size-sm');
     expect(getByTestId('icon-md')).toHaveClass('mm-icon--size-md');
     expect(getByTestId('icon-lg')).toHaveClass('mm-icon--size-lg');
     expect(getByTestId('icon-xl')).toHaveClass('mm-icon--size-xl');
-    expect(getByTestId('icon-auto')).toHaveClass('mm-icon--size-auto');
+    expect(getByTestId('icon-auto')).toHaveClass('mm-icon--size-inherit');
   });
   it('should render with icon colors', () => {
     const { getByTestId } = render(
       <>
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          color={COLORS.ICON_DEFAULT}
+          name={ICON_NAMES.ADD_SQUARE}
+          color={IconColor.iconDefault}
           data-testid="icon-color-default"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          color={COLORS.ICON_ALTERNATIVE}
+          name={ICON_NAMES.ADD_SQUARE}
+          color={IconColor.iconAlternative}
           data-testid="icon-color-alternative"
         />
         <Icon
-          name={ICON_NAMES.ADD_SQUARE_FILLED}
-          color={COLORS.ICON_MUTED}
+          name={ICON_NAMES.ADD_SQUARE}
+          color={IconColor.iconMuted}
           data-testid="icon-color-muted"
         />
       </>,

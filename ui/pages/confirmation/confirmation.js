@@ -17,9 +17,9 @@ import MetaMaskTemplateRenderer from '../../components/app/metamask-template-ren
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
-  COLORS,
   FLEX_DIRECTION,
-  SIZES,
+  Size,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
@@ -28,6 +28,7 @@ import {
   getSnap,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
+  getUnapprovedTxCount,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -169,6 +170,7 @@ export default function ConfirmationPage({
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
+  const unnaprovedTxsCount = useSelector(getUnapprovedTxCount);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
@@ -301,8 +303,8 @@ export default function ConfirmationPage({
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
             <NetworkDisplay
-              indicatorSize={SIZES.XS}
-              labelProps={{ color: COLORS.TEXT_DEFAULT }}
+              indicatorSize={Size.XS}
+              labelProps={{ color: TextColor.textDefault }}
             />
           </Box>
         ) : null}
@@ -339,6 +341,7 @@ export default function ConfirmationPage({
       <ConfirmationFooter
         alerts={
           alertState[pendingConfirmation.id] &&
+          unnaprovedTxsCount > 0 &&
           Object.values(alertState[pendingConfirmation.id])
             .filter((alert) => alert.dismissed === false)
             .map((alert, idx, filtered) => (

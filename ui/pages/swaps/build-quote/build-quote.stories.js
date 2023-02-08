@@ -7,7 +7,7 @@ const tokenValuesArr = shuffle(testData.metamask.tokenList);
 
 export default {
   title: 'Pages/Swaps/BuildQuote',
-  id: __filename,
+
   argTypes: {
     ethBalance: {
       control: { type: 'text' },

@@ -48,10 +48,10 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
-  getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -82,11 +82,6 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  decGWEIToHexWEI,
-  addHexes,
-  decWEIToDecETH,
-} from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
@@ -97,7 +92,7 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
+import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
@@ -109,14 +104,19 @@ import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-u
 import {
   calcGasTotal,
   calcTokenAmount,
-  decimalToHex,
-  hexWEIToDecGWEI,
   toPrecisionWithoutTrailingZeros,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
-import { sumHexes } from '../../../helpers/utils/transactions.util';
+import {
+  addHexes,
+  decGWEIToHexWEI,
+  decimalToHex,
+  decWEIToDecETH,
+  hexWEIToDecGWEI,
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -141,8 +141,8 @@ export default function ViewQuote() {
   const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
     useState(false);
   const priceDifferenceRiskyBuckets = [
-    GAS_RECOMMENDATIONS.HIGH,
-    GAS_RECOMMENDATIONS.MEDIUM,
+    GasRecommendations.high,
+    GasRecommendations.medium,
   ];
 
   const routeState = useSelector(getBackgroundSwapRouteState);
@@ -195,17 +195,10 @@ export default function ViewQuote() {
     getCurrentSmartTransactionsError,
   );
   const smartTransactionsError = useSelector(getSmartTransactionsError);
-  const currentSmartTransactionsErrorMessageDismissed = useSelector(
-    getCurrentSmartTransactionsErrorMessageDismissed,
-  );
-  const currentSmartTransactionsEnabled =
-    smartTransactionsEnabled &&
-    !(
-      currentSmartTransactionsError &&
-      (currentSmartTransactionsError !== 'not_enough_funds' ||
-        currentSmartTransactionsErrorMessageDismissed)
-    );
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
 
@@ -213,8 +206,8 @@ export default function ViewQuote() {
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs(GAS_RECOMMENDATIONS.HIGH, {
-      userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
+    gasFeeInputs = useGasFeeInputs(GasRecommendations.high, {
+      userFeeLevel: swapsUserFeeLevel || GasRecommendations.high,
     });
   }
 
@@ -304,20 +297,23 @@ export default function ViewQuote() {
   const approveGas = approveTxParams?.gas;
 
   const renderablePopoverData = useMemo(() => {
-    return quotesToRenderableData(
+    return quotesToRenderableData({
       quotes,
-      networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : gasPrice,
+      gasPrice: networkAndAccountSupports1559
+        ? baseAndPriorityFeePerGas
+        : gasPrice,
       conversionRate,
       currentCurrency,
       approveGas,
-      memoizedTokenConversionRates,
+      tokenConversionRates: memoizedTokenConversionRates,
       chainId,
-      smartTransactionsEnabled &&
+      smartTransactionEstimatedGas:
+        smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
       multiLayerL1ApprovalFeeTotal,
-    );
+    });
   }, [
     quotes,
     gasPrice,
@@ -732,8 +728,8 @@ export default function ViewQuote() {
   useEffect(() => {
     if (
       acknowledgedPriceDifference &&
-      lastPriceDifferenceBucket === GAS_RECOMMENDATIONS.MEDIUM &&
-      priceSlippageBucket === GAS_RECOMMENDATIONS.HIGH
+      lastPriceDifferenceBucket === GasRecommendations.medium &&
+      priceSlippageBucket === GasRecommendations.high
     ) {
       setAcknowledgedPriceDifference(false);
     }

@@ -14,6 +14,9 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
+  COINGECKO_LINK,
+  CRYPTOCOMPARE_LINK,
+  PRIVACY_POLICY_LINK,
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   CONSENSYS_PRIVACY_LINK,
   ETHERSCAN_PRIVACY_LINK,
@@ -45,10 +48,8 @@ export default class SecurityTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
-    useNftDetection: PropTypes.bool,
-    setUseNftDetection: PropTypes.func,
-    setOpenSeaEnabled: PropTypes.func,
-    openSeaEnabled: PropTypes.bool,
+    useCurrencyRateCheck: PropTypes.bool.isRequired,
+    setUseCurrencyRateCheck: PropTypes.func.isRequired,
   };
 
   state = {
@@ -348,7 +349,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
       >
@@ -395,7 +396,7 @@ export default class SecurityTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[4]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[8]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">
@@ -423,51 +424,48 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderCollectibleDetectionToggle() {
-    if (!process.env.COLLECTIBLES_V1) {
-      return null;
-    }
-
+  renderCurrencyRateCheckToggle() {
     const { t } = this.context;
-    const {
-      useNftDetection,
-      setUseNftDetection,
-      openSeaEnabled,
-      setOpenSeaEnabled,
-    } = this.props;
+    const { useCurrencyRateCheck, setUseCurrencyRateCheck } = this.props;
 
     return (
       <div ref={this.settingsRefs[9]} className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('useCollectibleDetection')}</span>
+          <span>{t('currencyRateCheckToggle')}</span>
           <div className="settings-page__content-description">
-            {t('useCollectibleDetectionDescription')}
-            <br />
-            {t('useCollectibleDetectionDescriptionLine2')}
-            <ul className="settings-page__content-unordered-list">
-              <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
-              <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
-            </ul>
+            {t('currencyRateCheckToggleDescription', [
+              <a
+                key="coingecko_link"
+                href={COINGECKO_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('coingecko')}
+              </a>,
+              <a
+                key="cryptocompare_link"
+                href={CRYPTOCOMPARE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('cryptoCompare')}
+              </a>,
+              <a
+                key="privacy_policy_link"
+                href={PRIVACY_POLICY_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={useNftDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Collectible Detection',
-                  properties: {
-                    action: 'Collectible Detection',
-                    legacy_event: true,
-                  },
-                });
-                if (!value && !openSeaEnabled) {
-                  setOpenSeaEnabled(!value);
-                }
-                setUseNftDetection(!value);
-              }}
+              value={useCurrencyRateCheck}
+              onToggle={(value) => setUseCurrencyRateCheck(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -503,6 +501,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('transactions')}
         </span>
         <div className="settings-page__content-padded">
+          {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
         </div>
         <span className="settings-page__security-tab-sub-header">
@@ -513,14 +512,18 @@ export default class SecurityTab extends PureComponent {
           {this.renderIpfsGatewayControl()}
         </div>
         <span className="settings-page__security-tab-sub-header">
-          {this.context.t('tokenNftAutoDetection')}
+          {this.context.t('tokenAutoDetection')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderAutoDectectTokensToggle()}
           {this.renderBatchAccountBalanceRequestsToggle()}
-          {this.renderCollectibleDetectionToggle()}
         </div>
-        {this.renderMetaMetricsOptIn()}
+        <span className="settings-page__security-tab-sub-header">
+          {this.context.t('metrics')}
+        </span>
+        <div className="settings-page__content-padded">
+          {this.renderMetaMetricsOptIn()}
+        </div>
       </div>
     );
   }

@@ -25,8 +25,7 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
-      // Snow currently only works on Chromium based browsers
-      shouldIncludeSnow && browser === 'chrome',
+      shouldIncludeSnow,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -42,6 +41,12 @@ module.exports = function createStaticAssetTasks({
     [BuildType.flask]: [
       {
         src: './app/build-types/flask/images/',
+        dest: `images`,
+      },
+    ],
+    [BuildType.desktop]: [
+      {
+        src: './app/build-types/desktop/images/',
         dest: `images`,
       },
     ],
@@ -80,7 +85,7 @@ module.exports = function createStaticAssetTasks({
   return { dev, prod };
 
   async function setupLiveCopy(target, browser) {
-    const pattern = target.pattern || '/**/*';
+    const pattern = target.pattern === undefined ? '/**/*' : target.pattern;
     watch(target.src + pattern, (event) => {
       livereload.changed(event.path);
       performCopy(target, browser);
@@ -89,16 +94,16 @@ module.exports = function createStaticAssetTasks({
   }
 
   async function performCopy(target, browser) {
-    if (target.pattern) {
+    if (target.pattern === undefined) {
       await copyGlob(
         target.src,
-        `${target.src}${target.pattern}`,
+        `${target.src}`,
         `./dist/${browser}/${target.dest}`,
       );
     } else {
       await copyGlob(
         target.src,
-        `${target.src}`,
+        `${target.src}${target.pattern}`,
         `./dist/${browser}/${target.dest}`,
       );
     }
@@ -196,10 +201,12 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,
+      pattern: '',
     },
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
       dest: `runtime-lavamoat.js`,
+      pattern: '',
     },
   ];
 

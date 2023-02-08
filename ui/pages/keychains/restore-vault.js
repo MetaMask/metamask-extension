@@ -11,7 +11,10 @@ import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import Typography from '../../components/ui/typography';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { TYPOGRAPHY, COLORS } from '../../helpers/constants/design-system';
+import {
+  TextColor,
+  TypographyVariant,
+} from '../../helpers/constants/design-system';
 import { EVENT } from '../../../shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
@@ -67,14 +70,17 @@ class RestoreVaultPage extends Component {
             >
               {`< ${t('back')}`}
             </a>
-            <Typography variant={TYPOGRAPHY.H1} color={COLORS.TEXT_DEFAULT}>
+            <Typography
+              variant={TypographyVariant.H1}
+              color={TextColor.textDefault}
+            >
               {t('resetWallet')}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT}>
+            <Typography color={TextColor.textDefault}>
               {t('resetWalletSubHeader')}
             </Typography>
             <Typography
-              color={COLORS.TEXT_DEFAULT}
+              color={TextColor.textDefault}
               marginTop={4}
               marginBottom={4}
             >
@@ -111,7 +117,11 @@ class RestoreVaultPage extends Component {
                 </Button>,
               ])}
             </Typography>
-            <Typography color={COLORS.TEXT_DEFAULT} margin={0} marginBottom={4}>
+            <Typography
+              color={TextColor.textDefault}
+              margin={0}
+              marginBottom={4}
+            >
               {t('resetWalletWarning')}
             </Typography>
             <CreateNewVault

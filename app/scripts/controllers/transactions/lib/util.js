@@ -1,8 +1,10 @@
 import { ethErrors } from 'eth-rpc-errors';
+import { Interface } from '@ethersproject/abi';
+import abi from 'human-standard-token-abi';
 import { addHexPrefix } from '../../../lib/util';
 import {
-  TRANSACTION_ENVELOPE_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionEnvelopeType,
+  TransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
@@ -103,10 +105,10 @@ function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
     case 'maxPriorityFeePerGas':
       if (
         txParams.type &&
-        txParams.type !== TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+        txParams.type !== TransactionEnvelopeType.feeMarket
       ) {
         throw ethErrors.rpc.invalidParams(
-          `Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TRANSACTION_ENVELOPE_TYPES.FEE_MARKET}"`,
+          `Invalid transaction envelope type: specified type "${txParams.type}" but including maxFeePerGas and maxPriorityFeePerGas requires type: "${TransactionEnvelopeType.feeMarket}"`,
         );
       }
       break;
@@ -114,7 +116,7 @@ function ensureProperTransactionEnvelopeTypeProvided(txParams, field) {
     default:
       if (
         txParams.type &&
-        txParams.type === TRANSACTION_ENVELOPE_TYPES.FEE_MARKET
+        txParams.type === TransactionEnvelopeType.feeMarket
       ) {
         throw ethErrors.rpc.invalidParams(
           `Invalid transaction envelope type: specified type "${txParams.type}" but included a gasPrice instead of maxFeePerGas and maxPriorityFeePerGas`,
@@ -218,10 +220,36 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
           );
         }
         break;
+      case 'data':
+        validateInputData(value);
+        ensureFieldIsString(txParams, 'data');
+        break;
       default:
         ensureFieldIsString(txParams, key);
     }
   });
+}
+
+/**
+ *
+ * @param {*} value
+ */
+export function validateInputData(value) {
+  if (value !== null) {
+    // Validate the input data
+    const hstInterface = new Interface(abi);
+    try {
+      hstInterface.parseTransaction({ data: value });
+    } catch (e) {
+      // Throw an invalidParams error if BUFFER_OVERRUN
+      /* eslint require-unicode-regexp: off */
+      if (e.message.match(/BUFFER_OVERRUN/)) {
+        throw ethErrors.rpc.invalidParams(
+          `Invalid transaction params: data out-of-bounds, BUFFER_OVERRUN.`,
+        );
+      }
+    }
+  }
 }
 
 /**
@@ -274,7 +302,7 @@ export const validateConfirmedExternalTransaction = ({
       '"txMeta" or "txMeta.txParams" is missing',
     );
   }
-  if (txMeta.status !== TRANSACTION_STATUSES.CONFIRMED) {
+  if (txMeta.status !== TransactionStatus.confirmed) {
     throw ethErrors.rpc.invalidParams(
       'External transaction status should be "confirmed"',
     );
@@ -309,10 +337,10 @@ export const validateConfirmedExternalTransaction = ({
  */
 export function getFinalStates() {
   return [
-    TRANSACTION_STATUSES.REJECTED, // the user has responded no!
-    TRANSACTION_STATUSES.CONFIRMED, // the tx has been included in a block.
-    TRANSACTION_STATUSES.FAILED, // the tx failed for some reason, included on tx data.
-    TRANSACTION_STATUSES.DROPPED, // the tx nonce was already used
+    TransactionStatus.rejected, // the user has responded no!
+    TransactionStatus.confirmed, // the tx has been included in a block.
+    TransactionStatus.failed, // the tx failed for some reason, included on tx data.
+    TransactionStatus.dropped, // the tx nonce was already used
   ];
 }
 

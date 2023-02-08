@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
@@ -8,28 +9,27 @@ import FormField from '../../ui/form-field';
 import Typography from '../../ui/typography';
 import { ButtonLink } from '../../component-library';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   TEXT_ALIGN,
   FONT_WEIGHT,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
-  SIZES,
+  TypographyVariant,
+  JustifyContent,
+  Size,
   BLOCK_SIZES,
+  BackgroundColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
-  conversionGreaterThan,
-  conversionLTE,
-} from '../../../../shared/modules/conversion.utils';
-import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
-  TOKEN_ALLOWANCE_VALUE_REGEX,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
+  DECIMAL_REGEX,
 } from '../../../../shared/constants/tokens';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
@@ -56,20 +56,16 @@ export default function CustomSpendingCap({
   };
 
   const decConversionGreaterThan = (tokenValue, tokenBalance) => {
-    return conversionGreaterThan(
-      { value: Number(replaceCommaToDot(tokenValue)), fromNumericBase: 'dec' },
-      { value: Number(tokenBalance), fromNumericBase: 'dec' },
+    return new Numeric(Number(replaceCommaToDot(tokenValue)), 10).greaterThan(
+      Number(tokenBalance),
+      10,
     );
   };
 
   const getInputTextLogic = (inputNumber) => {
     if (
-      conversionLTE(
-        {
-          value: Number(replaceCommaToDot(inputNumber)),
-          fromNumericBase: 'dec',
-        },
-        { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
+      new Numeric(Number(replaceCommaToDot(inputNumber)), 10).lessThanOrEqualTo(
+        new Numeric(Number(currentTokenBalance), 10),
       )
     ) {
       return {
@@ -77,7 +73,7 @@ export default function CustomSpendingCap({
         description: t('inputLogicEqualOrSmallerNumber', [
           <Typography
             key="custom-spending-cap"
-            variant={TYPOGRAPHY.H6}
+            variant={TypographyVariant.H6}
             fontWeight={FONT_WEIGHT.BOLD}
             className="custom-spending-cap__input-value-and-token-name"
           >
@@ -105,8 +101,12 @@ export default function CustomSpendingCap({
     let spendingCapError = '';
     const inputTextLogic = getInputTextLogic(valueInput);
     const inputTextLogicDescription = inputTextLogic.description;
+    const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
+    if (match?.[1]?.length > decimals) {
+      return;
+    }
 
-    if (valueInput && !TOKEN_ALLOWANCE_VALUE_REGEX.test(valueInput)) {
+    if (valueInput && !NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(valueInput)) {
       spendingCapError = t('spendingCapError');
       setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
       setError(spendingCapError);
@@ -147,9 +147,9 @@ export default function CustomSpendingCap({
     ? t('warningTooltipText', [
         <Typography
           key="tooltip-text"
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           fontWeight={FONT_WEIGHT.BOLD}
-          color={COLORS.ERROR_DEFAULT}
+          color={TextColor.errorDefault}
         >
           <i className="fa fa-exclamation-circle" /> {t('beCareful')}
         </Typography>,
@@ -160,18 +160,18 @@ export default function CustomSpendingCap({
     <>
       <Box
         className="custom-spending-cap"
-        borderRadius={SIZES.SM}
+        borderRadius={Size.SM}
         paddingTop={2}
         paddingRight={6}
         paddingLeft={6}
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.FLEX_START}
+        alignItems={AlignItems.flexStart}
         flexDirection={FLEX_DIRECTION.COLUMN}
-        backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+        backgroundColor={BackgroundColor.backgroundAlternative}
         gap={2}
       >
         <Box
-          justifyContent={JUSTIFY_CONTENT.CENTER}
+          justifyContent={JustifyContent.center}
           display={DISPLAY.BLOCK}
           className="custom-spending-cap__input"
         >
@@ -211,7 +211,7 @@ export default function CustomSpendingCap({
               titleDetail={
                 showUseDefaultButton && (
                   <ButtonLink
-                    size={SIZES.AUTO}
+                    size={Size.auto}
                     onClick={(e) => {
                       e.preventDefault();
                       setShowUseDefaultButton(false);
@@ -230,10 +230,12 @@ export default function CustomSpendingCap({
               paddingRight={4}
               paddingBottom={2}
               textAlign={TEXT_ALIGN.END}
-              className="custom-spending-cap__max"
+              className={classnames('custom-spending-cap__max', {
+                'custom-spending-cap__max--with-error-message': error,
+              })}
             >
               <ButtonLink
-                size={SIZES.AUTO}
+                size={Size.auto}
                 onClick={(e) => {
                   e.preventDefault();
                   handleChange(currentTokenBalance);
@@ -242,16 +244,21 @@ export default function CustomSpendingCap({
                 {t('max')}
               </ButtonLink>
             </Box>
-            <Typography
-              className="custom-spending-cap__description"
-              color={COLORS.TEXT_DEFAULT}
-              variant={TYPOGRAPHY.H7}
-              boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+            <Box
+              className={classnames('custom-spending-cap__description', {
+                'custom-spending-cap__description--with-error-message': error,
+              })}
             >
-              {replaceCommaToDot(value)
-                ? customSpendingCapText
-                : inputLogicEmptyStateText}
-            </Typography>
+              <Typography
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H7}
+                boxProps={{ paddingTop: 2, paddingBottom: 2 }}
+              >
+                {replaceCommaToDot(value)
+                  ? customSpendingCapText
+                  : inputLogicEmptyStateText}
+              </Typography>
+            </Box>
           </label>
         </Box>
       </Box>

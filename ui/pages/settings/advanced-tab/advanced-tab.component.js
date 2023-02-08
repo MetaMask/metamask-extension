@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import {
-  LEDGER_TRANSPORT_TYPES,
+  LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../../../shared/constants/hardware-wallets';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
@@ -49,13 +49,17 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+    ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
     setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     userHasALedgerAccount: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     restoreUserData: PropTypes.func.isRequired,
+    setDisabledRpcMethodPreference: PropTypes.func.isRequired,
+    disabledRpcMethodPreferences: PropTypes.shape({
+      eth_sign: PropTypes.bool.isRequired,
+    }),
   };
 
   state = {
@@ -473,18 +477,18 @@ export default class AdvancedTab extends PureComponent {
     const transportTypeOptions = [
       {
         name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LEDGER_TRANSPORT_TYPES.LIVE,
+        value: LedgerTransportTypes.live,
       },
       {
         name: LEDGER_TRANSPORT_NAMES.U2F,
-        value: LEDGER_TRANSPORT_TYPES.U2F,
+        value: LedgerTransportTypes.u2f,
       },
     ];
 
     if (window.navigator.hid) {
       transportTypeOptions.push({
         name: LEDGER_TRANSPORT_NAMES.WEBHID,
-        value: LEDGER_TRANSPORT_TYPES.WEBHID,
+        value: LedgerTransportTypes.webhid,
       });
     }
 
@@ -520,14 +524,14 @@ export default class AdvancedTab extends PureComponent {
               selectedOption={ledgerTransportType}
               onChange={async (transportType) => {
                 if (
-                  ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE &&
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID
+                  ledgerTransportType === LedgerTransportTypes.live &&
+                  transportType === LedgerTransportTypes.webhid
                 ) {
                   this.setState({ showLedgerTransportWarning: true });
                 }
                 setLedgerTransportPreference(transportType);
                 if (
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+                  transportType === LedgerTransportTypes.webhid &&
                   userHasALedgerAccount
                 ) {
                   await window.navigator.hid.requestDevice({
@@ -571,6 +575,39 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={dismissSeedBackUpReminder}
               onToggle={(value) => setDismissSeedBackUpReminder(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderToggleEthSignControl() {
+    const { t } = this.context;
+    const { disabledRpcMethodPreferences, setDisabledRpcMethodPreference } =
+      this.props;
+
+    return (
+      <div
+        ref={this.settingsRefs[10]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-toggle-ethsign"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleEthSignField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleEthSignDescriptionField')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={disabledRpcMethodPreferences?.eth_sign || false}
+              onToggle={(value) =>
+                setDisabledRpcMethodPreference('eth_sign', !value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -711,6 +748,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderRestoreUserData()}
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
+        {this.renderToggleEthSignControl()}
       </div>
     );
   }
