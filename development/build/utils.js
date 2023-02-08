@@ -154,6 +154,10 @@ function wrapAgainstScuttling(content, bag = {}) {
     const bag = ${JSON.stringify(bag)};
     // setup vetted shim bag of properties
     for (const prop in bag) {
+      if (!global[prop] && prop === 'document') {
+        delete bag[prop];
+        continue;
+      }
       const that = bag[prop];
       let api = global[prop];
       if (that) api = api.bind(global[that]);
