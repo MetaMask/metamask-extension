@@ -1,6 +1,12 @@
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { detectSIWE } from '../../../shared/modules/siwe';
+import {
+  EVENT,
+  EVENT_NAMES,
+  METAMETRIC_KEY_OPTIONS,
+  METAMETRIC_KEY,
+} from '../../../shared/constants/metametrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -160,6 +166,16 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
+      if (process.env.SIWE_V1 && method === MESSAGE_TYPE.PERSONAL_SIGN) {
+        const data = req?.params?.[0];
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          properties.ui_customizations = [
+            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+          ];
+        }
+      }
+
       trackEvent({
         event,
         category: EVENT.CATEGORIES.INPAGE_PROVIDER,
@@ -190,6 +206,16 @@ export default function createRPCMethodTrackingMiddleware({
         properties.signature_type = method;
       } else {
         properties.method = method;
+      }
+
+      if (process.env.SIWE_V1 && method === MESSAGE_TYPE.PERSONAL_SIGN) {
+        const data = req?.params?.[0];
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          properties.ui_customizations = [
+            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+          ];
+        }
       }
 
       trackEvent({
