@@ -27,7 +27,7 @@ export default class ConfirmTransactionSwitch extends Component {
 
   redirectToTransaction() {
     const { txData } = this.props;
-    const { id, txParams: { data, value } = {}, type } = txData;
+    const { id, txParams: { data } = {}, type } = txData;
 
     if (type === TransactionType.deployContract) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_DEPLOY_CONTRACT_PATH}`;

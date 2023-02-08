@@ -219,10 +219,12 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
 /**
  *
  * @param {object} txData - transaction object
- * @returns {boolean} - true is transaction is send ETH with approve token
+ * @returns {boolean} true is transaction is send ETH with approve token
  */
 export const isSendWithApprove = (txData) => {
-  if (!txData?.txParams) return false;
+  if (!txData?.txParams) {
+    return false;
+  }
   const {
     type,
     txParams: { value },

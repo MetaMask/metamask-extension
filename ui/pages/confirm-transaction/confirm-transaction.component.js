@@ -81,7 +81,7 @@ const ConfirmTransaction = () => {
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
-  const isValidERC20TokenMethod = isTokenMethodAction(type);
+  const isValidTokenMethod = isTokenMethodAction(type);
 
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
@@ -173,7 +173,7 @@ const ConfirmTransaction = () => {
     (!paramsTransactionId || paramsTransactionId === transactionId);
 
   if (
-    isTokenMethodAction &&
+    isValidTokenMethod &&
     validTransactionId &&
     !isSendWithApprove(transaction)
   ) {

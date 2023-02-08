@@ -97,7 +97,7 @@ describe('Transactions utils', () => {
   describe('isSendWithApprove', () => {
     it('should return true if transaction is type approve with a defined non-zero value', () => {
       expect(
-        isSendWithApprove({
+        utils.isSendWithApprove({
           type: TransactionType.isSendWithApprove,
           txParams: { value: '0x5' },
         }),
@@ -105,7 +105,7 @@ describe('Transactions utils', () => {
     });
     it('should return false if transaction is not type approve', () => {
       expect(
-        isSendWithApprove({
+        utils.isSendWithApprove({
           type: TransactionType.swapApproval,
           txParams: { value: '0x5' },
         }),
@@ -113,7 +113,7 @@ describe('Transactions utils', () => {
     });
     it('should return false if transaction is type approve but value is zero', () => {
       expect(
-        isSendWithApprove({
+        utils.isSendWithApprove({
           type: TransactionType.swapApproval,
           txParams: { value: '0x0' },
         }),

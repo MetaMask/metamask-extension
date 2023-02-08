@@ -12,7 +12,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../helpers/constants/routes';
 
-import ConfirmTransaction from './confirm-transaction.container';
+import ConfirmTransaction from './confirm-transaction';
 
 const middleware = [thunk];
 
