@@ -642,10 +642,10 @@
   "close": {
     "message": "关闭"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "此代币是NFT。另加上$1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "收藏品已成功添加！"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "此 URL 目前已被 $1 网络使用。"
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "自动检测 NFT"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "显示 NFT 媒体和数据可能会将您的 IP 地址暴露给集中式服务器。第三方 API（例如 OpenSea）用于在您的钱包中检测 NFT。这会通过这些服务暴露您的账户地址。如果您不希望该应用程序从这些服务中提取数据，请禁用此功能。"
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "此外，请注意："
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT元数据可能包含欺诈或网络钓鱼网站的链接。"
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
   },
   "useDefault": {

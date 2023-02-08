@@ -642,10 +642,10 @@
   "close": {
     "message": "Tutup"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Token ini merupakan NFT. Tambahkan ke $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "Koleksi berhasil ditambahkan!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "URL ini saat ini digunakan oleh jaringan $1."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Deteksi otomatis NFT"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "Menampilkan media & data NFT dapat mengekspos alamat IP Anda ke server terpusat. API pihak ketiga (seperti OpenSea) digunakan untuk mendeteksi NFT di dompet Anda. API memperlihatkan alamat akun Anda dengan layanan tersebut. Biarkan nonaktif jika Anda tidak ingin aplikasi memakai data dari layanan tersebut."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Selain itu, ketahuilah bahwa:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
   },
   "useDefault": {

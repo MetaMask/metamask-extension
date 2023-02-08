@@ -642,10 +642,10 @@
   "close": {
     "message": "Schließen"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "NFT kann nicht hinzugefügt werden, da die Eigentumsangaben nicht übereinstimmen. Stellen Sie sicher, dass Sie die richtigen Informationen eingegeben haben."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Dieses Token ist ein NFT. Bei $1 hinzufügen",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "Sammelobjekt wurde erfolgreich hinzugefügt!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "Diese URL wird derzeit vom $1-Netzwerk verwendet."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "NFTs automatisch erkennen"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "Durch die Anzeige von NFTs-Medien und -Daten kann deine IP-Adresse an zentrale Server weitergegeben werden. APIs von Drittanbietern (wie OpenSea) werden verwendet, um NFTs in deiner Wallet zu erkennen. Dadurch wird deine Kontoadresse bei diesen Diensten offengelegt. Lass diese Option deaktiviert, wenn du nicht möchtest, dass die App Daten von diesen Diensten abruft."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Beachten Sie außerdem Folgendes:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT-Metadaten können Links zu Webseiten mit Betrugs- oder Phishing-Inhalten enthalten."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrem Wallet angezeigt werden könnten."
   },
   "useDefault": {

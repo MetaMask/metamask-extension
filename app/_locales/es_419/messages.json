@@ -1528,7 +1528,7 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "¡El coleccionable fue añadido con éxito!"
   },
   "newContact": {
@@ -2907,10 +2907,10 @@
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Autodetectar NFT"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
   },
   "usePhishingDetection": {

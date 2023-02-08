@@ -642,10 +642,10 @@
   "close": {
     "message": "Fermer"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "Ce NFT ne peut pas être ajouté, car les informations de propriété ne correspondent pas. Vérifiez que votre saisie est correcte."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Ce token est un NFT. Ajouter sur la $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "Le collectible a été ajouté avec succès !"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "Cette URL est actuellement utilisée par le réseau $1."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Détection automatique des NFT"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "L’affichage des médias et des données des NFT peut exposer votre adresse IP à des serveurs centralisés. Des API tierces (comme OpenSea) sont utilisées pour détecter les NFT dans votre portefeuille. Cela expose donc l’adresse de votre compte à ces services. Désactivez cette option si vous ne souhaitez pas que l’application récupère des données auprès de ces services."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "De plus, veuillez noter que :"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "Les métadonnées des NFT peuvent contenir des liens vers des sites d’arnaques ou d’hameçonnage."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "N’importe qui peut déposer des NFT sur votre compte. Les NFT peuvent contenir du contenu offensant qui pourrait s’afficher automatiquement dans votre portefeuille."
   },
   "useDefault": {

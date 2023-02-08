@@ -642,10 +642,10 @@
   "close": {
     "message": "Cerrar"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "No se puede agregar NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Este token es un NFT. Añadir a $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "¡El coleccionable fue añadido con éxito!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Detectar NFTs automáticamente"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Además, tenga en cuenta que:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "Los metadatos de NFT pueden contener enlaces a sitios fraudulentos o de phishing."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Cualquiera puede enviar NFT a su cuenta. Esto puede incluir contenido ofensivo que podría mostrarse automáticamente en su billetera."
   },
   "useDefault": {

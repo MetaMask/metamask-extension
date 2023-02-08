@@ -642,10 +642,10 @@
   "close": {
     "message": "Đóng"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Token này là một NFT. Thêm vào $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "Bộ sưu tập đã được thêm thành công!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng URL này."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Tự động phát hiện NFT"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "Việc hiển thị nội dung đa phương tiện và dữ liệu NFT có thể làm lộ địa chỉ IP của bạn cho các máy chủ tập trung. API của bên thứ ba (như OpenSea) được dùng để phát hiện NFT trong ví của bạn. Điều này sẽ làm lộ địa chỉ tài khoản của bạn với các dịch vụ đó. Hãy tắt tính năng này nếu bạn không muốn ứng dụng lấy dữ liệu từ các dịch vụ đó."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Ngoài ra, hãy lưu ý rằng:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "Siêu dữ liệu NFT có thể chứa liên kết dẫn đến các trang web lừa đảo."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Bất kỳ ai cũng có thể gửi NFT vào tài khoản của bạn. Điều này có thể khiến nội dung xúc phạm tự động hiển thị trong ví của bạn."
   },
   "useDefault": {

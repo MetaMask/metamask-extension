@@ -642,10 +642,10 @@
   "close": {
     "message": "Fechar"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "O NFT não pôde ser adicionado, pois os dados de propriedade não coincidem. Certifique-se de ter inserido as informações corretas."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Esse token é um NFT. Adicione-o na $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "O colecionável foi adicionado com sucesso!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "O ID da cadeia está sendo usado pela rede $1."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Além disso, esteja ciente de que:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "Os metadados de NFTs podem conter links para golpes ou sites de phishing."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
   },
   "useDefault": {

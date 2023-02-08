@@ -642,10 +642,10 @@
   "close": {
     "message": "बंद करें"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "ये टोकन एक एनएफटी है। $1 पर जोड़ें",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "खाता $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "संग्रहणीय सफलतापूर्वक जोड़ा गया!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "यह URL वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "NFT को ऑटो-डिटेक्ट करें"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "NFT के मीडिया और डेटा प्रदर्शित करना आपके IP पते को केंद्रीकृत सर्वर के सामने उजागर कर सकता है। आपके वॉलेट में NFT को डिटेक्ट करने के लिए तीसरे-पक्ष API (जैसे OpenSea) का उपयोग किया जाता है। यह उन सेवाओं के साथ आपके अकाउंट के पते को उजागर करता है। इसे अक्षम कर दें यदि आप नहीं चाहते कि ऐप उन सेवाओं से डेटा पुल करे।"
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "इसके अतिरिक्त, ध्यान रखें कि:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT मेटाडेटा में धोखाधड़ी या फिशिंग साइटों के लिंक हो सकते हैं।"
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "कोई भी आपके खाते में NFT को एयरड्रॉप कर सकता है। इसमें आपत्तिजनक सामग्री शामिल हो सकती है जो आपके वॉलेट में स्वचालित रूप से प्रदर्शित हो सकती है।"
   },
   "useDefault": {

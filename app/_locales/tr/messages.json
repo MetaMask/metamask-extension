@@ -642,10 +642,10 @@
   "close": {
     "message": "Kapat"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "Sahiplik bilgileri eşleşmediğinden NFT eklenemez. Doğru bilgileri girdiğinden emin ol."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Bu token bir NFT'dir. $1 üzerine ekle",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Hesap $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "Tahsil edilebilir tutar başarılı bir şekilde eklendi!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "Bu URL şu anda $1 ağı tarafından kullanılıyor."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "NFT'lerin medya ve verilerinin görüntülenmesi IP adresinizin merkezi sunuculara açıklanmasına neden olabilir. Üçüncü taraf API'ler (OpenSea gibi) cüzdanınızda NFT'leri algılamak için kullanılır. Bu, hesap adresinizin bu hizmetlere açıklanmasını sağlar. Uygulamanın bu sunuculardan veri çekmesini istemiyorsanız bunu devre dışı bırakın."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Ayrıca, şunları unutmayın:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT meta verileri dolandırıcılık veya kimlik hırsızlığı sitelerine bağlantılar içerebilir."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Hesabınıza herkes NFT atabilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
   },
   "useDefault": {

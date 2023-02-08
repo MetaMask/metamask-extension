@@ -642,10 +642,10 @@
   "close": {
     "message": "Isara"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "Hindi maidagdag ang NFT dahil hindi tugma ang mga detalye ng pagmamay-ari. Tiyaking nailagay mo ang wastong impormasyon."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "Ang token na ito ay isang NFT. Idagdag sa $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "Ang collectible ay tagumpay na naidagdag!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "Nasa kasalukuyang listahan ng mga network na ang URL."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Autodetect ng mga NFT"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "Ang pagpapakita ng media at data ng mga NFT ay maaaring maglantad sa IP address sa iyong mga centralized server. Ang mga Third-party API (tulad ng OpenSea) ay ginagamit upang ma-detect ang mga NFT sa iyong wallet. Maglalantad ito sa iyong account address sa mga serbisyong iyon. Hayaan itong naka-disable kung ayaw mong kunin ng app ang data mula sa mga serbisyong iyon."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "Bilang karagdagan, tandaan na:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "Ang NFT metadata ay maaaring maglaman ng mga link sa mga scam o phishing site."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "Kahit sino ay maaaring mag-airdrop ng mga NFT sa iyong account. Maaaring kabilang dito ang nakakapanakit na nilalaman na maaaring awtomatikong ipakita sa iyong wallet."
   },
   "useDefault": {

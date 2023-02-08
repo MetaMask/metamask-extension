@@ -642,10 +642,10 @@
   "close": {
     "message": "닫기"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "소유권 정보가 일치하지 않아 NFT를 추가할 수 없습니다. 올바른 정보를 입력했는지 확인하세요."
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "이 토큰은 NFT입니다. $1에 추가하세요",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "수집이 성공적으로 추가되었습니다!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "이 URL은 현재 $1 네트워크에서 사용됩니다."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "NFT 자동 감지"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "NFT 미디어 및 데이터를 표시하면 IP 주소가 중앙 서버에 노출될 수 있습니다. 지갑에서 NFT를 감지하려면 (OpenSea와 같은) 타사 API를 사용해야 합니다. 이렇게 하면 해당 서비스의 계정 주소가 노출됩니다. 앱이 해당 서비스에서 데이터를 가져오지 않도록 하려면 비활성화된 상태로 유지하세요."
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "아울러, 다음을 명심하세요:"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT 메타 데이터에는 사기 또는 허위 사이트로 안내하는 링크가 있을 수 있습니다."
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "누구든지 회원님의 계정으로 NFT를 에어드롭할 수 있습니다. 여기에는 지갑에 자동으로 표시될 수도 있는 공격적인 콘텐츠도 포함될 수 있습니다."
   },
   "useDefault": {

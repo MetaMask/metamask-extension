@@ -642,10 +642,10 @@
   "close": {
     "message": "閉じる"
   },
-  "collectibleAddFailedMessage": {
+  "nftAddFailedMessage": {
     "message": "所有者情報が一致していないため、NFT を追加できません。入力された情報が正しいことを確認してください。"
   },
-  "collectibleAddressError": {
+  "nftAddressError": {
     "message": "このトークンは NFT です。$1で追加してください",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
@@ -2103,7 +2103,7 @@
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
+  "newNftAddedMessage": {
     "message": "コレクティブルが追加されました!"
   },
   "newContact": {
@@ -4192,19 +4192,19 @@
   "urlExistsErrorMsg": {
     "message": "このURLは現在$1ネットワークで使用されています。"
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "NFTを自動検出"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "NFTメディアとデータを表示すると、IPアドレスが集中型のサーバーに開示される可能性があります。ウォレット内のNFTの検出には、サードパーティーAPI (OpenSeaなど) が使用されます。これにより、これらのサービスにアカウントのアドレスが公開されます。これらのサービスからデータを取得しない場合は、この機能を無効にしてください。"
   },
-  "useCollectibleDetectionDescriptionLine2": {
+  "useNftDetectionDescriptionLine2": {
     "message": "また、次の点にも留意してください。"
   },
-  "useCollectibleDetectionDescriptionLine3": {
+  "useNftDetectionDescriptionLine3": {
     "message": "NFT のメタデータには、詐欺サイトやフィッシングサイトへのリンクが含まれている可能性があります。"
   },
-  "useCollectibleDetectionDescriptionLine4": {
+  "useNftDetectionDescriptionLine4": {
     "message": "誰でもあなたのアカウントに NFT をエアドロップできます。これには不快なコンテンツが含まれている場合があり、ウォレットに自動で表示される可能性があります。"
   },
   "useDefault": {
