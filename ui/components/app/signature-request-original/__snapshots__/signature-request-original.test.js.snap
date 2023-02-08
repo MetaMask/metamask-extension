@@ -178,7 +178,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       class="request-signature__body"
     >
       <div
-        class="box mm-banner-base mm-banner mm-banner--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+        class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
       >
         <div
           class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-warning-default"

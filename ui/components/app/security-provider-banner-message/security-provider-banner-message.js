@@ -7,7 +7,7 @@ import {
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../.storybook/i18n';
-import { Banner, ButtonLink } from '../../component-library';
+import { BannerAlert, ButtonLink } from '../../component-library';
 import Typography from '../../ui/typography/typography';
 
 export default function SecurityProviderBannerMessage({
@@ -37,7 +37,7 @@ export default function SecurityProviderBannerMessage({
   }
 
   return (
-    <Banner
+    <BannerAlert
       marginTop={4}
       marginRight={4}
       marginLeft={4}
@@ -55,7 +55,7 @@ export default function SecurityProviderBannerMessage({
           {t('openSeaNew')}
         </ButtonLink>
       </Typography>
-    </Banner>
+    </BannerAlert>
   );
 }
 
