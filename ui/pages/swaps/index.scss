@@ -125,6 +125,14 @@
     flex: 1;
   }
 
+  &__header-back {
+    @include H7;
+
+    color: var(--color-primary-default);
+    cursor: pointer;
+    padding-left: 24px;
+  }
+
   .actionable-message__message &__notification-close-button {
     background-color: transparent;
     position: absolute;

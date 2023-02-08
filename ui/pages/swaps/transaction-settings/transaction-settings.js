@@ -13,6 +13,7 @@ import {
   TypographyVariant,
   FONT_WEIGHT,
   AlignItems,
+  JustifyContent,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
@@ -88,6 +89,47 @@ export default function TransactionSettings({
       <Popover title={t('transactionSettings')} onClose={() => onModalClose()}>
         <div className="transaction-settings__content">
           <>
+            {smartTransactionsEnabled && (
+              <Box
+                marginTop={2}
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Box
+                  display={DISPLAY.FLEX}
+                  alignItems={AlignItems.center}
+                  paddingRight={3}
+                >
+                  <Typography
+                    variant={TypographyVariant.H6}
+                    boxProps={{ paddingRight: 2 }}
+                    fontWeight={FONT_WEIGHT.BOLD}
+                  >
+                    {t('smartTransaction')}
+                  </Typography>
+                  {currentSmartTransactionsError ? (
+                    <InfoTooltip
+                      position="top"
+                      contentText={getTranslatedStxErrorMessage(
+                        currentSmartTransactionsError,
+                        t,
+                      )}
+                    />
+                  ) : (
+                    <InfoTooltip position="top" contentText={t('stxTooltip')} />
+                  )}
+                </Box>
+                <ToggleButton
+                  value={smartTransactionsOptInStatus}
+                  onToggle={(value) => {
+                    setSmartTransactionsOptInStatus(!value, value);
+                  }}
+                  offLabel={t('off')}
+                  onLabel={t('on')}
+                  disabled={Boolean(currentSmartTransactionsError)}
+                />
+              </Box>
+            )}
             {!isDirectWrappingEnabled && (
               <div className="transaction-settings__dropdown-content">
                 <div className="transaction-settings__buttons-prefix">
@@ -184,43 +226,6 @@ export default function TransactionSettings({
                   </Button>
                 </ButtonGroup>
               </div>
-            )}
-            {smartTransactionsEnabled && (
-              <Box marginTop={2} display={DISPLAY.FLEX}>
-                <Box
-                  display={DISPLAY.FLEX}
-                  alignItems={AlignItems.center}
-                  paddingRight={3}
-                >
-                  <Typography
-                    variant={TypographyVariant.H6}
-                    boxProps={{ paddingRight: 2 }}
-                    fontWeight={FONT_WEIGHT.BOLD}
-                  >
-                    {t('smartTransaction')}
-                  </Typography>
-                  {currentSmartTransactionsError ? (
-                    <InfoTooltip
-                      position="top"
-                      contentText={getTranslatedStxErrorMessage(
-                        currentSmartTransactionsError,
-                        t,
-                      )}
-                    />
-                  ) : (
-                    <InfoTooltip position="top" contentText={t('stxTooltip')} />
-                  )}
-                </Box>
-                <ToggleButton
-                  value={smartTransactionsOptInStatus}
-                  onToggle={(value) => {
-                    setSmartTransactionsOptInStatus(!value, value);
-                  }}
-                  offLabel={t('off')}
-                  onLabel={t('on')}
-                  disabled={Boolean(currentSmartTransactionsError)}
-                />
-              </Box>
             )}
           </>
           {errorText && (

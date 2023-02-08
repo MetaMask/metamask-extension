@@ -379,44 +379,73 @@ export default function Swap() {
     <div className="swaps">
       <div className="swaps__container">
         <div className="swaps__header">
-          <div
-            className="swaps__header-edit"
-            onClick={async () => {
-              await dispatch(navigateBackToBuildQuote(history));
-            }}
-          >
-            {isViewQuoteRoute && t('edit')}
-          </div>
-          <div className="swaps__title">{t('swap')}</div>
-          <div
-            className="swaps__header-cancel"
-            onClick={async () => {
-              clearTemporaryTokenRef.current();
-              dispatch(clearSwapsState());
-              await dispatch(resetBackgroundSwapsState());
-              history.push(DEFAULT_ROUTE);
-            }}
-          >
-            {!isAwaitingSwapRoute &&
-              !isAwaitingSignaturesRoute &&
-              !isSmartTransactionStatusRoute &&
-              t('cancel')}
-          </div>
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            marginRight={2}
-          >
-            <Icon
-              name={ICON_NAMES.SETTING}
-              size={ICON_SIZES.LG}
-              onClick={() => {
-                dispatch(setTransactionSettingsOpened(true));
+          {!swapsRedesignEnabled && (
+            <div
+              className="swaps__header-edit"
+              onClick={async () => {
+                await dispatch(navigateBackToBuildQuote(history));
               }}
-              style={{ cursor: 'pointer' }}
-              title={t('swapsAdvancedOptions')}
-            />
-          </Box>
+            >
+              {isViewQuoteRoute && t('edit')}
+            </div>
+          )}
+          {swapsRedesignEnabled &&
+            !isAwaitingSwapRoute &&
+            !isAwaitingSignaturesRoute &&
+            !isSmartTransactionStatusRoute && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.center}
+                marginLeft={4}
+              >
+                <Icon
+                  name={ICON_NAMES.ARROW_2_LEFT}
+                  size={ICON_SIZES.LG}
+                  onClick={async () => {
+                    clearTemporaryTokenRef.current();
+                    dispatch(clearSwapsState());
+                    await dispatch(resetBackgroundSwapsState());
+                    history.push(DEFAULT_ROUTE);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                  title={t('cancel')}
+                />
+              </Box>
+            )}
+          <div className="swaps__title">{t('swap')}</div>
+          {!swapsRedesignEnabled && (
+            <div
+              className="swaps__header-cancel"
+              onClick={async () => {
+                clearTemporaryTokenRef.current();
+                dispatch(clearSwapsState());
+                await dispatch(resetBackgroundSwapsState());
+                history.push(DEFAULT_ROUTE);
+              }}
+            >
+              {!isAwaitingSwapRoute &&
+                !isAwaitingSignaturesRoute &&
+                !isSmartTransactionStatusRoute &&
+                t('cancel')}
+            </div>
+          )}
+          {swapsRedesignEnabled && (
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JustifyContent.center}
+              marginRight={4}
+            >
+              <Icon
+                name={ICON_NAMES.SETTING}
+                size={ICON_SIZES.LG}
+                onClick={() => {
+                  dispatch(setTransactionSettingsOpened(true));
+                }}
+                style={{ cursor: 'pointer' }}
+                title={t('transactionSettings')}
+              />
+            </Box>
+          )}
         </div>
         <div className="swaps__content">
           <Switch>
