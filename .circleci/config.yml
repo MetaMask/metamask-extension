@@ -51,6 +51,9 @@ workflows:
       - prep-build-beta:
           requires:
             - prep-deps
+      - prep-build-desktop:
+          requires:
+            - prep-deps
       - prep-build-flask:
           requires:
             - prep-deps
@@ -58,6 +61,9 @@ workflows:
           requires:
             - prep-deps
       - prep-build-test-mv3:
+          requires:
+            - prep-deps
+      - prep-build-test-nft:
           requires:
             - prep-deps
       - prep-build-test-flask:
@@ -94,6 +100,12 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
+      - test-e2e-chrome-nft:
+          requires:
+            - prep-build-test-nft
+      - test-e2e-firefox-nft:
+          requires:
+            - prep-build-test-nft
       - test-unit-mocha:
           requires:
             - prep-deps
@@ -111,12 +123,19 @@ workflows:
       - test-unit-global:
           requires:
             - prep-deps
+      - test-storybook:
+          requires:
+            - prep-deps
+            - prep-build-storybook
       - validate-source-maps:
           requires:
             - prep-build
       - validate-source-maps-beta:
           requires:
             - prep-build-beta
+      - validate-source-maps-desktop:
+          requires:
+            - prep-build-desktop
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
@@ -128,6 +147,10 @@ workflows:
           requires:
             - prep-deps
             - prep-build-beta
+      - test-mozilla-lint-desktop:
+          requires:
+            - prep-deps
+            - prep-build-desktop
       - test-mozilla-lint-flask:
           requires:
             - prep-deps
@@ -146,14 +169,17 @@ workflows:
             - upload-and-validate-coverage
             - validate-source-maps
             - validate-source-maps-beta
+            - validate-source-maps-desktop
             - validate-source-maps-flask
             - test-mozilla-lint
             - test-mozilla-lint-beta
+            - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
+            - test-storybook
       - benchmark:
           requires:
             - prep-build-test
@@ -168,10 +194,12 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-beta
+            - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
+            - prep-build-test-nft
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
@@ -183,6 +211,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-desktop
             - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
@@ -357,6 +386,46 @@ jobs:
             - dist-beta
             - builds-beta
 
+  prep-build-desktop:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type desktop dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type desktop prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move desktop build to 'dist-desktop' to avoid conflict with production build
+          command: mv ./dist ./dist-desktop
+      - run:
+          name: Move desktop zips to 'builds-desktop' to avoid conflict with production build
+          command: mv ./builds ./builds-desktop
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-desktop
+            - builds-desktop
+
   prep-build-flask:
     executor: node-browsers-medium-plus
     steps:
@@ -439,6 +508,27 @@ jobs:
             - dist-test-mv3
             - builds-test-mv3
 
+  prep-build-test-nft:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension with nft's enabled for testing
+          command: yarn build:test:nft
+      - run:
+          name: Move test build to 'dist-test-nft' to avoid conflict with production build
+          command: mv ./dist ./dist-test-nft
+      - run:
+          name: Move test zips to 'builds-test-nft' to avoid conflict with production build
+          command: mv ./builds ./builds-test-nft
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-nft
+            - builds-test-nft
+
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
@@ -486,7 +576,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - development/ts-migration-dashboard/build
+            - development/ts-migration-dashboard/build/final
 
   test-yarn-dedupe:
     executor: node-browsers
@@ -510,6 +600,19 @@ jobs:
       - run:
           name: Verify locales
           command: yarn verify-locales --quiet
+
+  test-storybook:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install Playwright browsers
+          command: yarn exec playwright install
+      - run:
+          name: Test Storybook
+          command: yarn test-storybook:ci
 
   test-lint-shellcheck:
     executor: shellcheck
@@ -600,9 +703,17 @@ jobs:
               yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   test-e2e-chrome-mv3:
     executor: node-browsers
@@ -632,6 +743,78 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
+  test-e2e-chrome-nft:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-nft ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-nft ./builds
+      - run:
+          name: test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:nft --retries 2
+            fi
+          no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
+
+  test-e2e-firefox-nft:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-nft ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-nft ./builds
+      - run:
+          name: test:e2e:firefox
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox:nft --retries 2
+            fi
+          no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
+          
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 2
@@ -656,9 +839,17 @@ jobs:
               yarn test:e2e:firefox:snaps --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   test-e2e-chrome-snaps:
     executor: node-browsers
@@ -684,9 +875,17 @@ jobs:
               yarn test:e2e:chrome:snaps --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
@@ -712,9 +911,17 @@ jobs:
               yarn test:e2e:firefox --retries 2
             fi
           no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   benchmark:
     executor: node-browsers-medium-plus
@@ -854,7 +1061,7 @@ jobs:
           path: storybook-build
           destination: storybook
       - store_artifacts:
-          path: development/ts-migration-dashboard/build
+          path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
       - run:
           name: Set branch parent commit env var
@@ -1013,6 +1220,22 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
+  validate-source-maps-desktop:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move desktop build to dist
+          command: mv ./dist-desktop ./dist
+      - run:
+          name: Move desktop zips to builds
+          command: mv ./builds-desktop ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
   validate-source-maps-flask:
     executor: node-browsers
     steps:
@@ -1051,6 +1274,22 @@ jobs:
       - run:
           name: Move beta zips to builds
           command: mv ./builds-beta ./builds
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+
+  test-mozilla-lint-desktop:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move desktop build to dist
+          command: mv ./dist-desktop ./dist
+      - run:
+          name: Move desktop zips to builds
+          command: mv ./builds-desktop ./builds
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint

@@ -4,9 +4,12 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
-import createEngineStream from 'json-rpc-middleware-stream/engineStream';
+import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
-import KeyringController from 'eth-keyring-controller';
+import {
+  KeyringController,
+  keyringBuilderFactory,
+} from '@metamask/eth-keyring-controller';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -43,7 +46,10 @@ import {
   PermissionController,
   PermissionsRequestNotFoundError,
 } from '@metamask/permission-controller';
-import { SubjectMetadataController } from '@metamask/subject-metadata-controller';
+import {
+  SubjectMetadataController,
+  SubjectType,
+} from '@metamask/subject-metadata-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
@@ -69,9 +75,11 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
-import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
+import {
+  HardwareDeviceNames,
+  HardwareKeyringTypes,
+} from '../../shared/constants/hardware-wallets';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -92,7 +100,6 @@ import {
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  SUBJECT_TYPES,
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
@@ -100,11 +107,9 @@ import { getTokenIdParam } from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import {
-  getTokenValueParam,
-  hexToDecimal,
-} from '../../shared/lib/metamask-controller-utils';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -164,10 +169,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { checkSnapsBlockList } from './flask/snaps-utilities';
-import { SNAP_BLOCKLIST } from './flask/snaps-blocklist';
-///: END:ONLY_INCLUDE_IN
+import { securityProviderCheck } from './lib/security-provider-helpers';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -340,6 +342,7 @@ export default class MetamaskController extends EventEmitter {
               ...networkState,
               providerConfig: {
                 ...networkState.provider,
+                chainId: hexToDecimal(networkState.provider.chainId),
               },
             };
             return cb(modifiedNetworkState);
@@ -639,21 +642,27 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    let additionalKeyrings = [];
-    if (!isManifestV3) {
-      additionalKeyrings = [
+    let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
+
+    if (this.canUseHardwareWallets()) {
+      const additionalKeyringTypes = [
         TrezorKeyring,
         LedgerBridgeKeyring,
         LatticeKeyring,
         QRHardwareKeyring,
       ];
+      additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
+        keyringBuilderFactory(keyringType),
+      );
     }
+
     this.keyringController = new KeyringController({
-      keyringTypes: additionalKeyrings,
+      keyringBuilders: additionalKeyrings,
       initState: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
     });
+
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
@@ -731,7 +740,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.snapExecutionService = new IframeExecutionService({
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.11.1',
+        'https://metamask.github.io/iframe-execution-environment/0.12.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -766,15 +775,19 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
+    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
+
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
       closeAllConnections: this.removeAllConnections.bind(this),
-      checkBlockList: async (snapsToCheck) => {
-        return checkSnapsBlockList(snapsToCheck, SNAP_BLOCKLIST);
-      },
       state: initState.SnapController,
       messenger: snapControllerMessenger,
-      featureFlags: { dappsCanUpdateSnaps: true },
+      featureFlags: {
+        dappsCanUpdateSnaps: true,
+        allowLocalSnaps: isFlask,
+        requireAllowlist: isMain,
+      },
     });
 
     this.notificationController = new NotificationController({
@@ -918,6 +931,7 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getTokenStandardAndDetails.bind(
           this.assetsContractController,
         ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -961,8 +975,11 @@ export default class MetamaskController extends EventEmitter {
             getTokenValueParam(transactionData);
           const { allNfts } = this.nftController.state;
 
+          const chainIdAsDecimal = hexToDecimal(chainId);
           // check if its a known collectible
-          const knownCollectible = allNfts?.[userAddress]?.[chainId].find(
+          const knownCollectible = allNfts?.[userAddress]?.[
+            chainIdAsDecimal
+          ]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
@@ -973,7 +990,7 @@ export default class MetamaskController extends EventEmitter {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
               knownCollectible,
               false,
-              { userAddress, chainId },
+              { userAddress, chainId: chainIdAsDecimal },
             );
           }
         }
@@ -1015,11 +1032,13 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.personalMessageManager = new PersonalMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1038,6 +1057,7 @@ export default class MetamaskController extends EventEmitter {
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
     this.swapsController = new SwapsController({
@@ -1312,6 +1332,10 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  canUseHardwareWallets() {
+    return !isManifestV3 || process.env.CONF?.HARDWARE_WALLETS_MV3;
+  }
+
   resetStates(resetMethods) {
     resetMethods.forEach((resetMethod) => {
       try {
@@ -1482,7 +1506,7 @@ export default class MetamaskController extends EventEmitter {
           version,
         } = snap;
         this.subjectMetadataController.addSubjectMetadata({
-          subjectType: SUBJECT_TYPES.SNAP,
+          subjectType: SubjectType.Snap,
           name: proposedName,
           origin: snap.id,
           version,
@@ -1536,6 +1560,22 @@ export default class MetamaskController extends EventEmitter {
             new Error('Snap was terminated.'),
           );
         }
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapRemoved`,
+      (truncatedSnap) => {
+        const notificationIds = Object.values(
+          this.notificationController.state.notifications,
+        ).reduce((idList, notification) => {
+          if (notification.origin === truncatedSnap.id) {
+            idList.push(notification.id);
+          }
+          return idList;
+        }, []);
+
+        this.dismissNotifications(notificationIds);
       },
     );
 
@@ -1796,10 +1836,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      setImprovedTokenAllowanceEnabled:
-        preferencesController.setImprovedTokenAllowanceEnabled.bind(
-          preferencesController,
-        ),
       setTransactionSecurityCheckEnabled:
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
@@ -1850,6 +1886,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setRecoveryPhraseReminderLastShown.bind(
           appStateController,
         ),
+      setOutdatedBrowserWarningLastShown:
+        appStateController.setOutdatedBrowserWarningLastShown.bind(
+          appStateController,
+        ),
       setShowTestnetMessageInDropdown:
         appStateController.setShowTestnetMessageInDropdown.bind(
           appStateController,
@@ -1858,10 +1898,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowPortfolioTooltip.bind(appStateController),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
-      setCollectiblesDetectionNoticeDismissed:
-        appStateController.setCollectiblesDetectionNoticeDismissed.bind(
-          appStateController,
-        ),
       updateCollectibleDropDownState:
         appStateController.updateCollectibleDropDownState.bind(
           appStateController,
@@ -2280,7 +2316,7 @@ export default class MetamaskController extends EventEmitter {
       );
 
       const [primaryKeyring] = keyringController.getKeyringsByType(
-        KEYRING_TYPES.HD_KEY_TREE,
+        HardwareKeyringTypes.hdKeyTree,
       );
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
@@ -2407,10 +2443,10 @@ export default class MetamaskController extends EventEmitter {
 
     // Accounts
     const [hdKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.IMPORTED,
+      HardwareKeyringTypes.hdKeyTree,
     );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
@@ -2571,11 +2607,12 @@ export default class MetamaskController extends EventEmitter {
    */
   getPrimaryKeyringMnemonic() {
     const [keyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
+
     return keyring.mnemonic;
   }
 
@@ -2585,17 +2622,23 @@ export default class MetamaskController extends EventEmitter {
 
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
+    if (
+      deviceName !== HardwareDeviceNames.QR &&
+      !this.canUseHardwareWallets()
+    ) {
+      throw new Error('Hardware wallets are not supported on this version.');
+    }
     switch (deviceName) {
-      case DEVICE_NAMES.TREZOR:
+      case HardwareDeviceNames.trezor:
         keyringName = TrezorKeyring.type;
         break;
-      case DEVICE_NAMES.LEDGER:
+      case HardwareDeviceNames.ledger:
         keyringName = LedgerBridgeKeyring.type;
         break;
-      case DEVICE_NAMES.QR:
+      case HardwareDeviceNames.qr:
         keyringName = QRHardwareKeyring.type;
         break;
-      case DEVICE_NAMES.LATTICE:
+      case HardwareDeviceNames.lattice:
         keyringName = LatticeKeyring.type;
         break;
       default:
@@ -2610,10 +2653,10 @@ export default class MetamaskController extends EventEmitter {
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
     }
-    if (deviceName === DEVICE_NAMES.LATTICE) {
+    if (deviceName === HardwareDeviceNames.lattice) {
       keyring.appName = 'MetaMask';
     }
-    if (deviceName === DEVICE_NAMES.TREZOR) {
+    if (deviceName === HardwareDeviceNames.trezor) {
       const model = keyring.getModel();
       this.appStateController.setTrezorModel(model);
     }
@@ -2624,7 +2667,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async attemptLedgerTransportCreation() {
-    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
+    const keyring = await this.getKeyringForDevice(HardwareDeviceNames.ledger);
     return await keyring.attemptMakeApp();
   }
 
@@ -2702,12 +2745,12 @@ export default class MetamaskController extends EventEmitter {
   async getAccountType(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case KEYRING_TYPES.TREZOR:
-      case KEYRING_TYPES.LATTICE:
-      case KEYRING_TYPES.QR:
-      case KEYRING_TYPES.LEDGER:
+      case HardwareKeyringTypes.trezor:
+      case HardwareKeyringTypes.lattice:
+      case HardwareKeyringTypes.qr:
+      case HardwareKeyringTypes.ledger:
         return 'hardware';
-      case KEYRING_TYPES.IMPORTED:
+      case HardwareKeyringTypes.imported:
         return 'imported';
       default:
         return 'MetaMask';
@@ -2725,16 +2768,16 @@ export default class MetamaskController extends EventEmitter {
   async getDeviceModel(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case KEYRING_TYPES.TREZOR:
+      case HardwareKeyringTypes.trezor:
         return keyring.getModel();
-      case KEYRING_TYPES.QR:
+      case HardwareKeyringTypes.qr:
         return keyring.getName();
-      case KEYRING_TYPES.LEDGER:
+      case HardwareKeyringTypes.ledger:
         // TODO: get model after ledger keyring exposes method
-        return DEVICE_NAMES.LEDGER;
-      case KEYRING_TYPES.LATTICE:
+        return HardwareDeviceNames.ledger;
+      case HardwareKeyringTypes.lattice:
         // TODO: get model after lattice keyring exposes method
-        return DEVICE_NAMES.LATTICE;
+        return HardwareDeviceNames.lattice;
       default:
         return 'N/A';
     }
@@ -2777,7 +2820,9 @@ export default class MetamaskController extends EventEmitter {
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
         const label = this.getAccountLabel(
-          deviceName === DEVICE_NAMES.QR ? keyring.getName() : deviceName,
+          deviceName === HardwareDeviceNames.qr
+            ? keyring.getName()
+            : deviceName,
           index,
           hdPathDescription,
         );
@@ -2804,7 +2849,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async addNewAccount(accountCount) {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -2849,7 +2894,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async verifySeedPhrase() {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.HD_KEY_TREE,
+      HardwareKeyringTypes.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -2971,7 +3016,7 @@ export default class MetamaskController extends EventEmitter {
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
     const keyring = await this.keyringController.addNewKeyring(
-      KEYRING_TYPES.IMPORTED,
+      HardwareKeyringTypes.imported,
       [privateKey],
     );
     const [firstAccount] = await keyring.getAccounts();
@@ -3265,7 +3310,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case KEYRING_TYPES.LEDGER: {
+      case HardwareKeyringTypes.ledger: {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
@@ -3273,7 +3318,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case KEYRING_TYPES.TREZOR: {
+      case HardwareKeyringTypes.trezor: {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
@@ -3281,7 +3326,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case KEYRING_TYPES.LATTICE: {
+      case HardwareKeyringTypes.lattice: {
         return new Promise((_, reject) => {
           reject(
             new Error('Lattice does not support eth_getEncryptionPublicKey.'),
@@ -3289,7 +3334,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case KEYRING_TYPES.QR: {
+      case HardwareKeyringTypes.qr: {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
         );
@@ -3549,9 +3594,9 @@ export default class MetamaskController extends EventEmitter {
     if (subjectType) {
       _subjectType = subjectType;
     } else if (sender.id && sender.id !== this.extension.runtime.id) {
-      _subjectType = SUBJECT_TYPES.EXTENSION;
+      _subjectType = SubjectType.Extension;
     } else {
-      _subjectType = SUBJECT_TYPES.WEBSITE;
+      _subjectType = SubjectType.Website;
     }
 
     if (sender.url) {
@@ -3565,6 +3610,13 @@ export default class MetamaskController extends EventEmitter {
           hostname,
           phishingTestResponse,
         );
+        this.metaMetricsController.trackEvent({
+          event: EVENT_NAMES.PHISHING_PAGE_DISPLAYED,
+          category: EVENT.CATEGORIES.PHISHING,
+          properties: {
+            url: hostname,
+          },
+        });
         return;
       }
     }
@@ -3603,7 +3655,7 @@ export default class MetamaskController extends EventEmitter {
     this.setupProviderConnection(
       mux.createStream('provider'),
       sender,
-      SUBJECT_TYPES.INTERNAL,
+      SubjectType.Internal,
     );
   }
 
@@ -3719,15 +3771,15 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide over.
    * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
-   * @param {string} subjectType - The type of the sender, i.e. subject.
+   * @param {SubjectType} subjectType - The type of the sender, i.e. subject.
    */
   setupProviderConnection(outStream, sender, subjectType) {
     let origin;
-    if (subjectType === SUBJECT_TYPES.INTERNAL) {
+    if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
     }
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    else if (subjectType === SUBJECT_TYPES.SNAP) {
+    else if (subjectType === SubjectType.Snap) {
       origin = sender.snapId;
     }
     ///: END:ONLY_INCLUDE_IN
@@ -3739,7 +3791,7 @@ export default class MetamaskController extends EventEmitter {
       this.subjectMetadataController.addSubjectMetadata({
         origin,
         extensionId: sender.id,
-        subjectType: SUBJECT_TYPES.EXTENSION,
+        subjectType: SubjectType.Extension,
       });
     }
 
@@ -3785,7 +3837,7 @@ export default class MetamaskController extends EventEmitter {
     this.setupUntrustedCommunication({
       connectionStream,
       sender: { snapId },
-      subjectType: SUBJECT_TYPES.SNAP,
+      subjectType: SubjectType.Snap,
     });
   }
   ///: END:ONLY_INCLUDE_IN
@@ -3842,7 +3894,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // onboarding
-    if (subjectType === SUBJECT_TYPES.WEBSITE) {
+    if (subjectType === SubjectType.Website) {
       engine.push(
         createOnboardingMiddleware({
           location: sender.url,
@@ -3950,7 +4002,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
-      createSnapMethodMiddleware(subjectType === SUBJECT_TYPES.SNAP, {
+      createSnapMethodMiddleware(subjectType === SubjectType.Snap, {
         getAppKey: this.getAppKeyForSubject.bind(this, origin),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
@@ -3983,7 +4035,7 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
-    if (subjectType !== SUBJECT_TYPES.INTERNAL) {
+    if (subjectType !== SubjectType.Internal) {
       // permissions
       engine.push(
         this.permissionController.createPermissionMiddleware({
@@ -4186,6 +4238,8 @@ export default class MetamaskController extends EventEmitter {
         },
       };
     });
+
+    this.unMarkPasswordForgotten();
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
@@ -4411,12 +4465,16 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} transportType - The Ledger transport type.
    */
   async setLedgerTransportPreference(transportType) {
+    if (!this.canUseHardwareWallets()) {
+      return undefined;
+    }
+
     const currentValue =
       this.preferencesController.getLedgerTransportPreference();
     const newValue =
       this.preferencesController.setLedgerTransportPreference(transportType);
 
-    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
+    const keyring = await this.getKeyringForDevice(HardwareDeviceNames.ledger);
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod(newValue).catch((e) => {
         // If there was an error updating the transport, we should
@@ -4505,14 +4563,14 @@ export default class MetamaskController extends EventEmitter {
    */
   setLocked() {
     const [trezorKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.TREZOR,
+      HardwareKeyringTypes.trezor,
     );
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
 
     const [ledgerKeyring] = this.keyringController.getKeyringsByType(
-      KEYRING_TYPES.LEDGER,
+      HardwareKeyringTypes.ledger,
     );
     ledgerKeyring?.destroy?.();
 
@@ -4575,4 +4633,31 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  async securityProviderRequest(requestData, methodName) {
+    const { currentLocale, transactionSecurityCheckEnabled } =
+      this.preferencesController.store.getState();
+
+    const chainId = Number(
+      hexToDecimal(this.networkController.getCurrentChainId()),
+    );
+
+    if (transactionSecurityCheckEnabled) {
+      try {
+        const securityProviderResponse = await securityProviderCheck(
+          requestData,
+          methodName,
+          chainId,
+          currentLocale,
+        );
+
+        return securityProviderResponse;
+      } catch (err) {
+        log.error(err.message);
+        throw err;
+      }
+    }
+
+    return null;
+  }
 }

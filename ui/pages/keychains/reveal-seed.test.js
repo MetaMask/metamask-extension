@@ -7,7 +7,7 @@ import RevealSeedPage from './reveal-seed';
 
 const mockRequestRevealSeedWords = jest.fn().mockResolvedValue();
 
-jest.mock('../../store/actions.js', () => ({
+jest.mock('../../store/actions.ts', () => ({
   requestRevealSeedWords: () => mockRequestRevealSeedWords,
 }));
 

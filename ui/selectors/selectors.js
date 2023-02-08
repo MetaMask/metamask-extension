@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SubjectType } from '@metamask/subject-metadata-controller';
+///: END:ONLY_INCLUDE_IN
 import {
   createSelector,
   createSelectorCreator,
@@ -22,19 +25,13 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/keyrings';
 import {
-  WEBHID_CONNECTED_STATUSES,
-  LEDGER_TRANSPORT_TYPES,
-  TRANSPORT_STATES,
+  HardwareKeyringTypes,
+  WebHIDConnectedStatuses,
+  LedgerTransportTypes,
+  HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
-
-import {
-  MESSAGE_TYPE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SUBJECT_TYPES,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../shared/constants/app';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -49,7 +46,6 @@ import {
   getAccountByAddress,
   getURLHostName,
 } from '../helpers/utils/util';
-import { getValueFromWeiHex } from '../helpers/utils/conversions.util';
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -69,9 +65,12 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { hexToDecimal } from '../../shared/lib/metamask-controller-utils';
 import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
 import { TransactionStatus } from '../../shared/constants/transaction';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
@@ -130,7 +129,7 @@ export function hasUnsignedQRHardwareTransaction(state) {
   }
   const { from } = txParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
+  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -148,7 +147,7 @@ export function hasUnsignedQRHardwareMessage(state) {
   }
   const { from } = msgParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
+  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -239,11 +238,11 @@ export function getAccountType(state) {
   const type = currentKeyring && currentKeyring.type;
 
   switch (type) {
-    case KEYRING_TYPES.TREZOR:
-    case KEYRING_TYPES.LEDGER:
-    case KEYRING_TYPES.LATTICE:
+    case HardwareKeyringTypes.trezor:
+    case HardwareKeyringTypes.ledger:
+    case HardwareKeyringTypes.lattice:
       return 'hardware';
-    case KEYRING_TYPES.IMPORTED:
+    case HardwareKeyringTypes.imported:
       return 'imported';
     default:
       return 'default';
@@ -533,6 +532,20 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
+export function getTotalUnapprovedSignatureRequestCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedTypedMessagesCount
+  );
+}
+
 export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
@@ -630,7 +643,7 @@ export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  if (metadata?.subjectType === SUBJECT_TYPES.SNAP) {
+  if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
       ...remainingMetadata,
@@ -842,7 +855,7 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
-const getCurrentNetworkTransactionList = (state) =>
+export const getCurrentNetworkTransactionList = (state) =>
   state.metamask.currentNetworkTxList;
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -983,10 +996,11 @@ export const getUnreadNotificationsCount = createSelector(
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
+  const currentKeyringIsLedger =
+    currentKeyring?.type === HardwareKeyringTypes.ledger;
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
-    getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.LIVE;
+    getLedgerTransportType(state) === LedgerTransportTypes.live;
 
   return {
     1: false,
@@ -1050,6 +1064,15 @@ export function getShowRecoveryPhraseReminder(state) {
   const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
+}
+
+export function getShowOutdatedBrowserWarning(state) {
+  const { outdatedBrowserWarningLastShown } = state.metamask;
+  if (!outdatedBrowserWarningLastShown) {
+    return true;
+  }
+  const currentTime = new Date().getTime();
+  return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
 export function getShowPortfolioTooltip(state) {
@@ -1119,13 +1142,12 @@ export function getTokenList(state) {
 export function doesAddressRequireLedgerHidConnection(state, address) {
   const addressIsLedger = isAddressLedger(state, address);
   const transportTypePreferenceIsWebHID =
-    getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.WEBHID;
+    getLedgerTransportType(state) === LedgerTransportTypes.webhid;
   const webHidIsNotConnected =
-    getLedgerWebHidConnectedStatus(state) !==
-    WEBHID_CONNECTED_STATUSES.CONNECTED;
+    getLedgerWebHidConnectedStatus(state) !== WebHIDConnectedStatuses.connected;
   const ledgerTransportStatus = getLedgerTransportStatus(state);
   const transportIsNotSuccessfullyCreated =
-    ledgerTransportStatus !== TRANSPORT_STATES.VERIFIED;
+    ledgerTransportStatus !== HardwareTransportStates.verified;
 
   return (
     addressIsLedger &&
@@ -1136,6 +1158,10 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
 
 export function getNewCollectibleAddedMessage(state) {
   return state.appState.newCollectibleAddedMessage;
+}
+
+export function getRemoveCollectibleMessage(state) {
+  return state.appState.removeCollectibleMessage;
 }
 
 /**
@@ -1299,16 +1325,6 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   const isDynamicTokenListAvailable = getIsDynamicTokenListAvailable(state);
 
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
-}
-
-/**
- * To get the `improvedTokenAllowanceEnabled` value which determines whether we use the improved token allowance
- *
- * @param {*} state
- * @returns Boolean
- */
-export function getIsImprovedTokenAllowanceEnabled(state) {
-  return state.metamask.improvedTokenAllowanceEnabled;
 }
 
 /**

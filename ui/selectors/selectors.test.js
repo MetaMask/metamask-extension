@@ -1,5 +1,5 @@
 import mockState from '../../test/data/mock-state.json';
-import { KEYRING_TYPES } from '../../shared/constants/keyrings';
+import { HardwareKeyringTypes } from '../../shared/constants/hardware-wallets';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -18,38 +18,38 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.IMPORTED;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
       expect(selectors.isHardwareWallet(mockState)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.IMPORTED;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
       expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.LEDGER;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        KEYRING_TYPES.LEDGER,
+        HardwareKeyringTypes.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KEYRING_TYPES.TREZOR;
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        KEYRING_TYPES.TREZOR,
+        HardwareKeyringTypes.trezor,
       );
     });
   });
@@ -87,7 +87,7 @@ describe('Selectors', () => {
           ...mockState.metamask,
           keyrings: [
             {
-              type: KEYRING_TYPES.LEDGER,
+              type: HardwareKeyringTypes.ledger,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
             },
           ],
@@ -267,5 +267,31 @@ describe('Selectors', () => {
   it('#getUseCurrencyRateCheck', () => {
     const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
+  });
+
+  it('#getShowOutdatedBrowserWarning returns false if outdatedBrowserWarningLastShown is less than 2 days ago', () => {
+    mockState.metamask.showOutdatedBrowserWarning = true;
+    const timestamp = new Date();
+    timestamp.setDate(timestamp.getDate() - 1);
+    mockState.metamask.outdatedBrowserWarningLastShown = timestamp.getTime();
+    const showOutdatedBrowserWarning =
+      selectors.getShowOutdatedBrowserWarning(mockState);
+    expect(showOutdatedBrowserWarning).toStrictEqual(false);
+  });
+
+  it('#getShowOutdatedBrowserWarning returns true if outdatedBrowserWarningLastShown is more than 2 days ago', () => {
+    mockState.metamask.showOutdatedBrowserWarning = true;
+    const timestamp = new Date();
+    timestamp.setDate(timestamp.getDate() - 3);
+    mockState.metamask.outdatedBrowserWarningLastShown = timestamp.getTime();
+    const showOutdatedBrowserWarning =
+      selectors.getShowOutdatedBrowserWarning(mockState);
+    expect(showOutdatedBrowserWarning).toStrictEqual(true);
+  });
+
+  it('#getTotalUnapprovedSignatureRequestCount', () => {
+    const totalUnapprovedSignatureRequestCount =
+      selectors.getTotalUnapprovedSignatureRequestCount(mockState);
+    expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
 });

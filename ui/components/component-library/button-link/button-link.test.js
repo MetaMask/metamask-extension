@@ -1,8 +1,9 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { ButtonLink } from './button-link';
+import { BUTTON_LINK_SIZES } from './button-link.constants';
 
 describe('ButtonLink', () => {
   it('should render button element correctly', () => {
@@ -39,25 +40,23 @@ describe('ButtonLink', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <ButtonLink size={SIZES.SM} data-testid={SIZES.SM} />
-        <ButtonLink size={SIZES.MD} data-testid={SIZES.MD} />
-        <ButtonLink size={SIZES.LG} data-testid={SIZES.LG} />
-        <ButtonLink size={SIZES.AUTO} data-testid={SIZES.AUTO} />
+        <ButtonLink size={Size.SM} data-testid={Size.SM} />
+        <ButtonLink size={Size.MD} data-testid={Size.MD} />
+        <ButtonLink size={Size.LG} data-testid={Size.LG} />
       </>,
     );
 
-    expect(getByTestId(SIZES.SM)).toHaveClass(
-      `mm-button-base--size-${SIZES.SM}`,
+    expect(getByTestId(Size.SM)).toHaveClass(`mm-button-base--size-${Size.SM}`);
+    expect(getByTestId(Size.MD)).toHaveClass(`mm-button-base--size-${Size.MD}`);
+    expect(getByTestId(Size.LG)).toHaveClass(`mm-button-base--size-${Size.LG}`);
+  });
+
+  it('should render ButtonLink inherit size', () => {
+    const { getByTestId } = render(
+      <ButtonLink size={BUTTON_LINK_SIZES.INHERIT} data-testid="inherit" />,
     );
-    expect(getByTestId(SIZES.MD)).toHaveClass(
-      `mm-button-base--size-${SIZES.MD}`,
-    );
-    expect(getByTestId(SIZES.LG)).toHaveClass(
-      `mm-button-base--size-${SIZES.LG}`,
-    );
-    expect(getByTestId(SIZES.AUTO)).toHaveClass(
-      `mm-button-base--size-${SIZES.AUTO}`,
-    );
+    // Different size classname compared to Size.SM, Size.MD, Size.LG
+    expect(getByTestId('inherit')).toHaveClass(`mm-button-link--size-inherit`);
   });
 
   it('should render as danger', () => {
@@ -82,7 +81,7 @@ describe('ButtonLink', () => {
   });
   it('should render with icon', () => {
     const { container } = render(
-      <ButtonLink data-testid="icon" iconName="add-square-filled" />,
+      <ButtonLink data-testid="icon" iconName="add-square" />,
     );
 
     const icons = container.getElementsByClassName('mm-icon').length;

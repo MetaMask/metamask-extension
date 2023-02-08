@@ -8,8 +8,8 @@ import TransactionDetail from '../../../components/app/transaction-detail/transa
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import Typography from '../../../components/ui/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -123,8 +123,8 @@ export default function FeeCard({
                     <Typography
                       as="span"
                       fontWeight={FONT_WEIGHT.BOLD}
-                      color={COLORS.TEXT_ALTERNATIVE}
-                      variant={TYPOGRAPHY.H7}
+                      color={TextColor.textAlternative}
+                      variant={TypographyVariant.H7}
                     >
                       {t('maxFee')}
                     </Typography>

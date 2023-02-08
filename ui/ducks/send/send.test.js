@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -12,8 +12,8 @@ import {
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
-import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import {
   AssetType,
   TokenStandard,
@@ -93,7 +93,7 @@ jest.mock('lodash', () => ({
 
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
-  addUnapprovedTransaction: jest.fn((_v, _w, _x, _y, _z, cb) => {
+  addUnapprovedTransaction: jest.fn((_u, _v, _w, _x, _y, _z, cb) => {
     cb(null);
   }),
   updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
@@ -1267,7 +1267,7 @@ describe('Send Slice', () => {
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
         getState = jest.fn().mockReturnValue({
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             networkDetails: {
               EIPS: {
@@ -1278,7 +1278,7 @@ describe('Send Slice', () => {
             identities: { '0xAddress': { address: '0xAddress' } },
             keyrings: [
               {
-                type: KEYRING_TYPES.HD_KEY_TREE,
+                type: HardwareKeyringTypes.hdKeyTree,
                 accounts: ['0xAddress'],
               },
             ],
@@ -1365,7 +1365,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'GAS_FEE_ESTIMATES_UPDATED',
           payload: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasEstimateType: GasEstimateTypes.legacy,
             gasFeeEstimates: {
               medium: '1',
             },
@@ -2308,7 +2308,7 @@ describe('Send Slice', () => {
             },
           };
 
-          jest.mock('../../store/actions.js');
+          jest.mock('../../store/actions.ts');
 
           const store = mockStore(tokenTransferTxState);
 
@@ -2316,13 +2316,13 @@ describe('Send Slice', () => {
 
           expect(
             addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][0].data,
+              .calls[0][1].data,
           ).toStrictEqual(
             '0xa9059cbb0000000000000000000000004f90e18605fd46f9f9fab0e225d88e1acf5f53240000000000000000000000000000000000000000000000000000000000000001',
           );
           expect(
             addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][0].to,
+              .calls[0][1].to,
           ).toStrictEqual('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
         });
       });
@@ -2345,7 +2345,7 @@ describe('Send Slice', () => {
           },
         };
 
-        jest.mock('../../store/actions.js');
+        jest.mock('../../store/actions.ts');
 
         const store = mockStore(editStageSignTxState);
 
@@ -2372,7 +2372,7 @@ describe('Send Slice', () => {
       it('should set up the appropriate state for editing a native asset transaction', async () => {
         const editTransactionState = {
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             provider: {
               chainId: CHAIN_IDS.GOERLI,
@@ -2536,7 +2536,7 @@ describe('Send Slice', () => {
                   data: generateERC721TransferData({
                     toAddress: BURN_ADDRESS,
                     fromAddress: '0xAddress',
-                    tokenId: ethers.BigNumber.from(15000).toString(),
+                    tokenId: BigNumber.from(15000).toString(),
                   }),
                   from: '0xAddress',
                   to: '0xCollectibleAddress',
@@ -2952,7 +2952,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),
@@ -2966,7 +2966,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),

@@ -5,7 +5,7 @@ import Tooltip from '.';
 
 export default {
   title: 'Components/UI/Tooltip',
-  id: __filename,
+
   argTypes: {
     containerClassName: {
       control: 'text',

@@ -4,7 +4,7 @@ import ShowHideToggle from '.';
 
 export default {
   title: 'Components/UI/ShowHideToggle', // title should follow the folder structure location of the component. Don't use spaces.
-  id: __filename,
+
   argTypes: {
     id: {
       control: 'text',

@@ -24,11 +24,11 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   VIEW_QUOTE_ROUTE,
@@ -72,7 +72,6 @@ import {
   getUseCurrencyRateCheck,
 } from '../../../selectors';
 
-import { getValueFromWeiHex } from '../../../helpers/utils/conversions.util';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -87,7 +86,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  TOKEN_BUCKET_PRIORITY,
+  TokenBucketPriority,
 } from '../../../../shared/constants/swaps';
 
 import {
@@ -106,9 +105,12 @@ import {
 } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../../../shared/modules/conversion.utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -219,13 +221,13 @@ export default function BuildQuote({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
-    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.OWNED,
+    tokenBucketPriority: TokenBucketPriority.owned,
   });
   const tokensToSearchSwapTo = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
     shuffledTokensList,
-    tokenBucketPriority: TOKEN_BUCKET_PRIORITY.TOP,
+    tokenBucketPriority: TokenBucketPriority.top,
   });
   const selectedToToken =
     tokensToSearchSwapFrom.find(({ address }) =>
@@ -588,7 +590,7 @@ export default function BuildQuote({
                   {t('enableSmartTransactions')}
                 </Button>
                 <Box marginTop={1}>
-                  <Typography variant={TYPOGRAPHY.H6}>
+                  <Typography variant={TypographyVariant.H6}>
                     <Button
                       type="link"
                       onClick={onCloseSmartTransactionsOptInPopover}
@@ -622,12 +624,12 @@ export default function BuildQuote({
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
+              <Typography variant={TypographyVariant.H7} marginTop={0}>
                 {t('stxDescription')}
               </Typography>
               <Typography
                 as="ul"
-                variant={TYPOGRAPHY.H7}
+                variant={TypographyVariant.H7}
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={3}
               >
@@ -639,23 +641,23 @@ export default function BuildQuote({
                   <Typography
                     as="span"
                     fontWeight={FONT_WEIGHT.NORMAL}
-                    variant={TYPOGRAPHY.H7}
+                    variant={TypographyVariant.H7}
                   >
                     {' *'}
                   </Typography>
                 </li>
               </Typography>
               <Typography
-                variant={TYPOGRAPHY.H8}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H8}
+                color={TextColor.textAlternative}
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
                 <Typography
                   as="span"
                   fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  variant={TypographyVariant.H8}
+                  color={TextColor.textAlternative}
                 >
                   {t('stxYouCanOptOut')}&nbsp;
                 </Typography>

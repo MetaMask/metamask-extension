@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  SIZES,
-  TEXT,
+  Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { ICON_NAMES } from '../icon';
 import { BUTTON_LINK_SIZES } from '../button-link/button-link.constants';
@@ -33,7 +33,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/Button',
-  id: __filename,
+
   component: Button,
   parameters: {
     docs: {
@@ -129,33 +129,37 @@ export const Type = (args) => (
   </Box>
 );
 
-export const Size = (args) => (
+export const SizeStory = (args) => (
   <>
     <Box
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.BASELINE}
+      alignItems={AlignItems.baseline}
       gap={1}
       marginBottom={3}
     >
-      <Button {...args} size={SIZES.SM}>
+      <Button {...args} size={Size.SM}>
         Small Button
       </Button>
-      <Button {...args} size={SIZES.MD}>
+      <Button {...args} size={Size.MD}>
         Medium (Default) Button
       </Button>
-      <Button {...args} size={SIZES.LG}>
+      <Button {...args} size={Size.LG}>
         Large Button
       </Button>
+      <Button {...args} type={BUTTON_TYPES.LINK}>
+        Auto ButtonLink
+      </Button>
     </Box>
-    <Text variant={TEXT.BODY_SM}>
-      <Button {...args} type={BUTTON_TYPES.LINK} size={SIZES.AUTO}>
-        Button Auto
+    <Text variant={TextVariant.bodySm}>
+      <Button {...args} type={BUTTON_TYPES.LINK} size={Size.inherit}>
+        Button Inherit
       </Button>{' '}
-      inherits the font-size of the parent element. Auto size only used for
+      inherits the font-size of the parent element. Inherit size only used for
       ButtonLink.
     </Text>
   </>
 );
+SizeStory.storyName = 'Size';
 
 export const Danger = (args) => (
   <Box display={DISPLAY.FLEX} gap={1}>
@@ -205,8 +209,8 @@ Loading.args = {
   loading: true,
 };
 
-export const IconName = (args) => <Button {...args}>Button</Button>;
-
-IconName.args = {
-  iconName: ICON_NAMES.ADD_SQUARE_FILLED,
-};
+export const Icon = (args) => (
+  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
+    Button
+  </Button>
+);

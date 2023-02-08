@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  SIZES,
   DISPLAY,
-  ALIGN_ITEMS,
-  BORDER_COLORS,
+  AlignItems,
+  BorderColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -13,7 +13,7 @@ import { AvatarFavicon, AVATAR_FAVICON_SIZES } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarFavicon',
-  id: __filename,
+
   component: AvatarFavicon,
   parameters: {
     docs: {
@@ -29,13 +29,13 @@ export default {
       control: 'text',
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
     },
   },
   args: {
     src: 'https://uniswap.org/favicon.ico',
-    size: SIZES.MD,
+    size: Size.MD,
   },
 };
 
@@ -46,18 +46,19 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
-    <AvatarFavicon {...args} size={SIZES.XS} />
-    <AvatarFavicon {...args} size={SIZES.SM} />
-    <AvatarFavicon {...args} size={SIZES.MD} />
-    <AvatarFavicon {...args} size={SIZES.LG} />
-    <AvatarFavicon {...args} size={SIZES.XL} />
+export const SizeStory = (args) => (
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+    <AvatarFavicon {...args} size={Size.XS} />
+    <AvatarFavicon {...args} size={Size.SM} />
+    <AvatarFavicon {...args} size={Size.MD} />
+    <AvatarFavicon {...args} size={Size.LG} />
+    <AvatarFavicon {...args} size={Size.XL} />
   </Box>
 );
+SizeStory.storyName = 'Size';
 
 export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX} gap={1}>
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexStart} gap={1}>
     <AvatarFavicon {...args} src="https://uniswap.org/favicon.ico" />
     <AvatarFavicon
       {...args}

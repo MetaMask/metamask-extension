@@ -6,6 +6,72 @@ exports[`Signature Request Component render should match snapshot 1`] = `
     class="signature-request"
   >
     <div
+      class="confirm-page-container-navigation"
+      style="display: none;"
+    >
+      <div
+        class="confirm-page-container-navigation__container"
+        data-testid="navigation-container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
+        >
+          <i
+            class="fa fa-angle-double-left fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
+        >
+          <i
+            class="fa fa-angle-left fa-2x"
+          />
+        </button>
+      </div>
+      <div
+        class="confirm-page-container-navigation__textcontainer"
+      >
+        <div
+          class="confirm-page-container-navigation__navtext"
+        >
+          0
+           
+          of
+           
+          1
+        </div>
+        <div
+          class="confirm-page-container-navigation__longtext"
+        >
+          requests waiting to be acknowledged
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-navigation__container"
+        style="visibility: initial;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
+        >
+          <i
+            class="fa fa-angle-right fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
+        >
+          <i
+            class="fa fa-angle-double-right fa-2x"
+          />
+        </button>
+      </div>
+    </div>
+    <div
       class="request-signature__account"
     >
       <div
@@ -680,24 +746,26 @@ exports[`Signature Request Component render should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="signature-request-footer"
+      class="page-container__footer"
     >
-      <button
-        class="button btn--rounded btn-secondary"
-        data-testid="signature-cancel-button"
-        role="button"
-        tabindex="0"
-      >
-        Reject
-      </button>
-      <button
-        class="button btn--rounded btn-primary"
-        data-testid="signature-sign-button"
-        role="button"
-        tabindex="0"
-      >
-        Sign
-      </button>
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+          role="button"
+          tabindex="0"
+        >
+          Reject
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+          role="button"
+          tabindex="0"
+        >
+          Sign
+        </button>
+      </footer>
     </div>
   </div>
 </div>

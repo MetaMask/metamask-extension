@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  COLORS,
-  SIZES,
-  ALIGN_ITEMS,
+  Size,
+  AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -17,7 +17,7 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/Label',
-  id: __filename,
+
   component: Label,
   parameters: {
     docs: {
@@ -58,19 +58,19 @@ export const Children = (args) => (
     gap={2}
   >
     <Label {...args}>Plain text</Label>
-    <Label {...args} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START}>
+    <Label {...args} display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>
       Text and icon
       <Icon
-        color={COLORS.ICON_ALTERNATIVE}
-        name={ICON_NAMES.INFO_FILLED}
-        size={SIZES.AUTO}
+        color={IconColor.iconAlternative}
+        name={ICON_NAMES.INFO}
+        size={Size.inherit}
       />
     </Label>
     <Label
       {...args}
       display={DISPLAY.INLINE_FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      alignItems={ALIGN_ITEMS.FLEX_START}
+      alignItems={AlignItems.flexStart}
     >
       Label that wraps an input
       <TextField placeholder="Click label to focus" />

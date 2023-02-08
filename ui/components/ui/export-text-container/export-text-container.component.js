@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Copy from '../icon/copy-icon.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 function ExportTextContainer({
   text = '',
@@ -28,7 +28,7 @@ function ExportTextContainer({
             handleCopy(text);
           }}
         >
-          <Copy size={17} color="var(--color-primary-default)" />
+          <Icon name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY} />
           <div className="export-text-container__button-text">
             {copied ? t('copiedExclamation') : t('copyToClipboard')}
           </div>

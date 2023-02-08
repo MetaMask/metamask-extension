@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  SIZES,
+  Size,
   DISPLAY,
-  COLORS,
-  ALIGN_ITEMS,
-  TEXT,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  TextVariant,
+  JustifyContent,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -49,7 +50,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/FormTextField',
-  id: __filename,
+
   component: FormTextField,
   parameters: {
     docs: {
@@ -396,21 +397,17 @@ export const FormExample = () => {
           error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
           helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
         />
-        <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} gap={1}>
+        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
-      <ButtonSecondary
-        iconName={ICON_NAMES.CLOSE_OUTLINE}
-        onClick={handleClearForm}
-        danger
-      >
+      <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
         Clear form
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
         <Text
-          variant={TEXT.BODY_LG}
-          color={COLORS.SUCCESS_DEFAULT}
+          variant={TextVariant.bodyLgMedium}
+          color={TextColor.successDefault}
           marginTop={4}
         >
           Form successfully submitted!
@@ -428,10 +425,10 @@ export const CustomLabelOrHelpText = () => (
     </Text>
     <Box
       display={DISPLAY.FLEX}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-      alignItems={ALIGN_ITEMS.FLEX_END}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.flexEnd}
     >
-      <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
@@ -439,18 +436,18 @@ export const CustomLabelOrHelpText = () => (
           Custom spending cap
         </Label>
         <Icon
-          name={ICON_NAMES.INFO_FILLED}
-          size={SIZES.SM}
+          name={ICON_NAMES.INFO}
+          size={Size.SM}
           marginLeft={1}
-          color={COLORS.ICON_ALTERNATIVE}
+          color={IconColor.iconAlternative}
         />
       </Box>
-      <ButtonLink size={SIZES.AUTO}>Use default</ButtonLink>
+      <ButtonLink>Use default</ButtonLink>
     </Box>
     <FormTextField
       id="custom-spending-cap"
       placeholder="Enter a number"
-      rightAccessory={<ButtonLink size={SIZES.AUTO}>Max</ButtonLink>}
+      rightAccessory={<ButtonLink>Max</ButtonLink>}
       marginBottom={4}
       type={TEXT_FIELD_TYPES.NUMBER}
     />
@@ -461,8 +458,8 @@ export const CustomLabelOrHelpText = () => (
     />
     <Box
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.FLEX_START}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      alignItems={AlignItems.flexStart}
+      justifyContent={JustifyContent.spaceBetween}
     >
       {/* If you need a custom help text
        or require adding some form of customization
@@ -473,7 +470,7 @@ export const CustomLabelOrHelpText = () => (
         accessing now or in the future. You can always increase the token limit
         later.
       </HelpText>
-      <ButtonLink size={SIZES.AUTO} marginLeft="auto" marginTop={1}>
+      <ButtonLink marginLeft="auto" marginTop={1}>
         Max
       </ButtonLink>
     </Box>

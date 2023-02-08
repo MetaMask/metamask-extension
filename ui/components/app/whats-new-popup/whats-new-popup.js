@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { getCurrentLocale } from '../../../ducks/metamask/metamask';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Button from '../../ui/button';
@@ -18,7 +18,7 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function getActionFunctionById(id, history) {
@@ -59,10 +59,6 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 14: true });
       history.push(`${ADVANCED_ROUTE}#backup-userdata`);
     },
-    16: () => {
-      updateViewedNotifications({ 16: true });
-      history.push(EXPERIMENTAL_ROUTE);
-    },
     17: () => {
       updateViewedNotifications({ 17: true });
       history.push(SECURITY_ROUTE);
@@ -75,7 +71,9 @@ function getActionFunctionById(id, history) {
 const renderDescription = (description) => {
   if (!Array.isArray(description)) {
     return (
-      <Typography variant={TYPOGRAPHY.Paragraph}>{description}</Typography>
+      <Typography variant={TypographyVariant.paragraph}>
+        {description}
+      </Typography>
     );
   }
 
@@ -86,7 +84,7 @@ const renderDescription = (description) => {
         return (
           <Typography
             key={`item-${index}`}
-            variant={TYPOGRAPHY.Paragraph}
+            variant={TypographyVariant.paragraph}
             boxProps={{ marginBottom: isLast ? 0 : 2 }}
           >
             {piece}

@@ -51,10 +51,6 @@
     "message": "Leí y estoy de acuerdo con $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 puede acceder y gastar hasta este importe máximo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara..."
   },
@@ -230,15 +226,8 @@
   "approveButtonText": {
     "message": "Aprobar"
   },
-  "approveSpendLimit": {
-    "message": "Aprobar límite de gastos de $1",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "Aprobado"
-  },
-  "approvedAmountWithColon": {
-    "message": "Monto aprobado:"
   },
   "asset": {
     "message": "Activo"
@@ -300,24 +289,8 @@
   "basic": {
     "message": "Básico"
   },
-  "betaMetamaskDescription": {
-    "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
-  },
-  "betaMetamaskDescriptionExplanation": {
-    "message": "Use esta versión para probar las próximas funcionalidades antes de su lanzamiento. Su uso y comentarios nos ayudan a construir la mejor versión de MetaMask posible. Su uso de MetaMask Beta quedará sujeto a nuestra tarifa estándar de $1 y $2. Como Beta, puede haber un mayor riesgo de errores. Al proceder, usted acepta y reconoce estos riesgos, así como los que se encuentran en nuestros Términos y en los Términos de Beta.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Términos Beta adicionales"
-  },
-  "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Términos"
-  },
   "betaMetamaskVersion": {
     "message": "Versión Beta de MetaMask"
-  },
-  "betaWelcome": {
-    "message": "Bienvenido a MetaMask Beta"
   },
   "blockExplorerAccountAction": {
     "message": "Cuenta",
@@ -410,9 +383,6 @@
     "message": "Haga clic aquí para conectar su Ledger a través de WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
-  "clickToRevealSeed": {
-    "message": "Haga clic aquí para revelar las palabras secretas"
-  },
   "close": {
     "message": "Cerrar"
   },
@@ -425,9 +395,6 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmar la frase secreta de recuperación"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Confirmar la frase secreta de respaldo"
-  },
   "confirmed": {
     "message": "Confirmado"
   },
@@ -439,9 +406,6 @@
   },
   "confusingEnsDomain": {
     "message": "Se detectó un carácter que puede confundirse con otro similar en el nombre de ENS. Verifique el nombre de ENS para evitar una posible estafa."
-  },
-  "congratulations": {
-    "message": "Felicitaciones"
   },
   "connect": {
     "message": "Conectar"
@@ -561,9 +525,6 @@
   },
   "create": {
     "message": "Crear"
-  },
-  "createAWallet": {
-    "message": "Crear una cartera"
   },
   "createAccount": {
     "message": "Crear cuenta"
@@ -711,9 +672,6 @@
   "downloadGoogleChrome": {
     "message": "Descargar Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Descargue esta frase secreta de respaldo y guárdela en un medio de almacenamiento o disco duro externo cifrado."
-  },
   "downloadStateLogs": {
     "message": "Descargar registros de estado"
   },
@@ -837,37 +795,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "Solicitar clave pública de cifrado"
-  },
-  "endOfFlowMessage1": {
-    "message": "Pasó la prueba: guarde la frase secreta de recuperación en un lugar seguro, ¡es su responsabilidad!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Todo listo"
-  },
-  "endOfFlowMessage2": {
-    "message": "Sugerencias de almacenamiento seguro"
-  },
-  "endOfFlowMessage3": {
-    "message": "Guarde una copia de seguridad en varios lugares."
-  },
-  "endOfFlowMessage4": {
-    "message": "No comparta la frase con nadie."
-  },
-  "endOfFlowMessage5": {
-    "message": "Tenga cuidado con el phishing. MetaMask nunca le pedirá la frase secreta de recuperación sin anticipárselo."
-  },
-  "endOfFlowMessage6": {
-    "message": "Si necesita volver a crear una copia de seguridad de la frase secreta de recuperación, puede encontrarla en Configuración -> Seguridad."
-  },
-  "endOfFlowMessage7": {
-    "message": "Si tiene preguntas o nota movimientos sospechosos, comuníquese con soporte técnico $1.",
-    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask no puede recuperar la frase secreta de recuperación."
-  },
-  "endOfFlowMessage9": {
-    "message": "Obtenga más información."
   },
   "endpointReturnedDifferentChainId": {
     "message": "El punto de conexión devolvió un id. de cadena diferente: $1",
@@ -1133,9 +1060,6 @@
     "message": "Obtener ether de un faucet para $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Empezar"
-  },
   "goBack": {
     "message": "Volver"
   },
@@ -1147,9 +1071,6 @@
   },
   "gwei": {
     "message": "GWEI"
-  },
-  "happyToSeeYou": {
-    "message": "Nos alegra verlo."
   },
   "hardware": {
     "message": "Hardware"
@@ -1212,9 +1133,6 @@
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Aprenda más sobre las cuentas importadas"
   },
-  "importAccountSeedPhrase": {
-    "message": "Importar una cartera con la frase secreta de recuperación"
-  },
   "importMyWallet": {
     "message": "Importar Mi cartera"
   },
@@ -1232,12 +1150,6 @@
   },
   "importTokensCamelCase": {
     "message": "Importar tokens"
-  },
-  "importWallet": {
-    "message": "Importar cartera"
-  },
-  "importYourExisting": {
-    "message": "Importar la cartera existente con una frase secreta de recuperación"
   },
   "imported": {
     "message": "Importado",
@@ -1396,9 +1308,6 @@
     "message": "El dispositivo Ledger no se ha conectado. Si desea conectar su Ledger, haga clic de nuevo en 'Continuar' y apruebe la conexión HID",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "letsGoSetUp": {
-    "message": "Sí, ¡quiero establecer la configuración!"
-  },
   "likeToImportTokens": {
     "message": "¿Quiere agregar estos tokens?"
   },
@@ -1468,9 +1377,6 @@
   "memo": {
     "message": "nota"
   },
-  "memorizePhrase": {
-    "message": "Memorice esta frase."
-  },
   "message": {
     "message": "Mensaje"
   },
@@ -1482,9 +1388,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "El botón de estado de la conexión muestra si el sitio web que visita está conectado a la cuenta seleccionada actualmente."
-  },
-  "metamaskDescription": {
-    "message": "Conectándolo a Ethereum y a la Web descentralizada."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps está en mantenimiento. Vuelva a comprobarlo más tarde."
@@ -1643,9 +1546,6 @@
   "newPassword": {
     "message": "Contraseña nueva (mín. de 8 caracteres)"
   },
-  "newToMetaMask": {
-    "message": "¿Es nuevo en MetaMask?"
-  },
   "newValues": {
     "message": "nuevos valores"
   },
@@ -1667,9 +1567,6 @@
   },
   "noAddressForName": {
     "message": "No se estableció ninguna dirección para este nombre."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "No, ya tengo una frase secreta de recuperación"
   },
   "noConversionDateAvailable": {
     "message": "No hay fecha de conversión de moneda disponible"
@@ -1859,12 +1756,8 @@
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"
   },
-  "onboardingReturnNotice": {
-    "message": "\"$1\" cerrará esta pestaña y lo dirigirá de nuevo a $2",
-    "description": "Return the user to the site that initiated onboarding"
-  },
   "onboardingShowIncomingTransactionsDescription": {
-    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver @2.",
+    "message": "Mostrar las transacciones entrantes en su cartera depende de la comunicación con $1. Etherscan tendrá acceso a su dirección de Ethereum y a su dirección IP. Ver $2.",
     "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
@@ -2061,9 +1954,6 @@
   "remember": {
     "message": "Recuerde:"
   },
-  "remindMeLater": {
-    "message": "Recordarme más adelante"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -2145,15 +2035,6 @@
   "searchTokens": {
     "message": "Buscar tokens"
   },
-  "secretBackupPhraseDescription": {
-    "message": "La frase secreta de respaldo facilita la creación de una copia de seguridad y la restauración de su cuenta."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ADVERTENCIA: No revele su frase de respaldo. Cualquier persona que tenga esta frase puede robarle los ethers."
-  },
-  "secretPhrase": {
-    "message": "Ingrese su frase secreta aquí para restaurar su bóveda."
-  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },
@@ -2183,9 +2064,6 @@
   },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "Guárdela en una caja fuerte."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guárdela en una bóveda bancaria."
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Su frase de recuperación secreta es una frase de 12 palabras que es la “clave maestra” de su cartera y sus fondos"
@@ -2231,9 +2109,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Esta cuenta ya se conectó a MetaMask"
-  },
-  "selectEachPhrase": {
-    "message": "Seleccione cada frase para garantizar que sea correcta."
   },
   "selectHdPath": {
     "message": "Seleccione la ruta de acceso al disco duro"
@@ -2367,9 +2242,6 @@
   "speedUpTransaction": {
     "message": "Acelerar esta transacción"
   },
-  "spendLimitAmount": {
-    "message": "Monto de límite de gastos"
-  },
   "spendLimitInsufficient": {
     "message": "Límite de gastos insuficiente"
   },
@@ -2437,9 +2309,6 @@
   "step2LedgerWalletMsg": {
     "message": "Conecte la cartera directamente al equipo.  Desbloquee su Ledger y abra la aplicación de Ethereum. Para más información sobre el uso de su dispositivo de cartera de hardware, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "storePhrase": {
-    "message": "Guarde esta frase en un administrador de contraseñas como 1Password."
   },
   "submit": {
     "message": "Enviar"
@@ -2809,9 +2678,6 @@
   "testFaucet": {
     "message": "Probar faucet"
   },
-  "thisWillCreate": {
-    "message": "Esto creará una cartera y una frase secreta de recuperación nuevas"
-  },
   "time": {
     "message": "Tiempo"
   },
@@ -3138,9 +3004,6 @@
     "message": "WebHID",
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
-  "welcome": {
-    "message": "Bienvenido a MetaMask"
-  },
   "welcomeBack": {
     "message": "¡Bienvenido de nuevo!"
   },
@@ -3168,9 +3031,6 @@
   },
   "whatsThis": {
     "message": "¿Qué es esto?"
-  },
-  "writePhrase": {
-    "message": "Anote esta frase en un papel y guárdelo en un lugar seguro. Si quiere aún más seguridad, anótela en varios papeles y guárdelos en dos o tres lugares distintos."
   },
   "xOfY": {
     "message": "$1 de $2",

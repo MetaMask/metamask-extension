@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Collectible Default Image should match snapshot with all provided props 1`] = `
+<div>
+  <button
+    class="collectible-default collectible-default--clickable"
+    data-testid="collectible-default-image"
+    tabindex="0"
+  >
+    <h6
+      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography collectible-default__text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+    >
+      Collectible Name
+       
+      <br />
+       #
+      123
+    </h6>
+  </button>
+</div>
+`;
+
+exports[`Collectible Default Image should match snapshot with missing image click handler 1`] = `
+<div>
+  <div
+    class="collectible-default"
+    data-testid="collectible-default-image"
+    tabindex="0"
+  >
+    <h6
+      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography collectible-default__text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+    >
+      Collectible Name
+       
+      <br />
+       #
+      123
+    </h6>
+  </div>
+</div>
+`;
+
+exports[`Collectible Default Image should render with no props 1`] = `
+<div>
+  <div
+    class="collectible-default"
+    data-testid="collectible-default-image"
+    tabindex="0"
+  >
+    <h6
+      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography collectible-default__text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
+    >
+      [unknownCollection]
+       
+      <br />
+       #
+    </h6>
+  </div>
+</div>
+`;

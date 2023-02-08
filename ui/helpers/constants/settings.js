@@ -213,14 +213,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('useCollectibleDetection'),
-    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
-    route: `${SECURITY_ROUTE}#autodetect-nfts`,
-    icon: 'fa fa-flask',
-    featureFlag: 'NFTS_V1',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('currencyRateCheckToggle'),
     descriptionMessage: (t) => t('currencyRateCheckToggleDescription'),
     route: `${SECURITY_ROUTE}#price-checker`,
@@ -344,6 +336,14 @@ export const SETTINGS_CONSTANTS = [
     featureFlag: 'NFTS_V1',
   },
   {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('useCollectibleDetection'),
+    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+    icon: 'fa fa-flask',
+    featureFlag: 'NFTS_V1',
+  },
+  {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('backupUserData'),
     descriptionMessage: (t) => t('backupUserDataDescription'),
@@ -356,13 +356,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('restoreUserDataDescription'),
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('improvedTokenAllowance'),
-    descriptionMessage: (t) => t('improvedTokenAllowanceDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#improved-token-allowance`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('experimental'),

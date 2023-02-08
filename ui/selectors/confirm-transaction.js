@@ -2,12 +2,10 @@ import { createSelector } from 'reselect';
 import txHelper from '../helpers/utils/tx-helper';
 import {
   roundExponential,
-  getValueFromWeiHex,
   getTransactionFee,
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
-import { sumHexes } from '../helpers/utils/transactions.util';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
   getGasEstimateType,
@@ -15,9 +13,8 @@ import {
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
 import { TransactionEnvelopeType } from '../../shared/constants/transaction';
-import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
 import {
-  GAS_ESTIMATE_TYPES,
+  GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
 } from '../../shared/constants/gas';
 import {
@@ -26,6 +23,11 @@ import {
 } from '../../shared/modules/gas.utils';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
+import {
+  decGWEIToHexWEI,
+  getValueFromWeiHex,
+  sumHexes,
+} from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
@@ -298,19 +300,19 @@ export const transactionFeeSelector = function (state, txData) {
     }
   } else {
     switch (gasEstimateType) {
-      case GAS_ESTIMATE_TYPES.NONE:
+      case GasEstimateTypes.none:
         gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
         break;
-      case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+      case GasEstimateTypes.ethGasPrice:
         gasEstimationObject.gasPrice =
           txData.txParams?.gasPrice ??
           decGWEIToHexWEI(gasFeeEstimates.gasPrice);
         break;
-      case GAS_ESTIMATE_TYPES.LEGACY:
+      case GasEstimateTypes.legacy:
         gasEstimationObject.gasPrice =
           txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
         break;
-      case GAS_ESTIMATE_TYPES.FEE_MARKET:
+      case GasEstimateTypes.feeMarket:
         break;
       default:
         break;
