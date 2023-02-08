@@ -576,7 +576,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - development/ts-migration-dashboard/build
+            - development/ts-migration-dashboard/build/final
 
   test-yarn-dedupe:
     executor: node-browsers
@@ -1013,7 +1013,7 @@ jobs:
           path: storybook-build
           destination: storybook
       - store_artifacts:
-          path: development/ts-migration-dashboard/build
+          path: development/ts-migration-dashboard/build/final
           destination: ts-migration-dashboard
       - run:
           name: Set branch parent commit env var

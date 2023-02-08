@@ -83,10 +83,10 @@
     "lavamoat:webapp:auto:ci": "node ./development/generate-lavamoat-policies.js --parallel=false",
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:webapp:auto",
     "lavamoat:auto:ci": "yarn lavamoat:build:auto && yarn lavamoat:webapp:auto:ci",
+    "ts-migration:dashboard:build": "ts-node development/ts-migration-dashboard/scripts/build-app.ts",
+    "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build/final --remote ts-migration-dashboard",
+    "ts-migration:dashboard:watch": "yarn ts-migration:dashboard:build --watch",
     "ts-migration:enumerate": "ts-node development/ts-migration-dashboard/scripts/write-list-of-files-to-convert.ts",
-    "ts-migration:dashboard:watch": "ts-node development/ts-migration-dashboard/scripts/build.ts --watch",
-    "ts-migration:dashboard:build": "ts-node development/ts-migration-dashboard/scripts/build.ts",
-    "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build --remote ts-migration-dashboard",
     "test-storybook": "test-storybook -c .storybook",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook --maxWorkers=2\""
   },
