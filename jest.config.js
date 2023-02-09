@@ -10,6 +10,7 @@ module.exports = {
     '<rootDir>/app/scripts/platforms/*.js',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
+    '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
@@ -45,6 +46,7 @@ module.exports = {
     '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>/shared/**/*.test.(js|ts)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
+    '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
   ],
   testTimeout: 2500,
   // We have to specify the environment we are running in, which is jsdom. The
