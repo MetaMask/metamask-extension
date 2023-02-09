@@ -46,7 +46,7 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
-const MetaMaskController = proxyquire('./metamask-controller', {
+const MetaMaskController = proxyquire('../metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 

@@ -17,7 +17,7 @@ import {
 } from '../../../shared/constants/transaction';
 import { MILLISECOND } from '../../../shared/constants/time';
 
-const IncomingTransactionsController = proxyquire('./incoming-transactions', {
+const IncomingTransactionsController = proxyquire('../controllers/incoming-transactions', {
   '../../../shared/modules/random-id': { default: () => 54321 },
 }).default;
 

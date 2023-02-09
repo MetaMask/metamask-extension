@@ -85,7 +85,7 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
-const MetaMaskController = proxyquire('./metamask-controller', {
+const MetaMaskController = proxyquire('../metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
