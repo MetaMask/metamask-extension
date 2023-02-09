@@ -40,7 +40,7 @@ describe('Confirm Transaction', () => {
         txData: sendWithApproveTransaction,
       },
     });
-    const { getByText, getByTitle, getByRole, getAllByText } =
+    const { container, getByText, getByRole, getAllByText } =
       renderWithProvider(
         <ConfirmTransaction
           actionKey="confirm"
@@ -50,9 +50,10 @@ describe('Confirm Transaction', () => {
         store,
         `${CONFIRM_TRANSACTION_ROUTE}/${sendWithApproveTransaction.id}${CONFIRM_SEND_ETHER_PATH}`,
       );
+
     expect(getAllByText('Approve')).toHaveLength(1);
     expect(getByText('0x2f3...C970')).toBeInTheDocument();
-    expect(getByTitle('0.0001 ETH')).toBeInTheDocument();
+    expect(getByText('Max fee:')).toBeInTheDocument();
 
     act(() => {
       const dataTabButton = getByRole('button', { name: 'Data' });
