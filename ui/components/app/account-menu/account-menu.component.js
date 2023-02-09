@@ -32,7 +32,6 @@ import {
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import IconCheck from '../../ui/icon/icon-check';
-import IconConnect from '../../ui/icon/icon-connect';
 import IconCog from '../../ui/icon/icon-cog';
 import IconPlus from '../../ui/icon/icon-plus';
 import IconImport from '../../ui/icon/icon-import';
@@ -412,10 +411,7 @@ export default class AccountMenu extends Component {
             }
           }}
           icon={
-            <IconConnect
-              color="var(--color-icon-alternative)"
-              ariaLabel={t('connectHardwareWallet')}
-            />
+            <Icon name={ICON_NAMES.HARDWARE} color={Color.iconAlternative} />
           }
           text={t('connectHardwareWallet')}
         />
