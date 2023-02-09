@@ -5,7 +5,7 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { getURLHostName } from '../../../helpers/utils/util';
+import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
@@ -13,14 +13,15 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  COLORS,
   TEXT_ALIGN,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -148,15 +149,15 @@ export default class SignatureRequestOriginal extends Component {
 
         <Typography
           className="request-signature__content__title"
-          variant={TYPOGRAPHY.H3}
+          variant={TypographyVariant.H3}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {this.context.t('sigRequest')}
         </Typography>
         <Typography
           className="request-signature__content__subtitle"
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H7}
+          color={TextColor.textAlternative}
           align={TEXT_ALIGN.CENTER}
           margin={12}
           marginTop={3}
@@ -176,8 +177,12 @@ export default class SignatureRequestOriginal extends Component {
                 className="request-signature__row"
                 key={`request-signature-row-${index}`}
               >
-                <div className="request-signature__row-title">{`${name}:`}</div>
-                <div className="request-signature__row-value">{value}</div>
+                <div className="request-signature__row-title">
+                  {sanitizeString(`${name}:`)}
+                </div>
+                <div className="request-signature__row-value">
+                  {sanitizeString(value)}
+                </div>
               </div>
             );
           })}
@@ -280,6 +285,9 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__container">
+        <div className="request-signature__navigation">
+          <ConfirmPageContainerNavigation />
+        </div>
         <div className="request-signature__account">
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}

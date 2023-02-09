@@ -1,17 +1,17 @@
-import { TEXT } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
 export const TEXT_VARIANTS = {
-  DISPLAY_MD: TEXT.DISPLAY_MD,
-  HEADING_LG: TEXT.HEADING_LG,
-  HEADING_MD: TEXT.HEADING_MD,
-  HEADING_SM: TEXT.HEADING_SM,
-  BODY_LG_MEDIUM: TEXT.BODY_LG_MEDIUM,
-  BODY_MD: TEXT.BODY_MD,
-  BODY_MD_BOLD: TEXT.BODY_MD_BOLD,
-  BODY_SM: TEXT.BODY_SM,
-  BODY_SM_BOLD: TEXT.BODY_SM_BOLD,
-  BODY_XS: TEXT.BODY_XS,
-  INHERIT: TEXT.INHERIT,
+  DISPLAY_MD: TextVariant.displayMd,
+  HEADING_LG: TextVariant.headingLg,
+  HEADING_MD: TextVariant.headingMd,
+  HEADING_SM: TextVariant.headingSm,
+  BODY_LG_MEDIUM: TextVariant.bodyLgMedium,
+  BODY_MD: TextVariant.bodyMd,
+  BODY_MD_BOLD: TextVariant.bodyMdBold,
+  BODY_SM: TextVariant.bodySm,
+  BODY_SM_BOLD: TextVariant.bodySmBold,
+  BODY_XS: TextVariant.bodyXs,
+  INHERIT: TextVariant.inherit,
 };
 
 export const TEXT_DIRECTIONS = {

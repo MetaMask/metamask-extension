@@ -154,9 +154,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "За да се свържете с хардуерния си портфейл, трябва да използвате MetaMask в Google Chrome."
   },
-  "clickToRevealSeed": {
-    "message": "Кликнете тук, за да разкриете тайните думи"
-  },
   "close": {
     "message": "Затваряне"
   },
@@ -166,14 +163,8 @@
   "confirmPassword": {
     "message": "Потвърдете паролата"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Потвърдете своята тайна резервна фраза"
-  },
   "confirmed": {
     "message": "Потвърден"
-  },
-  "congratulations": {
-    "message": "Поздравления"
   },
   "connect": {
     "message": "Свързване"
@@ -216,9 +207,6 @@
   },
   "create": {
     "message": "Създаване"
-  },
-  "createAWallet": {
-    "message": "Създайте портфейл"
   },
   "createAccount": {
     "message": "Създай акаунт"
@@ -265,9 +253,6 @@
   "downloadGoogleChrome": {
     "message": "Изтеглете Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Изтеглете тази секретна резервна фраза и я съхранявайте безопасно на външен криптиран твърд диск или носител за съхранение."
-  },
   "downloadStateLogs": {
     "message": "Изтеглете държавни дневници"
   },
@@ -279,33 +264,6 @@
   },
   "editContact": {
     "message": "Редактиране на контакт"
-  },
-  "endOfFlowMessage1": {
-    "message": "Преминахте теста - пазете основната си фраза на сигурно място, това е Ваша отговорност!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Всичко е готово"
-  },
-  "endOfFlowMessage2": {
-    "message": "Съвети за безопасното му съхраняване"
-  },
-  "endOfFlowMessage3": {
-    "message": "Запазете резервно копие на няколко места."
-  },
-  "endOfFlowMessage4": {
-    "message": "Никога не споделяйте фразата с никого."
-  },
-  "endOfFlowMessage5": {
-    "message": "Внимавайте с фишинга! MetaMask никога няма да поиска спонтанно вашата фраза зародиш."
-  },
-  "endOfFlowMessage6": {
-    "message": "Ако отново трябва да архивирате основната си фраза, можете да я намерите в Настройки -> Защита."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask не може да възстанови ключовата Ви фраза. Научете повече."
-  },
-  "endOfFlowMessage9": {
-    "message": "Научете повече."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Името на ENS не е намерено в текущата мрежа. Опитайте да преминете към основната мрежа на етереум."
@@ -381,14 +339,8 @@
     "message": "Вземете Ether от фосет за $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Първи стъпки"
-  },
   "goerli": {
     "message": "Тестова мрежа на Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Радваме се да Ви видим."
   },
   "hardware": {
     "message": "хардуер"
@@ -427,12 +379,6 @@
   },
   "importAccountMsg": {
     "message": "Импортираните акаунти няма да бъдат свързани с първоначално създадената ви фраза за метаМаск акаунт. Научете повече за импортираните акаунти"
-  },
-  "importAccountSeedPhrase": {
-    "message": "Импортирайте акаунт с фраза зародиш"
-  },
-  "importWallet": {
-    "message": "Импортиране на портфейла"
   },
   "imported": {
     "message": "Импортирани",
@@ -484,9 +430,6 @@
   "ledgerAccountRestriction": {
     "message": "Трябва да използвате последния си акаунт, преди да можете да добавите нов."
   },
-  "letsGoSetUp": {
-    "message": "Да, нека да настроим нещата!"
-  },
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
@@ -517,14 +460,8 @@
   "memo": {
     "message": "бележка"
   },
-  "memorizePhrase": {
-    "message": "Запомнете тази фраза."
-  },
   "message": {
     "message": "Съобщение"
-  },
-  "metamaskDescription": {
-    "message": "Свързва ви с Ethereum и децентрализираната мрежа."
   },
   "metamaskVersion": {
     "message": "Версия на MetaMask"
@@ -567,17 +504,11 @@
   "newPassword": {
     "message": "Нова парола (мин. 8 символа)"
   },
-  "newToMetaMask": {
-    "message": "Нови ли сте в MetaMask?"
-  },
   "next": {
     "message": "Напред"
   },
   "noAddressForName": {
     "message": "За това име не е зададен адрес."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Не, вече имам фраза зародиш"
   },
   "noConversionRateAvailable": {
     "message": "Няма наличен процент на преобръщане"
@@ -686,9 +617,6 @@
   "rejected": {
     "message": "Отказан"
   },
-  "remindMeLater": {
-    "message": "Напомни ми по-късно"
-  },
   "remove": {
     "message": "Премахване"
   },
@@ -752,12 +680,6 @@
   "searchTokens": {
     "message": "Търсене на маркери"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Вашата тайна резервна фраза улеснява архивирането и възстановяването на акаунта ви."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ВНИМАНИЕ: Никога не разкривайте резервната си фраза. Всеки с тази фраза може да вземе вашия етер завинаги."
-  },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
@@ -766,9 +688,6 @@
   },
   "selectAnAccount": {
     "message": "Изберете акаунт"
-  },
-  "selectEachPhrase": {
-    "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."
   },
   "selectHdPath": {
     "message": "Изберете HD Path"
@@ -842,9 +761,6 @@
   "stateLogsDescription": {
     "message": "Държавните дневници съдържат адресите на публичните ви акаунти и изпратените транзакции."
   },
-  "storePhrase": {
-    "message": "Съхранявайте тази фраза в мениджър на пароли като 1Password."
-  },
   "submitted": {
     "message": "Изпратен"
   },
@@ -886,9 +802,6 @@
   },
   "testFaucet": {
     "message": "Тест Faucet"
-  },
-  "thisWillCreate": {
-    "message": "Това ще създаде нова фраза за портфейл и зародиш"
   },
   "tips": {
     "message": "Дарения"
@@ -1017,14 +930,8 @@
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"
   },
-  "welcome": {
-    "message": "Добре дошли в MetaMask"
-  },
   "welcomeBack": {
     "message": "Добре дошли отново!"
-  },
-  "writePhrase": {
-    "message": "Напишете тази фраза на лист хартия и я съхранявайте на сигурно място. Ако искате още по-голяма сигурност, запишете я на няколко листа хартия и ги съхранявайте на 2 - 3 различни места."
   },
   "yesLetsTry": {
     "message": "Да, нека опитаме"

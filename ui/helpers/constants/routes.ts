@@ -51,20 +51,6 @@ const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 const ADD_COLLECTIBLE_ROUTE = '/add-collectible';
 
-const INITIALIZE_ROUTE = '/initialize';
-const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome';
-const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock';
-const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password';
-const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE =
-  '/initialize/create-password/import-with-seed-phrase';
-const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action';
-const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase';
-const INITIALIZE_BACKUP_SEED_PHRASE_ROUTE = '/initialize/backup-seed-phrase';
-const INITIALIZE_SEED_PHRASE_INTRO_ROUTE = '/initialize/seed-phrase-intro';
-const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow';
-const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
-const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
-
 const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
@@ -165,23 +151,6 @@ const PATH_NAME_MAP = {
     'Decrypt Message Request Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
-  [INITIALIZE_ROUTE]: 'Initialization Page',
-  [INITIALIZE_WELCOME_ROUTE]: 'Install Welcome Page',
-  [INITIALIZE_UNLOCK_ROUTE]: 'Initialization Unlock page',
-  [INITIALIZE_CREATE_PASSWORD_ROUTE]: 'Initialization Create Password Page',
-  [INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE]:
-    'Initialization Import Account With Secret Recovery Phrase Page',
-  [INITIALIZE_SELECT_ACTION_ROUTE]:
-    'Initialization Choose Restore or New Account Page',
-  [INITIALIZE_SEED_PHRASE_ROUTE]: 'Initialization Secret Recovery Phrase Page',
-  [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]:
-    'Initialization Backup Secret Recovery Phrase Page',
-  [INITIALIZE_SEED_PHRASE_INTRO_ROUTE]:
-    'Initialization Secret Recovery Phrase Intro Page',
-  [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
-  [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]:
-    'Initialization Confirm Secret Recovery Phrase Page',
-  [INITIALIZE_METAMETRICS_OPT_IN_ROUTE]: 'MetaMetrics Opt In Page',
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
@@ -207,15 +176,6 @@ export {
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   TOKEN_DETAILS,
-  INITIALIZE_ROUTE,
-  INITIALIZE_WELCOME_ROUTE,
-  INITIALIZE_UNLOCK_ROUTE,
-  INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_SELECT_ACTION_ROUTE,
-  INITIALIZE_SEED_PHRASE_ROUTE,
-  INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
-  INITIALIZE_END_OF_FLOW_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_SEND_TOKEN_PATH,
@@ -229,7 +189,6 @@ export {
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   CONFIRMATION_V_NEXT_ROUTE,
-  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   ADVANCED_ROUTE,
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
@@ -245,8 +204,6 @@ export {
   NETWORKS_FORM_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
-  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
-  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)

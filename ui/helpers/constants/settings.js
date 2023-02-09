@@ -133,6 +133,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
   },
   {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('toggleEthSignField'),
+    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
+    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
+    icon: 'fas fa-sliders-h',
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
@@ -203,14 +210,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('useMultiAccountBalanceCheckerDescription'),
     route: `${SECURITY_ROUTE}#-use-milti-account-balance-checker`,
     icon: 'fa fa-lock',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('useCollectibleDetection'),
-    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
-    route: `${SECURITY_ROUTE}#autodetect-nfts`,
-    icon: 'fa fa-flask',
-    featureFlag: 'NFTS_V1',
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
@@ -333,6 +332,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('enableOpenSeaAPI'),
     descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
     route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
+    icon: 'fa fa-flask',
+    featureFlag: 'NFTS_V1',
+  },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('useCollectibleDetection'),
+    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'NFTS_V1',
   },

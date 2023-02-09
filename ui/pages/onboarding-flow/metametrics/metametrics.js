@@ -1,14 +1,12 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
-  COLORS,
-  ICON_COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -111,7 +109,7 @@ export default function OnboardingMetametrics() {
       data-testid="onboarding-metametrics"
     >
       <Typography
-        variant={TYPOGRAPHY.H2}
+        variant={TypographyVariant.H2}
         align={TEXT_ALIGN.CENTER}
         fontWeight={FONT_WEIGHT.BOLD}
       >
@@ -131,26 +129,18 @@ export default function OnboardingMetametrics() {
       </Typography>
       <ul>
         <li>
-          <Icon
-            name={ICON_NAMES.CHECK}
-            color={ICON_COLORS.SUCCESS_DEFAULT}
-            marginRight={2}
-          />
+          <i className="fa fa-check" />
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <Icon
-            name={ICON_NAMES.CHECK}
-            color={ICON_COLORS.SUCCESS_DEFAULT}
-            marginRight={2}
-          />
+          <i className="fa fa-check" />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
           <i className="fa fa-times" />
           {t('onboardingMetametricsNeverCollect', [
             <Typography
-              variant={TYPOGRAPHY.Span}
+              variant={TypographyVariant.Span}
               key="never"
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -162,7 +152,7 @@ export default function OnboardingMetametrics() {
           <i className="fa fa-times" />
           {t('onboardingMetametricsNeverCollectIP', [
             <Typography
-              variant={TYPOGRAPHY.Span}
+              variant={TypographyVariant.Span}
               key="never-collect"
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -174,7 +164,7 @@ export default function OnboardingMetametrics() {
           <i className="fa fa-times" />
           {t('onboardingMetametricsNeverSellData', [
             <Typography
-              variant={TYPOGRAPHY.Span}
+              variant={TypographyVariant.Span}
               key="never-sell"
               fontWeight={FONT_WEIGHT.BOLD}
             >
@@ -184,17 +174,17 @@ export default function OnboardingMetametrics() {
         </li>
       </ul>
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsDataTerms')}
       </Typography>
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [

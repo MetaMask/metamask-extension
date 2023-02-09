@@ -8,7 +8,7 @@ import {
 } from '../../../../../../selectors';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
-import { TYPOGRAPHY } from '../../../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../../../helpers/constants/design-system';
 
 import Button from '../../../../../ui/button';
 import Typography from '../../../../../ui/typography';
@@ -23,7 +23,7 @@ const Accreditation = ({ fetchVia, address }) => {
     return (
       <>
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           className="accreditation__prefix"
           boxProps={{ margin: 0 }}
         >
@@ -45,7 +45,7 @@ const Accreditation = ({ fetchVia, address }) => {
             </Button>,
           ])}
         </Typography>
-        <Typography variant={TYPOGRAPHY.H7} boxProps={{ margin: 0 }}>
+        <Typography variant={TypographyVariant.H7} boxProps={{ margin: 0 }}>
           {t('transactionDecodingAccreditationDecoded')}
         </Typography>
       </>

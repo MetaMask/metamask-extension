@@ -154,9 +154,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "আপনার হার্ডওয়্যার ওয়ালেটের সাথে সংযোগ করতে আপনাকে Google Chrome এ MetaMask ব্যবহার করতে হবে।  "
   },
-  "clickToRevealSeed": {
-    "message": "গোপন শব্দগুলি প্রকাশ করতে এখানে ক্লিক করুন"
-  },
   "close": {
     "message": "বন্ধ করুন"
   },
@@ -166,14 +163,8 @@
   "confirmPassword": {
     "message": "পাসওয়ার্ড নিশ্চিত করুন"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "আপনার গোপন ব্যাক আপ ফ্রেজ নিশ্চিত করুন"
-  },
   "confirmed": {
     "message": "নিশ্চিত করা হয়েছে"
-  },
-  "congratulations": {
-    "message": "অভিনন্দন"
   },
   "connect": {
     "message": "সংযুক্ত করুন"
@@ -216,9 +207,6 @@
   },
   "create": {
     "message": "তৈরি করুন"
-  },
-  "createAWallet": {
-    "message": "একটি ওয়ালেট তৈরি করুন"
   },
   "createAccount": {
     "message": "অ্যাকাউন্ট তৈরি করুন"
@@ -265,9 +253,6 @@
   "downloadGoogleChrome": {
     "message": "Google Chrome ডাউনলোড করুন"
   },
-  "downloadSecretBackup": {
-    "message": "এই গোপন ব্যাকআপ বাক্যাংশটি ডাউনলোড করুন এবং একটি বাইরের এনক্রিপ্ট করা হার্ড ড্রাইভ বা স্টোরেজের বন্দোবস্তে নিরাপদে সংরক্ষণ করুন।"
-  },
   "downloadStateLogs": {
     "message": "স্টেট লগগুলি ডাউনলোড করুন"
   },
@@ -279,33 +264,6 @@
   },
   "editContact": {
     "message": "পরিচিতি সম্পাদনা করুন"
-  },
-  "endOfFlowMessage1": {
-    "message": "আপনি টেস্টটি পাস করেছেন - আপনার সীডফ্রেজ নিরাপদে রাখুন, এটি আপনার দায়িত্ব!"
-  },
-  "endOfFlowMessage10": {
-    "message": "সব সম্পন্ন হয়েছে"
-  },
-  "endOfFlowMessage2": {
-    "message": "সেটি নিরাপদে সংরক্ষণ করার পরামর্শ"
-  },
-  "endOfFlowMessage3": {
-    "message": "একাধিক স্থানে একটি ব্যাকআপ রেখে দিন।"
-  },
-  "endOfFlowMessage4": {
-    "message": "ফ্রেজটি কখনও কারোর সাথে শেয়ার করবেন না।"
-  },
-  "endOfFlowMessage5": {
-    "message": "ফিসিং থেকে সাবধান! MetaMask কখনই নিজের থেকে আপনার সীড ফ্রেজ জিজ্ঞাসা করবে না।"
-  },
-  "endOfFlowMessage6": {
-    "message": "আপনাকে আপনার সীড আবার ব্যাকআপ করতে হলে, আপনি সেটি সেটিংস -> নিরাপত্তায় পাবেন।"
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask আপনার সীডফ্রেজ পুনরুদ্ধার করতে পারবে না। আরও জানুন।"
-  },
-  "endOfFlowMessage9": {
-    "message": "আরও জানুন।"
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS নাম বর্তমান নেটওয়ার্কে খুঁজে পাওয়া যায় নি। মূল Ethereum নেটওয়ার্কে বদলানোর চেষ্টা করুন।"
@@ -385,14 +343,8 @@
     "message": "$1 এর জন্য একটি ফসেট থেকে ইথার পান",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "শুরু করুন"
-  },
   "goerli": {
     "message": "গোয়েরলি টেস্ট নেটওয়ার্ক"
-  },
-  "happyToSeeYou": {
-    "message": "আপনাকে দেখে আমরা আনন্দিত।"
   },
   "hardware": {
     "message": "হার্ডওয়্যার"
@@ -431,12 +383,6 @@
   },
   "importAccountMsg": {
     "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা MetaMask অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
-  },
-  "importAccountSeedPhrase": {
-    "message": "সীড ফ্রেজ দিয়ে একটি অ্যাকাউন্ট আমদানি করুন"
-  },
-  "importWallet": {
-    "message": "ওয়ালেট আমদানি করুন"
   },
   "imported": {
     "message": "আমদানিকৃত",
@@ -488,9 +434,6 @@
   "ledgerAccountRestriction": {
     "message": "একটি নতুন অ্যা কাউন্ট যোগ করার আগে আপনাকে আপনার শেষ অ্যাকাউন্ট ব্যবহার করে ফেলতে হবে।"
   },
-  "letsGoSetUp": {
-    "message": "হ্যাঁ, তাহলে সেট আপ করে নেওয়া যাক!"
-  },
   "likeToImportTokens": {
     "message": "আপনি কি এই টোকেনগুলি যোগ করতে চান?"
   },
@@ -521,14 +464,8 @@
   "memo": {
     "message": "মেমো"
   },
-  "memorizePhrase": {
-    "message": "এই ফ্রেজটি মুখস্থ করুন।"
-  },
   "message": {
     "message": "বার্তা"
-  },
-  "metamaskDescription": {
-    "message": "আপনার Ethereum এবং ছড়িয়ে ছিটিয়ে থাকা ওয়েবের সাথে সংযোগ করছে। "
   },
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
@@ -571,17 +508,11 @@
   "newPassword": {
     "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
   },
-  "newToMetaMask": {
-    "message": "MetaMask এ নতুন?"
-  },
   "next": {
     "message": "পরবর্তী"
   },
   "noAddressForName": {
     "message": "এই নামের জন্য কোনো ঠিকানা সেট করা হয় নি।"
-  },
-  "noAlreadyHaveSeed": {
-    "message": "না, আমার আগে থেকেই একটি সীড ফ্রেজ আছে"
   },
   "noConversionRateAvailable": {
     "message": "কোনো বিনিময় হার উপলভ্য নয়"
@@ -690,9 +621,6 @@
   "rejected": {
     "message": "খারিজ করা হয়েছে"
   },
-  "remindMeLater": {
-    "message": "পরে আমাকে মনে করাবেন"
-  },
   "remove": {
     "message": "সরান"
   },
@@ -756,12 +684,6 @@
   "searchTokens": {
     "message": "টোকেনগুলি অনুসন্ধান করুন"
   },
-  "secretBackupPhraseDescription": {
-    "message": "আপনার গোপন বাক্যাংশ আপনার অ্যাকাউন্ট ব্যাকআপ এবং রিস্টোর করা সহজতর করে তোলে।"
-  },
-  "secretBackupPhraseWarning": {
-    "message": "সতর্কতা: কখনও আপনার ব্যাকআপ ফ্রেজ প্রকাশ করবেন না। এই ফ্রেজ পেয়ে গেলে যে কেউ আপনার ইথার চিরকালের জন্য নিয়ে নিতে পারবেন।"
-  },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
@@ -770,9 +692,6 @@
   },
   "selectAnAccount": {
     "message": "একটি অ্যাকাউন্ট নির্বাচন করুন"
-  },
-  "selectEachPhrase": {
-    "message": "ফ্রেজগুলি সঠিক তা নিশ্চিত করতে অনুগ্রহ করে প্রতিটি ফ্রেজ নির্বাচন করুন।"
   },
   "selectHdPath": {
     "message": "HD পাথ নির্বাচন করুন"
@@ -846,9 +765,6 @@
   "stateLogsDescription": {
     "message": "স্টেট লগগুলিতে আপনার পাবলিক অ্যাকাউন্টের ঠিকানা এবং প্রেরণ করার লেনদেনগুলি আছে।"
   },
-  "storePhrase": {
-    "message": "এই বাক্যাংশটি 1Password এর মতো একটি পাসওয়ার্ড পরিচালকে সংরক্ষণ করুন। "
-  },
   "submitted": {
     "message": "জমা করা হয়েছে"
   },
@@ -890,9 +806,6 @@
   },
   "testFaucet": {
     "message": "টেস্ট ফসেট"
-  },
-  "thisWillCreate": {
-    "message": "এটি একটি নতুন ওয়ালেট এবং সীড ফ্রেজ তৈরি করবে"
   },
   "tips": {
     "message": "অর্থসাহায্য এবং পরামর্শ"
@@ -1021,14 +934,8 @@
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"
   },
-  "welcome": {
-    "message": "MetaMask এ স্বাগতম"
-  },
   "welcomeBack": {
     "message": "পুনরায় স্বাগত!"
-  },
-  "writePhrase": {
-    "message": "এই বাক্যাংশটি একটি কাগজের টুকরোর উপর লিখে একটি নিরাপদ স্থানে সংরক্ষণ করুন। আপনি আরও নিরাপত্তা চাইলে, সেটি একাধিক কাগজের টুকরোতে লিখে 2 - 3টি আলাদা আলাদা স্থানে সংরক্ষণ করুন।"
   },
   "yesLetsTry": {
     "message": "হ্যাঁ, চেষ্টা করা যাক"

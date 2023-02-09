@@ -8,7 +8,7 @@ import mockState from '../../../../test/data/mock-state.json';
 
 import GasTiming from '.';
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 

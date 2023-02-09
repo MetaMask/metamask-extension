@@ -154,9 +154,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "Żeby połączyć się z portfelem sprzętowym, należy uruchomić MetaMask z przeglądarką Google Chrome."
   },
-  "clickToRevealSeed": {
-    "message": "Kliknij tutaj, aby odkryć tajne słowa"
-  },
   "close": {
     "message": "Zamknij"
   },
@@ -166,14 +163,8 @@
   "confirmPassword": {
     "message": "Potwierdź hasło"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Potwierdź swoją tajną frazę zapasową"
-  },
   "confirmed": {
     "message": "Potwierdzone"
-  },
-  "congratulations": {
-    "message": "Gratulacje"
   },
   "connect": {
     "message": "Połącz"
@@ -216,9 +207,6 @@
   },
   "create": {
     "message": "Utwórz"
-  },
-  "createAWallet": {
-    "message": "Utwórz portfel"
   },
   "createAccount": {
     "message": "Utwórz konto"
@@ -265,9 +253,6 @@
   "downloadGoogleChrome": {
     "message": "Ściągnij Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Pobierz swoją tajną frazę zapasową i przechowuj ją bezpiecznie na zaszyfrowanym zewnętrznym dysku twardym lub nośniku pamięci masowej."
-  },
   "downloadStateLogs": {
     "message": "Załaduj logi stanów"
   },
@@ -279,33 +264,6 @@
   },
   "editContact": {
     "message": "Edytuj kontakt"
-  },
-  "endOfFlowMessage1": {
-    "message": "Zaliczyłeś test – zabezpiecz swoją frazę seed, to Twoja odpowiedzialność!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Wszystko gotowe"
-  },
-  "endOfFlowMessage2": {
-    "message": "Wskazówki dotyczące bezpiecznego przechowywania"
-  },
-  "endOfFlowMessage3": {
-    "message": "Zapisz kopię zapasową w wielu miejscach."
-  },
-  "endOfFlowMessage4": {
-    "message": "Nigdy nie udostępniaj nikomu tej frazy."
-  },
-  "endOfFlowMessage5": {
-    "message": "Uważaj na phishing! MetaMask nigdy spontanicznie nie poprosi Cię o podanie frazy seed."
-  },
-  "endOfFlowMessage6": {
-    "message": "Jeśli zajdzie konieczność ponownego wykonania kopii zapasowej frazy seed, znajdziesz ją w Ustawieniach -> Zabezpieczenia."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask nie może odzyskać Twojej frazy seed. Dowiedz się więcej."
-  },
-  "endOfFlowMessage9": {
-    "message": "Dowiedz się więcej."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "Nazwa ENS nie została znaleziona w bieżącej sieci. Spróbuj przełączyć się na Główną sieć Ethereum."
@@ -385,14 +343,8 @@
     "message": "Zdobądź Eter ze źródła za $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Rozpocznij"
-  },
   "goerli": {
     "message": "Sieć testowa Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Cieszymy się, że tu jesteś."
   },
   "hardware": {
     "message": "sprzęt"
@@ -431,12 +383,6 @@
   },
   "importAccountMsg": {
     "message": " Importowane konta nie będą powiązane z Twoją pierwotną frazą seed MetaMask. Dowiedz się więcej o importowaniu kont "
-  },
-  "importAccountSeedPhrase": {
-    "message": "Zaimportuj konto za pomocą frazy seed"
-  },
-  "importWallet": {
-    "message": "Importuj portfel"
   },
   "imported": {
     "message": "Zaimportowane",
@@ -488,9 +434,6 @@
   "ledgerAccountRestriction": {
     "message": "Musisz użyć swojego poprzedniego konta zanim dodasz kolejne."
   },
-  "letsGoSetUp": {
-    "message": "Tak, zacznijmy od początku!"
-  },
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
@@ -518,14 +461,8 @@
   "max": {
     "message": "Maks."
   },
-  "memorizePhrase": {
-    "message": "Zapamiętaj tę frazę."
-  },
   "message": {
     "message": "Wiadomość"
-  },
-  "metamaskDescription": {
-    "message": "MetaMask to bezpieczny portfel dla Ethereum."
   },
   "metamaskVersion": {
     "message": "Wersja MetaMask"
@@ -568,17 +505,11 @@
   "newPassword": {
     "message": "Nowe hasło (min. 8 znaków)"
   },
-  "newToMetaMask": {
-    "message": "Pierwszy raz w MetaMask?"
-  },
   "next": {
     "message": "Dalej"
   },
   "noAddressForName": {
     "message": "Nie wybrano żadnego adresu dla tej nazwy."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Nie, mam już frazę seed"
   },
   "noConversionRateAvailable": {
     "message": "Brak kursu waluty"
@@ -684,9 +615,6 @@
   "rejected": {
     "message": "Odrzucone"
   },
-  "remindMeLater": {
-    "message": "Przypomnij mi później"
-  },
   "remove": {
     "message": "usuń"
   },
@@ -750,12 +678,6 @@
   "searchTokens": {
     "message": "Szukaj tokenów"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Twoja tajna fraza zapasowa ułatwia tworzenie kopii zapasowych i przywracanie konta."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "OSTRZEŻENIE: Nigdy nie ujawniaj swojej frazy zapasowej. Każdy, kto pozna tę frazę, może bezpowrotnie odebrać Ci kryptowalutę Ether."
-  },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
@@ -764,9 +686,6 @@
   },
   "selectAnAccount": {
     "message": "Wybierz konto"
-  },
-  "selectEachPhrase": {
-    "message": "Wybierz każdą frazę, aby upewnić się, że jest poprawna."
   },
   "selectHdPath": {
     "message": "Wybierz ścieżkę HD"
@@ -840,9 +759,6 @@
   "stateLogsDescription": {
     "message": "Logi stanów zawierają Twoje publiczne adresy kont i wykonanych transakcji."
   },
-  "storePhrase": {
-    "message": "Przechowuj tę frazę w menedżerze haseł, takim jak 1Password."
-  },
   "submitted": {
     "message": "Wysłane"
   },
@@ -881,9 +797,6 @@
   },
   "testFaucet": {
     "message": "Źródło testowego ETH"
-  },
-  "thisWillCreate": {
-    "message": "Utworzony zostanie nowy portfel i fraza seed"
   },
   "tips": {
     "message": "Napiwki"
@@ -1009,14 +922,8 @@
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"
   },
-  "welcome": {
-    "message": "Witaj w MetaMask"
-  },
   "welcomeBack": {
     "message": "Witaj z powrotem!"
-  },
-  "writePhrase": {
-    "message": "Zapisz tę frazę na kartce papieru i przechowuj w bezpiecznym miejscu. Jeśli chcesz zapewnić jeszcze większe bezpieczeństwo, zapisz ją na kilku kartkach i przechowuj w 2-3 różnych miejscach."
   },
   "yesLetsTry": {
     "message": "Tak, spróbuj"

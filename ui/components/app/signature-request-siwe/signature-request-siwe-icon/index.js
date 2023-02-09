@@ -1,23 +1,23 @@
 import React from 'react';
 import {
   DISPLAY,
-  ALIGN_ITEMS,
-  COLORS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  Color,
+  JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import { Icon, ICON_NAMES } from '../../../component-library/icon';
+import { Icon, ICON_NAMES } from '../../../component-library';
 
 const SignatureRequestSIWEIcon = () => {
   return (
     <Box
       className="signature-request-siwe-icon"
       display={DISPLAY.INLINE_FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      backgroundColor={COLORS.ERROR_DEFAULT}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      alignItems={AlignItems.center}
+      backgroundColor={Color.errorDefault}
+      justifyContent={JustifyContent.center}
     >
-      <Icon name={ICON_NAMES.DANGER} color={COLORS.ERROR_INVERSE} />
+      <Icon name={ICON_NAMES.DANGER} color={Color.errorInverse} />
     </Box>
   );
 };
