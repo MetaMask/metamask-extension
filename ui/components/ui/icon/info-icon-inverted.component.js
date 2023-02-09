@@ -3,6 +3,10 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
+/**
+ * @deprecated please use the <Icon /> component in ./ui/components/component-library/icon/icon.js
+ */
+
 export default function InfoIconInverted({ severity }) {
   const className = classnames('info-icon', {
     'info-icon--success': severity === SEVERITIES.SUCCESS,

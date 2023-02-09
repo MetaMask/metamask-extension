@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * @deprecated please use the <Icon /> component in ./ui/components/component-library/icon/icon.js
+ */
+
 export default function SunCheck({ reverseColors }) {
   const sunColor = reverseColors
     ? 'var(--color-primary-default)'
