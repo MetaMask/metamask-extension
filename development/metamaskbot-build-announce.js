@@ -48,7 +48,7 @@ async function start() {
   const betaBuildLinks = platforms
     .map((platform) => {
       // builds-beta/metamask-chrome-10.20.1-beta.0.zip
-      const url = `${BUILD_LINK_BASE}/builds-beta/metamask-${platform}-${VERSION}.zip`;
+      const url = `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');

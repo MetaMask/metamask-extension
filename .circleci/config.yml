@@ -29,12 +29,12 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - trigger-beta-build:
-          - requires:
-              - prep-deps
-            filters:
-              branches:
-                only:
-                  - /^Version-v(\d+)[.](\d+)[.](\d+)/
+          requires:
+            - prep-deps
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps-audit:
           requires:
@@ -53,9 +53,6 @@ workflows:
           requires:
             - prep-deps
       - prep-build:
-          requires:
-            - prep-deps
-      - prep-build-beta:
           requires:
             - prep-deps
       - prep-build-desktop:
@@ -139,7 +136,7 @@ workflows:
             - prep-build
       - validate-source-maps-beta:
           requires:
-            - prep-build-beta
+            - trigger-beta-build
       - validate-source-maps-desktop:
           requires:
             - prep-build-desktop
@@ -153,7 +150,7 @@ workflows:
       - test-mozilla-lint-beta:
           requires:
             - prep-deps
-            - prep-build-beta
+            - trigger-beta-build
       - test-mozilla-lint-desktop:
           requires:
             - prep-deps
@@ -200,7 +197,6 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-            - prep-build-beta
             - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
@@ -211,6 +207,7 @@ workflows:
             - user-actions-benchmark
             - stats-module-load-init
             - all-tests-pass
+            - trigger-beta-build
       - job-publish-release:
           filters:
             branches:
@@ -255,12 +252,22 @@ jobs:
           command: .circleci/scripts/release-create-release-pr.sh
 
   trigger-beta-build:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Build beta prod build for version
-          command: .circleci/scripts/trigger-beta-build.sh
+#          command: .circleci/scripts/trigger-beta-build.sh
+          command: yarn build --build-type beta prod
+      - run:
+          name: Move beta build to 'prod-beta' to avoid conflict with production build
+          command: mv ./dist ./prod-beta
+      - persist_to_workspace:
+          root: .
+          paths:
+            - prod-beta
 
   prep-deps:
     executor: node-browsers
@@ -360,37 +367,6 @@ jobs:
           paths:
             - dist
             - builds
-
-  prep-build-beta:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:dist
-                command: yarn build --build-type beta dist
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move beta build to 'dist-beta' to avoid conflict with production build
-          command: mv ./dist ./dist-beta
-      - run:
-          name: Move beta zips to 'builds-beta' to avoid conflict with production build
-          command: mv ./builds ./builds-beta
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-beta
-            - builds-beta
 
   prep-build-desktop:
     executor: node-browsers-medium-plus
@@ -1274,9 +1250,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
       - run:
           name: Move beta zips to builds
           command: mv ./builds-beta ./builds
