@@ -14,12 +14,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../box';
 
+import { BannerAlert } from '../../component-library/banner-alert';
+
 import { ValidColors, ValidTags } from './typography';
 
 import README from './README.mdx';
 import Typography from '.';
-
-import { BannerAlert } from '../../component-library/banner-alert';
 
 const sizeKnobOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
