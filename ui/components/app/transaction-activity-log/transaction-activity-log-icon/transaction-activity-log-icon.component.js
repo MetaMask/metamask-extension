@@ -12,7 +12,7 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
 } from '../transaction-activity-log.constants';
-import { Icon, ICON_NAMES } from '../../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
 import { Color } from '../../../../helpers/constants/design-system';
 
 export const ACTIVITY_ICONS = {
@@ -42,7 +42,9 @@ export default class TransactionActivityLogIcon extends PureComponent {
 
     return (
       <div className={classnames('transaction-activity-log-icon', className)}>
-        {icon ? <Icon name={icon} color={Color.iconDefault} /> : null}
+        {icon ? (
+          <Icon name={icon} color={Color.iconDefault} size={ICON_SIZES.SM} />
+        ) : null}
       </div>
     );
   }
