@@ -28,6 +28,13 @@ workflows:
             branches:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
+      - trigger-beta-build:
+          - requires:
+              - prep-deps
+            filters:
+              branches:
+                only:
+                  - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps-audit:
           requires:
@@ -247,6 +254,14 @@ jobs:
           name: Create GitHub Pull Request for version
           command: .circleci/scripts/release-create-release-pr.sh
 
+  trigger-beta-build:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Build beta prod build for version
+          command: .circleci/scripts/trigger-beta-build.sh
+
   prep-deps:
     executor: node-browsers
     steps:
@@ -362,15 +377,6 @@ jobs:
             - run:
                 name: build:dist
                 command: yarn build --build-type beta dist
-      - when:
-          condition:
-            matches:
-              pattern: /^master$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:prod
-                command: yarn build --build-type beta prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -814,7 +820,7 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e.xml
-          
+
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 2
