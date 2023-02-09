@@ -7,12 +7,12 @@ import {
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
-} from '../../shared/constants/app';
+} from '../../../shared/constants/app';
 import {
   checkForMultipleVersionsRunning,
   onMessageReceived,
-} from './detect-multiple-instances';
-import * as util from './lib/util';
+} from '../detect-multiple-instances';
+import * as util from '../lib/util';
 
 describe('multiple instances running detector', function () {
   const PING_MESSAGE = 'isRunning';

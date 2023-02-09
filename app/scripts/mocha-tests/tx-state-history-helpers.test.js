@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
-import testData from '../../../../../test/data/mock-tx-history.json';
+import testData from '../../../test/data/mock-tx-history.json';
 import {
   snapshotFromTxMeta,
   migrateFromSnapshotsToDiffs,
   replayHistory,
   generateHistoryEntry,
-} from './tx-state-history-helpers';
+} from '../controllers/transactions/lib/tx-state-history-helpers';
 
 describe('Transaction state history helper', function () {
   describe('#snapshotFromTxMeta', function () {

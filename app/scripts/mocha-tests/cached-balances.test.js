@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import CachedBalancesController from './cached-balances';
+import CachedBalancesController from '../controllers/cached-balances';
 
 describe('CachedBalancesController', function () {
   describe('updateCachedBalances', function () {

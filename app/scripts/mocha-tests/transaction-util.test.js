@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '../../../../../shared/constants/transaction';
-import { BURN_ADDRESS } from '../../../../../shared/modules/hexstring-utils';
-import { GasRecommendations } from '../../../../../shared/constants/gas';
-import * as txUtils from './util';
+import { TransactionEnvelopeType } from '../../../shared/constants/transaction';
+import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
+import { GasRecommendations } from '../../../shared/constants/gas';
+import * as txUtils from '../controllers/transactions/lib/util';
 
 describe('txUtils', function () {
   describe('#validateTxParams', function () {

@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
 import { TransactionFactory } from '@ethereumjs/tx';
 import Common from '@ethereumjs/common';
-import { hexToBn } from '../../lib/util';
-import { bnToHex } from '../../../../shared/modules/conversion.utils';
-import TxUtils from './tx-gas-utils';
+import { hexToBn } from '../lib/util';
+import { bnToHex } from '../../../shared/modules/conversion.utils';
+import TxUtils from '../controllers/transactions/tx-gas-utils';
 
 describe('txUtils', function () {
   let txUtils;

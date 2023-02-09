@@ -71,7 +71,7 @@ async function runJest(
  * @param {boolean} coverage - Use nyc to collect coverage
  */
 async function runMocha({ coverage }) {
-  const options = ['mocha', './app/**/*.test.js'];
+  const options = ['mocha', './app/scripts/mocha-tests/*.test.js'];
   // If coverage is true, then we need to run nyc as the first command
   // and mocha after, so we use unshift to add three options to the beginning
   // of the options array.

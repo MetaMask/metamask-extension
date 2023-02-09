@@ -3,8 +3,8 @@ import sinon from 'sinon';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { TokenListController } from '@metamask/assets-controllers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import PreferencesController from './preferences';
-import NetworkController from './network';
+import PreferencesController from '../controllers/preferences';
+import NetworkController from '../controllers/network';
 
 describe('preferences controller', function () {
   let preferencesController;

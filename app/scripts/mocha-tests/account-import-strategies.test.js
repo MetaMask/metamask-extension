@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import accountImporter from '.';
+import accountImporter from '../account-import-strategies';
 
 describe('Account Import Strategies', function () {
   const privkey =

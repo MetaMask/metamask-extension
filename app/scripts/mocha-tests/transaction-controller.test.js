@@ -8,9 +8,9 @@ import sinon from 'sinon';
 import {
   createTestProviderTools,
   getTestAccounts,
-} from '../../../../test/stub/provider';
-import mockEstimates from '../../../../test/data/mock-estimates.json';
-import { EVENT } from '../../../../shared/constants/metametrics';
+} from '../../../test/stub/provider';
+import mockEstimates from '../../../test/data/mock-estimates.json';
+import { EVENT } from '../../../shared/constants/metametrics';
 import {
   TransactionStatus,
   TransactionType,
@@ -18,17 +18,17 @@ import {
   TransactionMetaMetricsEvent,
   AssetType,
   TokenStandard,
-} from '../../../../shared/constants/transaction';
+} from '../../../shared/constants/transaction';
 
-import { SECOND } from '../../../../shared/constants/time';
+import { SECOND } from '../../../shared/constants/time';
 import {
   GasEstimateTypes,
   GasRecommendations,
-} from '../../../../shared/constants/gas';
-import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-import TransactionController from '.';
+} from '../../../shared/constants/gas';
+import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../shared/lib/transactions-controller-utils';
+import TransactionController from '../controllers/transactions';
 
 const noop = () => true;
 const currentNetworkId = '5';

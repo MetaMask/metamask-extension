@@ -13,8 +13,8 @@ import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
 } from '../../../shared/constants/smartTransactions';
-import SwapsController, { utils } from './swaps';
-import { NETWORK_EVENTS } from './network';
+import SwapsController, { utils } from '../controllers/swaps';
+import { NETWORK_EVENTS } from '../controllers/network';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,

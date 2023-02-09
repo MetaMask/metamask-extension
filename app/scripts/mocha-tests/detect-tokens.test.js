@@ -12,9 +12,9 @@ import {
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import DetectTokensController from './detect-tokens';
-import NetworkController, { NETWORK_EVENTS } from './network';
-import PreferencesController from './preferences';
+import DetectTokensController from '../controllers/detect-tokens';
+import NetworkController, { NETWORK_EVENTS } from '../controllers/network';
+import PreferencesController from '../controllers/preferences';
 
 describe('DetectTokensController', function () {
   const sandbox = sinon.createSandbox();

@@ -3,7 +3,7 @@ import { isMatch } from 'lodash';
 import nock from 'nock';
 import sinon from 'sinon';
 import * as ethJsonRpcMiddlewareModule from 'eth-json-rpc-middleware';
-import NetworkController from './network-controller';
+import NetworkController from '../controllers/network/network-controller';
 
 jest.mock('eth-json-rpc-middleware', () => {
   return {

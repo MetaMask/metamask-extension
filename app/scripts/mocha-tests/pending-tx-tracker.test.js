@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import BN from 'bn.js';
-import { TransactionStatus } from '../../../../shared/constants/transaction';
-import PendingTransactionTracker from './pending-tx-tracker';
+import { TransactionStatus } from '../../../shared/constants/transaction';
+import PendingTransactionTracker from '../controllers/transactions/pending-tx-tracker';
 
 describe('PendingTransactionTracker', function () {
   describe('#resubmitPendingTxs', function () {

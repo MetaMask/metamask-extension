@@ -3,12 +3,12 @@ import sinon from 'sinon';
 import {
   TransactionStatus,
   TransactionType,
-} from '../../../../shared/constants/transaction';
-import { CHAIN_IDS, NETWORK_IDS } from '../../../../shared/constants/network';
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import TxStateManager, { ERROR_SUBMITTING } from './tx-state-manager';
-import { snapshotFromTxMeta } from './lib/tx-state-history-helpers';
+} from '../../../shared/constants/transaction';
+import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
+import { GAS_LIMITS } from '../../../shared/constants/gas';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import TxStateManager, { ERROR_SUBMITTING } from '../controllers/transactions/tx-state-manager';
+import { snapshotFromTxMeta } from '../controllers/transactions/lib/tx-state-history-helpers';
 
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';

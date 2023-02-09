@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import BackupController from './backup';
+import BackupController from '../controllers/backup';
 
 function getMockController() {
   const mcState = {

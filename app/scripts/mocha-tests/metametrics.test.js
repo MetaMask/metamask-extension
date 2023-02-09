@@ -14,8 +14,8 @@ import {
   NETWORK_TYPES,
 } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
-import MetaMetricsController from './metametrics';
-import { NETWORK_EVENTS } from './network';
+import MetaMetricsController from '../controllers/metametrics';
+import { NETWORK_EVENTS } from '../controllers/network';
 
 const segment = createSegmentMock(2, 10000);
 

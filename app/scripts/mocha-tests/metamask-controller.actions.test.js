@@ -5,9 +5,9 @@ import proxyquire from 'proxyquire';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
-import { ORIGIN_METAMASK } from '../../shared/constants/app';
+import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
-const Ganache = require('../../test/e2e/ganache');
+const Ganache = require('../../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 

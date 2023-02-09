@@ -7,16 +7,16 @@ import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
 import browser from 'webextension-polyfill';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { TransactionStatus } from '../../shared/constants/transaction';
-import createTxMeta from '../../test/lib/createTxMeta';
-import { NETWORK_TYPES } from '../../shared/constants/network';
+import { TransactionStatus } from '../../../shared/constants/transaction';
+import createTxMeta from '../../../test/lib/createTxMeta';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   HardwareDeviceNames,
   HardwareKeyringTypes,
-} from '../../shared/constants/hardware-wallets';
-import { deferredPromise } from './lib/util';
+} from '../../../shared/constants/hardware-wallets';
+import { deferredPromise } from '../lib/util';
 
-const Ganache = require('../../test/e2e/ganache');
+const Ganache = require('../../../test/e2e/ganache');
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
