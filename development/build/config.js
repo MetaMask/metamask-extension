@@ -14,7 +14,6 @@ const configurationPropertyNames = [
   'SEGMENT_HOST',
   'SEGMENT_WRITE_KEY',
   'SENTRY_DSN_DEV',
-  'SIWE_V1',
   'SWAPS_USE_DEV_APIS',
 ];
 
