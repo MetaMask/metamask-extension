@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {ICON_COLORS} from "../../../../helpers/constants/design-system";
-import { Icon, ICON_NAMES} from "../../../component-library";
+import { IconColor } from '../../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES } from '../../../component-library';
 import MetaFoxLogo from '../../../ui/metafox-logo';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 import {
@@ -47,7 +47,7 @@ export default class MetaMetricsOptInModal extends Component {
                 <div className="metametrics-opt-in__row">
                   <Icon
                     name={ICON_NAMES.CHECK}
-                    color={ICON_COLORS.SUCCESS_DEFAULT}
+                    color={IconColor.successDefault}
                     marginRight={2}
                   />
                   <div className="metametrics-opt-in__row-description">
@@ -57,7 +57,7 @@ export default class MetaMetricsOptInModal extends Component {
                 <div className="metametrics-opt-in__row">
                   <Icon
                     name={ICON_NAMES.CHECK}
-                    color={ICON_COLORS.SUCCESS_DEFAULT}
+                    color={IconColor.successDefault}
                     marginRight={2}
                   />
                   <div className="metametrics-opt-in__row-description">

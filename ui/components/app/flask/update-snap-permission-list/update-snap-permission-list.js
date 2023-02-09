@@ -19,7 +19,7 @@ export default function UpdateSnapPermissionList({
     return getWeightedPermissions(t, permissions).map(
       ({ label, rightIcon, permissionName, permissionValue }) => (
         <div className={className} key={permissionName}>
-          <i className="fas fa-x" />
+          <Icon name={ICON_NAMES.CHECK} />
           <div className="permission-description">
             {label}
             <Typography
