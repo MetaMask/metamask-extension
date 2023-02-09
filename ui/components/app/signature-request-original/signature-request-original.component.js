@@ -5,7 +5,7 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { getURLHostName } from '../../../helpers/utils/util';
+import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
@@ -177,8 +177,12 @@ export default class SignatureRequestOriginal extends Component {
                 className="request-signature__row"
                 key={`request-signature-row-${index}`}
               >
-                <div className="request-signature__row-title">{`${name}:`}</div>
-                <div className="request-signature__row-value">{value}</div>
+                <div className="request-signature__row-title">
+                  {sanitizeString(`${name}:`)}
+                </div>
+                <div className="request-signature__row-value">
+                  {sanitizeString(value)}
+                </div>
               </div>
             );
           })}
