@@ -31,7 +31,7 @@ export default class ConfirmSendEther extends Component {
   render() {
     const hideData = this.shouldHideData();
     const { txParams = {}, type } = this.props;
-    const { to: tokenAddress } = txParams;
+    const { to } = txParams;
     return (
       <ConfirmTransactionBase
         actionKey="confirm"
@@ -39,7 +39,7 @@ export default class ConfirmSendEther extends Component {
         onEdit={(confirmTransactionData) =>
           this.handleEdit(confirmTransactionData)
         }
-        tokenAddress={tokenAddress}
+        toAddress={to}
         isSendWithApproval={isSendWithApprove({ type, txParams })}
       />
     );

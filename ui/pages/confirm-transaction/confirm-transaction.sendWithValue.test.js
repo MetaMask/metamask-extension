@@ -50,8 +50,9 @@ describe('Confirm Transaction', () => {
         store,
         `${CONFIRM_TRANSACTION_ROUTE}/${sendWithApproveTransaction.id}${CONFIRM_SEND_ETHER_PATH}`,
       );
+    const contractAddressShortened = '0x85c...D65e';
     expect(getAllByText('Approve')).toHaveLength(1);
-    expect(getByText('0x85c...D65e')).toBeInTheDocument();
+    expect(getAllByText(contractAddressShortened)).toHaveLength(2);
     expect(getByTitle('0.0001 ETH')).toBeInTheDocument();
 
     act(() => {

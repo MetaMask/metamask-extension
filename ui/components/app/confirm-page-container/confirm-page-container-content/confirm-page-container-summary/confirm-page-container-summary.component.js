@@ -60,8 +60,7 @@ const ConfirmPageContainerSummary = (props) => {
       transactionType === TransactionType.tokenMethodTransfer ||
       transactionType === TransactionType.tokenMethodTransferFrom ||
       transactionType === TransactionType.tokenMethodSafeTransferFrom ||
-      transactionType === TransactionType.tokenMethodSetApprovalForAll ||
-      isSendWithApproval
+      transactionType === TransactionType.tokenMethodSetApprovalForAll
         ? tokenAddress
         : toAddress;
   }
