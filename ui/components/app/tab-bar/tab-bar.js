@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;
@@ -21,7 +21,7 @@ const TabBar = (props) => {
             <div className="tab-bar__tab__content__icon">{icon}</div>
             <div className="tab-bar__tab__content__title">{content}</div>
           </div>
-          <Icon name={ICON_NAMES.ARROW_RIGHT} className="tab-bar__tab__caret" />
+          <Icon name={ICON_NAMES.ARROW_RIGHT} size={ICON_SIZES.SM} className="tab-bar__tab__caret" />
         </button>
       ))}
     </div>
