@@ -30,9 +30,8 @@ export default class ConfirmSendEther extends Component {
 
   render() {
     const hideData = this.shouldHideData();
-    const { txParams } = this.props;
-    const { txParams: { to: tokenAddress } = {}, type } = txParams;
-
+    const { txParams = {}, type } = this.props;
+    const { to: tokenAddress } = txParams;
     return (
       <ConfirmTransactionBase
         actionKey="confirm"
