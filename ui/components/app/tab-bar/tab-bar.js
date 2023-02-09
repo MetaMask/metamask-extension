@@ -21,7 +21,11 @@ const TabBar = (props) => {
             <div className="tab-bar__tab__content__icon">{icon}</div>
             <div className="tab-bar__tab__content__title">{content}</div>
           </div>
-          <Icon name={ICON_NAMES.ARROW_RIGHT} size={ICON_SIZES.SM} className="tab-bar__tab__caret" />
+          <Icon
+            name={ICON_NAMES.ARROW_RIGHT}
+            size={ICON_SIZES.SM}
+            className="tab-bar__tab__caret"
+          />
         </button>
       ))}
     </div>
