@@ -47,7 +47,8 @@ async function start() {
     .join(', ');
   const betaBuildLinks = platforms
     .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-beta/metamask-beta-${platform}-${VERSION}.zip`;
+      // builds-beta/metamask-chrome-10.20.1-beta.0.zip
+      const url = `${BUILD_LINK_BASE}/builds-beta/metamask-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');

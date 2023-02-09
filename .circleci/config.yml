@@ -28,6 +28,13 @@ workflows:
             branches:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
+      - trigger-beta-build:
+          requires:
+            - prep-deps
+#          filters:
+#            branches:
+#              only:
+#                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps-audit:
           requires:
@@ -192,18 +199,19 @@ workflows:
       - job-publish-prerelease:
           requires:
             - prep-deps
-            - prep-build
-            - prep-build-beta
-            - prep-build-desktop
-            - prep-build-flask
-            - prep-build-storybook
-            - prep-build-ts-migration-dashboard
-            - prep-build-test-mv3
-            - prep-build-test-nft
-            - benchmark
-            - user-actions-benchmark
-            - stats-module-load-init
-            - all-tests-pass
+            - trigger-beta-build
+#            - prep-build
+#            - prep-build-beta
+#            - prep-build-desktop
+#            - prep-build-flask
+#            - prep-build-storybook
+#            - prep-build-ts-migration-dashboard
+#            - prep-build-test-mv3
+#            - prep-build-test-nft
+#            - benchmark
+#            - user-actions-benchmark
+#            - stats-module-load-init
+#            - all-tests-pass
       - job-publish-release:
           filters:
             branches:
@@ -346,31 +354,29 @@ jobs:
             - dist
             - builds
 
+  trigger-beta-build:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+      - run:
+          name: build:prod
+          command: yarn build --build-type beta prod
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+            - builds
+
   prep-build-beta:
     executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:dist
-                command: yarn build --build-type beta dist
-      - when:
-          condition:
-            matches:
-              pattern: /^master$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:prod
-                command: yarn build --build-type beta prod
+      - run:
+          name: build:prod
+          command: yarn build --build-type beta prod
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
@@ -814,7 +820,7 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e.xml
-          
+
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 2
