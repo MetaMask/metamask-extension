@@ -2314,7 +2314,7 @@ export default class TransactionController extends EventEmitter {
       transaction_type: transactionType,
       transaction_speed_up: type === TransactionType.retry,
       ui_customizations:
-        securityProviderResponse.flagAsDangerous === 1
+        securityProviderResponse?.flagAsDangerous === 1
           ? ['flagged_as_malicious']
           : [],
     };
