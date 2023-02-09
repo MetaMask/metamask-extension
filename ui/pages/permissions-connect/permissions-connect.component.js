@@ -232,7 +232,7 @@ export default class PermissionConnect extends Component {
             className="permissions-connect__back"
             onClick={() => this.goBack()}
           >
-            <Icon name={ICON_NAMES.ARROW_RIGHT} marginInlineEnd={10} />
+            <Icon name={ICON_NAMES.ARROW_RIGHT} marginInlineEnd={2} />
             {t('back')}
           </div>
         ) : null}

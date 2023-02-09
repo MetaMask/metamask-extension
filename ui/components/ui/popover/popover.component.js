@@ -10,8 +10,11 @@ import {
   FLEX_DIRECTION,
   JustifyContent,
   Color,
+  DISPLAY,
+  TextVariant,
+  Size,
 } from '../../../helpers/constants/design-system';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { ButtonIcon, Text, ICON_NAMES } from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
@@ -55,44 +58,44 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
-  const Header = () => {
-    return (
+  const Header = () => (
+    <Box
+      {...{ ...defaultHeaderProps, ...headerProps }}
+      className="popover-header"
+    >
       <Box
-        {...{ ...defaultHeaderProps, ...headerProps }}
-        className="popover-header"
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        justifyContent={
+          centerTitle ? JustifyContent.center : JustifyContent.spaceBetween
+        }
+        marginBottom={2}
       >
-        <div
-          className={classnames(
-            'popover-header__title',
-            centerTitle ? 'center' : '',
-          )}
-        >
-          <h2 title="popover">
-            {onBack ? (
-              <ButtonIcon
-                iconName={ICON_NAMES.ARROW_LEFT}
-                ariaLabel={t('back')}
-                onClick={onBack}
-                color={Color.iconDefault}
-              />
-            ) : null}
-            {title}
-          </h2>
-          {onClose ? (
-            <button
-              className="fas fa-times popover-header__button"
-              title={t('close')}
-              data-testid="popover-close"
-              onClick={onClose}
-            />
-          ) : null}
-        </div>
-        {subtitle ? (
-          <p className="popover-header__subtitle">{subtitle}</p>
+        {onBack ? (
+          <ButtonIcon
+            iconName={ICON_NAMES.ARROW_LEFT}
+            ariaLabel={t('back')}
+            onClick={onBack}
+            color={Color.iconDefault}
+            size={Size.SM}
+          />
+        ) : null}
+        <Text ellipsis variant={TextVariant.headingSm}>
+          {title}
+        </Text>
+        {onClose ? (
+          <ButtonIcon
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel={t('close')}
+            data-testid="popover-close"
+            onClick={onClose}
+            size={Size.SM}
+          />
         ) : null}
       </Box>
-    );
-  };
+      {subtitle ? <Text variant={TextVariant.bodySm}>{subtitle}</Text> : null}
+    </Box>
+  );
 
   return (
     <div className="popover-container">
