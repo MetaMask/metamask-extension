@@ -85,6 +85,10 @@ export const UI_NOTIFICATIONS = {
   18: {
     id: 18,
     date: null,
+    image: {
+      src: 'images/nfts.svg',
+      width: '100%',
+    },
   },
 };
 
