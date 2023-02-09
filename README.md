@@ -36,7 +36,7 @@ To get quick feedback from our shared code quality fitness functions before comm
 
 `$ yarn githooks:install`
 
-You can read more about them in our [testing documentation](https://github.com/MetaMask/metamask-extension/blob/develop/docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
+You can read more about them in our [testing documentation](./docs/testing.md#fitness-functions-measuring-progress-in-code-quality-and-preventing-regressions-using-custom-git-hooks).
 
 ## Contributing
 
