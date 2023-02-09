@@ -89,7 +89,9 @@
     "ts-migration:dashboard:watch": "yarn ts-migration:dashboard:build --watch",
     "ts-migration:enumerate": "ts-node development/ts-migration-dashboard/scripts/write-list-of-files-to-convert.ts",
     "test-storybook": "test-storybook -c .storybook",
-    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook --maxWorkers=2\""
+    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"yarn storybook:build && npx http-server storybook-build --port 6006 \" \"wait-on tcp:6006 && yarn test-storybook --maxWorkers=2\"",
+    "githooks:install": "husky install",
+    "fitness-functions": "node development/fitness-functions/index.js"
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
@@ -467,6 +469,7 @@
     "gulp-watch": "^5.0.1",
     "gulp-zip": "^5.1.0",
     "history": "^5.0.0",
+    "husky": "^8.0.3",
     "improved-yarn-audit": "^3.0.0",
     "ini": "^3.0.0",
     "istanbul-lib-coverage": "^3.2.0",
