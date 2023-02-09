@@ -18,7 +18,7 @@ import {
 import Chip from '../../ui/chip/chip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 export default function NetworkDisplay({
   indicatorSize,
@@ -66,7 +66,11 @@ export default function NetworkDisplay({
           />
         </LoadingIndicator>
       }
-      rightIcon={onClick ? <Icon name={ICON_NAMES.ARROW_DOWN} /> : null}
+      rightIcon={
+        onClick ? (
+          <Icon name={ICON_NAMES.ARROW_DOWN} size={ICON_SIZES.XS} />
+        ) : null
+      }
       label={
         networkType === NETWORK_TYPES.RPC
           ? networkNickname ?? t('privateNetwork')
