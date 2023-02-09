@@ -1,5 +1,5 @@
 
-.mm-popover {
+.popover {
   // TODO
 }
 
@@ -28,7 +28,7 @@
   transform: rotate(45deg);
 }
 
-.tooltip[data-popper-placement^='top'] > .arrow {
+.popover[data-popper-placement^='top'] > .arrow {
   bottom: -6px;
 
   &::before {
@@ -36,11 +36,11 @@
   }
 }
 
-.tooltip[data-popper-placement^='bottom'] > .arrow {
+.popover[data-popper-placement^='bottom'] > .arrow {
   top: -6px;
 }
 
-.tooltip[data-popper-placement^='left'] > .arrow {
+.popover[data-popper-placement^='left'] > .arrow {
   right: -2px;
 
   &::before {
@@ -48,7 +48,7 @@
   }
 }
 
-.tooltip[data-popper-placement^='right'] > .arrow {
+.popover[data-popper-placement^='right'] > .arrow {
   left: -6px;
 
   &::before {
