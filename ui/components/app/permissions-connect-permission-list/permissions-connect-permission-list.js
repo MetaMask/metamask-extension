@@ -1,30 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getPermissionDescription } from '../../../helpers/utils/permission';
+import { getWeightedPermissions } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 /**
  * Get one or more permission descriptions for a permission name.
  *
- * @param t - The translation function.
- * @param permissionName - The name of the permission to request.
- * @param permissionValue - The value of the permission to request.
+ * @param permission - The permission to render.
+ * @param permission.label - The text label.
+ * @param permission.leftIcon - The left icon.
+ * @param permission.rightIcon - The right icon.
+ * @param permission.permissionName - The name of the permission.
+ * @param index - The index of the permission in the permissions array.
  * @returns {JSX.Element[]} An array of permission description nodes.
  */
-function getDescriptionNodes(t, permissionName, permissionValue) {
-  const permissions = getPermissionDescription(
-    t,
-    permissionName,
-    permissionValue,
-  );
-
-  return permissions.map(({ label, leftIcon, rightIcon }, index) => (
+function getDescriptionNode(
+  { label, leftIcon, rightIcon, permissionName },
+  index,
+) {
+  return (
     <div className="permission" key={`${permissionName}-${index}`}>
       <i className={leftIcon} />
       {label}
       {rightIcon && <i className={rightIcon} />}
     </div>
-  ));
+  );
 }
 
 export default function PermissionsConnectPermissionList({ permissions }) {
@@ -32,13 +32,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 
   return (
     <div className="permissions-connect-permission-list">
-      {Object.entries(permissions).reduce(
-        (target, [permissionName, permissionValue]) =>
-          target.concat(
-            getDescriptionNodes(t, permissionName, permissionValue),
-          ),
-        [],
-      )}
+      {getWeightedPermissions(t, permissions).map(getDescriptionNode)}
     </div>
   );
 }
