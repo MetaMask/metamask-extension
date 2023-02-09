@@ -44,4 +44,18 @@
   .permission-description-subtext {
     @include H7;
   }
+
+  .permission {
+    &__tooltip-icon {
+      margin-left: auto !important;
+
+      i {
+        color: var(--color-icon-muted);
+      }
+
+      &__warning i {
+        color: var(--color-warning-default);
+      }
+    }
+  }
 }
