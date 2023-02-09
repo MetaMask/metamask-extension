@@ -67,11 +67,7 @@ Use the `clearButtonProps` to access other props of the clear button.
 
 ```jsx
 import React, { useState } from 'react';
-import {
-  SIZES,
-  COLORS,
-  BORDER_RADIUS,
-} from '../../../helpers/constants/design-system';
+import { Color, BorderRadius } from '../../../helpers/constants/design-system';
 
 import { TextField } from '../../component-library';
 
@@ -92,8 +88,8 @@ const handleOnClear = () => {
   showClearButton
   clearButtonOnClick={handleOnClear}
   clearButtonProps={{
-    backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
-    borderRadius: BORDER_RADIUS.XS,
+    backgroundColor: Color.backgroundAlternative,
+    borderRadius: BorderRadius.XS,
     'data-testid': 'clear-button',
   }}
 />;
