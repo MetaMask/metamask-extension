@@ -15,13 +15,13 @@ import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
+  LEDGER_LOCKED_ERROR_CODES,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
 const U2F_ERROR = 'U2F';
-const LEDGER_LOCKED_ERROR_CODES = ['0x6b0c', '0x5515'];
 
 const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
 const MEW_PATH = `m/44'/60'/0'`;

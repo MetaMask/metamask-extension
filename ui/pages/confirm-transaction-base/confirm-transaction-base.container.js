@@ -13,6 +13,7 @@ import {
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
+  checkHardwareStatus,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -37,6 +38,9 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
+  isHardwareWallet,
+  getHardwareWalletDevice,
+  getHardwareWalletPath,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -185,6 +189,11 @@ const mapStateToProps = (state, ownProps) => {
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
+
+  const fromAddressIsHardwareWallet = isHardwareWallet(state, fromAddress);
+  const fromDevice = getHardwareWalletDevice(state);
+  const fromHdPath = getHardwareWalletPath(state);
+
   const nativeCurrency = getNativeCurrency(state);
 
   const hardwareWalletRequiresConnection =
@@ -237,6 +246,11 @@ const mapStateToProps = (state, ownProps) => {
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
     showLedgerSteps: fromAddressIsLedger,
+
+    isHardwareWallet: fromAddressIsHardwareWallet,
+    device: fromDevice,
+    hdPath: fromHdPath,
+
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
@@ -256,6 +270,9 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(updateCustomNonce(value));
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    checkHardwareStatus: (deviceName, hdPath) => {
+      return dispatch(checkHardwareStatus(deviceName, hdPath));
+    },
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
     },

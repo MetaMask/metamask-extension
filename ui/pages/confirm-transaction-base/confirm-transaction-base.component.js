@@ -17,6 +17,11 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import Disclosure from '../../components/ui/disclosure';
+import {
+  HardwareDeviceNames,
+  LedgerTransportTypes,
+  LEDGER_LOCKED_ERROR_CODES,
+} from '../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../shared/constants/metametrics';
 import {
   TransactionType,
@@ -49,6 +54,7 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  // checkHardwareStatus,
 } from '../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -139,6 +145,11 @@ export default class ConfirmTransactionBase extends Component {
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
     showLedgerSteps: PropTypes.bool.isRequired,
+
+    isHardwareWallet: PropTypes.bool,
+    device: PropTypes.string,
+    hdPath: PropTypes.string,
+
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -150,6 +161,7 @@ export default class ConfirmTransactionBase extends Component {
   };
 
   state = {
+    locked: false,
     submitting: false,
     submitError: null,
     submitWarning: '',
@@ -935,6 +947,17 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
+  // @TODO - copied from connect-hardware, move to shared utility
+  async checkIfUnlocked() {
+    const { device, hdPath, checkHardwareStatus } = this.props;
+    const unlocked = await checkHardwareStatus(device, hdPath);
+
+console.log(`UNLOCKED: `, unlocked);
+
+    this.setState({ locked: !unlocked, submitError: 'Hardware device is LOCKED!!!!' });
+    return unlocked;
+  }
+
   componentDidMount() {
     this._isMounted = true;
     const {
@@ -942,6 +965,8 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      hardwareWalletRequiresConnection,
+      isHardwareWallet,
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
@@ -970,6 +995,12 @@ export default class ConfirmTransactionBase extends Component {
       if (this._isMounted) {
         addPollingTokenToAppState(pollingToken);
         this.setState({ pollingToken });
+
+// check if hardware wallet needs (re-)connecting
+if (isHardwareWallet) {
+  this.checkIfUnlocked();
+}        
+
       } else {
         disconnectGasFeeEstimatePoller(pollingToken);
         removePollingTokenFromAppState(this.state.pollingToken);
@@ -1017,6 +1048,7 @@ export default class ConfirmTransactionBase extends Component {
       assetStandard,
     } = this.props;
     const {
+      locked,
       submitting,
       submitError,
       submitWarning,
@@ -1094,6 +1126,7 @@ export default class ConfirmTransactionBase extends Component {
             !valid ||
             submitting ||
             hardwareWalletRequiresConnection ||
+            locked ||
             (gasIsLoading && !gasFeeIsCustom)
           }
           onEdit={() => this.handleEdit()}
