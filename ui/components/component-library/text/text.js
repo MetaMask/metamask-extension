@@ -83,6 +83,8 @@ export const Text = React.forwardRef(
       Tag = 'h2';
     } else if (splitTag === 'display') {
       Tag = 'h1';
+    } else if (splitTag === 'inherit') {
+      Tag = 'span';
     }
 
     return (
