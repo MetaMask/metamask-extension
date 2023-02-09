@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -26,7 +26,6 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail';
 import ActionableMessage from '../../../components/ui/actionable-message';
-import DepositPopover from '../../../components/app/deposit-popover';
 import {
   getProvider,
   getPreferences,
@@ -45,12 +44,14 @@ import {
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
-  const [showDepositPopover, setShowDepositPopover] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const currentProvider = useSelector(getProvider);
   const isMainnet = useSelector(getIsMainnet);
@@ -153,9 +154,6 @@ export default function GasDisplay({ gasError }) {
 
   return (
     <>
-      {showDepositPopover && (
-        <DepositPopover onClose={() => setShowDepositPopover(false)} />
-      )}
       <Box className="gas-display">
         <TransactionDetail
           userAcknowledgedGasMissing={false}
@@ -338,7 +336,18 @@ export default function GasDisplay({ gasError }) {
                         type="inline"
                         className="confirm-page-container-content__link"
                         onClick={() => {
-                          setShowDepositPopover(true);
+                          const portfolioUrl = process.env.PORTFOLIO_URL;
+                          global.platform.openTab({
+                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+                          });
+                          trackEvent({
+                            event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
+                            category: EVENT.CATEGORIES.NAVIGATION,
+                            properties: {
+                              location: 'Gas Warning Insufficient Funds',
+                              text: 'Buy',
+                            },
+                          });
                         }}
                         key={`${nativeCurrency}-buy-button`}
                       >

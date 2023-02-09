@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -24,7 +24,6 @@ import Typography from '../../ui/typography';
 import { TypographyVariant } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import DepositPopover from '../deposit-popover/deposit-popover';
 import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,6 +39,8 @@ import {
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -94,8 +95,8 @@ const ConfirmPageContainer = (props) => {
   } = props;
 
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
-  const [showDepositPopover, setShowDepositPopover] = useState(false);
   const [collectionBalance, setCollectionBalance] = useState(0);
 
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -237,7 +238,20 @@ const ConfirmPageContainer = (props) => {
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() => setShowDepositPopover(true)}
+                        onClick={() => {
+                          const portfolioUrl = process.env.PORTFOLIO_URL;
+                          global.platform.openTab({
+                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+                          });
+                          trackEvent({
+                            event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
+                            category: EVENT.CATEGORIES.NAVIGATION,
+                            properties: {
+                              location: 'Transaction Confirmation',
+                              text: 'Buy',
+                            },
+                          });
+                        }}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
@@ -258,9 +272,6 @@ const ConfirmPageContainer = (props) => {
               type="danger"
             />
           </div>
-        )}
-        {showDepositPopover && (
-          <DepositPopover onClose={() => setShowDepositPopover(false)} />
         )}
         {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
           <div className="confirm-approve-content__warning">
