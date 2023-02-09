@@ -37,6 +37,10 @@ import IconTokenSearch from './icon-token-search';
 import SearchIcon from './search-icon';
 import IconBlockExplorer from './icon-block-explorer';
 
+/**
+ * @deprecated please use the <Icon /> component in ./ui/components/component-library/icon/icon.js
+ */
+
 const validColors = [
   'var(--color-icon-default)',
   'var(--color-icon-alternative)',
