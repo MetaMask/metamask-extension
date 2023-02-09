@@ -23,7 +23,6 @@ import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
 import IconCaretLeft from './icon-caret-left';
-import IconCaretRight from './icon-caret-right';
 import IconCaretDown from './icon-caret-down';
 import IconCaretUp from './icon-caret-up';
 import IconCheck from './icon-check';
@@ -123,7 +122,6 @@ export const DefaultStory = (args) => (
         }}
       >
         <IconItem Component={<IconCaretLeft {...args} />} />
-        <IconItem Component={<IconCaretRight {...args} />} />
         <IconItem Component={<IconCaretDown {...args} />} />
         <IconItem Component={<IconCaretUp {...args} />} />
         <IconItem Component={<IconCheck {...args} />} />
