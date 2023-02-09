@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getPermissionDescription } from '../../../../helpers/utils/permission';
+import { isFunction } from 'lodash';
+import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatDate } from '../../../../helpers/utils/util';
 import Typography from '../../../ui/typography/typography';
@@ -13,97 +14,50 @@ export default function UpdateSnapPermissionList({
 }) {
   const t = useI18nContext();
 
-  const ApprovedPermissions = () => {
-    return Object.entries(approvedPermissions).map(
-      ([permissionName, permissionValue]) => {
-        const permissions = getPermissionDescription(
-          t,
-          permissionName,
-          permissionValue,
-        );
-        const { date } = permissionValue;
-        const formattedDate = formatDate(date, 'yyyy-MM-dd');
-        return permissions.map(({ label, rightIcon }) => (
-          <div className="approved-permission" key={permissionName}>
-            <i className="fas fa-check" />
-            <div className="permission-description">
-              {label}
-              <Typography
-                color={TextColor.textAlternative}
-                className="permission-description-subtext"
-                boxProps={{ paddingTop: 1 }}
-              >
-                {t('approvedOn', [formattedDate])}
-              </Typography>
-            </div>
-            {rightIcon && <i className={rightIcon} />}
+  const Permissions = ({ className, permissions, subText }) => {
+    return getWeightedPermissions(t, permissions).map(
+      ({ label, rightIcon, permissionName, permissionValue }) => (
+        <div className={className} key={permissionName}>
+          <i className="fas fa-x" />
+          <div className="permission-description">
+            {label}
+            <Typography
+              color={TextColor.textAlternative}
+              boxProps={{ paddingTop: 1 }}
+              className="permission-description-subtext"
+            >
+              {isFunction(subText)
+                ? subText(permissionName, permissionValue)
+                : subText}
+            </Typography>
           </div>
-        ));
-      },
-    );
-  };
-
-  const RevokedPermissions = () => {
-    return Object.entries(revokedPermissions).map(
-      ([permissionName, permissionValue]) => {
-        const permissions = getPermissionDescription(
-          t,
-          permissionName,
-          permissionValue,
-        );
-        return permissions.map(({ label, rightIcon }) => (
-          <div className="revoked-permission" key={permissionName}>
-            <i className="fas fa-x" />
-            <div className="permission-description">
-              {label}
-              <Typography
-                color={TextColor.textAlternative}
-                boxProps={{ paddingTop: 1 }}
-                className="permission-description-subtext"
-              >
-                {t('permissionRevoked')}
-              </Typography>
-            </div>
-            {rightIcon && <i className={rightIcon} />}
-          </div>
-        ));
-      },
-    );
-  };
-
-  const NewPermissions = () => {
-    return Object.entries(newPermissions).map(
-      ([permissionName, permissionValue]) => {
-        const permissions = getPermissionDescription(
-          t,
-          permissionName,
-          permissionValue,
-        );
-        return permissions.map(({ label, rightIcon }) => (
-          <div className="new-permission" key={permissionName}>
-            <i className="fas fa-arrow-right" />
-            <div className="permission-description">
-              {label}
-              <Typography
-                color={TextColor.textAlternative}
-                boxProps={{ paddingTop: 1 }}
-                className="permission-description-subtext"
-              >
-                {t('permissionRequested')}
-              </Typography>
-            </div>
-            {rightIcon && <i className={rightIcon} />}
-          </div>
-        ));
-      },
+          {rightIcon && <i className={rightIcon} />}
+        </div>
+      ),
     );
   };
 
   return (
     <div className="update-snap-permission-list">
-      <NewPermissions />
-      <ApprovedPermissions />
-      <RevokedPermissions />
+      <Permissions
+        className="new-permission"
+        permissions={newPermissions}
+        subText={t('permissionRequested')}
+      />
+      <Permissions
+        className="approved-permission"
+        permissions={approvedPermissions}
+        subText={(_, permissionValue) => {
+          const { date } = permissionValue;
+          const formattedDate = formatDate(date, 'yyyy-MM-dd');
+          return t('approvedOn', [formattedDate]);
+        }}
+      />
+      <Permissions
+        className="revoked-permission"
+        permissions={revokedPermissions}
+        subText={t('permissionRevoked')}
+      />
     </div>
   );
 }

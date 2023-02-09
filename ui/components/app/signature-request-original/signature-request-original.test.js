@@ -52,14 +52,17 @@ const props = {
   },
 };
 
-const render = () => {
+const render = (txData = props.txData) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
     },
   });
 
-  return renderWithProvider(<SignatureRequestOriginal {...props} />, store);
+  return renderWithProvider(
+    <SignatureRequestOriginal {...props} txData={txData} />,
+    store,
+  );
 };
 
 describe('SignatureRequestOriginal', () => {
@@ -91,5 +94,25 @@ describe('SignatureRequestOriginal', () => {
 
     fireEvent.click(signButton);
     expect(screen.getByText('Your funds may be at risk')).toBeInTheDocument();
+  });
+
+  it('should escape RTL character in label or value', () => {
+    const txData = {
+      msgParams: {
+        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        data: [
+          {
+            type: 'string',
+            name: 'Message \u202E test',
+            value: 'Hi, \u202E Alice!',
+          },
+        ],
+        origin: 'https://happydapp.website/governance?futarchy=true',
+      },
+      type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+    };
+    const { getByText } = render(txData);
+    expect(getByText('Message \\u202E test:')).toBeInTheDocument();
+    expect(getByText('Hi, \\u202E Alice!')).toBeInTheDocument();
   });
 });

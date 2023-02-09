@@ -451,3 +451,19 @@ export const EVENT = {
 export const CONTEXT_PROPS = {
   PAGE_TITLE: 'location',
 };
+
+/**
+ * These types correspond to the keys in the METAMETRIC_KEY_OPTIONS object
+ */
+export const METAMETRIC_KEY = {
+  UI_CUSTOMIZATIONS: `ui_customizations`,
+};
+
+/**
+ * This object maps a method name to a METAMETRIC_KEY
+ */
+export const METAMETRIC_KEY_OPTIONS = {
+  [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
+    SIWE: 'sign_in_with_ethereum',
+  },
+};

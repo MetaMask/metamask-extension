@@ -76,6 +76,8 @@ async function main() {
     throw error;
   }
 
+  const testFileName = path.basename(e2eTestPath);
+
   if (debug) {
     process.env.E2E_DEBUG = 'true';
   }
@@ -95,8 +97,10 @@ async function main() {
     await runInShell('yarn', [
       'mocha',
       `--config=${configFile}`,
-      '--timeout',
-      testTimeoutInMilliseconds,
+      `--timeout=${testTimeoutInMilliseconds}`,
+      '--reporter=xunit',
+      '--reporter-option',
+      `output=test/test-results/e2e/${testFileName}.xml`,
       e2eTestPath,
       exit,
     ]);
