@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon, ICON_NAMES } from '../../../../components/component-library';
-import { ICON_COLORS } from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -77,7 +77,7 @@ const NetworksListItem = ({
           <Icon
             name={ICON_NAMES.CHECK}
             className="networks-tab__content__icon-check"
-            color={ICON_COLORS.SUCCESS_DEFAULT}
+            color={IconColor.successDefault}
             aria-label={t('active')}
           />
         </>
@@ -86,7 +86,7 @@ const NetworksListItem = ({
           <Icon
             name={ICON_NAMES.CHECK}
             className="networks-tab__content__icon-check"
-            color={ICON_COLORS.SUCCESS_DEFAULT}
+            color={IconColor.successDefault}
             aria-hidden="true"
           />
         </>

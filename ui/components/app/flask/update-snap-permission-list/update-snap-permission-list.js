@@ -4,6 +4,7 @@ import { isFunction } from 'lodash';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatDate } from '../../../../helpers/utils/util';
+import { Icon, ICON_NAMES } from '../../../component-library';
 import Typography from '../../../ui/typography/typography';
 import { TextColor } from '../../../../helpers/constants/design-system';
 
@@ -18,7 +19,7 @@ export default function UpdateSnapPermissionList({
     return getWeightedPermissions(t, permissions).map(
       ({ label, rightIcon, permissionName, permissionValue }) => (
         <div className={className} key={permissionName}>
-          <i className="fas fa-x" />
+          <Icon name={ICON_NAMES.CHECK} />
           <div className="permission-description">
             {label}
             <Typography
