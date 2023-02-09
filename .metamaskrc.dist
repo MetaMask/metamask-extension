@@ -9,8 +9,5 @@ PUBNUB_SUB_KEY=
 PORTFOLIO_URL=
 TRANSACTION_SECURITY_PROVIDER=
 
-; Set this to '1' to enable support for Sign-In with Ethereum [EIP-4361](https://eips.ethereum.org/EIPS/eip-4361)
-SIWE_V1=
-
 ; Set this to test changes to the phishing warning page.
 PHISHING_WARNING_PAGE_URL=
