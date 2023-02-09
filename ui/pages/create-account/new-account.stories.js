@@ -1,5 +1,6 @@
-import React from 'react';
 import { action } from '@storybook/addon-actions';
+import React from 'react';
+import Box from '../../components/ui/box/box';
 import NewAccountCreateForm from './new-account.component';
 
 export default {
@@ -15,7 +16,12 @@ export default {
 };
 export const DefaultStory = (args) => {
   return (
-    <NewAccountCreateForm {...args} createAccount={action('Account Created')} />
+    <Box className="new-account">
+      <NewAccountCreateForm
+        {...args}
+        createAccount={action('Account Created')}
+      />
+    </Box>
   );
 };
 
