@@ -67,11 +67,12 @@ export function testsForProviderType(providerType) {
         // This list is presented in the same order as in the network client
         // tests on the core side.
 
-        { name: 'eth_newFilter', numberOfParameters: 1 },
-        { name: 'eth_getFilterChanges', numberOfParameters: 1 },
-        { name: 'eth_newBlockFilter', numberOfParameters: 0 },
-        { name: 'eth_newPendingTransactionFilter', numberOfParameters: 0 },
-        { name: 'eth_uninstallFilter', numberOfParameters: 1 },
+        // TODO: Methods to add back when we add testing for filter middleware
+        // { name: 'eth_newFilter', numberOfParameters: 1 },
+        // { name: 'eth_getFilterChanges', numberOfParameters: 1 },
+        // { name: 'eth_newBlockFilter', numberOfParameters: 0 },
+        // { name: 'eth_newPendingTransactionFilter', numberOfParameters: 0 },
+        // { name: 'eth_uninstallFilter', numberOfParameters: 1 },
 
         { name: 'eth_sendRawTransaction', numberOfParameters: 1 },
         { name: 'eth_sendTransaction', numberOfParameters: 1 },
@@ -291,9 +292,9 @@ export function testsForProviderType(providerType) {
         // tests on the core side.
 
         { name: 'net_listening', numberOfParameters: 0 },
-
-        { name: 'eth_subscribe', numberOfParameters: 1 },
-        { name: 'eth_unsubscribe', numberOfParameters: 1 },
+        // TODO: Methods to add back when we add testing for subscribe middleware
+        // { name: 'eth_subscribe', numberOfParameters: 1 },
+        // { name: 'eth_unsubscribe', numberOfParameters: 1 },
         { name: 'custom_rpc_method', numberOfParameters: 1 },
         { name: 'net_peerCount', numberOfParameters: 0 },
         { name: 'parity_nextNonce', numberOfParameters: 1 },

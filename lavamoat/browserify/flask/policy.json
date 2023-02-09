@@ -925,7 +925,6 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util": true,
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>pify": true,
         "browserify>browser-resolve": true,
         "eth-rpc-errors": true,
@@ -3049,6 +3048,11 @@
         "document.body.appendChild": true,
         "document.body.removeChild": true,
         "document.createElement": true
+      }
+    },
+    "btoa": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "classnames": {
