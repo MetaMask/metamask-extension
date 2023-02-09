@@ -17,9 +17,12 @@ import {
 } from '../../../shared/constants/transaction';
 import { MILLISECOND } from '../../../shared/constants/time';
 
-const IncomingTransactionsController = proxyquire('../controllers/incoming-transactions', {
-  '../../../shared/modules/random-id': { default: () => 54321 },
-}).default;
+const IncomingTransactionsController = proxyquire(
+  '../controllers/incoming-transactions',
+  {
+    '../../../shared/modules/random-id': { default: () => 54321 },
+  },
+).default;
 
 const FAKE_CHAIN_ID = '0x1338';
 const MOCK_SELECTED_ADDRESS = '0x0101';

@@ -32,14 +32,14 @@ const mockAccounts = {
   },
 };
 
-describe('Account Tracker', () => {
+describe('Account Tracker', function () {
   let provider,
     blockTrackerStub,
     providerResultStub,
     useMultiAccountBalanceChecker,
     accountTracker;
 
-  beforeEach(() => {
+  beforeEach(function () {
     providerResultStub = {
       eth_getBalance: UPDATE_BALANCE,
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
@@ -74,8 +74,8 @@ describe('Account Tracker', () => {
     });
   });
 
-  describe('_updateAccount', () => {
-    it('should update the passed address account balance, and leave other balances unchanged, if useMultiAccountBalanceChecker is true', async () => {
+  describe('_updateAccount', function () {
+    it('should update the passed address account balance, and leave other balances unchanged, if useMultiAccountBalanceChecker is true', async function () {
       useMultiAccountBalanceChecker = true;
       accountTracker.store.updateState({ accounts: { ...mockAccounts } });
 
@@ -97,7 +97,7 @@ describe('Account Tracker', () => {
       assert.deepEqual(newAccounts, expectedAccounts);
     });
 
-    it('should not change accounts if the passed address is not in accounts', async () => {
+    it('should not change accounts if the passed address is not in accounts', async function () {
       accountTracker.store.updateState({ accounts: { ...mockAccounts } });
 
       await accountTracker._updateAccount('fake address');
@@ -121,7 +121,7 @@ describe('Account Tracker', () => {
       assert.deepEqual(newAccounts, expectedAccounts);
     });
 
-    it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
+    it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async function () {
       useMultiAccountBalanceChecker = false;
       accountTracker.store.updateState({ accounts: { ...mockAccounts } });
 
@@ -141,8 +141,8 @@ describe('Account Tracker', () => {
     });
   });
 
-  describe('_updateAccountsViaBalanceChecker', () => {
-    it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
+  describe('_updateAccountsViaBalanceChecker', function () {
+    it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async function () {
       useMultiAccountBalanceChecker = true;
       accountTracker.store.updateState({ accounts: { ...mockAccounts } });
 
@@ -167,7 +167,7 @@ describe('Account Tracker', () => {
       assert.deepEqual(newAccounts, expectedAccounts);
     });
 
-    it('should update all balances if useMultiAccountBalanceChecker is true', async () => {
+    it('should update all balances if useMultiAccountBalanceChecker is true', async function () {
       useMultiAccountBalanceChecker = true;
       accountTracker.store.updateState({ accounts: { ...mockAccounts } });
 

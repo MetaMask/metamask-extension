@@ -7,7 +7,9 @@ import {
 import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import { GAS_LIMITS } from '../../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
-import TxStateManager, { ERROR_SUBMITTING } from '../controllers/transactions/tx-state-manager';
+import TxStateManager, {
+  ERROR_SUBMITTING,
+} from '../controllers/transactions/tx-state-manager';
 import { snapshotFromTxMeta } from '../controllers/transactions/lib/tx-state-history-helpers';
 
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
