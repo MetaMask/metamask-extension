@@ -13,9 +13,7 @@ import {
   EndowmentPermissions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import Tooltip from '../../components/ui/tooltip';
-///: END:ONLY_INCLUDE_IN
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import { Color } from '../constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
