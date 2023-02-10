@@ -48,7 +48,7 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
-      - trigger-beta-build:
+      - prep-build-beta:
           requires:
             - prep-deps
       - prep-build-desktop:
@@ -132,7 +132,7 @@ workflows:
             - prep-build
       - validate-source-maps-beta:
           requires:
-            - trigger-beta-build
+            - prep-build-beta
       - validate-source-maps-desktop:
           requires:
             - prep-build-desktop
@@ -146,7 +146,7 @@ workflows:
       - test-mozilla-lint-beta:
           requires:
             - prep-deps
-            - trigger-beta-build
+            - prep-build-beta
       - test-mozilla-lint-desktop:
           requires:
             - prep-deps
@@ -193,7 +193,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-            - trigger-beta-build
+            - prep-build-beta
             - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
@@ -346,7 +346,7 @@ jobs:
             - dist
             - builds
 
-  trigger-beta-build:
+  prep-build-beta:
     executor: node-browsers-medium-plus
     steps:
       - checkout
