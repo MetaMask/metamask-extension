@@ -642,13 +642,6 @@
   "close": {
     "message": "Fechar"
   },
-  "collectibleAddFailedMessage": {
-    "message": "O NFT não pôde ser adicionado, pois os dados de propriedade não coincidem. Certifique-se de ter inserido as informações corretas."
-  },
-  "collectibleAddressError": {
-    "message": "Esse token é um NFT. Adicione-o na $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Confirmar"
   },
@@ -2103,9 +2096,6 @@
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "O colecionável foi adicionado com sucesso!"
-  },
   "newContact": {
     "message": "Novo contato"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
+  },
+  "newNftAddedMessage": {
+    "message": "O colecionável foi adicionado com sucesso!"
   },
   "newPassword": {
     "message": "Nova Palavra-passe (min 8 caracteres)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "O NFT não pôde ser adicionado, pois os dados de propriedade não coincidem. Certifique-se de ter inserido as informações corretas."
+  },
+  "nftAddressError": {
+    "message": "Esse token é um NFT. Adicione-o na $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Insira o ID do token"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Não conseguimos verificar esse contrato. Certifique-se de que você confia nesse endereço."
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "O ID da cadeia está sendo usado pela rede $1."
   },
-  "useCollectibleDetection": {
-    "message": "Detectar NFTs automaticamente"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Além disso, esteja ciente de que:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Os metadados de NFTs podem conter links para golpes ou sites de phishing."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
-  },
   "useDefault": {
     "message": "Usar padrão"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Agrupamos as contas e consultamos a Infura para exibir seus saldos de forma responsiva. Se isso for desativado, somente contas ativas serão consultadas. Alguns dapps só funcionam se você conecta a sua carteira."
+  },
+  "useNftDetection": {
+    "message": "Detectar NFTs automaticamente"
+  },
+  "useNftDetectionDescription": {
+    "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Além disso, esteja ciente de que:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Os metadados de NFTs podem conter links para golpes ou sites de phishing."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Qualquer pessoa pode realizar o airdrop de NFTs em sua conta. Isso inclui conteúdo ofensivo que pode ser exibido automaticamente em sua carteira."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"

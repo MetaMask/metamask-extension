@@ -642,13 +642,6 @@
   "close": {
     "message": "Isara"
   },
-  "collectibleAddFailedMessage": {
-    "message": "Hindi maidagdag ang NFT dahil hindi tugma ang mga detalye ng pagmamay-ari. Tiyaking nailagay mo ang wastong impormasyon."
-  },
-  "collectibleAddressError": {
-    "message": "Ang token na ito ay isang NFT. Idagdag sa $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Kumpirmahin"
   },
@@ -2103,9 +2096,6 @@
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Ang collectible ay tagumpay na naidagdag!"
-  },
   "newContact": {
     "message": "Bagong Contact"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "Ang “$1” matagumpay na naidagdag!"
+  },
+  "newNftAddedMessage": {
+    "message": "Ang collectible ay tagumpay na naidagdag!"
   },
   "newPassword": {
     "message": "Bagong password (min na 8 char)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Hindi maidagdag ang NFT dahil hindi tugma ang mga detalye ng pagmamay-ari. Tiyaking nailagay mo ang wastong impormasyon."
+  },
+  "nftAddressError": {
+    "message": "Ang token na ito ay isang NFT. Idagdag sa $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Ilagay ang token id"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "Ang pagpapadala ng collectible (ERC-721) token ay kasalukuyang hindi magagamit",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Hindi namin ma-verify ang kontratang ito. Tiyaking pinagkakatiwalaan mo ang address na ito."
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "Nasa kasalukuyang listahan ng mga network na ang URL."
   },
-  "useCollectibleDetection": {
-    "message": "Autodetect ng mga NFT"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "Ang pagpapakita ng media at data ng mga NFT ay maaaring maglantad sa IP address sa iyong mga centralized server. Ang mga Third-party API (tulad ng OpenSea) ay ginagamit upang ma-detect ang mga NFT sa iyong wallet. Maglalantad ito sa iyong account address sa mga serbisyong iyon. Hayaan itong naka-disable kung ayaw mong kunin ng app ang data mula sa mga serbisyong iyon."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Bilang karagdagan, tandaan na:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Ang NFT metadata ay maaaring maglaman ng mga link sa mga scam o phishing site."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Kahit sino ay maaaring mag-airdrop ng mga NFT sa iyong account. Maaaring kabilang dito ang nakakapanakit na nilalaman na maaaring awtomatikong ipakita sa iyong wallet."
-  },
   "useDefault": {
     "message": "Gamitin ang default"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Pinagsasama-sama namin ang mga account at tanong sa Infura para maipakita ang inyong balanse. Kung io-off mo ito, ang mga aktibong account lamang ang makakapagtanong. Ang ilan sa dapps ay hindi gagana maliban kung nakakonekta ang iyongg wallet."
+  },
+  "useNftDetection": {
+    "message": "Autodetect ng mga NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "Ang pagpapakita ng media at data ng mga NFT ay maaaring maglantad sa IP address sa iyong mga centralized server. Ang mga Third-party API (tulad ng OpenSea) ay ginagamit upang ma-detect ang mga NFT sa iyong wallet. Maglalantad ito sa iyong account address sa mga serbisyong iyon. Hayaan itong naka-disable kung ayaw mong kunin ng app ang data mula sa mga serbisyong iyon."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Bilang karagdagan, tandaan na:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Ang NFT metadata ay maaaring maglaman ng mga link sa mga scam o phishing site."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Kahit sino ay maaaring mag-airdrop ng mga NFT sa iyong account. Maaaring kabilang dito ang nakakapanakit na nilalaman na maaaring awtomatikong ipakita sa iyong wallet."
   },
   "usePhishingDetection": {
     "message": "Gumamit ng Pag-detect ng Phishing"

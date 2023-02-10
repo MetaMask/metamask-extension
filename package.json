@@ -372,7 +372,7 @@
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^1.2.1",
-    "@metamask/test-dapp": "^5.2.1",
+    "@metamask/test-dapp": "^5.4.0",
     "@sentry/cli": "^1.58.0",
     "@storybook/addon-a11y": "^6.5.13",
     "@storybook/addon-actions": "^6.5.13",
