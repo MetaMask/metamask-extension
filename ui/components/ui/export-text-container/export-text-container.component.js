@@ -9,9 +9,10 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../box/box';
-import { ButtonSecondary, Text, TEXT_VARIANTS } from '../../component-library';
+import { ButtonSecondary, Text } from '../../component-library';
 
 function ExportTextContainer({ text = '', onClickCopy = null }) {
   const ONE_MINUTE = 1000 * 60;
@@ -33,7 +34,7 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
         display={DISPLAY.FLEX}
         justifyContent={JustifyContent.CENTER}
         className="notranslate"
-        variant={TEXT_VARIANTS.BODY_LG}
+        variant={TextVariant.bodyLgMedium}
       >
         {text}
       </Text>

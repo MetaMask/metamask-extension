@@ -20,7 +20,7 @@ import Box from '../../components/ui/box';
 import {
   Text,
   Label,
-  Banner,
+  BannerAlert,
   Button,
   TextField,
   HelpText,
@@ -105,7 +105,7 @@ const RevealSeedPage = () => {
 
   const renderWarning = () => {
     return (
-      <Banner severity={SEVERITIES.DANGER}>
+      <BannerAlert severity={SEVERITIES.DANGER}>
         <Text variant={TextVariant.bodyMd}>
           {t('revealSeedWordsWarning', [
             <Text
@@ -117,7 +117,7 @@ const RevealSeedPage = () => {
             </Text>,
           ])}
         </Text>
-      </Banner>
+      </BannerAlert>
     );
   };
 
