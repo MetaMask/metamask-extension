@@ -14,6 +14,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
   checkHardwareStatus,
+  // attemptLedgerTransportCreation,
   addToAddressBook,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
@@ -287,6 +288,9 @@ export const mapDispatchToProps = (dispatch) => {
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(checkHardwareStatus(deviceName, hdPath));
     },
+    // attemptLedgerTransportCreation: () => {
+    //   return dispatch(attemptLedgerTransportCreation());
+    // },
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
     },

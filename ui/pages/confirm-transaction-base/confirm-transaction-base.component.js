@@ -54,7 +54,8 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  // checkHardwareStatus,
+  attemptLedgerTransportCreation,
+  isDeviceAccessible,
 } from '../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -99,7 +100,7 @@ export default class ConfirmTransactionBase extends Component {
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
-    toAccounts: PropTypes.object,
+    toAccounts: PropTypes.array,
     toAddress: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
@@ -151,6 +152,8 @@ export default class ConfirmTransactionBase extends Component {
     isHardwareWallet: PropTypes.bool,
     device: PropTypes.string,
     hdPath: PropTypes.string,
+    checkHardwareStatus: PropTypes.func,
+    // attemptLedgerTransportCreation: PropTypes.func,
 
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
@@ -186,6 +189,7 @@ export default class ConfirmTransactionBase extends Component {
       isEthGasPrice,
       setDefaultHomeActiveTabName,
     } = this.props;
+
     const {
       customNonceValue: prevCustomNonceValue,
       nextNonce: prevNextNonce,
@@ -338,13 +342,14 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       showLedgerSteps,
       supportsEIP1559,
-      isMultiLayerFeeNetwork,
+      isHardwareWallet,
+      isMultiLayerFeeNetwork,      
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
     } = this.props;
     const { t } = this.context;
-    const { userAcknowledgedGasMissing } = this.state;
+    const { userAcknowledgedGasMissing, locked } = this.state;
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
@@ -586,6 +591,12 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
+    const deviceLockedWarning = () => (
+      <div className="confirm-page-container-content__error-container" key="hw-locked-error">
+        <span className="hw-connect__error">{t('ledgerLocked')}</span>
+      </div>
+    );
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -610,6 +621,8 @@ export default class ConfirmTransactionBase extends Component {
             renderSimulationFailureWarning &&
               !this.supportsEIP1559 &&
               simulationFailureWarning(),
+            isHardwareWallet && locked &&
+              deviceLockedWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
               renderGasDetailsItem(),
@@ -734,6 +747,18 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
+
+  // @TODO - copied from connect-hardware, move to shared utility
+  async checkIfUnlocked() {
+    const { device, hdPath, fromAddress, checkHardwareStatus } = this.props;    
+    const unlocked = await isDeviceAccessible(device, hdPath);
+
+console.log(`UNLOCKED? ${unlocked}`);  
+
+    this.setState({ locked: !unlocked });
+    return unlocked;
+  }  
+
   handleEdit() {
     const {
       txData,
@@ -820,8 +845,9 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
+      isHardwareWallet,
     } = this.props;
-    const { submitting } = this.state;
+    const { submitting, locked } = this.state;
     const { name } = methodData;
 
     if (txData.type === TransactionType.simpleSend) {
@@ -829,6 +855,17 @@ export default class ConfirmTransactionBase extends Component {
     }
     if (submitting) {
       return;
+    }
+
+    if (isHardwareWallet) {
+      this.checkIfUnlocked(); // @TODO - async function
+      if (this.state.locked) {
+        this.setState({
+          submitting: false,
+          submitError: "DEVICE IS LOCKED!!!",
+        });
+        return;
+      }
     }
 
     if (baseFeePerGas) {
@@ -955,17 +992,6 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
-  // @TODO - copied from connect-hardware, move to shared utility
-  async checkIfUnlocked() {
-    const { device, hdPath, checkHardwareStatus } = this.props;
-    const unlocked = await checkHardwareStatus(device, hdPath);
-
-console.log(`UNLOCKED: `, unlocked);
-
-    this.setState({ locked: !unlocked, submitError: 'Hardware device is LOCKED!!!!' });
-    return unlocked;
-  }
-
   componentDidMount() {
     this._isMounted = true;
     const {
@@ -992,6 +1018,12 @@ console.log(`UNLOCKED: `, unlocked);
       tryReverseResolveAddress(toAddress);
     }
 
+    // need to keep an eye on the hardware wallet status?
+    if (isHardwareWallet) {
+      this.checkIfUnlocked();
+      this.hdStatusIntervalId = setInterval(() => this.checkIfUnlocked(), 5000);
+    }
+
     /**
      * This makes a request to get estimates and begin polling, keeping track of the poll
      * token in component state.
@@ -1002,13 +1034,7 @@ console.log(`UNLOCKED: `, unlocked);
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       if (this._isMounted) {
         addPollingTokenToAppState(pollingToken);
-        this.setState({ pollingToken });
-
-// check if hardware wallet needs (re-)connecting
-if (isHardwareWallet) {
-  this.checkIfUnlocked();
-}        
-
+        this.setState({ pollingToken });  
       } else {
         disconnectGasFeeEstimatePoller(pollingToken);
         removePollingTokenFromAppState(this.state.pollingToken);
@@ -1020,6 +1046,9 @@ if (isHardwareWallet) {
   componentWillUnmount() {
     this._beforeUnloadForGasPolling();
     this._removeBeforeUnload();
+    if (this.hdStatusIntervalId) {
+      clearInterval(this.hdStatusIntervalId);
+    }
   }
 
   supportsEIP1559 =
