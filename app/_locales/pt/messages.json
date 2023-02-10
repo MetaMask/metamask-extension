@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "Redefinir"
   },
-  "resetAccount": {
-    "message": "Redefinir conta"
-  },
-  "resetAccountDescription": {
-    "message": "A redefinição da sua conta limpará o histórico de transações. Isso não alterará os saldos nas suas contas nem exigirá a reintrodução da Frase de Recuperação Secreta."
-  },
   "resetWallet": {
     "message": "Redefinir carteira"
   },

@@ -617,12 +617,6 @@
   "reset": {
     "message": "Weka upya"
   },
-  "resetAccount": {
-    "message": "Futa Akaunti"
-  },
-  "resetAccountDescription": {
-    "message": "Kufuta Akaunti yako kutafuta histori ya akaunti yako."
-  },
   "restore": {
     "message": "Rejesha"
   },

@@ -623,12 +623,6 @@
   "reset": {
     "message": "Återställ"
   },
-  "resetAccount": {
-    "message": "Återställ konto"
-  },
-  "resetAccountDescription": {
-    "message": "Återställning av ditt konto rensar din transaktionshistorik"
-  },
   "restore": {
     "message": "Återställ"
   },

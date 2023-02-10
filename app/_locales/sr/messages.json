@@ -630,12 +630,6 @@
   "reset": {
     "message": "Ресетуј"
   },
-  "resetAccount": {
-    "message": "Ponovo postavi nalog"
-  },
-  "resetAccountDescription": {
-    "message": "Resetovanje vašeg naloga će obrisati istoriju transakcija."
-  },
   "restore": {
     "message": "Поново отвори"
   },
