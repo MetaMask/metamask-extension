@@ -9,7 +9,7 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
       class="asset-breadcrumb"
     >
       <div
-        class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--flex-direction-row box--color-inherit"
         data-testid="asset__back"
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
