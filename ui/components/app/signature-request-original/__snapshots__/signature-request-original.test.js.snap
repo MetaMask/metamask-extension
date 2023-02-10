@@ -44,7 +44,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
              
             of
              
-            0
+            1
           </div>
           <div
             class="confirm-page-container-navigation__longtext"
@@ -54,7 +54,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
         </div>
         <div
           class="confirm-page-container-navigation__container"
-          style="visibility: hidden;"
+          style="visibility: initial;"
         >
           <button
             class="confirm-page-container-navigation__arrow"
@@ -244,7 +244,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
     >
       <footer>
         <button
-          class="button btn--rounded btn-secondary page-container__footer-button"
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
           data-testid="page-container-footer-cancel"
           role="button"
           tabindex="0"

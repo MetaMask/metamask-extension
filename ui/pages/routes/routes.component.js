@@ -17,7 +17,7 @@ import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
-import AddCollectiblePage from '../add-collectible';
+import AddCollectiblePage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';

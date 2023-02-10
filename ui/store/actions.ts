@@ -3779,20 +3779,20 @@ export function setNewNetworkAdded(
 }
 
 export function setNewCollectibleAddedMessage(
-  newCollectibleAddedMessage: string,
+  newNftAddedMessage: string,
 ): PayloadAction<string> {
   return {
     type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
-    payload: newCollectibleAddedMessage,
+    payload: newNftAddedMessage,
   };
 }
 
 export function setRemoveCollectibleMessage(
-  removeCollectibleMessage: string,
+  removeNftMessage: string,
 ): PayloadAction<string> {
   return {
     type: actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE,
-    payload: removeCollectibleMessage,
+    payload: removeNftMessage,
   };
 }
 
@@ -3826,6 +3826,33 @@ export function setDismissSeedBackUpReminder(
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function setDisabledRpcMethodPreference(
+  methodName: string,
+  value: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('setDisabledRpcMethodPreference', [
+      methodName,
+      value,
+    ]);
+    dispatch(hideLoadingIndication());
+  };
+}
+
+export function getRpcMethodPreferences(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('getRpcMethodPreferences', []);
     dispatch(hideLoadingIndication());
   };
 }

@@ -133,6 +133,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
   },
   {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('toggleEthSignField'),
+    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
+    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
+    icon: 'fas fa-sliders-h',
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
@@ -330,8 +337,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('useCollectibleDetection'),
-    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
+    sectionMessage: (t) => t('useNftDetection'),
+    descriptionMessage: (t) => t('useNftDetectionDescription'),
     route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'NFTS_V1',
