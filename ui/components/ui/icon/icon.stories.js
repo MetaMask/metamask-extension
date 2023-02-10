@@ -37,10 +37,6 @@ import IconTokenSearch from './icon-token-search';
 import SearchIcon from './search-icon';
 import IconBlockExplorer from './icon-block-explorer';
 
-/**
- * @deprecated please use the <Icon /> component in ./ui/components/component-library/icon/icon.js
- */
-
 const validColors = [
   'var(--color-icon-default)',
   'var(--color-icon-alternative)',
@@ -100,6 +96,13 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
+    <Typography
+      variant={TypographyVariant.H2}
+      color={TextColor.errorDefault}
+      boxProps={{ marginBottom: 4 }}
+    >
+      DEPRECATED
+    </Typography>
     <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
     </Typography>
@@ -135,13 +138,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconBlockExplorer {...args} />} />
       </div>
     </Box>
-    <Typography
-      variant={TypographyVariant.H2}
-      color={TextColor.errorDefault}
-      boxProps={{ marginBottom: 4 }}
-    >
-      DEPRECATED
-    </Typography>
     <Box marginBottom={4}>
       <div
         style={{

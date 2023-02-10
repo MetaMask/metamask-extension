@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
 /**
- * @deprecated please use the <Icon /> component in ./ui/components/component-library/icon/icon.js
+ * @deprecated This has been deprecated in favour of the `<Icon />` component in ./ui/components/component-library/icon/icon.js
+ *
+ * See storybook documentation for Icon here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-icon--default-story#icon
+ *
  */
 
 export default function InfoIconInverted({ severity }) {
