@@ -16,16 +16,16 @@ const withFixturesOptions = {
   ganacheOptions,
 };
 
-const loadSwaps = async (driver) => {
+const loginExtension = async (driver) => {
   await driver.navigate();
   await driver.fill('#password', 'correct horse battery staple');
   await driver.press('#password', driver.Key.ENTER);
+};
+
+const enterSwapQuote = async (driver, options) => {
   await driver.clickElement(
     '.wallet-overview__buttons .icon-button:nth-child(3)',
   );
-};
-
-const buildQuote = async (driver, options) => {
   await driver.fill('input[placeholder*="0"]', options.amount);
   await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
   await driver.clickElement(
@@ -63,8 +63,44 @@ const buildQuote = async (driver, options) => {
   await driver.clickElement('.searchable-item-list__primary-label');
 };
 
+const reviewQuote = async (driver) => {
+  await driver.delay(5000); // Need an extra delay after typing an amount.
+  await driver.clickElement({ text: 'Review swap', tag: 'button' });
+  await driver.waitForSelector('[class*="box--align-items-center"]');
+  const estimatedEth = await driver.waitForSelector({
+    css: '[class*="box--align-items-center"]',
+    text: 'Estimated gas fee',
+  });
+  assert.equal(await estimatedEth.getText(), 'Estimated gas fee');
+  await driver.waitForSelector(
+    '[class="exchange-rate-display main-quote-summary__exchange-rate-display"]',
+  );
+  await driver.waitForSelector(
+    '[class="fee-card__info-tooltip-container"]',
+  );
+};
+
+const waitForTransactionToComplete = async (driver, tokenName) => {
+  const sucessfulTransactionMessage = await driver.waitForSelector({
+    css: '[class="awaiting-swap__header"]',
+    text: 'Transaction complete',
+  });
+  assert.equal(
+    await sucessfulTransactionMessage.getText(),
+    'Transaction complete',
+  );
+  const sucessfulTransactionToken = await driver.waitForSelector({
+    css: '[class="awaiting-swap__amount-and-symbol"]',
+    text: tokenName,
+  });
+  assert.equal(await sucessfulTransactionToken.getText(), tokenName);
+  await driver.clickElement({ text: 'Close', tag: 'button' });
+};
+
 module.exports = {
   withFixturesOptions,
-  loadSwaps,
-  buildQuote,
+  loginExtension,
+  enterSwapQuote,
+  reviewQuote,
+  waitForTransactionToComplete,
 };
