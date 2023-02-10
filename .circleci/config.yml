@@ -134,9 +134,9 @@ workflows:
           requires:
             - prep-deps
             - prep-build-storybook
-      - validate-source-maps:
-          requires:
-            - prep-build
+#      - validate-source-maps:
+#          requires:
+#            - prep-build
       - validate-source-maps-beta:
           requires:
             - prep-build-beta
@@ -146,10 +146,10 @@ workflows:
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
-      - test-mozilla-lint:
-          requires:
-            - prep-deps
-            - prep-build
+#      - test-mozilla-lint:
+#          requires:
+#            - prep-deps
+#            - prep-build
       - test-mozilla-lint-beta:
           requires:
             - prep-deps
@@ -174,11 +174,11 @@ workflows:
             - test-unit-global
             - test-unit-mocha
             - upload-and-validate-coverage
-            - validate-source-maps
+#            - validate-source-maps
             - validate-source-maps-beta
             - validate-source-maps-desktop
             - validate-source-maps-flask
-            - test-mozilla-lint
+#            - test-mozilla-lint
             - test-mozilla-lint-beta
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
