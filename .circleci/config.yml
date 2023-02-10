@@ -348,11 +348,11 @@ jobs:
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist
-            - builds
+#      - persist_to_workspace:
+#          root: .
+#          paths:
+#            - dist
+#            - builds
 
   trigger-beta-build:
     executor: node-browsers-medium-plus
