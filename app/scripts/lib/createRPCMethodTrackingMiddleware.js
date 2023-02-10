@@ -166,7 +166,7 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
-      if (process.env.SIWE_V1 && method === MESSAGE_TYPE.PERSONAL_SIGN) {
+      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const data = req?.params?.[0];
         const { isSIWEMessage } = detectSIWE({ data });
         if (isSIWEMessage) {
@@ -208,7 +208,7 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
-      if (process.env.SIWE_V1 && method === MESSAGE_TYPE.PERSONAL_SIGN) {
+      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const data = req?.params?.[0];
         const { isSIWEMessage } = detectSIWE({ data });
         if (isSIWEMessage) {

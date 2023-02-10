@@ -11,7 +11,7 @@ import {
   OVERFLOW_WRAP,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TEXT_VARIANTS, TEXT_DIRECTIONS } from './text.constants';
+import { TEXT_DIRECTIONS } from './text.constants';
 
 export const ValidTags = [
   'dd',
@@ -115,7 +115,7 @@ Text.propTypes = {
    * `BODY_XS` large screen: 12px / small screen: 10px,
    * `INHERIT`
    */
-  variant: PropTypes.oneOf(Object.values(TEXT_VARIANTS)),
+  variant: PropTypes.oneOf(Object.values(TextVariant)),
   /**
    * The color of the Text component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js

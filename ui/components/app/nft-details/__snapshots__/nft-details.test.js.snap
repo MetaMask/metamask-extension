@@ -102,25 +102,6 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
         <h6
           class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography collectible-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
         >
-          Link
-        </h6>
-        <h6
-          class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography collectible-details__image-source typography--h6 typography--weight-normal typography--style-normal typography--color-primary-default"
-        >
-          <a
-            href="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-            rel="noopener noreferrer"
-            target="_blank"
-            title="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-          />
-        </h6>
-      </div>
-      <div
-        class="box box--display-flex box--flex-direction-row"
-      >
-        <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography collectible-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
-        >
           Contract address
         </h6>
         <div
