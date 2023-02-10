@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "重置"
   },
-  "resetAccount": {
-    "message": "重置账户"
-  },
-  "resetAccountDescription": {
-    "message": "重置账户将清除您的交易历史记录。这不会改变您账户中的余额，也不会要求您重新输入账户助记词。"
-  },
   "resetWallet": {
     "message": "重置钱包"
   },
