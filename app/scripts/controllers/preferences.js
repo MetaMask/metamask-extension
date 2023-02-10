@@ -4,6 +4,7 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { getDefaultLedgerTransportType } from '../../../shared/lib/hardware-utils';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -65,9 +66,7 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
-      ledgerTransportType: window.navigator.hid
-        ? LedgerTransportTypes.webhid
-        : LedgerTransportTypes.u2f,
+      ledgerTransportType: getDefaultLedgerTransportType(),
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
       ...opts.initState,

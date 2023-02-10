@@ -23,6 +23,10 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import {
+  getLedgerTransportOption,
+  getRecommendedLedgerTransportType,
+} from '../../../../shared/lib/hardware-utils';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
@@ -468,33 +472,25 @@ export default class AdvancedTab extends PureComponent {
       userHasALedgerAccount,
     } = this.props;
 
-    const LEDGER_TRANSPORT_NAMES = {
-      LIVE: t('ledgerLive'),
-      WEBHID: t('webhid'),
-      U2F: t('u2f'),
+    const TRANSPORT_NAMES = {
+      [LedgerTransportTypes.live]: t('ledgerLive'),
+      [LedgerTransportTypes.webhid]: t('webhid'),
+      [LedgerTransportTypes.u2f]: t('u2f'),
     };
 
     const transportTypeOptions = [
-      {
-        name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LedgerTransportTypes.live,
-      },
-      {
-        name: LEDGER_TRANSPORT_NAMES.U2F,
-        value: LedgerTransportTypes.u2f,
-      },
+      getLedgerTransportOption(LedgerTransportTypes.live, TRANSPORT_NAMES),
+      getLedgerTransportOption(LedgerTransportTypes.u2f, TRANSPORT_NAMES),
     ];
 
     if (window.navigator.hid) {
-      transportTypeOptions.push({
-        name: LEDGER_TRANSPORT_NAMES.WEBHID,
-        value: LedgerTransportTypes.webhid,
-      });
+      transportTypeOptions.push(
+        getLedgerTransportOption(LedgerTransportTypes.webhid, TRANSPORT_NAMES),
+      );
     }
 
-    const recommendedLedgerOption = window.navigator.hid
-      ? LEDGER_TRANSPORT_NAMES.WEBHID
-      : LEDGER_TRANSPORT_NAMES.U2F;
+    const recommendedLedgerOption =
+      TRANSPORT_NAMES[getRecommendedLedgerTransportType()];
 
     return (
       <div ref={this.settingsRefs[9]} className="settings-page__content-row">
