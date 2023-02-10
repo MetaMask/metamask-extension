@@ -60,9 +60,7 @@ import {
   CronjobController,
   SnapController,
   IframeExecutionService,
-  JsonSnapRegistry,
 } from '@metamask/snaps-controllers';
-import { DecentralizedSnapsRegistry } from './snaps/registry/decentralized';
 ///: END:ONLY_INCLUDE_IN
 
 import browser from 'webextension-polyfill';
@@ -112,6 +110,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { DecentralizedSnapsRegistry } from './snaps/registry/decentralized';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
