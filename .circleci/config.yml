@@ -57,9 +57,9 @@ workflows:
       - prep-build-flask:
           requires:
             - prep-deps
-#      - prep-build-test:
-#          requires:
-#            - prep-deps
+      - prep-build-test:
+          requires:
+            - prep-deps
       - prep-build-test-mv3:
           requires:
             - prep-deps
