@@ -200,18 +200,18 @@ workflows:
           requires:
             - prep-deps
             - trigger-beta-build
-#            - prep-build
-#            - prep-build-beta
-#            - prep-build-desktop
-#            - prep-build-flask
-#            - prep-build-storybook
-#            - prep-build-ts-migration-dashboard
-#            - prep-build-test-mv3
-#            - prep-build-test-nft
-#            - benchmark
-#            - user-actions-benchmark
-#            - stats-module-load-init
-#            - all-tests-pass
+            - prep-build
+            - prep-build-beta
+            - prep-build-desktop
+            - prep-build-flask
+            - prep-build-storybook
+            - prep-build-ts-migration-dashboard
+            - prep-build-test-mv3
+            - prep-build-test-nft
+            - benchmark
+            - user-actions-benchmark
+            - stats-module-load-init
+            - all-tests-pass
       - job-publish-release:
           filters:
             branches:
@@ -359,6 +359,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
+          at: .
       - run:
           name: build:prod
           command: yarn build --build-type beta prod
