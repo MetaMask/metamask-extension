@@ -97,6 +97,7 @@ async function runInShell(command, args, output) {
   try {
     await new Promise((resolve, reject) => {
       const childProcess = spawn(command, args);
+      childProcess.stdout.setEncoding('utf8');
       childProcess.stdout.pipe(process.stdout);
       if (output) {
         childProcess.stdout.pipe(fs.createWriteStream(output));
