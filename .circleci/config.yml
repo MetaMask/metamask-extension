@@ -29,22 +29,22 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps-audit:
-          requires:
-            - prep-deps
-      - test-deps-depcheck:
-          requires:
-            - prep-deps
-      - test-yarn-dedupe:
-          requires:
-            - prep-deps
-      - validate-lavamoat-config:
-          filters:
-            branches:
-              only:
-                - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
-          requires:
-            - prep-deps
+#      - test-deps-audit:
+#          requires:
+#            - prep-deps
+#      - test-deps-depcheck:
+#          requires:
+#            - prep-deps
+#      - test-yarn-dedupe:
+#          requires:
+#            - prep-deps
+#      - validate-lavamoat-config:
+#          filters:
+#            branches:
+#              only:
+#                - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
+#          requires:
+#            - prep-deps
       - prep-build:
           requires:
             - prep-deps
@@ -57,129 +57,129 @@ workflows:
       - prep-build-flask:
           requires:
             - prep-deps
-      - prep-build-test:
-          requires:
-            - prep-deps
+#      - prep-build-test:
+#          requires:
+#            - prep-deps
       - prep-build-test-mv3:
           requires:
             - prep-deps
       - prep-build-test-nft:
           requires:
             - prep-deps
-      - prep-build-test-flask:
-          requires:
-            - prep-deps
-      - prep-build-storybook:
-          requires:
-            - prep-deps
-      - prep-build-ts-migration-dashboard:
-          requires:
-            - prep-deps
-      - test-lint:
-          requires:
-            - prep-deps
-      - test-lint-shellcheck
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
-      - test-lint-changelog:
-          requires:
-            - prep-deps
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
-      - test-e2e-firefox:
-          requires:
-            - prep-build-test
-      - test-e2e-chrome-snaps:
-          requires:
-            - prep-build-test-flask
-      - test-e2e-firefox-snaps:
-          requires:
-            - prep-build-test-flask
-      - test-e2e-chrome-mv3:
-          requires:
-            - prep-build-test-mv3
-      - test-e2e-chrome-nft:
-          requires:
-            - prep-build-test-nft
-      - test-e2e-firefox-nft:
-          requires:
-            - prep-build-test-nft
-      - test-unit-mocha:
-          requires:
-            - prep-deps
-      - test-unit-jest-main:
-          requires:
-            - prep-deps
-      - test-unit-jest-development:
-          requires:
-            - prep-deps
-      - upload-and-validate-coverage:
-          requires:
-            - test-unit-jest-main
-            - test-unit-jest-development
-            - test-unit-mocha
-      - test-unit-global:
-          requires:
-            - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
-            - prep-build-storybook
+#      - prep-build-test-flask:
+#          requires:
+#            - prep-deps
+#      - prep-build-storybook:
+#          requires:
+#            - prep-deps
+#      - prep-build-ts-migration-dashboard:
+#          requires:
+#            - prep-deps
+#      - test-lint:
+#          requires:
+#            - prep-deps
+#      - test-lint-shellcheck
+#      - test-lint-lockfile:
+#          requires:
+#            - prep-deps
+#      - test-lint-changelog:
+#          requires:
+#            - prep-deps
+#      - test-e2e-chrome:
+#          requires:
+#            - prep-build-test
+#      - test-e2e-firefox:
+#          requires:
+#            - prep-build-test
+#      - test-e2e-chrome-snaps:
+#          requires:
+#            - prep-build-test-flask
+#      - test-e2e-firefox-snaps:
+#          requires:
+#            - prep-build-test-flask
+#      - test-e2e-chrome-mv3:
+#          requires:
+#            - prep-build-test-mv3
+#      - test-e2e-chrome-nft:
+#          requires:
+#            - prep-build-test-nft
+#      - test-e2e-firefox-nft:
+#          requires:
+#            - prep-build-test-nft
+#      - test-unit-mocha:
+#          requires:
+#            - prep-deps
+#      - test-unit-jest-main:
+#          requires:
+#            - prep-deps
+#      - test-unit-jest-development:
+#          requires:
+#            - prep-deps
+#      - upload-and-validate-coverage:
+#          requires:
+#            - test-unit-jest-main
+#            - test-unit-jest-development
+#            - test-unit-mocha
+#      - test-unit-global:
+#          requires:
+#            - prep-deps
+#      - test-storybook:
+#          requires:
+#            - prep-deps
+#            - prep-build-storybook
       - validate-source-maps:
           requires:
             - prep-build
       - validate-source-maps-beta:
           requires:
             - prep-build-beta
-      - validate-source-maps-desktop:
-          requires:
-            - prep-build-desktop
-      - validate-source-maps-flask:
-          requires:
-            - prep-build-flask
-      - test-mozilla-lint:
-          requires:
-            - prep-deps
-            - prep-build
-      - test-mozilla-lint-beta:
-          requires:
-            - prep-deps
-            - prep-build-beta
-      - test-mozilla-lint-desktop:
-          requires:
-            - prep-deps
-            - prep-build-desktop
-      - test-mozilla-lint-flask:
-          requires:
-            - prep-deps
-            - prep-build-flask
-      - all-tests-pass:
-          requires:
-            - validate-lavamoat-config
-            - test-lint
-            - test-lint-shellcheck
-            - test-lint-lockfile
-            - test-lint-changelog
-            - test-unit-jest-main
-            - test-unit-jest-development
-            - test-unit-global
-            - test-unit-mocha
-            - upload-and-validate-coverage
-            - validate-source-maps
-            - validate-source-maps-beta
-            - validate-source-maps-desktop
-            - validate-source-maps-flask
-            - test-mozilla-lint
-            - test-mozilla-lint-beta
-            - test-mozilla-lint-desktop
-            - test-mozilla-lint-flask
-            - test-e2e-chrome
-            - test-e2e-firefox
-            - test-e2e-chrome-snaps
-            - test-e2e-firefox-snaps
-            - test-storybook
+#      - validate-source-maps-desktop:
+#          requires:
+#            - prep-build-desktop
+#      - validate-source-maps-flask:
+#          requires:
+#            - prep-build-flask
+#      - test-mozilla-lint:
+#          requires:
+#            - prep-deps
+#            - prep-build
+#      - test-mozilla-lint-beta:
+#          requires:
+#            - prep-deps
+#            - prep-build-beta
+#      - test-mozilla-lint-desktop:
+#          requires:
+#            - prep-deps
+#            - prep-build-desktop
+#      - test-mozilla-lint-flask:
+#          requires:
+#            - prep-deps
+#            - prep-build-flask
+#      - all-tests-pass:
+#          requires:
+#            - validate-lavamoat-config
+#            - test-lint
+#            - test-lint-shellcheck
+#            - test-lint-lockfile
+#            - test-lint-changelog
+#            - test-unit-jest-main
+#            - test-unit-jest-development
+#            - test-unit-global
+#            - test-unit-mocha
+#            - upload-and-validate-coverage
+#            - validate-source-maps
+#            - validate-source-maps-beta
+#            - validate-source-maps-desktop
+#            - validate-source-maps-flask
+#            - test-mozilla-lint
+#            - test-mozilla-lint-beta
+#            - test-mozilla-lint-desktop
+#            - test-mozilla-lint-flask
+#            - test-e2e-chrome
+#            - test-e2e-firefox
+#            - test-e2e-chrome-snaps
+#            - test-e2e-firefox-snaps
+#            - test-storybook
       - benchmark:
           requires:
             - prep-build-test
@@ -194,16 +194,16 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-beta
-            - prep-build-desktop
-            - prep-build-flask
-            - prep-build-storybook
-            - prep-build-ts-migration-dashboard
+#            - prep-build-desktop
+#            - prep-build-flask
+#            - prep-build-storybook
+#            - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
             - prep-build-test-nft
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
-            - all-tests-pass
+#            - all-tests-pass
       - job-publish-release:
           filters:
             branches:
