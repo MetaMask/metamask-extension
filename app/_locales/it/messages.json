@@ -1499,12 +1499,6 @@
   "reset": {
     "message": "Ripristina"
   },
-  "resetAccount": {
-    "message": "Ripristina account"
-  },
-  "resetAccountDescription": {
-    "message": "Ripristinare il tuo account cancellerà lo storico delle transazioni."
-  },
   "restore": {
     "message": "Ripristina"
   },

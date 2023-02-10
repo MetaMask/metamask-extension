@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "Reinitialiser"
   },
-  "resetAccount": {
-    "message": "Réinitialiser le compte"
-  },
-  "resetAccountDescription": {
-    "message": "La réinitialisation de votre compte effacera l’historique de vos transactions. Les soldes de vos comptes ne seront pas modifiés. Vous ne serez pas obligé de saisir à nouveau votre phrase secrète de récupération."
-  },
   "resetWallet": {
     "message": "Réinitialiser le portefeuille"
   },
