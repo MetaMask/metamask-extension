@@ -19,6 +19,7 @@ import {
   TypographyVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { sanitizeString } from '../../../../helpers/utils/util';
 
 function SignatureRequestData({ data }) {
   const identities = useSelector(getMemoizedMetaMaskIdentities);
@@ -42,7 +43,7 @@ function SignatureRequestData({ data }) {
               typeof value === 'object' ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL
             }
           >
-            {label.charAt(0).toUpperCase() + label.slice(1)}:{' '}
+            {sanitizeString(label.charAt(0).toUpperCase() + label.slice(1))}:{' '}
           </Typography>
           {typeof value === 'object' && value !== null ? (
             <SignatureRequestData data={value} />
@@ -68,7 +69,7 @@ function SignatureRequestData({ data }) {
                   />
                 </Typography>
               ) : (
-                `${value}`
+                sanitizeString(`${value}`)
               )}
             </Typography>
           )}
