@@ -64,6 +64,7 @@ class Driver {
     this.extensionUrl = extensionUrl;
     this.timeout = timeout;
     this.exceptions = [];
+    this.errors = [];
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -472,7 +473,6 @@ class Driver {
   }
 
   async checkBrowserForConsoleErrors() {
-    const ignoredLogTypes = ['WARNING'];
     const ignoredErrorMessages = [
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -481,17 +481,19 @@ class Driver {
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
     ];
-    const browserLogs = await this.driver.manage().logs().get('browser');
-    const errorEntries = browserLogs.filter(
-      (entry) => !ignoredLogTypes.includes(entry.level.toString()),
-    );
-    const errorObjects = errorEntries.map((entry) => entry.toJSON());
-    return errorObjects.filter(
-      (entry) =>
-        !ignoredErrorMessages.some((message) =>
-          entry.message.includes(message),
-        ),
-    );
+    const { errors } = this;
+    const cdpConnection = await this.driver.createCDPConnection('page');
+    await this.driver.onLogEvent(cdpConnection, function (event) {
+      if (event.type === 'error') {
+        const { description } = event.args[0];
+        const ignore = ignoredErrorMessages.some((message) =>
+          description.includes(message),
+        );
+        if (!ignore) {
+          errors.push(description);
+        }
+      }
+    });
   }
 }
 
