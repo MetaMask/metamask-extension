@@ -642,13 +642,6 @@
   "close": {
     "message": "Schließen"
   },
-  "collectibleAddFailedMessage": {
-    "message": "NFT kann nicht hinzugefügt werden, da die Eigentumsangaben nicht übereinstimmen. Stellen Sie sicher, dass Sie die richtigen Informationen eingegeben haben."
-  },
-  "collectibleAddressError": {
-    "message": "Dieses Token ist ein NFT. Bei $1 hinzufügen",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Bestätigen"
   },
@@ -2103,9 +2096,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Sammelobjekt wurde erfolgreich hinzugefügt!"
-  },
   "newContact": {
     "message": "Neuer Kontakt"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” wurde erfolgreich hinzugefügt!"
+  },
+  "newNftAddedMessage": {
+    "message": "Sammelobjekt wurde erfolgreich hinzugefügt!"
   },
   "newPassword": {
     "message": "Neues Passwort (min. 8 Zeichen)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "NFT kann nicht hinzugefügt werden, da die Eigentumsangaben nicht übereinstimmen. Stellen Sie sicher, dass Sie die richtigen Informationen eingegeben haben."
+  },
+  "nftAddressError": {
+    "message": "Dieses Token ist ein NFT. Bei $1 hinzufügen",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Token-ID eingeben"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "Verwenden von Sammelbaren (ERC-721) Token wird derzeit nicht unterstützt",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Wir können diesen Vertrag nicht verifizieren. Stellen Sie sicher, dass Sie dieser Adresse vertrauen."
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "Diese URL wird derzeit vom $1-Netzwerk verwendet."
   },
-  "useCollectibleDetection": {
-    "message": "NFTs automatisch erkennen"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "Durch die Anzeige von NFTs-Medien und -Daten kann deine IP-Adresse an zentrale Server weitergegeben werden. APIs von Drittanbietern (wie OpenSea) werden verwendet, um NFTs in deiner Wallet zu erkennen. Dadurch wird deine Kontoadresse bei diesen Diensten offengelegt. Lass diese Option deaktiviert, wenn du nicht möchtest, dass die App Daten von diesen Diensten abruft."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Beachten Sie außerdem Folgendes:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "NFT-Metadaten können Links zu Webseiten mit Betrugs- oder Phishing-Inhalten enthalten."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrem Wallet angezeigt werden könnten."
-  },
   "useDefault": {
     "message": "Standardeinstellungen verwenden"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Wir sammeln Konten und fragen bei Infura an, um Ihr Guthaben anzuzeigen. Wenn Sie dies deaktivieren, werden nur aktive Konten abgefragt. Einige Dapps funktionieren nicht, wenn Sie Ihr Wallet nicht verbinden."
+  },
+  "useNftDetection": {
+    "message": "NFTs automatisch erkennen"
+  },
+  "useNftDetectionDescription": {
+    "message": "Durch die Anzeige von NFTs-Medien und -Daten kann deine IP-Adresse an zentrale Server weitergegeben werden. APIs von Drittanbietern (wie OpenSea) werden verwendet, um NFTs in deiner Wallet zu erkennen. Dadurch wird deine Kontoadresse bei diesen Diensten offengelegt. Lass diese Option deaktiviert, wenn du nicht möchtest, dass die App Daten von diesen Diensten abruft."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Beachten Sie außerdem Folgendes:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "NFT-Metadaten können Links zu Webseiten mit Betrugs- oder Phishing-Inhalten enthalten."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Jeder kann NFTs via Airdrop in Ihrem Konto ablegen. Dies kann anstößige Inhalte einschließen, die automatisch in Ihrem Wallet angezeigt werden könnten."
   },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"

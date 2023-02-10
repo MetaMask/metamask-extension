@@ -1,3 +1,5 @@
+const EXCLUDE_E2E_TESTS_REGEX = '^(?!test/e2e/).*.(js|ts|jsx)$';
+
 function filterDiffByFilePath(diff, regex) {
   // split by `diff --git` and remove the first element which is empty
   const diffBlocks = diff.split(`diff --git`).slice(1);
@@ -64,6 +66,7 @@ function hasNumberOfCodeBlocksIncreased(diffFragment, codeBlocks) {
 }
 
 module.exports = {
+  EXCLUDE_E2E_TESTS_REGEX,
   filterDiffByFilePath,
   filterDiffAdditions,
   hasNumberOfCodeBlocksIncreased,
