@@ -1759,6 +1759,9 @@ export default class MetamaskController extends EventEmitter {
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
+
+      isDeviceAccessible: this.isDeviceAccessible.bind(this),
+
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       setLedgerTransportPreference:
@@ -2721,6 +2724,31 @@ export default class MetamaskController extends EventEmitter {
   async checkHardwareStatus(deviceName, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
     return keyring.isUnlocked();
+  }
+
+  /**
+   * Attempts to communicate with the hardware device and returns true if successful
+   *
+   * @param deviceName
+   * @param hdPath
+   * @returns {Promise<bool>}
+   */
+  async isDeviceAccessible(deviceName, hdPath) {
+    const keyring = await this.getKeyringForDevice(deviceName);
+    // will throw an error if locked and inaccessible
+    let status = false;
+    if (keyring.type === HardwareKeyringTypes.ledger) {
+      try {
+        await keyring.unlock(hdPath, false);
+        status = true;
+      } catch (e) {
+        /* YUM! unlock failed */
+        status = false;
+      }
+    } else {
+      status = await checkHardwareStatus(deviceName, hdPath);
+    }
+    return status;
   }
 
   /**
