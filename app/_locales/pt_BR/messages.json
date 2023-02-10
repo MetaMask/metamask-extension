@@ -1528,9 +1528,6 @@
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "O colecionável foi adicionado com sucesso!"
-  },
   "newContact": {
     "message": "Novo contato"
   },
@@ -1542,6 +1539,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
+  },
+  "newNftAddedMessage": {
+    "message": "O colecionável foi adicionado com sucesso!"
   },
   "newPassword": {
     "message": "Nova senha (no mínimo 8 caracteres)"
@@ -2896,7 +2896,7 @@
   },
   "unsendableAsset": {
     "message": "O envio de tokens colecionáveis (ERC-721) não é suportado no momento",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "updatedWithDate": {
     "message": "Atualizado em $1"
@@ -2907,10 +2907,10 @@
   "urlExistsErrorMsg": {
     "message": "O ID da cadeia está sendo usado pela rede $1."
   },
-  "useCollectibleDetection": {
+  "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
   },
-  "useCollectibleDetectionDescription": {
+  "useNftDetectionDescription": {
     "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
   },
   "usePhishingDetection": {

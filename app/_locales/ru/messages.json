@@ -642,13 +642,6 @@
   "close": {
     "message": "Закрыть"
   },
-  "collectibleAddFailedMessage": {
-    "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
-  },
-  "collectibleAddressError": {
-    "message": "Этот токен является NFT. Добавьте на $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Подтвердить"
   },
@@ -2103,9 +2096,6 @@
     "message": "Счет $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Коллекционный актив успешно добавлен!"
-  },
   "newContact": {
     "message": "Новый контакт"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
+  },
+  "newNftAddedMessage": {
+    "message": "Коллекционный актив успешно добавлен!"
   },
   "newPassword": {
     "message": "Новый пароль (мин. 8 знаков)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Невозможно добавить NFT, так как сведения о владельце не совпадают. Убедитесь, что вы ввели правильную информацию."
+  },
+  "nftAddressError": {
+    "message": "Этот токен является NFT. Добавьте на $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Введите ид. коллекционного актива"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "Отправка коллекционных активов (ERC-721) сейчас не поддерживается",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Мы не можем проверить этот контракт. Убедитесь, что вы доверяете этому адресу."
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "Это URL-адрес в настоящее время используется сетью $1."
   },
-  "useCollectibleDetection": {
-    "message": "Автообнаружение NFT"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "Отображение медиафайлов и данных NFT может раскрыть ваш IP-адрес централизованным серверам. Сторонние API (например, OpenSea) используются для обнаружения NFT в вашем кошельке. При таком обнаружении адрес вашего счета становится известен этим службами. Оставьте этот параметр отключенным, если не хотите, чтобы приложение получало данные от этих служб."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Кроме того, знайте, что:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Метаданные NFT могут содержать мошеннические или фишинговые сайты."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Любой может эйрдропнуть NFT на ваш счет. Они могут включать оскорбительный контент, который может автоматически отображаться в вашем кошельке."
-  },
   "useDefault": {
     "message": "Использовать значения по умолчанию"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Мы создаем пакет счетов и запрашиваем Infura, чтобы оперативно отображать ваши остатки. Если вы отключите это, запрос будет отправляться только в отношении активных счетов. Некоторые dapps не будут работать, пока вы не подключите свой кошелек."
+  },
+  "useNftDetection": {
+    "message": "Автообнаружение NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "Отображение медиафайлов и данных NFT может раскрыть ваш IP-адрес централизованным серверам. Сторонние API (например, OpenSea) используются для обнаружения NFT в вашем кошельке. При таком обнаружении адрес вашего счета становится известен этим службами. Оставьте этот параметр отключенным, если не хотите, чтобы приложение получало данные от этих служб."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Кроме того, знайте, что:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Метаданные NFT могут содержать мошеннические или фишинговые сайты."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Любой может эйрдропнуть NFT на ваш счет. Они могут включать оскорбительный контент, который может автоматически отображаться в вашем кошельке."
   },
   "usePhishingDetection": {
     "message": "Использовать обнаружение фишинга"
