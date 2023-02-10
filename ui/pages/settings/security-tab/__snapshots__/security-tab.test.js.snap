@@ -406,7 +406,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
                   dir="auto"
                   type="text"
-                  value=""
+                  value="dweb.link"
                 />
               </div>
               

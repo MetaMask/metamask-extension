@@ -21,7 +21,7 @@ lavamoat/                            @MetaMask/supply-chain
 # empower our CI steps. ANY addition of orbs to our CircleCI config
 # should be brought to the attention of engineering leadership for
 # discussion
-.circleci/                           @MetaMask/library-admins @kumavis
+.circleci/                           @MetaMask/library-admins @kumavis @brad-decker
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
 # of contributors. Modifications to this file result in a modification of

@@ -27,7 +27,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 </Canvas>
 
 ```jsx
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 <Icon name={ICON_NAMES.ADD_SQUARE} />
 <Icon name={ICON_NAMES.BANK} />
@@ -55,7 +55,7 @@ Possible sizes include:
 
 ```jsx
 import { Size，TextVariant } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 <Icon name={ICON_NAMES.ADD_SQUARE} size={Size.XS} />
 <Icon name={ICON_NAMES.ADD_SQUARE} size={Size.SM} />
@@ -78,7 +78,7 @@ Use the `color` prop and the `COLORS` object from `./ui/helpers/constants/design
 
 ```jsx
 import { IconColor } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.inherit} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.iconDefault} />
@@ -87,14 +87,78 @@ import { Icon, ICON_NAMES } from '../../components/component-library';
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.overlayInverse} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.primaryDefault} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.primaryInverse} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.errorDefault />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.errorDefault} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.errorInverse} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.successDefault} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.successInverse} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.warningDefault} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.warningInverse} />
 <Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.infoDefault} />
-<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.infoInvers} />
+<Icon name={ICON_NAMES.ADD_SQUARE} color={IconColor.infoInverse} />
+```
+
+### Layout & Spacing
+
+The `Icon` component accepts all [Box](/docs/components-ui-box--default-story#props) component props including `marginTop`, `marginRight`, ` marginBottom`, `marginLeft` which you can use directly to adjust the space between icons and other components like `Text`
+
+Some examples of `Icon` with `Text` using [Box](/docs/components-ui-box--default-story#props) component props
+
+<Canvas>
+  <Story id="components-componentlibrary-icon--layout-and-spacing" />
+</Canvas>
+
+```jsx
+import {
+  AlignItems,
+  DISPLAY,
+  IconColor,
+  FLEX_DIRECTION,
+  BorderColor,
+  BorderRadius,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box/box';
+
+import { ICON_NAMES, Icon, Text } from '../../component-library';
+
+<Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Icon
+      name={ICON_NAMES.CHECK}
+      color={IconColor.successDefault}
+      marginRight={1}
+    />
+    <Text>Always allow you to opt-out via Settings</Text>
+  </Box>
+  <Box
+    as="button"
+    display={DISPLAY.FLEX}
+    alignItems={AlignItems.center}
+    borderRadius={BorderRadius.pill}
+    backgroundColor={BackgroundColor.primaryMuted}
+    marginRight="auto"
+  >
+    <Text color={Color.primaryDefault}>
+      0x79fAaFe7B6D5DB5D8c63FE88DFF0AF1Fe53358db
+    </Text>
+    <Icon
+      name={ICON_NAMES.COPY}
+      color={IconColor.primaryDefault}
+      marginLeft={1}
+    />
+  </Box>
+  <Box
+    as="button"
+    display={DISPLAY.FLEX}
+    alignItems={AlignItems.center}
+    padding={4}
+    borderColor={BorderColor.borderMuted}
+    backgroundColor={BackgroundColor.backgroundDefault}
+  >
+    <Icon name={ICON_NAMES.ADD} color={IconColor.iconDefault} marginRight={2} />
+    <Text>Create account</Text>
+  </Box>
+</Box>;
 ```
 
 ### Adding a new icon
