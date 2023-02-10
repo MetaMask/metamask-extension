@@ -62,6 +62,7 @@ import {
   IframeExecutionService,
   JsonSnapRegistry,
 } from '@metamask/snaps-controllers';
+import { DecentralizedSnapsRegistry } from './snaps/registry/decentralized';
 ///: END:ONLY_INCLUDE_IN
 
 import browser from 'webextension-polyfill';
@@ -781,7 +782,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
-      registry: new JsonSnapRegistry(),
+      registry: new DecentralizedSnapsRegistry(),
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
