@@ -2740,7 +2740,11 @@
   },
   "permission_accessNamedSnap": {
     "message": "Connect to $1.",
+<<<<<<< HEAD
     "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
+=======
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the Snap."
+>>>>>>> fc60da635 (updated localization message descriptions)
   },
   "permission_accessNetwork": {
     "message": "Access the internet.",

@@ -2721,7 +2721,11 @@
   },
   "permission_accessSnap": {
     "message": "$1 スナップに接続します。",
+<<<<<<< HEAD
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
+=======
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the Snap."
+>>>>>>> fc60da635 (updated localization message descriptions)
   },
   "permission_cronjob": {
     "message": "定期的なアクションのスケジュール設定と実行。",

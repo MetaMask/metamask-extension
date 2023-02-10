@@ -2720,8 +2720,13 @@
     "description": "The description of the `endowment:network-access` permission."
   },
   "permission_accessSnap": {
+<<<<<<< HEAD
     "message": "连接到$1 Snap。",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
+=======
+    "message": "连接$1的Snap。",
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the Snap."
+>>>>>>> fc60da635 (updated localization message descriptions)
   },
   "permission_cronjob": {
     "message": "规划并执行定期操作。",
