@@ -642,13 +642,6 @@
   "close": {
     "message": "बंद करें"
   },
-  "collectibleAddFailedMessage": {
-    "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
-  },
-  "collectibleAddressError": {
-    "message": "ये टोकन एक एनएफटी है। $1 पर जोड़ें",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "पुष्टि करें"
   },
@@ -2103,9 +2096,6 @@
     "message": "खाता $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "संग्रहणीय सफलतापूर्वक जोड़ा गया!"
-  },
   "newContact": {
     "message": "नया संपर्क"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
+  },
+  "newNftAddedMessage": {
+    "message": "संग्रहणीय सफलतापूर्वक जोड़ा गया!"
   },
   "newPassword": {
     "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "एनएफटी"
+  },
+  "nftAddFailedMessage": {
+    "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
+  },
+  "nftAddressError": {
+    "message": "ये टोकन एक एनएफटी है। $1 पर जोड़ें",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "संग्रहणीय ID दर्ज करें"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "वर्तमान में संग्रहणीय (ERC-721) टोकन भेजना समर्थित नहीं है",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "हम इस कॉन्ट्रैक्ट को सत्यापित नहीं कर सकते हैं। सुनिश्चित करें कि आपको इस एड्रेस पर भरोसा हो।"
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "यह URL वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
   },
-  "useCollectibleDetection": {
-    "message": "NFT को ऑटो-डिटेक्ट करें"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "NFT के मीडिया और डेटा प्रदर्शित करना आपके IP पते को केंद्रीकृत सर्वर के सामने उजागर कर सकता है। आपके वॉलेट में NFT को डिटेक्ट करने के लिए तीसरे-पक्ष API (जैसे OpenSea) का उपयोग किया जाता है। यह उन सेवाओं के साथ आपके अकाउंट के पते को उजागर करता है। इसे अक्षम कर दें यदि आप नहीं चाहते कि ऐप उन सेवाओं से डेटा पुल करे।"
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "इसके अतिरिक्त, ध्यान रखें कि:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "NFT मेटाडेटा में धोखाधड़ी या फिशिंग साइटों के लिंक हो सकते हैं।"
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "कोई भी आपके खाते में NFT को एयरड्रॉप कर सकता है। इसमें आपत्तिजनक सामग्री शामिल हो सकती है जो आपके वॉलेट में स्वचालित रूप से प्रदर्शित हो सकती है।"
-  },
   "useDefault": {
     "message": "डिफॉल्ट का उपयोग करें"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "हम खातों को बैच करते हैं और Infura से आपकी शेष राशि को प्रतिक्रियात्मक रूप से दिखाने के लिए पूछताछ करते हैं। यदि आप इसे बंद कर देते हैं, तो केवल सक्रिय खातों के बारे में पूछताछ की जाएगी। कुछ डैप तब तक काम नहीं करेंगे जब तक आप अपने वॉलेट को कनेक्ट नहीं करते।"
+  },
+  "useNftDetection": {
+    "message": "NFT को ऑटो-डिटेक्ट करें"
+  },
+  "useNftDetectionDescription": {
+    "message": "NFT के मीडिया और डेटा प्रदर्शित करना आपके IP पते को केंद्रीकृत सर्वर के सामने उजागर कर सकता है। आपके वॉलेट में NFT को डिटेक्ट करने के लिए तीसरे-पक्ष API (जैसे OpenSea) का उपयोग किया जाता है। यह उन सेवाओं के साथ आपके अकाउंट के पते को उजागर करता है। इसे अक्षम कर दें यदि आप नहीं चाहते कि ऐप उन सेवाओं से डेटा पुल करे।"
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "इसके अतिरिक्त, ध्यान रखें कि:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "NFT मेटाडेटा में धोखाधड़ी या फिशिंग साइटों के लिंक हो सकते हैं।"
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "कोई भी आपके खाते में NFT को एयरड्रॉप कर सकता है। इसमें आपत्तिजनक सामग्री शामिल हो सकती है जो आपके वॉलेट में स्वचालित रूप से प्रदर्शित हो सकती है।"
   },
   "usePhishingDetection": {
     "message": "फिशिंग डिटेक्शन का उपयोग करें"

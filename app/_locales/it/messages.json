@@ -508,13 +508,6 @@
   "close": {
     "message": "Chiudi"
   },
-  "collectibleAddFailedMessage": {
-    "message": "Non è possibile aggiungere questo NFT poiché i dettagli della proprietà non corrispondono. Assicurati di aver inserito le informazioni corrette."
-  },
-  "collectibleAddressError": {
-    "message": "Questo token è un NFT. Aggiungilo su $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Conferma"
   },
@@ -1332,6 +1325,13 @@
   "nextNonceWarning": {
     "message": "Numero di transazione deve essere maggiore di $1",
     "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nftAddFailedMessage": {
+    "message": "Non è possibile aggiungere questo NFT poiché i dettagli della proprietà non corrispondono. Assicurati di aver inserito le informazioni corrette."
+  },
+  "nftAddressError": {
+    "message": "Questo token è un NFT. Aggiungilo su $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "noAccountsFound": {
     "message": "Nessun account trovato per la ricerca effettuata"

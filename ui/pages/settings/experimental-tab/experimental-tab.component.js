@@ -95,18 +95,18 @@ export default class ExperimentalTab extends PureComponent {
         </div>
         <div ref={this.settingsRefs[1]} className="settings-page__content-row">
           <div className="settings-page__content-item">
-            <span>{t('useCollectibleDetection')}</span>
+            <span>{t('useNftDetection')}</span>
             <div className="settings-page__content-description">
               <Text color={TextColor.textAlternative}>
-                {t('useCollectibleDetectionDescription')}
+                {t('useNftDetectionDescription')}
               </Text>
               <ul className="settings-page__content-unordered-list">
-                <li>{t('useCollectibleDetectionDescriptionLine2')}</li>
-                <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
-                <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
+                <li>{t('useNftDetectionDescriptionLine2')}</li>
+                <li>{t('useNftDetectionDescriptionLine3')}</li>
+                <li>{t('useNftDetectionDescriptionLine4')}</li>
               </ul>
               <Text color={TextColor.textAlternative} paddingTop={4}>
-                {t('useCollectibleDetectionDescriptionLine5')}
+                {t('useNftDetectionDescriptionLine5')}
               </Text>
             </div>
           </div>
