@@ -642,13 +642,6 @@
   "close": {
     "message": "关闭"
   },
-  "collectibleAddFailedMessage": {
-    "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
-  },
-  "collectibleAddressError": {
-    "message": "此代币是NFT。另加上$1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "确认"
   },
@@ -2103,9 +2096,6 @@
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "收藏品已成功添加！"
-  },
   "newContact": {
     "message": "新联系人"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "成功添加了 “$1”！"
+  },
+  "newNftAddedMessage": {
+    "message": "收藏品已成功添加！"
   },
   "newPassword": {
     "message": "新密码（至少 8 个字符）"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "非同质化代币(NFT)"
+  },
+  "nftAddFailedMessage": {
+    "message": "由于所有权信息不匹配，无法添加NFT。请确保所输入的信息正确无误。"
+  },
+  "nftAddressError": {
+    "message": "此代币是NFT。另加上$1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "输入代币ID"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "当前不支持发送可收藏的 (ERC-721) 代币",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "我们无法验证此合约。请确保此地址是可靠的。"
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "此 URL 目前已被 $1 网络使用。"
   },
-  "useCollectibleDetection": {
-    "message": "自动检测 NFT"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "显示 NFT 媒体和数据可能会将您的 IP 地址暴露给集中式服务器。第三方 API（例如 OpenSea）用于在您的钱包中检测 NFT。这会通过这些服务暴露您的账户地址。如果您不希望该应用程序从这些服务中提取数据，请禁用此功能。"
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "此外，请注意："
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "NFT元数据可能包含欺诈或网络钓鱼网站的链接。"
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
-  },
   "useDefault": {
     "message": "使用默认值"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "我们会将账户分批并向 Infura 查询，以对应地显示您的余额。如果禁用此选项，将仅查询活动账户。必须连接钱包，否则有一些去中心化应用程序（dapp）将无法工作。"
+  },
+  "useNftDetection": {
+    "message": "自动检测 NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "显示 NFT 媒体和数据可能会将您的 IP 地址暴露给集中式服务器。第三方 API（例如 OpenSea）用于在您的钱包中检测 NFT。这会通过这些服务暴露您的账户地址。如果您不希望该应用程序从这些服务中提取数据，请禁用此功能。"
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "此外，请注意："
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "NFT元数据可能包含欺诈或网络钓鱼网站的链接。"
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "任何人都可以将NFT空投到您的账户。这可能包括或会自动显示在钱包中的冒犯性内容。"
   },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"

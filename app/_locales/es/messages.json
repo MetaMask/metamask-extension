@@ -642,13 +642,6 @@
   "close": {
     "message": "Cerrar"
   },
-  "collectibleAddFailedMessage": {
-    "message": "No se puede agregar NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
-  },
-  "collectibleAddressError": {
-    "message": "Este token es un NFT. Añadir a $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Confirmar"
   },
@@ -2103,9 +2096,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "¡El coleccionable fue añadido con éxito!"
-  },
   "newContact": {
     "message": "Contacto nuevo"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "¡\"$1\" se añadió con éxito!"
+  },
+  "newNftAddedMessage": {
+    "message": "¡El coleccionable fue añadido con éxito!"
   },
   "newPassword": {
     "message": "Contraseña nueva (mín. de 8 caracteres)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "No se puede agregar NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
+  },
+  "nftAddressError": {
+    "message": "Este token es un NFT. Añadir a $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Ingrese el id del token"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "El envío de tokens coleccionables (ERC-721) no se admite actualmente",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "No podemos verificar este contrato. Asegúrese de que confía en esta dirección."
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
-  "useCollectibleDetection": {
-    "message": "Detectar NFTs automáticamente"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Además, tenga en cuenta que:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Los metadatos de NFT pueden contener enlaces a sitios fraudulentos o de phishing."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Cualquiera puede enviar NFT a su cuenta. Esto puede incluir contenido ofensivo que podría mostrarse automáticamente en su billetera."
-  },
   "useDefault": {
     "message": "Uso por defecto"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Procesamos cuentas por lotes y consultamos a Infura para mostrar sus saldos de manera receptiva. Si desactiva esta opción, solo se consultarán las cuentas activas. Algunas dapps no funcionarán a menos que conecte su biletera."
+  },
+  "useNftDetection": {
+    "message": "Detectar NFTs automáticamente"
+  },
+  "useNftDetectionDescription": {
+    "message": "La visualización de medios y datos de NFT puede exponer su dirección IP a servidores centralizados. Las API de terceros (como OpenSea) se utilizan para detectar NFT en su cartera. Esto expone la dirección de su cuenta con esos servicios. Deje esta opción desactivada si no quiere que la aplicación extraiga datos de esos servicios."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Además, tenga en cuenta que:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Los metadatos de NFT pueden contener enlaces a sitios fraudulentos o de phishing."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Cualquiera puede enviar NFT a su cuenta. Esto puede incluir contenido ofensivo que podría mostrarse automáticamente en su billetera."
   },
   "usePhishingDetection": {
     "message": "Usar detección de phishing"
