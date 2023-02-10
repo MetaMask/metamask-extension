@@ -2636,7 +2636,7 @@
   },
   "permission_accessSnap": {
     "message": "Kết nối với Snap $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
     "message": "Lên lịch và thực hiện các hành động theo định kỳ.",

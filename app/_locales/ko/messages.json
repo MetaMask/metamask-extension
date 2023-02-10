@@ -2636,7 +2636,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 스냅에 연결합니다.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
     "message": "정기적 활동 예약 및 실행",
