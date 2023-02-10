@@ -75,7 +75,9 @@ export const DefaultStory = (args) => (
     justifyContent={JustifyContent.center}
     alignItems={AlignItems.center}
   >
-    <Popover {...args}>Example</Popover>
+    <Popover placement="bottom" {...args}>
+      Example
+    </Popover>
   </Box>
 );
 
