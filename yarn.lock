@@ -3620,16 +3620,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "@metamask/base-controller@npm:1.1.2"
-  dependencies:
-    "@metamask/controller-utils": ^2.0.0
-    immer: ^9.0.6
-  checksum: 54a114615924a755fe1a1e2d0b9fd7b9f982dee813a9908889e133aec8190f7d52a7903f830d66b020b487c1c4047b1a379ac07e9c80fec67688763bd8a713dd
-  languageName: node
-  linkType: hard
-
 "@metamask/base-controller@npm:~1.0.0":
   version: 1.0.0
   resolution: "@metamask/base-controller@npm:1.0.0"
@@ -3895,11 +3885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "@metamask/key-tree@npm:^6.2.1":
-=======
-"@metamask/key-tree@npm:^6.2.0, @metamask/key-tree@npm:^6.2.1":
->>>>>>> develop
   version: 6.2.1
   resolution: "@metamask/key-tree@npm:6.2.1"
   dependencies:
