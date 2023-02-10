@@ -642,13 +642,6 @@
   "close": {
     "message": "Κλείσιμο"
   },
-  "collectibleAddFailedMessage": {
-    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
-  },
-  "collectibleAddressError": {
-    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Επιβεβαίωση"
   },
@@ -2103,9 +2096,6 @@
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Το Collectible προστέθηκε με επιτυχία!"
-  },
   "newContact": {
     "message": "Νέα Επαφή"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
+  },
+  "newNftAddedMessage": {
+    "message": "Το Collectible προστέθηκε με επιτυχία!"
   },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
+  },
+  "nftAddressError": {
+    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Εισάγετε το συλλεκτικό αναγνωριστικό"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "Η αποστολή συλλεκτικών (ERC-721) δεν υποστηρίζεται προς το παρόν",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Δεν μπορούμε να επαληθεύσουμε αυτή τη σύμβαση. Βεβαιωθείτε ότι εμπιστεύεστε αυτήν τη διεύθυνση."
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "Αυτό το URL χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
   },
-  "useCollectibleDetection": {
-    "message": "Αυτόματη Ανίχνευση NFT"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "Η εμφάνιση πολυμέσων και δεδομένων NFT μπορεί να εκθέσει τη διεύθυνση IP σας σε κεντρικούς διακομιστές. Τα API τρίτων (όπως το OpenSea) χρησιμοποιούνται για την ανίχνευση NFT στο πορτοφόλι σας. Αυτό εκθέτει τη διεύθυνση του λογαριασμού σας με αυτές τις υπηρεσίες. Αφήστε το απενεργοποιημένο αν δεν θέλετε η εφαρμογή να τραβήξει δεδομένα από αυτές τις υπηρεσίες."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Επιπλέον, λάβετε υπόψη ότι:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Τα μεταδεδομένα των NFT ενδέχεται να περιέχουν συνδέσμους προς ιστοσελίδες απάτης ή ηλεκτρονικού «ψαρέματος»."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Οποιοσδήποτε μπορεί να στείλει NFT στον λογαριασμό σας. Αυτό μπορεί να περιλαμβάνει προσβλητικό περιεχόμενο που μπορεί να εμφανίζεται αυτόματα στο πορτοφόλι σας."
-  },
   "useDefault": {
     "message": "Χρήση προκαθορισμένου"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Συγκεντρώνουμε τους λογαριασμούς και ζητάμε από την Infura να εμφανίσει το υπόλοιπό σας. Αν το απενεργοποιήσετε αυτό, θα ζητηθούν μόνο οι ενεργοί λογαριασμοί. Ορισμένες αποκεντρωμένες εφαρμογές δεν θα λειτουργούν αν δεν συνδέσετε το πορτοφόλι σας."
+  },
+  "useNftDetection": {
+    "message": "Αυτόματη Ανίχνευση NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "Η εμφάνιση πολυμέσων και δεδομένων NFT μπορεί να εκθέσει τη διεύθυνση IP σας σε κεντρικούς διακομιστές. Τα API τρίτων (όπως το OpenSea) χρησιμοποιούνται για την ανίχνευση NFT στο πορτοφόλι σας. Αυτό εκθέτει τη διεύθυνση του λογαριασμού σας με αυτές τις υπηρεσίες. Αφήστε το απενεργοποιημένο αν δεν θέλετε η εφαρμογή να τραβήξει δεδομένα από αυτές τις υπηρεσίες."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Επιπλέον, λάβετε υπόψη ότι:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Τα μεταδεδομένα των NFT ενδέχεται να περιέχουν συνδέσμους προς ιστοσελίδες απάτης ή ηλεκτρονικού «ψαρέματος»."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Οποιοσδήποτε μπορεί να στείλει NFT στον λογαριασμό σας. Αυτό μπορεί να περιλαμβάνει προσβλητικό περιεχόμενο που μπορεί να εμφανίζεται αυτόματα στο πορτοφόλι σας."
   },
   "usePhishingDetection": {
     "message": "Χρήση Ανίχνευσης Απάτης Ηλεκτρονικού Ψαρέματος"

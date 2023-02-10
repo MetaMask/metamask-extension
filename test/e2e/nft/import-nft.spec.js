@@ -43,7 +43,7 @@ describe('Import NFT', function () {
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
         const newNftNotification = await driver.findElement({
-          text: 'Collectible was successfully added!',
+          text: 'NFT was successfully added!',
           tag: 'h6',
         });
         assert.equal(await newNftNotification.isDisplayed(), true);

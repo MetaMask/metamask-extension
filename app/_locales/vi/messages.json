@@ -642,13 +642,6 @@
   "close": {
     "message": "Đóng"
   },
-  "collectibleAddFailedMessage": {
-    "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
-  },
-  "collectibleAddressError": {
-    "message": "Token này là một NFT. Thêm vào $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
-  },
   "confirm": {
     "message": "Xác nhận"
   },
@@ -2103,9 +2096,6 @@
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Bộ sưu tập đã được thêm thành công!"
-  },
   "newContact": {
     "message": "Địa chỉ liên hệ mới"
   },
@@ -2120,6 +2110,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
+  },
+  "newNftAddedMessage": {
+    "message": "Bộ sưu tập đã được thêm thành công!"
   },
   "newPassword": {
     "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
@@ -2143,6 +2136,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
+  },
+  "nftAddressError": {
+    "message": "Token này là một NFT. Thêm vào $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Nhập mã token"
@@ -4175,7 +4175,7 @@
   },
   "unsendableAsset": {
     "message": "Hiện không hỗ trợ gửi token sưu tập (ERC-721)",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Chúng tôi không thể xác minh hợp đồng này. Hãy chắc chắn bạn tin tưởng địa chỉ này."
@@ -4192,21 +4192,6 @@
   "urlExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng URL này."
   },
-  "useCollectibleDetection": {
-    "message": "Tự động phát hiện NFT"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "Việc hiển thị nội dung đa phương tiện và dữ liệu NFT có thể làm lộ địa chỉ IP của bạn cho các máy chủ tập trung. API của bên thứ ba (như OpenSea) được dùng để phát hiện NFT trong ví của bạn. Điều này sẽ làm lộ địa chỉ tài khoản của bạn với các dịch vụ đó. Hãy tắt tính năng này nếu bạn không muốn ứng dụng lấy dữ liệu từ các dịch vụ đó."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Ngoài ra, hãy lưu ý rằng:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Siêu dữ liệu NFT có thể chứa liên kết dẫn đến các trang web lừa đảo."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Bất kỳ ai cũng có thể gửi NFT vào tài khoản của bạn. Điều này có thể khiến nội dung xúc phạm tự động hiển thị trong ví của bạn."
-  },
   "useDefault": {
     "message": "Sử dụng mặc định"
   },
@@ -4215,6 +4200,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Chúng tôi xử lý hàng loạt tài khoản và kiểm tra với Infura để hiển thị các số dư tài khoản của bạn một cách nhanh chóng. Nếu bạn tắt tính năng này, chỉ những tài khoản đang hoạt động mới được truy vấn. Một số dapp sẽ không hoạt động trừ khi bạn kết nối với ví của mình."
+  },
+  "useNftDetection": {
+    "message": "Tự động phát hiện NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "Việc hiển thị nội dung đa phương tiện và dữ liệu NFT có thể làm lộ địa chỉ IP của bạn cho các máy chủ tập trung. API của bên thứ ba (như OpenSea) được dùng để phát hiện NFT trong ví của bạn. Điều này sẽ làm lộ địa chỉ tài khoản của bạn với các dịch vụ đó. Hãy tắt tính năng này nếu bạn không muốn ứng dụng lấy dữ liệu từ các dịch vụ đó."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Ngoài ra, hãy lưu ý rằng:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Siêu dữ liệu NFT có thể chứa liên kết dẫn đến các trang web lừa đảo."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Bất kỳ ai cũng có thể gửi NFT vào tài khoản của bạn. Điều này có thể khiến nội dung xúc phạm tự động hiển thị trong ví của bạn."
   },
   "usePhishingDetection": {
     "message": "Sử dụng tính năng phát hiện lừa đảo"
