@@ -1,11 +1,15 @@
 import { cloneDeep } from 'lodash';
+import {
+  WALLET_SNAP_PERMISSION_KEY,
+  SnapCaveatType,
+} from '@metamask/rpc-methods';
 
 const version = 78;
 
 /**
- * Prior to this migration, snap <> dapp permissions were wildcards `wallet_snap_*`.
- * Now the permission has been changed to `wallet_snap` and the current `wallet_snap_*`
- * permissions will be added as caveats to the parent `wallet_snap` permission.
+ * Prior to this migration, snap <> dapp permissions were wildcards i.e. `wallet_snap_*`.
+ * Now the permission has been changed to `wallet_snap` and the current snap permissions
+ * that are under wildcards will be added as caveats to a parent `wallet_snap` permission.
  */
 export default {
   version,
@@ -29,21 +33,21 @@ function transformState(state) {
   for (const [subjectName, subject] of Object.entries(subjects)) {
     // we keep track of the latest permission's date and associated id
     // to assign to the wallet_snap permission
-    let date = 0;
+    let date = 1;
     let id;
     const { permissions } = subject;
     const updatedPermissions = { ...permissions };
     for (const [permissionName, permission] of Object.entries(permissions)) {
       if (permissionName.startsWith(snapPrefix)) {
-        if (!updatedPermissions.wallet_snap) {
-          updatedPermissions.wallet_snap = {
-            caveats: [{ type: 'snapIds', value: {} }],
+        if (!updatedPermissions[WALLET_SNAP_PERMISSION_KEY]) {
+          updatedPermissions[WALLET_SNAP_PERMISSION_KEY] = {
+            caveats: [{ type: SnapCaveatType.SnapIds, value: {} }],
             invoker: subjectName,
-            parentCapability: 'wallet_snap',
+            parentCapability: WALLET_SNAP_PERMISSION_KEY,
           };
         }
         const snapId = permissionName.slice(snapPrefix.length);
-        const caveat = updatedPermissions.wallet_snap.caveats[0];
+        const caveat = updatedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0];
         caveat.value[snapId] = {};
         if (permission.date > date) {
           date = permission.date;
@@ -52,9 +56,9 @@ function transformState(state) {
         delete updatedPermissions[permissionName];
       }
     }
-    if (updatedPermissions.wallet_snap) {
-      updatedPermissions.wallet_snap.date = date;
-      updatedPermissions.wallet_snap.id = id;
+    if (updatedPermissions[WALLET_SNAP_PERMISSION_KEY]) {
+      updatedPermissions[WALLET_SNAP_PERMISSION_KEY].date = date;
+      updatedPermissions[WALLET_SNAP_PERMISSION_KEY].id = id;
       subject.permissions = updatedPermissions;
     }
   }
