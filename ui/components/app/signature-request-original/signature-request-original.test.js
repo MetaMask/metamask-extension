@@ -49,6 +49,11 @@ const props = {
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
     type: MESSAGE_TYPE.ETH_SIGN,
+    securityProviderResponse: {
+      flagAsDangerous: undefined,
+      reason: 'Some reason...',
+      reason_header: 'Some reason header...',
+    },
   },
 };
 
@@ -114,5 +119,33 @@ describe('SignatureRequestOriginal', () => {
     const { getByText } = render(txData);
     expect(getByText('Message \\u202E test:')).toBeInTheDocument();
     expect(getByText('Hi, \\u202E Alice!')).toBeInTheDocument();
+  });
+
+  it('should render SecurityProviderBannerMessage component properly', () => {
+    render();
+    expect(screen.getByText('Request not verified')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('This is based on information from'),
+    ).toBeInTheDocument();
+  });
+
+  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is 0', () => {
+    props.txData.securityProviderResponse = {
+      flagAsDangerous: 0,
+    };
+
+    render();
+    expect(screen.queryByText('Request not verified')).toBeNull();
+    expect(
+      screen.queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeNull();
+    expect(screen.queryByText('This is based on information from')).toBeNull();
   });
 });

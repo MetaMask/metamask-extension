@@ -47,6 +47,13 @@ describe('Confirm Page Container Content', () => {
       disabled: true,
       origin: 'http://localhost:4200',
       hideTitle: false,
+      txData: {
+        securityProviderResponse: {
+          flagAsDangerous: undefined,
+          reason: 'Some reason...',
+          reason_header: 'Some reason header...',
+        },
+      },
     };
   });
 
@@ -125,5 +132,41 @@ describe('Confirm Page Container Content', () => {
     );
 
     expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
+  });
+
+  it('should render SecurityProviderBannerMessage component properly', () => {
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Request not verified')).toBeInTheDocument();
+    expect(
+      queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      queryByText('This is based on information from'),
+    ).toBeInTheDocument();
+  });
+
+  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is 0', () => {
+    props.txData.securityProviderResponse = {
+      flagAsDangerous: 0,
+    };
+
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Request not verified')).toBeNull();
+    expect(
+      queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeNull();
+    expect(queryByText('This is based on information from')).toBeNull();
   });
 });

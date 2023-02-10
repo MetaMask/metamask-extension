@@ -275,5 +275,87 @@ describe('Signature Request Component', () => {
 
       expect(getByText('Reject 2 requests')).toBeInTheDocument();
     });
+
+    it('should render SecurityProviderBannerMessage component properly', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      const { queryByText } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(queryByText('Request not verified')).toBeInTheDocument();
+      expect(
+        queryByText(
+          'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        queryByText('This is based on information from'),
+      ).toBeInTheDocument();
+    });
+
+    it('should not render SecurityProviderBannerMessage component when flagAsDangerous is 0', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      const { queryByText } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: 0,
+            },
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(queryByText('Request not verified')).toBeNull();
+      expect(
+        queryByText(
+          'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+        ),
+      ).toBeNull();
+      expect(queryByText('This is based on information from')).toBeNull();
+    });
   });
 });
