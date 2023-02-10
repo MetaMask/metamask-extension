@@ -5,13 +5,6 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@adraffy/ens-normalize@npm:1.8.9":
-  version: 1.8.9
-  resolution: "@adraffy/ens-normalize@npm:1.8.9"
-  checksum: 17791dce03a4320a88c377136c48d0c16ac3e5b07aad321d028c8342fcf821b95c0082cd269cddd488472d1273e8157ae101f2e4e7f9e6be42667ed7ab9614d9
-  languageName: node
-  linkType: hard
-
 "@agoric/babel-standalone@npm:^7.9.5":
   version: 7.9.5
   resolution: "@agoric/babel-standalone@npm:7.9.5"
@@ -4374,7 +4367,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/secp256k1@npm:1.7.1, @noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.7.0":
+"@noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.7.0":
   version: 1.7.1
   resolution: "@noble/secp256k1@npm:1.7.1"
   checksum: d2301f1f7690368d8409a3152450458f27e54df47e3f917292de3de82c298770890c2de7c967d237eff9c95b70af485389a9695f73eb05a43e2bd562d18b18cb
@@ -8760,13 +8753,6 @@ __metadata:
   version: 3.0.0
   resolution: "aes-js@npm:3.0.0"
   checksum: 251e26d533cd1a915b44896b17d5ed68c24a02484cfdd2e74ec700a309267db96651ea4eb657bf20aac32a3baa61f6e34edf8e2fec2de440a655da9942d334b8
-  languageName: node
-  linkType: hard
-
-"aes-js@npm:4.0.0-beta.3":
-  version: 4.0.0-beta.3
-  resolution: "aes-js@npm:4.0.0-beta.3"
-  checksum: 2336feee1e4a7722f5b6ede192b0a22881fd6f9310b36ec10e62b6f015f9fddf812c1d8a61b9743ab710811fd0b0d7aad844178f11e7cb1439bbc14246c6c93e
   languageName: node
   linkType: hard
 
@@ -15973,20 +15959,6 @@ __metadata:
     "@ethersproject/web": 5.7.1
     "@ethersproject/wordlists": 5.7.0
   checksum: b7c08cf3e257185a7946117dbbf764433b7ba0e77c27298dec6088b3bc871aff711462b0621930c56880ff0a7ceb8b1d3a361ffa259f93377b48e34107f62553
-  languageName: node
-  linkType: hard
-
-"ethers@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "ethers@npm:6.0.2"
-  dependencies:
-    "@adraffy/ens-normalize": 1.8.9
-    "@noble/hashes": 1.1.2
-    "@noble/secp256k1": 1.7.1
-    aes-js: 4.0.0-beta.3
-    tslib: 2.4.0
-    ws: 8.5.0
-  checksum: 7e012ca49ccc326c1ff63f8d4a00cc71f95ae69167adb24ab73148f386714866479eda429ea2330ea93241cf6afbd3a086d43a00a75b483f99fb8ef597676a85
   languageName: node
   linkType: hard
 
@@ -24347,7 +24319,6 @@ __metadata:
     ethereumjs-abi: ^0.6.4
     ethereumjs-util: ^7.0.10
     ethereumjs-wallet: ^0.6.4
-    ethers: ^6.0.2
     ethjs: ^0.4.0
     ethjs-contract: ^0.2.3
     ethjs-query: ^0.3.4
@@ -33366,13 +33337,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.4.0":
-  version: 2.4.0
-  resolution: "tslib@npm:2.4.0"
-  checksum: 8c4aa6a3c5a754bf76aefc38026134180c053b7bd2f81338cb5e5ebf96fefa0f417bff221592bf801077f5bf990562f6264fecbc42cd3309b33872cb6fc3b113
-  languageName: node
-  linkType: hard
-
 "tslib@npm:^1.8.1, tslib@npm:^1.9.0, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
@@ -35414,21 +35378,6 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 3a990b32ed08c72070d5e8913e14dfcd831919205be52a3ff0b4cdd998c8d554f167c9df3841605cde8b11d607768cacab3e823c58c96a5c08c987e093eb767a
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.5.0":
-  version: 8.5.0
-  resolution: "ws@npm:8.5.0"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ^5.0.2
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 76f2f90e40344bf18fd544194e7067812fb1372b2a37865678d8f12afe4b478ff2ebc0c7c0aff82cd5e6b66fc43d889eec0f1865c2365d8f7a66d92da7744a77
   languageName: node
   linkType: hard
 

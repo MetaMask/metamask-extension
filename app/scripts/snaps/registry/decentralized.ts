@@ -2,7 +2,8 @@
 import { SnapsRegistryRequest, SnapsRegistry, SnapsRegistryResult, SnapsRegistryInfo, SnapsRegistryStatus } from '@metamask/snaps-controllers';
 import { SnapId } from '@metamask/snaps-utils';
 import { GOERLI_RPC_URL } from '../../../../shared/constants/network';
-import { ethers } from 'ethers';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 
 const SNAPS_REGISTRY_ADDRESS = '0xD9a7DE6F9D009c1B99bc7A2C438C93417bb0CdE7';
 const SNAPS_REGISTRY_NETWORK_URL = GOERLI_RPC_URL;
@@ -118,10 +119,10 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
     }
   }
 
-  public async getSnapsRegistryContract(): Promise<ethers.Contract | null> {
+  public async getSnapsRegistryContract(): Promise<Contract | null> {
     try {
       // Connect to a Decentralized Network to access the Snaps Registry
-      const provider = new ethers.providers.JsonRpcProvider(this.#registryContractInfo.networkRpcUrl);
+      const provider = new JsonRpcProvider(this.#registryContractInfo.networkRpcUrl);
       console.log('log: Connection to the configured Decentralized Network 🚀🚀🚀 ', this.#registryContractInfo.networkRpcUrl);
 
       // Verify the existance of the snaps registry
@@ -131,7 +132,7 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
       // Create the contract instance if the registry is available
       if (isRegistryAvailable) {
         console.log('log: Connection to the Snaps Registry Smart Contract 🚀🚀🚀');
-        return new ethers.Contract(this.#registryContractInfo.address, SNAPS_REGISTRY_ABI, provider);
+        return new Contract(this.#registryContractInfo.address, SNAPS_REGISTRY_ABI, provider);
       } else {
         return null;
       }
