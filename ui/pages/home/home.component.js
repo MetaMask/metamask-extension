@@ -27,13 +27,9 @@ import {
   TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
-  BLOCK_SIZES,
-  Size,
-  TextVariant,
   TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
-import { ButtonLink, ICON_NAMES } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -51,7 +47,6 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import Tooltip from '../../components/ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -110,7 +105,6 @@ export default class Home extends PureComponent {
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
     showPortfolioTooltip: PropTypes.bool.isRequired,
-    hidePortfolioTooltip: PropTypes.func.isRequired,
     portfolioTooltipWasShownInThisSession: PropTypes.bool.isRequired,
     setPortfolioTooltipWasShownInThisSession: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
@@ -619,13 +613,11 @@ export default class Home extends PureComponent {
       showWhatsNewPopup,
       hideWhatsNewPopup,
       showPortfolioTooltip,
-      hidePortfolioTooltip,
       portfolioTooltipWasShownInThisSession,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
-      shouldShowSeedPhraseReminder,
       onboardedInThisUISession,
       newCustomNetworkAdded,
     } = this.props;
@@ -673,74 +665,6 @@ export default class Home extends PureComponent {
               defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
-              subHeader={
-                <Tooltip
-                  position="bottom"
-                  open={
-                    !process.env.IN_TEST &&
-                    !shouldShowSeedPhraseReminder &&
-                    !showRecoveryPhraseReminder &&
-                    showPortfolioTooltip
-                  }
-                  interactive
-                  theme="home__subheader-link--tooltip"
-                  html={
-                    <div>
-                      <div className="home__subheader-link--tooltip-content-header">
-                        <div className="home__subheader-link--tooltip-content-header-text">
-                          {t('new')}
-                        </div>
-                        <button
-                          className="home__subheader-link--tooltip-content-header-button"
-                          onClick={() => {
-                            hidePortfolioTooltip();
-                          }}
-                        >
-                          <i className="fa fa-times" />
-                        </button>
-                      </div>
-                      <div>
-                        {t('tryOur')}&nbsp;
-                        <span className="home__subheader-link--tooltip-content-text-bold">
-                          {t('betaPortfolioSite')}
-                        </span>
-                        &nbsp;{t('keepTapsOnTokens')}
-                      </div>
-                    </div>
-                  }
-                >
-                  <ButtonLink
-                    className="home__subheader-link"
-                    data-testid="home__portfolio-site"
-                    onClick={async () => {
-                      const portfolioUrl = process.env.PORTFOLIO_URL;
-                      global.platform.openTab({
-                        url: `${portfolioUrl}?metamaskEntry=ext`,
-                      });
-                      this.context.trackEvent(
-                        {
-                          category: EVENT.CATEGORIES.HOME,
-                          event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
-                          properties: {
-                            url: portfolioUrl,
-                          },
-                        },
-                        {
-                          contextPropsIntoEventProperties: [
-                            CONTEXT_PROPS.PAGE_TITLE,
-                          ],
-                        },
-                      );
-                    }}
-                    iconName={ICON_NAMES.DIAGRAM}
-                    width={BLOCK_SIZES.FULL}
-                    size={Size.MD}
-                    textProps={{ variant: TextVariant.bodySm }}
-                  >
-                    {t('portfolioSite')}
-                  </ButtonLink>
-                </Tooltip>
-              }
             >
               <Tab
                 activeClassName="home__tab--active"

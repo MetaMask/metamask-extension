@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
   },
-  "betaPortfolioSite": {
-    "message": "beta portföy sitesi"
-  },
   "betaTerms": {
     "message": "Beta Kullanım koşulları"
   },
@@ -1717,9 +1714,6 @@
     "message": "JSON Dosyası",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "hesaplar ve ağlar arasında tokenlerinizin ve NFT'lerinizin sekmelerini korumak için."
-  },
   "keystone": {
     "message": "Ana İlke"
   },
@@ -2714,9 +2708,6 @@
   },
   "popularCustomNetworks": {
     "message": "Popüler özel ağlar"
-  },
-  "portfolioSite": {
-    "message": "Portföy sitesi"
   },
   "preferredLedgerConnectionType": {
     "message": "Tercih Edilen Kayıt Defteri bağlantı türü",
@@ -4089,9 +4080,6 @@
   },
   "tryAgain": {
     "message": "Tekrar dene"
-  },
-  "tryOur": {
-    "message": "Dene:"
   },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"

@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "Phiên Bản MetaMask Beta"
   },
-  "betaPortfolioSite": {
-    "message": "trang web danh mục đầu tư beta"
-  },
   "betaTerms": {
     "message": "Điều khoản Sử dụng Beta"
   },
@@ -1717,9 +1714,6 @@
     "message": "Tập tin JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "để giữ lại thẻ trên token và NFT của bạn trong các tài khoản và mạng."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2708,6 @@
   },
   "popularCustomNetworks": {
     "message": "Mạng tùy chỉnh phổ biến"
-  },
-  "portfolioSite": {
-    "message": "Trang web danh mục đầu tư"
   },
   "preferredLedgerConnectionType": {
     "message": "Dạng kết nối Ledger ưu tiên",
@@ -4089,9 +4080,6 @@
   },
   "tryAgain": {
     "message": "Thử lại"
-  },
-  "tryOur": {
-    "message": "Thử ngay"
   },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"

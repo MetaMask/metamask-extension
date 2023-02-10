@@ -303,15 +303,6 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets whether the portfolio site tooltip should be shown on the home page
-   *
-   * @param showPortfolioTooltip
-   */
-  setShowPortfolioTooltip(showPortfolioTooltip) {
-    this.store.updateState({ showPortfolioTooltip });
-  }
-
-  /**
    * Sets whether the beta notification heading on the home page
    *
    * @param showBetaHeader

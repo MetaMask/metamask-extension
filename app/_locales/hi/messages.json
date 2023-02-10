@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "MetaMask बीटा संस्करण"
   },
-  "betaPortfolioSite": {
-    "message": "बीटा पोर्टफोलियो साइट"
-  },
   "betaTerms": {
     "message": "बीटा के उपयोग की शर्तें"
   },
@@ -1717,9 +1714,6 @@
     "message": "JSON फाइल",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "खातों और नेटवर्क पर अपने टोकन और एनएफटी पर नज़र रखने के लिए।"
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2708,6 @@
   },
   "popularCustomNetworks": {
     "message": "लोकप्रिय कस्टम नेटवर्क"
-  },
-  "portfolioSite": {
-    "message": "पोर्टफोलियो साइट"
   },
   "preferredLedgerConnectionType": {
     "message": "वरीयता वाले लेजर कनेक्शन के प्रकार",
@@ -4089,9 +4080,6 @@
   },
   "tryAgain": {
     "message": "पुनः प्रयास करें"
-  },
-  "tryOur": {
-    "message": "हमारा आजमाएं"
   },
   "turnOnTokenDetection": {
     "message": "उन्नत टोकन डिटेक्शन चालू करें"
