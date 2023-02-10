@@ -28,13 +28,6 @@ workflows:
             branches:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
-      - trigger-beta-build:
-          requires:
-            - prep-deps
-          filters:
-            branches:
-              only:
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
       - test-deps-audit:
           requires:
@@ -53,6 +46,9 @@ workflows:
           requires:
             - prep-deps
       - prep-build:
+          requires:
+            - prep-deps
+      - trigger-beta-build:
           requires:
             - prep-deps
       - prep-build-desktop:
@@ -197,6 +193,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - trigger-beta-build
             - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
@@ -207,7 +204,6 @@ workflows:
             - user-actions-benchmark
             - stats-module-load-init
             - all-tests-pass
-            - trigger-beta-build
       - job-publish-release:
           filters:
             branches:
@@ -251,46 +247,6 @@ jobs:
           name: Create GitHub Pull Request for version
           command: .circleci/scripts/release-create-release-pr.sh
 
-  trigger-beta-build:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:dist
-                command: yarn build --build-type beta dist
-      - when:
-          condition:
-            matches:
-              pattern: /^master$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:prod
-                command: yarn build --build-type beta prod
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move beta build to 'dist-beta' to avoid conflict with production build
-          command: mv ./dist ./dist-beta
-      - run:
-          name: Move beta zips to 'builds-beta' to avoid conflict with production build
-          command: mv ./builds ./builds-beta
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-beta
-            - builds-beta
-          
   prep-deps:
     executor: node-browsers
     steps:
@@ -389,6 +345,46 @@ jobs:
           paths:
             - dist
             - builds
+
+  trigger-beta-build:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type beta dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type beta prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move beta build to 'dist-beta' to avoid conflict with production build
+          command: mv ./dist ./dist-beta
+      - run:
+          name: Move beta zips to 'builds-beta' to avoid conflict with production build
+          command: mv ./builds ./builds-beta
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-beta
+            - builds-beta
 
   prep-build-desktop:
     executor: node-browsers-medium-plus
@@ -1272,6 +1268,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: Move beta build to dist
+          command: mv ./dist-beta ./dist
       - run:
           name: Move beta zips to builds
           command: mv ./builds-beta ./builds
