@@ -1166,12 +1166,6 @@
   "reset": {
     "message": "重置"
   },
-  "resetAccount": {
-    "message": "重置帳戶"
-  },
-  "resetAccountDescription": {
-    "message": "重置帳戶將清除您的交易紀錄。這將不會改變您的帳戶餘額或要求您重新輸入助憶詞。"
-  },
   "restore": {
     "message": "還原"
   },

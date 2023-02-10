@@ -626,12 +626,6 @@
   "reset": {
     "message": "Resetează"
   },
-  "resetAccount": {
-    "message": "Resetare cont"
-  },
-  "resetAccountDescription": {
-    "message": "Resetarea contului va duce la ștergerea istoricului tranzacțiilor dvs."
-  },
   "restore": {
     "message": "Restabilește"
   },

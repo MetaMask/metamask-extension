@@ -2,13 +2,13 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Reset account', function () {
-  // ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // When user get stuck with pending transactions, one can reset the account by clicking the 'Reset account' //
-  // button in settings, advanced tab. This functionality will clear all the send transactions history.       //
-  // Note that the receive transactions history will be kept and it only only affects the current network.    //
-  // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-  it('User can reset account via the advanced setting tab, ', async function () {
+describe('Clear account activity', function () {
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // When user get stuck with pending transactions, one can reset the account by clicking the 'Clear activity tab data' //
+  // button in settings, advanced tab. This functionality will clear all the send transactions history.                 //
+  // Note that the receive transactions history will be kept and it only only affects the current network.              //
+  // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  it('User can clear account activity via the advanced setting tab, ', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -43,15 +43,18 @@ describe('Reset account', function () {
           { timeout: 10000 },
         );
 
-        // Reset account
+        // Clear activity and nonce data
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({
           css: '.tab-bar__tab__content__title',
           text: 'Advanced',
         });
-        await driver.clickElement({ text: 'Reset account', tag: 'button' });
-        await driver.clickElement({ text: 'Reset', tag: 'button' });
+        await driver.clickElement({
+          text: 'Clear activity tab data',
+          tag: 'button',
+        });
+        await driver.clickElement({ text: 'Clear', tag: 'button' });
         await driver.navigate();
 
         // Check send transaction history is cleared and receive transaction history is kept
