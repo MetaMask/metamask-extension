@@ -47,7 +47,8 @@ function transformState(state) {
           };
         }
         const snapId = permissionName.slice(snapPrefix.length);
-        const caveat = updatedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0];
+        const caveat =
+          updatedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0];
         caveat.value[snapId] = {};
         if (permission.date > date) {
           date = permission.date;
