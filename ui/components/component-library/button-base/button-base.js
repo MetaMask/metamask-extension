@@ -7,15 +7,15 @@ import { Icon, ICON_NAMES } from '../icon';
 import { Text } from '../text';
 
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  JUSTIFY_CONTENT,
-  TEXT_COLORS,
-  TEXT,
-  SIZES,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+  Size,
   FLEX_DIRECTION,
-  BORDER_RADIUS,
-  COLORS,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -39,8 +39,8 @@ export const ButtonBase = ({
   return (
     <Box
       as={Tag}
-      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-      color={COLORS.TEXT_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      color={TextColor.textDefault}
       href={href}
       paddingLeft={4}
       paddingRight={4}
@@ -57,32 +57,32 @@ export const ButtonBase = ({
       )}
       disabled={disabled}
       display={DISPLAY.INLINE_FLEX}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      alignItems={ALIGN_ITEMS.CENTER}
-      borderRadius={BORDER_RADIUS.PILL}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
       {...props}
     >
       <Text
         as="span"
         className="mm-button-base__content"
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
         flexDirection={
           iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
         }
         gap={2}
-        variant={TEXT.BODY_MD}
-        color={TEXT_COLORS.INHERIT}
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
         {...textProps}
       >
-        {iconName && <Icon name={iconName} size={SIZES.SM} {...iconProps} />}
+        {iconName && <Icon name={iconName} size={Size.SM} {...iconProps} />}
         {children}
       </Text>
       {loading && (
         <Icon
           className="mm-button-base__icon-loading"
           name={ICON_NAMES.LOADING}
-          size={SIZES.MD}
+          size={Size.MD}
           {...iconLoadingProps}
         />
       )}
@@ -143,7 +143,7 @@ ButtonBase.propTypes = {
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
+   * Possible values could be 'Size.SM'(32px), 'Size.MD'(40px), 'Size.LG'(48px),
    */
   size: PropTypes.oneOfType([
     PropTypes.shape(BUTTON_BASE_SIZES),

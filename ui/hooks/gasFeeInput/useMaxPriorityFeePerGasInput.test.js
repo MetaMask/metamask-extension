@@ -102,4 +102,15 @@ describe('useMaxPriorityFeePerGasInput', () => {
     });
     expect(result.current.maxPriorityFeePerGas).toBe(100);
   });
+
+  it('returns maxPriorityFeePerGas from transaction if it is 0', () => {
+    const { result } = renderUseMaxPriorityFeePerGasInputHook({
+      transaction: {
+        txParams: {
+          maxPriorityFeePerGas: '0x0',
+        },
+      },
+    });
+    expect(result.current.maxPriorityFeePerGas).toBe(0);
+  });
 });

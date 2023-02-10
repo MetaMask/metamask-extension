@@ -5,30 +5,30 @@ import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
 import { ICON_NAMES, Icon } from '../icon';
 import {
-  COLORS,
-  BORDER_COLORS,
-  SIZES,
+  BorderColor,
+  Size,
   DISPLAY,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  JustifyContent,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { AVATAR_FAVICON_SIZES } from './avatar-favicon.constants';
 
 export const AvatarFavicon = ({
-  size = SIZES.MD,
+  size = Size.MD,
   src,
   name = 'avatar-favicon',
   className,
   fallbackIconProps,
-  borderColor = BORDER_COLORS.TRANSPARENT,
+  borderColor = BorderColor.transparent,
   ...props
 }) => {
   return (
     <AvatarBase
       size={size}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.CENTER}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
       className={classnames('mm-avatar-favicon', className)}
       {...{ borderColor, ...props }}
     >
@@ -41,7 +41,7 @@ export const AvatarFavicon = ({
       ) : (
         <Icon
           name={ICON_NAMES.GLOBAL}
-          color={COLORS.ICON_DEFAULT}
+          color={IconColor.iconDefault}
           size={size}
           {...fallbackIconProps}
         />
@@ -65,8 +65,8 @@ AvatarFavicon.propTypes = {
   fallbackIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * The size of the AvatarFavicon
-   * Possible values could be 'SIZES.XS' 16px, 'SIZES.SM' 24px, 'SIZES.MD' 32px, 'SIZES.LG' 40px, 'SIZES.XL' 48px
-   * Defaults to SIZES.MD
+   * Possible values could be 'Size.XS' 16px, 'Size.SM' 24px, 'Size.MD' 32px, 'Size.LG' 40px, 'Size.XL' 48px
+   * Defaults to Size.MD
    */
   size: PropTypes.oneOf(Object.values(AVATAR_FAVICON_SIZES)),
   /**

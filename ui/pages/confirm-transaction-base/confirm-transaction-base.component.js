@@ -40,9 +40,9 @@ import LedgerInstructionField from '../../components/app/ledger-instruction-fiel
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 import Typography from '../../components/ui/typography/typography';
 import {
-  COLORS,
+  TextColor,
   FONT_STYLE,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
@@ -93,6 +93,7 @@ export default class ConfirmTransactionBase extends Component {
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
+    toAccounts: PropTypes.object,
     toAddress: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
@@ -103,6 +104,7 @@ export default class ConfirmTransactionBase extends Component {
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
     customGas: PropTypes.object,
+    addToAddressBookIfNew: PropTypes.func,
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -535,9 +537,9 @@ export default class ConfirmTransactionBase extends Component {
             <>
               {txData.dappSuggestedGasFees ? (
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontStyle={FONT_STYLE.ITALIC}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  color={TextColor.textAlternative}
                 >
                   {t('transactionDetailDappGasMoreInfo')}
                 </Typography>
@@ -803,10 +805,16 @@ export default class ConfirmTransactionBase extends Component {
       maxPriorityFeePerGas,
       baseFeePerGas,
       methodData,
+      addToAddressBookIfNew,
+      toAccounts,
+      toAddress,
     } = this.props;
     const { submitting } = this.state;
     const { name } = methodData;
 
+    if (txData.type === TransactionType.simpleSend) {
+      addToAddressBookIfNew(toAddress, toAccounts);
+    }
     if (submitting) {
       return;
     }

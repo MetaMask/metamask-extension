@@ -13,7 +13,7 @@ import {
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
 import ColorIndicator from '../../ui/color-indicator';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { IconColor, Size } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -180,8 +180,8 @@ class NetworkDropdown extends Component {
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.ICON_MUTED}
-            size={SIZES.LG}
+            color={opts.isLocalHost ? 'localhost' : IconColor.iconMuted}
+            size={Size.LG}
             type={ColorIndicator.TYPES.FILLED}
           />
           <span
@@ -249,7 +249,7 @@ class NetworkDropdown extends Component {
         )}
         <ColorIndicator
           color={network}
-          size={SIZES.LG}
+          size={Size.LG}
           type={ColorIndicator.TYPES.FILLED}
         />
         <span

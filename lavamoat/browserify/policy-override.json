@@ -49,6 +49,16 @@
         "crypto": true
       }
     },
+    "eth-lattice-keyring>gridplus-sdk": {
+      "packages": {
+        "eth-lattice-keyring>gridplus-sdk>uuid": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "ethereumjs-wallet>randombytes": {
       "globals": {
         "crypto.getRandomValues": true
