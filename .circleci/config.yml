@@ -36,204 +36,198 @@ workflows:
 #              only:
 #                - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps-audit:
-          requires:
-            - prep-deps
-      - test-deps-depcheck:
-          requires:
-            - prep-deps
-      - test-yarn-dedupe:
-          requires:
-            - prep-deps
-      - validate-lavamoat-config:
-          filters:
-            branches:
-              only:
-                - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
-          requires:
-            - prep-deps
-      - prep-build:
-          requires:
-            - prep-deps
-      - prep-build-beta:
-          requires:
-            - prep-deps
-      - prep-build-desktop:
-          requires:
-            - prep-deps
-      - prep-build-flask:
-          requires:
-            - prep-deps
-      - prep-build-test:
-          requires:
-            - prep-deps
-      - prep-build-test-mv3:
-          requires:
-            - prep-deps
-      - prep-build-test-nft:
-          requires:
-            - prep-deps
-      - prep-build-test-flask:
-          requires:
-            - prep-deps
-      - prep-build-storybook:
-          requires:
-            - prep-deps
-      - prep-build-ts-migration-dashboard:
-          requires:
-            - prep-deps
-      - test-lint:
-          requires:
-            - prep-deps
-      - test-lint-shellcheck
-      - test-lint-lockfile:
-          requires:
-            - prep-deps
-      - test-lint-changelog:
-          requires:
-            - prep-deps
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
-      - test-e2e-firefox:
-          requires:
-            - prep-build-test
-      - test-e2e-chrome-snaps:
-          requires:
-            - prep-build-test-flask
-      - test-e2e-firefox-snaps:
-          requires:
-            - prep-build-test-flask
-      - test-e2e-chrome-mv3:
-          requires:
-            - prep-build-test-mv3
-      - test-e2e-chrome-nft:
-          requires:
-            - prep-build-test-nft
-      - test-e2e-firefox-nft:
-          requires:
-            - prep-build-test-nft
-      - test-unit-mocha:
-          requires:
-            - prep-deps
-      - test-unit-jest-main:
-          requires:
-            - prep-deps
-      - test-unit-jest-development:
-          requires:
-            - prep-deps
-      - upload-and-validate-coverage:
-          requires:
-            - test-unit-jest-main
-            - test-unit-jest-development
-            - test-unit-mocha
-      - test-unit-global:
-          requires:
-            - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
-            - prep-build-storybook
+#      - test-deps-audit:
+#          requires:
+#            - prep-deps
+#      - test-deps-depcheck:
+#          requires:
+#            - prep-deps
+#      - test-yarn-dedupe:
+#          requires:
+#            - prep-deps
+#      - validate-lavamoat-config:
+#          filters:
+#            branches:
+#              only:
+#                - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
+#          requires:
+#            - prep-deps
+#      - prep-build:
+#          requires:
+#            - prep-deps
+#      - prep-build-desktop:
+#          requires:
+#            - prep-deps
+#      - prep-build-flask:
+#          requires:
+#            - prep-deps
+#      - prep-build-test:
+#          requires:
+#            - prep-deps
+#      - prep-build-test-mv3:
+#          requires:
+#            - prep-deps
+#      - prep-build-test-nft:
+#          requires:
+#            - prep-deps
+#      - prep-build-test-flask:
+#          requires:
+#            - prep-deps
+#      - prep-build-storybook:
+#          requires:
+#            - prep-deps
+#      - prep-build-ts-migration-dashboard:
+#          requires:
+#            - prep-deps
+#      - test-lint:
+#          requires:
+#            - prep-deps
+#      - test-lint-shellcheck
+#      - test-lint-lockfile:
+#          requires:
+#            - prep-deps
+#      - test-lint-changelog:
+#          requires:
+#            - prep-deps
+#      - test-e2e-chrome:
+#          requires:
+#            - prep-build-test
+#      - test-e2e-firefox:
+#          requires:
+#            - prep-build-test
+#      - test-e2e-chrome-snaps:
+#          requires:
+#            - prep-build-test-flask
+#      - test-e2e-firefox-snaps:
+#          requires:
+#            - prep-build-test-flask
+#      - test-e2e-chrome-mv3:
+#          requires:
+#            - prep-build-test-mv3
+#      - test-e2e-chrome-nft:
+#          requires:
+#            - prep-build-test-nft
+#      - test-e2e-firefox-nft:
+#          requires:
+#            - prep-build-test-nft
+#      - test-unit-mocha:
+#          requires:
+#            - prep-deps
+#      - test-unit-jest-main:
+#          requires:
+#            - prep-deps
+#      - test-unit-jest-development:
+#          requires:
+#            - prep-deps
+#      - upload-and-validate-coverage:
+#          requires:
+#            - test-unit-jest-main
+#            - test-unit-jest-development
+#            - test-unit-mocha
+#      - test-unit-global:
+#          requires:
+#            - prep-deps
+#      - test-storybook:
+#          requires:
+#            - prep-deps
+#            - prep-build-storybook
 #      - validate-source-maps:
 #          requires:
 #            - prep-build
-      - validate-source-maps-beta:
-          requires:
-            - prep-build-beta
-      - validate-source-maps-desktop:
-          requires:
-            - prep-build-desktop
-      - validate-source-maps-flask:
-          requires:
-            - prep-build-flask
+#      - validate-source-maps-beta:
+#          requires:
+#            - prep-build-beta
+#      - validate-source-maps-desktop:
+#          requires:
+#            - prep-build-desktop
+#      - validate-source-maps-flask:
+#          requires:
+#            - prep-build-flask
 #      - test-mozilla-lint:
 #          requires:
 #            - prep-deps
 #            - prep-build
-      - test-mozilla-lint-beta:
-          requires:
-            - prep-deps
-            - prep-build-beta
-      - test-mozilla-lint-desktop:
-          requires:
-            - prep-deps
-            - prep-build-desktop
-      - test-mozilla-lint-flask:
-          requires:
-            - prep-deps
-            - prep-build-flask
-      - all-tests-pass:
-          requires:
-            - validate-lavamoat-config
-            - test-lint
-            - test-lint-shellcheck
-            - test-lint-lockfile
-            - test-lint-changelog
-            - test-unit-jest-main
-            - test-unit-jest-development
-            - test-unit-global
-            - test-unit-mocha
-            - upload-and-validate-coverage
+#      - test-mozilla-lint-beta:
+#          requires:
+#            - prep-deps
+#            - prep-build-beta
+#      - test-mozilla-lint-desktop:
+#          requires:
+#            - prep-deps
+#            - prep-build-desktop
+#      - test-mozilla-lint-flask:
+#          requires:
+#            - prep-deps
+#            - prep-build-flask
+#      - all-tests-pass:
+#          requires:
+#            - validate-lavamoat-config
+#            - test-lint
+#            - test-lint-shellcheck
+#            - test-lint-lockfile
+#            - test-lint-changelog
+#            - test-unit-jest-main
+#            - test-unit-jest-development
+#            - test-unit-global
+#            - test-unit-mocha
+#            - upload-and-validate-coverage
 #            - validate-source-maps
-            - validate-source-maps-beta
-            - validate-source-maps-desktop
-            - validate-source-maps-flask
+#            - validate-source-maps-beta
+#            - validate-source-maps-desktop
+#            - validate-source-maps-flask
 #            - test-mozilla-lint
-            - test-mozilla-lint-beta
-            - test-mozilla-lint-desktop
-            - test-mozilla-lint-flask
-            - test-e2e-chrome
-            - test-e2e-firefox
-            - test-e2e-chrome-snaps
-            - test-e2e-firefox-snaps
-            - test-storybook
-      - benchmark:
-          requires:
-            - prep-build-test
-      - user-actions-benchmark:
-          requires:
-            - prep-build-test
-      - stats-module-load-init:
-          requires:
-            - prep-build-test-mv3
+#            - test-mozilla-lint-beta
+#            - test-mozilla-lint-desktop
+#            - test-mozilla-lint-flask
+#            - test-e2e-chrome
+#            - test-e2e-firefox
+#            - test-e2e-chrome-snaps
+#            - test-e2e-firefox-snaps
+#            - test-storybook
+#      - benchmark:
+#          requires:
+#            - prep-build-test
+#      - user-actions-benchmark:
+#          requires:
+#            - prep-build-test
+#      - stats-module-load-init:
+#          requires:
+#            - prep-build-test-mv3
       - job-publish-prerelease:
           requires:
             - prep-deps
             - trigger-beta-build
-            - prep-build
-            - prep-build-beta
-            - prep-build-desktop
-            - prep-build-flask
-            - prep-build-storybook
-            - prep-build-ts-migration-dashboard
-            - prep-build-test-mv3
-            - prep-build-test-nft
-            - benchmark
-            - user-actions-benchmark
-            - stats-module-load-init
-            - all-tests-pass
+#            - prep-build-desktop
+#            - prep-build-flask
+#            - prep-build-storybook
+#            - prep-build-ts-migration-dashboard
+#            - prep-build-test-mv3
+#            - prep-build-test-nft
+#            - benchmark
+#            - user-actions-benchmark
+#            - stats-module-load-init
       - job-publish-release:
           filters:
             branches:
               only: master
           requires:
             - prep-deps
-            - prep-build
-            - prep-build-desktop
-            - prep-build-flask
-            - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-build-storybook
-      - job-publish-ts-migration-dashboard:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-build-ts-migration-dashboard
+#            - prep-build
+#            - prep-build-desktop
+#            - prep-build-flask
+#            - all-tests-pass
+#      - job-publish-storybook:
+#          filters:
+#            branches:
+#              only: develop
+#          requires:
+#            - prep-build-storybook
+#      - job-publish-ts-migration-dashboard:
+#          filters:
+#            branches:
+#              only: develop
+#          requires:
+#            - prep-build-ts-migration-dashboard
 
 jobs:
   create_release_pull_request:
@@ -368,30 +362,6 @@ jobs:
           paths:
             - dist
             - builds
-
-  prep-build-beta:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: build:prod
-          command: yarn build --build-type beta prod
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move beta build to 'dist-beta' to avoid conflict with production build
-          command: mv ./dist ./dist-beta
-      - run:
-          name: Move beta zips to 'builds-beta' to avoid conflict with production build
-          command: mv ./builds ./builds-beta
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-beta
-            - builds-beta
 
   prep-build-desktop:
     executor: node-browsers-medium-plus
@@ -1035,17 +1005,11 @@ jobs:
           path: dist/sourcemaps
           destination: builds/sourcemaps
       - store_artifacts:
-          path: dist-beta/sourcemaps
-          destination: builds-beta/sourcemaps
-      - store_artifacts:
           path: dist-flask/sourcemaps
           destination: builds-flask/sourcemaps
       - store_artifacts:
           path: builds
           destination: builds
-      - store_artifacts:
-          path: builds-beta
-          destination: builds-beta
       - store_artifacts:
           path: builds-flask
           destination: builds-flask

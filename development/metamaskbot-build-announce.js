@@ -47,17 +47,16 @@ async function start() {
     .join(', ');
   const betaBuildLinks = platforms
     .map((platform) => {
-      // builds-beta/metamask-chrome-10.20.1-beta.0.zip
       const url = `${BUILD_LINK_BASE}/builds-beta/metamask-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
-  const flaskBuildLinks = platforms
-    .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}.zip`;
-      return `<a href="${url}">${platform}</a>`;
-    })
-    .join(', ');
+  // const flaskBuildLinks = platforms
+  //   .map((platform) => {
+  //     const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}.zip`;
+  //     return `<a href="${url}">${platform}</a>`;
+  //   })
+  //   .join(', ');
 
   // links to bundle browser builds
   const bundles = {};
@@ -93,28 +92,28 @@ async function start() {
   const bundleSizeDataUrl =
     'https://raw.githubusercontent.com/MetaMask/extension_bundlesize_stats/main/stats/bundle_size_data.json';
 
-  const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
-  const coverageLink = `<a href="${coverageUrl}">Report</a>`;
+  // const coverageUrl = `${BUILD_LINK_BASE}/coverage/index.html`;
+  // const coverageLink = `<a href="${coverageUrl}">Report</a>`;
 
-  const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
-  const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
+  // const storybookUrl = `${BUILD_LINK_BASE}/storybook/index.html`;
+  // const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
-  const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
-  const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
+  // const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
+  // const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
 
   // links to bundle browser builds
-  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
-  const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
-  const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
-  const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
-  const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
-  const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
-  const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
-  const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
-  const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
-  const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
-  const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
-  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
+  // const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
+  // const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
+  // const moduleInitStatsBackgroundUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/background/index.html`;
+  // const moduleInitStatsBackgroundLink = `<a href="${moduleInitStatsBackgroundUrl}">Background Module Init Stats</a>`;
+  // const moduleInitStatsUIUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/initialisation/ui/index.html`;
+  // const moduleInitStatsUILink = `<a href="${moduleInitStatsUIUrl}">UI Init Stats</a>`;
+  // const moduleLoadStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/load_time/index.html`;
+  // const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
+  // const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
+  // const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
+  // const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
+  // const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -122,16 +121,16 @@ async function start() {
   const contentRows = [
     `builds: ${buildLinks}`,
     `builds (beta): ${betaBuildLinks}`,
-    `builds (flask): ${flaskBuildLinks}`,
-    `build viz: ${depVizLink}`,
-    `mv3: ${moduleInitStatsBackgroundLink}`,
-    `mv3: ${moduleInitStatsUILink}`,
-    `mv3: ${moduleLoadStatsLink}`,
-    `mv3: ${bundleSizeStatsLink}`,
-    `mv2: ${userActionsStatsLink}`,
-    `code coverage: ${coverageLink}`,
-    `storybook: ${storybookLink}`,
-    `typescript migration: ${tsMigrationDashboardLink}`,
+    // `builds (flask): ${flaskBuildLinks}`,
+    // `build viz: ${depVizLink}`,
+    // `mv3: ${moduleInitStatsBackgroundLink}`,
+    // `mv3: ${moduleInitStatsUILink}`,
+    // `mv3: ${moduleLoadStatsLink}`,
+    // `mv3: ${bundleSizeStatsLink}`,
+    // `mv2: ${userActionsStatsLink}`,
+    // `code coverage: ${coverageLink}`,
+    // `storybook: ${storybookLink}`,
+    // `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
