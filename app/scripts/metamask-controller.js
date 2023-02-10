@@ -888,7 +888,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getNetworkState: () => this.networkController.networkStore.getState(),
+      getNetworkState: () => this.networkController.store.getState().network,
       onNetworkStateChange: (listener) =>
         this.networkController.networkStore.subscribe(listener),
       getCurrentChainId: () =>
@@ -1083,9 +1083,7 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           });
         },
-        getNetwork: this.networkController.getNetworkState.bind(
-          this.networkController,
-        ),
+        getNetwork: () => this.networkController.store.getState().network,
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
