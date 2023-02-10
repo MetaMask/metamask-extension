@@ -13,7 +13,6 @@ import SendFooter from '.';
 
 const mockResetSendState = jest.fn();
 const mockSendTransaction = jest.fn();
-const mockAddtoAddressBook = jest.fn();
 const mockCancelTx = jest.fn();
 
 jest.mock('../../../ducks/send/index.js', () => ({
@@ -23,7 +22,6 @@ jest.mock('../../../ducks/send/index.js', () => ({
 }));
 
 jest.mock('../../../store/actions.ts', () => ({
-  addToAddressBook: () => mockAddtoAddressBook,
   cancelTx: () => mockCancelTx,
 }));
 
@@ -108,7 +106,6 @@ describe('SendFooter Component', () => {
       fireEvent.click(nextText);
 
       await waitFor(() => {
-        expect(mockAddtoAddressBook).toHaveBeenCalled();
         expect(mockSendTransaction).toHaveBeenCalled();
         expect(props.history.push).toHaveBeenCalledWith(
           CONFIRM_TRANSACTION_ROUTE,

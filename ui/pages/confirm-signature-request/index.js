@@ -35,7 +35,7 @@ const signatureSelect = (txData) => {
     return SignatureRequest;
   }
 
-  if (process.env.SIWE_V1 && siwe?.isSIWEMessage) {
+  if (siwe?.isSIWEMessage) {
     return SignatureRequestSIWE;
   }
 
