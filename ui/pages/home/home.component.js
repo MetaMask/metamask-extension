@@ -104,9 +104,6 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
-    showPortfolioTooltip: PropTypes.bool.isRequired,
-    portfolioTooltipWasShownInThisSession: PropTypes.bool.isRequired,
-    setPortfolioTooltipWasShownInThisSession: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
@@ -210,12 +207,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    const { setPortfolioTooltipWasShownInThisSession, showPortfolioTooltip } =
-      this.props;
     this.checkStatusAndNavigate();
-    if (showPortfolioTooltip) {
-      setPortfolioTooltipWasShownInThisSession();
-    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -612,8 +604,6 @@ export default class Home extends PureComponent {
       announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
-      showPortfolioTooltip,
-      portfolioTooltipWasShownInThisSession,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
@@ -633,8 +623,6 @@ export default class Home extends PureComponent {
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       announcementsToShow &&
       showWhatsNewPopup &&
-      !showPortfolioTooltip &&
-      !portfolioTooltipWasShownInThisSession &&
       Object.keys(newCustomNetworkAdded).length === 0;
     return (
       <div className="main-container">
