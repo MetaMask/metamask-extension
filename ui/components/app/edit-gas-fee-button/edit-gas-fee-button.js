@@ -14,7 +14,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();
@@ -73,7 +73,11 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
           </span>
         )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
-        <Icon name={ICON_NAMES.ARROW_RIGHT} color={Color.primaryDefault} />
+        <Icon
+          name={ICON_NAMES.ARROW_RIGHT}
+          color={Color.primaryDefault}
+          size={ICON_SIZES.XS}
+        />
       </button>
       {estimateUsed === 'custom' && (
         <button onClick={openAdvancedGasFeeModal}>{t('edit')}</button>

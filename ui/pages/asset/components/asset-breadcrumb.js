@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../components/component-library';
 
 const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
   return (
@@ -8,7 +12,8 @@ const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
       <Icon
         name={ICON_NAMES.ARROW_LEFT}
         data-testid="asset__back"
-        padding="0 10 0 2"
+        marginInlineEnd={3}
+        size={ICON_SIZES.XS}
       />
       <span>{accountName}</span>
       &nbsp;/&nbsp;

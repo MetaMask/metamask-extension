@@ -9,7 +9,11 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -232,7 +236,11 @@ export default class PermissionConnect extends Component {
             className="permissions-connect__back"
             onClick={() => this.goBack()}
           >
-            <Icon name={ICON_NAMES.ARROW_RIGHT} marginInlineEnd={2} />
+            <Icon
+              name={ICON_NAMES.ARROW_RIGHT}
+              marginInlineEnd={1}
+              size={ICON_SIZES.XS}
+            />
             {t('back')}
           </div>
         ) : null}
