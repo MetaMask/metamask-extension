@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import {getDefaultLedgerTransportType} from "../../../shared/lib/hardware-utils";
+import { getDefaultLedgerTransportType } from '../../../shared/lib/hardware-utils';
 
 const version = 66;
 

@@ -2,7 +2,6 @@ import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { getDefaultLedgerTransportType } from '../../../shared/lib/hardware-utils';
 import { NETWORK_EVENTS } from './network';
