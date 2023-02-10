@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "Sıfırla"
   },
-  "resetAccount": {
-    "message": "Hesabı sıfırla"
-  },
-  "resetAccountDescription": {
-    "message": "Hesabınızı sıfırlamak işlem geçmişinizi temizler. Bu işlem, hesaplarınızdaki bakiyeyi değiştirmez veya Gizli Kurtarma İfadenizi yeniden girmenizi gerektirmez."
-  },
   "resetWallet": {
     "message": "Cüzdanı sıfırla"
   },
