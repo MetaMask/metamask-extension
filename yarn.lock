@@ -3538,20 +3538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^1.0.0, @metamask/approval-controller@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/approval-controller@npm:1.0.1"
-  dependencies:
-    "@metamask/base-controller": ^1.1.1
-    "@metamask/controller-utils": ^1.0.0
-    eth-rpc-errors: ^4.0.0
-    immer: ^9.0.6
-    nanoid: ^3.1.31
-  checksum: 83b54946b948b0f97a5453328421666c8852b975bf045f6b23416579f1201feb390dc09941620fa4e480f76cd9a7b4f6e8f2c3e940ddd79f62491a81befe8c7c
-  languageName: node
-  linkType: hard
-
-"@metamask/approval-controller@npm:^1.1.0":
+"@metamask/approval-controller@npm:^1.0.0, @metamask/approval-controller@npm:^1.0.1, @metamask/approval-controller@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/approval-controller@npm:1.1.0"
   dependencies:
@@ -4250,17 +4237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-registry@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/snaps-registry@npm:1.0.0"
-  dependencies:
-    "@metamask/utils": ^3.4.0
-    superstruct: ^1.0.3
-  checksum: 6a127d4d2db30e6f3966f4f82f3810a22a79db62c84b5db2b95d189dd36fe59aa5de59f01203095c9f7f07a44c1bf049c0fc046931269327d0693d1274f8f154
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-registry@npm:^1.1.0":
+"@metamask/snaps-registry@npm:^1.0.0, @metamask/snaps-registry@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/snaps-registry@npm:1.1.0"
   dependencies:
