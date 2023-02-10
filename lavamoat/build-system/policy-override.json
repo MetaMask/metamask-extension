@@ -351,6 +351,11 @@
         "chokidar>fsevents": true
       }
     },
+    "eslint>ajv": {
+      "packages": {
+        "eslint>ajv>@metmask/snaps-utils>fast-json-stable-stringify": true
+      }
+    },
     "gulp-watch>chokidar": {
       "builtin": {
         "events.EventEmitter": true,
