@@ -1,3 +1,4 @@
+import { ReactFragment } from 'react';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
@@ -85,6 +86,7 @@ import { TransactionMeta } from '../../app/scripts/controllers/incoming-transact
 import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
+import { getLoadingMessage } from '../pages/create-account/import-account';
 import * as actionConstants from './actionConstants';
 import {
   generateActionId,
@@ -96,7 +98,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { getLoadingMessage } from '../pages/create-account/import-account';
 
 export function goHome() {
   return {
@@ -419,9 +420,6 @@ export function importNewAccount(
       newState = await submitRequestToBackground<
         MetaMaskReduxState['metamask']
       >('getState');
-    } catch (err) {
-      console.log('actions displayWarning', err);
-      return { warningMessage: err.message };
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -2715,8 +2713,8 @@ export function qrCodeDetected(
 }
 
 export function showLoadingIndication(
-  message?: string,
-): PayloadAction<string | undefined> {
+  message?: string | ReactFragment,
+): PayloadAction<string | ReactFragment | undefined> {
   return {
     type: actionConstants.SHOW_LOADING,
     payload: message,

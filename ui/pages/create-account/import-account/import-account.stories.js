@@ -1,7 +1,6 @@
 import React from 'react';
-import NewAccountImportForm from '.';
 import Box from '../../../components/ui/box';
-import { _setBackgroundConnection } from '../../../store/action-queue';
+import NewAccountImportForm from '.';
 
 export default {
   title: 'Pages/CreateAccount/ImportAccount',

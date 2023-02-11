@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import FormField from '../../../components/ui/form-field';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
+
+PrivateKeyImportView.propTypes = {
+  importAccountFunc: PropTypes.func.isRequired,
+};
 
 export default function PrivateKeyImportView({ importAccountFunc }) {
   const t = useI18nContext();

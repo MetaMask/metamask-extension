@@ -5,7 +5,7 @@ import Box from '../../components/ui/box';
 import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
-  NEW_ACCOUNT_ROUTE
+  NEW_ACCOUNT_ROUTE,
 } from '../../helpers/constants/routes';
 import ConnectHardwareForm from './connect-hardware';
 import NewAccountImportForm from './import-account';

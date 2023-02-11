@@ -34,10 +34,8 @@ export default function NewAccountImportForm() {
 
   function importAccount(strategy, importArgs) {
     dispatch(actions.importNewAccount(strategy, importArgs))
-      .then(({ selectedAddress, warningMessage }) => {
-        if (warningMessage) {
-          translateWarning(warningMessage);
-        } else if (selectedAddress) {
+      .then(({ selectedAddress }) => {
+        if (selectedAddress) {
           trackImportEvent(strategy, true);
           dispatch(actions.hideWarning());
           navigateToMostRecentOverviewPage();
@@ -50,7 +48,7 @@ export default function NewAccountImportForm() {
   }
 
   function trackImportEvent(strategy, wasSuccessful) {
-    const account_import_type =
+    const accountImportType =
       strategy === 'Private Key'
         ? EVENT.ACCOUNT_IMPORT_TYPES.PRIVATE_KEY
         : EVENT.ACCOUNT_IMPORT_TYPES.JSON;
@@ -64,14 +62,17 @@ export default function NewAccountImportForm() {
       event,
       properties: {
         account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
-        account_import_type,
+        account_import_type: accountImportType,
       },
     });
   }
 
   /**
-   * @param {string} message an Error/Warning message caught in importAccount()
-   * This function receives a message that is a string like 't(importAccountErrorNotHexadecimal)'
+   * @param {string} message - an Error/Warning message caught in importAccount()
+   * This function receives a message that is a string like:
+   * `t('importAccountErrorNotHexadecimal')`
+   * `t('importAccountErrorIsSRP')`
+   * `t('importAccountErrorNotAValidPrivateKey')`
    * and feeds it through useI18nContext
    */
   function translateWarning(message) {
@@ -80,9 +81,9 @@ export default function NewAccountImportForm() {
       dispatch(actions.displayWarning(message));
     } else {
       // This is an error message in a form like
-      // `t(importAccountErrorNotHexadecimal)`
-      // so slice off the first 2 chars and last char, and feed to i18n
-      dispatch(actions.displayWarning(t(message.slice(2, -1))));
+      // `t('importAccountErrorNotHexadecimal')`
+      // so slice off the first 3 chars and last 2 chars, and feed to i18n
+      dispatch(actions.displayWarning(t(message.slice(3, -2))));
     }
   }
 
@@ -92,6 +93,8 @@ export default function NewAccountImportForm() {
         return <PrivateKeyImportView importAccountFunc={importAccount} />;
       case menuItems[1]:
         return <JsonImportView importAccountFunc={importAccount} />;
+      default:
+        return null;
     }
   }
 
@@ -104,7 +107,7 @@ export default function NewAccountImportForm() {
       >
         <Text variant={TextVariant.headingLg}>{t('importAccount')}</Text>
         <Text variant={TextVariant.bodySm}>
-          {t('importAccountMsg') + ' '}
+          {t('importAccountMsg')}{' '}
           <ButtonLink size={Size.inherit} onClick={moreInfoLink}>
             {t('here')}
           </ButtonLink>
