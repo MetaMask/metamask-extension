@@ -1,3 +1,4 @@
+import { ICON_NAMES } from '../../components/component-library';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -223,7 +224,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     route: `${ALERTS_ROUTE}#unconnected-account`,
-    icon: 'fa fa-bell',
+    iconName: ICON_NAMES.NOTIFICATION,
   },
   {
     tabMessage: (t) => t('alerts'),

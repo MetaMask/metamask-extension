@@ -39,8 +39,14 @@ import IconImport from '../../ui/icon/icon-import';
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-import { Icon, ICON_NAMES } from '../../component-library';
 import { Color } from '../../../helpers/constants/design-system';
+import {
+  Icon,
+  ICON_NAMES,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ICON_SIZES,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -426,7 +432,7 @@ export default class AccountMenu extends Component {
               }}
               icon={
                 <div className="account-menu__notifications">
-                  <i className="fa fa-bell fa-xl" />
+                  <Icon name={ICON_NAMES.NOTIFICATION} size={ICON_SIZES.LG} />
                   {unreadNotificationsCount > 0 && (
                     <div className="account-menu__notifications__count">
                       {unreadNotificationsCount}
