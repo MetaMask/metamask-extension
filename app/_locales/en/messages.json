@@ -1002,6 +1002,12 @@
   "description": {
     "message": "Description"
   },
+  "desktopDisableButton": {
+    "message": "Disable Desktop App"
+  },
+  "desktopEnableButton": {
+    "message": "Enable Desktop App"
+  },
   "details": {
     "message": "Details"
   },
