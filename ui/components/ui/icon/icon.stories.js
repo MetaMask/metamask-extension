@@ -6,7 +6,6 @@ import {
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../component-library';
 import Card from '../card';
 import Typography from '../typography';
 import Box from '../box';
