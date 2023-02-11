@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
-import Typography from '../../ui/typography';
+import { Text } from '../../component-library'
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
   BorderRadius,
   BackgroundColor,
@@ -94,7 +94,7 @@ const AddNetwork = () => {
             <img src="images/info-fox.svg" />
           </Box>
           <Box>
-            <Typography variant={TypographyVariant.H7}>
+            <Text variant={TextVariant.bodySm}>
               {t('youHaveAddedAll', [
                 <a
                   key="link"
@@ -117,15 +117,15 @@ const AddNetwork = () => {
                       : history.push(ADD_NETWORK_ROUTE);
                   }}
                 >
-                  <Typography
-                    variant={TypographyVariant.H7}
+                  <Text
+                    variant={TextVariant.bodySm}
                     color={TextColor.infoDefault}
                   >
                     {t('addMoreNetworks')}.
-                  </Typography>
+                  </Text>
                 </Button>,
               ])}
-            </Typography>
+            </Text>
           </Box>
         </Box>
       ) : (
@@ -140,19 +140,19 @@ const AddNetwork = () => {
               paddingBottom={2}
               className="add-network__header"
             >
-              <Typography
-                variant={TypographyVariant.H4}
+              <Text
+                variant={TextVariant.headingSm}
                 color={TextColor.textMuted}
               >
                 {t('networks')}
-              </Typography>
+              </Text>
               <span className="add-network__header__subtitle">{'  >  '}</span>
-              <Typography
-                variant={TypographyVariant.H4}
+              <Text
+                variant={TextVariant.headingSm}
                 color={TextColor.textDefault}
               >
                 {t('addANetwork')}
-              </Typography>
+              </Text>
             </Box>
           )}
           <Box
@@ -160,22 +160,22 @@ const AddNetwork = () => {
             marginBottom={1}
             className="add-network__main-container"
           >
-            <Typography
-              variant={TypographyVariant.H6}
+            <Text
+              variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
               margin={0}
               marginTop={4}
             >
               {t('addFromAListOfPopularNetworks')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H7}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
               color={TextColor.textMuted}
               marginTop={4}
               marginBottom={3}
             >
               {t('popularCustomNetworks')}
-            </Typography>
+            </Text>
             {notFrequentRpcNetworks.map((item, index) => (
               <Box
                 key={index}
@@ -196,13 +196,13 @@ const AddNetwork = () => {
                     </IconBorder>
                   </Box>
                   <Box marginLeft={2}>
-                    <Typography
-                      variant={TypographyVariant.H7}
+                    <Text
+                      variant={TextVariant.bodySm}
                       color={TextColor.textDefault}
                       fontWeight={FONT_WEIGHT.BOLD}
                     >
                       {item.nickname}
-                    </Typography>
+                    </Text>
                   </Box>
                 </Box>
                 <Box
@@ -273,12 +273,12 @@ const AddNetwork = () => {
                   : history.push(ADD_NETWORK_ROUTE);
               }}
             >
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.H6}
                 color={TextColor.primaryDefault}
               >
                 {t('addANetworkManually')}
-              </Typography>
+              </Text>
             </Button>
           </Box>
         </Box>
