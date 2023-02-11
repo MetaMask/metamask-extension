@@ -2,7 +2,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase } from '../text-field-base';
+import { TextField } from '../text-field';
 
 import { Label } from './label';
 
@@ -31,7 +31,7 @@ describe('label', () => {
     const { getByText, getByRole } = render(
       <>
         <Label htmlFor="input">label</Label>
-        <TextFieldBase id="input" />
+        <TextField id="input" />
       </>,
     );
     const input = getByRole('textbox');
@@ -46,7 +46,7 @@ describe('label', () => {
       <>
         <Label>
           Label text
-          <TextFieldBase />
+          <TextField />
         </Label>
       </>,
     );
