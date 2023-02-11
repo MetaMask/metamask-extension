@@ -1,7 +1,7 @@
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import { bufferToHex, isValidPrivate, toBuffer } from 'ethereumjs-util';
 import Wallet from 'ethereumjs-wallet';
 import importers from 'ethereumjs-wallet/thirdparty';
-import { ethers } from 'ethers';
 import log from 'loglevel';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from '../lib/util';
@@ -20,30 +20,30 @@ const accountImporter = {
       }
 
       // Check if the user has entered an SRP by mistake instead of a private key
-      if (ethers.utils.isValidMnemonic(privateKey.trim())){
-        throw new Error('t(importAccountErrorIsSRP)');
+      if (isValidMnemonic(privateKey.trim())) {
+        throw new Error(`t('importAccountErrorIsSRP')`);
       }
 
-      privateKey = privateKey.replace(/\s+/g, ''); // Remove all whitespace
+      const trimmedPrivateKey = privateKey.replace(/\s+/gu, ''); // Remove all whitespace
 
-      const prefixed = addHexPrefix(privateKey);
+      const prefixedPrivateKey = addHexPrefix(trimmedPrivateKey);
       let buffer;
       try {
-        buffer = toBuffer(prefixed);
+        buffer = toBuffer(prefixedPrivateKey);
       } catch (e) {
-        throw new Error('t(importAccountErrorNotHexadecimal)');
+        throw new Error(`t('importAccountErrorNotHexadecimal')`);
       }
 
       try {
         if (!isValidPrivate(buffer)) {
-          throw new Error('t(importAccountErrorNotAValidPrivateKey)');
+          throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
         }
       } catch (e) {
-        throw new Error('t(importAccountErrorNotAValidPrivateKey)');
+        throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
       }
 
-      const stripped = stripHexPrefix(prefixed);
-      return stripped;
+      const strippedPrivateKey = stripHexPrefix(prefixedPrivateKey);
+      return strippedPrivateKey;
     },
     'JSON File': (input, password) => {
       let wallet;

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -11,6 +12,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
+
+BottomButtons.propTypes = {
+  importAccountFunc: PropTypes.func.isRequired,
+  isPrimaryDisabled: PropTypes.bool.isRequired,
+};
 
 export default function BottomButtons({
   importAccountFunc,
@@ -29,7 +35,7 @@ export default function BottomButtons({
         width={BLOCK_SIZES.FIVE_TWELFTHS}
         onClick={() => {
           dispatch(actions.hideWarning());
-          history.back();
+          window.history.back();
         }}
       >
         {t('cancel')}

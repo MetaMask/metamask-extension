@@ -1,16 +1,22 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import FileInput from 'react-simple-file-input';
-import { moreInfoLink } from '.';
 import { ButtonLink, Text } from '../../../components/component-library';
-import FormField from '../../../components/ui/form-field/';
+import FormField from '../../../components/ui/form-field';
 import {
   Size,
   TextVariant,
   TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { displayWarning } from '../../../store/actions';
 import BottomButtons from './bottom-buttons';
+import { moreInfoLink } from '.';
+
+JsonImportSubview.propTypes = {
+  importAccountFunc: PropTypes.func.isRequired,
+};
 
 export default function JsonImportSubview({ importAccountFunc }) {
   const t = useI18nContext();
@@ -28,7 +34,11 @@ export default function JsonImportSubview({ importAccountFunc }) {
   }
 
   function _importAccountFunc() {
-    importAccountFunc('JSON File', [fileContents, password]);
+    if (isPrimaryDisabled) {
+      displayWarning(t('needImportFile'));
+    } else {
+      importAccountFunc('JSON File', [fileContents, password]);
+    }
   }
 
   return (
