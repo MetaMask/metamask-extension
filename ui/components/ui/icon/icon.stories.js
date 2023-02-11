@@ -6,7 +6,6 @@ import {
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../component-library';
 import Card from '../card';
 import Typography from '../typography';
 import Box from '../box';
@@ -121,7 +120,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconCaretRight {...args} />} />
         <IconItem Component={<IconCaretDown {...args} />} />
         <IconItem Component={<IconCaretUp {...args} />} />
-        <IconItem Component={<Icon name={ICON_NAMES.CHECK} {...args} />} />
         <IconItem Component={<IconPlus {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
         <IconItem Component={<IconConnect {...args} />} />

@@ -33,7 +33,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
 import IconConnect from '../../ui/icon/icon-connect';
 import IconCog from '../../ui/icon/icon-cog';
 import IconPlus from '../../ui/icon/icon-plus';
