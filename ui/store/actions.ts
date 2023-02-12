@@ -518,11 +518,13 @@ export function forgetDevice(
   };
 }
 
-export async function isDeviceAccessible(deviceName, hdPath) {
-  const status = await submitRequestToBackground('isDeviceAccessible', [deviceName, hdPath]);  
+export async function isDeviceAccessible(deviceName: string, hdPath: string) {
+  const status = await submitRequestToBackground('isDeviceAccessible', [
+    deviceName,
+    hdPath,
+  ]);
   return status;
 }
-
 
 // TODO: Define an Account Type for the return type of this method and anywhere
 // else dealing with accounts.

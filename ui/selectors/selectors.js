@@ -235,24 +235,30 @@ export function getHardwareWalletType(state) {
 }
 
 /**
- * Returns the hardware wallet device for the current wallet.
- * 
+ * Returns the hardware wallet device for the current wallet
+ *
  * @param {object} state
  * @returns {string | undefined}
  */
 export function getHardwareWalletDevice(state) {
   const type = getHardwareWalletType(state);
-
-
-const idx = Object.fromEntries(Object.entries(HardwareKeyringTypes).map(([k, v]) => [v, HardwareDeviceNames[k]]));
-
-  // enum keys match for known HD wallets
-  return idx[type];
+  switch (type) {
+    case HardwareKeyringTypes.trezor:
+      return HardwareDeviceNames.trezor;
+    case HardwareKeyringTypes.ledger:
+      return HardwareDeviceNames.ledger;
+    case HardwareKeyringTypes.lattice:
+      return HardwareDeviceNames.lattice;
+    case HardwareKeyringTypes.qr:
+      return HardwareDeviceNames.qr;
+    default:
+      return undefined;
+  }
 }
 
 /**
- * Returns the HD path fore the current wallet.
- * 
+ * Returns the HD path fore the current wallet
+ *
  * @param {object} state
  * @returns {string | undefined}
  */

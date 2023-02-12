@@ -13,7 +13,6 @@ import {
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
-  checkHardwareStatus,
   addToAddressBook,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
@@ -284,9 +283,6 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(updateCustomNonce(value));
     },
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    checkHardwareStatus: (deviceName, hdPath) => {
-      return dispatch(checkHardwareStatus(deviceName, hdPath));
-    },
     showTransactionConfirmedModal: ({ onSubmit }) => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }));
     },

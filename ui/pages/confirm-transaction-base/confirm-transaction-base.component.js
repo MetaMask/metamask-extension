@@ -50,7 +50,6 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  attemptLedgerTransportCreation,
   isDeviceAccessible,
 } from '../../store/actions';
 
@@ -144,13 +143,9 @@ export default class ConfirmTransactionBase extends Component {
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
     showLedgerSteps: PropTypes.bool.isRequired,
-
     isHardwareWallet: PropTypes.bool,
     device: PropTypes.string,
     hdPath: PropTypes.string,
-    checkHardwareStatus: PropTypes.func,
-    // attemptLedgerTransportCreation: PropTypes.func,
-
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -339,7 +334,7 @@ export default class ConfirmTransactionBase extends Component {
       showLedgerSteps,
       supportsEIP1559,
       isHardwareWallet,
-      isMultiLayerFeeNetwork,      
+      isMultiLayerFeeNetwork,
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
@@ -588,7 +583,10 @@ export default class ConfirmTransactionBase extends Component {
     );
 
     const deviceLockedWarning = () => (
-      <div className="confirm-page-container-content__error-container" key="hw-locked-error">
+      <div
+        className="confirm-page-container-content__error-container"
+        key="hw-locked-error"
+      >
         <span className="hw-connect__error">{t('ledgerLocked')}</span>
       </div>
     );
@@ -741,10 +739,10 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   async isHdWalletUnlocked() {
-    const { device, hdPath, fromAddress, checkHardwareStatus } = this.props;    
+    const { device, hdPath } = this.props;
     const unlocked = await isDeviceAccessible(device, hdPath);
     this.setState({ locked: !unlocked });
-  }  
+  }
 
   handleEdit() {
     const {
@@ -833,7 +831,7 @@ export default class ConfirmTransactionBase extends Component {
       toAccounts,
       toAddress,
     } = this.props;
-    const { submitting, locked } = this.state;
+    const { submitting } = this.state;
     const { name } = methodData;
 
     if (txData.type === TransactionType.simpleSend) {
@@ -974,7 +972,6 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
-      hardwareWalletRequiresConnection,
       isHardwareWallet,
     } = this.props;
     const { trackEvent } = this.context;
@@ -996,7 +993,10 @@ export default class ConfirmTransactionBase extends Component {
     // need to keep an eye on the hardware wallet status?
     if (isHardwareWallet) {
       this.isHdWalletUnlocked();
-      this.hdStatusIntervalId = setInterval(() => this.isHdWalletUnlocked(), HD_LOCK_REFRESH_RATE);
+      this.hdStatusIntervalId = setInterval(
+        () => this.isHdWalletUnlocked(),
+        HD_LOCK_REFRESH_RATE,
+      );
     }
 
     /**
@@ -1009,7 +1009,7 @@ export default class ConfirmTransactionBase extends Component {
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       if (this._isMounted) {
         addPollingTokenToAppState(pollingToken);
-        this.setState({ pollingToken });  
+        this.setState({ pollingToken });
       } else {
         disconnectGasFeeEstimatePoller(pollingToken);
         removePollingTokenFromAppState(this.state.pollingToken);
