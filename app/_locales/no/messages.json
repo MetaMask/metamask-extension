@@ -626,12 +626,6 @@
   "reset": {
     "message": "Tilbakestill"
   },
-  "resetAccount": {
-    "message": "Tilbakestill konto"
-  },
-  "resetAccountDescription": {
-    "message": "Hvis du tilbakestiller kontoen din vil transaksjonshistorien din slettes. "
-  },
   "restore": {
     "message": "Gjenopprett"
   },

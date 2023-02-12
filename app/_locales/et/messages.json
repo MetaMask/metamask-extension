@@ -629,12 +629,6 @@
   "reset": {
     "message": "Lähtesta"
   },
-  "resetAccount": {
-    "message": "Lähtesta konto"
-  },
-  "resetAccountDescription": {
-    "message": "Konto lähtestamine tühjendab tehingute ajaloo."
-  },
   "restore": {
     "message": "Taasta"
   },

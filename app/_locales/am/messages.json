@@ -624,12 +624,6 @@
   "reset": {
     "message": "ዳግም አስጀምር"
   },
-  "resetAccount": {
-    "message": "መለያን እንደገና ይሙሉ"
-  },
-  "resetAccountDescription": {
-    "message": "መለያዎን እንደገና መሙላት የግብይት ታሪዎን ያጠራል።"
-  },
   "restore": {
     "message": "እነበረበት መልስ"
   },

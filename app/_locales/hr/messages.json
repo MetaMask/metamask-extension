@@ -632,12 +632,6 @@
   "reset": {
     "message": "Ponovno postavi"
   },
-  "resetAccount": {
-    "message": "Poništi račun"
-  },
-  "resetAccountDescription": {
-    "message": "Poništavanjem se računa uklanja vaša povijest transakcija."
-  },
   "restore": {
     "message": "Vrati"
   },

@@ -636,12 +636,6 @@
   "reset": {
     "message": "إعادة"
   },
-  "resetAccount": {
-    "message": "إعادة تعيين الحساب"
-  },
-  "resetAccountDescription": {
-    "message": "ستؤدي إعادة تعيين حسابك إلى مسح سجل معاملتك."
-  },
   "restore": {
     "message": "استعادة"
   },

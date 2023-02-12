@@ -632,12 +632,6 @@
   "reset": {
     "message": "Visszaállítás"
   },
-  "resetAccount": {
-    "message": "Fiók visszaállítása"
-  },
-  "resetAccountDescription": {
-    "message": "A fiók visszaállítása törli a tranzakciók előzményeit."
-  },
   "restore": {
     "message": "Visszaállítás"
   },

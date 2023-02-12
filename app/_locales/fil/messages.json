@@ -566,12 +566,6 @@
   "reset": {
     "message": "I-reset"
   },
-  "resetAccount": {
-    "message": "I-reset ang Account"
-  },
-  "resetAccountDescription": {
-    "message": "Kapag na-reset ang iyong account, maki-clear ang iyong kasaysayan ng transaksyon."
-  },
   "restore": {
     "message": "Ipanumbalik"
   },

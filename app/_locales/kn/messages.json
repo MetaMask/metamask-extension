@@ -639,12 +639,6 @@
   "reset": {
     "message": "ಮರುಹೊಂದಿಸು"
   },
-  "resetAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ"
-  },
-  "resetAccountDescription": {
-    "message": "ನಿಮ್ಮ ಖಾತೆಯ ಮರುಹೊಂದಿಸುವಿಕೆಯು ನಿಮ್ಮ ವಹಿವಾಟು ಇತಿಹಾಸವನ್ನು ತೆರವುಗೊಳಿಸುತ್ತದೆ."
-  },
   "restore": {
     "message": "ಮರುಸ್ಥಾಪನೆ"
   },

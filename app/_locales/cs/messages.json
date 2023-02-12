@@ -289,9 +289,6 @@
   "required": {
     "message": "Povinné"
   },
-  "resetAccount": {
-    "message": "Resetovat účet"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },

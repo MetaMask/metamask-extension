@@ -639,12 +639,6 @@
   "reset": {
     "message": "بازنشانی"
   },
-  "resetAccount": {
-    "message": "تنظیم مجدد حساب"
-  },
-  "resetAccountDescription": {
-    "message": "دوباره سازی حساب تاریخچه معامله تان را پاک میکند."
-  },
   "restore": {
     "message": "بازیابی"
   },

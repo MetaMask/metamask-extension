@@ -344,41 +344,43 @@ export default function CollectibleDetails({ collectible }) {
               )}
             </Typography>
           </Box>
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-            <Typography
-              color={TextColor.textDefault}
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-                marginRight: 2,
-              }}
-              className="collectible-details__link-title"
-            >
-              {t('link')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H6}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-              }}
-              className="collectible-details__image-source"
-              color={
-                isDataURI ? TextColor.textDefault : TextColor.primaryDefault
-              }
-            >
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={collectibleImageURL}
-                title={collectibleImageURL}
+          {imageThumbnail ? (
+            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+              <Typography
+                color={TextColor.textDefault}
+                variant={TypographyVariant.H6}
+                fontWeight={FONT_WEIGHT.BOLD}
+                boxProps={{
+                  margin: 0,
+                  marginBottom: 4,
+                  marginRight: 2,
+                }}
+                className="collectible-details__link-title"
               >
-                {imageThumbnail}
-              </a>
-            </Typography>
-          </Box>
+                {t('link')}
+              </Typography>
+              <Typography
+                variant={TypographyVariant.H6}
+                boxProps={{
+                  margin: 0,
+                  marginBottom: 4,
+                }}
+                className="collectible-details__image-source"
+                color={
+                  isDataURI ? TextColor.textDefault : TextColor.primaryDefault
+                }
+              >
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={collectibleImageURL}
+                  title={collectibleImageURL}
+                >
+                  {imageThumbnail}
+                </a>
+              </Typography>
+            </Box>
+          ) : null}
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
               color={TextColor.textDefault}

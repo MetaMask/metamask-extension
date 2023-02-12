@@ -639,12 +639,6 @@
   "reset": {
     "message": "Nustatyti iš naujo"
   },
-  "resetAccount": {
-    "message": "Atkurti paskyrą"
-  },
-  "resetAccountDescription": {
-    "message": "Atkūrus paskyrą, jūsų operacijų istorija bus išvalyta."
-  },
   "restore": {
     "message": "Atkurti"
   },
