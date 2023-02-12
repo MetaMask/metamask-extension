@@ -2735,18 +2735,20 @@ export default class MetamaskController extends EventEmitter {
    */
   async isDeviceAccessible(deviceName, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName);
-    // will throw an error if locked and inaccessible
+    // ledger state becomes stale and must be explicitly accessed
     let status = false;
     if (keyring.type === HardwareKeyringTypes.ledger) {
       try {
+        // attemptMakeApp will still return true when device locked
+        // creates app and then attempts to read address from device
         await keyring.unlock(hdPath, false);
         status = true;
       } catch (e) {
-        /* YUM! unlock failed */
+        // YUM! unlock failed - throws error if inaccessible
         status = false;
       }
     } else {
-      status = await checkHardwareStatus(deviceName, hdPath);
+      status = await this.checkHardwareStatus(deviceName, hdPath);
     }
     return status;
   }

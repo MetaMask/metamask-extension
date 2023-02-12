@@ -17,11 +17,7 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import Disclosure from '../../components/ui/disclosure';
-import {
-  HardwareDeviceNames,
-  LedgerTransportTypes,
-  LEDGER_LOCKED_ERROR_CODES,
-} from '../../../shared/constants/hardware-wallets';
+import { HD_LOCK_REFRESH_RATE } from '../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../shared/constants/metametrics';
 import {
   TransactionType,
@@ -744,16 +740,13 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-
-  // @TODO - copied from connect-hardware, move to shared utility
-  async checkIfUnlocked() {
+  async isHdWalletUnlocked() {
     const { device, hdPath, fromAddress, checkHardwareStatus } = this.props;    
     const unlocked = await isDeviceAccessible(device, hdPath);
 
 console.log(`UNLOCKED? ${unlocked}`);  
 
     this.setState({ locked: !unlocked });
-    return unlocked;
   }  
 
   handleEdit() {
@@ -842,7 +835,6 @@ console.log(`UNLOCKED? ${unlocked}`);
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
-      isHardwareWallet,
     } = this.props;
     const { submitting, locked } = this.state;
     const { name } = methodData;
@@ -852,17 +844,6 @@ console.log(`UNLOCKED? ${unlocked}`);
     }
     if (submitting) {
       return;
-    }
-
-    if (isHardwareWallet) {
-      this.checkIfUnlocked(); // @TODO - async function
-      if (this.state.locked) {
-        this.setState({
-          submitting: false,
-          submitError: "DEVICE IS LOCKED!!!",
-        });
-        return;
-      }
     }
 
     if (baseFeePerGas) {
@@ -1017,8 +998,8 @@ console.log(`UNLOCKED? ${unlocked}`);
 
     // need to keep an eye on the hardware wallet status?
     if (isHardwareWallet) {
-      this.checkIfUnlocked();
-      this.hdStatusIntervalId = setInterval(() => this.checkIfUnlocked(), 5000);
+      this.isHdWalletUnlocked();
+      this.hdStatusIntervalId = setInterval(() => this.isHdWalletUnlocked(), HD_LOCK_REFRESH_RATE);
     }
 
     /**

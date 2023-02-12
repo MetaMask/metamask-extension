@@ -70,3 +70,6 @@ export enum WebHIDConnectedStatuses {
 
 export const LEDGER_USB_VENDOR_ID = '0x2c97';
 export const LEDGER_LOCKED_ERROR_CODES = ['0x6b0c', '0x5515'];
+// time between hardware unlock checks in ms
+export const HD_LOCK_REFRESH_RATE = 5000;
+
