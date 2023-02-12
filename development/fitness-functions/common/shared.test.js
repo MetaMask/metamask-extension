@@ -1,41 +1,46 @@
 const {
-  EXCLUDE_E2E_TESTS_REGEX,
-  filterDiffAdditions,
+  filterDiffLineAdditions,
   hasNumberOfCodeBlocksIncreased,
   filterDiffByFilePath,
+  filterDiffFileCreations,
 } = require('./shared');
+const {
+  generateCreateFileDiff,
+  generateModifyFilesDiff,
+} = require('./test-data');
 
-const generateCreateFileDiff = (filePath, content) => `
-diff --git a/${filePath} b/${filePath}
-new file mode 100644
-index 000000000..30d74d258
---- /dev/null
-+++ b/${filePath}
-@@ -0,0 +1 @@
-+${content}
-`;
-
-const generateModifyFilesDiff = (filePath, addition, removal) => `
-diff --git a/${filePath} b/${filePath}
-index 57d5de75c..808d8ba37 100644
---- a/${filePath}
-+++ b/${filePath}
-@@ -1,3 +1,8 @@
-+${addition}
-@@ -34,33 +39,4 @@
--${removal}
-`;
-
-describe('filterDiffAdditions()', () => {
+describe('filterDiffLineAdditions()', () => {
   it('should return code additions in the diff', () => {
     const testFilePath = 'new-file.js';
     const testAddition = 'foo';
     const testFileDiff = generateCreateFileDiff(testFilePath, testAddition);
 
-    const actualResult = filterDiffAdditions(testFileDiff);
+    const actualResult = filterDiffLineAdditions(testFileDiff);
     const expectedResult = `+${testAddition}`;
 
     expect(actualResult).toStrictEqual(expectedResult);
+  });
+});
+
+describe('filterDiffFileCreations()', () => {
+  it('should return code additions in the diff', () => {
+    const testFileDiff = [
+      generateModifyFilesDiff('new-file.ts', 'foo', 'bar'),
+      generateCreateFileDiff('old-file.js', 'ping'),
+      generateModifyFilesDiff('old-file.jsx', 'yin', 'yang'),
+    ].join('');
+
+    const actualResult = filterDiffFileCreations(testFileDiff);
+
+    expect(actualResult).toMatchInlineSnapshot(`
+      "diff --git a/old-file.js b/old-file.js
+      new file mode 100644
+      index 000000000..30d74d258
+      --- /dev/null
+      +++ b/old-file.js
+      @@ -0,0 +1 @@
+      +ping"
+    `);
   });
 });
 
@@ -155,53 +160,5 @@ describe('filterDiffByFilePath()', () => {
       @@ -34,33 +39,4 @@
       -yang"
     `);
-  });
-});
-
-describe(`EXCLUDE_E2E_TESTS_REGEX "${EXCLUDE_E2E_TESTS_REGEX}"`, () => {
-  const PATHS_IT_SHOULD_MATCH = [
-    'file.js',
-    'path/file.js',
-    'much/longer/path/file.js',
-    'file.ts',
-    'path/file.ts',
-    'much/longer/path/file.ts',
-    'file.jsx',
-    'path/file.jsx',
-    'much/longer/path/file.jsx',
-  ];
-
-  const PATHS_IT_SHOULD_NOT_MATCH = [
-    'test/e2e/file',
-    'test/e2e/file.extension',
-    'test/e2e/path/file.extension',
-    'test/e2e/much/longer/path/file.extension',
-    'test/e2e/file.js',
-    'test/e2e/path/file.ts',
-    'test/e2e/much/longer/path/file.jsx',
-    'file',
-    'file.extension',
-    'path/file.extension',
-    'much/longer/path/file.extension',
-  ];
-
-  describe('included paths', () => {
-    PATHS_IT_SHOULD_MATCH.forEach((path) => {
-      it(`should match "${path}"`, () => {
-        const result = new RegExp(EXCLUDE_E2E_TESTS_REGEX, 'u').test(path);
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-  });
-
-  describe('excluded paths', () => {
-    PATHS_IT_SHOULD_NOT_MATCH.forEach((path) => {
-      it(`should not match "${path}"`, () => {
-        const result = new RegExp(EXCLUDE_E2E_TESTS_REGEX, 'u').test(path);
-
-        expect(result).toStrictEqual(false);
-      });
-    });
   });
 });
