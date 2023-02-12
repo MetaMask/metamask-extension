@@ -619,12 +619,6 @@
   "reset": {
     "message": "Tetapkan semula"
   },
-  "resetAccount": {
-    "message": "Tetapkan Semula Akaun"
-  },
-  "resetAccountDescription": {
-    "message": "Menetapkan semula akaun anda akan mengosongkan sejarah transaksi anda."
-  },
   "restore": {
     "message": "Pulihkan"
   },

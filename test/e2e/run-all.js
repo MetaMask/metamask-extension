@@ -108,6 +108,8 @@ async function main() {
   const currentChunk = chunks[currentChunkIndex];
 
   for (const testPath of currentChunk) {
+    const dir = 'test/test-results/e2e';
+    fs.mkdir(dir, { recursive: true });
     await runInShell('node', [...args, testPath]);
   }
 }

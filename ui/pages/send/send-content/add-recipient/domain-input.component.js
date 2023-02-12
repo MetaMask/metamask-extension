@@ -10,6 +10,7 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import {
   ButtonIcon,
+  Icon,
   ICON_NAMES,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
@@ -102,17 +103,18 @@ export default class DomainInput extends Component {
             'ens-input__wrapper--valid': hasSelectedAddress,
           })}
         >
-          <i
-            className={classnames('ens-input__wrapper__status-icon', 'fa', {
-              'fa-check-circle': hasSelectedAddress,
-              'fa-search': !hasSelectedAddress,
-            })}
-            style={{
-              color: hasSelectedAddress
-                ? 'var(--color-success-default)'
-                : 'var(--color-icon-muted)',
-            }}
-          />
+          {hasSelectedAddress ? (
+            <i
+              className="ens-input__wrapper__status-icon fa fa-check-circle"
+              style={{ color: 'var(--color-success-default)' }}
+            />
+          ) : (
+            <Icon
+              name={ICON_NAMES.SEARCH}
+              color={IconColor.iconMuted}
+              className="ens-input__wrapper__status-icon"
+            />
+          )}
           {hasSelectedAddress ? (
             <>
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">

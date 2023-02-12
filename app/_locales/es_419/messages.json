@@ -1978,12 +1978,6 @@
   "reset": {
     "message": "Restablecer"
   },
-  "resetAccount": {
-    "message": "Restablecer cuenta"
-  },
-  "resetAccountDescription": {
-    "message": "Al restablecer la cuenta se borrará el historial de transacciones. Esto no cambiará los saldos de las cuentas ni se le pedirá que vuelva a escribir la frase secreta de recuperación."
-  },
   "restore": {
     "message": "Restaurar"
   },

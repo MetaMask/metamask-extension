@@ -639,12 +639,6 @@
   "reset": {
     "message": "রিসেট করুন"
   },
-  "resetAccount": {
-    "message": "অ্যাকাউন্ট রিসেট করুন"
-  },
-  "resetAccountDescription": {
-    "message": "আপনার অ্যাকাউন্ট রিসেট করা আপনার লেনদেনের ইতিহাসকে মুছে পরিস্কার করবে।"
-  },
   "restore": {
     "message": "পুনরুদ্ধার করুন"
   },

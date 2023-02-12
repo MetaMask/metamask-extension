@@ -256,9 +256,6 @@
   "required": {
     "message": "Verplicht"
   },
-  "resetAccount": {
-    "message": "Account opnieuw instellen"
-  },
   "revealSeedWords": {
     "message": "Onthul back-up woorden"
   },

@@ -639,12 +639,6 @@
   "reset": {
     "message": "Скинути"
   },
-  "resetAccount": {
-    "message": "Перезапустити обліковий запис"
-  },
-  "resetAccountDescription": {
-    "message": "Перезапуск вашого облікового запису очистить історію ваших транзакцій."
-  },
   "restore": {
     "message": "Відновити"
   },

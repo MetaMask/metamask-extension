@@ -635,12 +635,6 @@
   "reset": {
     "message": "Нулиране"
   },
-  "resetAccount": {
-    "message": "Нулиране на акаунта"
-  },
-  "resetAccountDescription": {
-    "message": "Нулирането на вашия акаунт ще изчисти историята на транзакциите ви."
-  },
   "restore": {
     "message": "Възстановяване"
   },
