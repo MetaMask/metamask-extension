@@ -2,13 +2,12 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography/typography';
 import {
-  COLORS,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
 import Box from '../../ui/box';
@@ -17,6 +16,7 @@ import {
   setTransactionSecurityCheckEnabled,
 } from '../../../store/actions';
 import { getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown } from '../../../selectors';
+import { Text } from '../../component-library';
 
 export default function OpenSeaWhatsNewPopover() {
   const t = useContext(I18nContext);
@@ -31,13 +31,13 @@ export default function OpenSeaWhatsNewPopover() {
     !hasThePopoverBeenShown && (
       <Popover
         title={
-          <Typography
-            variant={TYPOGRAPHY.H4}
-            color={COLORS.TEXT_ALTERNATIVE}
+          <Text
+            variant={TextVariant.headingSm}
+            color={TextColor.textAlternative}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('staySafeWithOpenSea')}
-          </Typography>
+          </Text>
         }
         footer={
           <>
@@ -54,7 +54,7 @@ export default function OpenSeaWhatsNewPopover() {
               {t('enableOpenSeaSecurityProvider')}
             </Button>
             <Box marginTop={2}>
-              <Typography variant={TYPOGRAPHY.H6}>
+              <Text variant={TextVariant.bodySm}>
                 <Button
                   type="link"
                   onClick={() =>
@@ -65,7 +65,7 @@ export default function OpenSeaWhatsNewPopover() {
                 >
                   {t('notNow')}
                 </Button>
-              </Typography>
+              </Text>
             </Box>
           </>
         }
@@ -94,23 +94,23 @@ export default function OpenSeaWhatsNewPopover() {
               alt={t('openSeaAltText')}
             />
           </Box>
-          <Typography variant={TYPOGRAPHY.H6}>
+          <Text variant={TextVariant.bodySm}>
             {t('getWarningsFromOpenSea')}
-          </Typography>
-          <Typography
-            variant={TYPOGRAPHY.H6}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
             marginTop={4}
             fontWeight={FONT_WEIGHT.BOLD}
           >
             {t('openSeaDescription')}
-          </Typography>
-          <Typography
-            variant={TYPOGRAPHY.H7}
-            color={COLORS.TEXT_ALTERNATIVE}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
             marginTop={4}
           >
             {t('alwaysBeSureTo')}
-          </Typography>
+          </Text>
         </Box>
       </Popover>
     )
