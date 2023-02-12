@@ -743,9 +743,6 @@ export default class ConfirmTransactionBase extends Component {
   async isHdWalletUnlocked() {
     const { device, hdPath, fromAddress, checkHardwareStatus } = this.props;    
     const unlocked = await isDeviceAccessible(device, hdPath);
-
-console.log(`UNLOCKED? ${unlocked}`);  
-
     this.setState({ locked: !unlocked });
   }  
 
