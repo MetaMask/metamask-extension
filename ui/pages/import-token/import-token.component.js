@@ -312,7 +312,7 @@ class ImportToken extends Component {
       case process.env.NFTS_V1 &&
         (standard === 'ERC1155' || standard === 'ERC721'):
         this.setState({
-          collectibleAddressError: this.context.t('collectibleAddressError', [
+          collectibleAddressError: this.context.t('nftAddressError', [
             <a
               className="import-token__collectible-address-error-link"
               onClick={() =>

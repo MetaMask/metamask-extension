@@ -28,7 +28,6 @@ import IconCaretDown from './icon-caret-down';
 import IconCaretUp from './icon-caret-up';
 import IconCheck from './icon-check';
 import IconCog from './icon-cog';
-import IconConnect from './icon-connect';
 import IconImport from './icon-import';
 import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
@@ -123,7 +122,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconCheck {...args} />} />
         <IconItem Component={<IconPlus {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
-        <IconItem Component={<IconConnect {...args} />} />
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />

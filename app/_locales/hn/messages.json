@@ -266,9 +266,6 @@
   "required": {
     "message": "आवश्यक"
   },
-  "resetAccount": {
-    "message": "खाता रीसेट करें"
-  },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"
   },

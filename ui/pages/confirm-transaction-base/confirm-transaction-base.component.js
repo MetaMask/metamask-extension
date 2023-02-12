@@ -618,11 +618,8 @@ export default class ConfirmTransactionBase extends Component {
               : () => this.handleEditGas()
           }
           rows={[
-            renderSimulationFailureWarning &&
-              !this.supportsEIP1559 &&
-              simulationFailureWarning(),
-            isHardwareWallet && locked &&
-              deviceLockedWarning(),
+            isHardwareWallet && locked && deviceLockedWarning(),
+            renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
               renderGasDetailsItem(),
