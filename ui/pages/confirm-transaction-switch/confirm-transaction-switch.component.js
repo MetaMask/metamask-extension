@@ -15,6 +15,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
+  PLUME_SIGNATURE_PATH,
 } from '../../helpers/constants/routes';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionType } from '../../../shared/constants/transaction';
@@ -81,6 +82,8 @@ export default class ConfirmTransactionSwitch extends Component {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${DECRYPT_MESSAGE_REQUEST_PATH}`;
       } else if (txData.type === MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY) {
         pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`;
+      } else if (txData.type === MESSAGE_TYPE.ETH_GET_PLUME_SIGNATURE) {
+        pathname = `${CONFIRM_TRANSACTION_ROUTE}/${txData.id}${PLUME_SIGNATURE_PATH}`;
       }
       return <Redirect to={{ pathname }} />;
     }

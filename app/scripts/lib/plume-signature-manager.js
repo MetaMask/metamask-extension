@@ -61,17 +61,17 @@ export default class PlumeSignatureManager extends EventEmitter {
    * the new PlumeMessage to this.messages, and to save the unapproved PlumeMessages from that list to
    * this.memStore.
    *
-   * @param {object} address - The param for the eth_getPlumeSignature call to be made after the message is approved.
+   * @param {object} msgParams - The param for the eth_getPlumeSignature call to be made after the message is approved.
    * @param {object} [req] - The original request object possibly containing the origin
    * @returns {Promise<Buffer>} The genereated plume signature
    */
-  addUnapprovedMessageAsync(address, req) {
+  addUnapprovedMessageAsync(msgParams, req) {
     return new Promise((resolve, reject) => {
-      if (!address) {
-        reject(new Error('MetaMask Message: address field is required.'));
+      if (!msgParams.from) {
+        reject(new Error('MetaMask Message: from field is required.'));
         return;
       }
-      const msgId = this.addUnapprovedMessage(address, req);
+      const msgId = this.addUnapprovedMessage(msgParams, req);
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
           case 'received':
@@ -91,7 +91,7 @@ export default class PlumeSignatureManager extends EventEmitter {
             reject(
               new Error(
                 `MetaMask PlumeSignature: Unknown problem: ${JSON.stringify(
-                  address,
+                  msgParams,
                 )}`,
               ),
             );
@@ -105,18 +105,18 @@ export default class PlumeSignatureManager extends EventEmitter {
    * the new PlumeMessage to this.messages, and to save the unapproved PlumeMessages from that list to
    * this.memStore.
    *
-   * @param {object} address - The param for the eth_getPlumeSignature call to be made after the message is approved.
+   * @param {object} msgParams - The param for the eth_getPlumeSignature call to be made after the message is approved.
    * @param {object} [req] - The original request object possibly containing the origin
    * @returns {number} The id of the newly created PlumeMessage.
    */
-  addUnapprovedMessage(address, req) {
-    log.debug(`PlumeSignatureManager addUnapprovedMessage: ${address}`);
+  addUnapprovedMessage(msgParams, req) {
+    log.debug(`PlumeSignatureManager addUnapprovedMessage: ${msgParams}`);
     // create txData obj with parameters and meta data
     const time = new Date().getTime();
     const msgId = createId();
     const msgData = {
       id: msgId,
-      msgParams: address,
+      msgParams,
       time,
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_GET_PLUME_SIGNATURE,

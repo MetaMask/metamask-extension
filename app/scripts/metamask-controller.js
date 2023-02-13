@@ -6,6 +6,7 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
+import { computeAllInputs } from 'plume-sig';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -1162,6 +1163,7 @@ export default class MetamaskController extends EventEmitter {
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processGetPlumeSignature: this.newRequestGetPlumeSignature.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
+      getPlumeSignature: this.getPlumeSignature.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
         this.txController.getTransactions({
@@ -3184,13 +3186,43 @@ export default class MetamaskController extends EventEmitter {
    * Passed back to the requesting Dapp.
    */
   async newRequestGetPlumeSignature(msgParams, req) {
-    const promise = this.plumeSignatureManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
+    console.log('newRequestGetPlumeSignature', { msgParams, req });
+    console.log(1);
+
+    // return this.keyringController.exportAccount(msgParams.from);
+    const privateKey = await this.keyringController.exportAccount(
+      msgParams.from,
     );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
+    // return { window: typeof window, hi: 'zxcv' };
+    const { plume, s, publicKey, c, gPowR, hashMPKPowR } =
+      await computeAllInputs(msgParams.data, privateKey);
+    console.log({ privateKey, gPowR, plume, s, publicKey, c, hashMPKPowR });
+    return {
+      plume: plume.toHex(true),
+      publicKey: Buffer.from(publicKey).toString('hex'),
+      hashMPKPowR: hashMPKPowR.toHex(true),
+      gPowR: gPowR.toHex(true),
+      c,
+      s,
+    };
+
+    // const promise = this.plumeSignatureManager.addUnapprovedMessageAsync(
+    //   msgParams,
+    //   req,
+    // );
+    // REMOVE FROM HERE
+    // const privateKey = await this.keyringController.exportAccount(
+    //   msgParams.from,
+    // );
+
+    // // console.log({ privateKey });
+    // // computeHashMPk();
+    // // REMOVE END HERE
+    // console.log(2);
+    // this.sendUpdate();
+    // console.log(3);
+    // this.opts.showUserConfirmation();
+    // return promise;
   }
 
   /**
@@ -3204,14 +3236,13 @@ export default class MetamaskController extends EventEmitter {
     log.info('MetaMaskController - plumeMessage');
     const msgId = msgParams.metamaskId;
     // sets the status op the message to 'approved'
-    // and removes the metamaskId for decryption
+    // and removes the metamaskId for generating plume
     try {
       const params = await this.plumeSignatureManager.approveMessage(msgParams);
-      // TODO / FIXME: Import and use zk-nullifier library
-      const mockPlume = `mockPlume-${params.data}`;
+      const inputs = await computeAllInputs(msgParams.data, privateKey);
 
-      // tells the listener that the message has been decrypted and can be returned to the dapp
-      this.plumeSignatureManager.setMsgStatusReceived(msgId, mockPlume);
+      // tells the listener that the message has been received and can be returned to the dapp
+      this.plumeSignatureManager.setMsgStatusReceived(msgId, inputs);
     } catch (error) {
       log.info('MetaMaskController - eth_getPlumeSignature failed.', error);
       this.plumeSignatureManager.errorMessage(msgId, error);

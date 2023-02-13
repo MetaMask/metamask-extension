@@ -98,6 +98,7 @@ const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
 const SIGNATURE_REQUEST_PATH = '/signature-request';
 const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request';
+const PLUME_SIGNATURE_PATH = '/plume-signature-request';
 const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 
 // Used to pull a convenient name for analytics tracking events. The key must
@@ -165,6 +166,8 @@ const PATH_NAME_MAP = {
     'Decrypt Message Request Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
+  [`${CONFIRM_TRANSACTION_ROUTE}/:id${PLUME_SIGNATURE_PATH}`]:
+    'Plume Signature Request Page',
   [INITIALIZE_ROUTE]: 'Initialization Page',
   [INITIALIZE_WELCOME_ROUTE]: 'Install Welcome Page',
   [INITIALIZE_UNLOCK_ROUTE]: 'Initialization Unlock page',
@@ -228,6 +231,7 @@ export {
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  PLUME_SIGNATURE_PATH,
   CONFIRMATION_V_NEXT_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   ADVANCED_ROUTE,

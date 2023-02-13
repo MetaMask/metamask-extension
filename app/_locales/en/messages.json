@@ -2846,6 +2846,13 @@
   "pleaseConfirm": {
     "message": "Please confirm"
   },
+  "plumeNotice": {
+    "message": "$1 would like to sign this message with your Plume. This does not reveal anything about your account.",
+    "description": "$1 is the web3 site name"
+  },
+  "plumeRequest": {
+    "message": "Sign message with Plume"
+  },
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"

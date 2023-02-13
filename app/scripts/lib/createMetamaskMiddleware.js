@@ -17,7 +17,7 @@ export default function createMetamaskMiddleware({
   processPersonalMessage,
   processDecryptMessage,
   processEncryptionPublicKey,
-  getPlumeSignature,
+  processGetPlumeSignature,
   getPendingNonce,
   getPendingTransactionByHash,
 }) {
@@ -39,7 +39,7 @@ export default function createMetamaskMiddleware({
     }),
     createPendingNonceMiddleware({ getPendingNonce }),
     createPendingTxMiddleware({ getPendingTransactionByHash }),
-    createGetPlumeSignatureMiddleware({ getPlumeSignature }),
+    createGetPlumeSignatureMiddleware({ processGetPlumeSignature }),
   ]);
   return metamaskMiddleware;
 }

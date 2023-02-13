@@ -4556,7 +4556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.7.0":
+"@noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.7.0, @noble/secp256k1@npm:^1.7.1":
   version: 1.7.1
   resolution: "@noble/secp256k1@npm:1.7.1"
   checksum: d2301f1f7690368d8409a3152450458f27e54df47e3f917292de3de82c298770890c2de7c967d237eff9c95b70af485389a9695f73eb05a43e2bd562d18b18cb
@@ -9078,7 +9078,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amcl-js@npm:^3.0.0":
+"amcl-js@npm:3.0.0":
   version: 3.0.0
   resolution: "amcl-js@npm:3.0.0"
   dependencies:
@@ -24941,6 +24941,7 @@ __metadata:
     "@metamask/test-dapp": ^5.2.1
     "@metamask/utils": ^3.4.1
     "@ngraveio/bc-ur": ^1.1.6
+    "@noble/secp256k1": ^1.7.1
     "@popperjs/core": ^2.4.0
     "@reduxjs/toolkit": ^1.6.2
     "@segment/loosely-validate-event": ^2.0.0
@@ -25117,7 +25118,7 @@ __metadata:
     obj-multiplex: ^1.0.0
     pify: ^5.0.0
     playwright: ^1.29.2
-    plume-sig: ^1.0.0
+    plume-sig: ^1.1.2
     polyfill-crypto.getrandomvalues: ^1.0.0
     prettier: ^2.7.1
     prettier-plugin-sort-json: ^1.0.0
@@ -28029,15 +28030,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"plume-sig@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "plume-sig@npm:1.0.0"
+"plume-sig@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "plume-sig@npm:1.1.2"
   dependencies:
     "@noble/secp256k1": ^1.7.0
-    amcl-js: ^3.0.0
+    amcl-js: 3.0.0
     jest: ^29.3.1
     js-sha512: ^0.8.0
-  checksum: 7557f6335ee506eeb3fdf471028bba7d03d6f0ba159ecac8032cde9ea5f93f763ce9b6ea52834a7a14aad93a9f3308354d3f85aa90385008bfb6c79316872cad
+  checksum: bea9f76b27c94846c02b2793b8ff1e2fd4cac02fce2856d43ebb5eea0ecb2f1794f08a7eabb08cd1df75dd367ce169a938c24a7754cc3f7232e097f7b85256d7
   languageName: node
   linkType: hard
 

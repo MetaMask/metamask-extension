@@ -8,6 +8,7 @@ import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
+import confirmPlumeSignature from '../confirm-plume-signature';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -18,6 +19,7 @@ import {
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   DEFAULT_ROUTE,
+  PLUME_SIGNATURE_PATH,
 } from '../../helpers/constants/routes';
 import {
   disconnectGasFeeEstimatePoller,
@@ -196,6 +198,11 @@ export default class ConfirmTransaction extends Component {
           exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
           component={ConfirmEncryptionPublicKey}
+        />
+        <Route
+          exact
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${PLUME_SIGNATURE_PATH}`}
+          component={confirmPlumeSignature}
         />
         <Route path="*" component={ConfirmTransactionSwitch} />
       </Switch>

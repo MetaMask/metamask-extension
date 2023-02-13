@@ -1335,7 +1335,7 @@
         "@metamask/snaps-utils>@noble/hashes": true,
         "@metamask/snaps-utils>@scure/base": true,
         "@metamask/utils": true,
-        "plume-sig>@noble/secp256k1": true
+        "@noble/secp256k1": true
       }
     },
     "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
@@ -1684,6 +1684,14 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
+      }
+    },
+    "@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@popperjs/core": {
@@ -3911,12 +3919,23 @@
         "readable-stream": true
       }
     },
-    "plume-sig>@noble/secp256k1": {
+    "plume-sig": {
       "globals": {
-        "crypto": true
+        "TextEncoder": true
       },
       "packages": {
-        "browserify>browser-resolve": true
+        "@noble/secp256k1": true,
+        "browserify>buffer": true,
+        "plume-sig>amcl-js": true,
+        "plume-sig>js-sha512": true
+      }
+    },
+    "plume-sig>js-sha512": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "browserify>process": true
       }
     },
     "promise-to-callback": {
