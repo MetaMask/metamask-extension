@@ -1002,11 +1002,65 @@
   "description": {
     "message": "Description"
   },
+  "desktopConnectionCriticalErrorDescription": {
+    "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
+  },
+  "desktopConnectionCriticalErrorTitle": {
+    "message": "MetaMask had trouble starting"
+  },
+  "desktopConnectionLostErrorDescription": {
+    "message": "Please make sure you have the desktop app up and running or disable MetaMask Desktop."
+  },
+  "desktopConnectionLostErrorTitle": {
+    "message": "MetaMask Desktop connection was lost"
+  },
   "desktopDisableButton": {
     "message": "Disable Desktop App"
   },
+  "desktopDisableErrorCTA": {
+    "message": "Disable MetaMask Desktop"
+  },
   "desktopEnableButton": {
     "message": "Enable Desktop App"
+  },
+  "desktopErrorNavigateSettingsCTA": {
+    "message": "Return to Settings Page"
+  },
+  "desktopErrorRestartMMCTA": {
+    "message": "Restart MetaMask"
+  },
+  "desktopNotFoundErrorCTA": {
+    "message": "Download MetaMask Desktop"
+  },
+  "desktopNotFoundErrorDescription1": {
+    "message": "Please make sure you have the desktop app up and running."
+  },
+  "desktopNotFoundErrorDescription2": {
+    "message": "If you have no desktop app installed, please download it on the MetaMask website."
+  },
+  "desktopNotFoundErrorTitle": {
+    "message": "MetaMask Desktop was not found"
+  },
+  "desktopOpenOrDownloadCTA": {
+    "message": "Open MetaMask Desktop"
+  },
+  "desktopOutdatedErrorCTA": {
+    "message": "Update MetaMask Desktop"
+  },
+  "desktopOutdatedErrorDescription": {
+    "message": "Your MetaMask desktop app needs to be upgraded."
+  },
+  "desktopOutdatedErrorTitle": {
+    "message": "MetaMask Desktop is outdated"
+  },
+  "desktopOutdatedExtensionErrorCTA": {
+    "message": "Update MetaMask Extension"
+  },
+  "desktopOutdatedExtensionErrorDescription": {
+    "message": "Your MetaMask extension needs to be upgraded."
+  },
+  "desktopOutdatedExtensionErrorTitle": {
+    "message": "MetaMask Extension is outdated"
   },
   "desktopPageDescription": {
     "message": "If the pairing is successful, extension will restart and you'll have to re-enter your password."

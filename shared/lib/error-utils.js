@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { memoize } from 'lodash';
 import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
 import {
@@ -86,4 +87,16 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
       </div>
     </div>
     `;
+}
+
+export function downloadDesktopApp() {
+  global.platform.openTab({ url: 'https://metamask.io/' });
+}
+
+export function downloadExtension() {
+  global.platform.openTab({ url: 'https://metamask.io/' });
+}
+
+export function restartExtension() {
+  browser.runtime.reload();
 }
