@@ -425,8 +425,13 @@
       "packages": {
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
+<<<<<<< HEAD
         "ethereumjs-wallet>bs58check": true,
         "wait-on>rxjs>tslib": true
+=======
+        "enzyme>cheerio>tslib": true,
+        "ethereumjs-wallet>bs58check": true
+>>>>>>> 5d00502af (more policy updates)
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -814,6 +819,7 @@
         "fetch": true
       }
     },
+<<<<<<< HEAD
     "@metamask/desktop": {
       "globals": {
         "TextDecoder": true,
@@ -868,6 +874,8 @@
         "define": true
       }
     },
+=======
+>>>>>>> 5d00502af (more policy updates)
     "@metamask/eth-json-rpc-infura": {
       "globals": {
         "setTimeout": true
@@ -925,6 +933,7 @@
         "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
+<<<<<<< HEAD
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
         "URL": true,
@@ -953,6 +962,16 @@
         "@metamask/eth-keyring-controller>obs-store": true,
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "browserify>events": true
+=======
+    "@metamask/eth-keyring-controller": {
+      "packages": {
+        "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
+        "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/eth-keyring-controller>obs-store": true,
+        "@metamask/rpc-methods>@metamask/browser-passworder": true,
+        "browserify>events": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util": true
+>>>>>>> 5d00502af (more policy updates)
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": {
@@ -961,9 +980,15 @@
       },
       "packages": {
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": true,
+<<<<<<< HEAD
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/scure-bip39": true,
         "browserify>buffer": true,
+=======
+        "@metamask/scure-bip39": true,
+        "browserify>buffer": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+>>>>>>> 5d00502af (more policy updates)
         "eth-lattice-keyring>@ethereumjs/util": true
       }
     },
@@ -983,6 +1008,7 @@
         "crypto": true
       }
     },
+<<<<<<< HEAD
     "@metamask/eth-keyring-controller>@metamask/eth-sig-util": {
       "packages": {
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": true,
@@ -1022,6 +1048,14 @@
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
         "browserify>buffer": true,
         "browserify>events": true,
+=======
+    "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": {
+      "packages": {
+        "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+>>>>>>> 5d00502af (more policy updates)
         "eth-lattice-keyring>@ethereumjs/util": true,
         "ethereumjs-wallet>randombytes": true
       }
@@ -1132,8 +1166,13 @@
       "packages": {
         "@metamask/eth-token-tracker>deep-equal>is-arguments": true,
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
+<<<<<<< HEAD
         "@ngraveio/bc-ur>assert>object-is": true,
         "@storybook/api>telejson>is-regex": true,
+=======
+        "enzyme>is-regex": true,
+        "enzyme>object-is": true,
+>>>>>>> 5d00502af (more policy updates)
         "mocha>object.assign>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
       }
@@ -1364,7 +1403,11 @@
     "@metamask/permission-controller": {
       "packages": {
         "@metamask/base-controller": true,
+<<<<<<< HEAD
         "@metamask/permission-controller>@metamask/controller-utils": true,
+=======
+        "@metamask/controller-utils": true,
+>>>>>>> 5d00502af (more policy updates)
         "@metamask/permission-controller>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
@@ -1372,6 +1415,7 @@
         "json-rpc-engine": true
       }
     },
+<<<<<<< HEAD
     "@metamask/permission-controller>@metamask/controller-utils": {
       "globals": {
         "console.error": true,
@@ -1387,6 +1431,8 @@
         "ethjs>ethjs-unit": true
       }
     },
+=======
+>>>>>>> 5d00502af (more policy updates)
     "@metamask/permission-controller>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1400,7 +1446,11 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
         "@metamask/phishing-controller>@metamask/controller-utils": true,
+<<<<<<< HEAD
         "@metamask/phishing-warning>eth-phishing-detect": true,
+=======
+        "@metamask/phishing-controller>eth-phishing-detect": true,
+>>>>>>> 5d00502af (more policy updates)
         "punycode": true
       }
     },
@@ -1419,7 +1469,11 @@
         "ethjs>ethjs-unit": true
       }
     },
+<<<<<<< HEAD
     "@metamask/phishing-warning>eth-phishing-detect": {
+=======
+    "@metamask/phishing-controller>eth-phishing-detect": {
+>>>>>>> 5d00502af (more policy updates)
       "packages": {
         "eslint>optionator>fast-levenshtein": true
       }
@@ -1500,8 +1554,13 @@
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "@metamask/rpc-methods>@metamask/permission-controller": true,
+<<<<<<< HEAD
         "@metamask/rpc-methods>nanoid": true,
         "@metamask/snaps-ui": true,
+=======
+        "@metamask/rpc-methods>@metamask/snaps-ui": true,
+        "@metamask/rpc-methods>nanoid": true,
+>>>>>>> 5d00502af (more policy updates)
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true,
@@ -1524,7 +1583,11 @@
     },
     "@metamask/rpc-methods>@metamask/permission-controller": {
       "packages": {
+<<<<<<< HEAD
         "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": true,
+=======
+        "@metamask/base-controller": true,
+>>>>>>> 5d00502af (more policy updates)
         "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/rpc-methods>nanoid": true,
         "deep-freeze-strict": true,
@@ -1533,11 +1596,14 @@
         "json-rpc-engine": true
       }
     },
+<<<<<<< HEAD
     "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": {
       "packages": {
         "immer": true
       }
     },
+=======
+>>>>>>> 5d00502af (more policy updates)
     "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
       "globals": {
         "console.error": true,
@@ -1545,6 +1611,10 @@
         "setTimeout": true
       },
       "packages": {
+<<<<<<< HEAD
+=======
+        "@metamask/controller-utils>isomorphic-fetch": true,
+>>>>>>> 5d00502af (more policy updates)
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
@@ -1552,6 +1622,15 @@
         "ethjs>ethjs-unit": true
       }
     },
+<<<<<<< HEAD
+=======
+    "@metamask/rpc-methods>@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/utils>superstruct": true
+      }
+    },
+>>>>>>> 5d00502af (more policy updates)
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1609,12 +1688,20 @@
         "setTimeout": true
       },
       "packages": {
+<<<<<<< HEAD
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@metamask/subject-metadata-controller": true,
+=======
+        "@metamask/base-controller": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/permission-controller": true,
+>>>>>>> 5d00502af (more policy updates)
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>gunzip-maybe": true,
@@ -1622,6 +1709,10 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-utils": true,
+<<<<<<< HEAD
+=======
+        "@metamask/subject-metadata-controller": true,
+>>>>>>> 5d00502af (more policy updates)
         "@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -1629,6 +1720,7 @@
         "pump": true
       }
     },
+<<<<<<< HEAD
     "@metamask/snaps-controllers>@metamask/base-controller": {
       "packages": {
         "immer": true
@@ -1652,6 +1744,12 @@
       "packages": {
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils": true,
+=======
+    "@metamask/snaps-controllers>@metamask/permission-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": true,
+>>>>>>> 5d00502af (more policy updates)
         "@metamask/snaps-controllers>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
@@ -1659,9 +1757,25 @@
         "json-rpc-engine": true
       }
     },
+<<<<<<< HEAD
     "@metamask/snaps-controllers>@metamask/subject-metadata-controller": {
       "packages": {
         "@metamask/snaps-controllers>@metamask/base-controller": true
+=======
+    "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>isomorphic-fetch": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+>>>>>>> 5d00502af (more policy updates)
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -1889,12 +2003,15 @@
         "pubnub>cbor-sync": true
       }
     },
+<<<<<<< HEAD
     "@ngraveio/bc-ur>assert>object-is": {
       "packages": {
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true
       }
     },
+=======
+>>>>>>> 5d00502af (more policy updates)
     "@ngraveio/bc-ur>bignumber.js": {
       "globals": {
         "crypto": true,
@@ -2077,12 +2194,15 @@
         "regeneratorRuntime": "write"
       }
     },
+<<<<<<< HEAD
     "@storybook/api>telejson>is-regex": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true,
         "string.prototype.matchall>call-bind": true
       }
     },
+=======
+>>>>>>> 5d00502af (more policy updates)
     "@storybook/api>util-deprecate": {
       "globals": {
         "console.trace": true,
@@ -2845,11 +2965,14 @@
         "console": true
       }
     },
+<<<<<<< HEAD
     "browserify>has": {
       "packages": {
         "mocha>object.assign>function-bind": true
       }
     },
+=======
+>>>>>>> 5d00502af (more policy updates)
     "browserify>os-browserify": {
       "globals": {
         "location": true,
@@ -3007,6 +3130,31 @@
         "pump>once": true
       }
     },
+<<<<<<< HEAD
+=======
+    "enzyme>cheerio>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
+    "enzyme>has": {
+      "packages": {
+        "mocha>object.assign>function-bind": true
+      }
+    },
+    "enzyme>is-regex": {
+      "packages": {
+        "koa>is-generator-function>has-tostringtag": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
+    "enzyme>object-is": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true
+      }
+    },
+>>>>>>> 5d00502af (more policy updates)
     "eslint>optionator>fast-levenshtein": {
       "globals": {
         "Intl": true,
@@ -3070,7 +3218,64 @@
         "setTimeout": true
       },
       "packages": {
+<<<<<<< HEAD
         "wait-on>rxjs>tslib": true
+=======
+        "enzyme>cheerio>tslib": true
+      }
+    },
+    "eth-json-rpc-middleware": {
+      "globals": {
+        "URL": true,
+        "btoa": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "browserify>browser-resolve": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+        "eth-json-rpc-middleware>pify": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true,
+        "lavamoat>json-stable-stringify": true,
+        "vinyl>clone": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util": {
+      "packages": {
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": true,
+        "eth-lattice-keyring>@ethereumjs/util": true,
+        "eth-sig-util>tweetnacl": true,
+        "eth-sig-util>tweetnacl-util": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "eth-json-rpc-middleware>@metamask/eth-sig-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
+>>>>>>> 5d00502af (more policy updates)
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -3467,8 +3672,13 @@
       },
       "packages": {
         "@babel/runtime": true,
+<<<<<<< HEAD
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "browserify>events": true,
+=======
+        "browserify>events": true,
+        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
+>>>>>>> 5d00502af (more policy updates)
         "eth-trezor-keyring>trezor-connect>cross-fetch": true
       }
     },
@@ -4700,16 +4910,26 @@
         "WeakRef": true
       },
       "packages": {
+<<<<<<< HEAD
         "browserify>has": true,
+=======
+        "enzyme>has": true,
+>>>>>>> 5d00502af (more policy updates)
         "mocha>object.assign>function-bind": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
+<<<<<<< HEAD
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
+=======
+        "enzyme>function.prototype.name>functions-have-names": true,
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true
+>>>>>>> 5d00502af (more policy updates)
       }
     },
     "terser>source-map-support>buffer-from": {
@@ -4733,11 +4953,14 @@
         "browserify>path-browserify": true
       }
     },
+<<<<<<< HEAD
     "wait-on>rxjs>tslib": {
       "globals": {
         "define": true
       }
     },
+=======
+>>>>>>> 5d00502af (more policy updates)
     "web3": {
       "globals": {
         "XMLHttpRequest": true
