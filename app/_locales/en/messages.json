@@ -1008,6 +1008,42 @@
   "desktopEnableButton": {
     "message": "Enable Desktop App"
   },
+  "desktopPageDescription": {
+    "message": "If the pairing is successful, extension will restart and you'll have to re-enter your password."
+  },
+  "desktopPageSubTitle": {
+    "message": "Open your MetaMask Desktop and type this code"
+  },
+  "desktopPageTitle": {
+    "message": "Pair with Desktop"
+  },
+  "desktopPairedWarningDeepLink": {
+    "message": "Go to Settings in MetaMask Desktop"
+  },
+  "desktopPairedWarningDescription": {
+    "message": "If you want to start a new pairing, please remove the current connection."
+  },
+  "desktopPairedWarningTitle": {
+    "message": "MM Desktop is already paired"
+  },
+  "desktopPairingExpireMessage": {
+    "message": "Code expires in $1 seconds"
+  },
+  "desktopRouteNotFoundErrorDescription": {
+    "message": "desktopRouteNotFoundErrorDescription"
+  },
+  "desktopRouteNotFoundErrorTitle": {
+    "message": "desktopRouteNotFoundErrorTitle"
+  },
+  "desktopUnexpectedErrorCTA": {
+    "message": "Return MetaMask Home"
+  },
+  "desktopUnexpectedErrorDescription": {
+    "message": "Check your MetaMask Desktop to restore connection"
+  },
+  "desktopUnexpectedErrorTitle": {
+    "message": "Something went wrong..."
+  },
   "details": {
     "message": "Details"
   },
