@@ -1760,7 +1760,6 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       isDeviceAccessible: this.isDeviceAccessible.bind(this),
-
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       setLedgerTransportPreference:
@@ -2738,12 +2737,12 @@ export default class MetamaskController extends EventEmitter {
     // ledger state becomes stale and must be explicitly accessed
     if (keyring.type === HardwareKeyringTypes.ledger) {
       try {
+        // unlock creates app and then attempts to read address from device
         // attemptMakeApp will still return true when device locked
-        // creates app and then attempts to read address from device
         await keyring.unlock(hdPath, false);
         status = true;
       } catch (e) {
-        // YUM! unlock failed - throws error if inaccessible
+        // YUM! unlock failed - unlock throws generic error if inaccessible
         status = false;
       }
     } else {
