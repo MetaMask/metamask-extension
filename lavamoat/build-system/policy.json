@@ -1112,6 +1112,11 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
+    "@metamask/rpc-methods": {
+      "packages": {
+        "eth-rpc-errors": true
+      }
+    },
     "@sentry/cli>mkdirp": {
       "builtin": {
         "fs": true,

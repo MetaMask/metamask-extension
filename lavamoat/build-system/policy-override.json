@@ -32,6 +32,11 @@
         "process.versions": true
       }
     },
+    "@metamask/rpc-methods": {
+      "packages": {
+        "eth-rpc-errors": true
+      }
+    },
     "depcheck>@babel/traverse": {
       "packages": {
         "babel/preset-env>b@babel/types": true
