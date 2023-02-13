@@ -28,6 +28,7 @@ import {
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
+import { Icon, ICON_NAMES } from '../../components/component-library';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -290,7 +291,7 @@ class SettingsPage extends PureComponent {
           },
           {
             content: t('alerts'),
-            icon: <i className="fa fa-bell" />,
+            icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
             key: ALERTS_ROUTE,
           },
           {
