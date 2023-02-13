@@ -200,14 +200,12 @@ const mapStateToProps = (state, ownProps) => {
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
-  const fromAddressIsLedger = isAddressLedger(state, fromAddress);
+  const nativeCurrency = getNativeCurrency(state);
 
+  const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const fromAddressIsHardwareWallet = isHardwareWallet(state, fromAddress);
   const fromDevice = getHardwareWalletDevice(state);
   const fromHdPath = getHardwareWalletPath(state);
-
-  const nativeCurrency = getNativeCurrency(state);
-
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
@@ -259,11 +257,9 @@ const mapStateToProps = (state, ownProps) => {
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
     showLedgerSteps: fromAddressIsLedger,
-
     isHardwareWallet: fromAddressIsHardwareWallet,
     device: fromDevice,
     hdPath: fromHdPath,
-
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,

@@ -1759,7 +1759,6 @@ export default class MetamaskController extends EventEmitter {
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
-
       isDeviceAccessible: this.isDeviceAccessible.bind(this),
 
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
@@ -2735,8 +2734,8 @@ export default class MetamaskController extends EventEmitter {
    */
   async isDeviceAccessible(deviceName, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName);
-    // ledger state becomes stale and must be explicitly accessed
     let status = false;
+    // ledger state becomes stale and must be explicitly accessed
     if (keyring.type === HardwareKeyringTypes.ledger) {
       try {
         // attemptMakeApp will still return true when device locked
@@ -2748,6 +2747,7 @@ export default class MetamaskController extends EventEmitter {
         status = false;
       }
     } else {
+      // fallback on stored status
       status = await this.checkHardwareStatus(deviceName, hdPath);
     }
     return status;

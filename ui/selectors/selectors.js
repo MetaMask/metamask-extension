@@ -257,7 +257,7 @@ export function getHardwareWalletDevice(state) {
 }
 
 /**
- * Returns the HD path fore the current wallet
+ * Returns the HD path for the current wallet
  *
  * @param {object} state
  * @returns {string | undefined}
