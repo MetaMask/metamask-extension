@@ -116,8 +116,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions();
-      await driver.checkBrowserForConsoleErrors();
+      await driver.checkBrowserForExceptions(failOnConsoleError);
+      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
     }
 
     let driverProxy;
@@ -160,15 +160,6 @@ async function withFixtures(options, testSuite) {
          * proving more helpful context
          */
         await driver.navigate(PAGES.BACKGROUND);
-        const allErrors = driver.errors.concat(driver.exceptions);
-        const errorMessage = `Errors found in browser console including the background:\n${allErrors.join(
-          '\n',
-        )}`;
-        if (failOnConsoleError) {
-          throw new Error(errorMessage);
-        } else {
-          console.error(new Error(errorMessage));
-        }
       }
     }
     throw error;

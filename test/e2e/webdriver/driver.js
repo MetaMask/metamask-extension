@@ -463,16 +463,17 @@ class Driver {
     return browserLogs;
   }
 
-  async checkBrowserForExceptions() {
+  async checkBrowserForExceptions(failOnConsoleError) {
     const { exceptions } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogException(cdpConnection, function (exception) {
+    await this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
       exceptions.push(description);
+      logBrowserError(failOnConsoleError, description);
     });
   }
 
-  async checkBrowserForConsoleErrors() {
+  async checkBrowserForConsoleErrors(failOnConsoleError) {
     const ignoredErrorMessages = [
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
@@ -483,17 +484,29 @@ class Driver {
     ];
     const { errors } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogEvent(cdpConnection, function (event) {
+    await this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
-        const { description } = event.args[0];
+        const eventDescription = event.args.filter(
+          (err) => err.description !== undefined,
+        );
+        const [{ description }] = eventDescription;
         const ignore = ignoredErrorMessages.some((message) =>
           description.includes(message),
         );
         if (!ignore) {
           errors.push(description);
+          logBrowserError(failOnConsoleError, description);
         }
       }
     });
+  }
+}
+
+function logBrowserError(failOnConsoleError, errorMessage) {
+  if (failOnConsoleError) {
+    throw new Error(errorMessage);
+  } else {
+    console.error(new Error(errorMessage));
   }
 }
 

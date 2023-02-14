@@ -99,6 +99,7 @@ async function runInShell(command, args, output) {
       const childProcess = spawn(command, args);
       childProcess.stdout.setEncoding('utf8');
       childProcess.stdout.pipe(process.stdout);
+      childProcess.stderr.pipe(process.stderr);
       if (output) {
         childProcess.stdout.pipe(fs.createWriteStream(output));
       }
