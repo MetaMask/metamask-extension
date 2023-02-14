@@ -39,7 +39,7 @@ jest.mock('../../../store/actions.ts', () => ({
   setRemoveNftMessage: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-describe('Nft Details', () => {
+describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   const nfts =
@@ -75,7 +75,7 @@ describe('Nft Details', () => {
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it(`should call removeAndIgnoreNft with proper nft details and route to '/' when removing nft`, () => {
+  it(`should call removeAndIgnoreNFT with proper nft details and route to '/' when removing nft`, () => {
     const { queryByTestId } = renderWithProvider(
       <NftDetails {...props} />,
       mockStore,

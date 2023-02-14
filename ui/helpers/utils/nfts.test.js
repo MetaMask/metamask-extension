@@ -1,6 +1,6 @@
 import { getNftImageAlt } from './nfts';
 
-describe('Nfts Utils', () => {
+describe('NFTs Utils', () => {
   describe('getNftImageAlt', () => {
     it('returns the description attribute when it is available', () => {
       expect(

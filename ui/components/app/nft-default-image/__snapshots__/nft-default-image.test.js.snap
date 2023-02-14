@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Nft Default Image should match snapshot with all provided props 1`] = `
+exports[`NFT Default Image should match snapshot with all provided props 1`] = `
 <div>
   <button
     class="nft-default nft-default--clickable"
@@ -10,7 +10,7 @@ exports[`Nft Default Image should match snapshot with all provided props 1`] = `
     <h6
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography nft-default__text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
     >
-      Nft Name
+      NFT Name
        
       <br />
        #
@@ -20,7 +20,7 @@ exports[`Nft Default Image should match snapshot with all provided props 1`] = `
 </div>
 `;
 
-exports[`Nft Default Image should match snapshot with missing image click handler 1`] = `
+exports[`NFT Default Image should match snapshot with missing image click handler 1`] = `
 <div>
   <div
     class="nft-default"
@@ -30,7 +30,7 @@ exports[`Nft Default Image should match snapshot with missing image click handle
     <h6
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography nft-default__text typography--h6 typography--weight-normal typography--style-normal typography--color-text-default"
     >
-      Nft Name
+      NFT Name
        
       <br />
        #
@@ -40,7 +40,7 @@ exports[`Nft Default Image should match snapshot with missing image click handle
 </div>
 `;
 
-exports[`Nft Default Image should render with no props 1`] = `
+exports[`NFT Default Image should render with no props 1`] = `
 <div>
   <div
     class="nft-default"

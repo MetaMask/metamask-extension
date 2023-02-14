@@ -175,7 +175,7 @@ const render = ({
   return renderWithProvider(<NftsTab onAddNFT={onAddNFT} />, store);
 };
 
-describe('Nft Items', () => {
+describe('NFT Items', () => {
   const detectNftsStub = jest.fn();
   const getStateStub = jest.fn();
   const checkAndUpdateAllNftsOwnershipStatusStub = jest.fn();
@@ -198,15 +198,15 @@ describe('Nft Items', () => {
     jest.clearAllMocks();
   });
 
-  describe('Nfts Detection Notice', () => {
-    it('should render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has no nfts', () => {
+  describe('NFTs Detection Notice', () => {
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no nfts', () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
       });
       expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
     });
-    it('should not render the Nfts Detection Notice when currently selected network is Mainnet and currently selected account has nfts', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has nfts', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -261,8 +261,8 @@ describe('Nft Items', () => {
       expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
-  describe('Nfts options', () => {
-    it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNfts and checkAndUpdateNftsOwnershipStatus', () => {
+  describe('NFTs options', () => {
+    it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,

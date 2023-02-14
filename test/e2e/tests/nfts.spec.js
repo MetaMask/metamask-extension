@@ -3,7 +3,7 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Nfts', function () {
+describe('NFTs', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [

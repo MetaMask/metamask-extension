@@ -3,7 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import NftDefaultImage from '.';
 
-describe('Nft Default Image', () => {
+describe('NFT Default Image', () => {
   it('should render with no props', () => {
     const { container } = renderWithProvider(<NftDefaultImage />);
 
@@ -12,7 +12,7 @@ describe('Nft Default Image', () => {
 
   it('should match snapshot with all provided props', () => {
     const props = {
-      name: 'Nft Name',
+      name: 'NFT Name',
       tokenId: '123',
       handleImageClick: jest.fn(),
     };
@@ -24,7 +24,7 @@ describe('Nft Default Image', () => {
 
   it('should match snapshot with missing image click handler', () => {
     const props = {
-      name: 'Nft Name',
+      name: 'NFT Name',
       tokenId: '123',
     };
 
@@ -35,7 +35,7 @@ describe('Nft Default Image', () => {
 
   it('should render NFT name', () => {
     const props = {
-      name: 'Nft Name',
+      name: 'NFT Name',
     };
 
     const { queryByText } = renderWithProvider(<NftDefaultImage {...props} />);
@@ -47,7 +47,7 @@ describe('Nft Default Image', () => {
 
   it('should render NFT name and tokenId', () => {
     const props = {
-      name: 'Nft Name',
+      name: 'NFT Name',
       tokenId: '123',
     };
 

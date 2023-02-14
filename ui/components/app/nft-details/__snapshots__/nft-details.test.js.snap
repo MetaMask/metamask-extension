@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Nft Details should match minimal props and state snapshot 1`] = `
+exports[`NFT Details should match minimal props and state snapshot 1`] = `
 <div>
   <div
     class="asset-navigation"

@@ -22,7 +22,7 @@ jest.mock('../../../store/actions.ts', () => ({
   updateNftDropDownState: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-describe('Nfts Item Component', () => {
+describe('NFTs Item Component', () => {
   const nfts =
     mockState.metamask.allNftContracts[mockState.metamask.selectedAddress][5];
   const props = {
@@ -30,7 +30,7 @@ describe('Nfts Item Component', () => {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
         nfts,
         collectionImage: '',
-        collectionName: 'Nft Collection',
+        collectionName: 'NFT Collection',
       },
     },
     previouslyOwnedCollection: {

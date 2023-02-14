@@ -3,7 +3,7 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import NftOptions from './nft-options';
 
-describe('Nft Options Component', () => {
+describe('NFT Options Component', () => {
   const props = {
     onRemove: jest.fn(),
     onViewOnOpensea: jest.fn(),
