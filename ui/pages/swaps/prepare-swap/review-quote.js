@@ -116,7 +116,9 @@ import {
   AlignItems,
   FLEX_DIRECTION,
   FONT_STYLE,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
+import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
@@ -753,7 +755,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
-        <span key="swapApproveNeedMoreTokens-1" className="view-quote__bold">
+        <span key="swapApproveNeedMoreTokens-1">
           {tokenBalanceNeeded || ethBalanceNeededStx || ethBalanceNeeded}
         </span>,
         tokenBalanceNeeded && !(sourceTokenSymbol === defaultSwapsToken.symbol)
@@ -1016,10 +1018,10 @@ export default function ViewQuote({ setReceiveToAmount }) {
   // };
 
   return (
-    <div className="view-quote review-quote">
+    <div className="review-quote">
       <div
-        className={classnames('view-quote__content', {
-          'view-quote__content_modal': disableSubmissionDueToPriceWarning,
+        className={classnames('review-quote__content', {
+          'review-quote__content_modal': disableSubmissionDueToPriceWarning,
         })}
       >
         {
@@ -1040,24 +1042,23 @@ export default function ViewQuote({ setReceiveToAmount }) {
         }
         {isShowingWarning && (
           <div
-            className={classnames('view-quote__warning-wrapper', {
-              'view-quote__warning-wrapper--thin': !isShowingWarning,
+            className={classnames('review-quote__warning-wrapper', {
+              'review-quote__warning-wrapper--thin': !isShowingWarning,
             })}
           >
             {viewQuotePriceDifferenceComponent}
             {(showInsufficientWarning || tokenBalanceUnavailable) && (
-              <ActionableMessage
-                message={actionableBalanceErrorMessage}
-                onClose={
-                  /* istanbul ignore next */
-                  () => setWarningHidden(true)
-                }
-              />
+              <BannerAlert
+                severity={SEVERITIES.INFO}
+                title={t('notEnoughBalance')}
+              >
+                {actionableBalanceErrorMessage}
+              </BannerAlert>
             )}
           </div>
         )}
 
-        <div className="view-quote__countdown-timer-container">
+        <div className="review-quote__countdown-timer-container">
           <CountdownTimer
             timeStarted={quotesLastFetched}
             warningTime="0:10"
@@ -1070,7 +1071,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
           marginBottom={0}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
-          className="review-quote__overview"
+          className="rereview-quote__overview"
         >
           <Box
             display={DISPLAY.FLEX}
@@ -1080,6 +1081,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
             <Typography
               color={TextColor.textAlternative}
               variant={TypographyVariant.H6}
+              marginRight={1}
             >
               {t('quoteRate')}
             </Typography>
@@ -1241,8 +1243,8 @@ export default function ViewQuote({ setReceiveToAmount }) {
             !smartTransactionsOptInStatus ||
             smartTransactionFees?.tradeTxFees) && (
             <div
-              className={classnames('view-quote__fee-card-container', {
-                'view-quote__fee-card-container--three-rows':
+              className={classnames('review-quote__fee-card-container', {
+                'review-quote__fee-card-container--three-rows':
                   approveTxParams && (!balanceError || warningHidden),
               })}
             >
@@ -1322,7 +1324,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
         }
         hideCancel
         disabled={isSwapButtonDisabled}
-        className={isShowingWarning ? 'view-quote__thin-swaps-footer' : ''}
+        className={isShowingWarning ? 'review-quote__thin-swaps-footer' : ''}
         showTopBorder
         showTermsOfService
       />
