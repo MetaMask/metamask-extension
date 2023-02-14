@@ -156,7 +156,7 @@ export default class ConfirmTransactionBase extends Component {
   };
 
   state = {
-    hardwareLocked: false,
+    hardwareLocked: this.props.isHardwareWallet,
     submitting: false,
     submitError: null,
     submitWarning: '',
@@ -974,7 +974,6 @@ export default class ConfirmTransactionBase extends Component {
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
-      isHardwareWallet,
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
@@ -990,11 +989,6 @@ export default class ConfirmTransactionBase extends Component {
     getNextNonce();
     if (toAddress) {
       tryReverseResolveAddress(toAddress);
-    }
-
-    if (isHardwareWallet) {
-      // disable until status known
-      this.setState({ hardwareLocked: true });
     }
 
     /**
