@@ -125,8 +125,6 @@ export default class MetaMetricsController {
       environment === 'production' ? version : `${version}-${environment}`;
     this.extension = extension;
     this.environment = environment;
-    this.transactionSecurityCheckEnabled =
-      prefState.transactionSecurityCheckEnabled;
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
@@ -145,12 +143,9 @@ export default class MetaMetricsController {
       },
     });
 
-    preferencesStore.subscribe(
-      ({ currentLocale, transactionSecurityCheckEnabled }) => {
-        this.locale = currentLocale.replace('_', '-');
-        this.transactionSecurityCheckEnabled = transactionSecurityCheckEnabled;
-      },
-    );
+    preferencesStore.subscribe(({ currentLocale }) => {
+      this.locale = currentLocale.replace('_', '-');
+    });
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();
