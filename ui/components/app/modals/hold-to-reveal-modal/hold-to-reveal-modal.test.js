@@ -89,4 +89,26 @@ describe('Hold to Reveal Modal', () => {
       expect(hideModalStub.callCount).toBe(1);
     });
   });
+
+  it('should remain open if long pressed was not complete', async () => {
+    const { getByText } = renderWithProvider(
+      <HoldToRevealModal
+        onLongPressed={onLongPressStub}
+        hideModal={hideModalStub}
+      />,
+      mockStore,
+    );
+
+    const holdButton = getByText('Hold to reveal SRP');
+    waitFor(
+      () => {
+        expect(holdButton.firstChild).toHaveClass(
+          'hold-to-reveal-button__unlock-icon-container',
+        );
+        expect(onLongPressStub.callCount).toBe(0);
+        expect(hideModalStub.callCount).toBe(0);
+      },
+      { interval: 100 },
+    );
+  });
 });
