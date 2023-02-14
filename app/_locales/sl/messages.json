@@ -627,12 +627,6 @@
   "reset": {
     "message": "Ponastavi"
   },
-  "resetAccount": {
-    "message": "Ponastavi račun"
-  },
-  "resetAccountDescription": {
-    "message": "Ponastavljanje računa bo izbrisalo zgodovino transakcij."
-  },
   "restore": {
     "message": "Obnovi"
   },

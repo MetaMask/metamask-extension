@@ -636,12 +636,6 @@
   "reset": {
     "message": "אפס"
   },
-  "resetAccount": {
-    "message": "אפס חשבון"
-  },
-  "resetAccountDescription": {
-    "message": "איפוס חשבונך ינקה את היסטוריית העסקאות שלך."
-  },
   "restore": {
     "message": "שחזר"
   },
