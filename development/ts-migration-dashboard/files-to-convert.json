@@ -1149,7 +1149,7 @@
   "ui/hooks/useApproveTransaction.js",
   "ui/hooks/useAssetDetails.js",
   "ui/hooks/useAssetDetails.test.js",
-  "ui/hooks/useCollectiblesCollections.js",
+  "ui/hooks/useNftsCollections.js",
   "ui/hooks/useCopyToClipboard.js",
   "ui/hooks/useCurrencyDisplay.js",
   "ui/hooks/useCurrencyDisplay.test.js",

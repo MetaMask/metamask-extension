@@ -4,7 +4,7 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Import NFT', function () {
-  const smartContract = SMART_CONTRACTS.COLLECTIBLES;
+  const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [
       {
@@ -51,10 +51,10 @@ describe('Import NFT', function () {
         // Check the imported NFT and its image are displayed in the NFT tab
         const importedNft = await driver.waitForSelector({
           css: 'h5',
-          text: 'TestDappCollectibles',
+          text: 'TestDappNfts',
         });
         const importedNftImage = await driver.findElement(
-          '.collectibles-items__item-image',
+          '.nfts-items__item-image',
         );
         assert.equal(await importedNft.isDisplayed(), true);
         assert.equal(await importedNftImage.isDisplayed(), true);

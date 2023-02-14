@@ -3,8 +3,8 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Collectibles', function () {
-  const smartContract = SMART_CONTRACTS.COLLECTIBLES;
+describe('Nfts', function () {
+  const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [
       {
@@ -50,7 +50,7 @@ describe('Collectibles', function () {
         // Confirm transfer
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__title',
-          text: 'TestDappCollectibles',
+          text: 'TestDappNfts',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
@@ -114,7 +114,7 @@ describe('Collectibles', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of your TestDappCollectibles (#1)?',
+          'Allow access to and transfer of your TestDappNfts (#1)?',
         );
         assert.equal(await func.getText(), 'Function: Approve');
 
@@ -180,7 +180,7 @@ describe('Collectibles', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of all your TestDappCollectibles?',
+          'Allow access to and transfer of all your TestDappNfts?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: true');
@@ -252,7 +252,7 @@ describe('Collectibles', function () {
         );
         assert.equal(
           await title.getText(),
-          'Revoke permission to access and transfer all of your TestDappCollectibles?',
+          'Revoke permission to access and transfer all of your TestDappNfts?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: false');
