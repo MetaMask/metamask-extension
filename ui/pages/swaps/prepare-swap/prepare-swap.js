@@ -931,25 +931,21 @@ export default function PrepareSwap({
         {transactionSettingsOpened &&
           (smartTransactionsEnabled ||
             (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
-            <div className="prepare-swap__transaction-settings-container">
-              <TransactionSettings
-                onSelect={(newSlippage) => {
-                  dispatch(setMaxSlippage(newSlippage));
-                }}
-                maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-                currentSlippage={maxSlippage}
-                smartTransactionsEnabled={smartTransactionsEnabled}
-                smartTransactionsOptInStatus={smartTransactionsOptInStatus}
-                setSmartTransactionsOptInStatus={
-                  setSmartTransactionsOptInStatus
-                }
-                currentSmartTransactionsError={currentSmartTransactionsError}
-                isDirectWrappingEnabled={isDirectWrappingEnabled}
-                onModalClose={() => {
-                  dispatch(setTransactionSettingsOpened(false));
-                }}
-              />
-            </div>
+            <TransactionSettings
+              onSelect={(newSlippage) => {
+                dispatch(setMaxSlippage(newSlippage));
+              }}
+              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+              currentSlippage={maxSlippage}
+              smartTransactionsEnabled={smartTransactionsEnabled}
+              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
+              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
+              currentSmartTransactionsError={currentSmartTransactionsError}
+              isDirectWrappingEnabled={isDirectWrappingEnabled}
+              onModalClose={() => {
+                dispatch(setTransactionSettingsOpened(false));
+              }}
+            />
           )}
         {!isReviewSwapButtonDisabled && !areQuotesPresent && (
           <Box
