@@ -636,12 +636,6 @@
   "reset": {
     "message": "Tyhjennä"
   },
-  "resetAccount": {
-    "message": "Nollaa tili"
-  },
-  "resetAccountDescription": {
-    "message": "Tilisi nollaaminen tyhjentää tapahtumahistoriasi."
-  },
   "restore": {
     "message": "Palauta"
   },

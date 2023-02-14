@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "Atur ulang"
   },
-  "resetAccount": {
-    "message": "Reset akun"
-  },
-  "resetAccountDescription": {
-    "message": "Mengatur ulang akun akan mengosongkan riwayat transaksi Anda. Ini tidak akan mengubah saldo di akun atau mengharuskan Anda untuk memasukkan kembali Frasa Pemulihan Rahasia."
-  },
   "resetWallet": {
     "message": "Reset dompet"
   },

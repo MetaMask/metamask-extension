@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "재설정"
   },
-  "resetAccount": {
-    "message": "계정 재설정"
-  },
-  "resetAccountDescription": {
-    "message": "계정을 재설정하면 거래 내역이 지워집니다. 계정의 잔액은 변경되지 않으며 비밀 복구 구문을 다시 입력하지 않아도 됩니다."
-  },
   "resetWallet": {
     "message": "지갑 초기화"
   },

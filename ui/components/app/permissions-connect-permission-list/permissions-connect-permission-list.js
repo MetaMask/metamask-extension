@@ -20,7 +20,7 @@ function getDescriptionNode(
 ) {
   return (
     <div className="permission" key={`${permissionName}-${index}`}>
-      <i className={leftIcon} />
+      {typeof leftIcon === 'string' ? <i className={leftIcon} /> : leftIcon}
       {label}
       {rightIcon && <i className={rightIcon} />}
     </div>

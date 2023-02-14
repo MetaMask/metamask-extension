@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "Restablecer"
   },
-  "resetAccount": {
-    "message": "Restablecer cuenta"
-  },
-  "resetAccountDescription": {
-    "message": "Restablecer la cuenta borrará el historial de transacciones. Esto no cambiará los saldos de las cuentas ni se le pedirá que vuelva a escribir la frase secreta de recuperación."
-  },
   "resetWallet": {
     "message": "Restablecer cartera"
   },
