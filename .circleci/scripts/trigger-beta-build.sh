@@ -5,11 +5,12 @@ set -u
 set -o pipefail
 
 # => Version-v10.24.1
-version="${CIRCLE_BRANCH/Version-v/}"
-current_commit_msg=$(git show -s --format='%s' HEAD)
-build_version="echo $current_commit_msg | cut -d \beta -f 2"
-printf '%s\n' "Creating the prod beta build for $version with beta version $build_version"
-yarn build --build-type beta --build-version "${build_version}" prod
+#version="${CIRCLE_BRANCH/Version-v/}"
+#current_commit_msg=$(git show -s --format='%s' HEAD)
+#build_version="echo $current_commit_msg | cut -d \beta -f 2"
+#printf '%s\n' "Creating the prod beta build for $version with beta version $build_version"
+yarn build --build-type beta --build-version 2 prod
+
 
 #if [[ $current_commit_msg =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+[-]beta.[[:digit:]]) ]]
 #then
