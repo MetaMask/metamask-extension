@@ -66,7 +66,7 @@ export function useAssetDetails(
     nfts,
     tokensWithBalances,
     prevTokenBalance,
-    isTokenCategory,
+    opts.isTokenCategory,
   ]);
 
   if (currentAsset) {
