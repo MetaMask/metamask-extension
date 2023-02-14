@@ -71,8 +71,8 @@ async function compileScripts(src: string, dest: string) {
 
   const bundleStream = bundler.bundle();
   bundleStream.pipe(fs.createWriteStream(dest));
-  bundleStream.on('error', (error: Error) => {
-    throw error;
+  bundleStream.on('error', (error: unknown) => {
+    console.error(`Couldn't compile scripts: ${error}`);
   });
   await pify(endOfStream(bundleStream));
 
@@ -95,7 +95,7 @@ async function compileStylesheets(src: string, dest: string): Promise<void> {
     gulp.src(src),
     sourcemaps.init(),
     gulpDartSass().on('error', (error: unknown) => {
-      throw error;
+      console.error(`Couldn't compile stylesheets: ${error}`);
     }),
     autoprefixer(),
     sourcemaps.write(),
@@ -141,16 +141,10 @@ async function copyStaticFiles(src: string, dest: string): Promise<void> {
  * @param options.isInitial - Whether this is the first time this function has
  * been called (if we are watching for file changes, we may call this function
  * multiple times).
- * @param options.isOnly - Whether this will be the only time this function will
- * be called (if we are not watching for file changes, then this will never be
- * called again).
  */
-async function rebuild({
-  isInitial = false,
-  isOnly = false,
-} = {}): Promise<void> {
-  if (isInitial && !isOnly) {
-    console.log('Running initial build, please wait (may take a bit)...');
+async function rebuild({ isInitial = false } = {}): Promise<void> {
+  if (isInitial) {
+    console.log('Building dependency tree, hang tight...');
   }
 
   if (!isInitial) {
@@ -159,26 +153,22 @@ async function rebuild({
 
   await fs.emptyDir(FINAL_BUILD_DIRECTORY_PATH);
 
-  try {
-    if (isInitial) {
-      await generateIntermediateFiles();
-    }
-
-    await compileScripts(
-      path.join(APP_DIRECTORY_PATH, 'index.tsx'),
-      path.join(FINAL_BUILD_DIRECTORY_PATH, 'index.js'),
-    );
-    await compileStylesheets(
-      path.join(APP_DIRECTORY_PATH, 'index.scss'),
-      FINAL_BUILD_DIRECTORY_PATH,
-    );
-    await copyStaticFiles(
-      path.join(APP_DIRECTORY_PATH, 'public'),
-      FINAL_BUILD_DIRECTORY_PATH,
-    );
-  } catch (error: unknown) {
-    console.error(error);
+  if (isInitial) {
+    await generateIntermediateFiles();
   }
+
+  await compileScripts(
+    path.join(APP_DIRECTORY_PATH, 'index.tsx'),
+    path.join(FINAL_BUILD_DIRECTORY_PATH, 'index.js'),
+  );
+  await compileStylesheets(
+    path.join(APP_DIRECTORY_PATH, 'index.scss'),
+    FINAL_BUILD_DIRECTORY_PATH,
+  );
+  await copyStaticFiles(
+    path.join(APP_DIRECTORY_PATH, 'public'),
+    FINAL_BUILD_DIRECTORY_PATH,
+  );
 }
 
 /**
@@ -202,7 +192,7 @@ async function main() {
 
   if (opts.watch) {
     const rebuildIgnoringErrors = () => {
-      rebuild().catch((error: Error) => {
+      rebuild().catch((error: unknown) => {
         console.error(error);
       });
     };
@@ -222,8 +212,7 @@ async function main() {
       .on('error', (error: unknown) => {
         console.error(error);
       });
-    await rebuild({ isInitial: true, isOnly: false });
-  } else {
-    await rebuild({ isInitial: true, isOnly: true });
   }
+
+  await rebuild({ isInitial: true });
 }
