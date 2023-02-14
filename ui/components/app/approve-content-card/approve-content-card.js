@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
-import Typography from '../../ui/typography/typography';
+import { Text } from '../../component-library';
 import {
   AlignItems,
   BLOCK_SIZES,
@@ -14,7 +14,7 @@ import {
   JustifyContent,
   TEXT_ALIGN,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import GasDetailsItem from '../gas-details-item/gas-details-item';
@@ -73,24 +73,19 @@ export default function ApproveContentCard({
                 marginLeft={4}
                 className="approve-content-card-container__card-header__title"
               >
-                <Typography
-                  variant={TypographyVariant.H6}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
-                  {title}
-                </Typography>
+                <Text variant={TextVariant.bodySmBold}>{title}</Text>
               </Box>
             </>
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
             <Box width={BLOCK_SIZES.ONE_SIXTH}>
               <Button type="link" onClick={() => onEditClick()}>
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
                 >
                   {t('edit')}
-                </Typography>
+                </Text>
               </Button>
             </Box>
           )}
@@ -132,14 +127,14 @@ export default function ApproveContentCard({
                     display={DISPLAY.FLEX}
                     justifyContent={JustifyContent.spaceBetween}
                   >
-                    <Typography
-                      variant={TypographyVariant.H6}
+                    <Text
+                      variant={TextVariant.bodySm}
                       fontWeight={FONT_WEIGHT.NORMAL}
                       color={TextColor.textMuted}
                     >
                       <span>{t('transactionDetailLayer2GasHeading')}</span>
                       {`${ethTransactionTotal} ${nativeCurrency}`}
-                    </Typography>
+                    </Text>
                   </Box>
                   <MultiLayerFeeMessage
                     transaction={fullTxData}
@@ -151,12 +146,12 @@ export default function ApproveContentCard({
               ) : (
                 <>
                   <Box>
-                    <Typography
-                      variant={TypographyVariant.H7}
+                    <Text
+                      variant={TextVariant.bodySm}
                       color={TextColor.textAlternative}
                     >
                       {t('feeAssociatedRequest')}
-                    </Typography>
+                    </Text>
                   </Box>
                   <Box
                     display={DISPLAY.FLEX}
@@ -166,8 +161,8 @@ export default function ApproveContentCard({
                   >
                     {useCurrencyRateCheck && (
                       <Box>
-                        <Typography
-                          variant={TypographyVariant.H4}
+                        <Text
+                          variant={TextVariant.headingSm}
                           fontWeight={FONT_WEIGHT.BOLD}
                           color={TextColor.TEXT_DEFAULT}
                         >
@@ -175,17 +170,17 @@ export default function ApproveContentCard({
                             fiatTransactionTotal,
                             currentCurrency,
                           )}
-                        </Typography>
+                        </Text>
                       </Box>
                     )}
                     <Box>
-                      <Typography
-                        variant={TypographyVariant.H6}
+                      <Text
+                        variant={TextVariant.bodySm}
                         fontWeight={FONT_WEIGHT.NORMAL}
                         color={TextColor.textMuted}
                       >
                         {`${ethTransactionTotal} ${nativeCurrency}`}
-                      </Typography>
+                      </Text>
                     </Box>
                   </Box>
                 </>
@@ -195,35 +190,35 @@ export default function ApproveContentCard({
         {renderDataContent && (
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
             <Box>
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {isSetApproveForAll
                   ? t('functionSetApprovalForAll')
                   : t('functionApprove')}
-              </Typography>
+              </Text>
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
               <Box>
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}
                 >
                   {`${t('parameters')}: ${isApprovalOrRejection}`}
-                </Typography>
+                </Text>
               </Box>
             ) : null}
             <Box
               marginRight={4}
               className="approve-content-card-container__data__data-block"
             >
-              <Typography
-                variant={TypographyVariant.H7}
+              <Text
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {data}
-              </Typography>
+              </Text>
             </Box>
           </Box>
         )}
