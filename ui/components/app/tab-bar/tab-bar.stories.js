@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon, ICON_NAMES } from '../../component-library';
 import TabBar from '.';
 
 export default {
@@ -38,7 +39,7 @@ export default {
         key: 'securityAndPrivacy',
       },
       {
-        icon: <i className="fa fa-bell" />,
+        icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
         content: 'Alerts',
         key: 'alerts',
       },
