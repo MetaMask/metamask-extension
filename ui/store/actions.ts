@@ -2221,13 +2221,13 @@ export async function checkAndUpdateAllNftsOwnershipStatus() {
 
 export async function isNftOwner(
   ownerAddress: string,
-  collectibleAddress: string,
-  collectibleId: string,
+  nftAddress: string,
+  nftId: string,
 ): Promise<boolean> {
   return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
-    collectibleAddress,
-    collectibleId,
+    nftAddress,
+    nftId,
   ]);
 }
 
@@ -2675,7 +2675,7 @@ export function hideAlert(): Action {
 interface NftDropDownState {
   [address: string]: {
     [chainId: string]: {
-      [collectibleAddress: string]: boolean;
+      [nftAddress: string]: boolean;
     };
   };
 }
