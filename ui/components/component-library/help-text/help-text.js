@@ -36,7 +36,7 @@ export const HelpText = ({
   return (
     <Text
       className={classnames('mm-help-text', className)}
-      as="p"
+      as={children && typeof children === 'object' ? 'div' : 'p'}
       variant={TextVariant.bodyXs}
       color={severity ? severityColor() : color}
       {...props}

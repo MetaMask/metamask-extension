@@ -64,4 +64,18 @@ describe('HelpText', () => {
     );
     expect(getByText('text muted')).toHaveClass('mm-text--color-text-muted');
   });
+  it('should render with a different html element if children is an object', () => {
+    const { getByText, getByTestId } = render(
+      <>
+        <HelpText>help text as p</HelpText>
+        <HelpText data-testid="help-text-div">
+          <span>help text as div</span> <Icon name={ICON_NAMES.WARNING} />
+        </HelpText>
+      </>,
+    );
+    expect(getByText('help text as p')).toBeDefined();
+    expect(getByText('help text as p').tagName).toBe('P');
+    expect(getByText('help text as div')).toBeDefined();
+    expect(getByTestId('help-text-div').tagName).toBe('DIV');
+  });
 });
