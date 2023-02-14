@@ -38,22 +38,22 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   [RestrictedMethods.snap_confirm]: (t) => ({
     label: t('permission_customConfirmation'),
-    description: 'TODO.',
+    description: t('permission_customConfirmationDescription'),
     leftIcon: 'fas fa-user-check',
     rightIcon: 'fas fa-info-circle',
     weight: 3,
   }),
   [RestrictedMethods.snap_dialog]: (t) => ({
     label: t('permission_dialog'),
-    description: 'TODO.',
+    description: t('permission_dialogDescription'),
     leftIcon: 'fas fa-user-check',
     rightIcon: 'fas fa-info-circle',
     weight: 3,
   }),
   [RestrictedMethods.snap_notify]: (t) => ({
-    leftIcon: <Icon name={ICON_NAMES.NOTIFICATION} />,
-    description: 'TODO.',
     label: t('permission_notifications'),
+    description: t('permission_notificationsDescription'),
+    leftIcon: <Icon name={ICON_NAMES.NOTIFICATION} />,
     rightIcon: 'fas fa-info-circle',
     weight: 3,
   }),
@@ -81,6 +81,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
             </span>,
             path.join('/'),
           ]),
+          description: t('permission_viewNamedBip32PublicKeysDescription'),
         };
       }
 
@@ -92,12 +93,12 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           </span>,
           curve,
         ]),
+        description: t('permission_viewNamedBip32PublicKeysDescription'),
       };
     }),
   [RestrictedMethods.snap_getBip32Entropy]: (t, _, permissionValue) =>
     permissionValue.caveats[0].value.map(({ path, curve }) => {
       const baseDescription = {
-        description: 'TODO.',
         leftIcon: 'fas fa-door-open',
         rightIcon: 'fa fa-exclamation-triangle',
         weight: 1,
@@ -113,6 +114,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
             </span>,
             path.join('/'),
           ]),
+          description: t('permission_manageNamedBip32KeysDescription'),
         };
       }
 
@@ -124,6 +126,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           </span>,
           curve,
         ]),
+        description: t('permission_manageBip32KeysDescription'),
       };
     }),
   [RestrictedMethods.snap_getBip44Entropy]: (t, _, permissionValue) =>
@@ -134,21 +137,21 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
             `${coinType} (Unrecognized protocol)`}
         </span>,
       ]),
-      description: 'TODO.',
+      description: t('permission_manageBip44KeysDescription'),
       leftIcon: 'fas fa-door-open',
       rightIcon: 'fa fa-exclamation-triangle',
       weight: 1,
     })),
   [RestrictedMethods.snap_getEntropy]: (t) => ({
     label: t('permission_getEntropy'),
-    description: 'TODO.',
+    description: t('permission_getEntropyDescription'),
     leftIcon: 'fas fa-key',
     rightIcon: 'fas fa-info-circle',
     weight: 3,
   }),
   [RestrictedMethods.snap_manageState]: (t) => ({
     label: t('permission_manageState'),
-    description: 'TODO.',
+    description: t('permission_manageStateDescription'),
     leftIcon: 'fas fa-download',
     rightIcon: 'fas fa-info-circle',
     weight: 3,
@@ -156,10 +159,10 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.wallet_snap]: (t, _, permissionValue) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
-      description: 'TODO.',
       leftIcon: 'fas fa-bolt',
       rightIcon: 'fas fa-info-circle',
     };
+
     return Object.keys(snaps).map((snapId) => {
       const friendlyName = getSnapName(snapId);
       if (friendlyName) {
@@ -172,6 +175,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           ]),
         };
       }
+
       return {
         ...baseDescription,
         label: t('permission_accessSnap', [snapId]),
@@ -180,7 +184,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   },
   [EndowmentPermissions['endowment:network-access']]: (t) => ({
     label: t('permission_accessNetwork'),
-    description: 'TODO.',
+    description: t('permission_accessNetworkDescription'),
     leftIcon: 'fas fa-wifi',
     rightIcon: 'fas fa-info-circle',
     weight: 2,
@@ -193,7 +197,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   }),
   [EndowmentPermissions['endowment:long-running']]: (t) => ({
     label: t('permission_longRunning'),
-    description: 'TODO.',
+    description: t('permission_longRunningDescription'),
     leftIcon: 'fas fa-infinity',
     rightIcon: 'fas fa-info-circle',
     weight: 3,
@@ -204,15 +208,16 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     permissionValue,
   ) => {
     const baseDescription = {
-      description: 'TODO.',
       leftIcon: 'fas fa-info',
       rightIcon: 'fas fa-info-circle',
+      weight: 3,
     };
 
     const result = [
       {
         ...baseDescription,
         label: t('permission_transactionInsight'),
+        description: t('permission_transactionInsightDescription'),
       },
     ];
 
@@ -224,6 +229,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       result.push({
         ...baseDescription,
         label: t('permission_transactionInsightOrigin'),
+        description: t('permission_transactionInsightOriginDescription'),
         leftIcon: 'fas fa-compass',
       });
     }
@@ -232,37 +238,45 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   },
   [EndowmentPermissions['endowment:cronjob']]: (t) => ({
     label: t('permission_cronjob'),
-    description: 'TODO.',
+    description: t('permission_cronjobDescription'),
     leftIcon: 'fas fa-clock',
     rightIcon: 'fas fa-info-circle',
     weight: 2,
   }),
   [EndowmentPermissions['endowment:ethereum-provider']]: (t) => ({
     label: t('permission_ethereumProvider'),
-    description: 'TODO.',
+    description: t('permission_ethereumProviderDescription'),
     leftIcon: 'fab fa-ethereum',
     rightIcon: 'fas fa-info-circle',
     weight: 1,
   }),
   [EndowmentPermissions['endowment:rpc']]: (t, _, permissionValue) => {
-    const { snaps, dapps } = getRpcCaveatOrigins(permissionValue);
-
-    const labels = [];
-    if (snaps) {
-      labels.push(t('permission_rpc', [t('otherSnaps')]));
-    }
-
-    if (dapps) {
-      labels.push(t('permission_rpc', [t('websites')]));
-    }
-
-    return labels.map((label) => ({
-      label,
-      description: 'TODO.',
+    const baseDescription = {
       leftIcon: 'fas fa-plug',
       rightIcon: 'fas fa-info-circle',
       weight: 2,
-    }));
+    };
+
+    const { snaps, dapps } = getRpcCaveatOrigins(permissionValue);
+
+    const results = [];
+    if (snaps) {
+      results.push({
+        ...baseDescription,
+        label: t('permission_rpc', [t('otherSnaps')]),
+        description: t('permission_rpcDescription'),
+      });
+    }
+
+    if (dapps) {
+      results.push({
+        ...baseDescription,
+        label: t('permission_rpc', [t('websites')]),
+        description: t('permission_rpcDescription'),
+      });
+    }
+
+    return results;
   },
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: (t, permissionName) => ({
