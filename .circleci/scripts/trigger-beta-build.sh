@@ -27,7 +27,7 @@ if [[ $current_commit_msg =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:d
 then
     yarn build --build-type beta prod
     printf '%s\n' "Creating the prod beta build for $version"
-
+    exit 0
 else
   # filter the commit message like Version v10.24.1-beta.1
     printf '%s\n' 'Commit message does not match commit message for beta pattern; skipping beta automation build'

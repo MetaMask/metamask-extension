@@ -356,7 +356,7 @@ jobs:
           at: .
       - run:
           name: build:prod
-          command: yarn build --build-type beta prod
+          command: .circleci/scripts/trigger-beta-build.sh
       - persist_to_workspace:
           root: .
           paths:
