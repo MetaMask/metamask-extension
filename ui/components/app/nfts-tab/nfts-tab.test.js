@@ -206,7 +206,7 @@ describe('NFT Items', () => {
       });
       expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
     });
-    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has nfts', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -242,7 +242,7 @@ describe('NFT Items', () => {
   });
 
   describe('Collections', () => {
-    it('should render the name of the collections and number of NFTs in each collection if current account/chainId combination has nfts', () => {
+    it('should render the name of the collections and number of NFTs in each collection if current account/chainId combination has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
@@ -251,7 +251,7 @@ describe('NFT Items', () => {
       expect(screen.queryByText('PUNKS (5)')).toBeInTheDocument();
       expect(screen.queryByText('Munks (3)')).toBeInTheDocument();
     });
-    it('should not render collections if current account/chainId combination has nfts', () => {
+    it('should not render collections if current account/chainId combination has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
