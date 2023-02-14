@@ -611,12 +611,6 @@
   "reset": {
     "message": "Resetovať"
   },
-  "resetAccount": {
-    "message": "Resetovat účet"
-  },
-  "resetAccountDescription": {
-    "message": "Pri obnovení účtu sa vymaže história transakcií."
-  },
   "restore": {
     "message": "Obnoviť"
   },

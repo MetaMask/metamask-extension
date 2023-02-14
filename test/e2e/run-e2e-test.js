@@ -93,17 +93,22 @@ async function main() {
 
   const configFile = path.join(__dirname, '.mocharc.js');
 
+  const dir = 'test/test-results/e2e';
+  fs.mkdir(dir, { recursive: true });
+
   await retry({ retries }, async () => {
-    await runInShell('yarn', [
-      'mocha',
-      `--config=${configFile}`,
-      `--timeout=${testTimeoutInMilliseconds}`,
-      '--reporter=xunit',
-      '--reporter-option',
-      `output=test/test-results/e2e/${testFileName}.xml`,
-      e2eTestPath,
-      exit,
-    ]);
+    await runInShell(
+      'yarn',
+      [
+        'mocha',
+        `--config=${configFile}`,
+        `--timeout=${testTimeoutInMilliseconds}`,
+        '--reporter=xunit',
+        e2eTestPath,
+        exit,
+      ],
+      `${dir}/${testFileName}.xml`,
+    );
   });
 }
 

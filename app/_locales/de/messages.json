@@ -2883,12 +2883,6 @@
   "reset": {
     "message": "Zurücksetzen"
   },
-  "resetAccount": {
-    "message": "Konto zurücksetzen"
-  },
-  "resetAccountDescription": {
-    "message": "Durch das Zurücksetzen Ihres Kontos wird Ihr Transaktionsverlauf gelöscht."
-  },
   "resetWallet": {
     "message": "Wallet zurücksetzen"
   },
