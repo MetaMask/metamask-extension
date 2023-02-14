@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(main)
 import {
   EVENT,
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
 import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
