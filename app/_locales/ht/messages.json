@@ -452,12 +452,6 @@
   "reset": {
     "message": "Repwograme"
   },
-  "resetAccount": {
-    "message": "Repwograme Kont"
-  },
-  "resetAccountDescription": {
-    "message": "Repwograme kont a netwaye tranzaksyon ou yo."
-  },
   "restore": {
     "message": "Retabli"
   },
