@@ -1363,11 +1363,14 @@
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
 <<<<<<< HEAD
+<<<<<<< HEAD
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true
 =======
+=======
+        "@metamask/permission-controller": true,
+>>>>>>> d50ec2b73 (update policy)
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "@metamask/rpc-methods>@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/snaps-ui": true,
         "@metamask/rpc-methods>nanoid": true,
         "@metamask/snaps-utils": true,
@@ -1389,32 +1392,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/permission-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/rpc-methods>nanoid": true,
-        "deep-freeze-strict": true,
-        "eth-rpc-errors": true,
-        "immer": true,
-        "json-rpc-engine": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>isomorphic-fetch": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/rpc-methods>@metamask/snaps-ui": {
