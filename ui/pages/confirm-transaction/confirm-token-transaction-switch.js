@@ -32,7 +32,9 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
     tokenAmount,
     tokenId,
     toAddress,
-  } = useAssetDetails(tokenAddress, userAddress, data, true);
+  } = useAssetDetails(tokenAddress, userAddress, data, {
+    isTokenCategory: true,
+  });
 
   const {
     ethTransactionTotal,

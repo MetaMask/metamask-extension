@@ -30,12 +30,9 @@ const renderUseAssetDetails = ({
 
   return renderHook(
     () =>
-      useAssetDetails(
-        tokenAddress,
-        userAddress,
-        transactionData,
+      useAssetDetails(tokenAddress, userAddress, transactionData, {
         isTokenCategory,
-      ),
+      }),
     { wrapper },
   );
 };

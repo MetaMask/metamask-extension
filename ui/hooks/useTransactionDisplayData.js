@@ -132,7 +132,7 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress,
     senderAddress,
     initialTransaction?.txParams?.data,
-    isTokenCategory,
+    { isTokenCategory },
   );
   const customToken = { address: toAddress, symbol: tokenSymbol, decimals };
 

@@ -12,7 +12,7 @@ export function useAssetDetails(
   tokenAddress,
   userAddress,
   transactionData,
-  isTokenCategory = false,
+  opts = { isTokenCategory: false },
 ) {
   const dispatch = useDispatch();
   // state selectors
@@ -47,7 +47,7 @@ export function useAssetDetails(
       dispatch(hideLoadingIndication());
     }
     if (
-      isTokenCategory &&
+      opts.isTokenCategory &&
       (tokenAddress !== prevTokenAddress ||
         userAddress !== prevUserAddress ||
         transactionData !== prevTransactionData ||
