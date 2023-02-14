@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockState from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import sinon from 'sinon';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -25,8 +24,8 @@ jest.mock('../../../../store/actions.ts', () => {
 
 describe('Hold to Reveal Modal', () => {
   const mockStore = configureMockState([thunk])(mockState);
-  const onLongPressStub = sinon.stub().resolves();
-  const hideModalStub = sinon.stub().resolves();
+  const onLongPressStub = jest.fn().mockResolvedValue();
+  const hideModalStub = jest.fn().mockResolvedValue();
 
   global.platform = { openTab: jest.fn() };
 
