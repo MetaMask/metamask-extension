@@ -591,7 +591,8 @@ export default class ConfirmTransactionBase extends Component {
         <HardwareWalletState
           device={device}
           hdPath={hdPath}
-          onChange={(status) =>
+          initialStatus="unlocked"
+          onUpdate={(status) =>
             this.setState({ hardwareLocked: status === 'locked' })
           }
         />
@@ -992,7 +993,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     if (isHardwareWallet) {
-      // assume hardware is locked until status is known
+      // disable until status known
       this.setState({ hardwareLocked: true });
     }
 
@@ -1018,9 +1019,6 @@ export default class ConfirmTransactionBase extends Component {
   componentWillUnmount() {
     this._beforeUnloadForGasPolling();
     this._removeBeforeUnload();
-    if (this.hdStatusIntervalId) {
-      clearInterval(this.hdStatusIntervalId);
-    }
   }
 
   supportsEIP1559 =

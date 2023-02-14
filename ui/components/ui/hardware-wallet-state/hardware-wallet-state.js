@@ -16,35 +16,24 @@ const noOp = () => {
  * @param options0.device
  * @param options0.hdPath
  * @param options0.pollingRateMs
- * @param options0.onChange
- * @param options0.onLock
- * @param options0.onUnlock
+ * @param options0.initialStatus
+ * @param options0.onUpdate
  */
 export default function HardwareWalletState({
   device,
   hdPath,
   pollingRateMs = HARDWARE_CHECK_RATE,
-  onChange = noOp,
-  onLock = noOp,
-  onUnlock = noOp,
+  initialStatus = 'locked',
+  onUpdate = noOp,
 }) {
   const t = useContext(I18nContext);
-  const [isUnlocked, setUnlocked] = useState(undefined);
+  const [status, setStatus] = useState(initialStatus);
 
   const updateHardwareLockState = async () => {
-    const wasUnlocked = isUnlocked;
     const unlocked = await isDeviceAccessible(device, hdPath);
-    setUnlocked(unlocked);
-    // fire events on change
-    if (wasUnlocked !== unlocked) {
-      if (unlocked) {
-        await onUnlock();
-        await onChange('unlocked');
-      } else {
-        await onLock();
-        await onChange('locked');
-      }
-    }
+    const state = unlocked ? 'unlocked' : 'locked';
+    setStatus(state);
+    onUpdate(state);
   };
 
   useEffect(() => {
@@ -52,9 +41,8 @@ export default function HardwareWalletState({
     return () => clearInterval(intervalId);
   });
 
-  // only show if state is defined
   return (
-    isUnlocked === false && (
+    status === 'locked' && (
       <ActionableMessage
         message={t('ledgerLocked')}
         type="danger"
@@ -69,7 +57,6 @@ HardwareWalletState.propTypes = {
   device: PropTypes.string,
   hdPath: PropTypes.string,
   pollingRateMs: PropTypes.number,
-  onChange: PropTypes.func,
-  onLock: PropTypes.func,
-  onUnlock: PropTypes.func,
+  initialStatus: PropTypes.string,
+  onUpdate: PropTypes.func,
 };

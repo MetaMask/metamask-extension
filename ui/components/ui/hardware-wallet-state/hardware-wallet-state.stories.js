@@ -14,14 +14,11 @@ export default {
     pollingRateMs: {
       control: 'number',
     },
-    onChange: {
-      action: 'onChange',
+    initialStatus: {
+      control: 'text',
     },
-    onLock: {
-      action: 'onLock',
-    },
-    onUnlock: {
-      action: 'onUnlock',
+    onUpdate: {
+      action: 'onUpdate',
     },
   },
 
@@ -29,6 +26,7 @@ export default {
     device: 'ledger',
     hdPath: `m/44'/60'/0'/0/0`,
     pollingRateMs: 2000,
+    initialStatus: 'locked',
   },
 };
 
