@@ -50,7 +50,7 @@ describe('Nfts', function () {
         // Confirm transfer
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__title',
-          text: 'TestDappNfts',
+          text: 'TestDappCollectibles',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
@@ -114,7 +114,7 @@ describe('Nfts', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of your TestDappNfts (#1)?',
+          'Allow access to and transfer of your TestDappCollectibles (#1)?',
         );
         assert.equal(await func.getText(), 'Function: Approve');
 
@@ -180,7 +180,7 @@ describe('Nfts', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of all your TestDappNfts?',
+          'Allow access to and transfer of all your TestDappCollectibles?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: true');
@@ -252,7 +252,7 @@ describe('Nfts', function () {
         );
         assert.equal(
           await title.getText(),
-          'Revoke permission to access and transfer all of your TestDappNfts?',
+          'Revoke permission to access and transfer all of your TestDappCollectibles?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: false');
