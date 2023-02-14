@@ -55,7 +55,7 @@ export const Children = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
     <HelpText {...args}>Plain text</HelpText>
     <HelpText>
-      Text and icon
+      <span>Text and icon</span>
       <Icon
         marginLeft={1}
         color={IconColor.iconAlternative}
