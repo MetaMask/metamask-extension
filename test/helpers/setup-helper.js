@@ -1,8 +1,6 @@
 /* eslint-disable-next-line */
 import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
-import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
 
@@ -42,8 +40,6 @@ process.on('exit', () => {
     process.exit(1);
   }
 });
-
-Enzyme.configure({ adapter: new Adapter() });
 
 log.setDefaultLevel(5);
 global.log = log;
