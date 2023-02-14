@@ -245,9 +245,7 @@ export default class Home extends PureComponent {
   };
 
   renderNotifications() {
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const { t } = this.context;
-    ///: END:ONLY_INCLUDE_IN
 
     const {
       history,
@@ -691,7 +689,7 @@ export default class Home extends PureComponent {
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__activity-tab"
-                name={this.context.t('activity')}
+                name={t('activity')}
                 tabKey="activity"
               >
                 <TransactionList />
