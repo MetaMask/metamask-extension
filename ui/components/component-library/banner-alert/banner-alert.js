@@ -90,7 +90,7 @@ BannerAlert.propTypes = {
    */
   severity: PropTypes.oneOf(Object.values(BANNER_ALERT_SEVERITIES)),
   /**
-   * Banner accepts all the props from BannerBase
+   * BannerAlert accepts all the props from BannerBase
    */
   ...BannerBase.propTypes,
 };
