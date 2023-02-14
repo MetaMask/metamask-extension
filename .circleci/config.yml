@@ -355,8 +355,12 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: build:prod
-          command: .circleci/scripts/trigger-beta-build.sh
+          name: Build beta prod
+          command: |
+            .circleci/scripts/trigger-beta-build.sh
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
       - persist_to_workspace:
           root: .
           paths:
