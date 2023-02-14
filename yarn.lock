@@ -3995,7 +3995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^1.0.0, @metamask/permission-controller@npm:^1.0.1":
+"@metamask/permission-controller@npm:^1.0.1":
   version: 1.0.2
   resolution: "@metamask/permission-controller@npm:1.0.2"
   dependencies:
@@ -24229,7 +24229,7 @@ __metadata:
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
     "@metamask/obs-store": ^5.0.0
-    "@metamask/permission-controller": ^1.0.0
+    "@metamask/permission-controller": ^2.0.0
     "@metamask/phishing-controller": ^1.1.2
     "@metamask/phishing-warning": ^1.2.1
     "@metamask/post-message-stream": ^6.0.0
