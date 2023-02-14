@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   detectNewTokens: jest.fn(),
 }));
 

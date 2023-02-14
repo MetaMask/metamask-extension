@@ -41,7 +41,7 @@ const MOCK_SIGN_DATA = JSON.stringify({
 
 export default {
   title: 'Components/App/SignatureRequestOriginal',
-  id: __filename,
+
   component: SignatureRequestOriginal,
   parameters: {
     docs: {
@@ -71,6 +71,7 @@ export default {
     },
     mostRecentOverviewPage: '/',
     nativeCurrency: 'ETH',
+    provider: { name: 'Goerli ETH' },
   },
 };
 

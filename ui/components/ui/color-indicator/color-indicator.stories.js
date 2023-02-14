@@ -1,39 +1,40 @@
 import React from 'react';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { Color, Size } from '../../../helpers/constants/design-system';
 import ColorIndicator from './color-indicator';
 
 export default {
   title: 'Components/UI/ColorIndicator',
-  id: __filename,
+
   argTypes: {
     size: {
       control: {
         type: 'select',
       },
-      options: SIZES,
-      defaultValue: SIZES.LG,
+      options: Size,
     },
     type: {
       control: {
         type: 'select',
       },
       options: ColorIndicator.TYPES,
-      defaultValue: ColorIndicator.TYPES.FILLED,
     },
     color: {
       control: {
         type: 'select',
       },
-      options: COLORS,
-      defaultValue: COLORS.PRIMARY_DEFAULT,
+      options: Color,
     },
     borderColor: {
       control: {
         type: 'select',
       },
-      options: { NONE: undefined, ...COLORS },
-      defaultValue: undefined,
+      options: { NONE: undefined, ...Color },
     },
+  },
+  args: {
+    size: Size.LG,
+    type: ColorIndicator.TYPES.FILLED,
+    color: Color.primaryDefault,
   },
 };
 

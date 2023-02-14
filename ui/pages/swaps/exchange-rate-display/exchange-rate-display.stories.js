@@ -3,7 +3,37 @@ import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {
   title: 'Pages/Swaps/ExchangeRateDisplay',
-  id: __filename,
+
+  argTypes: {
+    primaryTokenValue: {
+      control: {
+        type: 'text',
+      },
+    },
+    primaryTokenDecimals: {
+      control: {
+        type: 'number',
+      },
+    },
+    primaryTokenSymbol: {
+      control: {
+        type: 'text',
+      },
+    },
+    secondaryTokenValue: {
+      control: {
+        type: 'text',
+      },
+    },
+    secondaryTokenDecimals: {
+      control: 'number',
+    },
+    secondaryTokenSymbol: {
+      control: {
+        type: 'text',
+      },
+    },
+  },
 };
 
 export const DefaultStory = (args) => {
@@ -12,41 +42,13 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 
-DefaultStory.argTypes = {
-  primaryTokenValue: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: '2000000000000000000',
-  },
-  primaryTokenDecimals: {
-    control: {
-      type: 'number',
-    },
-    defaultValue: 18,
-  },
-  primaryTokenSymbol: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: 'ETH',
-  },
-  secondaryTokenValue: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: '200000000000000000',
-  },
-  secondaryTokenDecimals: {
-    control: 'number',
-    defaultValue: 18,
-  },
-  secondaryTokenSymbol: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: 'ABC',
-  },
+DefaultStory.args = {
+  primaryTokenValue: '2000000000000000000',
+  primaryTokenDecimals: 18,
+  primaryTokenSymbol: 'ETH',
+  secondaryTokenValue: '200000000000000000',
+  secondaryTokenDecimals: 18,
+  secondaryTokenSymbol: 'ABC',
 };
 
 export const WhiteOnBlue = (args) => {
@@ -68,41 +70,11 @@ export const WhiteOnBlue = (args) => {
   );
 };
 
-WhiteOnBlue.argTypes = {
-  primaryTokenValue: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: '2000000000000000000',
-  },
-  primaryTokenDecimals: {
-    control: {
-      type: 'number',
-    },
-    defaultValue: 18,
-  },
-  primaryTokenSymbol: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: 'ETH',
-  },
-  secondaryTokenValue: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: '200000000000000000',
-  },
-  secondaryTokenDecimals: {
-    control: {
-      type: 'number',
-    },
-    defaultValue: 18,
-  },
-  secondaryTokenSymbol: {
-    control: {
-      type: 'text',
-    },
-    defaultValue: 'ABC',
-  },
+WhiteOnBlue.args = {
+  primaryTokenValue: '2000000000000000000',
+  primaryTokenDecimals: 18,
+  primaryTokenSymbol: 'ETH',
+  secondaryTokenValue: '200000000000000000',
+  secondaryTokenDecimals: 18,
+  secondaryTokenSymbol: 'ABC',
 };

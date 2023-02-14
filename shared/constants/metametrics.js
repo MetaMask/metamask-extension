@@ -46,6 +46,8 @@
  * @typedef {object} MetaMetricsEventPayload
  * @property {string} event - event name to track
  * @property {string} category - category to associate event to
+ * @property {number} [actionId] - Action id to deduplicate event requests from
+ * the UI
  * @property {string} [environmentType] - The type of environment this event
  *  occurred in. Defaults to the background process type
  * @property {object} [properties] - object of custom values to track, keys
@@ -300,6 +302,14 @@ export const EVENT_NAMES = {
   KEY_EXPORT_CANCELED: 'Key Export Canceled',
   KEY_EXPORT_REVEALED: 'Key Material Revealed',
   KEY_EXPORT_COPIED: 'Key Material Copied',
+  KEY_TOKEN_DETECTION_SELECTED: 'Key Token Detection Selected',
+  KEY_GLOBAL_SECURITY_TOGGLE_SELECTED: 'Key Global Security/Privacy Settings',
+  KEY_BALANCE_TOKEN_PRICE_CHECKER:
+    'Key Show Balance and Token Price Checker Settings',
+  KEY_GAS_FEE_ESTIMATION_BUY_SWAP_TOKENS:
+    'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
+  KEY_AUTO_DETECT_TOKENS: 'Key Autodetect tokens',
+  KEY_BATCH_ACCOUNT_BALANCE_REQUESTS: 'Key Batch account balance requests',
   METRICS_OPT_IN: 'Metrics Opt In',
   METRICS_OPT_OUT: 'Metrics Opt Out',
   NAV_ACCOUNT_MENU_OPENED: 'Account Menu Opened',
@@ -323,6 +333,7 @@ export const EVENT_NAMES = {
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PHISHING_PAGE_DISPLAYED: 'Phishing Page Displayed',
   PORTFOLIO_LINK_CLICKED: 'Portfolio Link Clicked',
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
@@ -337,6 +348,25 @@ export const EVENT_NAMES = {
   TOKEN_HIDDEN: 'Token Hidden',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
+  ONBOARDING_WELCOME: 'App Installed',
+  ONBOARDING_WALLET_CREATION_STARTED: 'Wallet Setup Selected',
+  ONBOARDING_WALLET_IMPORT_STARTED: 'Wallet Import Started',
+  ONBOARDING_WALLET_CREATION_ATTEMPTED: 'Wallet Password Created',
+  ONBOARDING_WALLET_SECURITY_STARTED: 'SRP Backup Selected',
+  ONBOARDING_WALLET_SECURITY_SKIP_INITIATED: 'SRP Skip Backup Selected',
+  ONBOARDING_WALLET_SECURITY_SKIP_CONFIRMED: 'SRP Backup Skipped',
+  ONBOARDING_WALLET_SECURITY_SKIP_CANCELED: 'SRP Skip Backup Canceled',
+  ONBOARDING_WALLET_SECURITY_PHRASE_REVEALED: 'Key Material Revealed',
+  ONBOARDING_WALLET_SECURITY_PHRASE_WRITTEN_DOWN: 'SRP Backup Confirm Display',
+  ONBOARDING_WALLET_SECURITY_PHRASE_CONFIRMED: 'SRP Backup Confirmed',
+  ONBOARDING_WALLET_CREATION_COMPLETE: 'Wallet Created',
+  ONBOARDING_WALLET_IMPORT_COMPLETE: 'Wallet Imported',
+  ONBOARDING_WALLET_SETUP_COMPLETE: 'Application Opened',
+  ONBOARDING_WALLET_ADVANCED_SETTINGS: 'Settings Updated',
+  ONBOARDING_WALLET_IMPORT_ATTEMPTED: 'Wallet Import Attempted',
+  ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED: 'Analytics Preferences Selected',
+  ONBOARDING_WALLET_VIDEO_PLAY: 'SRP Intro Video Played',
+  ONBOARDING_TWITTER_CLICK: 'External Link Clicked',
 };
 
 export const EVENT = {
@@ -364,6 +394,7 @@ export const EVENT = {
     NAVIGATION: 'Navigation',
     NETWORK: 'Network',
     ONBOARDING: 'Onboarding',
+    PHISHING: 'Phishing',
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
     SNAPS: 'Snaps',
@@ -419,4 +450,20 @@ export const EVENT = {
 // tracking object as keys, e.g. { location: 'Home' }
 export const CONTEXT_PROPS = {
   PAGE_TITLE: 'location',
+};
+
+/**
+ * These types correspond to the keys in the METAMETRIC_KEY_OPTIONS object
+ */
+export const METAMETRIC_KEY = {
+  UI_CUSTOMIZATIONS: `ui_customizations`,
+};
+
+/**
+ * This object maps a method name to a METAMETRIC_KEY
+ */
+export const METAMETRIC_KEY_OPTIONS = {
+  [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
+    SIWE: 'sign_in_with_ethereum',
+  },
 };

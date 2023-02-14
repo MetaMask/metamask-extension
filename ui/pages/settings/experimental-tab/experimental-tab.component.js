@@ -6,6 +6,13 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library';
+import {
+  FONT_WEIGHT,
+  TextColor,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -18,10 +25,6 @@ export default class ExperimentalTab extends PureComponent {
     setUseNftDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
     openSeaEnabled: PropTypes.bool,
-    eip1559V2Enabled: PropTypes.bool,
-    setEIP1559V2Enabled: PropTypes.func,
-    improvedTokenAllowanceEnabled: PropTypes.bool,
-    setImprovedTokenAllowanceEnabled: PropTypes.func,
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
   };
@@ -47,61 +50,7 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
-  renderCollectibleDetectionToggle() {
-    if (!process.env.COLLECTIBLES_V1) {
-      return null;
-    }
-
-    const { t } = this.context;
-    const {
-      useNftDetection,
-      setUseNftDetection,
-      openSeaEnabled,
-      setOpenSeaEnabled,
-    } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[2]}
-        className="settings-page__content-row--dependent"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('useCollectibleDetection')}</span>
-          <div className="settings-page__content-description">
-            {t('useCollectibleDetectionDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useNftDetection}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Collectible Detection',
-                  properties: {
-                    action: 'Collectible Detection',
-                    legacy_event: true,
-                  },
-                });
-                if (!value && !openSeaEnabled) {
-                  setOpenSeaEnabled(!value);
-                }
-                setUseNftDetection(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderOpenSeaEnabledToggle() {
-    if (!process.env.COLLECTIBLES_V1) {
-      return null;
-    }
     const { t } = this.context;
     const {
       openSeaEnabled,
@@ -111,123 +60,81 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row--parent"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('enableOpenSeaAPI')}</span>
-          <div className="settings-page__content-description">
-            {t('enableOpenSeaAPIDescription')}
+      <>
+        <div ref={this.settingsRefs[0]} className="settings-page__content-row">
+          <div className="settings-page__content-item">
+            <span>{t('enableOpenSeaAPI')}</span>
+            <div className="settings-page__content-description">
+              {t('enableOpenSeaAPIDescription')}
+            </div>
+          </div>
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <ToggleButton
+                value={openSeaEnabled}
+                onToggle={(value) => {
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.SETTINGS,
+                    event: 'Enabled/Disable OpenSea',
+                    properties: {
+                      action: 'Enabled/Disable OpenSea',
+                      legacy_event: true,
+                    },
+                  });
+                  // value is positive when being toggled off
+                  if (value && useNftDetection) {
+                    setUseNftDetection(false);
+                  }
+                  setOpenSeaEnabled(!value);
+                }}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={openSeaEnabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable OpenSea',
-                  properties: {
-                    action: 'Enabled/Disable OpenSea',
-                    legacy_event: true,
-                  },
-                });
-                // value is positive when being toggled off
-                if (value && useNftDetection) {
-                  setUseNftDetection(false);
-                }
-                setOpenSeaEnabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
+        <div ref={this.settingsRefs[1]} className="settings-page__content-row">
+          <div className="settings-page__content-item">
+            <span>{t('useNftDetection')}</span>
+            <div className="settings-page__content-description">
+              <Text color={TextColor.textAlternative}>
+                {t('useNftDetectionDescription')}
+              </Text>
+              <ul className="settings-page__content-unordered-list">
+                <li>{t('useNftDetectionDescriptionLine2')}</li>
+                <li>{t('useNftDetectionDescriptionLine3')}</li>
+                <li>{t('useNftDetectionDescriptionLine4')}</li>
+              </ul>
+              <Text color={TextColor.textAlternative} paddingTop={4}>
+                {t('useNftDetectionDescriptionLine5')}
+              </Text>
+            </div>
+          </div>
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <ToggleButton
+                value={useNftDetection}
+                onToggle={(value) => {
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.SETTINGS,
+                    event: 'NFT Detected',
+                    properties: {
+                      action: 'NFT Detected',
+                      legacy_event: true,
+                    },
+                  });
+                  if (!value && !openSeaEnabled) {
+                    setOpenSeaEnabled(!value);
+                  }
+                  setUseNftDetection(!value);
+                }}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  renderEIP1559V2EnabledToggle() {
-    const { t } = this.context;
-    const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
-
-    return (
-      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('enableEIP1559V2')}</span>
-          <div className="settings-page__content-description">
-            {t('enableEIP1559V2Description', [
-              <a
-                key="eip_page_link"
-                href="https://metamask.io/1559.html"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {t('learnMoreUpperCase')}
-              </a>,
-            ])}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={eip1559V2Enabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enable/Disable Advanced Gas UI',
-                  properties: {
-                    action: 'Enable/Disable Advanced Gas UI',
-                    legacy_event: true,
-                  },
-                });
-                setEIP1559V2Enabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  renderImprovedTokenAllowanceToggle() {
-    const { t } = this.context;
-    const { improvedTokenAllowanceEnabled, setImprovedTokenAllowanceEnabled } =
-      this.props;
-
-    return (
-      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('improvedTokenAllowance')}</span>
-          <div className="settings-page__content-description">
-            {t('improvedTokenAllowanceDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={improvedTokenAllowanceEnabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable ImprovedTokenAllowance',
-                  properties: {
-                    action: 'Enabled/Disable ImprovedTokenAllowance',
-                    legacy_event: true,
-                  },
-                });
-                setImprovedTokenAllowanceEnabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
+      </>
     );
   }
 
@@ -240,45 +147,88 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('transactionSecurityCheck')}</span>
-          <div className="settings-page__content-description">
-            {t('transactionSecurityCheckDescription')}
+      <>
+        <Typography
+          variant={TypographyVariant.H4}
+          color={TextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {t('privacy')}
+        </Typography>
+        <div
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+        >
+          <div className="settings-page__content-item">
+            <span>{t('transactionSecurityCheck')}</span>
+            <div className="settings-page__content-description">
+              <Typography
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
+              >
+                {t('transactionSecurityCheckDescription')}
+              </Typography>
+              <Typography
+                marginTop={3}
+                marginBottom={1}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
+              >
+                {t('selectProvider')}
+              </Typography>
+              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+                <Typography
+                  variant={TypographyVariant.H5}
+                  color={TextColor.textDefault}
+                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  marginBottom={0}
+                >
+                  {t('openSea')}
+                </Typography>
+                <ToggleButton
+                  value={transactionSecurityCheckEnabled}
+                  onToggle={(value) => {
+                    this.context.trackEvent({
+                      category: EVENT.CATEGORIES.SETTINGS,
+                      event: 'Enabled/Disable TransactionSecurityCheck',
+                      properties: {
+                        action: 'Enabled/Disable TransactionSecurityCheck',
+                        legacy_event: true,
+                      },
+                    });
+                    setTransactionSecurityCheckEnabled(!value);
+                  }}
+                />
+              </div>
+              <Typography
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
+                marginTop={0}
+              >
+                {t('thisServiceIsExperimental')}
+              </Typography>
+              <Typography
+                variant={TypographyVariant.H5}
+                color={TextColor.textMuted}
+                fontWeight={FONT_WEIGHT.MEDIUM}
+                marginTop={2}
+              >
+                {t('moreComingSoon')}
+              </Typography>
+            </div>
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={transactionSecurityCheckEnabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable TransactionSecurityCheck',
-                  properties: {
-                    action: 'Enabled/Disable TransactionSecurityCheck',
-                    legacy_event: true,
-                  },
-                });
-                setTransactionSecurityCheckEnabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
+      </>
     );
   }
 
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderTransactionSecurityCheckToggle()}
-        {this.renderImprovedTokenAllowanceToggle()}
-        {this.renderOpenSeaEnabledToggle()}
-        {this.renderCollectibleDetectionToggle()}
-        {this.renderEIP1559V2EnabledToggle()}
+        {process.env.TRANSACTION_SECURITY_PROVIDER &&
+          this.renderTransactionSecurityCheckToggle()}
+        {process.env.NFTS_V1 && this.renderOpenSeaEnabledToggle()}
       </div>
     );
   }

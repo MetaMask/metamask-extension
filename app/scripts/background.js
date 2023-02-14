@@ -2,6 +2,7 @@
  * @file The entry point for the web extension singleton process.
  */
 
+import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
@@ -17,6 +18,9 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  MESSAGE_TYPE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import {
@@ -92,6 +96,9 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
+// Event emitter for state persistence
+export const statePersistenceEvents = new EventEmitter();
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -173,8 +180,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // This is set in `setupController`, which is called as part of initialization
   connectExternal(...args);
 });
-
-initialize().catch(log.error);
 
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
@@ -328,7 +333,7 @@ async function loadPhishingWarningPage() {
  *
  * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
  */
-async function loadStateFromPersistence() {
+export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({ migrations });
   migrator.on('error', console.warn);
@@ -381,8 +386,9 @@ async function loadStateFromPersistence() {
  *
  * @param {object} initState - The initial state to start the controller with, matches the state that is emitted from the controller.
  * @param {string} initLangCode - The region code for the language preferred by the current user.
+ * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  */
-function setupController(initState, initLangCode) {
+export function setupController(initState, initLangCode, overrides) {
   //
   // MetaMask Controller
   //
@@ -407,6 +413,7 @@ function setupController(initState, initLangCode) {
       return openMetamaskTabsIDs;
     },
     localStore,
+    overrides,
   });
 
   setupEnsIpfsResolver({
@@ -423,7 +430,10 @@ function setupController(initState, initLangCode) {
   pump(
     storeAsStream(controller.store),
     debounce(1000),
-    createStreamSink((state) => localStore.set(state)),
+    createStreamSink(async (state) => {
+      await localStore.set(state);
+      statePersistenceEvents.emit('state-persisted', state);
+    }),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
     },
@@ -480,20 +490,20 @@ function setupController(initState, initLangCode) {
 
     let isMetaMaskInternalProcess = false;
     const sourcePlatform = getPlatform();
+    const senderUrl = remotePort.sender?.url
+      ? new URL(remotePort.sender.url)
+      : null;
 
     if (sourcePlatform === PLATFORM_FIREFOX) {
       isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
       isMetaMaskInternalProcess =
-        remotePort.sender.origin === `chrome-extension://${browser.runtime.id}`;
+        senderUrl?.origin === `chrome-extension://${browser.runtime.id}`;
     }
 
-    const senderUrl = remotePort.sender?.url
-      ? new URL(remotePort.sender.url)
-      : null;
-
     if (isMetaMaskInternalProcess) {
-      const portStream = new PortStream(remotePort);
+      const portStream =
+        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -551,7 +561,8 @@ function setupController(initState, initLangCode) {
       senderUrl.origin === phishingPageUrl.origin &&
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
-      const portStream = new PortStream(remotePort);
+      const portStream =
+        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -573,12 +584,17 @@ function setupController(initState, initLangCode) {
 
   // communication with page or other extension
   connectExternal = (remotePort) => {
-    const portStream = new PortStream(remotePort);
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
     });
   };
+
+  if (overrides?.registerConnectListeners) {
+    overrides.registerConnectListeners(connectRemote, connectExternal);
+  }
 
   //
   // User Interface setup
@@ -721,9 +737,27 @@ function setupController(initState, initLangCode) {
         ),
       );
 
-    // Finally, reject all approvals managed by the ApprovalController
-    controller.approvalController.clear(
-      ethErrors.provider.userRejectedRequest(),
+    // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
+    Object.values(controller.approvalController.state.pendingApprovals).forEach(
+      ({ id, type }) => {
+        switch (type) {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
+          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+            controller.approvalController.accept(id, null);
+            break;
+          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
+          default:
+            controller.approvalController.reject(
+              id,
+              ethErrors.provider.userRejectedRequest(),
+            );
+            break;
+        }
+      },
     );
 
     updateBadge();
@@ -818,4 +852,12 @@ function setupSentryGetStateGlobal(store) {
       version: platform.getVersion(),
     };
   };
+}
+
+function initBackground() {
+  initialize().catch(log.error);
+}
+
+if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
+  initBackground();
 }

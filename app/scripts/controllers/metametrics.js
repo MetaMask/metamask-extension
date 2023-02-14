@@ -35,15 +35,18 @@ const defaultCaptureException = (err) => {
 // The function is used to build a unique messageId for segment messages
 // It uses actionId and uniqueIdentifier from event if present
 const buildUniqueMessageId = (args) => {
-  let messageId = '';
+  const messageIdParts = [];
   if (args.uniqueIdentifier) {
-    messageId += `${args.uniqueIdentifier}-`;
+    messageIdParts.push(args.uniqueIdentifier);
   }
   if (args.actionId) {
-    messageId += args.actionId;
+    messageIdParts.push(args.actionId);
   }
-  if (messageId.length) {
-    return messageId;
+  if (messageIdParts.length && args.isDuplicateAnonymizedEvent) {
+    messageIdParts.push('0x000');
+  }
+  if (messageIdParts.length) {
+    return messageIdParts.join('-');
   }
   return generateRandomId();
 };
@@ -91,8 +94,6 @@ export default class MetaMetricsController {
    *  networkDidChange event emitted by the networkController
    * @param {Function} options.getCurrentChainId - Gets the current chain id from the
    *  network controller
-   * @param {Function} options.getNetworkIdentifier - Gets the current network
-   *  identifier from the network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
    * @param {string} options.extension - webextension-polyfill
@@ -104,7 +105,6 @@ export default class MetaMetricsController {
     preferencesStore,
     onNetworkDidChange,
     getCurrentChainId,
-    getNetworkIdentifier,
     version,
     environment,
     initState,
@@ -120,7 +120,6 @@ export default class MetaMetricsController {
     };
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
-    this.network = getNetworkIdentifier();
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
@@ -150,7 +149,6 @@ export default class MetaMetricsController {
 
     onNetworkDidChange(() => {
       this.chainId = getCurrentChainId();
-      this.network = getNetworkIdentifier();
     });
     this.segment = segment;
 
@@ -470,7 +468,6 @@ export default class MetaMetricsController {
         properties: {
           params,
           locale: this.locale,
-          network: this.network,
           chain_id: this.chainId,
           environment_type: environmentType,
         },
@@ -536,6 +533,7 @@ export default class MetaMetricsController {
           this._buildEventPayload({
             ...payload,
             properties: combinedProperties,
+            isDuplicateAnonymizedEvent: true,
           }),
           { ...options, excludeMetaMetricsId: true },
         ),
@@ -668,7 +666,6 @@ export default class MetaMetricsController {
         value,
         currency,
         category,
-        network: properties?.network ?? this.network,
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,

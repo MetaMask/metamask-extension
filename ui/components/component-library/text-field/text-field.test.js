@@ -11,8 +11,9 @@ import { TextField } from './text-field';
 
 describe('TextField', () => {
   it('should render correctly', () => {
-    const { getByRole } = render(<TextField />);
+    const { getByRole, container } = render(<TextField />);
     expect(getByRole('textbox')).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
   it('should render and be able to input text', async () => {
     const { user, getByRole } = renderWithUserEvent(<TextField />);

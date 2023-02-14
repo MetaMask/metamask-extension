@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  COLORS,
-  SIZES,
-  TYPOGRAPHY,
+  Size,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import DefinitionList from './definition-list';
 
@@ -29,18 +29,18 @@ const tooltips = {
 
 export default {
   title: 'Components/UI/DefinitionList',
-  id: __filename,
+
   argTypes: {
     dictionary: { control: 'object', name: 'Dictionary' },
     gapSize: {
       control: 'select',
       name: 'Gap Size',
-      options: Object.values(SIZES),
+      options: Object.values(Size),
     },
   },
   args: {
     dictionary: basic,
-    gapSize: SIZES.SM,
+    gapSize: Size.SM,
   },
 };
 
@@ -74,22 +74,22 @@ export const WithTypographyControl = (args) => (
     termTypography={{
       variant: args.termTypographyVariant,
       color: args.termTypographyColor,
-      children: <div></div>,
+      children: <div />,
     }}
     definitionTypography={{
       variant: args.definitionTypographyVariant,
       color: args.definitionTypographyColor,
-      children: <div></div>,
+      children: <div />,
     }}
   />
 );
 
 WithTypographyControl.args = {
   dictionary: advanced,
-  termTypographyVariant: TYPOGRAPHY.H6,
-  termTypographyColor: COLORS.TEXT_DEFAULT,
-  definitionTypographyVariant: TYPOGRAPHY.H6,
-  definitionTypographyColor: COLORS.TEXT_DEFAULT,
+  termTypographyVariant: TypographyVariant.H6,
+  termTypographyColor: TextColor.textDefault,
+  definitionTypographyVariant: TypographyVariant.H6,
+  definitionTypographyColor: TextColor.textDefault,
 };
 
 WithTypographyControl.argTypes = {
@@ -97,21 +97,21 @@ WithTypographyControl.argTypes = {
   termTypographyVariant: {
     control: 'select',
     name: 'Term Variant',
-    options: Object.values(TYPOGRAPHY),
+    options: Object.values(TypographyVariant),
   },
   termTypographyColor: {
     control: 'select',
     name: 'Term Color',
-    options: Object.values(COLORS),
+    options: Object.values(TextColor),
   },
   definitionTypographyVariant: {
     control: 'select',
     name: 'Definition Variant',
-    options: Object.values(TYPOGRAPHY),
+    options: Object.values(TypographyVariant),
   },
   definitionTypographyColor: {
     control: 'select',
     name: 'Definition Color',
-    options: Object.values(COLORS),
+    options: Object.values(TextColor),
   },
 };

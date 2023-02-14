@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { Icon, ICON_NAMES } from '../../component-library';
 import TabBar from '.';
 
 export default {
   title: 'Components/App/TabBar',
-  id: __filename,
+
   argTypes: {
     isActive: {
       action: 'isActive',
@@ -32,14 +33,13 @@ export default {
         content: 'Snaps',
         key: 'snaps',
       },
-
       {
         icon: <i className="fa fa-lock" />,
         content: 'SecurityAndPrivacy',
         key: 'securityAndPrivacy',
       },
       {
-        icon: <i className="fa fa-bell" />,
+        icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
         content: 'Alerts',
         key: 'alerts',
       },

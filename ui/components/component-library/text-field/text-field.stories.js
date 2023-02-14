@@ -2,9 +2,9 @@ import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  SIZES,
-  COLORS,
-  BORDER_RADIUS,
+  Size,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
@@ -32,7 +32,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/TextField',
-  id: __filename,
+
   component: TextField,
   parameters: {
     docs: {
@@ -175,9 +175,10 @@ export default {
     id: '',
     readOnly: false,
     required: false,
-    size: SIZES.MD,
+    size: Size.MD,
     type: 'text',
     truncate: false,
+    value: '',
   },
 };
 
@@ -209,20 +210,13 @@ ShowClearButton.args = {
   showClearButton: true,
 };
 
-export const ClearButtonOnClick = Template.bind({});
-
-ShowClearButton.args = {
-  placeholder: 'Enter text to show clear',
-  showClearButton: true,
-};
-
 export const ClearButtonProps = Template.bind({});
 ClearButtonProps.args = {
   value: 'clear button props',
-  size: SIZES.LG,
+  size: Size.LG,
   showClearButton: true,
   clearButtonProps: {
-    backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
-    borderRadius: BORDER_RADIUS.XS,
+    backgroundColor: BackgroundColor.backgroundAlternative,
+    borderRadius: BorderRadius.XS,
   },
 };

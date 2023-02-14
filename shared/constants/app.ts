@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { DialogType } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -53,9 +56,19 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP_CONFIRM: RestrictedMethods.snap_confirm,
+  SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
+  SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
+  SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
   ///: END:ONLY_INCLUDE_IN
 } as const;
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export const SNAP_DIALOG_TYPES = {
+  [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
+  [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
+  [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+};
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Custom messages to send and be received by the extension
@@ -65,24 +78,11 @@ export const EXTENSION_MESSAGES = {
   READY: 'METAMASK_EXTENSION_READY',
 } as const;
 
-/**
- * The different kinds of subjects that MetaMask may interact with, including
- * third parties and itself (e.g. when the background communicated with the UI).
- */
-export const SUBJECT_TYPES = {
-  EXTENSION: 'extension',
-  INTERNAL: 'internal',
-  UNKNOWN: 'unknown',
-  WEBSITE: 'website',
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP: 'snap',
-  ///: END:ONLY_INCLUDE_IN
-} as const;
-
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
+  [ENVIRONMENT_TYPE_BACKGROUND]: 'none',
 } as const;
 
 export const ORIGIN_METAMASK = 'metamask';

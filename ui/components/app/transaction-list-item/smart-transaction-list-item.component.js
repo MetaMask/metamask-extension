@@ -2,15 +2,15 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import ListItem from '../../ui/list-item';
-import TransactionStatus from '../transaction-status/transaction-status.component';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
-  TRANSACTION_GROUP_CATEGORIES,
-  TRANSACTION_GROUP_STATUSES,
-  SMART_TRANSACTION_STATUSES,
+  TransactionGroupCategory,
+  TransactionGroupStatus,
+  SmartTransactionStatus,
 } from '../../../../shared/constants/transaction';
 
 import CancelButton from '../cancel-button';
@@ -31,7 +31,7 @@ export default function SmartTransactionListItem({
     useTransactionDisplayData(transactionGroup);
   const { sourceTokenSymbol, destinationTokenSymbol, time, status } =
     smartTransaction;
-  const category = TRANSACTION_GROUP_CATEGORIES.SWAP;
+  const category = TransactionGroupCategory.swap;
   const title = t('swapTokenToToken', [
     sourceTokenSymbol,
     destinationTokenSymbol,
@@ -39,10 +39,10 @@ export default function SmartTransactionListItem({
   const subtitle = 'metamask';
   const date = formatDateWithYearContext(time);
   let displayedStatusKey;
-  if (status === SMART_TRANSACTION_STATUSES.PENDING) {
-    displayedStatusKey = TRANSACTION_GROUP_STATUSES.PENDING;
-  } else if (status?.startsWith(SMART_TRANSACTION_STATUSES.CANCELLED)) {
-    displayedStatusKey = TRANSACTION_GROUP_STATUSES.CANCELLED;
+  if (status === SmartTransactionStatus.pending) {
+    displayedStatusKey = TransactionGroupStatus.pending;
+  } else if (status?.startsWith(SmartTransactionStatus.cancelled)) {
+    displayedStatusKey = TransactionGroupStatus.cancelled;
   }
   const showCancelSwapLink =
     smartTransaction.cancellable && !cancelSwapLinkClicked;
@@ -61,7 +61,7 @@ export default function SmartTransactionListItem({
         }
         subtitle={
           <h3>
-            <TransactionStatus
+            <TransactionStatusLabel
               isPending
               isEarliestNonce={isEarliestNonce}
               date={date}
@@ -75,7 +75,7 @@ export default function SmartTransactionListItem({
           </h3>
         }
       >
-        {displayedStatusKey === TRANSACTION_GROUP_STATUSES.PENDING &&
+        {displayedStatusKey === TransactionGroupStatus.pending &&
           showCancelSwapLink && (
             <div className="transaction-list-item__pending-actions">
               <CancelButton
@@ -99,7 +99,7 @@ export default function SmartTransactionListItem({
           isEarliestNonce={isEarliestNonce}
           transactionGroup={transactionGroup}
           transactionStatus={() => (
-            <TransactionStatus
+            <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
               date={date}

@@ -8,6 +8,7 @@ const { BuildType } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
+const { getPathInsideNodeModules } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
@@ -24,8 +25,7 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
-      // Snow currently only works on Chromium based browsers
-      shouldIncludeSnow && browser === 'chrome',
+      shouldIncludeSnow,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -41,6 +41,12 @@ module.exports = function createStaticAssetTasks({
     [BuildType.flask]: [
       {
         src: './app/build-types/flask/images/',
+        dest: `images`,
+      },
+    ],
+    [BuildType.desktop]: [
+      {
+        src: './app/build-types/desktop/images/',
         dest: `images`,
       },
     ],
@@ -79,7 +85,7 @@ module.exports = function createStaticAssetTasks({
   return { dev, prod };
 
   async function setupLiveCopy(target, browser) {
-    const pattern = target.pattern || '/**/*';
+    const pattern = target.pattern === undefined ? '/**/*' : target.pattern;
     watch(target.src + pattern, (event) => {
       livereload.changed(event.path);
       performCopy(target, browser);
@@ -88,16 +94,16 @@ module.exports = function createStaticAssetTasks({
   }
 
   async function performCopy(target, browser) {
-    if (target.pattern) {
+    if (target.pattern === undefined) {
       await copyGlob(
         target.src,
-        `${target.src}${target.pattern}`,
+        `${target.src}`,
         `./dist/${browser}/${target.dest}`,
       );
     } else {
       await copyGlob(
         target.src,
-        `${target.src}`,
+        `${target.src}${target.pattern}`,
         `./dist/${browser}/${target.dest}`,
       );
     }
@@ -125,7 +131,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `images`,
     },
     {
-      src: `./node_modules/@metamask/contract-metadata/images/`,
+      src: getPathInsideNodeModules('@metamask/contract-metadata', 'images/'),
       dest: `images/contract`,
     },
     {
@@ -137,11 +143,14 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `vendor`,
     },
     {
-      src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
+      src: getPathInsideNodeModules(
+        '@fortawesome/fontawesome-free',
+        'webfonts/',
+      ),
       dest: `fonts/fontawesome`,
     },
     {
-      src: `./node_modules/react-responsive-carousel/lib/styles`,
+      src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles/'),
       dest: 'react-gallery/',
     },
     {
@@ -154,7 +163,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `loading.html`,
     },
     {
-      src: `./node_modules/globalthis/dist/browser.js`,
+      src: getPathInsideNodeModules('globalthis', 'dist/browser.js'),
       dest: `globalthis.js`,
     },
     {
@@ -169,7 +178,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     },
     {
       src: shouldIncludeLockdown
-        ? `./node_modules/ses/dist/lockdown.umd.min.js`
+        ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
         : EMPTY_JS_FILE,
       dest: `lockdown-install.js`,
     },
@@ -190,14 +199,14 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `lockdown-more.js`,
     },
     {
-      // eslint-disable-next-line node/no-extraneous-require
-      src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
+      src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,
+      pattern: '',
     },
     {
-      // eslint-disable-next-line node/no-extraneous-require
-      src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
+      src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
       dest: `runtime-lavamoat.js`,
+      pattern: '',
     },
   ];
 
@@ -210,7 +219,10 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
 
   for (const tag of languageTags) {
     allCopyTargets.push({
-      src: `./node_modules/@formatjs/intl-relativetimeformat/dist/locale-data/${tag}.json`,
+      src: getPathInsideNodeModules(
+        '@formatjs/intl-relativetimeformat',
+        `dist/locale-data/${tag}.json`,
+      ),
       dest: `intl/${tag}/relative-time-format-data.json`,
     });
   }

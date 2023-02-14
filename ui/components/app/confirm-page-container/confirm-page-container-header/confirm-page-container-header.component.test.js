@@ -4,8 +4,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import ConfirmPageContainerHeader from '.';
 
-jest.mock('../../../../../app/scripts/lib/util.js', () => ({
-  ...jest.requireActual('../../../../../app/scripts/lib/util.js'),
+jest.mock('../../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../../app/scripts/lib/util'),
   getEnvironmentType: jest.fn(),
 }));
 

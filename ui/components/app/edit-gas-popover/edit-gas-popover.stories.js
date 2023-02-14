@@ -1,13 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import {
-  EDIT_GAS_MODES,
-  GAS_RECOMMENDATIONS,
+  EditGasModes,
+  GasRecommendations,
 } from '../../../../shared/constants/gas';
 
+import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import EditGasPopover from '.';
 
 const store = configureStore(testData);
@@ -15,7 +15,7 @@ const store = configureStore(testData);
 export default {
   title: 'Components/App/EditGasPopover',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
-  id: __filename,
+
   argTypes: {
     editGasDisplayProps: {
       control: 'object',
@@ -32,7 +32,7 @@ export default {
 };
 
 const transaction = {
-  userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
+  userFeeLevel: GasRecommendations.medium,
   txParams: {
     maxFeePerGas: decGWEIToHexWEI('10000'),
     maxPriorityFeePerGas: '0x5600',
@@ -40,8 +40,8 @@ const transaction = {
     gasPrice: '0x5600',
   },
 };
-const defaultEstimateToUse = GAS_RECOMMENDATIONS.HIGH;
-const mode = EDIT_GAS_MODES.SWAPS;
+const defaultEstimateToUse = GasRecommendations.high;
+const mode = EditGasModes.swaps;
 const confirmButtonText = 'Submit';
 const minimumGasLimit = '5700';
 

@@ -7,7 +7,7 @@ const [MOCK_PRIMARY_IDENTITY] = Object.values(testData.metamask.identities);
 
 export default {
   title: 'Components/App/SignatureRequest',
-  id: __filename,
+
   component: SignatureRequest,
   parameters: {
     docs: {
@@ -71,8 +71,9 @@ DefaultStory.args = {
           ],
         },
       }),
-      origin: 'https://happydapp.website/governance?futarchy=true',
+      origin: 'https://happydapp.website/',
     },
   },
   fromAccount: MOCK_PRIMARY_IDENTITY,
+  provider: { name: 'Goerli ETH' },
 };

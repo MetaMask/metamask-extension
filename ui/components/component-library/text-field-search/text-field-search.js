@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 
 import { ButtonIcon } from '../button-icon';
 import { Icon, ICON_NAMES } from '../icon';
@@ -12,7 +12,6 @@ import { TextField } from '../text-field';
 export const TextFieldSearch = ({
   value,
   onChange,
-  showClearButton = true,
   clearButtonOnClick,
   clearButtonProps,
   className,
@@ -23,8 +22,8 @@ export const TextFieldSearch = ({
     value={value}
     onChange={onChange}
     type={TEXT_FIELD_BASE_TYPES.SEARCH}
-    leftAccessory={<Icon name={ICON_NAMES.SEARCH_FILLED} size={SIZES.SM} />}
-    showClearButton={showClearButton}
+    leftAccessory={<Icon name={ICON_NAMES.SEARCH} size={Size.SM} />}
+    showClearButton
     clearButtonOnClick={clearButtonOnClick}
     clearButtonProps={clearButtonProps}
     {...props}
@@ -41,14 +40,24 @@ TextFieldSearch.propTypes = {
    */
   onChange: TextFieldBase.propTypes.onChange,
   /**
-   * Show a clear button to clear the input
-   * Defaults to true
-   */
-  showClearButton: PropTypes.bool,
-  /**
    * The onClick handler for the clear button
+   * Required unless showClearButton is false
+   *
+   * @param {object} props - The props passed to the component.
+   * @param {string} propName - The prop name in this case 'id'.
+   * @param {string} componentName - The name of the component.
    */
-  clearButtonOnClick: PropTypes.func,
+  clearButtonOnClick: (props, propName, componentName) => {
+    if (
+      props.showClearButton &&
+      (!props[propName] || !props.clearButtonProps?.onClick)
+    ) {
+      return new Error(
+        `${propName} is required unless showClearButton is false. Warning coming from ${componentName} ui/components/component-library/text-field-search/text-field-search.js`,
+      );
+    }
+    return null;
+  },
   /**
    * The props to pass to the clear button
    */

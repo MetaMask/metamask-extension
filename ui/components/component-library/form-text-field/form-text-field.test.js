@@ -7,7 +7,7 @@ import {
   renderWithUserEvent,
 } from '../../../../test/lib/render-helpers';
 
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 
 import { FormTextField } from './form-text-field';
 
@@ -83,7 +83,7 @@ describe('FormTextField', () => {
     );
     expect(getByTestId('text-field')).toHaveClass('mm-text-field-base--error');
     expect(getByText('test help text')).toHaveClass(
-      'text--color-error-default',
+      'mm-text--color-error-default',
     );
   });
   // helpText
@@ -247,15 +247,15 @@ describe('FormTextField', () => {
     const { getByTestId } = render(
       <>
         <FormTextField
-          size={SIZES.SM}
+          size={Size.SM}
           textFieldProps={{ 'data-testid': 'sm' }}
         />
         <FormTextField
-          size={SIZES.MD}
+          size={Size.MD}
           textFieldProps={{ 'data-testid': 'md' }}
         />
         <FormTextField
-          size={SIZES.LG}
+          size={Size.LG}
           textFieldProps={{ 'data-testid': 'lg' }}
         />
       </>,

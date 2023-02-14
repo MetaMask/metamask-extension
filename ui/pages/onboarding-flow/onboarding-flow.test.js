@@ -29,12 +29,20 @@ jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
+  verifySeedPhrase: jest.fn(),
 }));
 
 describe('Onboarding Flow', () => {
   const mockState = {
-    metamask: {},
+    metamask: {
+      identities: {},
+    },
+    localeMessages: {
+      currentLocale: 'en',
+    },
   };
+
+  process.env.METAMASK_BUILD_TYPE = 'main';
 
   const store = configureMockStore()(mockState);
 

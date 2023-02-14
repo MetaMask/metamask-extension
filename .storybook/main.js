@@ -9,6 +9,7 @@ module.exports = {
   core: {
     builder: 'webpack5',
   },
+  features: { buildStoriesJson: true },
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.mdx',
@@ -30,7 +31,7 @@ module.exports = {
     return {
       ...config,
       // Creates the icon names environment variable for the component-library/icon/icon.js component
-      ICON_NAMES: await generateIconNames(),
+      ICON_NAMES: generateIconNames(),
     };
   },
   webpackFinal: async (config) => {
@@ -39,7 +40,7 @@ module.exports = {
       __filename: true,
     };
     config.resolve.alias['webextension-polyfill'] = require.resolve(
-      './__mocks__/webextension-polyfill.js',
+      '../ui/__mocks__/webextension-polyfill.js',
     );
     config.resolve.fallback = {
       child_process: false,
@@ -96,7 +97,7 @@ module.exports = {
       new ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
       }),
-    )
+    );
     return config;
   },
 };

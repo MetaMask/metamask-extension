@@ -1,19 +1,65 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
+import {
+  unconfirmedTransactionsHashSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+} from '../../../../selectors';
+import { I18nContext } from '../../../../contexts/i18n';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  SIGNATURE_REQUEST_PATH,
+} from '../../../../helpers/constants/routes';
+import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
 
-const ConfirmPageContainerNavigation = (props) => {
-  const {
-    onNextTx,
-    totalTx,
-    positionOfCurrentTx,
-    nextTxId,
-    prevTxId,
-    showNavigation,
-    firstTx,
-    lastTx,
-    ofText,
-    requestsWaitingText,
-  } = props;
+const ConfirmPageContainerNavigation = () => {
+  const t = useContext(I18nContext);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { id } = useParams();
+
+  const unapprovedDecryptMsgs = useSelector(unapprovedDecryptMsgsSelector);
+  const unapprovedEncryptionPublicKeyMsgs = useSelector(
+    unapprovedEncryptionPublicKeyMsgsSelector,
+  );
+  const uncofirmedTransactions = useSelector(
+    unconfirmedTransactionsHashSelector,
+  );
+
+  const enumUnapprovedDecryptMsgsKey = Object.keys(unapprovedDecryptMsgs || {});
+  const enumUnapprovedEncryptMsgsKey = Object.keys(
+    unapprovedEncryptionPublicKeyMsgs || {},
+  );
+  const enumDecryptAndEncryptMsgs = [
+    ...enumUnapprovedDecryptMsgsKey,
+    ...enumUnapprovedEncryptMsgsKey,
+  ];
+
+  const enumUnapprovedTxs = Object.keys(uncofirmedTransactions).filter(
+    (key) => enumDecryptAndEncryptMsgs.includes(key) === false,
+  );
+
+  const currentPosition = enumUnapprovedTxs.indexOf(id);
+
+  const totalTx = enumUnapprovedTxs.length;
+  const positionOfCurrentTx = currentPosition + 1;
+  const nextTxId = enumUnapprovedTxs[currentPosition + 1];
+  const prevTxId = enumUnapprovedTxs[currentPosition - 1];
+  const showNavigation = enumUnapprovedTxs.length > 1;
+  const firstTx = enumUnapprovedTxs[0];
+  const lastTx = enumUnapprovedTxs[enumUnapprovedTxs.length - 1];
+
+  const onNextTx = (txId) => {
+    if (txId) {
+      dispatch(clearConfirmTransaction());
+      history.push(
+        uncofirmedTransactions[txId]?.msgParams
+          ? `${CONFIRM_TRANSACTION_ROUTE}/${txId}${SIGNATURE_REQUEST_PATH}`
+          : `${CONFIRM_TRANSACTION_ROUTE}/${txId}`,
+      );
+    }
+  };
 
   return (
     <div
@@ -46,10 +92,10 @@ const ConfirmPageContainerNavigation = (props) => {
       </div>
       <div className="confirm-page-container-navigation__textcontainer">
         <div className="confirm-page-container-navigation__navtext">
-          {positionOfCurrentTx} {ofText} {totalTx}
+          {positionOfCurrentTx} {t('ofTextNofM')} {totalTx}
         </div>
         <div className="confirm-page-container-navigation__longtext">
-          {requestsWaitingText}
+          {t('requestsAwaitingAcknowledgement')}
         </div>
       </div>
       <div
@@ -75,19 +121,6 @@ const ConfirmPageContainerNavigation = (props) => {
       </div>
     </div>
   );
-};
-
-ConfirmPageContainerNavigation.propTypes = {
-  totalTx: PropTypes.number,
-  positionOfCurrentTx: PropTypes.number,
-  onNextTx: PropTypes.func,
-  nextTxId: PropTypes.string,
-  prevTxId: PropTypes.string,
-  showNavigation: PropTypes.bool,
-  firstTx: PropTypes.string,
-  lastTx: PropTypes.string,
-  ofText: PropTypes.string,
-  requestsWaitingText: PropTypes.string,
 };
 
 export default ConfirmPageContainerNavigation;

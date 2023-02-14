@@ -41,7 +41,6 @@ export default class AccountDetailsModal extends Component {
       setAccountLabel,
       keyrings,
       rpcPrefs,
-      accounts,
       history,
       hideModal,
       blockExplorerLinkText,
@@ -51,12 +50,6 @@ export default class AccountDetailsModal extends Component {
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address);
     });
-
-    const getAccountsNames = (allAccounts, currentName) => {
-      return Object.values(allAccounts)
-        .map((item) => item.name)
-        .filter((itemName) => itemName !== currentName);
-    };
 
     let exportPrivateKeyFeatureEnabled = true;
     // This feature is disabled for hardware wallets
@@ -91,7 +84,7 @@ export default class AccountDetailsModal extends Component {
           className="account-details-modal__name"
           defaultValue={name}
           onSubmit={(label) => setAccountLabel(address, label)}
-          accountsNames={getAccountsNames(accounts, name)}
+          accounts={this.props.accounts}
         />
 
         <QrView
@@ -111,15 +104,12 @@ export default class AccountDetailsModal extends Component {
               : openBlockExplorer
           }
         >
-          {this.context.t(
-            blockExplorerLinkText.firstPart,
-            blockExplorerLinkText.secondPart === ''
-              ? null
-              : [blockExplorerLinkText.secondPart],
-          )}
+          {this.context.t(blockExplorerLinkText.firstPart, [
+            blockExplorerLinkText.secondPart,
+          ])}
         </Button>
 
-        {exportPrivateKeyFeatureEnabled ? (
+        {exportPrivateKeyFeatureEnabled && (
           <Button
             type="secondary"
             className="account-details-modal__button"
@@ -137,7 +127,7 @@ export default class AccountDetailsModal extends Component {
           >
             {this.context.t('exportPrivateKey')}
           </Button>
-        ) : null}
+        )}
       </AccountModalContainer>
     );
   }

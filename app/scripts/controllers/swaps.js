@@ -1,13 +1,13 @@
-import { ethers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
 import {
-  conversionUtil,
   decGWEIToHexWEI,
-  addCurrencies,
+  sumHexes,
 } from '../../../shared/modules/conversion.utils';
 import {
   DEFAULT_ERC20_APPROVE_GAS,
@@ -16,7 +16,8 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
@@ -36,7 +37,10 @@ import {
   calcGasTotal,
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
+import fetchEstimatedL1Fee from '../../../ui/helpers/utils/optimism/fetchEstimatedL1Fee';
 
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
@@ -131,12 +135,12 @@ export default class SwapsController {
 
     this.indexOfNewestCallInFlight = 0;
 
-    this.ethersProvider = new ethers.providers.Web3Provider(provider);
+    this.ethersProvider = new Web3Provider(provider);
     this._currentNetwork = networkController.store.getState().network;
     networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, (network) => {
       if (network !== 'loading' && network !== this._currentNetwork) {
         this._currentNetwork = network;
-        this.ethersProvider = new ethers.providers.Web3Provider(provider);
+        this.ethersProvider = new Web3Provider(provider);
       }
     });
   }
@@ -290,6 +294,24 @@ export default class SwapsController {
       sourceTokenInfo: fetchParamsMetaData.sourceTokenInfo,
       destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
     }));
+
+    if (chainId === CHAIN_IDS.OPTIMISM && Object.values(newQuotes).length > 0) {
+      await Promise.all(
+        Object.values(newQuotes).map(async (quote) => {
+          if (quote.trade) {
+            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
+              {
+                txParams: quote.trade,
+                chainId,
+              },
+              this.ethersProvider,
+            );
+            quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
+          }
+          return quote;
+        }),
+      );
+    }
 
     const quotesLastFetched = Date.now();
 
@@ -660,26 +682,31 @@ export default class SwapsController {
 
     let usedGasPrice = '0x0';
 
-    if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+    if (gasEstimateType === GasEstimateTypes.feeMarket) {
       const {
         high: { suggestedMaxPriorityFeePerGas },
         estimatedBaseFee,
       } = gasFeeEstimates;
 
-      usedGasPrice = addCurrencies(
-        customMaxPriorityFeePerGas || // Is already in hex WEI.
-          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
-        decGWEIToHexWEI(estimatedBaseFee),
-        {
-          aBase: 16,
-          bBase: 16,
-          toNumericBase: 'hex',
-          numberOfDecimals: 6,
-        },
+      const suggestedMaxPriorityFeePerGasInHexWEI = decGWEIToHexWEI(
+        suggestedMaxPriorityFeePerGas,
       );
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      const estimatedBaseFeeNumeric = new Numeric(
+        estimatedBaseFee,
+        10,
+        EtherDenomination.GWEI,
+      ).toDenomination(EtherDenomination.WEI);
+
+      usedGasPrice = new Numeric(
+        customMaxPriorityFeePerGas || suggestedMaxPriorityFeePerGasInHexWEI,
+        16,
+      )
+        .add(estimatedBaseFeeNumeric)
+        .round(6)
+        .toString();
+    } else if (gasEstimateType === GasEstimateTypes.legacy) {
       usedGasPrice = customGasPrice || decGWEIToHexWEI(gasFeeEstimates.high);
-    } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+    } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
       usedGasPrice =
         customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
     }
@@ -700,6 +727,7 @@ export default class SwapsController {
         sourceToken,
         trade,
         fee: metaMaskFee,
+        multiLayerL1TradeFeeTotal,
       } = quote;
 
       const tradeGasLimitForCalculation = gasEstimateWithRefund
@@ -710,43 +738,40 @@ export default class SwapsController {
         .plus(approvalNeeded?.gas || '0x0', 16)
         .toString(16);
 
-      const gasTotalInWeiHex = calcGasTotal(
+      let gasTotalInWeiHex = calcGasTotal(
         totalGasLimitForCalculation,
         usedGasPrice,
       );
+      if (multiLayerL1TradeFeeTotal !== null) {
+        gasTotalInWeiHex = sumHexes(
+          gasTotalInWeiHex || '0x0',
+          multiLayerL1TradeFeeTotal || '0x0',
+        );
+      }
 
       // trade.value is a sum of different values depending on the transaction.
       // It always includes any external fees charged by the quote source. In
       // addition, if the source asset is the selected chain's default token, trade.value
       // includes the amount of that token.
-      const totalWeiCost = new BigNumber(gasTotalInWeiHex, 16).plus(
-        trade.value,
+      const totalWeiCost = new Numeric(
+        gasTotalInWeiHex,
         16,
-      );
+        EtherDenomination.WEI,
+      ).add(new Numeric(trade.value, 16, EtherDenomination.WEI));
 
-      const totalEthCost = conversionUtil(totalWeiCost, {
-        fromCurrency: 'ETH',
-        fromDenomination: 'WEI',
-        toDenomination: 'ETH',
-        fromNumericBase: 'BN',
-        numberOfDecimals: 6,
-      });
+      const totalEthCost = totalWeiCost
+        .toDenomination(EtherDenomination.ETH)
+        .round(6).value;
 
       // The total fee is aggregator/exchange fees plus gas fees.
       // If the swap is from the selected chain's default token, subtract
       // the sourceAmount from the total cost. Otherwise, the total fee
       // is simply trade.value plus gas fees.
       const ethFee = isSwapsDefaultTokenAddress(sourceToken, chainId)
-        ? conversionUtil(
-            totalWeiCost.minus(sourceAmount, 10), // sourceAmount is in wei
-            {
-              fromCurrency: 'ETH',
-              fromDenomination: 'WEI',
-              toDenomination: 'ETH',
-              fromNumericBase: 'BN',
-              numberOfDecimals: 6,
-            },
-          )
+        ? totalWeiCost
+            .minus(new Numeric(sourceAmount, 10))
+            .toDenomination(EtherDenomination.ETH)
+            .round(6).value
         : totalEthCost;
 
       const decimalAdjustedDestinationAmount = calcTokenAmount(
@@ -867,11 +892,7 @@ export default class SwapsController {
   }
 
   async _getERC20Allowance(contractAddress, walletAddress, chainId) {
-    const contract = new ethers.Contract(
-      contractAddress,
-      abi,
-      this.ethersProvider,
-    );
+    const contract = new Contract(contractAddress, abi, this.ethersProvider);
     return await contract.allowance(
       walletAddress,
       SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],

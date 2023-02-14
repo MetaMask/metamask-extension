@@ -1,17 +1,26 @@
 import React, { PureComponent } from 'react';
+import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
-import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage } from '../../../helpers/utils/util';
+import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
-import Message from './signature-request-message';
+import {
+  TypographyVariant,
+  FONT_WEIGHT,
+  TEXT_ALIGN,
+  TextColor,
+} from '../../../helpers/constants/design-system';
+import NetworkAccountBalanceHeader from '../network-account-balance-header';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../shared/constants/common';
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import Footer from './signature-request-footer';
-import Header from './signature-request-header';
+import Message from './signature-request-message';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -55,6 +64,16 @@ export default class SignatureRequest extends PureComponent {
      * Dapp image
      */
     siteImage: PropTypes.string,
+    conversionRate: PropTypes.number,
+    nativeCurrency: PropTypes.string,
+    provider: PropTypes.object,
+    subjectMetadata: PropTypes.object,
+    unapprovedMessagesCount: PropTypes.number,
+    clearConfirmTransaction: PropTypes.func.isRequired,
+    history: PropTypes.object,
+    mostRecentOverviewPage: PropTypes.string,
+    showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
+    cancelAll: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -78,13 +97,58 @@ export default class SignatureRequest extends PureComponent {
     )}`;
   }
 
+  getNetworkName() {
+    const { provider } = this.props;
+    const providerName = provider.type;
+    const { t } = this.context;
+
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('mainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('goerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('sepolia');
+      case NETWORK_TYPES.LOCALHOST:
+        return t('localhost');
+      default:
+        return provider.nickname || t('unknownNetwork');
+    }
+  }
+
+  memoizedParseMessage = memoize((data) => {
+    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+    const sanitizedMessage = sanitizeMessage(message, primaryType, types);
+    return { sanitizedMessage, domain, primaryType };
+  });
+
+  handleCancelAll = () => {
+    const {
+      cancelAll,
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      showRejectTransactionsConfirmationModal,
+      unapprovedMessagesCount,
+    } = this.props;
+
+    showRejectTransactionsConfirmationModal({
+      unapprovedTxCount: unapprovedMessagesCount,
+      onSubmit: async () => {
+        await cancelAll();
+        clearConfirmTransaction();
+        history.push(mostRecentOverviewPage);
+      },
+    });
+  };
+
   render() {
     const {
-      fromAccount,
       txData: {
         msgParams: { data, origin, version },
         type,
       },
+      fromAccount: { address, balance, name },
       cancel,
       sign,
       isLedgerWallet,
@@ -92,11 +156,27 @@ export default class SignatureRequest extends PureComponent {
       chainId,
       rpcPrefs,
       siteImage,
+      txData,
+      subjectMetadata,
+      conversionRate,
+      nativeCurrency,
+      unapprovedMessagesCount,
     } = this.props;
-    const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, primaryType, types } = JSON.parse(data);
-    const { trackEvent } = this.context;
+    const { t, trackEvent } = this.context;
+    const {
+      sanitizedMessage,
+      domain: { verifyingContract },
+      primaryType,
+    } = this.memoizedParseMessage(data);
+    const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
+    const currentNetwork = this.getNetworkName();
 
+    const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
+      .toDenomination(EtherDenomination.ETH)
+      .applyConversionRate(conversionRate)
+      .round(6)
+      .toBase(10)
+      .toString();
     const onSign = (event) => {
       sign(event);
       trackEvent({
@@ -128,41 +208,69 @@ export default class SignatureRequest extends PureComponent {
     const messageIsScrollable =
       this.messageRootRef?.scrollHeight > this.messageRootRef?.clientHeight;
 
+    const targetSubjectMetadata = txData.msgParams.origin
+      ? subjectMetadata?.[txData.msgParams.origin]
+      : null;
+
     return (
-      <div className="signature-request page-container">
-        <Header fromAccount={fromAccount} />
-        <div className="signature-request-content">
-          <div className="signature-request-content__title">
-            {this.context.t('sigRequest')}
-          </div>
-          <div className="signature-request-content__identicon-container">
-            <div className="signature-request-content__identicon-initial">
-              {domain.name && domain.name[0]}
-            </div>
-            <div className="signature-request-content__identicon-border" />
-            <Identicon address={fromAddress} diameter={70} />
-          </div>
-          <div className="signature-request-content__info--bolded">
-            {domain.name}
-          </div>
-          <SiteOrigin
-            className="signature-request-content__info"
-            siteOrigin={origin}
+      <div className="signature-request">
+        <ConfirmPageContainerNavigation />
+        <div className="request-signature__account">
+          <NetworkAccountBalanceHeader
+            networkName={currentNetwork}
+            accountName={name}
+            accountBalance={balanceInBaseAsset}
+            tokenName={nativeCurrency}
+            accountAddress={address}
           />
-          <div>
-            <Button
-              type="link"
-              onClick={() => this.setState({ showContractDetails: true })}
-              className="signature-request-content__verify-contract-details"
-            >
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.PRIMARY_DEFAULT}
-              >
-                {this.context.t('verifyContractDetails')}
-              </Typography>
-            </Button>
+        </div>
+        <div className="signature-request-content">
+          <div className="signature-request__origin">
+            <SiteOrigin
+              siteOrigin={origin}
+              iconSrc={targetSubjectMetadata?.iconUrl}
+              iconName={getURLHostName(origin) || origin}
+              chip
+            />
           </div>
+
+          <Typography
+            className="signature-request__content__title"
+            variant={TypographyVariant.H3}
+            fontWeight={FONT_WEIGHT.BOLD}
+            boxProps={{
+              marginTop: 4,
+            }}
+          >
+            {this.context.t('sigRequest')}
+          </Typography>
+          <Typography
+            className="request-signature__content__subtitle"
+            variant={TypographyVariant.H7}
+            color={TextColor.textAlternative}
+            align={TEXT_ALIGN.CENTER}
+            margin={12}
+            marginTop={3}
+          >
+            {this.context.t('signatureRequestGuidance')}
+          </Typography>
+          {verifyingContract ? (
+            <div>
+              <Button
+                type="link"
+                onClick={() => this.setState({ showContractDetails: true })}
+                className="signature-request-content__verify-contract-details"
+                data-testid="verify-contract-details"
+              >
+                <Typography
+                  variant={TypographyVariant.H7}
+                  color={TextColor.primaryDefault}
+                >
+                  {this.context.t('verifyContractDetails')}
+                </Typography>
+              </Button>
+            </div>
+          ) : null}
         </div>
         {isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
@@ -170,11 +278,12 @@ export default class SignatureRequest extends PureComponent {
           </div>
         ) : null}
         <Message
-          data={sanitizeMessage(message, primaryType, types)}
+          data={sanitizedMessage}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}
           messageIsScrollable={messageIsScrollable}
+          primaryType={primaryType}
         />
         <Footer
           cancelAction={onCancel}
@@ -186,7 +295,7 @@ export default class SignatureRequest extends PureComponent {
         />
         {this.state.showContractDetails && (
           <ContractDetailsModal
-            toAddress={domain.verifyingContract}
+            toAddress={verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
             origin={origin}
@@ -195,6 +304,19 @@ export default class SignatureRequest extends PureComponent {
             isContractRequestingSignature
           />
         )}
+        {unapprovedMessagesCount > 1 ? (
+          <Button
+            type="link"
+            className="signature-request__reject-all-button"
+            data-testid="signature-request-reject-all"
+            onClick={(e) => {
+              e.preventDefault();
+              this.handleCancelAll();
+            }}
+          >
+            {rejectNText}
+          </Button>
+        ) : null}
       </div>
     );
   }

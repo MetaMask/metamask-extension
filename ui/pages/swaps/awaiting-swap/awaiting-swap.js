@@ -307,7 +307,7 @@ export default function AwaitingSwap({
           ) {
             history.push(DEFAULT_ROUTE);
           } else {
-            await dispatch(setDefaultHomeActiveTabName('Activity'));
+            await dispatch(setDefaultHomeActiveTabName('activity'));
             history.push(DEFAULT_ROUTE);
           }
         }}

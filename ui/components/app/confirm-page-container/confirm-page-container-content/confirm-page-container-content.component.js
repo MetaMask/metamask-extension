@@ -8,7 +8,7 @@ import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../helpers/constants/design-system';
 import DepositPopover from '../../deposit-popover/deposit-popover';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
@@ -48,7 +48,7 @@ export default class ConfirmPageContainerContent extends Component {
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
-    supportsEIP1559V2: PropTypes.bool,
+    supportsEIP1559: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
     nativeCurrency: PropTypes.string,
     networkName: PropTypes.string,
@@ -101,11 +101,16 @@ export default class ConfirmPageContainerContent extends Component {
         <Tab
           className="confirm-page-container-content__tab"
           name={t('details')}
+          tabKey="details"
         >
           {detailsComponent}
         </Tab>
         {dataComponent && (
-          <Tab className="confirm-page-container-content__tab" name={t('data')}>
+          <Tab
+            className="confirm-page-container-content__tab"
+            name={t('data')}
+            tabKey="data"
+          >
             {dataComponent}
           </Tab>
         )}
@@ -113,6 +118,7 @@ export default class ConfirmPageContainerContent extends Component {
           <Tab
             className="confirm-page-container-content__tab"
             name={t('dataHex')}
+            tabKey="dataHex"
           >
             {dataHexComponent}
           </Tab>
@@ -153,7 +159,7 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
-      supportsEIP1559V2,
+      supportsEIP1559,
       hasTopBorder,
       nativeCurrency,
       networkName,
@@ -165,7 +171,7 @@ export default class ConfirmPageContainerContent extends Component {
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559V2 &&
+      supportsEIP1559 &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
@@ -200,7 +206,7 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559V2 && (errorKey || errorMessage) && (
+        {!supportsEIP1559 && (errorKey || errorMessage) && (
           <div className="confirm-page-container-content__error-container">
             <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
           </div>
@@ -211,11 +217,10 @@ export default class ConfirmPageContainerContent extends Component {
               className="actionable-message--warning"
               message={
                 isBuyableChain ? (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
-
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -229,7 +234,7 @@ export default class ConfirmPageContainerContent extends Component {
                     ])}
                   </Typography>
                 ) : (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
