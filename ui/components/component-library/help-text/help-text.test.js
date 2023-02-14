@@ -22,7 +22,8 @@ describe('HelpText', () => {
   it('should render with react nodes inside the HelpText', () => {
     const { getByText, getByTestId } = render(
       <HelpText>
-        help text <Icon name={ICON_NAMES.WARNING} data-testid="icon" />
+        help text{' '}
+        <Icon name={ICON_NAMES.WARNING} data-testid="icon" as="span" />
       </HelpText>,
     );
     expect(getByText('help text')).toBeDefined();

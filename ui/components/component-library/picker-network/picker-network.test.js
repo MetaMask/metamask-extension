@@ -57,7 +57,11 @@ describe('PickerNetwork', () => {
   // className
   it('should render with custom className', () => {
     const { getByTestId } = render(
-      <PickerNetwork data-testid="picker-network" className="test-class" />,
+      <PickerNetwork
+        data-testid="picker-network"
+        label="test"
+        className="test-class"
+      />,
     );
     expect(getByTestId('picker-network')).toHaveClass('test-class');
   });
