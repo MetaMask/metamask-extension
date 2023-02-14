@@ -5,6 +5,7 @@ import { EVENT } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 import { PermissionPageContainerContent } from '.';
+import { RestrictedMethods } from 'shared/constants/permissions';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
@@ -54,7 +55,10 @@ export default class PermissionPageContainer extends Component {
 
   getRequestedMethodState(methodNames) {
     return methodNames.reduce((acc, methodName) => {
-      acc[methodName] = true;
+      acc[methodName] =
+        methodName === RestrictedMethods.wallet_snap
+          ? this.props.request.permissions[RestrictedMethods.wallet_snap]
+          : true;
       return acc;
     }, {});
   }
