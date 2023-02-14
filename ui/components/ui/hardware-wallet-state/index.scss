@@ -1,0 +1,8 @@
+.hardware-wallet-state {
+  &__error {
+    color: var(--color-warning-default);
+    margin: 20px 20px 10px;
+    display: block;
+    text-align: center;
+  }
+}

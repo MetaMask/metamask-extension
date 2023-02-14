@@ -16,8 +16,8 @@ import CopyRawData from '../../components/app/transaction-decoding/components/ui
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
+import HardwareWalletState from '../../components/ui/hardware-wallet-state';
 import Disclosure from '../../components/ui/disclosure';
-import { HARDWARE_CHECK_RATE } from '../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../shared/constants/metametrics';
 import {
   TransactionType,
@@ -50,7 +50,6 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  isDeviceAccessible,
 } from '../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -313,12 +312,6 @@ export default class ConfirmTransactionBase extends Component {
     this.setState({ userAcknowledgedGasMissing: true });
   }
 
-  async updateHardwareLockState() {
-    const { device, hdPath } = this.props;
-    const unlocked = await isDeviceAccessible(device, hdPath);
-    this.setState({ hardwareLocked: !unlocked });
-  }
-
   renderDetails() {
     const {
       primaryTotalTextOverride,
@@ -339,14 +332,16 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       showLedgerSteps,
       supportsEIP1559,
-      isHardwareWallet,
       isMultiLayerFeeNetwork,
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
+      isHardwareWallet,
+      device,
+      hdPath,
     } = this.props;
     const { t } = this.context;
-    const { userAcknowledgedGasMissing, hardwareLocked } = this.state;
+    const { userAcknowledgedGasMissing } = this.state;
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
@@ -588,12 +583,18 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
-    const hardwareLockedWarning = () => (
+    const renderHardwareWalletState = () => (
       <div
         className="confirm-page-container-content__error-container"
         key="hw-locked-error"
       >
-        <span className="hw-connect__error">{t('ledgerLocked')}</span>
+        <HardwareWalletState
+          device={device}
+          hdPath={hdPath}
+          onChange={(status) =>
+            this.setState({ hardwareLocked: status === 'locked' })
+          }
+        />
       </div>
     );
 
@@ -618,7 +619,7 @@ export default class ConfirmTransactionBase extends Component {
               : () => this.handleEditGas()
           }
           rows={[
-            isHardwareWallet && hardwareLocked && hardwareLockedWarning(),
+            isHardwareWallet && renderHardwareWalletState(),
             renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&
@@ -990,12 +991,9 @@ export default class ConfirmTransactionBase extends Component {
       tryReverseResolveAddress(toAddress);
     }
 
-    // need to keep an eye on the hardware wallet status?
     if (isHardwareWallet) {
-      this.hdStatusIntervalId = setInterval(
-        () => this.updateHardwareLockState(),
-        HARDWARE_CHECK_RATE,
-      );
+      // assume hardware is locked until status is known
+      this.setState({ hardwareLocked: true });
     }
 
     /**
