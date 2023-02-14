@@ -40,7 +40,7 @@ describe('Nfts Item Component', () => {
 
   const mockStore = configureMockStore([thunk])(mockState);
 
-  it('should expand nft collection showing individual nfts', async () => {
+  it('should expand NFT collection showing individual NFTs', async () => {
     const { queryByTestId, queryAllByTestId, rerender } = renderWithProvider(
       <NftsItems {...props} />,
       mockStore,
@@ -68,7 +68,7 @@ describe('Nfts Item Component', () => {
     expect(queryAllByTestId('nft-wrapper')).toHaveLength(8);
   });
 
-  it('should nft click image', () => {
+  it('should NFT click image', () => {
     const { queryAllByTestId } = renderWithProvider(
       <NftsItems {...props} />,
       mockStore,

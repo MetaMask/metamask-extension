@@ -49,7 +49,7 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        // When transaction complete, check the send nft item is displayed in activity tab
+        // When transaction complete, check the send NFT is displayed in activity tab
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .transaction-list-item',

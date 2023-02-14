@@ -33,7 +33,7 @@ describe('Nft Default Image', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render nft name', () => {
+  it('should render NFT name', () => {
     const props = {
       name: 'Nft Name',
     };
@@ -45,7 +45,7 @@ describe('Nft Default Image', () => {
     expect(nftElement).toBeInTheDocument();
   });
 
-  it('should render nft name and tokenId', () => {
+  it('should render NFT name and tokenId', () => {
     const props = {
       name: 'Nft Name',
       tokenId: '123',

@@ -9,7 +9,7 @@ describe('Nft Options Component', () => {
     onViewOnOpensea: jest.fn(),
   };
 
-  it('should expand nft options menu`', async () => {
+  it('should expand NFT options menu`', async () => {
     const { queryByTestId } = renderWithProvider(<NftOptions {...props} />);
 
     const openOptionMenuButton = queryByTestId('nft-options__button');

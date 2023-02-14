@@ -63,7 +63,7 @@ describe('SendAmountRow Component', () => {
     });
 
     describe('Nft Asset Type', () => {
-      it('should match snapshot for token nft type', () => {
+      it('should match snapshot for token NFT type', () => {
         const nftState = {
           ...mockSendState,
           send: {

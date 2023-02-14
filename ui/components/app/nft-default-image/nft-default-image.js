@@ -26,7 +26,7 @@ export default function NftDefaultImage({ name, tokenId, handleImageClick }) {
 
 NftDefaultImage.propTypes = {
   /**
-   * The name of the nft collection if not supplied will default to "Unnamed collection"
+   * The name of the NFT collection if not supplied will default to "Unnamed collection"
    */
   name: PropTypes.string,
   /**
@@ -34,7 +34,7 @@ NftDefaultImage.propTypes = {
    */
   tokenId: PropTypes.string,
   /**
-   * The click handler for the nft default image
+   * The click handler for the NFT default image
    */
   handleImageClick: PropTypes.func,
 };
