@@ -80,12 +80,15 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // switch back to test-snaps window
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectBip32',
+          text: 'Reconnect to BIP-32 Snap',
+        });
 
         // scroll to and click get public key
         await driver.delay(1000);

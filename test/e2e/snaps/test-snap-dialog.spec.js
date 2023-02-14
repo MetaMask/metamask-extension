@@ -68,12 +68,15 @@ describe('Test Snap Dialog', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // switch to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectDialogSnap',
+          text: 'Reconnect to Dialog Snap',
+        });
 
         // click on alert dialog
         await driver.clickElement('#sendAlertButton');

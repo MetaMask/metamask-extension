@@ -68,12 +68,15 @@ describe('Test Snap Confirm', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // switch back to test snaps page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectConfirmSnap',
+          text: 'Reconnect to Confirm Snap',
+        });
 
         // click send inputs on test snap page
         const snapButton2 = await driver.findElement('#sendConfirmButton');
