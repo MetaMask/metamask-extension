@@ -15,6 +15,7 @@ import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 ///: END:ONLY_INCLUDE_IN
 import { PermissionPageContainerContent } from '.';
+import { RestrictedMethods } from 'shared/constants/permissions';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
