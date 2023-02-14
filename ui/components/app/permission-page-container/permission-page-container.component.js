@@ -4,8 +4,8 @@ import { isEqual } from 'lodash';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import { PermissionPageContainerContent } from '.';
-import { RestrictedMethods } from 'shared/constants/permissions';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
