@@ -20,7 +20,10 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
-import { getErrorHtml } from '../../shared/lib/error-utils';
+import {
+  getErrorHtml,
+  registerDesktopErrorActions,
+} from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -253,10 +256,15 @@ async function start() {
   }
 
   function initializeUiWithTab(tab) {
-    initializeUi(tab, connectionStream, (err, store) => {
+    initializeUi(tab, connectionStream, (err, store, backgroundConnection) => {
       if (err) {
         // if there's an error, store will be = metamaskState
-        displayCriticalError('troubleStarting', err, store);
+        displayCriticalError(
+          'troubleStarting',
+          err,
+          store,
+          backgroundConnection,
+        );
         return;
       }
       isUIInitialised = true;
@@ -274,7 +282,12 @@ async function start() {
   function updateUiStreams() {
     connectToAccountManager(connectionStream, (err, backgroundConnection) => {
       if (err) {
-        displayCriticalError('troubleStarting', err);
+        displayCriticalError(
+          'troubleStarting',
+          err,
+          undefined,
+          backgroundConnection,
+        );
         return;
       }
 
@@ -310,7 +323,7 @@ async function queryCurrentActiveTab(windowType) {
 function initializeUi(activeTab, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      cb(err, null);
+      cb(err, null, backgroundConnection);
       return;
     }
 
@@ -325,14 +338,21 @@ function initializeUi(activeTab, connectionStream, cb) {
   });
 }
 
-async function displayCriticalError(errorKey, err, metamaskState) {
-  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState);
+async function displayCriticalError(
+  errorKey,
+  err,
+  metamaskState,
+  backgroundConnection,
+) {
+  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState, err);
 
   container.innerHTML = html;
 
+  registerDesktopErrorActions(backgroundConnection, browser);
+
   const button = document.getElementById('critical-error-button');
 
-  button.addEventListener('click', (_) => {
+  button?.addEventListener('click', (_) => {
     browser.runtime.reload();
   });
 

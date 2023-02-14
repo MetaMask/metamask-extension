@@ -5,7 +5,10 @@ import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../../ui/helpers/utils/i18n-helper';
+import { renderDesktopError } from '../../ui/pages/desktop-error/render-desktop-error';
+import { EXTENSION_ERROR_PAGE_TYPES } from '../constants/desktop';
 import switchDirection from './switch-direction';
+import { openCustomProtocol } from './deep-linking';
 
 const _setupLocale = async (currentLocale) => {
   const currentLocaleMessages = currentLocale
@@ -33,7 +36,7 @@ const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export async function getErrorHtml(errorKey, supportLink, metamaskState) {
+export async function getErrorHtml(errorKey, supportLink, metamaskState, err) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
@@ -50,6 +53,22 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
   switchDirection(textDirection);
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
+
+  const isDesktopEnabled = metamaskState?.desktopEnabled === true;
+
+  if (isDesktopEnabled) {
+    let errorType = EXTENSION_ERROR_PAGE_TYPES.CRITICAL_ERROR;
+
+    if (err?.message.includes('No response from RPC')) {
+      errorType = EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST;
+    }
+
+    return renderDesktopError({
+      type: errorType,
+      t,
+      isHtmlError: true,
+    });
+  }
 
   /**
    * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
@@ -89,6 +108,10 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState) {
     `;
 }
 
+function disableDesktop(backgroundConnection) {
+  backgroundConnection.disableDesktopError();
+}
+
 export function downloadDesktopApp() {
   global.platform.openTab({ url: 'https://metamask.io/' });
 }
@@ -99,4 +122,42 @@ export function downloadExtension() {
 
 export function restartExtension() {
   browser.runtime.reload();
+}
+
+export function openOrDownloadMMD() {
+  openCustomProtocol('metamask-desktop://pair').catch(() => {
+    window.open('https://metamask.io/download.html', '_blank').focus();
+  });
+}
+
+export function registerDesktopErrorActions(backgroundConnection) {
+  const disableDesktopButton = document.getElementById(
+    'desktop-error-button-disable-mmd',
+  );
+  const restartMMButton = document.getElementById(
+    'desktop-error-button-restart-mm',
+  );
+  const downloadMMDButton = document.getElementById(
+    'desktop-error-button-download-mmd',
+  );
+
+  const openOrDownloadMMDButton = document.getElementById(
+    'desktop-error-button-open-or-download-mmd',
+  );
+
+  disableDesktopButton?.addEventListener('click', (_) => {
+    disableDesktop(backgroundConnection);
+  });
+
+  restartMMButton?.addEventListener('click', (_) => {
+    restartExtension();
+  });
+
+  downloadMMDButton?.addEventListener('click', (_) => {
+    downloadDesktopApp();
+  });
+
+  openOrDownloadMMDButton?.addEventListener('click', (_) => {
+    openOrDownloadMMD();
+  });
 }
