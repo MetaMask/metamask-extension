@@ -8,6 +8,7 @@ export default class MetaFoxLogo extends PureComponent {
     onClick: PropTypes.func,
     unsetIconHeight: PropTypes.bool,
     isOnboarding: PropTypes.bool,
+    src: PropTypes.string,
   };
 
   static defaultProps = {
@@ -15,7 +16,7 @@ export default class MetaFoxLogo extends PureComponent {
   };
 
   render() {
-    const { onClick, unsetIconHeight, isOnboarding } = this.props;
+    const { onClick, unsetIconHeight, isOnboarding, src } = this.props;
     const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
 
     return (
@@ -28,15 +29,28 @@ export default class MetaFoxLogo extends PureComponent {
         })}
         data-testid="app-header-logo"
       >
-        <MetaFoxHorizontalLogo
-          className={classnames({
-            'app-header__metafox-logo--horizontal': !isOnboarding,
-            'onboarding-app-header__metafox-logo--horizontal': isOnboarding,
-          })}
-        />
+        {src ? (
+          <img
+            {...iconProps}
+            src={src}
+            className={classnames({
+              'app-header__metafox-logo--horizontal': !isOnboarding,
+              'onboarding-app-header__metafox-logo--horizontal': isOnboarding,
+            })}
+            alt=""
+          />
+        ) : (
+          <MetaFoxHorizontalLogo
+            className={classnames({
+              'app-header__metafox-logo--horizontal': !isOnboarding,
+              'onboarding-app-header__metafox-logo--horizontal': isOnboarding,
+            })}
+          />
+        )}
+
         <img
           {...iconProps}
-          src="./images/logo/metamask-fox.svg"
+          src={src || './images/logo/metamask-fox.svg'}
           className={classnames({
             'app-header__metafox-logo--icon': !isOnboarding,
             'onboarding-app-header__metafox-logo--icon': isOnboarding,

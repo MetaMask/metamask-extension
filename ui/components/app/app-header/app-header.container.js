@@ -16,7 +16,8 @@ import AppHeader from './app-header.component';
 const mapStateToProps = (state) => {
   const { appState, metamask } = state;
   const { networkDropdownOpen } = appState;
-  const { selectedAddress, isUnlocked, isAccountMenuOpen } = metamask;
+  const { selectedAddress, isUnlocked, isAccountMenuOpen, desktopEnabled } =
+    metamask;
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const unreadNotificationsCount = getUnreadNotificationsCount(state);
@@ -37,6 +38,7 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IN(beta)
     showBetaHeader,
     ///: END:ONLY_INCLUDE_IN
+    desktopEnabled,
   };
 };
 
