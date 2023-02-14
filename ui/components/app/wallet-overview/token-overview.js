@@ -19,10 +19,7 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
   getIsSwapsChain,
-  getIsBuyableCoinbasePayToken,
-  getIsBuyableTransakToken,
-  getIsBuyableMoonpayToken,
-  getIsBuyableWyreToken,
+  getIsBuyableChain,
 } from '../../../selectors';
 
 import IconButton from '../../ui/icon-button';
@@ -52,24 +49,8 @@ const TokenOverview = ({ className, token }) => {
     token.symbol,
   );
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const isTokenBuyableCoinbasePay = useSelector((state) =>
-    getIsBuyableCoinbasePayToken(state, token.symbol),
-  );
-  const isTokenBuyableTransak = useSelector((state) =>
-    getIsBuyableTransakToken(state, token.symbol),
-  );
-  const isTokenBuyableMoonpay = useSelector((state) =>
-    getIsBuyableMoonpayToken(state, token.symbol),
-  );
-  const isTokenBuyableWyre = useSelector((state) =>
-    getIsBuyableWyreToken(state, token.symbol),
-  );
 
-  const isBuyable =
-    isTokenBuyableCoinbasePay ||
-    isTokenBuyableTransak ||
-    isTokenBuyableMoonpay ||
-    isTokenBuyableWyre;
+  const isBuyableChain = useSelector(getIsBuyableChain);
 
   useEffect(() => {
     if (token.isERC721 && process.env.NFTS_V1) {
@@ -102,7 +83,7 @@ const TokenOverview = ({ className, token }) => {
       }
       buttons={
         <>
-          {isBuyable && (
+          {isBuyableChain && (
             <IconButton
               className="token-overview__button"
               Icon={

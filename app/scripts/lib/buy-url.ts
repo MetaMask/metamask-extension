@@ -10,12 +10,6 @@ import {
   ChainId,
 } from '../../../shared/constants/network';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import {
-  TRANSAK_API_KEY,
-  MOONPAY_API_KEY,
-  COINBASEPAY_API_KEY,
-} from '../constants/on-ramp';
-import { formatMoonpaySymbol } from '../../../ui/helpers/utils/moonpay';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -62,109 +56,6 @@ const createWyrePurchaseUrl = async (
 };
 
 /**
- * Create a Transak Checkout URL.
- * API docs here: https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238
- *
- * @param walletAddress - Ethereum destination address
- * @param chainId - Current chain ID
- * @param symbol - Token symbol to buy
- * @returns String
- */
-const createTransakUrl = (
-  walletAddress: string,
-  chainId: keyof typeof BUYABLE_CHAINS_MAP,
-  symbol?: CurrencySymbol,
-): string => {
-  const { nativeCurrency, network } = BUYABLE_CHAINS_MAP[chainId];
-
-  const queryParams = new URLSearchParams({
-    apiKey: TRANSAK_API_KEY,
-    hostURL: 'https://metamask.io',
-    defaultCryptoCurrency: symbol || nativeCurrency,
-    networks: network,
-    walletAddress,
-  });
-
-  return `https://global.transak.com/?${queryParams}`;
-};
-
-/**
- * Create a MoonPay Checkout URL.
- *
- * @param walletAddress - Destination address
- * @param chainId - Current chain ID
- * @param symbol - Token symbol to buy
- * @returns String
- */
-const createMoonPayUrl = async (
-  walletAddress: string,
-  chainId: keyof typeof BUYABLE_CHAINS_MAP,
-  symbol?: CurrencySymbol,
-): Promise<string> => {
-  const { moonPay: { defaultCurrencyCode, showOnlyCurrencies } = {} as any } =
-    BUYABLE_CHAINS_MAP[chainId];
-  const moonPayQueryParams = new URLSearchParams({
-    apiKey: MOONPAY_API_KEY,
-    walletAddress,
-    defaultCurrencyCode: symbol
-      ? formatMoonpaySymbol(symbol, chainId)
-      : defaultCurrencyCode,
-    showOnlyCurrencies,
-  });
-  const queryParams = new URLSearchParams({
-    url: `https://buy.moonpay.com?${moonPayQueryParams}`,
-    context: 'extension',
-  });
-  const moonPaySignUrl = `${SWAPS_API_V2_BASE_URL}/moonpaySign/?${queryParams}`;
-  try {
-    const response = await fetchWithTimeout(moonPaySignUrl, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    const parsedResponse = await response.json();
-    if (response.ok && parsedResponse.url) {
-      return parsedResponse.url;
-    }
-    log.warn('Failed to create a MoonPay purchase URL', parsedResponse);
-  } catch (err) {
-    log.warn('Failed to create a MoonPay purchase URL', err);
-  }
-  return '';
-};
-
-/**
- * Create a Coinbase Pay Checkout URL.
- *
- * @param walletAddress - Ethereum destination address
- * @param chainId - Current chain ID
- * @param symbol - Token symbol to buy
- * @returns String
- */
-const createCoinbasePayUrl = (
-  walletAddress: string,
-  chainId: keyof typeof BUYABLE_CHAINS_MAP,
-  symbol?: CurrencySymbol,
-): string => {
-  // since coinbasePayCurrencies is going to be extended to include all tokens supported
-  // we now default to nativeCurrency instead of the 2 previous tokens + eth that we had before
-  const { nativeCurrency } = BUYABLE_CHAINS_MAP[chainId];
-  const queryParams = new URLSearchParams({
-    appId: COINBASEPAY_API_KEY,
-    attribution: 'extension',
-    destinationWallets: JSON.stringify([
-      {
-        address: walletAddress,
-        assets: symbol ? [symbol] : [nativeCurrency],
-      },
-    ]),
-  });
-  return `https://pay.coinbase.com/buy?${queryParams}`;
-};
-
-/**
  * Gives the caller a url at which the user can acquire eth, depending on the network they are in
  *
  * @param opts - Options required to determine the correct url
@@ -199,23 +90,6 @@ export default async function getBuyUrl({
         return await createWyrePurchaseUrl(address as string, chainId, symbol);
       }
       throw new Error('Address is required when requesting url for Wyre');
-    case 'transak':
-      if (address) {
-        return createTransakUrl(address as string, chainId, symbol);
-      }
-      throw new Error('Address is required when requesting url for Transak');
-    case 'moonpay':
-      if (address) {
-        return createMoonPayUrl(address as string, chainId, symbol);
-      }
-      throw new Error('Address is required when requesting url for Moonpay');
-    case 'coinbase':
-      if (address) {
-        return createCoinbasePayUrl(address as string, chainId, symbol);
-      }
-      throw new Error(
-        'Address is required when requesting url for Coinbase Pay',
-      );
     case 'metamask-faucet':
       return 'https://faucet.metamask.io/';
     case 'goerli-faucet':
