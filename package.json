@@ -436,8 +436,6 @@
     "depcheck": "^1.4.3",
     "dependency-tree": "^8.1.2",
     "duplexify": "^4.1.1",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-node": "^0.3.4",

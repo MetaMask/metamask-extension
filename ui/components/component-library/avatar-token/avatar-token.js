@@ -100,17 +100,17 @@ AvatarToken.propTypes = {
   size: PropTypes.oneOf(Object.values(AVATAR_TOKEN_SIZES)),
   /**
    * The background color of the AvatarToken
-   * Defaults to COLORS.BACKGROUND_ALTERNATIVE
+   * Defaults to Color.backgroundAlternative
    */
   backgroundColor: Box.propTypes.backgroundColor,
   /**
    * The background color of the AvatarToken
-   * Defaults to COLORS.BORDER_DEFAULT
+   * Defaults to Color.borderDefault
    */
   borderColor: Box.propTypes.borderColor,
   /**
    * The color of the text inside the AvatarToken
-   * Defaults to COLORS.TEXT_DEFAULT
+   * Defaults to Color.textDefault
    */
   color: Box.propTypes.color,
   /**
