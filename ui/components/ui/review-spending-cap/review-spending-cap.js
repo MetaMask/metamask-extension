@@ -18,6 +18,7 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { Color } from '../typography/typography.stories';
 
 export default function ReviewSpendingCap({
   tokenName,
@@ -90,7 +91,7 @@ export default function ReviewSpendingCap({
               }
             >
               {valueIsGreaterThanBalance && (
-                <i className="fa fa-exclamation-triangle review-spending-cap__heading-title__tooltip__warning-icon" />
+                <Icon name={ICON_NAMES.DANGER} color={Color.errorDefault} />
               )}
               {Number(tokenValue) === 0 && (
                 <Icon

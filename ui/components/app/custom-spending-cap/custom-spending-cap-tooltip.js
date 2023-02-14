@@ -30,7 +30,10 @@ export const CustomSpendingCapTooltip = ({
       }
     >
       {tooltipIcon ? (
-        <i className="fa fa-exclamation-triangle form-field__heading-title__tooltip__warning-icon" />
+        <Icon
+          name={ICON_NAMES.DANGER}
+          className="form-field__heading-title__tooltip__warning-icon"
+        />
       ) : (
         tooltipIcon !== '' && <Icon name={ICON_NAMES.QUESTION} />
       )}
