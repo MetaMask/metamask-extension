@@ -245,7 +245,10 @@ export default class Home extends PureComponent {
   };
 
   renderNotifications() {
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const { t } = this.context;
+    ///: END:ONLY_INCLUDE_IN
+
     const {
       history,
       shouldShowSeedPhraseReminder,
