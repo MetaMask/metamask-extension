@@ -235,6 +235,7 @@ const TokenOverview = ({ className, token }) => {
                 />
               }
               label={t('portfolio')}
+              data-testid="home__portfolio-site"
               onClick={() => {
                 const portfolioUrl = process.env.PORTFOLIO_URL;
                 global.platform.openTab({

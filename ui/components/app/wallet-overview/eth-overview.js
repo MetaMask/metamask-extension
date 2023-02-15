@@ -200,6 +200,7 @@ const EthOverview = ({ className }) => {
             />
             <IconButton
               className="eth-overview__button"
+              data-testid="home__portfolio-site"
               Icon={
                 <Icon
                   name={ICON_NAMES.DIAGRAM}
