@@ -1,0 +1,49 @@
+diff --git a/index.js b/index.js
+index 9b76a29305d48cd36b3ffd3b17f5ecdc9be96d0d..1a3c4e5f2a7a1e17006ade2c49b2f378f422add9 100644
+--- a/index.js
++++ b/index.js
+@@ -1,7 +1,7 @@
+ const { EventEmitter } = require('events');
+ const ethUtil = require('ethereumjs-util');
+ const HDKey = require('hdkey');
+-const TrezorConnect = require('trezor-connect').default;
++const { default: TrezorConnectSDK, DEVICE_EVENT } = require('trezor-connect');
+ const { TransactionFactory } = require('@ethereumjs/tx');
+ const transformTypedData = require('trezor-connect/lib/plugins/ethereum/typedData');
+ 
+@@ -48,6 +48,8 @@ function isOldStyleEthereumjsTx(tx) {
+   return typeof tx.getChainId === 'function';
+ }
+ 
++let TrezorConnect = TrezorConnectSDK;
++
+ class TrezorKeyring extends EventEmitter {
+   constructor(opts = {}) {
+     super();
+@@ -60,12 +62,19 @@ class TrezorKeyring extends EventEmitter {
+     this.paths = {};
+     this.deserialize(opts);
+ 
+-    TrezorConnect.on('DEVICE_EVENT', (event) => {
++    if (opts.trezorConnectOverride) {
++      TrezorConnect = opts.trezorConnectOverride;
++    }
++
++    TrezorConnect.on(DEVICE_EVENT, (event) => {
+       if (event && event.payload && event.payload.features) {
+         this.model = event.payload.features.model;
+       }
+     });
+-    TrezorConnect.init({ manifest: TREZOR_CONNECT_MANIFEST });
++    TrezorConnect.init({
++      manifest: TREZOR_CONNECT_MANIFEST,
++      ...opts.trezorConnectInitOverride,
++    });
+   }
+ 
+   /**
+@@ -517,3 +526,4 @@ class TrezorKeyring extends EventEmitter {
+ 
+ TrezorKeyring.type = keyringType;
+ module.exports = TrezorKeyring;
++module.exports.DEVICE_EVENT = DEVICE_EVENT;
