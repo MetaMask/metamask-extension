@@ -8,6 +8,7 @@ import {
   getSubjectMetadata,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  isHardwareWallet,
 } from '../../../selectors';
 import {
   isAddressLedger,
@@ -30,6 +31,7 @@ function mapStateToProps(state, ownProps) {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
+  const isHdWallet = isHardwareWallet(state, fromAddress);
   const chainId = getCurrentChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
   const subjectMetadata = getSubjectMetadata(state);
@@ -43,6 +45,7 @@ function mapStateToProps(state, ownProps) {
     provider,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
+    isHardwareWallet: isHdWallet,
     chainId,
     rpcPrefs,
     siteImage,
@@ -83,6 +86,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     allAccounts,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
+    isHardwareWallet,
     chainId,
     rpcPrefs,
     siteImage,
@@ -136,6 +140,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     sign,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
+    isHardwareWallet,
     chainId,
     rpcPrefs,
     siteImage,

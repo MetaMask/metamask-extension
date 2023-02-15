@@ -7,6 +7,7 @@ import { EVENT } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
+import HardwareWalletState from '../../ui/hardware-wallet-state';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
   TypographyVariant,
@@ -40,6 +41,10 @@ export default class SignatureRequest extends PureComponent {
      * Check if the wallet is ledget wallet or not
      */
     isLedgerWallet: PropTypes.bool,
+    /**
+     * Check if wallet is a hardware wallet in general
+     */
+    isHardwareWallet: PropTypes.bool,
     /**
      * Handler for cancel button
      */
@@ -153,6 +158,7 @@ export default class SignatureRequest extends PureComponent {
       sign,
       isLedgerWallet,
       hardwareWalletRequiresConnection,
+      isHardwareWallet,
       chainId,
       rpcPrefs,
       siteImage,
@@ -276,6 +282,16 @@ export default class SignatureRequest extends PureComponent {
           <div className="confirm-approve-content__ledger-instruction-wrapper">
             <LedgerInstructionField showDataInstruction />
           </div>
+        ) : null}
+        {isHardwareWallet ? (
+          <HardwareWalletState
+            device={device}
+            hdPath={hdPath}
+            initialStatus="unlocked"
+            onUpdate={(status) =>
+              this.setState({ hardwareLocked: status === 'locked' })
+            }
+          />          
         ) : null}
         <Message
           data={sanitizedMessage}
