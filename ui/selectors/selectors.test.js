@@ -1,5 +1,8 @@
 import mockState from '../../test/data/mock-state.json';
-import { HardwareKeyringTypes } from '../../shared/constants/hardware-wallets';
+import {
+  HardwareKeyringTypes,
+  HardwareDeviceNames,
+} from '../../shared/constants/hardware-wallets';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -51,6 +54,62 @@ describe('Selectors', () => {
       expect(selectors.getHardwareWalletType(mockState)).toBe(
         HardwareKeyringTypes.trezor,
       );
+    });
+  });
+
+  describe('#getHardwareWalletDevice', () => {
+    it('returns undefined if it is not a HW wallet', () => {
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
+      expect(selectors.getHardwareWalletDevice(mockState)).toBeUndefined();
+    });
+
+    it('returns "ledger" if it is a Ledger HW wallet', () => {
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
+      expect(selectors.getHardwareWalletDevice(mockState)).toBe(
+        HardwareDeviceNames.ledger,
+      );
+    });
+
+    it('returns "trezor" if it is a Trezor HW wallet', () => {
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
+      expect(selectors.getHardwareWalletDevice(mockState)).toBe(
+        HardwareDeviceNames.trezor,
+      );
+    });
+
+    it('returns "lattice" if it is a Lattice HW wallet', () => {
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.lattice;
+      expect(selectors.getHardwareWalletDevice(mockState)).toBe(
+        HardwareDeviceNames.lattice,
+      );
+    });
+
+    it('returns "QR Hardware" if it is a QR HW wallet', () => {
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.qr;
+      expect(selectors.getHardwareWalletDevice(mockState)).toBe(
+        HardwareDeviceNames.qr,
+      );
+    });
+  });
+
+  describe('#getHardwareWalletPath', () => {
+    it('returns undefined if it is not a HW wallet', () => {
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
+      expect(selectors.getHardwareWalletPath(mockState)).toBeUndefined();
+    });
+
+    it('returns default path if path not set', () => {
+      const hdPath = 'defaultpath';
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
+      mockState.appState.defaultHdPaths = { trezor: hdPath };
+      expect(selectors.getHardwareWalletPath(mockState)).toStrictEqual(hdPath);
+    });
+
+    it('returns stored path if path set', () => {
+      const hdPath = 'storedpath';
+      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
+      mockState.metamask.keyrings[0].hdPath = hdPath;
+      expect(selectors.getHardwareWalletPath(mockState)).toStrictEqual(hdPath);
     });
   });
 
