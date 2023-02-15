@@ -73,7 +73,9 @@ export default function ApproveContentCard({
                 marginLeft={4}
                 className="approve-content-card-container__card-header__title"
               >
-                <Text variant={TextVariant.bodySmBold}>{title}</Text>
+                <Text variant={TextVariant.bodySmBold} as="h6">
+                  {title}
+                </Text>
               </Box>
             </>
           )}
@@ -83,6 +85,7 @@ export default function ApproveContentCard({
                 <Text
                   variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
+                  as="h6"
                 >
                   {t('edit')}
                 </Text>
@@ -131,6 +134,7 @@ export default function ApproveContentCard({
                       variant={TextVariant.bodySm}
                       fontWeight={FONT_WEIGHT.NORMAL}
                       color={TextColor.textMuted}
+                      as="h6"
                     >
                       <span>{t('transactionDetailLayer2GasHeading')}</span>
                       {`${ethTransactionTotal} ${nativeCurrency}`}
@@ -149,6 +153,7 @@ export default function ApproveContentCard({
                     <Text
                       variant={TextVariant.bodySm}
                       color={TextColor.textAlternative}
+                      as="h6"
                     >
                       {t('feeAssociatedRequest')}
                     </Text>
@@ -165,6 +170,7 @@ export default function ApproveContentCard({
                           variant={TextVariant.headingSm}
                           fontWeight={FONT_WEIGHT.BOLD}
                           color={TextColor.TEXT_DEFAULT}
+                          as="h6"
                         >
                           {formatCurrency(
                             fiatTransactionTotal,
@@ -178,6 +184,7 @@ export default function ApproveContentCard({
                         variant={TextVariant.bodySm}
                         fontWeight={FONT_WEIGHT.NORMAL}
                         color={TextColor.textMuted}
+                        as="h6"
                       >
                         {`${ethTransactionTotal} ${nativeCurrency}`}
                       </Text>
@@ -193,6 +200,7 @@ export default function ApproveContentCard({
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
+                as="h6"
               >
                 {isSetApproveForAll
                   ? t('functionSetApprovalForAll')
@@ -204,6 +212,7 @@ export default function ApproveContentCard({
                 <Text
                   variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}
+                  as="h6"
                 >
                   {`${t('parameters')}: ${isApprovalOrRejection}`}
                 </Text>
@@ -216,6 +225,7 @@ export default function ApproveContentCard({
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
+                as="h6"
               >
                 {data}
               </Text>
