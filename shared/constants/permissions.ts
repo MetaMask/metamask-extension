@@ -20,14 +20,21 @@ export const RestrictedMethods = Object.freeze({
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
-  'endowment:long-running': 'endowment:long-running',
   'endowment:transaction-insight': 'endowment:transaction-insight',
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
+  'endowment:long-running': 'endowment:long-running',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
-export const ExcludedSnapPermissions = new Set([]);
-export const ExcludedSnapEndowments = new Set(['endowment:keyring']);
+export const ExcludedSnapPermissions = Object.freeze({
+  eth_accounts:
+    'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
+});
+
+export const ExcludedSnapEndowments = Object.freeze({
+  'endowment:keyring':
+    'This endowment is still in development therefore not available.',
+});
 ///: END:ONLY_INCLUDE_IN

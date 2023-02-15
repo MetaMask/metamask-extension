@@ -2188,6 +2188,9 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },
+  "nftOptions": {
+    "message": "NFT Options"
+  },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
   },
@@ -2600,6 +2603,9 @@
   },
   "optionalWithParanthesis": {
     "message": "(Optional)"
+  },
+  "options": {
+    "message": "Options"
   },
   "or": {
     "message": "or"
