@@ -18,8 +18,8 @@ export default {
 };
 
 function transformState(state) {
-  if (state?.metamask?.collectiblesDetectionNoticeDismissed) {
-    delete state.metamask.collectiblesDetectionNoticeDismissed;
+  if (state?.AppStateController?.collectiblesDetectionNoticeDismissed) {
+    delete state.AppStateController.collectiblesDetectionNoticeDismissed;
   }
   if (state?.metamask?.collectiblesDropdownState) {
     delete state.metamask.collectiblesDropdownState;
