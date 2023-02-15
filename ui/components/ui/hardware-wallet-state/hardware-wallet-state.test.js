@@ -48,7 +48,6 @@ describe('HardwareWalletState Component', () => {
     const handler = (state) => {
       status = state;
     };
-
     // start unlocked and wait to update to locked
     const props = {
       initialStatus: status,
@@ -59,14 +58,11 @@ describe('HardwareWalletState Component', () => {
       <HardwareWalletState {...props} />,
       mockStore,
     );
-
     // should not change until polling commences
     expect(status).toStrictEqual('unlocked');
-
     // wait for polling to complete (allow time for at least 2 polling cycles)
     await act(() => new Promise((res) => setTimeout(res, 1500)));
     expect(status).toStrictEqual('locked');
-
     expect(container).toMatchSnapshot();
   });
 });
