@@ -6,7 +6,7 @@ import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
@@ -19,8 +19,8 @@ import Box from '../../ui/box';
 import Button from '../../ui/button';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography';
 import AppLoadingSpinner from '../app-loading-spinner';
+import { Text } from 'ui/components/component-library';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -97,9 +97,9 @@ const CancelSpeedupPopover = () => {
     >
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
       <div className="cancel-speedup-popover__wrapper">
-        <Typography
+        <Text
           boxProps={{ alignItems: AlignItems.center, display: DISPLAY.FLEX }}
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           marginTop={0}
           marginBottom={2}
         >
@@ -127,7 +127,7 @@ const CancelSpeedupPopover = () => {
               </Box>
             }
           />
-        </Typography>
+        </Text>
         <div className="cancel-speedup-popover__separator" />
         <Box
           display={DISPLAY.FLEX}

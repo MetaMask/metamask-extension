@@ -2,16 +2,16 @@ import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../ui/box/box';
-import Typography from '../../ui/typography/typography';
 import {
-  TypographyVariant,
   Color,
   BLOCK_SIZES,
   DISPLAY,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
+import { Text } from 'ui/components/component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -24,8 +24,8 @@ const BetaHeader = () => {
       padding={2}
       className="beta-header"
     >
-      <Typography
-        variant={TypographyVariant.H7}
+      <Text
+        variant={TextVariant.bodySm}
         marginTop={0}
         marginBottom={0}
         className="beta-header__message"
@@ -41,7 +41,7 @@ const BetaHeader = () => {
             {t('here')}
           </a>,
         ])}
-      </Typography>
+      </Text>
       <button
         className="beta-header__button"
         data-testid="beta-header-close"

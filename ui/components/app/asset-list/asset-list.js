@@ -15,19 +15,19 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import Typography from '../../ui/typography/typography';
 import Box from '../../ui/box/box';
 import {
   Color,
-  TypographyVariant,
   FONT_WEIGHT,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
+import { Text } from 'ui/components/component-library';
 
 const AssetList = ({ onClickAsset }) => {
   const t = useI18nContext();
@@ -102,13 +102,13 @@ const AssetList = ({ onClickAsset }) => {
         )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <Box justifyContent={JustifyContent.center}>
-          <Typography
+          <Text
             color={Color.textAlternative}
-            variant={TypographyVariant.H6}
+            variant={TextVariant.bodySm}
             fontWeight={FONT_WEIGHT.NORMAL}
           >
             {t('missingToken')}
-          </Typography>
+          </Text>
         </Box>
         <ImportTokenLink />
       </Box>

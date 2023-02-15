@@ -20,8 +20,7 @@ import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
-import Typography from '../../ui/typography';
-import { TypographyVariant } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import DepositPopover from '../deposit-popover/deposit-popover';
@@ -45,6 +44,7 @@ import {
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
+import { Text } from 'ui/components/component-library';
 
 const ConfirmPageContainer = (props) => {
   const {
@@ -230,7 +230,7 @@ const ConfirmPageContainer = (props) => {
             <ActionableMessage
               message={
                 isBuyableChain ? (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text variant={TextVariant.bodySm} align="left">
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
@@ -243,14 +243,14 @@ const ConfirmPageContainer = (props) => {
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
                     ])}
-                  </Typography>
+                  </Text>
                 ) : (
-                  <Typography variant={TypographyVariant.H7} align="left">
+                  <Text variant={TextVariant.bodySm} align="left">
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
                     ])}
-                  </Typography>
+                  </Text>
                 )
               }
               useIcon
