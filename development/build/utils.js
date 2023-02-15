@@ -146,6 +146,7 @@ function logError(error) {
  * @returns {string} wrapped js code
  */
 function wrapAgainstScuttling(content, bag = {}) {
+  return content;
   return `
 {
   function setupProxy(global) {
