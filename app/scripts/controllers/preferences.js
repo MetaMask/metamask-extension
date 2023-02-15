@@ -70,6 +70,8 @@ export default class PreferencesController {
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      // Snaps
+      snapsTrustLevel: 'AuditedOnly',
       ...opts.initState,
     };
 
@@ -568,6 +570,44 @@ export default class PreferencesController {
 
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
+  }
+
+  /**
+   * A setter for the user preference to configure the Snaps Trust Level
+   *
+   * @param {enum} snapsTrustLevel
+   * @returns The Snaps Trust Level that was set.
+   */
+  setSnapsTrustLevel(snapsTrustLevel) {
+    return this.store.updateState({ snapsTrustLevel });
+  }
+
+  /**
+   * A getter for the `snapsTrustLevel` property.
+   *
+   * @returns {enum} The current preferred Snaps Trust Level
+   */
+  getSnapsTrustLevel() {
+    return this.store.getState().snapsTrustLevel;
+  }
+
+  /**
+   * A setter for the user preference to configure the Snaps Audit Trails sources
+   *
+   * @param {any} snapsAuditTrails
+   * @returns The Snaps Audit Trails sources that was set.
+   */
+  setSnapsAuditTrails(snapsAuditTrails) {
+    return this.store.updateState({ snapsAuditTrails });
+  }
+
+  /**
+   * A getter for the `snapsAuditTrails` property.
+   *
+   * @returns {any} The current preferred list of Snaps Audit Trails sources
+   */
+  getSnapsAuditTrails() {
+    return this.store.getState().snapsAuditTrails;
   }
 
   //

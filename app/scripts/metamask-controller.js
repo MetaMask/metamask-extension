@@ -779,9 +779,18 @@ export default class MetamaskController extends EventEmitter {
     const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
     const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
 
+    console.log(
+      'log: User prefered snaps trust level is:::: ',
+      this.preferencesController.getSnapsTrustLevel(),
+    );
+
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
-      registry: new DecentralizedSnapsRegistry(),
+      registry: new DecentralizedSnapsRegistry({
+        getSnapsTrustLevel: this.preferencesController.getSnapsTrustLevel.bind(
+          this.preferencesController,
+        ),
+      }),
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
@@ -2011,6 +2020,9 @@ export default class MetamaskController extends EventEmitter {
       handleSnapRequest: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:handleRequest',
+      ),
+      setSnapsTrustLevel: this.preferencesController.setSnapsTrustLevel.bind(
+        preferencesController,
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),

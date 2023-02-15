@@ -27,9 +27,9 @@ enum StatusReasonMessage {
 
 // Trust level which conditions the level of verification require before installing snaps
 enum SnapsTrustLevel {
-  AuditedOnly,
-  SafeAccessOnly,
-  Open,
+  AuditedOnly = 'AuditedOnly',
+  SafeAccessOnly = 'SafeAccessOnly',
+  Open = 'Open',
 }
 
 // Information to connect to the audit trail smart contract
@@ -40,35 +40,35 @@ export declare type RegistryContractInfo = {
 
 // Arguments of the DecentralizedSnapsRegistry constructor
 export type DecentralizedSnapsRegistryArgs = {
-  snapsTrustLevel?: SnapsTrustLevel;
   registryContractInfo?: RegistryContractInfo;
   failOnUnavailableRegistry?: boolean;
+  getSnapsTrustLevel: () => SnapsTrustLevel;
 };
 
 /**
  * Implementation of the Snaps Registry smart contract based
  */
 export class DecentralizedSnapsRegistry implements SnapsRegistry {
-  #snapsTrustLevel: SnapsTrustLevel;
-
   #registryContractInfo: RegistryContractInfo;
 
   #contract: any;
 
   #failOnUnavailableRegistry: boolean;
 
+  #getSnapsTrustLevel: () => SnapsTrustLevel;
+
   constructor({
     registryContractInfo = {
       networkRpcUrl: SNAPS_REGISTRY_NETWORK_URL,
       address: SNAPS_REGISTRY_ADDRESS,
     },
-    snapsTrustLevel = SnapsTrustLevel.AuditedOnly,
+    getSnapsTrustLevel,
     failOnUnavailableRegistry = true,
-  }: DecentralizedSnapsRegistryArgs = {}) {
+  }: DecentralizedSnapsRegistryArgs) {
     this.#failOnUnavailableRegistry = failOnUnavailableRegistry;
-    this.#snapsTrustLevel = snapsTrustLevel;
     this.#registryContractInfo = registryContractInfo;
     this.#contract = null;
+    this.#getSnapsTrustLevel = getSnapsTrustLevel;
   }
 
   /**
@@ -85,10 +85,13 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
     // Verify if a compliant snaps registry contract is available
     if (this.#contract !== null) {
       console.log(
-        'log: The snaps trust level is configured to ',
-        this.#snapsTrustLevel,
+        'log: The prefered snaps trust level is configured to ',
+        this.#getSnapsTrustLevel(),
       );
-      if (this.#snapsTrustLevel === SnapsTrustLevel.AuditedOnly) {
+      console.log(
+        `${this.#getSnapsTrustLevel()}===${SnapsTrustLevel.AuditedOnly}`,
+      );
+      if (this.#getSnapsTrustLevel() === SnapsTrustLevel.AuditedOnly) {
         return await Object.entries(snaps).reduce<
           Promise<Record<SnapId, SnapsRegistryResult>>
         >(async (accumulator, [snapId, snapInfo]) => {
@@ -99,7 +102,9 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
           (await accumulator)[snapId] = result;
           return accumulator;
         }, Promise.resolve({}));
-      } else if (this.#snapsTrustLevel === SnapsTrustLevel.SafeAccessOnly) {
+      } else if (
+        this.#getSnapsTrustLevel() === SnapsTrustLevel.SafeAccessOnly
+      ) {
         return Promise.resolve({}); // TODO
       }
       return Promise.resolve({});
