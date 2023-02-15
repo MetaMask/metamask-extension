@@ -267,7 +267,7 @@ export function getHardwareWalletPath(state) {
   let hdPath = keyring?.hdPath;
   if (!hdPath) {
     const device = getHardwareWalletDevice(state);
-    hdPath = state?.appState?.defaultHdPaths[device];
+    hdPath = state?.appState?.defaultHdPaths?.[device];
   }
   return hdPath;
 }
