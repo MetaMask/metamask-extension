@@ -18,10 +18,13 @@ export default {
 };
 
 function transformState(state) {
-  if (state?.AppStateController?.collectiblesDetectionNoticeDismissed) {
+  if (
+    state?.AppStateController?.collectiblesDetectionNoticeDismissed !==
+    undefined
+  ) {
     delete state.AppStateController.collectiblesDetectionNoticeDismissed;
   }
-  if (state?.metamask?.collectiblesDropdownState) {
+  if (state?.metamask?.collectiblesDropdownState !== undefined) {
     delete state.metamask.collectiblesDropdownState;
   }
   return state;
