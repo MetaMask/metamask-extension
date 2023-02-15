@@ -94,6 +94,13 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
+    <Typography
+      variant={TypographyVariant.H2}
+      color={TextColor.errorDefault}
+      boxProps={{ marginBottom: 4 }}
+    >
+      DEPRECATED
+    </Typography>
     <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
     </Typography>
@@ -127,13 +134,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<SearchIcon {...args} />} />
       </div>
     </Box>
-    <Typography
-      variant={TypographyVariant.H2}
-      color={TextColor.errorDefault}
-      boxProps={{ marginBottom: 4 }}
-    >
-      DEPRECATED
-    </Typography>
     <Box marginBottom={4}>
       <div
         style={{

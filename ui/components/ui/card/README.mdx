@@ -27,7 +27,7 @@ The Card component has a set of default props that should meet most card use cas
 That being said all props can be overwritten if necessary.
 
 ```jsx
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 
 // To remove the border
 <Card border={false} />
@@ -38,5 +38,5 @@ import { COLORS } from '../../../helpers/constants/design-system';
 // All padding related props of the Box component will work
 
 // To change the background color
-<Card backgroundColor={COLORS.BACKGROUND_ALTERNATIVE} />
+<Card backgroundColor={Color.backgroundAlternative} />
 ```
