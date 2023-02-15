@@ -42,7 +42,7 @@ A lot of other components like `confirm-deploy-contract`, `confirm-send-ether`, 
    - Legacy gas popover - [component](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/edit-gas-popover)
    - EIP-1559 V2 gas popover - [component1](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/edit-gas-fee-popover), [component2](https://github.com/MetaMask/metamask-extension/tree/develop/ui/components/app/advanced-gas-fee-popover).
      Context [transaction-modal-context](https://github.com/MetaMask/metamask-extension/blob/develop/ui/contexts/transaction-modal.js) is used to show hide EIP-1559 gas popovers.
-     A parent component can be created for gas editing popover which will wrap both the legacy and IEP-1559 gas popover. Depending on the type of transaction appropriate gas popover can be show. `transaction-modal-context` can be used to take care to open/close both the popovers.
+     A parent component can be created for gas editing popover which will wrap both the legacy and EIP-1559 gas popover. Depending on the type of transaction appropriate gas popover can be shown. `transaction-modal-context` can be used to take care to open/close both popovers.
      This parent component can be added to `confirm-transaction-base` and `token-allowance` components and thus will be available on all confirmation pages using gas editing.
      Code [handleEditGas, handleCloseEditGas](https://github.com/MetaMask/metamask-extension/blob/develop/ui/pages/confirm-transaction-base/confirm-transaction-base.component.js#L276) can be moved to this new component.
 2. ### [confirm-transaction-base](https://github.com/MetaMask/metamask-extension/tree/develop/ui/pages/confirm-transaction-base) cleanup:
