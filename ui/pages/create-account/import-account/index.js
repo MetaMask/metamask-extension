@@ -122,7 +122,6 @@ export default function NewAccountImportForm() {
         >
           {t('selectType')}
           <Dropdown
-            id="new-account-import-form__select"
             options={menuItems.map((text) => ({ value: text }))}
             selectedOption={type}
             onChange={(value) => {
