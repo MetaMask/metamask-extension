@@ -62,8 +62,4 @@ describe('label', () => {
     expect(getByText('label')).toBeDefined();
     expect(getByText('*')).toBeDefined();
   });
-  it('should render with disabled state and have disabled class', () => {
-    const { getByText } = render(<Label disabled>label</Label>);
-    expect(getByText('label')).toHaveClass('mm-label--disabled');
-  });
 });

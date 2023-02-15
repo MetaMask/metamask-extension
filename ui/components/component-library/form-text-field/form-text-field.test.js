@@ -96,11 +96,14 @@ describe('FormTextField', () => {
     const { getByText, getByTestId } = render(
       <FormTextField
         helpText="test help text"
-        helpTextProps={{ 'data-testid': 'help-text-test' }}
+        helpTextProps={{ 'data-testid': 'help-text-test', className: 'test' }}
       />,
     );
     expect(getByText('test help text')).toBeDefined();
     expect(getByTestId('help-text-test')).toBeDefined();
+    expect(getByTestId('help-text-test')).toHaveClass(
+      'mm-form-text-field__help-text test',
+    );
   });
   // id
   it('should render the FormTextField with an id and pass it to input and Label as htmlFor. When clicking on Label the input should have focus', async () => {
@@ -141,12 +144,15 @@ describe('FormTextField', () => {
     const { getByTestId, getByLabelText } = render(
       <FormTextField
         label="test label"
-        labelProps={{ 'data-testid': 'label-test-id' }}
+        labelProps={{ 'data-testid': 'label-test-id', className: 'test' }}
         id="test-id"
       />,
     );
     expect(getByLabelText('test label')).toBeDefined();
     expect(getByTestId('label-test-id')).toBeDefined();
+    expect(getByTestId('label-test-id')).toHaveClass(
+      'mm-form-text-field__label test',
+    );
   });
   // leftAccessory, // rightAccessory
   it('should render with right and left accessories', () => {
