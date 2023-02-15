@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { 
+import {
   getMetaMaskIdentities,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getPermissions,
