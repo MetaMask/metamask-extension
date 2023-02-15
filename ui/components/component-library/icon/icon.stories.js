@@ -180,7 +180,7 @@ export const DefaultStory = (args) => {
                     textAlign: TEXT_ALIGN.CENTER,
                   }}
                   backgroundColor={BackgroundColor.backgroundAlternative}
-                  rightAccessory={
+                  endAccessory={
                     <ButtonIcon
                       iconName={ICON_NAMES.COPY}
                       size={Size.SM}
