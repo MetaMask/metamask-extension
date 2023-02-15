@@ -34,8 +34,8 @@ export default async function fetchEstimatedL1Fee(txMeta, ethersProvider) {
     OPTIMISM_GAS_PRICE_ORACLE_ABI,
     provider,
   );
-  const serializedTransaction =
-    buildUnserializedTransaction(txMeta).serialize();
+  const unserializedTransaction = await buildUnserializedTransaction(txMeta);
+  const serializedTransaction = unserializedTransaction.serialize();
 
   const result = await contract.getL1Fee(serializedTransaction);
   return result?.toHexString();
