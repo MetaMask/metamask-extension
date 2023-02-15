@@ -62,8 +62,11 @@ export const FormTextField = ({
       <Label
         htmlFor={id}
         required={required}
-        disabled={disabled}
         {...labelProps}
+        className={classnames(
+          'mm-form-text-field__label',
+          labelProps?.className,
+        )}
       >
         {label}
       </Label>
@@ -105,13 +108,13 @@ export const FormTextField = ({
     />
     {helpText && (
       <HelpText
+        error={error}
+        marginTop={1}
+        {...helpTextProps}
         className={classnames(
           'mm-form-text-field__help-text',
           helpTextProps?.className,
         )}
-        error={error}
-        marginTop={1}
-        {...helpTextProps}
       >
         {helpText}
       </HelpText>
