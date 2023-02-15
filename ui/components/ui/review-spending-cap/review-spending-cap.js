@@ -18,7 +18,6 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { Color } from '../typography/typography.stories';
 
 export default function ReviewSpendingCap({
   tokenName,
