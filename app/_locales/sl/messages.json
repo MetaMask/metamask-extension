@@ -633,23 +633,15 @@
   "revealSeedWords": {
     "message": "Razkrij seed words"
   },
-  "revealSeedWordsDescription": {
-    "message": "Če želite zamenjati brskalnik ali računalnik, potrebujete vaš seed phase za dostop do računa. Shranite ga na varno skrito mesto."
-  },
   "revealSeedWordsWarning": {
-    "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Tega ne delite z nikomer!"
+    "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nov URL RPC"
   },
   "save": {
     "message": "Shrani"
-  },
-  "saveAsCsvFile": {
-    "message": "Shrani kot CSV datoteko"
   },
   "scanInstructions": {
     "message": "Postavite QR kodo pred vašo kamero"
