@@ -31,9 +31,6 @@ export default {
     required: {
       control: 'boolean',
     },
-    disabled: {
-      control: 'boolean',
-    },
     children: {
       control: 'text',
     },
@@ -103,9 +100,4 @@ HtmlFor.args = {
 export const Required = Template.bind({});
 Required.args = {
   required: true,
-};
-
-export const Disabled = Template.bind({});
-Disabled.args = {
-  disabled: true,
 };
