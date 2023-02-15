@@ -230,7 +230,7 @@ const ConfirmPageContainer = (props) => {
             <ActionableMessage
               message={
                 isBuyableChain ? (
-                  <Text variant={TextVariant.bodySm} align="left">
+                  <Text variant={TextVariant.bodySm} textAlign="left">
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
