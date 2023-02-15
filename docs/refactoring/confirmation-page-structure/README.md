@@ -65,4 +65,7 @@ A lot of other components like `confirm-deploy-contract`, `confirm-send-ether`, 
    Gas polling related code in `/pages/confirm-transaction` can be moved into a hook and included in `pages/confirm-transaction-base`, `/app/token-allowance` as only those confirmation pages need gas estimates.
 5. ### Refactor gasFeeInput hook
     [GasFeeInput](https://github.com/MetaMask/metamask-extension/tree/develop/ui/hooks/gasFeeInput) is huge hook exporting about 18 different transaction related values and functions. We need to break this down into smaller hooks and utility functions.
+    The main use o fthis hook is inside [GasFeeContext](https://github.com/MetaMask/metamask-extension/blob/develop/ui/contexts/gasFee.js). Transaction pages are rendered for a transaction, this transaction can is set in this context so that we can avoid passing it over to multiple levels of child components.
+    - Some of the values like `gasFeeEstimates`, `isNetworkBusy` can be directly obtained from selectors and should be removed from the context.
+    - Hooks like `useGasPriceInput`, `useMaxFeePerGasInput`, `useMaxPriorityFeePerGasInput`, etc should be removed from this huge hook and used independent of this.
 Note: This document does not cover signature request pages which are covered separately.
