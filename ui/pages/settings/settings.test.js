@@ -42,4 +42,30 @@ describe('SettingsPage', () => {
 
     expect(queryByPlaceholderText('Search in Settings')).toBeInTheDocument();
   });
+
+  it('should not render the experimental tab if there will not be experimental settings', () => {
+    process.env.NFTS_V1 = false;
+    process.env.TRANSACTION_SECURITY_PROVIDER = false;
+
+    const { getByText } = renderWithProvider(
+      <Settings {...props} />,
+      mockStore,
+      '/settings',
+    );
+
+    expect(getByText('Experimental')).toHaveLength(0);
+  });
+
+  it('should render the experimental tab if there will be experimental settings', () => {
+    process.env.NFTS_V1 = true;
+    process.env.TRANSACTION_SECURITY_PROVIDER = true;
+
+    const { getByText } = renderWithProvider(
+      <Settings {...props} />,
+      mockStore,
+      '/settings',
+    );
+
+    expect(getByText('Experimental')).toHaveLength(1);
+  });
 });
