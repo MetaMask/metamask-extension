@@ -42,7 +42,7 @@ The proposed routing of confirmation pages looks like.
 
 - There are 2 ways in which confirmation pages can be opened:
   1. User triggers send flow from within Metamask
-     - If the user trigger send flow from within Metamask, user selects receipient and amount and on send screen, at this point an un-approved transaction is created in background and user is re-directed to specific transaction route **/confirm-transaction/${id}/XXXX** depending on transaction.
+     - [changed] If the user triggers the send flow from within MetaMask and selects the recipient and amount on the send screen, an unapproved transaction is created in the background and the user is redirected to a specific transaction route, **/confirm-transaction/${id}/XXXX**, depending on the transaction type.
   2. DAPP sends request to Metamask
      - If DAPP send request to Metamask an un-approved transaction or signature request is created in background and UI is triggered to open (if it is not already open).
      - [changed] Instead of rendering `pages/home`,  `pages/routes` finds the unapproved transaction in state and reroutes to **/confirm-transaction**.
