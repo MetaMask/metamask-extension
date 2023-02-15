@@ -269,7 +269,7 @@ class SettingsPage extends PureComponent {
           },
           {
             content: t('contacts'),
-            icon: <i className="fa fa-address-book" />,
+            icon: <Icon name={ICON_NAMES.BOOK} />,
             key: CONTACT_LIST_ROUTE,
           },
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
