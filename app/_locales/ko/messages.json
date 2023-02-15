@@ -266,9 +266,6 @@
   "address": {
     "message": "주소"
   },
-  "addressBookIcon": {
-    "message": "주소록 아이콘"
-  },
   "advanced": {
     "message": "고급"
   },

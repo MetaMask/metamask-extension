@@ -266,9 +266,6 @@
   "address": {
     "message": "Адрес"
   },
-  "addressBookIcon": {
-    "message": "Значок адресной книги"
-  },
   "advanced": {
     "message": "Дополнительно"
   },

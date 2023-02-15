@@ -266,9 +266,6 @@
   "address": {
     "message": "Address"
   },
-  "addressBookIcon": {
-    "message": "Address book icon"
-  },
   "advanced": {
     "message": "Advanced"
   },

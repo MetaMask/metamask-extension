@@ -266,9 +266,6 @@
   "address": {
     "message": "Address"
   },
-  "addressBookIcon": {
-    "message": "Icon ng address book"
-  },
   "advanced": {
     "message": "Makabago"
   },
