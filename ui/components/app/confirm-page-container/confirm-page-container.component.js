@@ -245,7 +245,7 @@ const ConfirmPageContainer = (props) => {
                     ])}
                   </Text>
                 ) : (
-                  <Text variant={TextVariant.bodySm} align="left">
+                  <Text variant={TextVariant.bodySm} textAlign="left">
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
