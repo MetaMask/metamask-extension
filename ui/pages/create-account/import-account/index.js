@@ -33,7 +33,9 @@ export default function NewAccountImportForm() {
   const [type, setType] = useState(menuItems[0]);
 
   function importAccount(strategy, importArgs) {
-    dispatch(actions.importNewAccount(strategy, importArgs))
+    const loadingMessage = getLoadingMessage(strategy);
+
+    dispatch(actions.importNewAccount(strategy, importArgs, loadingMessage))
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
           trackImportEvent(strategy, true);
@@ -67,6 +69,22 @@ export default function NewAccountImportForm() {
     });
   }
 
+  function getLoadingMessage(strategy) {
+    if (strategy === 'JSON File') {
+      return (
+        <Text width={BLOCK_SIZES.THREE_FOURTHS} fontWeight={FONT_WEIGHT.BOLD}>
+          <br />
+          {t('importAccountJsonLoading1')}
+          <br />
+          <br />
+          {t('importAccountJsonLoading2')}
+        </Text>
+      );
+    }
+
+    return '';
+  }
+
   /**
    * @param {string} message - an Error/Warning message caught in importAccount()
    * This function receives a message that is a string like:
@@ -92,9 +110,8 @@ export default function NewAccountImportForm() {
       case menuItems[0]:
         return <PrivateKeyImportView importAccountFunc={importAccount} />;
       case menuItems[1]:
-        return <JsonImportView importAccountFunc={importAccount} />;
       default:
-        return null;
+        return <JsonImportView importAccountFunc={importAccount} />;
     }
   }
 
@@ -140,20 +157,4 @@ export function moreInfoLink() {
   global.platform.openTab({
     url: ZENDESK_URLS.IMPORTED_ACCOUNTS,
   });
-}
-
-export function getLoadingMessage(strategy) {
-  if (strategy === 'JSON File') {
-    return (
-      <Text width={BLOCK_SIZES.THREE_FOURTHS} fontWeight={FONT_WEIGHT.BOLD}>
-        <br />
-        Expect this JSON import to take a few minutes and freeze MetaMask.
-        <br />
-        <br />
-        We apologize, and we will make it faster in the future.
-      </Text>
-    );
-  }
-
-  return '';
 }
