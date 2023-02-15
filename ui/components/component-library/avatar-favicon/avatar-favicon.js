@@ -71,7 +71,7 @@ AvatarFavicon.propTypes = {
   size: PropTypes.oneOf(Object.values(AVATAR_FAVICON_SIZES)),
   /**
    * The border color of the AvatarFavicon
-   * Defaults to COLORS.TRANSPARENT
+   * Defaults to Color.transparent
    */
   borderColor: Box.propTypes.borderColor,
   /**

@@ -14,6 +14,7 @@ import {
 } from '../../../shared/constants/permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_METADATA } from '../../../shared/constants/snaps';
+import { Icon, ICON_NAMES } from '../../components/component-library';
 import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
 ///: END:ONLY_INCLUDE_IN
 
@@ -40,7 +41,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: 3,
   }),
   [RestrictedMethods.snap_notify]: (t) => ({
-    leftIcon: 'fas fa-bell',
+    leftIcon: <Icon name={ICON_NAMES.NOTIFICATION} />,
     label: t('permission_notifications'),
     rightIcon: null,
     weight: 3,

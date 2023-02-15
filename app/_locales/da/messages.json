@@ -620,12 +620,6 @@
   "reset": {
     "message": "Nulstil"
   },
-  "resetAccount": {
-    "message": "Nulstil Konto"
-  },
-  "resetAccountDescription": {
-    "message": "Nulstilling af din konto vil rydde din transaktionshistorik."
-  },
   "restore": {
     "message": "Gendan"
   },

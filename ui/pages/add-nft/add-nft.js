@@ -155,7 +155,7 @@ export default function AddCollectible() {
                       fontWeight={FONT_WEIGHT.NORMAL}
                       margin={0}
                     >
-                      {t('collectibleAddFailedMessage')}
+                      {t('nftAddFailedMessage')}
                     </Typography>
                     <button
                       className="fas fa-times add-collectible__close"
