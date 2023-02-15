@@ -1694,6 +1694,12 @@
   "importAccountErrorNotHexadecimal": {
     "message": "This is not a valid private key. You must enter a hexadecimal string of length 64."
   },
+  "importAccountJsonLoading1": {
+    "message": "Expect this JSON import to take a few minutes and freeze MetaMask."
+  },
+  "importAccountJsonLoading2": {
+    "message": "We apologize, and we will make it faster in the future."
+  },
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
   },

@@ -92,7 +92,6 @@ import { TransactionMeta } from '../../app/scripts/controllers/incoming-transact
 import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
-import { getLoadingMessage } from '../pages/create-account/import-account';
 import * as actionConstants from './actionConstants';
 import {
   generateActionId,
@@ -405,6 +404,7 @@ export function removeAccount(
 export function importNewAccount(
   strategy: string,
   args: any[],
+  loadingMessage: ReactFragment,
 ): ThunkAction<
   Promise<MetaMaskReduxState['metamask']>,
   MetaMaskReduxState,
@@ -414,7 +414,7 @@ export function importNewAccount(
   return async (dispatch: MetaMaskReduxDispatch) => {
     let newState;
 
-    dispatch(showLoadingIndication(getLoadingMessage(strategy)));
+    dispatch(showLoadingIndication(loadingMessage));
 
     try {
       log.debug(`background.importAccountWithStrategy`);
