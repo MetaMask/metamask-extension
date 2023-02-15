@@ -1,28 +1,31 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../ui/menu';
-import { ICON_NAMES } from '../../component-library';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { Color } from '../../../helpers/constants/design-system';
 
 const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
   const t = useContext(I18nContext);
-  const [collectibleOptionsButtonElement, setCollectibleOptionsButtonElement] =
-    useState(null);
   const [collectibleOptionsOpen, setCollectibleOptionsOpen] = useState(false);
+  const ref = useRef(false);
 
   return (
-    <>
-      <button
-        className="fas fa-ellipsis-v collectible-options__button"
+    <div ref={ref}>
+      <ButtonIcon
+        iconName={ICON_NAMES.MORE_VERTICAL}
+        className="collectible-options__button"
         data-testid="collectible-options__button"
         onClick={() => setCollectibleOptionsOpen(true)}
-        ref={setCollectibleOptionsButtonElement}
+        color={Color.textDefault}
+        ariaLabel={t('nftOptions')}
       />
+
       {collectibleOptionsOpen ? (
         <Menu
-          anchorElement={collectibleOptionsButtonElement}
           data-testid="close-collectible-options-menu"
+          anchorElement={ref.current}
           onHide={() => setCollectibleOptionsOpen(false)}
         >
           {onViewOnOpensea ? (
@@ -49,7 +52,7 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
           </MenuItem>
         </Menu>
       ) : null}
-    </>
+    </div>
   );
 };
 
