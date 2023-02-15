@@ -20,20 +20,6 @@ The current flow of routing to confirmation pages is un-necessarily complicated 
 - For specific route **/confirm-transaction/${id}/XXXXX** routes also `pages/confirm-transaction` is rendered.
 - Depending on confirmation route `pages/confirm-transaction` and `pages/confirm-transaction/confirm-token-transaction-switch` renders specific confirmation page component.
 
-**Current Route component mapping**
-
-| Route                                           | Component                            |
-| ----------------------------------------------- | ------------------------------------ |
-| /confirm-transaction/${id}/deploy-contract      | pages/confirm-deploy-contract        |
-| /confirm-transaction/${id}/send-ether           | pages/confirm-send-ether             |
-| /confirm-transaction/${id}/send-token           | pages/confirm-send-token             |
-| /confirm-transaction/${id}/approve              | pages/confirm-approve                |
-| /confirm-transaction/${id}/set-approval-for-all | pages/confirm-approve                |
-| /confirm-transaction/${id}/transfer-from        | pages/confirm-token-transaction-base |
-| /confirm-transaction/${id}/safe-transfer-from   | pages/confirm-token-transaction-base |
-| /confirm-transaction/${id}/token-method         | pages/confirm-contract-interaction   |
-| /confirm-transaction/${id}/signature-request    | pages/confirm-signature-request.js   |
-
 ## Proposed flow
 
 The proposed routing of confirmation pages looks like.
@@ -50,18 +36,19 @@ The proposed routing of confirmation pages looks like.
 - `pages/confirm-transaction` component redirect to specific confirmation page route depending on un-approved transaction or signature request in the state.
 - Again for specific route **/confirm-transaction/${id}/XXXXX** `pages/confirm-transaction` is rendered, it in-turn renders appropriate confirmation page for the specific route.
 
-**Proposed Route component mapping**
+## Current Route component mapping
 
 | Route                                           | Component                            |
 | ----------------------------------------------- | ------------------------------------ |
-| /confirm-transaction/${id}/method      | pages/confirm-transaction-base        |
+| /confirm-transaction/${id}/deploy-contract      | pages/confirm-deploy-contract        |
+| /confirm-transaction/${id}/send-ether           | pages/confirm-send-ether             |
+| /confirm-transaction/${id}/send-token           | pages/confirm-send-token             |
 | /confirm-transaction/${id}/approve              | pages/confirm-approve                |
-| /confirm-transaction/${id}/token-method         | pages/confirm-token-transaction-base   |
-| /confirm-transaction/${id}/signature-request    | pages/confirm-signature-request   |
-
-Currently we have 9 different confirmation routes, but these can be grouped into 4 categories and we can merge similar confirmation pages to remove redunduncy. This will be covered more in document detailing structure of confirmation pages.
-We will still need to support old routes for backward compatibility.
-
+| /confirm-transaction/${id}/set-approval-for-all | pages/confirm-approve                |
+| /confirm-transaction/${id}/transfer-from        | pages/confirm-token-transaction-base |
+| /confirm-transaction/${id}/safe-transfer-from   | pages/confirm-token-transaction-base |
+| /confirm-transaction/${id}/token-method         | pages/confirm-contract-interaction   |
+| /confirm-transaction/${id}/signature-request    | pages/confirm-signature-request.js   |
 
 ## Areas of code refactoring
 - **Routing to mostRecentOverviewPage**
