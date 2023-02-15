@@ -1,10 +1,17 @@
 import { connect } from 'react-redux';
-import { getMetaMaskIdentities } from '../../../selectors';
+import { 
+  getMetaMaskIdentities,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  getPermissions,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../selectors';
 import PermissionPageContainer from './permission-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { selectedIdentities } = ownProps;
-
+  const { selectedIdentities, request } = ownProps;
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const currentPermissions = getPermissions(state, request.metadata.origin);
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const allIdentities = getMetaMaskIdentities(state);
   const allIdentitiesSelected =
     Object.keys(selectedIdentities).length ===
@@ -12,6 +19,9 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     allIdentitiesSelected,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    currentPermissions,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
