@@ -31,7 +31,7 @@ Possible sizes include:
 Defaults to `md`
 
 <Canvas>
-  <Story id="components-componentlibrary-textfieldbase--size" />
+  <Story id="components-componentlibrary-textfieldbase--size-story" />
 </Canvas>
 
 ```jsx
@@ -91,14 +91,14 @@ Use the `leftAccessory` and `rightAccessory` props to add components such as ico
 </Canvas>
 
 ```jsx
-import { COLORS, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
+import { Color, DISPLAY } from '../../../helpers/constants/design-system';
 import { ButtonIcon, Icon, ICON_NAMES, TextFieldBase } from '../../component-library';
 
 <TextFieldBase
   placeholder="Search"
   leftAccessory={
     <Icon
-      color={COLORS.ICON_ALTERNATIVE}
+      color={Color.iconAlternative}
       name={ICON_NAMES.SEARCH}
     />
   }
@@ -110,7 +110,7 @@ import { ButtonIcon, Icon, ICON_NAMES, TextFieldBase } from '../../component-lib
     <ButtonIcon
       iconName={ICON_NAMES.SCAN_BARCODE}
       ariaLabel="Scan QR code"
-      iconProps={{ color: COLORS.PRIMARY_DEFAULT }}
+      iconProps={{ color: Color.primaryDefault }}
     />
   }
 />
@@ -131,7 +131,7 @@ import { ButtonIcon, Icon, ICON_NAMES, TextFieldBase } from '../../component-lib
     isAddressValid && (
       <Icon
         name={ICON_NAMES.CHECK}
-        color={COLORS.SUCCESS_DEFAULT}
+        color={Color.successDefault}
       />
     )
   }
@@ -208,16 +208,17 @@ To function fully the custom component should accept the following props:
 
 ```jsx
 import { TextFieldBase, Icon, ICON_NAMES } from '../../component-library';
+import { Size } from '../../../helpers/constants/design-system';
 
 // should map the props to the custom input component
 const CustomInputComponent = () => <div>{/* Custom input component */}</div>;
 
 const TextFieldCustomInput = (args) => (
   <TextFieldBase
-    size={SIZES.LG}
+    size={Size.LG}
     InputComponent={CustomInputComponent}
     leftAccessory={
-      <Icon color={COLORS.ICON_ALTERNATIVE} name={ICON_NAMES.WALLET} />
+      <Icon color={Color.iconAlternative} name={ICON_NAMES.WALLET} />
     }
   />
 );

@@ -43,7 +43,7 @@ export const TagUrl = ({
       display={DISPLAY.FLEX}
       {...props}
     >
-      <AvatarFavicon src={src} {...avatarFaviconProps} />
+      <AvatarFavicon src={src} name={label} {...avatarFaviconProps} />
       {showLockIcon && (
         <Icon
           className="mm-tag-url__lock-icon"
@@ -58,7 +58,6 @@ export const TagUrl = ({
       <Text variant={TextVariant.bodyMd} ellipsis {...labelProps}>
         {label}
       </Text>
-
       {actionButtonLabel && (
         <ButtonLink
           as="a"

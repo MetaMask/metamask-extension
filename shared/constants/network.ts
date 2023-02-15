@@ -201,17 +201,24 @@ export const CHAIN_IDS = {
   GOERLI: '0x5',
   LOCALHOST: '0x539',
   BSC: '0x38',
+  BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
   OPTIMISM_TESTNET: '0x1a4',
   POLYGON: '0x89',
+  POLYGON_TESTNET: '0x13881',
   AVALANCHE: '0xa86a',
+  AVALANCHE_TESTNET: '0xa869',
   FANTOM: '0xfa',
+  FANTOM_TESTNET: '0xfa2',
   CELO: '0xa4ec',
   ARBITRUM: '0xa4b1',
   HARMONY: '0x63564c40',
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
   AURORA: '0x4e454152',
+  MOONBEAM: '0x504',
+  MOONBEAM_TESTNET: '0x507',
+  MOONRIVER: '0x505',
 } as const;
 
 /**
@@ -542,6 +549,98 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
+const defaultEtherscanDomain = 'etherscan.io';
+const defaultEtherscanSubdomainPrefix = 'api';
+/**
+ * Map of all Etherscan supported networks.
+ */
+export const ETHERSCAN_SUPPORTED_NETWORKS = {
+  [CHAIN_IDS.GOERLI]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${
+      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
+    }`,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.GOERLI],
+  },
+  [CHAIN_IDS.MAINNET]: {
+    domain: defaultEtherscanDomain,
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.MAINNET],
+  },
+  [CHAIN_IDS.SEPOLIA]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${
+      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
+    }`,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.SEPOLIA],
+  },
+  [CHAIN_IDS.BSC]: {
+    domain: 'bscscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(CHAIN_IDS.BSC, 16).toString(),
+  },
+  [CHAIN_IDS.BSC_TESTNET]: {
+    domain: 'bscscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
+    networkId: parseInt(CHAIN_IDS.BSC_TESTNET, 16).toString(),
+  },
+  [CHAIN_IDS.OPTIMISM]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-optimistic`,
+    networkId: parseInt(CHAIN_IDS.OPTIMISM, 16).toString(),
+  },
+  [CHAIN_IDS.OPTIMISM_TESTNET]: {
+    domain: defaultEtherscanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-goerli-optimistic`,
+    networkId: parseInt(CHAIN_IDS.OPTIMISM_TESTNET, 16).toString(),
+  },
+  [CHAIN_IDS.POLYGON]: {
+    domain: 'polygonscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(CHAIN_IDS.POLYGON, 16).toString(),
+  },
+  [CHAIN_IDS.POLYGON_TESTNET]: {
+    domain: 'polygonscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-mumbai`,
+    networkId: parseInt(CHAIN_IDS.POLYGON_TESTNET, 16).toString(),
+  },
+  [CHAIN_IDS.AVALANCHE]: {
+    domain: 'snowtrace.io',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(CHAIN_IDS.AVALANCHE, 16).toString(),
+  },
+  [CHAIN_IDS.AVALANCHE_TESTNET]: {
+    domain: 'snowtrace.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
+    networkId: parseInt(CHAIN_IDS.AVALANCHE_TESTNET, 16).toString(),
+  },
+  [CHAIN_IDS.FANTOM]: {
+    domain: 'ftmscan.com',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: parseInt(CHAIN_IDS.FANTOM, 16).toString(),
+  },
+  [CHAIN_IDS.FANTOM_TESTNET]: {
+    domain: 'ftmscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
+    networkId: parseInt(CHAIN_IDS.FANTOM_TESTNET, 16).toString(),
+  },
+  [CHAIN_IDS.MOONBEAM]: {
+    domain: 'moonscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-moonbeam`,
+    networkId: parseInt(CHAIN_IDS.MOONBEAM, 16).toString(),
+  },
+  [CHAIN_IDS.MOONBEAM_TESTNET]: {
+    domain: 'moonscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-moonbase`,
+    networkId: parseInt(CHAIN_IDS.MOONBEAM_TESTNET, 16).toString(),
+  },
+  [CHAIN_IDS.MOONRIVER]: {
+    domain: 'moonscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-moonriver`,
+    networkId: parseInt(CHAIN_IDS.MOONRIVER, 16).toString(),
+  },
+};
+
 /**
  * Hardforks are points in the chain where logic is changed significantly
  * enough where there is a fork and the new fork becomes the active chain.
@@ -591,6 +690,13 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.PALM
     | typeof CHAIN_IDS.HARMONY
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
+    | typeof CHAIN_IDS.BSC_TESTNET
+    | typeof CHAIN_IDS.POLYGON_TESTNET
+    | typeof CHAIN_IDS.AVALANCHE_TESTNET
+    | typeof CHAIN_IDS.FANTOM_TESTNET
+    | typeof CHAIN_IDS.MOONBEAM
+    | typeof CHAIN_IDS.MOONBEAM_TESTNET
+    | typeof CHAIN_IDS.MOONRIVER
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
