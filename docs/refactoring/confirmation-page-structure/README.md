@@ -68,4 +68,5 @@ A lot of other components like `confirm-deploy-contract`, `confirm-send-ether`, 
     The main use o fthis hook is inside [GasFeeContext](https://github.com/MetaMask/metamask-extension/blob/develop/ui/contexts/gasFee.js). Transaction pages are rendered for a transaction, this transaction can is set in this context so that we can avoid passing it over to multiple levels of child components.
     - Some of the values like `gasFeeEstimates`, `isNetworkBusy` can be directly obtained from selectors and should be removed from the context.
     - Hooks like `useGasPriceInput`, `useMaxFeePerGasInput`, `useMaxPriorityFeePerGasInput`, etc should be removed from this huge hook and used independent of this.
-Note: This document does not cover signature request pages which are covered separately.
+
+**Note:** This document **does not cover signature request pages** which are covered separately.
