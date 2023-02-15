@@ -105,7 +105,6 @@ const AssetList = ({ onClickAsset }) => {
           <Text
             color={Color.textAlternative}
             variant={TextVariant.bodySm}
-            fontWeight={FONT_WEIGHT.NORMAL}
           >
             {t('missingToken')}
           </Text>
