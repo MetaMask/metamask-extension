@@ -60,7 +60,7 @@ describe('HardwareWalletState Component', () => {
     );
     // should not change until polling commences
     expect(status).toStrictEqual('unlocked');
-    
+
     // wait for polling to complete (allow time for at least 2 polling cycles)
     await act(() => new Promise((res) => setTimeout(res, 1500)));
     expect(status).toStrictEqual('locked');
