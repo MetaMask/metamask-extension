@@ -570,10 +570,12 @@ describe('MetaMaskController', function () {
 
     beforeEach(async function () {
       unlock = sinon.stub();
-      mockKeyrings = [{
-        type: HardwareKeyringTypes.ledger,
-        unlock,
-      }];
+      mockKeyrings = [
+        {
+          type: HardwareKeyringTypes.ledger,
+          unlock,
+        },
+      ];
       sinon
         .stub(metamaskController.keyringController, 'getKeyringsByType')
         .callsFake(() => mockKeyrings);
@@ -598,7 +600,9 @@ describe('MetaMaskController', function () {
     });
 
     it('should call underlying keyring for ledger device and return true if accessible', async function () {
-      unlock.returns(Promise.resolve('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'));
+      unlock.returns(
+        Promise.resolve('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'),
+      );
       // checking accessibility should invoke unlock
       const status = await metamaskController.isDeviceAccessible(
         HardwareDeviceNames.ledger,
@@ -609,12 +613,14 @@ describe('MetaMaskController', function () {
     });
 
     it('should not call underlying device for other devices', async function () {
-      mockKeyrings = [{
-        type: HardwareKeyringTypes.trezor,
-        unlock,
-        getModel: () => 'mock trezor',
-        isUnlocked: () => false,
-      }];
+      mockKeyrings = [
+        {
+          type: HardwareKeyringTypes.trezor,
+          unlock,
+          getModel: () => 'mock trezor',
+          isUnlocked: () => false,
+        },
+      ];
       const status = await metamaskController.isDeviceAccessible(
         HardwareDeviceNames.trezor,
         `m/44'/1'/0'/0`,
