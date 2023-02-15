@@ -13,7 +13,14 @@ const DEFAULT_DELAY = SECOND * 3;
 
 export function useCopyToClipboard(delay = DEFAULT_DELAY) {
   const [copied, setCopied] = useState(false);
-  const startTimeout = useTimeout(() => setCopied(false), delay, false);
+  const startTimeout = useTimeout(
+    () => {
+      copyToClipboard(' ');
+      setCopied(false);
+    },
+    delay,
+    false,
+  );
 
   const handleCopy = useCallback(
     (text) => {
