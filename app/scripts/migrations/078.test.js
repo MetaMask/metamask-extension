@@ -22,7 +22,7 @@ describe('migration #78', () => {
       data: {
         metamask: {
           collectiblesDetectionNoticeDismissed: false,
-          nftsDropdownState: {},
+          collectiblesDropdownState: {},
         },
       },
     };
