@@ -13,8 +13,6 @@ describe('Swap Eth for another Token', function () {
       async ({ driver }) => {
         await loginExtension(driver);
 
-        console.log('Waiting')
-        await driver.delay(1200000) 
         await enterSwapQuote(driver, {
           amount: .001,
           swapTo: 'USDC',
@@ -26,57 +24,38 @@ describe('Swap Eth for another Token', function () {
 
         await enterSwapQuote(driver, {
           amount: .003,
-          swapTo: 'BUSD',
+          swapTo: 'DAI',
         });
 
         await reviewQuote(driver)
         await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await waitForTransactionToComplete(driver, 'BUSD')
+        await waitForTransactionToComplete(driver, 'DAI')
 
-        await driver.clickElement({ text: 'Review swap', tag: 'button' });
-        await driver.waitForSelector('[class*="box--align-items-center"]');
-        await driver.waitForSelector({
-          css: '[class*="box--align-items-center"]',
-          text: 'Estimated gas fee',
-        });
-
-        await driver.waitForSelector(
-          '[class="exchange-rate-display main-quote-summary__exchange-rate-display"]',
-        );
-        await driver.waitForSelector(
-          '[class="fee-card__info-tooltip-container"]',
-        );
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-
-        const sucessfulTransactionMessage = await driver.waitForSelector({
-          css: '[class="awaiting-swap__header"]',
-          text: 'Transaction complete',
-        });
-        assert.equal(
-          await sucessfulTransactionMessage.getText(),
-          'Transaction complete',
-        );
-        const sucessfulTransactionToken = await driver.waitForSelector({
-          css: '[class="awaiting-swap__amount-and-symbol"]',
-          text: 'DAI',
-        });
-        assert.equal(await sucessfulTransactionToken.getText(), 'DAI');
-        await driver.clickElement({ text: 'Close', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        const swaptotal = await driver.waitForSelector({
-          css: '[class="transaction-list-item__primary-currency"]',
-          text: '-2 TESTETH',
-        });
-        assert.equal(await swaptotal.getText(), '-2 TESTETH');
-        const swaptotaltext = await driver.waitForSelector({
-          css: '[class="list-item__title"]',
-          text: 'Swap TESTETH to DAI',
-        });
-        assert.equal(await swaptotaltext.getText(), 'Swap TESTETH to DAI');
-      },
-    );
-  },1200000);
 
+        await driver.wait(async () => {
+          const confirmedTxes = await driver.findElements(
+            '.transaction-list__completed-transactions .transaction-list-item',
+          );
+          return confirmedTxes.length === 2;
+        }, 10000);
+
+        const itemsText = await driver.findElements(
+          '.list-item__title',
+        );
+        assert.equal(itemsText.length, 2);
+        assert.equal(await itemsText[0].getText(), 'Swap TESTETH to DAI');
+        assert.equal(await itemsText[1].getText(), 'Swap TESTETH to USDC');
+
+        const amountValues = await driver.findElements(
+          '.transaction-list-item__primary-currency',
+        );
+        assert.equal(amountValues.length, 2);
+        assert.equal(await amountValues[0].getText(), '-0.003 TESTETH');
+        assert.equal(await amountValues[1].getText(), '-0.001 TESTETH');
+      }
+    );
+  });
   it('Completes a Swap between Eth and Dai', async function () {
     await withFixtures(
       {

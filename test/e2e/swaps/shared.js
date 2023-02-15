@@ -1,3 +1,5 @@
+const { strict: assert } = require('assert');
+
 const FixtureBuilder = require('../fixture-builder');
 const { veryLargeDelayMs } = require('../helpers');
 
@@ -64,14 +66,17 @@ const enterSwapQuote = async (driver, options) => {
 };
 
 const reviewQuote = async (driver) => {
-  await driver.delay(5000); // Need an extra delay after typing an amount.
-  await driver.clickElement({ text: 'Review swap', tag: 'button' });
-  await driver.waitForSelector('[class*="box--align-items-center"]');
-  const estimatedEth = await driver.waitForSelector({
+
+  do {
+    await driver.delay(10000)
+    await driver.clickElement({ text: 'Review swap', tag: 'button' });
+  } while (!await driver.executeScript(`return document.querySelector('.main-quote-summary__quote-large-number')`))
+
+  await driver.waitForSelector({
     css: '[class*="box--align-items-center"]',
     text: 'Estimated gas fee',
   });
-  assert.equal(await estimatedEth.getText(), 'Estimated gas fee');
+
   await driver.waitForSelector(
     '[class="exchange-rate-display main-quote-summary__exchange-rate-display"]',
   );
