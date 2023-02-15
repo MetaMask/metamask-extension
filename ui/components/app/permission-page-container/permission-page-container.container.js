@@ -8,10 +8,10 @@ import {
 import PermissionPageContainer from './permission-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { 
+  const {
     selectedIdentities,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    request
+    request,
     ///: END:ONLY_INCLUDE_IN
   } = ownProps;
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
