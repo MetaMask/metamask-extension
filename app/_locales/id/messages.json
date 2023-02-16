@@ -266,9 +266,6 @@
   "address": {
     "message": "Alamat"
   },
-  "addressBookIcon": {
-    "message": "Ikon buku alamat"
-  },
   "advanced": {
     "message": "Lanjutan"
   },

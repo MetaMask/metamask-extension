@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import Tooltip from '../tooltip';
-import IconCaretRight from '../icon/icon-caret-right';
 import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
+import { Icon, ICON_NAMES } from '../../component-library';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -199,7 +199,7 @@ function Arrow({ variant }) {
     </div>
   ) : (
     <div className="sender-to-recipient__arrow-container">
-      <IconCaretRight />
+      <Icon name={ICON_NAMES.ARROW_RIGHT} />
     </div>
   );
 }
