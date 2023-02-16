@@ -6,7 +6,7 @@ import { HelpText } from './help-text';
 
 # HelpText
 
-The `HelpText` is intended to be used as the help or error text under a form element
+The `HelpText` is used as feedback text under a form field including error, success, warning or info messages
 
 <Canvas>
   <Story id="components-componentlibrary-helptext--default-story" />
@@ -24,40 +24,49 @@ The `HelpText` accepts all props below as well as all [Box](/docs/components-ui-
 
 ### Children
 
-The `children` of the `HelpText` can be plain text or react nodes
-
-<Canvas>
-  <Story id="components-componentlibrary-helptext--children" />
-</Canvas>
+`HelpText` renders as a `<p>` tag if the child is a `string` or a `<div>` if the child is an `object`.
 
 ```jsx
 import { Size, IconColor } from '../../../helpers/constants/design-system';
 import { HelpText, Icon, ICON_NAMES } from '../../component-library';
 
-<HelpText>Plain text</HelpText>
+<HelpText>Plain text</HelpText> // renders as <p>Plain text</p>
 <HelpText>
-  Text and icon
-      <Icon
-        marginLeft={1}
-        color={IconColor.inherit}
-        name={ICON_NAMES.WARNING}
-        size={Size.inherit}
-      />
-</HelpText>
+  <span>Text and icon</span>
+  <Icon
+    marginLeft={1}
+    color={IconColor.iconAlternative}
+    name={ICON_NAMES.WARNING}
+    size={Size.inherit}
+  />
+</HelpText> // renders as <div><span>Text and icon</span> <div style={{background: icon/warning.svg}} /></div>
 ```
 
-### Error
+### Severity
 
-Use the `error` prop to show the `HelpText` in error state
+Use the `severity` prop and `SEVERITIES` object to change the severity of the `HelpText`
 
 <Canvas>
-  <Story id="components-componentlibrary-helptext--error-story" />
+  <Story id="components-componentlibrary-helptext--severity-story" />
 </Canvas>
 
 ```jsx
+import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { HelpText } from '../../component-library';
 
-<HelpText error>This HelpText in error state</HelpText>;
+<HelpText>HelpText without severity prop</HelpText>
+<HelpText severity={SEVERITIES.DANGER}>
+  HelpText with severity: SEVERITY.DANGER
+</HelpText>
+<HelpText severity={SEVERITIES.SUCCESS}>
+  HelpText with severity: SEVERITY.SUCCESS
+</HelpText>
+<HelpText severity={SEVERITIES.WARNING}>
+  HelpText with severity: SEVERITY.WARNING
+</HelpText>
+<HelpText severity={SEVERITIES.INFO}>
+  HelpText with severity: SEVERITY.INFO
+</HelpText>
 ```
 
 ### Color
@@ -72,18 +81,13 @@ It may be useful to change the color of the `HelpText`. Use the `color` prop and
 import { Color } from '../../../helpers/constants/design-system';
 import { HelpText } from '../../component-library';
 
-<Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
-  <HelpText color={Color.textDefault} {...args}>
-    This HelpText default color is Color.textDefault
-  </HelpText>
-  <HelpText color={Color.infoDefault} {...args}>
-    This HelpText color is Color.infoDefault
-  </HelpText>
-  <HelpText color={Color.warningDefault} {...args}>
-    This HelpText color is Color.warningDefault
-  </HelpText>
-  <HelpText color={Color.successDefault} {...args}>
-    This HelpText color is Color.successDefault
-  </HelpText>
-</Box>;
+<HelpText color={TextColor.textDefault}>
+  This HelpText default color is TextColor.textDefault
+</HelpText>
+<HelpText color={TextColor.textAlternative}>
+  This HelpText color is TextColor.textAlternative
+</HelpText>
+<HelpText color={TextColor.textMuted}>
+  This HelpText color is TextColor.textMuted
+</HelpText>
 ```

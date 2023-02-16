@@ -6,9 +6,9 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import CollectiblesTab from '.';
+import NftsTab from '.';
 
-const COLLECTIBLES = [
+const NFTS = [
   {
     address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
     tokenId:
@@ -123,7 +123,7 @@ const COLLECTIBLES = [
   },
 ];
 
-const COLLECTIBLES_CONTRACTS = [
+const NFTS_CONTRACTS = [
   {
     address: '0x495f947276749Ce646f68AC8c248420045cb7b5e',
     name: 'PUNKS',
@@ -137,7 +137,7 @@ const COLLECTIBLES_CONTRACTS = [
   },
 ];
 
-const collectiblesDropdownState = {
+const nftsDropdownState = {
   '0x495f947276749ce646f68ac8c248420045cb7b5e': true,
   '0xdc7382eb0bc9c352a4cba23c909bda01e0206414': true,
 };
@@ -146,8 +146,8 @@ const ACCOUNT_1 = '0x123';
 const ACCOUNT_2 = '0x456';
 
 const render = ({
-  collectibleContracts = [],
-  collectibles = [],
+  nftContracts = [],
+  nfts = [],
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
@@ -158,34 +158,34 @@ const render = ({
     metamask: {
       allNfts: {
         [ACCOUNT_1]: {
-          [chainIdAsDecimal]: collectibles,
+          [chainIdAsDecimal]: nfts,
         },
       },
       allNftContracts: {
         [ACCOUNT_1]: {
-          [chainIdAsDecimal]: collectibleContracts,
+          [chainIdAsDecimal]: nftContracts,
         },
       },
       provider: { chainId },
       selectedAddress,
       useNftDetection,
-      collectiblesDropdownState,
+      nftsDropdownState,
     },
   });
-  return renderWithProvider(<CollectiblesTab onAddNFT={onAddNFT} />, store);
+  return renderWithProvider(<NftsTab onAddNFT={onAddNFT} />, store);
 };
 
-describe('Collectible Items', () => {
-  const detectCollectiblesStub = jest.fn();
+describe('NFT Items', () => {
+  const detectNftsStub = jest.fn();
   const getStateStub = jest.fn();
-  const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
-  const updateCollectibleDropDownStateStub = jest.fn();
+  const checkAndUpdateAllNftsOwnershipStatusStub = jest.fn();
+  const updateNftDropDownStateStub = jest.fn();
   setBackgroundConnection({
-    detectNfts: detectCollectiblesStub,
+    detectNfts: detectNftsStub,
     getState: getStateStub,
     checkAndUpdateAllNftsOwnershipStatus:
-      checkAndUpdateAllCollectiblesOwnershipStatusStub,
-    updateCollectibleDropDownState: updateCollectibleDropDownStateStub,
+      checkAndUpdateAllNftsOwnershipStatusStub,
+    updateNftDropDownState: updateNftDropDownStateStub,
   });
   const historyPushMock = jest.fn();
 
@@ -198,25 +198,25 @@ describe('Collectible Items', () => {
     jest.clearAllMocks();
   });
 
-  describe('Collectibles Detection Notice', () => {
-    it('should render the Collectibles Detection Notice when currently selected network is Mainnet and currently selected account has no collectibles', () => {
+  describe('NFTs Detection Notice', () => {
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no nfts', () => {
       render({
         selectedAddress: ACCOUNT_2,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
       });
       expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
     });
-    it('should not render the Collectibles Detection Notice when currently selected network is Mainnet and currently selected account has collectibles', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
     it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
         selectedAddress: ACCOUNT_2,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
       });
       fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
@@ -224,92 +224,84 @@ describe('Collectible Items', () => {
         `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
       );
     });
-    it('should not render the Collectibles Detection Notice when currently selected network is Mainnet and currently selected account has no collectibles but use collectible autodetection preference is set to true', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
       render({
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
         useNftDetection: true,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
-    it('should not render the Collectibles Detection Notice when currently selected network is Mainnet and currently selected account has no collectibles but user has dismissed the notice before', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
       });
       expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
     });
   });
 
   describe('Collections', () => {
-    it('should render the name of the collections and number of collectibles in each collection if current account/chainId combination has collectibles', () => {
+    it('should render the name of the collections and number of NFTs in each collection if current account/chainId combination has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
-        collectibleContracts: COLLECTIBLES_CONTRACTS,
+        nfts: NFTS,
+        nftContracts: NFTS_CONTRACTS,
       });
       expect(screen.queryByText('PUNKS (5)')).toBeInTheDocument();
       expect(screen.queryByText('Munks (3)')).toBeInTheDocument();
     });
-    it('should not render collections if current account/chainId combination has collectibles', () => {
+    it('should not render collections if current account/chainId combination has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_2,
-        collectibles: COLLECTIBLES,
-        collectibleContracts: COLLECTIBLES_CONTRACTS,
+        nfts: NFTS,
+        nftContracts: NFTS_CONTRACTS,
       });
       expect(screen.queryByText('PUNKS (5)')).not.toBeInTheDocument();
       expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
-  describe('Collectibles options', () => {
-    it('should render a link "Refresh list" when some collectibles are present on mainnet and collectible auto-detection preference is set to true, which, when clicked calls methods DetectCollectibles and checkAndUpdateCollectiblesOwnershipStatus', () => {
+  describe('NFTs options', () => {
+    it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
         useNftDetection: true,
       });
-      expect(detectCollectiblesStub).not.toHaveBeenCalled();
-      expect(
-        checkAndUpdateAllCollectiblesOwnershipStatusStub,
-      ).not.toHaveBeenCalled();
+      expect(detectNftsStub).not.toHaveBeenCalled();
+      expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
       fireEvent.click(screen.queryByText('Refresh list'));
-      expect(detectCollectiblesStub).toHaveBeenCalled();
-      expect(
-        checkAndUpdateAllCollectiblesOwnershipStatusStub,
-      ).toHaveBeenCalled();
+      expect(detectNftsStub).toHaveBeenCalled();
+      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
     });
 
-    it('should render a link "Refresh list" when some collectibles are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateCollectiblesOwnershipStatus', () => {
+    it('should render a link "Refresh list" when some NFTs are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', () => {
       render({
         chainId: '0x5',
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
         useNftDetection: true,
       });
-      expect(
-        checkAndUpdateAllCollectiblesOwnershipStatusStub,
-      ).not.toHaveBeenCalled();
+      expect(checkAndUpdateAllNftsOwnershipStatusStub).not.toHaveBeenCalled();
       fireEvent.click(screen.queryByText('Refresh list'));
-      expect(
-        checkAndUpdateAllCollectiblesOwnershipStatusStub,
-      ).toHaveBeenCalled();
+      expect(checkAndUpdateAllNftsOwnershipStatusStub).toHaveBeenCalled();
     });
 
-    it('should render a link "Enable autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
+    it('should render a link "Enable autodetect" when some NFTs are present and NFT auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
       render({
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
       });
       expect(historyPushMock).toHaveBeenCalledTimes(0);
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
     });
-    it('should render a link "Import NFTs" when some collectibles are present, which, when clicked calls the passed in onAddNFT method', () => {
+    it('should render a link "Import NFTs" when some NFTs are present, which, when clicked calls the passed in onAddNFT method', () => {
       const onAddNFTStub = jest.fn();
       render({
         selectedAddress: ACCOUNT_1,
-        collectibles: COLLECTIBLES,
+        nfts: NFTS,
         onAddNFT: onAddNFTStub,
       });
       expect(onAddNFTStub).toHaveBeenCalledTimes(0);
