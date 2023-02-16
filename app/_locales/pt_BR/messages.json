@@ -142,9 +142,6 @@
   "address": {
     "message": "Endereço"
   },
-  "addressBookIcon": {
-    "message": "Ícone da agenda de endereços"
-  },
   "advanced": {
     "message": "Avançado"
   },

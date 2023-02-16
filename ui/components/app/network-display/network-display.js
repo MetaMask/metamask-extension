@@ -16,9 +16,9 @@ import {
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Chip from '../../ui/chip/chip';
-import IconCaretDown from '../../ui/icon/icon-caret-down';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 export default function NetworkDisplay({
   indicatorSize,
@@ -68,7 +68,7 @@ export default function NetworkDisplay({
       }
       rightIcon={
         onClick ? (
-          <IconCaretDown size={16} className="network-display__icon" />
+          <Icon name={ICON_NAMES.ARROW_DOWN} size={ICON_SIZES.XS} />
         ) : null
       }
       label={

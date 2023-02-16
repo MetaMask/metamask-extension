@@ -207,9 +207,6 @@
   "address": {
     "message": "Indirizzo"
   },
-  "addressBookIcon": {
-    "message": "Icona rubrica indirizzo"
-  },
   "advanced": {
     "message": "Avanzate"
   },

@@ -140,7 +140,7 @@ describe('Swaps - notifications', function () {
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
         });
         await driver.waitForSelector({
-          css: '.popover-header__title',
+          css: '.popover-header',
           text: 'Import token?',
         });
         await driver.clickElement(

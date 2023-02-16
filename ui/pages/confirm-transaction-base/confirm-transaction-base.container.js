@@ -185,7 +185,7 @@ const mapStateToProps = (state, ownProps) => {
     customTxParamsData,
   );
 
-  const isCollectibleTransfer = Boolean(
+  const isNftTransfer = Boolean(
     allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
@@ -237,7 +237,7 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state) && !isCollectibleTransfer,
+    hideSubtitle: !getShouldShowFiat(state) && !isNftTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
