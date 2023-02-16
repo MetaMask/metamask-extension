@@ -34,7 +34,6 @@ dist
 builds/
 builds.zip
 development/ts-migration-dashboard/build
-development/ts-migration-dashboard/intermediate
 
 test-artifacts
 test-builds

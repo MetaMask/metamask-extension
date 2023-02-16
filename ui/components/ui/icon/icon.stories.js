@@ -28,14 +28,12 @@ import IconCaretDown from './icon-caret-down';
 import IconCaretUp from './icon-caret-up';
 import IconCheck from './icon-check';
 import IconCog from './icon-cog';
-import IconConnect from './icon-connect';
 import IconImport from './icon-import';
 import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
 import SearchIcon from './search-icon';
-import IconBlockExplorer from './icon-block-explorer';
 
 const validColors = [
   'var(--color-icon-default)',
@@ -96,6 +94,13 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
+    <Typography
+      variant={TypographyVariant.H2}
+      color={TextColor.errorDefault}
+      boxProps={{ marginBottom: 4 }}
+    >
+      DEPRECATED
+    </Typography>
     <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
     </Typography>
@@ -124,20 +129,11 @@ export const DefaultStory = (args) => (
         <IconItem Component={<IconCheck {...args} />} />
         <IconItem Component={<IconPlus {...args} />} />
         <IconItem Component={<IconImport {...args} />} />
-        <IconItem Component={<IconConnect {...args} />} />
         <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
-        <IconItem Component={<IconBlockExplorer {...args} />} />
       </div>
     </Box>
-    <Typography
-      variant={TypographyVariant.H2}
-      color={TextColor.errorDefault}
-      boxProps={{ marginBottom: 4 }}
-    >
-      DEPRECATED
-    </Typography>
     <Box marginBottom={4}>
       <div
         style={{
@@ -282,9 +278,3 @@ PreloaderStory.args = {
   size: 40,
 };
 PreloaderStory.storyName = 'Preloader';
-
-export const IconBlockExplorerStory = (args) => <IconBlockExplorer {...args} />;
-IconBlockExplorerStory.args = {
-  size: 40,
-};
-IconBlockExplorerStory.storyName = 'IconBlockExplorer';

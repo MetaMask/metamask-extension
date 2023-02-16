@@ -299,9 +299,6 @@ export function requestRevealSeedWords(
       await verifyPassword(password);
       const seedPhrase = await verifySeedPhrase();
       return seedPhrase;
-    } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -3779,20 +3776,20 @@ export function setNewNetworkAdded(
 }
 
 export function setNewCollectibleAddedMessage(
-  newCollectibleAddedMessage: string,
+  newNftAddedMessage: string,
 ): PayloadAction<string> {
   return {
     type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
-    payload: newCollectibleAddedMessage,
+    payload: newNftAddedMessage,
   };
 }
 
 export function setRemoveCollectibleMessage(
-  removeCollectibleMessage: string,
+  removeNftMessage: string,
 ): PayloadAction<string> {
   return {
     type: actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE,
-    payload: removeCollectibleMessage,
+    payload: removeNftMessage,
   };
 }
 

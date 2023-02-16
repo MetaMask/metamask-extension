@@ -4,7 +4,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
-import createEngineStream from 'json-rpc-middleware-stream/engineStream';
+import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import {
   KeyringController,
@@ -85,6 +85,8 @@ import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
+  ExcludedSnapPermissions,
+  ExcludedSnapEndowments,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
@@ -110,6 +112,9 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { isMain, isFlask } from '../../shared/constants/environment';
+///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -775,11 +780,12 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
-    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
-
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+      excludedPermissions: {
+        ...ExcludedSnapPermissions,
+        ...ExcludedSnapEndowments,
+      },
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,

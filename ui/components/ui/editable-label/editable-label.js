@@ -1,7 +1,9 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Color } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 
 export default class EditableLabel extends Component {
   static propTypes = {
@@ -73,13 +75,13 @@ export default class EditableLabel extends Component {
     return (
       <div className={classnames('editable-label', this.props.className)}>
         <div className="editable-label__value">{this.state.value}</div>
-        <button
-          className="editable-label__icon-button"
+        <ButtonIcon
+          iconName={ICON_NAMES.EDIT}
+          ariaLabel={this.context.t('edit')}
           data-testid="editable-label-button"
           onClick={() => this.setState({ isEditing: true })}
-        >
-          <i className="fas fa-pencil-alt editable-label__icon" />
-        </button>
+          color={Color.iconDefault}
+        />
       </div>
     );
   }
