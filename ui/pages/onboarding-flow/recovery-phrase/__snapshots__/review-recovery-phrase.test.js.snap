@@ -278,7 +278,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography recovery-phrase__secret-blocker--text typography--h6 typography--weight-normal typography--style-normal typography--color-overlay-inverse"
         >
-          Make sure no one is watching your screen
+          Make sure nobody is looking
         </h6>
       </div>
     </div>
