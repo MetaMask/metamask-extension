@@ -40,7 +40,7 @@ module.exports = {
       __filename: true,
     };
     config.resolve.alias['webextension-polyfill'] = require.resolve(
-      './__mocks__/webextension-polyfill.js',
+      '../ui/__mocks__/webextension-polyfill.js',
     );
     config.resolve.fallback = {
       child_process: false,

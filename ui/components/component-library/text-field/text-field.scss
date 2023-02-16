@@ -1,5 +1,5 @@
-.mm-text-field-base {
-  --text-field-base-height: var(--size, 40px);
+.mm-text-field {
+  --text-field-height: var(--size, 40px);
 
   &--size-sm {
     --size: 32px;
@@ -13,7 +13,7 @@
     --size: 48px;
   }
 
-  height: var(--text-field-base-height);
+  height: var(--text-field-height);
   border-color: var(--color-border-default);
 
   &--focused {
@@ -31,7 +31,7 @@
   }
 
   // truncates text with ellipsis
-  &--truncate .mm-text-field-base__input {
+  &--truncate .mm-text-field__input {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -468,5 +468,55 @@ describe('Signature Request Data', () => {
 
       expect(getByText('0xB0B...0000')).toBeInTheDocument();
     });
+
+    it('should escape RTL character in label or value', () => {
+      const messageDataWithRTLCharacters = {
+        ...messageData,
+        message: {
+          ...messageData.message,
+          contents: 'Hello, \u202E Bob!',
+          from: {
+            'name\u202Ename': 'Cow \u202E Cow',
+            'wallets\u202Ewallets': [
+              '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+              '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+              '0x06195827297c7A80a443b6894d3BDB8824b43896',
+            ],
+          },
+          to: [
+            {
+              'name\u202Ename': 'Bob \u202E Bob',
+              'wallets\u202Ewallets': [
+                '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                '0xB0B0b0b0b0b0B000000000000000000000000000',
+              ],
+            },
+          ],
+        },
+        types: {
+          ...messageData.message.types,
+          Person: [
+            { name: 'name\u202Ename', type: 'string' },
+            { name: 'wallets\u202Ewallets', type: 'address[]' },
+          ],
+        },
+      };
+      const msgParams = {
+        data: JSON.parse(JSON.stringify(messageDataWithRTLCharacters)),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { getByText, getAllByText } = renderWithProvider(
+        <SignatureRequestData data={msgParams} />,
+        store,
+      );
+
+      expect(getByText('Hello, \\u202E Bob!')).toBeInTheDocument();
+      expect(getByText('Cow \\u202E Cow')).toBeInTheDocument();
+      expect(getByText('Bob \\u202E Bob')).toBeInTheDocument();
+      expect(getAllByText('Name\\u202Ename:')).toHaveLength(2);
+      expect(getAllByText('Wallets\\u202Ewallets:')).toHaveLength(2);
+    });
   });
 });

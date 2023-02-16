@@ -207,9 +207,6 @@
   "address": {
     "message": "Indirizzo"
   },
-  "addressBookIcon": {
-    "message": "Icona rubrica indirizzo"
-  },
   "advanced": {
     "message": "Avanzate"
   },
@@ -507,13 +504,6 @@
   },
   "close": {
     "message": "Chiudi"
-  },
-  "collectibleAddFailedMessage": {
-    "message": "Non è possibile aggiungere questo NFT poiché i dettagli della proprietà non corrispondono. Assicurati di aver inserito le informazioni corrette."
-  },
-  "collectibleAddressError": {
-    "message": "Questo token è un NFT. Aggiungilo su $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "Conferma"
@@ -1333,6 +1323,13 @@
     "message": "Numero di transazione deve essere maggiore di $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nftAddFailedMessage": {
+    "message": "Non è possibile aggiungere questo NFT poiché i dettagli della proprietà non corrispondono. Assicurati di aver inserito le informazioni corrette."
+  },
+  "nftAddressError": {
+    "message": "Questo token è un NFT. Aggiungilo su $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
+  },
   "noAccountsFound": {
     "message": "Nessun account trovato per la ricerca effettuata"
   },
@@ -1499,12 +1496,6 @@
   "reset": {
     "message": "Ripristina"
   },
-  "resetAccount": {
-    "message": "Ripristina account"
-  },
-  "resetAccountDescription": {
-    "message": "Ripristinare il tuo account cancellerà lo storico delle transazioni."
-  },
   "restore": {
     "message": "Ripristina"
   },
@@ -1514,23 +1505,15 @@
   "revealSeedWords": {
     "message": "Rivela Frase Seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "Se cambierai browser o computer, ti servirà questa frase seed per accedere ai tuoi account. Salvala in un posto sicuro e segreto."
-  },
   "revealSeedWordsWarning": {
-    "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NON CONDIVIDERE questa frase con nessuno!"
+    "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nuovo URL RPC"
   },
   "save": {
     "message": "Salva"
-  },
-  "saveAsCsvFile": {
-    "message": "Salva Come File CSV"
   },
   "scanInstructions": {
     "message": "Posizione il codice QR davanti alla fotocamera"

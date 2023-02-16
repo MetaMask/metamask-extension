@@ -31,6 +31,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CollectibleDefaultImage from '../nft-default-image';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -163,10 +164,11 @@ export default function CollectiblesItems({
               </Typography>
             </Box>
             <Box alignItems={AlignItems.flexEnd}>
-              <i
-                className={`collectibles-items__collection__icon-chevron fa fa-chevron-${
-                  isExpanded ? 'down' : 'right'
-                }`}
+              <Icon
+                name={
+                  isExpanded ? ICON_NAMES.ARROW_DOWN : ICON_NAMES.ARROW_RIGHT
+                }
+                color={Color.iconDefault}
               />
             </Box>
           </Box>

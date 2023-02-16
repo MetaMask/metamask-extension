@@ -49,7 +49,7 @@ Card.propTypes = {
   padding: Box.propTypes.padding,
   /**
    * The background color of the card
-   * Defaults to COLORS.BACKGROUND_DEFAULT
+   * Defaults to Color.backgroundDefault
    */
   backgroundColor: Box.propTypes.backgroundColor,
   /**

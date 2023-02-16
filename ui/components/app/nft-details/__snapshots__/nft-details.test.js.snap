@@ -8,9 +8,10 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
     <button
       class="asset-breadcrumb"
     >
-      <i
-        class="fas fa-chevron-left asset-breadcrumb__chevron"
+      <div
+        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--flex-direction-row box--color-inherit"
         data-testid="asset__back"
+        style="mask-image: url('./images/icons/arrow-left.svg');"
       />
       <span>
         Test Account
@@ -22,10 +23,18 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
         MUNK #1
       </span>
     </button>
-    <button
-      class="fas fa-ellipsis-v collectible-options__button"
-      data-testid="collectible-options__button"
-    />
+    <div>
+      <button
+        aria-label="NFT Options"
+        class="box mm-button-icon mm-button-icon--size-lg collectible-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
+        data-testid="collectible-options__button"
+      >
+        <div
+          class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/more-vertical.svg');"
+        />
+      </button>
+    </div>
   </div>
   <div
     class="box collectible-details box--flex-direction-row"
@@ -94,25 +103,6 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
           >
             https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link
           </a>
-        </h6>
-      </div>
-      <div
-        class="box box--display-flex box--flex-direction-row"
-      >
-        <h6
-          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography collectible-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
-        >
-          Link
-        </h6>
-        <h6
-          class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography collectible-details__image-source typography--h6 typography--weight-normal typography--style-normal typography--color-primary-default"
-        >
-          <a
-            href="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-            rel="noopener noreferrer"
-            target="_blank"
-            title="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-          />
         </h6>
       </div>
       <div

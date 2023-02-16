@@ -266,9 +266,6 @@
   "address": {
     "message": "Address"
   },
-  "addressBookIcon": {
-    "message": "Address book icon"
-  },
   "advanced": {
     "message": "Advanced"
   },
@@ -636,6 +633,18 @@
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
+  "clear": {
+    "message": "Clear"
+  },
+  "clearActivity": {
+    "message": "Clear activity and nonce data"
+  },
+  "clearActivityButton": {
+    "message": "Clear activity tab data"
+  },
+  "clearActivityDescription": {
+    "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -648,13 +657,6 @@
   },
   "coingecko": {
     "message": "CoinGecko"
-  },
-  "collectibleAddFailedMessage": {
-    "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
-  },
-  "collectibleAddressError": {
-    "message": "This token is an NFT. Add on the $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "Confirm"
@@ -823,7 +825,7 @@
     "message": "CoolWallet"
   },
   "copiedExclamation": {
-    "message": "Copied!"
+    "message": "Copied."
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
@@ -1565,6 +1567,32 @@
   "history": {
     "message": "History"
   },
+  "holdToReveal": {
+    "message": "Hold to reveal SRP"
+  },
+  "holdToRevealContent1": {
+    "message": "Your Secret Recovery Phrase provides $1",
+    "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
+  },
+  "holdToRevealContent2": {
+    "message": "full access to your wallet and funds.",
+    "description": "Is the bolded text in 'holdToRevealContent1'"
+  },
+  "holdToRevealContent3": {
+    "message": "Do not share this with anyone. $1 $2",
+    "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
+  },
+  "holdToRevealContent4": {
+    "message": "MetaMask Support will not request this,",
+    "description": "Part of 'holdToRevealContent3'"
+  },
+  "holdToRevealContent5": {
+    "message": "but phishers might.",
+    "description": "The text link in 'holdToRevealContent3'"
+  },
+  "holdToRevealTitle": {
+    "message": "Keep your SRP safe"
+  },
   "ignoreAll": {
     "message": "Ignore all"
   },
@@ -1597,7 +1625,7 @@
     "message": "Import NFT page"
   },
   "importNFTTokenIdToolTip": {
-    "message": "A collectible's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
+    "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
   "importNFTs": {
     "message": "Import NFTs"
@@ -1893,7 +1921,7 @@
     "message": "Create a new swap"
   },
   "makeSureNoOneWatching": {
-    "message": "Make sure no one is watching your screen",
+    "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "malformedData": {
@@ -2132,9 +2160,6 @@
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Collectible was successfully added!"
-  },
   "newContact": {
     "message": "New contact"
   },
@@ -2149,6 +2174,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNftAddedMessage": {
+    "message": "NFT was successfully added!"
   },
   "newPassword": {
     "message": "New password (8 characters min)"
@@ -2173,8 +2201,18 @@
   "nft": {
     "message": "NFT"
   },
+  "nftAddFailedMessage": {
+    "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
+  },
+  "nftAddressError": {
+    "message": "This token is an NFT. Add on the $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
+  },
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
+  },
+  "nftOptions": {
+    "message": "NFT Options"
   },
   "nftTokenIdPlaceholder": {
     "message": "Enter the token id"
@@ -2589,6 +2627,9 @@
   "optionalWithParanthesis": {
     "message": "(Optional)"
   },
+  "options": {
+    "message": "Options"
+  },
   "or": {
     "message": "or"
   },
@@ -2908,11 +2949,11 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
-  "removeCollectibleMessage": {
-    "message": "Collectible was successfully removed!"
-  },
   "removeNFT": {
     "message": "Remove NFT"
+  },
+  "removeNftMessage": {
+    "message": "NFT was successfully removed!"
   },
   "removeSnap": {
     "message": "Remove Snap"
@@ -2935,12 +2976,6 @@
   },
   "reset": {
     "message": "Reset"
-  },
-  "resetAccount": {
-    "message": "Reset account"
-  },
-  "resetAccountDescription": {
-    "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
   },
   "resetWallet": {
     "message": "Reset wallet"
@@ -2981,14 +3016,36 @@
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription": {
-    "message": "If you ever change browsers or move computers, you will need this Secret Recovery Phrase to access your accounts. Save them somewhere safe and secret."
+  "revealSeedWordsDescription1": {
+    "message": "The $1 provides $2",
+    "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
+  },
+  "revealSeedWordsDescription2": {
+    "message": "MetaMask is a $1. That means you're the owner of your SRP.",
+    "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
+  },
+  "revealSeedWordsDescription3": {
+    "message": "full access to your wallet and funds.\n"
+  },
+  "revealSeedWordsNonCustodialWallet": {
+    "message": "non-custodial wallet"
+  },
+  "revealSeedWordsQR": {
+    "message": "QR"
+  },
+  "revealSeedWordsSRPName": {
+    "message": "Secret Recovery Phrase (SRP)"
+  },
+  "revealSeedWordsText": {
+    "message": "Text"
   },
   "revealSeedWordsWarning": {
-    "message": "These words can be used to steal all your accounts."
+    "message": "Make sure no one is looking at your screen. $1",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
-  "revealSeedWordsWarningTitle": {
-    "message": "DO NOT share this phrase with anyone!"
+  "revealSeedWordsWarning2": {
+    "message": "MetaMask Support will never request this.",
+    "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
@@ -3019,9 +3076,6 @@
   },
   "save": {
     "message": "Save"
-  },
-  "saveAsCsvFile": {
-    "message": "Save as CSV file"
   },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
@@ -4245,8 +4299,8 @@
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
-    "message": "Sending collectible (ERC-721) tokens is not currently supported",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "message": "Sending NFT (ERC-721) tokens is not currently supported",
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "We cannot verify this contract. Make sure you trust this address."
@@ -4263,24 +4317,6 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
-  "useCollectibleDetection": {
-    "message": "Autodetect NFTs"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Your account address will be viewable to third-party APIs."
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "NFT metadata may contain links to scams or phishing sites."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
-  },
-  "useCollectibleDetectionDescriptionLine5": {
-    "message": "Leave this feature off if you don't want the app to pull data from those services."
-  },
   "useDefault": {
     "message": "Use default"
   },
@@ -4289,6 +4325,24 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
+  },
+  "useNftDetection": {
+    "message": "Autodetect NFTs"
+  },
+  "useNftDetectionDescription": {
+    "message": "We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Your account address will be viewable to third-party APIs."
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "NFT metadata may contain links to scams or phishing sites."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Anyone can airdrop NFTs to your account. This can include offensive content that might be automatically displayed in your wallet."
+  },
+  "useNftDetectionDescriptionLine5": {
+    "message": "Leave this feature off if you don't want the app to pull data from those services."
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"
@@ -4469,7 +4523,7 @@
     "message": "Your NFT may be at risk"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Your private Secret Recovery Phrase"
+    "message": "Your Secret Recovery Phrase"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

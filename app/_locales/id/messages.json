@@ -266,9 +266,6 @@
   "address": {
     "message": "Alamat"
   },
-  "addressBookIcon": {
-    "message": "Ikon buku alamat"
-  },
   "advanced": {
     "message": "Lanjutan"
   },
@@ -641,13 +638,6 @@
   },
   "close": {
     "message": "Tutup"
-  },
-  "collectibleAddFailedMessage": {
-    "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
-  },
-  "collectibleAddressError": {
-    "message": "Token ini merupakan NFT. Tambahkan ke $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "Konfirmasikan"
@@ -2103,9 +2093,6 @@
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Koleksi berhasil ditambahkan!"
-  },
   "newContact": {
     "message": "Kontak baru"
   },
@@ -2120,6 +2107,9 @@
   },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
+  },
+  "newNftAddedMessage": {
+    "message": "Koleksi berhasil ditambahkan!"
   },
   "newPassword": {
     "message": "Kata sandi baru (min 8 karakter)"
@@ -2143,6 +2133,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
+  },
+  "nftAddressError": {
+    "message": "Token ini merupakan NFT. Tambahkan ke $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Masukkan id token"
@@ -2883,12 +2880,6 @@
   "reset": {
     "message": "Atur ulang"
   },
-  "resetAccount": {
-    "message": "Reset akun"
-  },
-  "resetAccountDescription": {
-    "message": "Mengatur ulang akun akan mengosongkan riwayat transaksi Anda. Ini tidak akan mengubah saldo di akun atau mengharuskan Anda untuk memasukkan kembali Frasa Pemulihan Rahasia."
-  },
   "resetWallet": {
     "message": "Reset dompet"
   },
@@ -2928,14 +2919,9 @@
   "revealSeedWords": {
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jika Anda pernah mengubah peramban atau mengganti komputer, Frasa Pemulihan Rahasia ini akan berguna untuk mengakses akun Anda. Simpan di tempat yang aman dan rahasia."
-  },
   "revealSeedWordsWarning": {
-    "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "JANGAN bagikan frasa ini kepada siapa pun!"
+    "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Ungkap frasa seed"
@@ -2966,9 +2952,6 @@
   },
   "save": {
     "message": "Simpan"
-  },
-  "saveAsCsvFile": {
-    "message": "Simpan sebagai file CSV"
   },
   "scanInstructions": {
     "message": "Tempatkan kode QR di bagian depan kamera Anda"
@@ -4175,7 +4158,7 @@
   },
   "unsendableAsset": {
     "message": "Tidak mendukung pengiriman token koleksi (ERC-721) untuk saat ini",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Kami tidak dapat memverifikasi kontrak ini. Pastikan alamat ini aman."
@@ -4192,21 +4175,6 @@
   "urlExistsErrorMsg": {
     "message": "URL ini saat ini digunakan oleh jaringan $1."
   },
-  "useCollectibleDetection": {
-    "message": "Deteksi otomatis NFT"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "Menampilkan media & data NFT dapat mengekspos alamat IP Anda ke server terpusat. API pihak ketiga (seperti OpenSea) digunakan untuk mendeteksi NFT di dompet Anda. API memperlihatkan alamat akun Anda dengan layanan tersebut. Biarkan nonaktif jika Anda tidak ingin aplikasi memakai data dari layanan tersebut."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Selain itu, ketahuilah bahwa:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
-  },
   "useDefault": {
     "message": "Gunakan default"
   },
@@ -4215,6 +4183,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Kami mengelompokkan akun dan meminta Infura untuk menunjukkan saldo Anda secara responsif. Jika Anda menonaktifkannya, hanya akun aktif yang akan diminta. Beberapa aplikasi terdesentralisasi (dapp) tidak akan berfungsi kecuali dompet Anda terhubung."
+  },
+  "useNftDetection": {
+    "message": "Deteksi otomatis NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "Menampilkan media & data NFT dapat mengekspos alamat IP Anda ke server terpusat. API pihak ketiga (seperti OpenSea) digunakan untuk mendeteksi NFT di dompet Anda. API memperlihatkan alamat akun Anda dengan layanan tersebut. Biarkan nonaktif jika Anda tidak ingin aplikasi memakai data dari layanan tersebut."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Selain itu, ketahuilah bahwa:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi pengelabuan"
