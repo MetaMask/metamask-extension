@@ -925,8 +925,6 @@
   "ui/components/ui/loading-indicator/loading-indicator.js",
   "ui/components/ui/loading-screen/index.js",
   "ui/components/ui/loading-screen/loading-screen.component.js",
-  "ui/components/ui/lock-icon/index.js",
-  "ui/components/ui/lock-icon/lock-icon.component.js",
   "ui/components/ui/logo/logo-coinbasepay.js",
   "ui/components/ui/logo/logo-deposit-eth.js",
   "ui/components/ui/logo/logo-lattice.js",
