@@ -306,5 +306,30 @@ describe('Transaction.utils', function () {
         getCodeResponse: '0x0a',
       });
     });
+
+    it('should return contractInteraction for send with approve', async function () {
+      const _providerResultStub = {
+        // 1 gwei
+        eth_gasPrice: '0x0de0b6b3a7640000',
+        // by default, all accounts are external accounts (not contracts)
+        eth_getCode: '0x',
+      };
+      const _provider = createTestProviderTools({
+        scaffold: _providerResultStub,
+      }).provider;
+
+      const result = await determineTransactionType(
+        {
+          to: '0xabc',
+          value: '0x5af3107a4000',
+          data: '0x095ea7b30000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c9700000000000000000000000000000000000000000000000000000000000011170',
+        },
+        new EthQuery(_provider),
+      );
+      expect(result).toMatchObject({
+        type: TransactionType.contractInteraction,
+        getCodeResponse: null,
+      });
+    });
   });
 });
