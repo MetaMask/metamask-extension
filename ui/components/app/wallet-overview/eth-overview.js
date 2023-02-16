@@ -34,6 +34,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, ICON_NAMES } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import WalletOverview from './wallet-overview';
+import useRamps from '../../../hooks/experiences/useRamps';
 
 const EthOverview = ({ className }) => {
   const dispatch = useDispatch();
@@ -49,6 +50,8 @@ const EthOverview = ({ className }) => {
   const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+
+  const { openBuyCryptoInPdapp } = useRamps();
 
   return (
     <WalletOverview
@@ -108,10 +111,7 @@ const EthOverview = ({ className }) => {
             disabled={!isBuyableChain}
             label={t('buy')}
             onClick={() => {
-              const portfolioUrl = process.env.PORTFOLIO_URL;
-              global.platform.openTab({
-                url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
-              });
+              openBuyCryptoInPdapp();
               trackEvent({
                 event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
                 category: EVENT.CATEGORIES.NAVIGATION,

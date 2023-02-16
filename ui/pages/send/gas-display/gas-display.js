@@ -46,12 +46,15 @@ import {
 } from '../../../../shared/modules/conversion.utils';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import useRamps from '../../../hooks/experiences/useRamps';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const currentProvider = useSelector(getProvider);
   const isMainnet = useSelector(getIsMainnet);
@@ -336,10 +339,7 @@ export default function GasDisplay({ gasError }) {
                         type="inline"
                         className="confirm-page-container-content__link"
                         onClick={() => {
-                          const portfolioUrl = process.env.PORTFOLIO_URL;
-                          global.platform.openTab({
-                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
-                          });
+                          openBuyCryptoInPdapp();
                           trackEvent({
                             event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
                             category: EVENT.CATEGORIES.NAVIGATION,

@@ -39,6 +39,7 @@ import {
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
+import useRamps from '../../../hooks/experiences/useRamps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import {
@@ -111,6 +112,8 @@ const ConfirmPageContainer = (props) => {
   const toMetadataName = useSelector((state) =>
     getMetadataContractName(state, toAddress),
   );
+
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const isSetApproveForAll =
     currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;
@@ -239,10 +242,7 @@ const ConfirmPageContainer = (props) => {
                         type="inline"
                         className="confirm-page-container-content__link"
                         onClick={() => {
-                          const portfolioUrl = process.env.PORTFOLIO_URL;
-                          global.platform.openTab({
-                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
-                          });
+                          openBuyCryptoInPdapp();
                           trackEvent({
                             event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
                             category: EVENT.CATEGORIES.NAVIGATION,

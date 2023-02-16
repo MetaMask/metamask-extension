@@ -28,6 +28,7 @@ import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
+import useRamps from '../../../hooks/experiences/useRamps';
 
 import { Icon, ICON_NAMES } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -51,6 +52,8 @@ const TokenOverview = ({ className, token }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
 
   const isBuyableChain = useSelector(getIsBuyableChain);
+
+  const { openBuyCryptoInPdapp } = useRamps();
 
   useEffect(() => {
     if (token.isERC721 && process.env.NFTS_V1) {
@@ -91,10 +94,7 @@ const TokenOverview = ({ className, token }) => {
               }
               label={t('buy')}
               onClick={() => {
-                const portfolioUrl = process.env.PORTFOLIO_URL;
-                global.platform.openTab({
-                  url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
-                });
+                openBuyCryptoInPdapp();
                 trackEvent({
                   event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
                   category: EVENT.CATEGORIES.NAVIGATION,
