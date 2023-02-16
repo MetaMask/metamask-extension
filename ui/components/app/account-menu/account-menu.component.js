@@ -26,13 +26,9 @@ import {
   SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
-import TextField from '../../ui/text-field';
 import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
 import Button from '../../ui/button';
-import IconCog from '../../ui/icon/icon-cog';
-import IconImport from '../../ui/icon/icon-import';
-import IconPlus from '../../ui/icon/icon-plus';
 import SearchIcon from '../../ui/icon/search-icon';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
