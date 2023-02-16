@@ -28,7 +28,7 @@ export const FormTextField = ({
   inputRef,
   label,
   labelProps,
-  leftAccessory,
+  startAccessory,
   maxLength,
   name,
   onBlur,
@@ -37,13 +37,10 @@ export const FormTextField = ({
   placeholder,
   readOnly,
   required,
-  rightAccessory,
+  endAccessory,
   size = Size.MD,
   textFieldProps,
   truncate,
-  showClearButton,
-  clearButtonOnClick,
-  clearButtonProps,
   type = 'text',
   value,
   ...props
@@ -62,8 +59,11 @@ export const FormTextField = ({
       <Label
         htmlFor={id}
         required={required}
-        disabled={disabled}
         {...labelProps}
+        className={classnames(
+          'mm-form-text-field__label',
+          labelProps?.className,
+        )}
       >
         {label}
       </Label>
@@ -83,7 +83,7 @@ export const FormTextField = ({
         id,
         inputProps,
         inputRef,
-        leftAccessory,
+        startAccessory,
         maxLength,
         name,
         onBlur,
@@ -92,10 +92,7 @@ export const FormTextField = ({
         placeholder,
         readOnly,
         required,
-        rightAccessory,
-        showClearButton,
-        clearButtonOnClick,
-        clearButtonProps,
+        endAccessory,
         size,
         truncate,
         type,
@@ -105,13 +102,13 @@ export const FormTextField = ({
     />
     {helpText && (
       <HelpText
+        error={error}
+        marginTop={1}
+        {...helpTextProps}
         className={classnames(
           'mm-form-text-field__help-text',
           helpTextProps?.className,
         )}
-        error={error}
-        marginTop={1}
-        {...helpTextProps}
       >
         {helpText}
       </HelpText>

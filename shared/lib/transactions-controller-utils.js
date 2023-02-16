@@ -4,7 +4,7 @@ import { TransactionEnvelopeType } from '../constants/transaction';
 import { Numeric } from '../modules/Numeric';
 import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
 
-const TOKEN_TRANSFER_LOG_TOPIC_HASH =
+export const TOKEN_TRANSFER_LOG_TOPIC_HASH =
   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 
 export const TRANSACTION_NO_CONTRACT_ERROR_KEY = 'transactionErrorNoContract';
@@ -82,7 +82,7 @@ export function getSwapsTokensReceivedFromTxMeta(
         ? txReceipt.effectiveGasPrice
         : txMeta.txParams.gasPrice,
     );
-    const totalGasCost = new Numeric(gasCost, 16).plus(approvalTxGasCost);
+    const totalGasCost = new Numeric(gasCost, 16).add(approvalTxGasCost);
 
     const preTxBalanceLessGasCost = new Numeric(txMeta.preTxBalance, 16).minus(
       totalGasCost,
@@ -93,7 +93,7 @@ export function getSwapsTokensReceivedFromTxMeta(
       16,
       EtherDenomination.WEI,
     )
-      .subtract(preTxBalanceLessGasCost)
+      .minus(preTxBalanceLessGasCost)
       .toDenomination(EtherDenomination.ETH)
       .toBase(10)
       .round(6);
