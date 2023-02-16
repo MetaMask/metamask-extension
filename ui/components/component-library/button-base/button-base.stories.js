@@ -4,9 +4,10 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   Size,
+  Color,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES } from '../icon';
+import { ICON_NAMES, TEXT_DIRECTIONS } from '..';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
@@ -55,7 +56,11 @@ export default {
     disabled: {
       control: 'boolean',
     },
-    iconName: {
+    startIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
+    },
+    endIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
@@ -162,7 +167,24 @@ Loading.args = {
 };
 
 export const Icon = (args) => (
-  <ButtonBase {...args} icon={ICON_NAMES.ADD_SQUARE}>
+  <ButtonBase
+    {...args}
+    startIconName={ICON_NAMES.ADD_SQUARE}
+    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+  >
     Button
+  </ButtonBase>
+);
+
+export const Rtl = (args) => (
+  <ButtonBase
+    {...args}
+    startIconName={ICON_NAMES.ADD_SQUARE}
+    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+    textProps={{
+      textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
+    }}
+  >
+    Button Demo
   </ButtonBase>
 );

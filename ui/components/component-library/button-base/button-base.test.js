@@ -93,8 +93,8 @@ describe('ButtonBase', () => {
     const { getByTestId } = render(
       <ButtonBase
         data-testid="icon"
-        iconName="add-square"
-        iconProps={{ 'data-testid': 'base-button-icon' }}
+        endIconName="add-square"
+        endIconProps={{ 'data-testid': 'base-button-icon' }}
       />,
     );
 

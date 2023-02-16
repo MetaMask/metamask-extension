@@ -66,11 +66,21 @@ export default {
       options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconPositionRight: {
-      control: 'boolean',
+    startIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconProps: {
+    endIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
+      table: { category: 'button base props' },
+    },
+    startIconProps: {
+      control: 'object',
+      table: { category: 'button base props' },
+    },
+    endIconProps: {
       control: 'object',
       table: { category: 'button base props' },
     },

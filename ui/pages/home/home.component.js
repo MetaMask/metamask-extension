@@ -732,7 +732,7 @@ export default class Home extends PureComponent {
                         },
                       );
                     }}
-                    iconName={ICON_NAMES.DIAGRAM}
+                    startIconName={ICON_NAMES.DIAGRAM}
                     width={BLOCK_SIZES.FULL}
                     size={Size.MD}
                     textProps={{ variant: TextVariant.bodySm }}

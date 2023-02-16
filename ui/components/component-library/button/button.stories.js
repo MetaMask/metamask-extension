@@ -64,14 +64,18 @@ export default {
     href: {
       control: 'text',
     },
-    iconName: {
+    startIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
     },
-    iconPositionRight: {
-      control: 'boolean',
+    endIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
     },
-    iconProps: {
+    startIconProps: {
+      control: 'object',
+    },
+    endIconProps: {
       control: 'object',
     },
     loading: {
