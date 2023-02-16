@@ -62,19 +62,11 @@ const ConfirmTransaction = () => {
 
   const totalUnapproved = unconfirmedTxs.length || 0;
 
-  const transaction = useMemo(() => {
-    return totalUnapproved
-      ? unapprovedTxs[paramsTransactionId] ||
-          unconfirmedMessages[paramsTransactionId] ||
-          unconfirmedTxs[0]
-      : {};
-  }, [
-    paramsTransactionId,
-    totalUnapproved,
-    unapprovedTxs,
-    unconfirmedMessages,
-    unconfirmedTxs,
-  ]);
+  const transaction = totalUnapproved
+    ? unapprovedTxs[paramsTransactionId] ||
+        unconfirmedMessages[paramsTransactionId] ||
+        unconfirmedTxs[0]
+    : {};
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
