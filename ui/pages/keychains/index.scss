@@ -74,25 +74,12 @@
 }
 
 .reveal-seed {
-  &__content {
-    padding: 20px;
+  &__tab {
+    display: flex;
+    flex: 1;
   }
 
-  &__label {
-    padding-bottom: 10px;
-    font-weight: 400;
-    display: inline-block;
+  &__active-tab {
+    color: var(--color-primary-default);
   }
-
-  &__error {
-    @include H6;
-
-    color: var(--color-error-default);
-    padding-top: 5px;
-  }
-}
-
-.page-container__footer-single-button {
-  width: 40%;
-  margin: 8px auto;
 }
