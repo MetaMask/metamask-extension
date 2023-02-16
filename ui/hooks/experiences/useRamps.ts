@@ -1,14 +1,32 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { ChainId, CHAIN_IDS } from '../../../shared/constants/network';
+import { getCurrentChainId } from '../../selectors';
 
 interface IUseRamps {
   openBuyCryptoInPdapp: VoidFunction;
 }
 
+const portfolioUrl = process.env.PORTFOLIO_URL;
+
+const getBuyURI = (chainId: ChainId) => {
+  switch (chainId) {
+    case CHAIN_IDS.GOERLI:
+      return 'https://goerli-faucet.slock.it/';
+    case CHAIN_IDS.SEPOLIA:
+      return 'https://faucet.sepolia.dev/';
+    default:
+      return `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`;
+  }
+};
+
 const useRamps = (): IUseRamps => {
+  const chainId = useSelector(getCurrentChainId);
+
   const openBuyCryptoInPdapp = useCallback(() => {
-    const portfolioUrl = process.env.PORTFOLIO_URL;
+    const buyUrl = getBuyURI(chainId);
     global.platform.openTab({
-      url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+      url: buyUrl,
     });
   }, []);
 
