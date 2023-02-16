@@ -3,7 +3,7 @@
 exports[`HardwareWalletState Component should call onUpdate handler 1`] = `
 <div>
   <div
-    class="actionable-message actionable-message--danger actionable-message--with-icon"
+    class="actionable-message actionable-message--danger hardware-wallet-state__error actionable-message--with-icon"
   >
     <svg
       viewBox="0 0 10 10"
@@ -27,7 +27,7 @@ exports[`HardwareWalletState Component should call onUpdate handler 1`] = `
 exports[`HardwareWalletState Component should match default snapshot 1`] = `
 <div>
   <div
-    class="actionable-message actionable-message--danger actionable-message--with-icon"
+    class="actionable-message actionable-message--danger hardware-wallet-state__error actionable-message--with-icon"
   >
     <svg
       viewBox="0 0 10 10"
@@ -53,7 +53,7 @@ exports[`HardwareWalletState Component should render empty with unlocked state 1
 exports[`HardwareWalletState Component should render message with locked state 1`] = `
 <div>
   <div
-    class="actionable-message actionable-message--danger actionable-message--with-icon"
+    class="actionable-message actionable-message--danger hardware-wallet-state__error actionable-message--with-icon"
   >
     <svg
       viewBox="0 0 10 10"
