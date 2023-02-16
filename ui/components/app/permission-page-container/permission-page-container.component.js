@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { isEqual } from 'lodash';
-import { isObject } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { isObject } from '@metamask/utils';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
