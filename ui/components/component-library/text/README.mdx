@@ -376,40 +376,56 @@ If you need to use these variants, please use the `as` prop to render the correc
 
 ```jsx
 // Before
-<Typography variant={TypographyVariant.H1}>Demo</Typography>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typography variant={TypographyVariant.H1}>Demo</Typography>;
 
 // After
-<Text variant={TextVariant.displayMd}>Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.displayMd}>Demo</Text>;
 ```
 
 #### TypographyVariant.H2
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H2}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H2}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.headingLg}>Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingLg}>Demo</Text>;
 ```
 
 #### TypographyVariant.H3
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H3}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H3}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.headingMd}>Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingMd}>Demo</Text>;
 ```
 
 #### TypographyVariant.H4
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H4}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H4}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.headingSm}>Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.headingSm}>Demo</Text>;
 ```
 
 #### TypographyVariant.H5
@@ -418,10 +434,16 @@ Requires `as="h6"` prop for 1:1 conversion
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H5}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H5}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.bodyMd} as="h6">Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd} as="h6">
+  Demo
+</Text>;
 ```
 
 #### TypographyVariant.H6
@@ -430,20 +452,30 @@ Requires `as="h6"` prop for 1:1 conversion
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H6}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H6}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.bodySm} as="h6">Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
 ```
 
 #### TypographyVariant.Paragraph
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.Paragraph}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.Paragraph}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.bodyMd}>Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyMd}>Demo</Text>;
 ```
 
 #### TypographyVariant.H7
@@ -452,10 +484,16 @@ Requires `as="h6"` prop for 1:1 conversion
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H7}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H7}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.bodySm} as="h6">Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodySm} as="h6">
+  Demo
+</Text>;
 ```
 
 #### TypographyVariant.H8
@@ -464,10 +502,16 @@ Requires `as="h6"` prop for 1:1 conversion
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H8}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H8}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.bodyXs} as="h6">Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
 ```
 
 #### TypographyVariant.H9
@@ -476,10 +520,16 @@ Requires `as="h6"` prop for 1:1 conversion
 
 ```jsx
 // Before
-<Typograpghy variant={TypographyVariant.H9}>Demo</Typograpghy>
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+
+<Typograpghy variant={TypographyVariant.H9}>Demo</Typograpghy>;
 
 // After
-<Text variant={TextVariant.bodyXs} as="h6">Demo</Text>
+import { TextVariant } from '../../../helpers/constants/design-system';
+
+<Text variant={TextVariant.bodyXs} as="h6">
+  Demo
+</Text>;
 ```
 
 ### Align
@@ -490,10 +540,10 @@ Values and using the `TEXT_ALIGN` object from `./ui/helpers/constants/design-sys
 
 ```jsx
 // Before
-<Typograpghy align={TEXT_ALIGN.CENTER}>Demo</Typograpghy>
+<Typograpghy align={TEXT_ALIGN.CENTER}>Demo</Typograpghy>;
 
 // After
-<Text textAlign={TEXT_ALIGN.CENTER}>Demo</Text>
+<Text textAlign={TEXT_ALIGN.CENTER}>Demo</Text>;
 ```
 
 ### Box Props
@@ -514,7 +564,7 @@ You no longer need to pass these props as an object through `boxProps`
   color={Color.textDefault}
 >
   Demo
-</Typography>
+</Typography>;
 
 // After
 <Text
@@ -525,5 +575,5 @@ You no longer need to pass these props as an object through `boxProps`
   color={Color.textDefault}
 >
   Demo
-</Text>
+</Text>;
 ```
