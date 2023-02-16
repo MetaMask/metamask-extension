@@ -142,9 +142,6 @@
   "address": {
     "message": "Dirección"
   },
-  "addressBookIcon": {
-    "message": "Icono de libreta de direcciones"
-  },
   "advanced": {
     "message": "Avanzado"
   },

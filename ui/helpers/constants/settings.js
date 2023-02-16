@@ -145,7 +145,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    icon: 'fa fa-address-book',
+    icon: ICON_NAMES.BOOK,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   {
