@@ -626,6 +626,7 @@ export default class Home extends PureComponent {
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
       announcementsToShow &&
       showWhatsNewPopup &&
+      !process.env.IN_TEST &&
       Object.keys(newCustomNetworkAdded).length === 0;
     return (
       <div className="main-container">
