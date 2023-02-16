@@ -35,9 +35,6 @@ import IconImport from '../../ui/icon/icon-import';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 import Button from '../../ui/button';
-import IconCog from '../../ui/icon/icon-cog';
-import IconImport from '../../ui/icon/icon-import';
-import IconPlus from '../../ui/icon/icon-plus';
 import SearchIcon from '../../ui/icon/search-icon';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
