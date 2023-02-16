@@ -18,6 +18,7 @@ import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
+  Text,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
@@ -130,7 +131,7 @@ const NetworksListItem = ({
           <Icon
             name={ICON_NAMES.LOCK}
             color={Color.iconMuted}
-            size={ICON_SIZES.SM}
+            size={ICON_SIZES.AUTO}
             marginInlineStart={2}
           />
         )}
