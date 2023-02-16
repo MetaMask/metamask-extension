@@ -580,17 +580,13 @@ export default class ConfirmTransactionBase extends Component {
     );
 
     const renderHardwareWalletState = () => (
-      <div
-        className="confirm-page-container-content__error-container"
+      <HardwareWalletState
         key="hw-locked-error"
-      >
-        <HardwareWalletState
-          initialStatus="unlocked"
-          onUpdate={(status) =>
-            this.setState({ hardwareLocked: status === 'locked' })
-          }
-        />
-      </div>
+        initialStatus="unlocked"
+        onUpdate={(status) =>
+          this.setState({ hardwareLocked: status === 'locked' })
+        }
+      />
     );
 
     return (

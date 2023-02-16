@@ -50,6 +50,7 @@ export default function HardwareWalletState({
       <ActionableMessage
         message={t('ledgerLocked')}
         type="danger"
+        className="hardware-wallet-state__error"
         useIcon
         iconFillColor="var(--color-error-default)"
       />
