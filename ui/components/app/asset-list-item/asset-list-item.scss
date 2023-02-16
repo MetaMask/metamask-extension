@@ -29,10 +29,6 @@
     overflow: hidden;
   }
 
-  &__chevron-right {
-    color: var(--color-icon-default);
-  }
-
   .list-item__right-content {
     align-self: center;
   }
@@ -72,7 +68,7 @@
       display: inline-block;
     }
 
-    &__chevron-right {
+    &__arrow {
       display: none;
     }
   }

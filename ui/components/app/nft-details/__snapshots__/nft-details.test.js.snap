@@ -8,9 +8,10 @@ exports[`Collectible Details should match minimal props and state snapshot 1`] =
     <button
       class="asset-breadcrumb"
     >
-      <i
-        class="fas fa-chevron-left asset-breadcrumb__chevron"
+      <div
+        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--flex-direction-row box--color-inherit"
         data-testid="asset__back"
+        style="mask-image: url('./images/icons/arrow-left.svg');"
       />
       <span>
         Test Account
