@@ -9,7 +9,7 @@ export default {
 export const DefaultStory = () => {
   return (
     <div style={{ maxHeight: '2000px' }}>
-      <SkipSRPBackupPopover />
+      <SkipSRPBackup />
     </div>
   );
 };
