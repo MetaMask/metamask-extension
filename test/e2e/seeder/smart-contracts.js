@@ -20,7 +20,7 @@ const hstFactory = {
   abi: hstAbi,
 };
 
-const collectiblesFactory = {
+const nftsFactory = {
   bytecode: collectiblesBytecode,
   abi: collectiblesAbi,
 };
@@ -42,7 +42,7 @@ const multisigFactory = {
 
 const SMART_CONTRACTS = {
   HST: 'hst',
-  COLLECTIBLES: 'collectibles',
+  NFTS: 'nfts',
   PIGGYBANK: 'piggybank',
   FAILING: 'failing',
   MULTISIG: 'multisig',
@@ -50,7 +50,7 @@ const SMART_CONTRACTS = {
 
 const contractConfiguration = {
   [SMART_CONTRACTS.HST]: hstFactory,
-  [SMART_CONTRACTS.COLLECTIBLES]: collectiblesFactory,
+  [SMART_CONTRACTS.NFTS]: nftsFactory,
   [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
   [SMART_CONTRACTS.FAILING]: failingContract,
   [SMART_CONTRACTS.MULTISIG]: multisigFactory,

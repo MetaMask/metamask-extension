@@ -119,7 +119,7 @@ function defaultFixture() {
       },
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDropdownState: {},
+        nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
@@ -285,7 +285,7 @@ function onboardingFixture() {
     data: {
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDropdownState: {},
+        nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
@@ -415,7 +415,7 @@ class FixtureBuilder {
     return this;
   }
 
-  withCollectiblesController(data) {
+  withNftsController(data) {
     merge(
       this.fixture.data.NftController
         ? this.fixture.data.NftController
