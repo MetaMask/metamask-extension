@@ -31,6 +31,14 @@ export const Popover = ({ children, className, ...props }) => {
     setIsOpen(false);
   };
 
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
       <div ref={setReferenceElement}>
