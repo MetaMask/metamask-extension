@@ -425,13 +425,8 @@
       "packages": {
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
-<<<<<<< HEAD
         "ethereumjs-wallet>bs58check": true,
         "wait-on>rxjs>tslib": true
-=======
-        "enzyme>cheerio>tslib": true,
-        "ethereumjs-wallet>bs58check": true
->>>>>>> 5d00502af (more policy updates)
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -819,7 +814,6 @@
         "fetch": true
       }
     },
-<<<<<<< HEAD
     "@metamask/desktop": {
       "globals": {
         "TextDecoder": true,
@@ -874,8 +868,6 @@
         "define": true
       }
     },
-=======
->>>>>>> 5d00502af (more policy updates)
     "@metamask/eth-json-rpc-infura": {
       "globals": {
         "setTimeout": true
@@ -933,7 +925,6 @@
         "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
-<<<<<<< HEAD
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
         "URL": true,
@@ -962,16 +953,6 @@
         "@metamask/eth-keyring-controller>obs-store": true,
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
         "browserify>events": true
-=======
-    "@metamask/eth-keyring-controller": {
-      "packages": {
-        "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
-        "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/eth-keyring-controller>obs-store": true,
-        "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "browserify>events": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util": true
->>>>>>> 5d00502af (more policy updates)
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": {
@@ -980,15 +961,9 @@
       },
       "packages": {
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": true,
-<<<<<<< HEAD
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/scure-bip39": true,
         "browserify>buffer": true,
-=======
-        "@metamask/scure-bip39": true,
-        "browserify>buffer": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
->>>>>>> 5d00502af (more policy updates)
         "eth-lattice-keyring>@ethereumjs/util": true
       }
     },
@@ -1008,7 +983,6 @@
         "crypto": true
       }
     },
-<<<<<<< HEAD
     "@metamask/eth-keyring-controller>@metamask/eth-sig-util": {
       "packages": {
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": true,
@@ -1048,14 +1022,6 @@
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
         "browserify>buffer": true,
         "browserify>events": true,
-=======
-    "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": {
-      "packages": {
-        "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "eth-json-rpc-middleware>@metamask/eth-sig-util": true,
->>>>>>> 5d00502af (more policy updates)
         "eth-lattice-keyring>@ethereumjs/util": true,
         "ethereumjs-wallet>randombytes": true
       }
@@ -1166,13 +1132,8 @@
       "packages": {
         "@metamask/eth-token-tracker>deep-equal>is-arguments": true,
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
-<<<<<<< HEAD
         "@ngraveio/bc-ur>assert>object-is": true,
         "@storybook/api>telejson>is-regex": true,
-=======
-        "enzyme>is-regex": true,
-        "enzyme>object-is": true,
->>>>>>> 5d00502af (more policy updates)
         "mocha>object.assign>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
       }
