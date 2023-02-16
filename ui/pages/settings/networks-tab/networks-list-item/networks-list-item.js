@@ -18,7 +18,6 @@ import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
-  Text,
   Icon,
   ICON_NAMES,
   ICON_SIZES,
