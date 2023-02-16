@@ -80,7 +80,7 @@ export default {
       control: 'object',
       table: { category: 'text field base props' },
     },
-    leftAccessory: {
+    startAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
@@ -124,7 +124,7 @@ export default {
       control: 'boolean',
       table: { category: 'text field base props' },
     },
-    rightAccessory: {
+    endAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
