@@ -94,11 +94,11 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
         Enter password to continue
       </label>
       <div
-        class="box mm-text-field-base mm-text-field-base--size-lg mm-text-field-base--focused mm-text-field-base--truncate mm-text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+        class="box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
       >
         <input
           autocomplete="off"
-          class="box mm-text mm-text-field-base__input mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent"
+          class="box mm-text mm-text-field__input mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent"
           data-testid="input-password"
           focused="true"
           id="password-box"
