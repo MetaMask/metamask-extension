@@ -15,7 +15,7 @@ import {
   AlignItems,
   Color,
 } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();
@@ -59,6 +59,7 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
           name={ICON_NAMES.DANGER}
           color={Color.errorDefault}
           className="confirmation-warning-modal__content__header__warning-icon"
+          size={ICON_SIZES.XL}
         />
         <Typography
           variant={TypographyVariant.H4}

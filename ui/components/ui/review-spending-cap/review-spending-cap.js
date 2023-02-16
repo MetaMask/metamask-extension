@@ -4,7 +4,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
 import Typography from '../typography';
-import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
+import {
+  ButtonLink,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
@@ -94,6 +99,8 @@ export default function ReviewSpendingCap({
                   className="review-spending-cap__heading-title__tooltip__warning-icon"
                   name={ICON_NAMES.DANGER}
                   color={Color.errorDefault}
+                  size={ICON_SIZES.SM}
+                  style={{ 'vertical-align': 'middle' }}
                 />
               )}
               {Number(tokenValue) === 0 && (
