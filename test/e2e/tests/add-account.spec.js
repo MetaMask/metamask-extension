@@ -67,6 +67,16 @@ describe('Add account', function () {
           testPassword,
         );
 
+        // Don't allow a "What's New" item to brick the test
+        try {
+          await driver.waitForSelector('.whats-new-popup__popover', {
+            timeout: 500,
+          });
+          await driver.clickElement('[data-testid="popover-close"]');
+        } catch (e) {
+          // No "What's New" item
+        }
+
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Create account', tag: 'div' });
         await driver.fill('.new-account-create-form input', '2nd account');
