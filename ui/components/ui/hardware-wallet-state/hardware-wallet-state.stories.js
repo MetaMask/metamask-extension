@@ -5,12 +5,6 @@ export default {
   title: 'Components/App/HardwareWalletState',
 
   argTypes: {
-    device: {
-      control: 'text',
-    },
-    hdPath: {
-      control: 'text',
-    },
     pollingRateMs: {
       control: 'number',
     },
@@ -23,8 +17,6 @@ export default {
   },
 
   args: {
-    device: 'ledger',
-    hdPath: `m/44'/60'/0'/0/0`,
     pollingRateMs: 2000,
     initialStatus: 'locked',
   },
