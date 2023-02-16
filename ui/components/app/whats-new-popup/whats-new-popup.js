@@ -74,11 +74,7 @@ function getActionFunctionById(id, history) {
 
 const renderDescription = (description) => {
   if (!Array.isArray(description)) {
-    return (
-      <Text variant={TextVariant.bodyMd}>
-        {description}
-      </Text>
-    );
+    return <Text variant={TextVariant.bodyMd}>{description}</Text>;
   }
 
   return (
@@ -89,7 +85,7 @@ const renderDescription = (description) => {
           <Text
             key={`item-${index}`}
             variant={TextVariant.bodyMd}
-            boxProps={{ marginBottom: isLast ? 0 : 2 }}
+            marginBottom={isLast ? 0 : 4}
           >
             {piece}
           </Text>
@@ -121,10 +117,7 @@ const renderFirstNotification = (notification, idRefMap, history, isLast) => {
       )}
       key={`whats-new-popop-notification-${id}`}
     >
-      <Text
-        variant={TextVariant.bodyLgMedium}
-        marginBottom={2}
-      >
+      <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
         {title}
       </Text>
       {!placeImageBelowDescription && imageComponent}
