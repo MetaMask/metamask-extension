@@ -8,7 +8,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography';
+import { Text } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINotifications } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
@@ -18,7 +18,7 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import { TypographyVariant } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function getActionFunctionById(id, history) {
@@ -75,9 +75,9 @@ function getActionFunctionById(id, history) {
 const renderDescription = (description) => {
   if (!Array.isArray(description)) {
     return (
-      <Typography variant={TypographyVariant.paragraph}>
+      <Text variant={TextVariant.bodyMd}>
         {description}
-      </Typography>
+      </Text>
     );
   }
 
@@ -86,13 +86,13 @@ const renderDescription = (description) => {
       {description.map((piece, index) => {
         const isLast = index === description.length - 1;
         return (
-          <Typography
+          <Text
             key={`item-${index}`}
-            variant={TypographyVariant.paragraph}
+            variant={TextVariant.bodyMd}
             boxProps={{ marginBottom: isLast ? 0 : 2 }}
           >
             {piece}
-          </Typography>
+          </Text>
         );
       })}
     </>
@@ -121,8 +121,13 @@ const renderFirstNotification = (notification, idRefMap, history, isLast) => {
       )}
       key={`whats-new-popop-notification-${id}`}
     >
+      <Text
+        variant={TextVariant.bodyLgMedium}
+        marginBottom={2}
+      >
+        {title}
+      </Text>
       {!placeImageBelowDescription && imageComponent}
-      <div className="whats-new-popup__notification-title">{title}</div>
       <div className="whats-new-popup__description-and-date">
         <div className="whats-new-popup__notification-description">
           {renderDescription(description)}
@@ -132,7 +137,7 @@ const renderFirstNotification = (notification, idRefMap, history, isLast) => {
       {placeImageBelowDescription && imageComponent}
       {actionText && (
         <Button
-          type="secondary"
+          type="primary"
           className="whats-new-popup__button"
           onClick={actionFunction}
         >
@@ -242,8 +247,9 @@ export default function WhatsNewPopup({ onClose }) {
 
   return (
     <Popover
-      className="whats-new-popup__popover"
       title={t('whatsNew')}
+      headerProps={{ padding: [4, 4, 4] }}
+      className="whats-new-popup__popover"
       onClose={() => {
         updateViewedNotifications(seenNotifications);
         onClose();
