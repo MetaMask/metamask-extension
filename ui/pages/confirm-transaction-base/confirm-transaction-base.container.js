@@ -39,8 +39,6 @@ import {
   getFullTxData,
   getUseCurrencyRateCheck,
   isHardwareWallet,
-  getHardwareWalletDevice,
-  getHardwareWalletPath,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -203,9 +201,7 @@ const mapStateToProps = (state, ownProps) => {
   const nativeCurrency = getNativeCurrency(state);
 
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
-  const fromAddressIsHardwareWallet = isHardwareWallet(state, fromAddress);
-  const fromDevice = getHardwareWalletDevice(state);
-  const fromHdPath = getHardwareWalletPath(state);
+  const isHdWallet = isHardwareWallet(state, fromAddress);
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
@@ -257,9 +253,7 @@ const mapStateToProps = (state, ownProps) => {
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
     showLedgerSteps: fromAddressIsLedger,
-    isHardwareWallet: fromAddressIsHardwareWallet,
-    device: fromDevice,
-    hdPath: fromHdPath,
+    isHardwareWallet: isHdWallet,
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,

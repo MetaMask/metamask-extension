@@ -143,8 +143,6 @@ export default class ConfirmTransactionBase extends Component {
     gasFeeIsCustom: PropTypes.bool,
     showLedgerSteps: PropTypes.bool.isRequired,
     isHardwareWallet: PropTypes.bool,
-    device: PropTypes.string,
-    hdPath: PropTypes.string,
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -337,8 +335,6 @@ export default class ConfirmTransactionBase extends Component {
       isBuyableChain,
       useCurrencyRateCheck,
       isHardwareWallet,
-      device,
-      hdPath,
     } = this.props;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
@@ -589,8 +585,6 @@ export default class ConfirmTransactionBase extends Component {
         key="hw-locked-error"
       >
         <HardwareWalletState
-          device={device}
-          hdPath={hdPath}
           initialStatus="unlocked"
           onUpdate={(status) =>
             this.setState({ hardwareLocked: status === 'locked' })
