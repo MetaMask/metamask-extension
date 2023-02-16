@@ -14,6 +14,7 @@ const configurationPropertyNames = [
   'SEGMENT_HOST',
   'SEGMENT_WRITE_KEY',
   'SENTRY_DSN_DEV',
+  'PREPARE_SWAP',
   'SWAPS_USE_DEV_APIS',
   // Desktop
   'COMPATIBILITY_VERSION_EXTENSION',

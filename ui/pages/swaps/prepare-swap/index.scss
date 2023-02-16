@@ -1,0 +1,221 @@
+.build-quote {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  padding-top: 4px;
+
+  &__content {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  &__content {
+    display: flex;
+  }
+
+  &__dropdown-swap-to-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+
+  &__dropdown-input-pair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 12px;
+    flex: 0.5 1 auto;
+    max-height: 56px;
+  }
+
+  &__title,
+  &__input-label {
+    @include H5;
+
+    font-weight: bold;
+    color: var(--color-text-default);
+    margin-top: 3px;
+  }
+
+  &__swap-arrows-row {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 16px;
+    padding-top: 12px;
+    height: 24px;
+    position: relative;
+  }
+
+  &__swap-arrows {
+    display: flex;
+    flex: 0 0 auto;
+    height: 24px;
+    cursor: pointer;
+    background: unset;
+    color: var(--color-icon-muted);
+  }
+
+  &__max-button {
+    @include H7;
+
+    color: var(--color-primary-default);
+    cursor: pointer;
+  }
+
+  &__balance-message {
+    @include H7;
+
+    width: 100%;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+    display: flex;
+    flex-flow: column;
+    height: 18px;
+
+    &--error {
+      div:first-of-type {
+        font-weight: bold;
+        color: var(--color-text-default);
+      }
+
+      .build-quote__form-error:first-of-type {
+        font-weight: bold;
+        color: var(--color-error-default);
+      }
+
+      div:last-of-type {
+        font-weight: normal;
+        color: var(--color-text-alternative);
+      }
+    }
+  }
+
+  &__slippage-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+  }
+
+  &__open-dropdown,
+  &__open-to-dropdown {
+    max-height: 330px;
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
+    position: absolute;
+    width: 100%;
+  }
+
+  .dropdown-input-pair {
+    .searchable-item-list {
+      &__item--add-token {
+        display: none;
+      }
+    }
+
+    &__to {
+      .searchable-item-list {
+        &__item--add-token {
+          display: flex;
+        }
+      }
+    }
+
+    &__input {
+      div {
+        border: 1px solid var(--color-border-default);
+        border-left: 0;
+      }
+    }
+  }
+
+  &__open-to-dropdown {
+    max-height: 194px;
+
+    @include screen-sm-min {
+      max-height: 276px;
+    }
+  }
+
+  &__token-message {
+    @include H7;
+
+    width: 100%;
+    color: var(--color-text-alternative);
+    margin-top: 4px;
+
+    .info-tooltip {
+      display: inline-block;
+    }
+  }
+
+  &__token-etherscan-link {
+    color: var(--color-primary-default);
+    cursor: pointer;
+  }
+
+  &__token-tooltip-container {
+    // Needed to override the style property added by the react-tippy library
+    display: flex !important;
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__underline {
+    text-decoration: underline;
+  }
+
+  /* Prevents the swaps "Swap to" field from overflowing */
+  .dropdown-input-pair__to .dropdown-search-list {
+    width: 100%;
+  }
+}
+
+@keyframes slide-in {
+  100% { transform: translateY(0%); }
+}
+
+.smart-transactions-popover {
+  transform: translateY(-100%);
+  animation: slide-in 0.5s forwards;
+
+  &__content {
+    flex-direction: column;
+
+    ul {
+      list-style: inside;
+    }
+
+    a {
+      color: var(--color-primary-default);
+      cursor: pointer;
+    }
+  }
+
+  &__footer {
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    border-top: 0;
+
+    button {
+      border-radius: 50px;
+    }
+
+    a {
+      font-size: inherit;
+      padding-bottom: 0;
+    }
+  }
+}

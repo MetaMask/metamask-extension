@@ -11,3 +11,6 @@ MULTICHAIN=
 
 ; Set this to test changes to the phishing warning page.
 PHISHING_WARNING_PAGE_URL=
+
+; Set this to '1' to enable support for the Prepare Swap Page (new UI redesign)
+PREPARE_SWAP=
