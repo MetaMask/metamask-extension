@@ -1,139 +1,93 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import classnames from 'classnames';
-import { useClickAway } from '../../../hooks/useClickAway';
-import { useElementSize } from '../../../hooks/useElementSize';
-import {
-  AlignItems,
-  BorderRadius,
-  Color,
-  DISPLAY,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { Button } from '../button';
 import Box from '../../ui/box';
 
-const useValueRef = (newValue) => {
-  const ref = useRef(newValue);
+import { Button } from '../button';
 
-  useEffect(() => {
-    ref.current = newValue;
-  }, [newValue]);
+import { Color } from '../../../helpers/constants/design-system';
 
-  return ref;
-};
-
-export const Popover = (props) => {
-  const {
-    // eslint-disable-next-line react/prop-types
-    // need to decide if we want the anchor element to be wrapped and based as children or to make dev pass a ref to the anchor
-    anchor,
-    // eslint-disable-next-line react/prop-types
-    children,
-    // eslint-disable-next-line react/prop-types
-    onClickOutside,
-    // eslint-disable-next-line react/prop-types
-    placement = 'auto',
-    // eslint-disable-next-line react/prop-types
-    distance = 4,
-    // eslint-disable-next-line react/prop-types
-    enableScreenCover = false,
-    // eslint-disable-next-line react/prop-types
-    className,
-  } = props;
-
-  const [popperElement, setPopperElement] = useState(null);
+export const Popover = ({ children, className, ...props }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [referenceElement, setReferenceElement] = useState(null);
+  const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
-
-  const { styles, attributes, update } = usePopper(
-    referenceElement,
-    popperElement,
-    {
-      placement,
-      strategy: 'fixed',
-      modifiers: [
-        { name: 'arrow', options: { element: arrowElement } },
-        {
-          name: 'offset',
-          options: {
-            offset: [0, distance],
-          },
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement: 'auto',
+    modifiers: [
+      { name: 'arrow', options: { element: arrowElement } },
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 8],
         },
-        {
-          name: 'preventOverflow',
-          options: {
-            padding: 8,
-          },
-        },
-      ],
-    },
-  );
-
-  const popperRef = useValueRef(popperElement);
-
-  useClickAway(popperRef, (event) => {
-    // eslint-disable-next-line react/prop-types
-    if (referenceElement.contains(event.target)) {
-      return;
-    }
-    if (onClickOutside) {
-      onClickOutside();
-    }
+      },
+    ],
   });
 
-  const size = useElementSize(popperElement);
-
-  useEffect(() => {
-    if (!update) {
-      return;
-    }
-    update();
-  }, [size, update]);
-
-  const popoverNode = (
-    <Box
-      className={classnames('mm-popover tooltip', className)}
-      display={DISPLAY.INLINE_FLEX}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      borderColor={Color.borderDefault}
-      backgroundColor={Color.backgroundDefault}
-      borderRadius={BorderRadius.XL}
-      padding={4}
-      {...props}
-      ref={setPopperElement}
-      style={styles.popper}
-      {...attributes.popper}
-    >
-      {children} - This is the popper content
-      <Box
-        borderColor={Color.borderDefault}
-        className={classnames('arrow')}
-        ref={setArrowElement}
-        style={styles.arrow}
-        {...attributes.arrow}
-      />
-    </Box>
-  );
+  const handleClickOutside = () => {
+    setIsOpen(false);
+  };
 
   return (
-    <div>
-      <div style={{ backgroundColor: 'red' }} ref={setReferenceElement}>
-        <Button>Popper Trigger</Button>
+    <>
+      <div ref={setReferenceElement}>
+        <Button onClick={() => setIsOpen(!isOpen)}>{children}</Button>
       </div>
-      {createPortal(
-        <div>
-          {enableScreenCover && (
-            <div>
-              <h1>scrim</h1>
-            </div>
+      {isOpen && (
+        <>
+          {createPortal(
+            <Box
+              borderColor={Color.borderDefault}
+              className={classnames('popover', { 'popover--open': isOpen })}
+              ref={setPopperElement}
+              style={styles.popper}
+              {...attributes.popper}
+            >
+              {children} - This is the popper content
+              <Box
+                borderColor={Color.borderDefault}
+                className={classnames('arrow')}
+                ref={setArrowElement}
+                style={styles.arrow}
+                {...attributes.arrow}
+              />
+            </Box>,
+            document.body,
           )}
-          {popoverNode}
-        </div>,
-        document.body,
+
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 0,
+              background: 'red',
+              opacity: '10%',
+            }}
+            onClick={handleClickOutside}
+          />
+        </>
       )}
-    </div>
+    </>
   );
+};
+
+Popover.propTypes = {
+  /**
+   * The children to be rendered inside the Popover
+   */
+  children: PropTypes.node,
+  /**
+   * An additional className to apply to the Popover.
+   */
+  className: PropTypes.string,
+  /**
+   * Popover accepts all the props from Box
+   */
+  ...Box.propTypes,
 };
