@@ -4599,6 +4599,21 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  updateCaveat = (origin, target, caveatType, caveatValue) => {
+    try {
+      this.permissionController.updateCaveat(
+        origin,
+        target,
+        caveatType,
+        caveatValue,
+      );
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+
   rejectPermissionsRequest = (requestId) => {
     try {
       this.permissionController.rejectPermissionsRequest(requestId);
