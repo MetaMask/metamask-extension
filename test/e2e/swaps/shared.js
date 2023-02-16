@@ -67,10 +67,8 @@ const enterSwapQuote = async (driver, options) => {
 
 const reviewQuote = async (driver) => {
 
-  do {
-    await driver.delay(10000)
-    await driver.clickElement({ text: 'Review swap', tag: 'button' });
-  } while (!await driver.executeScript(`return document.querySelector('.main-quote-summary__quote-large-number')`))
+  await driver.delay(veryLargeDelayMs)
+  await driver.clickElement({ text: 'Review swap', tag: 'button' });
 
   await driver.waitForSelector({
     css: '[class*="box--align-items-center"]',
