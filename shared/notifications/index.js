@@ -250,7 +250,11 @@ export const getTranslatedUINotifications = (t, locale) => {
     18: {
       ...UI_NOTIFICATIONS[18],
       title: t('notifications18Title'),
-      description: t('notifications18Description'),
+      description: [
+        t('notifications18DescriptionOne'),
+        t('notifications18DescriptionTwo'),
+        t('notifications18DescriptionThree'),
+      ],
       actionText: t('notifications18ActionText'),
       date: UI_NOTIFICATIONS[18].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
