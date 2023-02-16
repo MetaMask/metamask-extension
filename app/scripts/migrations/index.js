@@ -81,7 +81,7 @@ import m074 from './074';
 import m075 from './075';
 import m076 from './076';
 import m077 from './077';
-import m078 from './078';
+import m079 from './079';
 
 const migrations = [
   m002,
@@ -160,7 +160,7 @@ const migrations = [
   m075,
   m076,
   m077,
-  m078,
+  m079,
 ];
 
 export default migrations;
