@@ -238,6 +238,7 @@ const AddNetwork = () => {
                         trigger="mouseenter"
                       >
                         <Icon
+                          className="add-network__warning-icon"
                           name={ICON_NAMES.DANGER}
                           color={Color.iconMuted}
                           size={ICON_SIZES.SM}
