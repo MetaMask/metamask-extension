@@ -172,7 +172,6 @@ workflows:
             - test-unit-mocha
             - upload-and-validate-coverage
             - validate-source-maps
-            - validate-source-maps-beta
             - validate-source-maps-desktop
             - validate-source-maps-flask
             - test-mozilla-lint
