@@ -93,10 +93,12 @@ export default function SignatureRequestSIWE({
         subjectMetadata={targetSubjectMetadata}
       />
       {isHdWallet ? (
-        <HardwareWalletState
-          initialStatus="unlocked"
-          onUpdate={(status) => setHardwareLocked(status === 'locked')}
-        />
+        <div className="signature-request-siwe__actionable-message">
+          <HardwareWalletState
+            initialStatus="unlocked"
+            onUpdate={(status) => setHardwareLocked(status === 'locked')}
+          />
+        </div>
       ) : null}
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (

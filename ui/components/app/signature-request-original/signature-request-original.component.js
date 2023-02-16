@@ -168,12 +168,14 @@ export default class SignatureRequestOriginal extends Component {
           {this.context.t('signatureRequestGuidance')}
         </Typography>
         {isHardwareWallet ? (
-          <HardwareWalletState
-            initialStatus="unlocked"
-            onUpdate={(status) =>
-              this.setState({ hardwareLocked: status === 'locked' })
-            }
-          />
+          <div className="signature-request__error-container">
+            <HardwareWalletState
+              initialStatus="unlocked"
+              onUpdate={(status) =>
+                this.setState({ hardwareLocked: status === 'locked' })
+              }
+            />
+          </div>
         ) : null}
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
