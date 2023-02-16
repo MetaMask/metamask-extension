@@ -28,7 +28,6 @@ import IconCaretDown from './icon-caret-down';
 import IconCaretUp from './icon-caret-up';
 import IconCog from './icon-cog';
 import IconImport from './icon-import';
-import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
@@ -170,9 +169,9 @@ DefaultStory.args = {
 
 export const Size = (args) => (
   <div>
-    <IconCaretLeft size={16 || args.size} />
-    <IconCaretLeft size={24 || args.size} />
-    <IconCaretLeft size={32 || args.size} />
+    <SunCheck size={16 || args.size} />
+    <SunCheck size={24 || args.size} />
+    <SunCheck size={32 || args.size} />
   </div>
 );
 
@@ -183,12 +182,12 @@ Size.args = {
 export const Color = (args) => (
   <>
     {Object.values(validColors).map((color) => (
-      <IconCaretLeft {...args} color={args.color || color} key={color} />
+      <SunCheck {...args} color={args.color || color} key={color} />
     ))}
   </>
 );
 
-export const AriaLabel = (args) => <IconCaretLeft {...args} />;
+export const AriaLabel = (args) => <SunCheck {...args} />;
 
 AriaLabel.args = {
   ariaLabel: 'back',

@@ -26,7 +26,9 @@ import {
   SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
-
+import TextField from '../../ui/text-field';
+import IconCog from '../../ui/icon/icon-cog';
+import IconImport from '../../ui/icon/icon-import';
 import Button from '../../ui/button';
 import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
@@ -374,7 +376,13 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus color="var(--color-icon-alternative)" />}
+          icon={
+            <Icon
+              name={ICON_NAMES.ADD}
+              color={Color.iconAlternative}
+              ariaLabel={t('createAccount')}
+            />
+          }
           text={t('createAccount')}
         />
         <AccountMenuItem
