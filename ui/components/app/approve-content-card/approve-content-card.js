@@ -170,7 +170,7 @@ export default function ApproveContentCard({
                           variant={TextVariant.headingSm}
                           fontWeight={FONT_WEIGHT.BOLD}
                           color={TextColor.TEXT_DEFAULT}
-                          as="h6"
+                          as="h4"
                         >
                           {formatCurrency(
                             fiatTransactionTotal,
