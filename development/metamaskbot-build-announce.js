@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+
 const { promises: fs } = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 // Fetch is part of node js in future versions, thus triggering no-shadow
 // eslint-disable-next-line no-shadow
 const fetch = require('node-fetch');
@@ -12,6 +14,12 @@ start().catch(console.error);
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function executeGitCommand(command) {
+  return execSync(command)
+    .toString('utf8')
+    .replace(/[\n\r\s]+$/u, '');
 }
 
 async function start() {
@@ -34,7 +42,6 @@ async function start() {
   const CIRCLE_PR_NUMBER = CIRCLE_PULL_REQUEST.split('/').pop();
   const SHORT_SHA1 = CIRCLE_SHA1.slice(0, 7);
   const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
-
   // build the github comment content
 
   // links to extension builds
@@ -116,11 +123,12 @@ async function start() {
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
 
   // link to artifacts
+  const branchName = executeGitCommand('git rev-parse --abbrev-ref HEAD');
+  const isReleaseBranch = branchName.match(/Version-v\d+\.\d+\.\d+/u);
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
 
   const contentRows = [
     `builds: ${buildLinks}`,
-    `builds (beta): ${betaBuildLinks}`,
     `builds (flask): ${flaskBuildLinks}`,
     `build viz: ${depVizLink}`,
     `mv3: ${moduleInitStatsBackgroundLink}`,
@@ -137,6 +145,9 @@ async function start() {
        ${bundleMarkup}
      </details>`,
   ];
+  if (isReleaseBranch) {
+    contentRows.splice(1, 0, `builds (beta): ${betaBuildLinks}`);
+  }
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
