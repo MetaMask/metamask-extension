@@ -89,6 +89,7 @@ export default class SignatureRequest extends PureComponent {
   state = {
     hasScrolledMessage: false,
     showContractDetails: false,
+    hardwareLocked: this.props.isHardwareWallet,
   };
 
   setMessageRootRef(ref) {
@@ -169,6 +170,7 @@ export default class SignatureRequest extends PureComponent {
       unapprovedMessagesCount,
     } = this.props;
     const { t, trackEvent } = this.context;
+    const { hardwareLocked } = this.state;
     const {
       sanitizedMessage,
       domain: { verifyingContract },
@@ -278,20 +280,20 @@ export default class SignatureRequest extends PureComponent {
             </div>
           ) : null}
         </div>
+        {isHardwareWallet ? (
+          <div className="confirm-page-container-content__error-container">
+            <HardwareWalletState
+              initialStatus="unlocked"
+              onUpdate={(status) =>
+                this.setState({ hardwareLocked: status === 'locked' })
+              }
+            />
+          </div>
+        ) : null}
         {isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
             <LedgerInstructionField showDataInstruction />
           </div>
-        ) : null}
-        {isHardwareWallet ? (
-          <HardwareWalletState
-            device={device}
-            hdPath={hdPath}
-            initialStatus="unlocked"
-            onUpdate={(status) =>
-              this.setState({ hardwareLocked: status === 'locked' })
-            }
-          />          
         ) : null}
         <Message
           data={sanitizedMessage}
@@ -306,6 +308,7 @@ export default class SignatureRequest extends PureComponent {
           signAction={onSign}
           disabled={
             hardwareWalletRequiresConnection ||
+            hardwareLocked ||
             (messageIsScrollable && !this.state.hasScrolledMessage)
           }
         />

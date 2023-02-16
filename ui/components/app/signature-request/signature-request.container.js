@@ -31,7 +31,7 @@ function mapStateToProps(state, ownProps) {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
-  const isHdWallet = isHardwareWallet(state, fromAddress);
+  const isHdWallet = isHardwareWallet(state, from);
   const chainId = getCurrentChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
   const subjectMetadata = getSubjectMetadata(state);

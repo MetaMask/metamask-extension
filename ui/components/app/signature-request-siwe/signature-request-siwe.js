@@ -5,11 +5,13 @@ import log from 'loglevel';
 import ActionableMessage from '../../ui/actionable-message';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
+import HardwareWalletState from '../../ui/hardware-wallet-state';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   accountsWithSendEtherInfoSelector,
   getSubjectMetadata,
+  isHardwareWallet,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
@@ -26,6 +28,7 @@ export default function SignatureRequestSIWE({
 }) {
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
+  const isHdWallet = useSelector(isHardwareWallet);
 
   const {
     msgParams: {
@@ -57,6 +60,7 @@ export default function SignatureRequestSIWE({
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [agreeToDomainWarning, setAgreeToDomainWarning] = useState(false);
+  const [isHardwareLocked, setHardwareLocked] = useState(isHdWallet);
 
   const onSign = useCallback(
     async (event) => {
@@ -88,6 +92,14 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
+      {isHdWallet ? (
+        <div className="signature-request-siwe__actionable-message">
+          <HardwareWalletState
+            initialStatus="unlocked"
+            onUpdate={(status) => setHardwareLocked(status === 'locked')}
+          />
+        </div>
+      ) : null}
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <ActionableMessage
@@ -150,7 +162,7 @@ export default function SignatureRequestSIWE({
               onSubmit={onSign}
               submitText={t('confirm')}
               submitButtonType="danger-primary"
-              disabled={!agreeToDomainWarning}
+              disabled={isHardwareLocked || !agreeToDomainWarning}
             />
           }
         >

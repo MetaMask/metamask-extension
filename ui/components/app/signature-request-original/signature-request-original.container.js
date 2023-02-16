@@ -11,6 +11,7 @@ import {
   doesAddressRequireLedgerHidConnection,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  isHardwareWallet,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -30,6 +31,7 @@ function mapStateToProps(state, ownProps) {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
+  const isHdWallet = isHardwareWallet(state, from);
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
   return {
@@ -39,6 +41,7 @@ function mapStateToProps(state, ownProps) {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     hardwareWalletRequiresConnection,
     isLedgerWallet,
+    isHardwareWallet: isHdWallet,
     nativeCurrency: getNativeCurrency(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),

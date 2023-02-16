@@ -8,6 +8,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
+import HardwareWalletState from '../../ui/hardware-wallet-state';
 import SiteOrigin from '../../ui/site-origin';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import Typography from '../../ui/typography/typography';
@@ -44,6 +45,7 @@ export default class SignatureRequestOriginal extends Component {
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
+    isHardwareWallet: PropTypes.bool,
     nativeCurrency: PropTypes.string.isRequired,
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
@@ -53,6 +55,7 @@ export default class SignatureRequestOriginal extends Component {
 
   state = {
     showSignatureRequestWarning: false,
+    hardwareLocked: this.props.isHardwareWallet,
   };
 
   getNetworkName() {
@@ -113,7 +116,7 @@ export default class SignatureRequestOriginal extends Component {
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
-    const { txData, subjectMetadata } = this.props;
+    const { txData, subjectMetadata, isHardwareWallet } = this.props;
     const {
       type,
       msgParams: { data },
@@ -164,7 +167,16 @@ export default class SignatureRequestOriginal extends Component {
         >
           {this.context.t('signatureRequestGuidance')}
         </Typography>
-
+        {isHardwareWallet ? (
+          <div className="confirm-page-container-content__error-container">
+            <HardwareWalletState
+              initialStatus="unlocked"
+              onUpdate={(status) =>
+                this.setState({ hardwareLocked: status === 'locked' })
+              }
+            />
+          </div>
+        ) : null}
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
@@ -220,6 +232,7 @@ export default class SignatureRequestOriginal extends Component {
       hardwareWalletRequiresConnection,
     } = this.props;
     const { t } = this.context;
+    const { hardwareLocked } = this.state;
 
     return (
       <PageContainerFooter
@@ -239,7 +252,7 @@ export default class SignatureRequestOriginal extends Component {
             history.push(mostRecentOverviewPage);
           }
         }}
-        disabled={hardwareWalletRequiresConnection}
+        disabled={hardwareWalletRequiresConnection || hardwareLocked}
       />
     );
   };
