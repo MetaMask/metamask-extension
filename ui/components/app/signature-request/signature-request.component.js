@@ -281,14 +281,12 @@ export default class SignatureRequest extends PureComponent {
           ) : null}
         </div>
         {isHardwareWallet ? (
-          <div className="confirm-page-container-content__error-container">
-            <HardwareWalletState
-              initialStatus="unlocked"
-              onUpdate={(status) =>
-                this.setState({ hardwareLocked: status === 'locked' })
-              }
-            />
-          </div>
+          <HardwareWalletState
+            initialStatus="unlocked"
+            onUpdate={(status) =>
+              this.setState({ hardwareLocked: status === 'locked' })
+            }
+          />
         ) : null}
         {isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
