@@ -24,7 +24,7 @@ export default {
         key: 'general',
       },
       {
-        icon: <i className="fa fa-address-book" />,
+        icon: <Icon name={ICON_NAMES.BOOK} />,
         content: 'Contacts',
         key: 'contacts',
       },
