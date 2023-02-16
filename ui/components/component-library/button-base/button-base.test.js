@@ -93,9 +93,9 @@ describe('ButtonBase', () => {
     const { getByTestId } = render(
       <ButtonBase
         data-testid="icon"
-        startIconName="add-square"
+        startIconName={ICON_NAMES.ADD_SQUARE}
         startIconProps={{ 'data-testid': 'start-button-icon' }}
-        endIconName="add-square"
+        endIconName={ICON_NAMES.ADD_SQUARE}
         endIconProps={{ 'data-testid': 'end-button-icon' }}
       />,
     );
