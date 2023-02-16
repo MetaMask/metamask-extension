@@ -138,7 +138,7 @@ const RevealSeedPage = () => {
           error={error}
           width={BLOCK_SIZES.FULL}
         />
-        {error && <HelpText error>{error}</HelpText>}
+        {error && <HelpText severity={SEVERITIES.DANGER}>{error}</HelpText>}
       </form>
     );
   };
