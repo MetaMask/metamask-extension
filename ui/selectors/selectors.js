@@ -177,10 +177,6 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
-export function getParticipateInMetaMetrics(state) {
-  return Boolean(state.metamask.participateInMetaMetrics);
-}
-
 export function isEIP1559Account() {
   return true;
 }
@@ -1157,11 +1153,11 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
 }
 
 export function getNewCollectibleAddedMessage(state) {
-  return state.appState.newCollectibleAddedMessage;
+  return state.appState.newNftAddedMessage;
 }
 
 export function getRemoveCollectibleMessage(state) {
-  return state.appState.removeCollectibleMessage;
+  return state.appState.removeNftMessage;
 }
 
 /**

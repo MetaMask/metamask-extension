@@ -43,7 +43,7 @@ describe('Import NFT', function () {
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
         const newNftNotification = await driver.findElement({
-          text: 'Collectible was successfully added!',
+          text: 'NFT was successfully added!',
           tag: 'h6',
         });
         assert.equal(await newNftNotification.isDisplayed(), true);
@@ -62,7 +62,7 @@ describe('Import NFT', function () {
     );
   });
 
-  it('should not be able to import an NFT that dose not belong to user', async function () {
+  it('should not be able to import an NFT that does not belong to user', async function () {
     await withFixtures(
       {
         dapp: true,

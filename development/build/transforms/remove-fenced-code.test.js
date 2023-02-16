@@ -271,6 +271,21 @@ describe('build/transforms/remove-fenced-code', () => {
       ).toStrictEqual(['', true]);
     });
 
+    it('keeps fences with inherited build types', () => {
+      // Desktop inherits from the flask build type
+      const minimalCode =
+        getMinimalFencedCode(BuildType.flask) +
+        getMinimalFencedCode(BuildType.desktop);
+
+      expect(
+        removeFencedCode(mockFileName, BuildType.desktop, minimalCode),
+      ).toStrictEqual([minimalCode, false]);
+
+      expect(
+        removeFencedCode(mockFileName, BuildType.flask, minimalCode),
+      ).toStrictEqual([getMinimalFencedCode(BuildType.flask), true]);
+    });
+
     it('ignores sentinels preceded by non-whitespace', () => {
       const validBeginDirective = '///: BEGIN:ONLY_INCLUDE_IN(flask)\n';
       const ignoredLines = [
@@ -629,14 +644,14 @@ function getTestData() {
   const data = {
     validInputs: {
       withFences: `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
   Always_Included
 Always_Included
    Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
   Conditionally_Included
 
   Conditionally_Included
@@ -655,7 +670,24 @@ Always_Included
    Always_Included
 Always_Included
 
+Always_Included
+   Always_Included
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+
+  Conditionally_Included
+    Conditionally_Included
+       ///: END:ONLY_INCLUDE_IN
+Always_Included
+   Always_Included
+Always_Included
+
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Conditionally_Included
+Conditionally_Included
+
+       ///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
   Conditionally_Included
 Conditionally_Included
 
@@ -663,14 +695,14 @@ Conditionally_Included
 `,
 
       extraContentWithFences: `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
   Always_Included
 Always_Included
    Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
   Conditionally_Included
 
   Conditionally_Included
@@ -689,7 +721,24 @@ Always_Included
    Always_Included
 Always_Included
 
+Always_Included
+   Always_Included
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+
+  Conditionally_Included
+    Conditionally_Included
+       ///: END:ONLY_INCLUDE_IN
+Always_Included
+   Always_Included
+Always_Included
+
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Conditionally_Included
+Conditionally_Included
+
+       ///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
   Conditionally_Included
 Conditionally_Included
 
@@ -712,6 +761,13 @@ Always_Included
    Always_Included
 Always_Included
 
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+
 `,
 
       extraContentWithoutFences: `
@@ -727,6 +783,13 @@ Always_Included
    Always_Included
 Always_Included
 
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+
     Always_Included
       Always_Included
 Always_Included
@@ -736,14 +799,14 @@ Always_Included
     validOutputs: {
       beta: [
         `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
   Always_Included
 Always_Included
    Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
   Conditionally_Included
 
   Conditionally_Included
@@ -756,6 +819,56 @@ Always_Included
 Always_Included
    Always_Included
 Always_Included
+
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+
+`,
+        true,
+      ],
+      flask: [
+        `
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+  Always_Included
+Always_Included
+   Always_Included
+Always_Included
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+  Conditionally_Included
+
+  Conditionally_Included
+  Conditionally_Included
+  ///: END:ONLY_INCLUDE_IN
+Always_Included
+
+Always_Included
+   Always_Included
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+
+  Conditionally_Included
+    Conditionally_Included
+       ///: END:ONLY_INCLUDE_IN
+Always_Included
+   Always_Included
+Always_Included
+
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Conditionally_Included
+Conditionally_Included
+
+       ///: END:ONLY_INCLUDE_IN
 
 `,
         true,
@@ -765,14 +878,14 @@ Always_Included
     validOutputsWithExtraContent: {
       beta: [
         `
-///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
   Always_Included
 Always_Included
    Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
   Conditionally_Included
 
   Conditionally_Included
@@ -785,6 +898,59 @@ Always_Included
 Always_Included
    Always_Included
 Always_Included
+
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+
+    Always_Included
+      Always_Included
+Always_Included
+`,
+        true,
+      ],
+      flask: [
+        `
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+  Always_Included
+Always_Included
+   Always_Included
+Always_Included
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+  Conditionally_Included
+
+  Conditionally_Included
+  Conditionally_Included
+  ///: END:ONLY_INCLUDE_IN
+Always_Included
+
+Always_Included
+   Always_Included
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+
+  Conditionally_Included
+    Conditionally_Included
+       ///: END:ONLY_INCLUDE_IN
+Always_Included
+   Always_Included
+Always_Included
+
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Conditionally_Included
+Conditionally_Included
+
+       ///: END:ONLY_INCLUDE_IN
 
     Always_Included
       Always_Included
@@ -795,10 +961,10 @@ Always_Included
     },
   };
 
-  data.validOutputs.flask = [data.validInputs.withFences, false];
+  data.validOutputs.desktop = [data.validInputs.withFences, false];
   data.validOutputs.main = [data.validInputs.withoutFences, true];
 
-  data.validOutputsWithExtraContent.flask = [
+  data.validOutputsWithExtraContent.desktop = [
     data.validInputs.extraContentWithFences,
     false,
   ];

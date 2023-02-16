@@ -14,7 +14,6 @@ import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
-  getParticipateInMetaMetrics,
 } from '../../../selectors';
 
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
@@ -29,31 +28,11 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
-
-    const isInitiallyNotParticipating = !participateInMetaMetrics;
-
     try {
-      if (isInitiallyNotParticipating) {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
-            properties: {
-              is_metrics_enabled: true,
-            },
-          },
-          {
-            isOptIn: true,
-            flushImmediately: true,
-          },
-        );
-      }
       trackEvent(
         {
           category: EVENT.CATEGORIES.ONBOARDING,
@@ -78,29 +57,7 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
-
-    const isInitiallyParticipatingOrNotSet =
-      participateInMetaMetrics === null || participateInMetaMetrics;
-
-    try {
-      if (isInitiallyParticipatingOrNotSet) {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
-            properties: {
-              is_metrics_enabled: false,
-            },
-          },
-          {
-            isOptIn: true,
-            flushImmediately: true,
-          },
-        );
-      }
-    } finally {
-      history.push(nextRoute);
-    }
+    history.push(nextRoute);
   };
 
   return (
