@@ -647,7 +647,7 @@ jobs:
           steps:
             - run:
                 name: Validate release candidate changelog
-                command: yarn lint:changelog:rc
+                command: .circleci/scripts/validate-rc-changelog.sh
 
   test-deps-audit:
     executor: node-browsers
