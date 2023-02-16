@@ -10,7 +10,7 @@ import PermissionPageContainer from './permission-page-container.component';
 const mapStateToProps = (state, ownProps) => {
   const { selectedIdentities, request } = ownProps;
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const currentPermissions = getPermissions(state, request.metadata.origin);
+  const currentPermissions = getPermissions(state, request.metadata?.origin);
   ///: END:ONLY_INCLUDE_IN(flask)
   const allIdentities = getMetaMaskIdentities(state);
   const allIdentitiesSelected =
