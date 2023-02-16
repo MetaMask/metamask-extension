@@ -209,13 +209,6 @@
   "gasUsed": {
     "message": "Gaz yo Itilize"
   },
-  "getEther": {
-    "message": "Jwenn Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Jwenn Ether nan yon tiyo pou $1 la",
-    "description": "Displays network name for Ether faucet"
-  },
   "hardware": {
     "message": "materyèl"
   },
@@ -546,9 +539,6 @@
   "terms": {
     "message": "Tèm pou itilize"
   },
-  "testFaucet": {
-    "message": "Tès Tiyo"
-  },
   "to": {
     "message": "Pou"
   },
@@ -627,9 +617,6 @@
   },
   "usedByClients": {
     "message": "Itilize pa yon varyete de kliyan diferan"
-  },
-  "viewAccount": {
-    "message": "Wè Kont"
   },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"

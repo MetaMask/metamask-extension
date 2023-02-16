@@ -464,20 +464,20 @@ describe('NetworkController', () => {
         },
         ({ controller }) => {
           expect(controller.store.getState()).toMatchInlineSnapshot(`
-            {
+            Object {
               "network": "loading",
-              "networkDetails": {
-                "EIPS": {
+              "networkDetails": Object {
+                "EIPS": Object {
                   "1559": false,
                 },
               },
-              "previousProviderStore": {
+              "previousProviderStore": Object {
                 "chainId": "0x9999",
                 "nickname": "Test initial state",
                 "rpcUrl": "http://example-custom-rpc.metamask.io",
                 "type": "rpc",
               },
-              "provider": {
+              "provider": Object {
                 "chainId": "0x9999",
                 "nickname": "Test initial state",
                 "rpcUrl": "http://example-custom-rpc.metamask.io",
@@ -492,21 +492,21 @@ describe('NetworkController', () => {
     it('sets default state without initial state', async () => {
       await withController(({ controller }) => {
         expect(controller.store.getState()).toMatchInlineSnapshot(`
-          {
+          Object {
             "network": "loading",
-            "networkDetails": {
-              "EIPS": {
+            "networkDetails": Object {
+              "EIPS": Object {
                 "1559": undefined,
               },
             },
-            "previousProviderStore": {
+            "previousProviderStore": Object {
               "chainId": "0x539",
               "nickname": "Localhost 8545",
               "rpcUrl": "http://localhost:8545",
               "ticker": "ETH",
               "type": "rpc",
             },
-            "provider": {
+            "provider": Object {
               "chainId": "0x539",
               "nickname": "Localhost 8545",
               "rpcUrl": "http://localhost:8545",

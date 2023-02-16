@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
   },
-  "buyWithWyre": {
-    "message": "$1 በ Wyre ይግዙ"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre ክሬዲት ካርድ ተጠቅመው $1 በቀጥታ በ MetaMask መለያዎ ላይ እንዲያስቀምጡ ያስችልዎታል።"
-  },
   "bytes": {
     "message": "ባይት"
   },
@@ -174,9 +168,6 @@
   },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
-  },
-  "continueToWyre": {
-    "message": "ወደ Wyre ይቀጥሉ"
   },
   "contractDeployment": {
     "message": "የኮንትራት ስምሪት"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "አጠቃላይ"
-  },
-  "getEther": {
-    "message": "Ether ያግኙ"
-  },
-  "getEtherFromFaucet": {
-    "message": "Ether ከቧንቧ በ$1ያግኙ",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "የ Goerli የሙከራ አውታረ መረብ"
@@ -775,9 +759,6 @@
   "terms": {
     "message": "የአጠቃቀም ደንቦች"
   },
-  "testFaucet": {
-    "message": "የሙከራ ቧንቧ"
-  },
   "tips": {
     "message": "መረጃዎች"
   },
@@ -895,9 +876,6 @@
   },
   "userName": {
     "message": "የተጣቃሚ ስም"
-  },
-  "viewAccount": {
-    "message": "መለያን ይመልከቱ"
   },
   "viewContact": {
     "message": "ዕውቂያን ይመልከቱ"

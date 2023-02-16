@@ -130,12 +130,6 @@
   "browserNotSupported": {
     "message": "Vaš brskalnik ni podptrt ..."
   },
-  "buyWithWyre": {
-    "message": "Kupi $1 z Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vam omogoča, da s kreditno kartico nakažete $1 neposredno na svoj račun MetaMask."
-  },
   "bytes": {
     "message": "Bajti"
   },
@@ -180,9 +174,6 @@
   },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
-  },
-  "continueToWyre": {
-    "message": "Nadaljuj na Wyre"
   },
   "contractDeployment": {
     "message": "Ustvarjanje pogodbe"
@@ -332,13 +323,6 @@
   },
   "general": {
     "message": "Splošno"
-  },
-  "getEther": {
-    "message": "Pridobi Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Pridobite Ether iz fauceta za $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Testno omrežje Goerli"
@@ -778,9 +762,6 @@
   "terms": {
     "message": "Pogoji uporabe"
   },
-  "testFaucet": {
-    "message": "Testni faucet"
-  },
   "tips": {
     "message": "Nasveti"
   },
@@ -898,9 +879,6 @@
   },
   "userName": {
     "message": "Uporabniško ime"
-  },
-  "viewAccount": {
-    "message": "Poglej račun"
   },
   "viewContact": {
     "message": "Ogled stika"

@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
   },
-  "buyWithWyre": {
-    "message": "Kúpte $1 s Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vám umožňuje použiť kreditnú kartu na vloženie depozitu $1 priamo na váš účet MetaMask."
-  },
   "bytes": {
     "message": "Bajty"
   },
@@ -174,9 +168,6 @@
   },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
-  },
-  "continueToWyre": {
-    "message": "Pokračovať na Wyre"
   },
   "contractDeployment": {
     "message": "Nasazení kontraktu"
@@ -329,13 +320,6 @@
   },
   "general": {
     "message": "Všeobecne"
-  },
-  "getEther": {
-    "message": "Získejte Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Získejte Ether z faucetu za $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Testovacia sieť Goerli"
@@ -759,9 +743,6 @@
   "terms": {
     "message": "Podmínky použití"
   },
-  "testFaucet": {
-    "message": "Testovací faucet"
-  },
   "tips": {
     "message": "Príspevky"
   },
@@ -876,9 +857,6 @@
   },
   "userName": {
     "message": "Meno používateľa"
-  },
-  "viewAccount": {
-    "message": "Zobrazit účet"
   },
   "viewContact": {
     "message": "Zobraziť kontakt"

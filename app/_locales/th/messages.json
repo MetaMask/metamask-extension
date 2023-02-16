@@ -75,9 +75,6 @@
   "connectingToMainnet": {
     "message": "เชื่อมต่อกับเครือข่าย Ethereum หลัก"
   },
-  "continueToWyre": {
-    "message": "ไปที่ Wyre"
-  },
   "contractDeployment": {
     "message": "การติดตั้งสัญญา"
   },
@@ -166,13 +163,6 @@
   },
   "general": {
     "message": "ทั่วไป"
-  },
-  "getEther": {
-    "message": "รับอีเธอร์"
-  },
-  "getEtherFromFaucet": {
-    "message": "รับอีเธอร์ที่ปล่อยจาก $1",
-    "description": "Displays network name for Ether faucet"
   },
   "here": {
     "message": "ที่นี่",
@@ -399,9 +389,6 @@
   "terms": {
     "message": "ข้อตกลงในการใช้งาน"
   },
-  "testFaucet": {
-    "message": "ตัวแจกจ่ายเพื่อการทดสอบ"
-  },
   "to": {
     "message": "ถึง"
   },
@@ -447,9 +434,6 @@
   },
   "usedByClients": {
     "message": "ถูกใช้งานโดยหลายไคลเอนท์"
-  },
-  "viewAccount": {
-    "message": "ดูบัญชี"
   },
   "visitWebSite": {
     "message": "เยี่ยมชมเว็บไซต์ของเรา"
