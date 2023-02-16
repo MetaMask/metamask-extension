@@ -90,7 +90,7 @@ export default function ReviewSpendingCap({
               }
             >
               {valueIsGreaterThanBalance && (
-                <Icon name={ICON_NAMES.DANGER} color={Color.errorDefault} />
+                <Icon className="review-spending-cap__heading-title__tooltip__warning-icon" name={ICON_NAMES.DANGER} color={Color.errorDefault} />
               )}
               {Number(tokenValue) === 0 && (
                 <Icon
