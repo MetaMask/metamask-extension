@@ -4599,6 +4599,7 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
       this.permissionController.updateCaveat(
@@ -4613,6 +4614,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+  ///: END:ONLY_INCLUDE_IN
 
   rejectPermissionsRequest = (requestId) => {
     try {
