@@ -11,13 +11,14 @@ import Popover from '../../../components/ui/popover';
 import Typography from '../../../components/ui/typography';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
   AlignItems,
   JustifyContent,
   DISPLAY,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import { Slippage } from '../../../../shared/constants/swaps';
+import { BannerAlert } from '../../../components/component-library/banner-alert';
 
 export default function TransactionSettings({
   onSelect,
@@ -54,21 +55,26 @@ export default function TransactionSettings({
   const [inputRef, setInputRef] = useState(null);
 
   let errorText = '';
+  let errorTitle = '';
   if (customValue) {
     // customValue is a string, e.g. '0'
     if (Number(customValue) < 0) {
-      errorText = t('swapSlippageNegative');
+      errorText = t('swapSlippageNegativeDescription');
+      errorTitle = t('swapSlippageNegativeTitle');
     } else if (Number(customValue) > 0 && Number(customValue) <= 1) {
       // We will not show this warning for 0% slippage, because we will only
       // return non-slippage quotes from off-chain makers.
-      errorText = t('swapLowSlippageError');
+      errorText = t('swapSlippageTooLowDescription');
+      errorTitle = t('swapSlippageTooLowTitle');
     } else if (
       Number(customValue) >= 5 &&
       Number(customValue) <= maxAllowedSlippage
     ) {
-      errorText = t('swapHighSlippageWarning');
+      errorText = t('swapSlippageVeryHighDescription', [Number(customValue)]);
+      errorTitle = t('swapSlippageVeryHighTitle');
     } else if (Number(customValue) > maxAllowedSlippage) {
-      errorText = t('swapsExcessiveSlippageWarning');
+      errorText = t('swapSlippageReduceDescription');
+      errorTitle = t('swapSlippageReduceTitle');
     }
   }
 
@@ -250,7 +256,12 @@ export default function TransactionSettings({
             )}
           </>
           {errorText && (
-            <div className="transaction-settings__error-text">{errorText}</div>
+            <Box marginTop={5}>
+              <BannerAlert severity={SEVERITIES.DANGER} title={errorTitle}>
+                {errorText}
+              </BannerAlert>
+            </Box>
+            // <div className="transaction-settings__error-text">{errorText}</div>
           )}
         </div>
       </Popover>

@@ -3962,6 +3962,9 @@
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
   },
+  "swapContinueSwapping": {
+    "message": "Continue swapping"
+  },
   "swapContractDataDisabledErrorDescription": {
     "message": "In the Ethereum app on your Ledger, go to \"Settings\" and allow contract data. Then, try your swap again."
   },
@@ -3979,6 +3982,9 @@
   },
   "swapEditLimit": {
     "message": "Edit limit"
+  },
+  "swapEditTransactionSettings": {
+    "message": "Edit transaction settings"
   },
   "swapEnableDescription": {
     "message": "This is required and gives MetaMask permission to swap your $1.",
@@ -4150,12 +4156,37 @@
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
   },
+  "swapSlippageNegativeDescription": {
+    "message": "Slippage must be greater or equal to zero"
+  },
+  "swapSlippageNegativeTitle": {
+    "message": "Increase slippage to continue"
+  },
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
+  "swapSlippageReduceDescription": {
+    "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
+  },
+  "swapSlippageReduceTitle": {
+    "message": "Reduce slippage to continue"
+  },
+  "swapSlippageTooLowDescription": {
+    "message": "Max slippage is too low which may cause your transaction to fail."
+  },
+  "swapSlippageTooLowTitle": {
+    "message": "Slippage is too low"
+  },
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
+  },
+  "swapSlippageVeryHighDescription": {
+    "message": "$1% considered very high and may result in a bad rate",
+    "description": "$1 is the amount of % for slippage"
+  },
+  "swapSlippageVeryHighTitle": {
+    "message": "Very high slippage"
   },
   "swapSource": {
     "message": "Liquidity source"
