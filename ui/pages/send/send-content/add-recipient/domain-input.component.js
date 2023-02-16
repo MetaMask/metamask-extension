@@ -13,7 +13,7 @@ import {
   Icon,
   ICON_NAMES,
 } from '../../../../components/component-library';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import { Color, IconColor } from '../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
   static contextTypes = {
@@ -104,9 +104,10 @@ export default class DomainInput extends Component {
           })}
         >
           {hasSelectedAddress ? (
-            <i
-              className="ens-input__wrapper__status-icon fa fa-check-circle"
-              style={{ color: 'var(--color-success-default)' }}
+            <Icon
+              className="ens-input__wrapper__status-icon"
+              name={ICON_NAMES.CLOSE}
+              color={Color.successDefault}
             />
           ) : (
             <Icon

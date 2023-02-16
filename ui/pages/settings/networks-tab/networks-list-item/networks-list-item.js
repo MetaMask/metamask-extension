@@ -7,7 +7,6 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
-import IconCheck from '../../../../components/ui/icon/icon-check';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -77,17 +76,9 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="var(--color-success-default)"
-          aria-label={t('active')}
-        />
+        <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
       ) : (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="transparent"
-          aria-hidden="true"
-        />
+        <Icon name={ICON_NAMES.CLOSE} color={Color.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon

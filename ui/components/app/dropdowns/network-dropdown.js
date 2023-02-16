@@ -13,7 +13,11 @@ import {
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
 import ColorIndicator from '../../ui/color-indicator';
-import { IconColor, Size } from '../../../helpers/constants/design-system';
+import {
+  Color,
+  IconColor,
+  Size,
+} from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -22,8 +26,8 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import IconCheck from '../../ui/icon/icon-check';
 
+import { Icon, ICON_NAMES } from '../../component-library';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -175,7 +179,7 @@ class NetworkDropdown extends Component {
           }}
         >
           {isCurrentRpcTarget ? (
-            <IconCheck color="var(--color-success-default)" />
+            <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
@@ -243,7 +247,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <IconCheck color="var(--color-success-default)" />
+          <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}

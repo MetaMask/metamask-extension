@@ -31,7 +31,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import IconCheck from '../../ui/icon/icon-check';
 import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
 
@@ -231,7 +230,7 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <IconCheck color="var(--color-success-default)" />
+              <Icon color={Color.successDefault} name={ICON_NAMES.CLOSE} />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />

@@ -7,6 +7,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,6 +20,7 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -86,11 +88,11 @@ export default function OnboardingMetametrics() {
       </Typography>
       <ul>
         <li>
-          <i className="fa fa-check" />
+          <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <i className="fa fa-check" />
+          <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
