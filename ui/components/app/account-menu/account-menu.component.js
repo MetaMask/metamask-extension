@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { debounce } from 'lodash';
-import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
+import Fuse from 'fuse.js';
+import { debounce } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
+  CONTEXT_PROPS,
   EVENT,
   EVENT_NAMES,
-  CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ICON_COLORS } from '../../../helpers/constants/design-system';
@@ -18,35 +18,31 @@ import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import {
   PRIMARY,
-  ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
   SUPPORT_REQUEST_LINK,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/common';
+import { Color, IconColor } from '../../../helpers/constants/design-system';
 import {
-  SETTINGS_ROUTE,
-  NEW_ACCOUNT_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  IMPORT_ACCOUNT_ROUTE,
+  NEW_ACCOUNT_ROUTE,
   NOTIFICATIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 import Button from '../../ui/button';
+import IconCog from '../../ui/icon/icon-cog';
+import IconImport from '../../ui/icon/icon-import';
+import IconPlus from '../../ui/icon/icon-plus';
 import SearchIcon from '../../ui/icon/search-icon';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-import { Color } from '../../../helpers/constants/design-system';
-import {
-  Icon,
-  ICON_NAMES,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  ICON_SIZES,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../component-library';
+import Identicon from '../../ui/identicon';
+import SiteIcon from '../../ui/site-icon';
+import TextField from '../../ui/text-field';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -117,8 +113,14 @@ export default class AccountMenu extends Component {
     minMatchCharLength: 1,
     ignoreFieldNorm: true,
     keys: [
-      { name: 'name', weight: 0.5 },
-      { name: 'address', weight: 0.5 },
+      {
+        name: 'name',
+        weight: 0.5,
+      },
+      {
+        name: 'address',
+        weight: 0.5,
+      },
     ],
   });
 
@@ -290,7 +292,11 @@ export default class AccountMenu extends Component {
     e.stopPropagation();
 
     const { scrollHeight } = this.accountsRef;
-    this.accountsRef.scroll({ left: 0, top: scrollHeight, behavior: 'smooth' });
+    this.accountsRef.scroll({
+      left: 0,
+      top: scrollHeight,
+      behavior: 'smooth',
+    });
 
     this.setShouldShowScrollButton();
   };
