@@ -93,11 +93,14 @@ describe('ButtonBase', () => {
     const { getByTestId } = render(
       <ButtonBase
         data-testid="icon"
+        startIconName="add-square"
+        startIconProps={{ 'data-testid': 'start-button-icon' }}
         endIconName="add-square"
-        endIconProps={{ 'data-testid': 'base-button-icon' }}
+        endIconProps={{ 'data-testid': 'end-button-icon' }}
       />,
     );
 
-    expect(getByTestId('base-button-icon')).toBeDefined();
+    expect(getByTestId('start-button-icon')).toBeDefined();
+    expect(getByTestId('end-button-icon')).toBeDefined();
   });
 });
