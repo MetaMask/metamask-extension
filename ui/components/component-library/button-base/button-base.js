@@ -125,7 +125,7 @@ ButtonBase.propTypes = {
    * Add icon to start (left side) of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  startIconName: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  startIconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * iconProps accepts all the props from Icon
    */
