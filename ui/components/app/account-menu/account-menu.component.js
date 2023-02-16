@@ -33,7 +33,6 @@ import {
 import TextField from '../../ui/text-field';
 import IconCheck from '../../ui/icon/icon-check';
 import IconCog from '../../ui/icon/icon-cog';
-import IconPlus from '../../ui/icon/icon-plus';
 import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
@@ -375,7 +374,13 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus color="var(--color-icon-alternative)" />}
+          icon={
+            <Icon
+              name={ICON_NAMES.ADD}
+              color={Color.iconAlternative}
+              ariaLabel={t('createAccount')}
+            />
+          }
           text={t('createAccount')}
         />
         <AccountMenuItem

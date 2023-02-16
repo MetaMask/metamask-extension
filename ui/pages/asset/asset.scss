@@ -22,11 +22,6 @@
   color: var(--color-text-default);
   background-color: inherit;
 
-  &__chevron {
-    font-size: $font-size-paragraph;
-    padding: 0 10px 0 2px;
-  }
-
   &__asset {
     font-weight: bold;
   }

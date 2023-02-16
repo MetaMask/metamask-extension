@@ -266,9 +266,6 @@
   "address": {
     "message": "Διεύθυνση"
   },
-  "addressBookIcon": {
-    "message": "Εικονίδιο βιβλίου διευθύνσεων"
-  },
   "advanced": {
     "message": "Σύνθετες"
   },
