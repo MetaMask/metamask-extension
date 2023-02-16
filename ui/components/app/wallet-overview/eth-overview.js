@@ -33,8 +33,8 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, ICON_NAMES } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
-import WalletOverview from './wallet-overview';
 import useRamps from '../../../hooks/experiences/useRamps';
+import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
   const dispatch = useDispatch();

@@ -14,7 +14,6 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import getBuyUrl from '../../app/scripts/lib/buy-url';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -76,12 +75,7 @@ import {
   TransactionMetaMetricsEvent,
   TransactionType,
 } from '../../shared/constants/transaction';
-import {
-  BUYABLE_CHAINS_MAP,
-  CurrencySymbol,
-  NetworkType,
-  RPCDefinition,
-} from '../../shared/constants/network';
+import { NetworkType, RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
@@ -2895,23 +2889,6 @@ export function clearAccountDetails(): Action {
 export function showSendTokenPage(): Action {
   return {
     type: actionConstants.SHOW_SEND_TOKEN_PAGE,
-  };
-}
-
-export function buy(opts: {
-  chainId: keyof typeof BUYABLE_CHAINS_MAP;
-  address?: string;
-  symbol?: CurrencySymbol;
-  service?: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    const url = await getBuyUrl(opts);
-    if (url) {
-      global.platform.openTab({ url });
-      dispatch({
-        type: actionConstants.BUY,
-      });
-    }
   };
 }
 
