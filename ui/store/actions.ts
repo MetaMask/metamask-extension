@@ -299,9 +299,6 @@ export function requestRevealSeedWords(
       await verifyPassword(password);
       const seedPhrase = await verifySeedPhrase();
       return seedPhrase;
-    } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }

@@ -22,6 +22,10 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/4404722782107',
   SECRET_RECOVERY_PHRASE:
     'https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure',
+  SECRET_RECOVERY_PHRASE_USER_GUIDE:
+    'https://metamask.zendesk.com/hc/en-us/articles/4404722782107-User-guide-Secret-Recovery-Phrase-password-and-private-keys',
+  NON_CUSTODIAL_WALLET:
+    'https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet',
   SPEEDUP_CANCEL:
     'https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-speed-up-or-cancel-a-pending-transaction',
   TOKEN_SAFETY_PRACTICES:

@@ -630,23 +630,15 @@
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"
   },
-  "revealSeedWordsDescription": {
-    "message": "ማሰሺያዎችን ከቀየሩ ወይም ኮምፒዩተሮቸን ከአንድ ቦታ ወደ ሌላ ቦታ ካንቀሳቀሱ፣ ወደ መለያዎችዎ ለመድረስ ይህ የዘር ሐረግ ያስፈልግዎታል። ደህንነቱና ሚስጥራዊነቱ በተጠበቀ ቦታ ያስቀምጧቸው።"
-  },
   "revealSeedWordsWarning": {
-    "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ይህን ሐረግ ለየትኛውም ሰው አያጋሩ!"
+    "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "አዲስ የ RPC URL"
   },
   "save": {
     "message": "አስቀምጥ"
-  },
-  "saveAsCsvFile": {
-    "message": "እንደ CSV ፋይል አስቀምጥ"
   },
   "scanInstructions": {
     "message": "የ QR ኮዱን ከካሜራዎ ፊት ለፊት ያስቀምጡ"
