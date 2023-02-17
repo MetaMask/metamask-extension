@@ -42,7 +42,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             justifyContent={JustifyContent.center}
           >
             <Icon
-              name={ICON_NAMES.CLOSE}
+              name={ICON_NAMES.CHECK}
               size={ICON_SIZES.LG}
               className="permissions-redirect__check"
             />
