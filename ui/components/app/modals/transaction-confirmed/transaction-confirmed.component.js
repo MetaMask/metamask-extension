@@ -31,7 +31,7 @@ export default class TransactionConfirmed extends PureComponent {
       <Modal onSubmit={this.handleSubmit} submitText={t('ok')}>
         <div className="transaction-confirmed__content">
           <Icon
-            name={ICON_NAMES.CLOSE}
+            name={ICON_NAMES.CHECK}
             color={Color.successDefault}
             size={ICON_SIZES.XL}
           />
