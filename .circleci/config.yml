@@ -36,8 +36,6 @@ workflows:
             branches:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
-            tags:
-              only: /Version-v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+[-]beta.[[:digit:]]/
           requires:
             - prep-deps
       - prep-deps
