@@ -13,7 +13,7 @@ exports[`Transaction Confirmed should match snapshot 1`] = `
       >
         <div
           class="box mm-icon mm-icon--size-xl box--flex-direction-row box--color-success-default"
-          style="mask-image: url('./images/icons/close.svg');"
+          style="mask-image: url('./images/icons/check.svg');"
         />
         <div
           class="transaction-confirmed__title"
