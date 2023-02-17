@@ -4033,9 +4033,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "@metamask/phishing-controller@npm:1.1.2"
+"@metamask/phishing-controller@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/phishing-controller@npm:2.0.0"
   dependencies:
     "@metamask/base-controller": ^1.1.2
     "@metamask/controller-utils": ^2.0.0
@@ -4043,31 +4043,24 @@ __metadata:
     eth-phishing-detect: ^1.2.0
     isomorphic-fetch: ^3.0.0
     punycode: ^2.1.1
-  checksum: a85427c5c0adab2651c9fb0207cae9501597b820d0807c35177615533bba2626a4c2458b4863f0bef987cc5dfbd523d70a60d3c48bd332ebc8bd6b5a8f640c4e
+  checksum: 8ad20a7cdac8fc5f450bb157d19b0b780d82490571f4d33e1afde871ace078cf4f885e2e5be4abc6e1e551986d5f44a3200b076d5545764f5492dfaf005419e4
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@metamask/phishing-warning@npm:1.2.1"
+"@metamask/phishing-warning@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@metamask/phishing-warning@npm:2.0.1"
   dependencies:
     "@metamask/design-tokens": ^1.6.0
-    "@metamask/post-message-stream": ^5.1.0
+    "@metamask/post-message-stream": ^6.0.0
+    "@types/punycode": ^2.1.0
+    eth-phishing-detect: ^1.2.0
     globalthis: 1.0.1
     obj-multiplex: ^1.0.0
     pump: ^3.0.0
-    ses: 0.12.4
-  checksum: 5cdf2f5fb12dbf774c6d54670051ecd02c489f3f0a5ae68a3facbb2135347be3fe308e260fb44e1a34310fe20cb8e26c3b7b0a3addfdd70ca26ff6ba22f22d92
-  languageName: node
-  linkType: hard
-
-"@metamask/post-message-stream@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@metamask/post-message-stream@npm:5.1.0"
-  dependencies:
-    "@metamask/utils": ^2.0.0
-    readable-stream: 2.3.3
-  checksum: d6c66d82b94970a0689f2d78e4011b891a48edb0f397b54d657c10506cfc066298f3198203a6e8ec090ba87705d62c0db5ba409fede209e1612c8028160059da
+    punycode: ^2.1.1
+    ses: ^0.18.1
+  checksum: caa3e596c3a67188e457307b43724c89121d60734353922d369932093f8618f96465ba7613b194dc2c57754399783dcdf1777c900afeff21bd5137f02688b686
   languageName: node
   linkType: hard
 
@@ -4301,15 +4294,6 @@ __metadata:
   version: 1.1.0
   resolution: "@metamask/types@npm:1.1.0"
   checksum: 500e8c076a2b0a6d688c8c465101256f090547d99c9a5585efe3d1db7a494b6b2712b127043fb316912caffc4fff78976b9a7780780abb68305e8a3bf812689c
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "@metamask/utils@npm:2.1.0"
-  dependencies:
-    fast-deep-equal: ^3.1.3
-  checksum: 50970fe28cbf98fbc34fb4f69d9bc90f5db94929c69ab532f57b48f42163ea77fb080ab31854efd984361c3e29e67831a78d94d1211ac3bcc6b9557769c73127
   languageName: node
   linkType: hard
 
@@ -24063,8 +24047,8 @@ __metadata:
     "@metamask/notification-controller": ^1.0.0
     "@metamask/obs-store": ^5.0.0
     "@metamask/permission-controller": ^1.0.0
-    "@metamask/phishing-controller": ^1.1.2
-    "@metamask/phishing-warning": ^1.2.1
+    "@metamask/phishing-controller": ^2.0.0
+    "@metamask/phishing-warning": ^2.0.1
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.1
     "@metamask/rate-limit-controller": ^1.0.0
@@ -30640,7 +30624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:0.12.4, ses@npm:^0.12.4":
+"ses@npm:^0.12.4":
   version: 0.12.4
   resolution: "ses@npm:0.12.4"
   dependencies:
