@@ -179,7 +179,7 @@ class NetworkDropdown extends Component {
           }}
         >
           {isCurrentRpcTarget ? (
-            <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
+            <Icon name={ICON_NAMES.CHECK} color={Color.successDefault} />
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
