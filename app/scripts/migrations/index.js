@@ -84,7 +84,6 @@ import m077 from './077';
 import m078 from './078';
 import m079 from './079';
 
-
 const migrations = [
   m002,
   m003,
