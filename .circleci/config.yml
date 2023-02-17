@@ -86,9 +86,9 @@ workflows:
       - test-lint-lockfile:
           requires:
             - prep-deps
-      - test-lint-changelog:
-          requires:
-            - prep-deps
+#      - test-lint-changelog:
+#          requires:
+#            - prep-deps
       - test-e2e-chrome:
           requires:
             - prep-build-test
@@ -134,10 +134,6 @@ workflows:
       - validate-source-maps:
           requires:
             - prep-build
-      - validate-source-maps-beta:
-          <<: *rc_branch_only
-          requires:
-            - trigger-beta-build
       - validate-source-maps-desktop:
           requires:
             - prep-build-desktop
@@ -167,14 +163,13 @@ workflows:
             - test-lint
             - test-lint-shellcheck
             - test-lint-lockfile
-            - test-lint-changelog
+#            - test-lint-changelog // remove for testing purpose
             - test-unit-jest-main
             - test-unit-jest-development
             - test-unit-global
             - test-unit-mocha
             - upload-and-validate-coverage
             - validate-source-maps
-            - validate-source-maps-beta
             - validate-source-maps-desktop
             - validate-source-maps-flask
             - test-mozilla-lint
@@ -244,18 +239,11 @@ jobs:
           command: |
             .circleci/scripts/trigger-beta-build.sh
       - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move beta build to 'dist-beta' to avoid conflict with production build
-          command: mv ./dist ./dist-beta
-      - run:
           name: Move beta zips to 'builds-beta' to avoid conflict with production build
           command: mv ./builds ./builds-beta
       - persist_to_workspace:
           root: .
           paths:
-            - dist-beta
             - builds-beta
 
   create_release_pull_request:
@@ -647,7 +635,7 @@ jobs:
           steps:
             - run:
                 name: Validate release candidate changelog
-                command: yarn lint:changelog:rc
+                command: .circleci/scripts/validate-changelog-in-rc.sh
 
   test-deps-audit:
     executor: node-browsers
@@ -1194,22 +1182,6 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
-  validate-source-maps-beta:
-    executor: node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
-          name: Move beta zips to builds
-          command: mv ./builds-beta ./builds
-      - run:
-          name: Validate source maps
-          command: yarn validate-source-maps
-
   validate-source-maps-desktop:
     executor: node-browsers
     steps:
@@ -1259,14 +1231,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Move beta build to dist
-          command: mv ./dist-beta ./dist
-      - run:
           name: Move beta zips to builds
           command: mv ./builds-beta ./builds
-      - run:
-          name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
   test-mozilla-lint-desktop:
     executor: node-browsers

@@ -16,7 +16,8 @@ then
     yarn build --build-type beta prod
 else
     printf '%s\n' 'Commit message does not match commit message for beta pattern; skipping beta automation build'
-    exit 0
+    # add empty folder so there won't be folder not found error
+    mkdir builds
 fi
 
 exit 0
