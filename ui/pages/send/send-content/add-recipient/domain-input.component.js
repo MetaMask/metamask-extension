@@ -106,7 +106,7 @@ export default class DomainInput extends Component {
           {hasSelectedAddress ? (
             <Icon
               className="ens-input__wrapper__status-icon"
-              name={ICON_NAMES.CLOSE}
+              name={ICON_NAMES.CHECK}
               color={Color.successDefault}
             />
           ) : (
