@@ -76,7 +76,7 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
+        <Icon name={ICON_NAMES.CHECK} color={Color.successDefault} />
       ) : (
         <Icon name={ICON_NAMES.CHECK} color={Color.transparent} />
       )}
