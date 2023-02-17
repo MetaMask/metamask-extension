@@ -41,9 +41,7 @@ import { Color } from '../../../helpers/constants/design-system';
 import {
   Icon,
   ICON_NAMES,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   ICON_SIZES,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 import KeyRingLabel from './keyring-label';
 
@@ -230,7 +228,11 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <Icon color={Color.successDefault} name={ICON_NAMES.CHECK} size={ICON_SIZES.LG} />
+              <Icon
+                color={Color.successDefault}
+                name={ICON_NAMES.CHECK}
+                size={ICON_SIZES.LG}
+              />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
