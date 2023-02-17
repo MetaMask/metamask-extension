@@ -15,6 +15,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_METADATA } from '../../../shared/constants/snaps';
 import { Icon, ICON_NAMES } from '../../components/component-library';
+import { Color } from '../constants/design-system';
 import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
 ///: END:ONLY_INCLUDE_IN
 
@@ -23,7 +24,9 @@ const UNKNOWN_PERMISSION = Symbol('unknown');
 const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: (t) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: 'fas fa-eye',
+    leftIcon: (
+      <Icon name={ICON_NAMES.EYE} margin={4} color={Color.iconAlternative} />
+    ),
     rightIcon: null,
     weight: 2,
   }),
@@ -49,7 +52,13 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.snap_getBip32PublicKey]: (t, _, permissionValue) =>
     permissionValue.caveats[0].value.map(({ path, curve }) => {
       const baseDescription = {
-        leftIcon: 'fas fa-eye',
+        leftIcon: (
+          <Icon
+            name={ICON_NAMES.EYE}
+            margin={4}
+            color={Color.iconAlternative}
+          />
+        ),
         rightIcon: null,
         weight: 1,
       };
