@@ -172,7 +172,6 @@ export default class PersonalMessageManager extends EventEmitter {
       status: 'unapproved',
       type: MESSAGE_TYPE.PERSONAL_SIGN,
     };
-    this.addMsg(msgData);
 
     const securityProviderResponse = await this.securityProviderRequest(
       msgData,
@@ -180,6 +179,8 @@ export default class PersonalMessageManager extends EventEmitter {
     );
 
     msgData.securityProviderResponse = securityProviderResponse;
+
+    this.addMsg(msgData);
 
     // signal update
     this.emit('update');

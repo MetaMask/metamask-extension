@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
@@ -151,9 +152,9 @@ describe('Confirm Page Container Content', () => {
     ).toBeInTheDocument();
   });
 
-  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is 0', () => {
+  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
     props.txData.securityProviderResponse = {
-      flagAsDangerous: 0,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
     };
 
     const { queryByText } = renderWithProvider(

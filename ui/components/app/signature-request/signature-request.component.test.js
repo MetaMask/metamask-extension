@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import SignatureRequest from './signature-request.component';
 
 describe('Signature Request Component', () => {
@@ -80,6 +81,11 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -108,6 +114,11 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -140,6 +151,11 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -171,6 +187,11 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -201,6 +222,11 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -232,6 +258,11 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -265,6 +296,11 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
+            securityProviderResponse: {
+              flagAsDangerous: undefined,
+              reason: 'Some reason...',
+              reason_header: 'Some reason header...',
+            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -319,7 +355,7 @@ describe('Signature Request Component', () => {
       ).toBeInTheDocument();
     });
 
-    it('should not render SecurityProviderBannerMessage component when flagAsDangerous is 0', () => {
+    it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
         version: 'V4',
@@ -339,7 +375,8 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
             securityProviderResponse: {
-              flagAsDangerous: 0,
+              flagAsDangerous:
+                SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
             },
           }}
           fromAccount={{ address: fromAddress }}

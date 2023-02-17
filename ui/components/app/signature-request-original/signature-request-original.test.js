@@ -5,6 +5,7 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import SignatureRequestOriginal from '.';
 
 const MOCK_SIGN_DATA = JSON.stringify({
@@ -115,6 +116,11 @@ describe('SignatureRequestOriginal', () => {
         origin: 'https://happydapp.website/governance?futarchy=true',
       },
       type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+      securityProviderResponse: {
+        flagAsDangerous: undefined,
+        reason: 'Some reason...',
+        reason_header: 'Some reason header...',
+      },
     };
     const { getByText } = render(txData);
     expect(getByText('Message \\u202E test:')).toBeInTheDocument();
@@ -134,9 +140,9 @@ describe('SignatureRequestOriginal', () => {
     ).toBeInTheDocument();
   });
 
-  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is 0', () => {
+  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
     props.txData.securityProviderResponse = {
-      flagAsDangerous: 0,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
     };
 
     render();

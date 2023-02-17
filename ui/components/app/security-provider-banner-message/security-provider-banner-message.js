@@ -9,6 +9,7 @@ import {
 import { I18nContext } from '../../../../.storybook/i18n';
 import { BannerAlert, ButtonLink } from '../../component-library';
 import Typography from '../../ui/typography/typography';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from './security-provider-banner-message.constants';
 
 export default function SecurityProviderBannerMessage({
   securityProviderResponse,
@@ -19,16 +20,22 @@ export default function SecurityProviderBannerMessage({
   let messageText;
   let severity;
 
-  if (securityProviderResponse?.flagAsDangerous === 1) {
+  if (
+    securityProviderResponse.flagAsDangerous ===
+    SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS
+  ) {
     messageTitle = securityProviderResponse.reason_header;
     messageText = securityProviderResponse.reason;
     severity = SEVERITIES.DANGER;
-  } else if (securityProviderResponse?.flagAsDangerous === 2) {
+  } else if (
+    securityProviderResponse.flagAsDangerous ===
+    SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_SAFE
+  ) {
     messageTitle = t('requestMayNotBeSafe');
     messageText = t('requestMayNotBeSafeError');
     severity = SEVERITIES.WARNING;
   } else if (
-    securityProviderResponse?.flagAsDangerous === undefined ||
+    securityProviderResponse.flagAsDangerous === undefined ||
     securityProviderResponse === {}
   ) {
     messageTitle = t('requestNotVerified');
