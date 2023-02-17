@@ -37,7 +37,7 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
             tags:
-              only: /v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+[-]beta.[[:digit:]]/
+              only: /Version-v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+[-]beta.[[:digit:]]/
           requires:
             - prep-deps
       - prep-deps
@@ -652,7 +652,7 @@ jobs:
           steps:
             - run:
                 name: Validate release candidate changelog
-                command: .circleci/scripts/validate-rc-changelog.sh
+                command: yarn lint:changelog:rc
 
   test-deps-audit:
     executor: node-browsers
