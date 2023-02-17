@@ -51,7 +51,7 @@ export default class MetaMetricsOptInModal extends Component {
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
-                  <Icon name={ICON_NAMES.CLOSE} />
+                  <Icon name={ICON_NAMES.CHECK} />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsSendAnonymizedEvents')}
                   </div>
