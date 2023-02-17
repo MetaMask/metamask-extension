@@ -95,6 +95,7 @@
     "generate-beta-commit": "node ./development/generate-beta-commit.js"
   },
   "resolutions": {
+    "@ethereumjs/tx": "^4.0.2",
     "analytics-node/axios": "^0.21.2",
     "cookiejar": "^2.1.4",
     "ganache-core/lodash": "^4.17.21",

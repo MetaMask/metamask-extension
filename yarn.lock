@@ -1988,16 +1988,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/common@npm:^2.4.0, @ethereumjs/common@npm:^2.6.3":
-  version: 2.6.5
-  resolution: "@ethereumjs/common@npm:2.6.5"
-  dependencies:
-    crc-32: ^1.2.0
-    ethereumjs-util: ^7.1.5
-  checksum: 0143386f267ef01b7a8bb1847596f964ad58643c084e5fd8e3a0271a7bf8428605dbf38cbb92c84f6622080ad095abeb765f178c02d86ec52abf9e8a4c0e4ecf
-  languageName: node
-  linkType: hard
-
 "@ethereumjs/common@npm:^3.0.2":
   version: 3.0.2
   resolution: "@ethereumjs/common@npm:3.0.2"
@@ -2014,26 +2004,6 @@ __metadata:
   bin:
     rlp: bin/rlp
   checksum: 407dfb8b1e09b4282e6be561e8d74f8939da78f460c08456c7ba2fb273fc42ee16027955a07085abfd7600ffb466c4c4add159885e67abb91bc85db9dd81ffb5
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/tx@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@ethereumjs/tx@npm:3.3.0"
-  dependencies:
-    "@ethereumjs/common": ^2.4.0
-    ethereumjs-util: ^7.1.0
-  checksum: f0720d4c7ccb670c50f61a3c26bf87181f3fddd4fe7f6c93753cca7c1442497719842ffb293db776c8c9a8c7107f18cb03eda3625d53cc5dda1bab736ff2a166
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/tx@npm:3.5.1, @ethereumjs/tx@npm:^3.2.0, @ethereumjs/tx@npm:^3.2.1, @ethereumjs/tx@npm:^3.3.0":
-  version: 3.5.1
-  resolution: "@ethereumjs/tx@npm:3.5.1"
-  dependencies:
-    "@ethereumjs/common": ^2.6.3
-    ethereumjs-util: ^7.1.4
-  checksum: ed17780314592eca96f7aed392707b55af713964a9ac8e5a1ba5b1a0d7cd90ced80d3793bc24e2ce7a5b4852cefae31af8731c5cf54cece48ada16c5dcb2713b
   languageName: node
   linkType: hard
 

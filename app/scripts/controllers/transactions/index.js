@@ -294,11 +294,7 @@ export default class TransactionController extends EventEmitter {
       networkId: networkId === 'loading' ? 0 : parseInt(networkId, 10),
     };
 
-    return Common.forCustomChain(
-      NETWORK_TYPES.MAINNET,
-      customChainParams,
-      hardfork,
-    );
+    return Common.custom(customChainParams, { hardfork });
   }
 
   /**
