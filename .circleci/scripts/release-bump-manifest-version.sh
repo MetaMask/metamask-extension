@@ -19,7 +19,7 @@ fi
 printf '%s\n' 'Updating the manifest version if needed'
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
-if [[ $current_commit_msg =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+[-]beta.[[:digit:]]) ]]
+if [[ $current_commit_msg =~ Version[[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+[-]beta.[[:digit:]]) ]]
 then
   printf '%s\n' 'manifest version will not be updated for beta commit'
 else
