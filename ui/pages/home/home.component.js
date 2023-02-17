@@ -7,7 +7,7 @@ import {
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-import CollectiblesTab from '../../components/app/nfts-tab';
+import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -47,7 +47,7 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -140,9 +140,9 @@ export default class Home extends PureComponent {
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newNftAddedMessage: PropTypes.string,
-    setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
-    setRemoveCollectibleMessage: PropTypes.func.isRequired,
+    setRemoveNftMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
@@ -276,9 +276,9 @@ export default class Home extends PureComponent {
       newNetworkAdded,
       setNewNetworkAdded,
       newNftAddedMessage,
-      setNewCollectibleAddedMessage,
+      setNewNftAddedMessage,
       removeNftMessage,
-      setRemoveCollectibleMessage,
+      setRemoveNftMessage,
       newTokensImported,
       setNewTokensImported,
       newCustomNetworkAdded,
@@ -287,8 +287,8 @@ export default class Home extends PureComponent {
     } = this.props;
 
     const onAutoHide = () => {
-      setNewCollectibleAddedMessage('');
-      setRemoveCollectibleMessage('');
+      setNewNftAddedMessage('');
+      setRemoveNftMessage('');
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -763,9 +763,9 @@ export default class Home extends PureComponent {
                   name={this.context.t('nfts')}
                   tabKey="nfts"
                 >
-                  <CollectiblesTab
+                  <NftsTab
                     onAddNFT={() => {
-                      history.push(ADD_COLLECTIBLE_ROUTE);
+                      history.push(ADD_NFT_ROUTE);
                     }}
                   />
                 </Tab>

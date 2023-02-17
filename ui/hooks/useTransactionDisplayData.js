@@ -20,7 +20,7 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
+import { getNfts, getTokens } from '../ducks/metamask/metamask';
 import {
   TransactionType,
   TransactionGroupCategory,
@@ -92,7 +92,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const dispatch = useDispatch();
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
-  const knownCollectibles = useSelector(getCollectibles);
+  const knownNfts = useSelector(getNfts);
   const t = useI18nContext();
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
@@ -145,9 +145,9 @@ export function useTransactionDisplayData(transactionGroup) {
   const transactionDataTokenId =
     getTokenIdParam(tokenData) ?? getTokenValueParam(tokenData);
 
-  const collectible =
+  const nft =
     isTokenCategory &&
-    knownCollectibles.find(
+    knownNfts.find(
       ({ address, tokenId }) =>
         isEqualCaseInsensitive(address, recipientAddress) &&
         tokenId === transactionDataTokenId,
@@ -258,7 +258,7 @@ export function useTransactionDisplayData(transactionGroup) {
   ) {
     category = TransactionGroupCategory.send;
     title = t('sendSpecifiedTokens', [
-      token?.symbol || collectible?.name || t('token'),
+      token?.symbol || nft?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);

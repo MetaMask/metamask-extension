@@ -227,11 +227,11 @@ export const getPendingTokens = (state) => state.metamask.pendingTokens;
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export function getCollectiblesDropdownState(state) {
-  return state.metamask.collectiblesDropdownState;
+export function getNftsDropdownState(state) {
+  return state.metamask.nftsDropdownState;
 }
 
-export const getCollectibles = (state) => {
+export const getNfts = (state) => {
   const {
     metamask: {
       allNfts,
@@ -245,7 +245,7 @@ export const getCollectibles = (state) => {
   return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
 };
 
-export const getCollectibleContracts = (state) => {
+export const getNftContracts = (state) => {
   const {
     metamask: {
       allNftContracts,
