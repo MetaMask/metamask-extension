@@ -197,7 +197,7 @@ class NetworkDropdown extends Component {
             {nickname || rpcUrl}
           </span>
           {isCurrentRpcTarget ? null : (
-            <ButtonIcon className="delete" ariaLabel="TODO" onClick={(e) => {
+            <ButtonIcon className="delete" ariaLabel={t('delete')} onClick={(e) => {
               e.stopPropagation();
               this.props.showConfirmDeleteNetworkModal({
                 target: rpcUrl,
