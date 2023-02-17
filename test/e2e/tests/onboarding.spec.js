@@ -13,7 +13,8 @@ describe('MetaMask onboarding', function () {
   const testSeedPhrase =
     'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
   const testPassword = 'correct horse battery staple';
-  const wrongSeedPhrase = 'test test test test test test test test test test test test'
+  const wrongSeedPhrase =
+    'test test test test test test test test test test test test';
 
   const ganacheOptions = {
     accounts: [
@@ -76,10 +77,7 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        await importWrongSRPOnboardingFlow(
-          driver,
-          wrongSeedPhrase,
-        );
+        await importWrongSRPOnboardingFlow(driver, wrongSeedPhrase);
       },
     );
   });
