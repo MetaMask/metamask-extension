@@ -230,7 +230,7 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <Icon color={Color.successDefault} name={ICON_NAMES.CLOSE} />
+              <Icon color={Color.successDefault} name={ICON_NAMES.CHECK} />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
