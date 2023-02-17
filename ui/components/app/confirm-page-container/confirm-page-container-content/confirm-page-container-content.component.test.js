@@ -50,7 +50,7 @@ describe('Confirm Page Container Content', () => {
       hideTitle: false,
       txData: {
         securityProviderResponse: {
-          flagAsDangerous: undefined,
+          flagAsDangerous: '?',
           reason: 'Some reason...',
           reason_header: 'Some reason header...',
         },

@@ -191,8 +191,8 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
-        {txData.securityProviderResponse !== undefined &&
-          txData.securityProviderResponse.flagAsDangerous !==
+        {txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
             SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS && (
             <SecurityProviderBannerMessage
               securityProviderResponse={txData.securityProviderResponse}

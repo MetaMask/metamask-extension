@@ -137,8 +137,8 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        {txData.securityProviderResponse !== undefined &&
-          txData.securityProviderResponse.flagAsDangerous !==
+        {txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
             SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS && (
             <SecurityProviderBannerMessage
               securityProviderResponse={txData.securityProviderResponse}

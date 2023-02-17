@@ -34,10 +34,7 @@ export default function SecurityProviderBannerMessage({
     messageTitle = t('requestMayNotBeSafe');
     messageText = t('requestMayNotBeSafeError');
     severity = SEVERITIES.WARNING;
-  } else if (
-    securityProviderResponse.flagAsDangerous === undefined ||
-    securityProviderResponse === {}
-  ) {
+  } else {
     messageTitle = t('requestNotVerified');
     messageText = t('requestNotVerifiedError');
     severity = SEVERITIES.WARNING;

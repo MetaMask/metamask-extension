@@ -81,11 +81,6 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: undefined,
-              reason: 'Some reason...',
-              reason_header: 'Some reason header...',
-            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -114,11 +109,6 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: undefined,
-              reason: 'Some reason...',
-              reason_header: 'Some reason header...',
-            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -151,11 +141,6 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: undefined,
-              reason: 'Some reason...',
-              reason_header: 'Some reason header...',
-            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -187,11 +172,6 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: undefined,
-              reason: 'Some reason...',
-              reason_header: 'Some reason header...',
-            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -222,11 +202,6 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: undefined,
-              reason: 'Some reason...',
-              reason_header: 'Some reason header...',
-            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -258,11 +233,6 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: undefined,
-              reason: 'Some reason...',
-              reason_header: 'Some reason header...',
-            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -296,11 +266,6 @@ describe('Signature Request Component', () => {
           sign={() => undefined}
           txData={{
             msgParams,
-            securityProviderResponse: {
-              flagAsDangerous: undefined,
-              reason: 'Some reason...',
-              reason_header: 'Some reason header...',
-            },
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
@@ -332,7 +297,7 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
             securityProviderResponse: {
-              flagAsDangerous: undefined,
+              flagAsDangerous: '?',
               reason: 'Some reason...',
               reason_header: 'Some reason header...',
             },

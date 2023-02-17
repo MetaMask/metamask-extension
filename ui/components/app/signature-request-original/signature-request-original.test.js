@@ -50,11 +50,6 @@ const props = {
       origin: 'https://happydapp.website/governance?futarchy=true',
     },
     type: MESSAGE_TYPE.ETH_SIGN,
-    securityProviderResponse: {
-      flagAsDangerous: undefined,
-      reason: 'Some reason...',
-      reason_header: 'Some reason header...',
-    },
   },
 };
 
@@ -116,11 +111,6 @@ describe('SignatureRequestOriginal', () => {
         origin: 'https://happydapp.website/governance?futarchy=true',
       },
       type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-      securityProviderResponse: {
-        flagAsDangerous: undefined,
-        reason: 'Some reason...',
-        reason_header: 'Some reason header...',
-      },
     };
     const { getByText } = render(txData);
     expect(getByText('Message \\u202E test:')).toBeInTheDocument();
@@ -128,6 +118,11 @@ describe('SignatureRequestOriginal', () => {
   });
 
   it('should render SecurityProviderBannerMessage component properly', () => {
+    props.txData.securityProviderResponse = {
+      flagAsDangerous: '?',
+      reason: 'Some reason...',
+      reason_header: 'Some reason header...',
+    };
     render();
     expect(screen.getByText('Request not verified')).toBeInTheDocument();
     expect(

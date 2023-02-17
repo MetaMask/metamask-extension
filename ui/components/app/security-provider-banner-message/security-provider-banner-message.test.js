@@ -57,7 +57,7 @@ describe('Security Provider Banner Message', () => {
 
   it('should render SecurityProviderBannerMessage component properly when flagAsDangerous is undefined', () => {
     const securityProviderResponse = {
-      flagAsDangerous: undefined,
+      flagAsDangerous: '?',
       reason: 'Some reason...',
       reason_header: 'Some reason header...',
     };

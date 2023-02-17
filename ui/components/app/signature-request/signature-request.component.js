@@ -227,8 +227,8 @@ export default class SignatureRequest extends PureComponent {
           />
         </div>
         <div className="signature-request-content">
-          {txData.securityProviderResponse !== undefined &&
-            txData.securityProviderResponse.flagAsDangerous !==
+          {txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+            txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS && (
               <SecurityProviderBannerMessage
                 securityProviderResponse={txData.securityProviderResponse}
