@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../ui/popover';
 import {
@@ -17,10 +18,12 @@ import {
 } from '../../../store/actions';
 import { getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown } from '../../../selectors';
 import { Text } from '../../component-library';
+import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 
 export default function OpenSeaWhatsNewPopover() {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const hasThePopoverBeenShown = useSelector(
     getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown,
@@ -47,6 +50,9 @@ export default function OpenSeaWhatsNewPopover() {
                 dispatch(setTransactionSecurityCheckEnabled(true));
                 dispatch(
                   setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(),
+                );
+                history.push(
+                  `${EXPERIMENTAL_ROUTE}#transaction-security-check`,
                 );
               }}
               className="open-sea-whats-new-popover__enable-security-provider-button"
