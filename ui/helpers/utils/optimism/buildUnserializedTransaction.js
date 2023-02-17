@@ -1,6 +1,6 @@
 import { omit } from 'lodash';
 import { BN } from 'ethereumjs-util';
-import Common, { Chain, Hardfork } from '@ethereumjs/common';
+import { Common, Chain, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 

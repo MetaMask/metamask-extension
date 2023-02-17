@@ -1988,7 +1988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/common@npm:^2.3.1, @ethereumjs/common@npm:^2.4.0, @ethereumjs/common@npm:^2.6.3":
+"@ethereumjs/common@npm:^2.4.0, @ethereumjs/common@npm:^2.6.3":
   version: 2.6.5
   resolution: "@ethereumjs/common@npm:2.6.5"
   dependencies:
@@ -1998,7 +1998,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/rlp@npm:^4.0.0-beta.2":
+"@ethereumjs/common@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@ethereumjs/common@npm:3.0.2"
+  dependencies:
+    "@ethereumjs/util": ^8.0.3
+    crc-32: ^1.2.0
+  checksum: d939cefec1f1132d2cf91e827c17f22913296372a07834ed8fae597b8f14c758ec0a6c264be3161a44656d0b7aeb382a54b330e7df7bcb8c5ade263d4956c0f5
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/rlp@npm:^4.0.0, @ethereumjs/rlp@npm:^4.0.0-beta.2":
   version: 4.0.0
   resolution: "@ethereumjs/rlp@npm:4.0.0"
   bin:
@@ -2027,7 +2037,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.2":
+"@ethereumjs/tx@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@ethereumjs/tx@npm:4.0.2"
+  dependencies:
+    "@ethereumjs/common": ^3.0.2
+    "@ethereumjs/rlp": ^4.0.0
+    "@ethereumjs/util": ^8.0.3
+    ethereum-cryptography: ^1.1.2
+    ethers: ^5.7.1
+  checksum: 899080979a856af4c4b9a5d5a21447bdb55b0c9474f6f68e2e09d62cb5333dd236b27c8e385ec0bb4f8b7c4608f69ecd41065425b44721ef96b816dcf7740cfa
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.2, @ethereumjs/util@npm:^8.0.3":
   version: 8.0.3
   resolution: "@ethereumjs/util@npm:8.0.3"
   dependencies:
@@ -15795,7 +15818,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.0.13":
+"ethers@npm:^5.0.13, ethers@npm:^5.7.1":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
@@ -23995,8 +24018,8 @@ __metadata:
     "@babel/runtime": ^7.5.5
     "@download/blockies": ^1.0.3
     "@ensdomains/content-hash": ^2.5.6
-    "@ethereumjs/common": ^2.3.1
-    "@ethereumjs/tx": ^3.2.1
+    "@ethereumjs/common": ^3.0.2
+    "@ethereumjs/tx": ^4.0.2
     "@ethersproject/abi": ^5.6.4
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0

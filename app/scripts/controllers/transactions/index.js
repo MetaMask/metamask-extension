@@ -3,7 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
-import Common from '@ethereumjs/common';
+import { Common } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
