@@ -78,7 +78,7 @@ const NetworksListItem = ({
       {isCurrentRpcTarget ? (
         <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
       ) : (
-        <Icon name={ICON_NAMES.CLOSE} color={Color.transparent} />
+        <Icon name={ICON_NAMES.CHECK} color={Color.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
