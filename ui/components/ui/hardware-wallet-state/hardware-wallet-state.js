@@ -8,7 +8,8 @@ import {
 import { isDeviceAccessible } from '../../../store/actions';
 import { I18nContext } from '../../../contexts/i18n';
 import { HARDWARE_CHECK_RATE } from '../../../../shared/constants/hardware-wallets';
-import ActionableMessage from '../actionable-message';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { BannerAlert } from '../../component-library';
 
 const noOp = () => {
   // do nothing
@@ -47,13 +48,9 @@ export default function HardwareWalletState({
 
   return (
     status === 'locked' && (
-      <ActionableMessage
-        message={t('ledgerLocked')}
-        type="danger"
-        className="hardware-wallet-state__error"
-        useIcon
-        iconFillColor="var(--color-error-default)"
-      />
+      <BannerAlert severity={SEVERITIES.DANGER}>
+        {t('ledgerLocked')}
+      </BannerAlert>
     )
   );
 }
