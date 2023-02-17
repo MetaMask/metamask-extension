@@ -92,7 +92,7 @@ export default function OnboardingMetametrics() {
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
+          <Icon name={ICON_NAMES.CHECK} color={Color.successDefault} />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
