@@ -70,7 +70,7 @@ export const FormFieldWithTitleDetail = (args) => {
         Click Me
       </button>
     ),
-    checkmark: <Icon name={ICON_NAMES.CLOSE} />,
+    checkmark: <Icon name={ICON_NAMES.CHECK} />,
   };
 
   return <FormField {...args} titleDetail={detailOptions[args.titleDetail]} />;

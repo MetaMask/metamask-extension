@@ -221,7 +221,7 @@ export default function CreatePassword({
             titleDetail={
               isValid && (
                 <div className="create-password__form--checkmark">
-                  <Icon name={ICON_NAMES.CLOSE} />
+                  <Icon name={ICON_NAMES.CHECK} />
                 </div>
               )
             }

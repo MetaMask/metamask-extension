@@ -88,11 +88,19 @@ export default function OnboardingMetametrics() {
       </Typography>
       <ul>
         <li>
-          <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={Color.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <Icon name={ICON_NAMES.CHECK} color={Color.successDefault} />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={Color.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
