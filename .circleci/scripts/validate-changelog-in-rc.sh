@@ -10,7 +10,7 @@ if [[ $current_commit_msg =~ Version[[:space:]](v[[:digit:]]+.[[:digit:]]+.[[:di
 then
     printf '%s\n' 'Skip changelog validation for beta commit'
 else
-    printf '%s\n' 'Validate changelog for beta commit'
+    printf '%s\n' 'Validate changelog for release branch'
     yarn lint:changelog:rc
 fi
 
