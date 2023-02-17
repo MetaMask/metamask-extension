@@ -1,69 +1,61 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import CollectibleDefaultImage from '.';
+import NftDefaultImage from '.';
 
-describe('Collectible Default Image', () => {
+describe('NFT Default Image', () => {
   it('should render with no props', () => {
-    const { container } = renderWithProvider(<CollectibleDefaultImage />);
+    const { container } = renderWithProvider(<NftDefaultImage />);
 
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot with all provided props', () => {
     const props = {
-      name: 'Collectible Name',
+      name: 'NFT Name',
       tokenId: '123',
       handleImageClick: jest.fn(),
     };
 
-    const { container } = renderWithProvider(
-      <CollectibleDefaultImage {...props} />,
-    );
+    const { container } = renderWithProvider(<NftDefaultImage {...props} />);
 
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot with missing image click handler', () => {
     const props = {
-      name: 'Collectible Name',
+      name: 'NFT Name',
       tokenId: '123',
     };
 
-    const { container } = renderWithProvider(
-      <CollectibleDefaultImage {...props} />,
-    );
+    const { container } = renderWithProvider(<NftDefaultImage {...props} />);
 
     expect(container).toMatchSnapshot();
   });
 
-  it('should render collectible name', () => {
+  it('should render NFT name', () => {
     const props = {
-      name: 'Collectible Name',
+      name: 'NFT Name',
     };
 
-    const { queryByText } = renderWithProvider(
-      <CollectibleDefaultImage {...props} />,
-    );
+    const { queryByText } = renderWithProvider(<NftDefaultImage {...props} />);
 
-    const collectibleElement = queryByText(`${props.name} #`);
+    const nftElement = queryByText(`${props.name} #`);
 
-    expect(collectibleElement).toBeInTheDocument();
+    expect(nftElement).toBeInTheDocument();
   });
 
-  it('should render collectible name and tokenId', () => {
+  it('should render NFT name and tokenId', () => {
     const props = {
-      name: 'Collectible Name',
+      name: 'NFT Name',
       tokenId: '123',
     };
 
-    const { queryByText } = renderWithProvider(
-      <CollectibleDefaultImage {...props} />,
-    );
+    const { queryByText } = renderWithProvider(<NftDefaultImage {...props} />);
 
-    const collectibleElement = queryByText(`${props.name} #${props.tokenId}`);
+    const nftElement = queryByText(`${props.name} #${props.tokenId}`);
 
-    expect(collectibleElement).toBeInTheDocument();
+    expect(nftElement).toBeInTheDocument();
   });
 
   it('should handle image click', () => {
@@ -72,11 +64,11 @@ describe('Collectible Default Image', () => {
     };
 
     const { queryByTestId } = renderWithProvider(
-      <CollectibleDefaultImage {...props} />,
+      <NftDefaultImage {...props} />,
     );
 
-    const collectibleImageElement = queryByTestId('collectible-default-image');
-    fireEvent.click(collectibleImageElement);
+    const nftImageElement = queryByTestId('nft-default-image');
+    fireEvent.click(nftImageElement);
 
     expect(props.handleImageClick).toHaveBeenCalled();
   });

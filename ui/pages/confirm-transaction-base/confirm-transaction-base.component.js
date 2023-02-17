@@ -93,7 +93,7 @@ export default class ConfirmTransactionBase extends Component {
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
-    toAccounts: PropTypes.object,
+    toAccounts: PropTypes.array,
     toAddress: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
@@ -866,6 +866,10 @@ export default class ConfirmTransactionBase extends Component {
         sendTransaction(txData)
           .then(() => {
             clearConfirmTransaction();
+            if (!this._isMounted) {
+              return;
+            }
+
             this.setState(
               {
                 submitting: false,
@@ -877,6 +881,10 @@ export default class ConfirmTransactionBase extends Component {
             );
           })
           .catch((error) => {
+            if (!this._isMounted) {
+              return;
+            }
+
             this.setState({
               submitting: false,
               submitError: error.message,
