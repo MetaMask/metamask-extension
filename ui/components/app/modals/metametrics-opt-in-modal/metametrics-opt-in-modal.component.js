@@ -45,7 +45,7 @@ export default class MetaMetricsOptInModal extends Component {
 
               <div className="metametrics-opt-in__committments">
                 <div className="metametrics-opt-in__row">
-                  <Icon name={ICON_NAMES.CLOSE} />
+                  <Icon name={ICON_NAMES.CHECK} />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsAllowOptOut')}
                   </div>
