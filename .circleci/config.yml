@@ -32,7 +32,12 @@ workflows:
           requires:
             - prep-deps
       - trigger-beta-build:
-          <<: *rc_branch_only
+          filters:
+            branches:
+              only:
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+            tags:
+              only: /v[[:digit:]]+.[[:digit:]]+.[[:digit:]]+[-]beta.[[:digit:]]/
           requires:
             - prep-deps
       - prep-deps
