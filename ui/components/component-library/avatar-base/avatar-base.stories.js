@@ -123,7 +123,7 @@ export const Children = (args) => (
       backgroundColor={BackgroundColor.infoMuted}
       borderColor={BorderColor.infoMuted}
     >
-      <Icon name={ICON_NAMES.USER} color={Color.iconDefault} />
+      <Icon name={ICON_NAMES.USER} color={Color.infoDefault} />
     </AvatarBase>
   </Box>
 );
