@@ -25,10 +25,11 @@ export const BannerTip = ({
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >
-          <img
-            style={{ width: '100%', minWidth: 60, maxWidth: 80 }}
+          <Box
+            as="img"
+            className="mm-banner-tip--logo"
             src={`images/fox-${logoType}.png`}
-            alt=""
+            alt={`${logoType} fox logo`}
           />
         </Box>
       }
