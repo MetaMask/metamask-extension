@@ -12,6 +12,7 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -42,16 +43,10 @@ const BetaHeader = () => {
           </a>,
         ])}
       </Typography>
-      <button
-        className="beta-header__button"
-        data-testid="beta-header-close"
-        onClick={() => {
+      <ButtonIcon iconName={ICON_NAMES.CLOSE} className="beta-header__button" data-testid="beta-header-close" onClick={() => {
           hideBetaHeader();
         }}
-        aria-label={t('close')}
-      >
-        <i className="fa fa-times" />
-      </button>
+        aria-label={t('close')} />
     </Box>
   );
 };

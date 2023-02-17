@@ -32,6 +32,7 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
+import { ButtonIcon, ICON_NAMES } from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -336,11 +337,7 @@ export default class Home extends PureComponent {
                 >
                   {t('newNftAddedMessage')}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
-                  onClick={onAutoHide}
-                />
+                <ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={onAutoHide}/>
               </Box>
             }
           />
@@ -361,11 +358,7 @@ export default class Home extends PureComponent {
                 >
                   {t('removeNftMessage')}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-nft-notification-close"
-                  title={t('close')}
-                  onClick={onAutoHide}
-                />
+                <ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={onAutoHide}/>
               </Box>
             }
           />
@@ -383,11 +376,7 @@ export default class Home extends PureComponent {
                 >
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
-                <button
-                  className="fas fa-times home__new-network-notification-close"
-                  title={t('close')}
-                  onClick={() => setNewNetworkAdded('')}
-                />
+                <ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={() => setNewNetworkAdded('')} className="home__new-network-notification-close" />
               </Box>
             }
           />
@@ -415,11 +404,8 @@ export default class Home extends PureComponent {
                     {t('newTokensImportedMessage', [newTokensImported])}
                   </Typography>
                 </Box>
-                <button
-                  className="fas fa-times home__new-tokens-imported-notification-close"
-                  title={t('close')}
-                  onClick={() => setNewTokensImported('')}
-                />
+
+<ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={() => setNewTokensImported('')} className="home__new-tokens-imported-notification-close" />
               </Box>
             }
           />
@@ -657,6 +643,73 @@ export default class Home extends PureComponent {
               defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
+<<<<<<< HEAD
+=======
+              subHeader={
+                <Tooltip
+                  position="bottom"
+                  open={
+                    !process.env.IN_TEST &&
+                    !shouldShowSeedPhraseReminder &&
+                    !showRecoveryPhraseReminder &&
+                    showPortfolioTooltip
+                  }
+                  interactive
+                  theme="home__subheader-link--tooltip"
+                  html={
+                    <div>
+                      <div className="home__subheader-link--tooltip-content-header">
+                        <div className="home__subheader-link--tooltip-content-header-text">
+                          {t('new')}
+                        </div>
+                        <ButtonIcon iconName={ICON_NAMES.CLOSE} className="home__subheader-link--tooltip-content-header-button"
+                          onClick={() => {
+                            hidePortfolioTooltip();
+                          }} ariaLabel={t('close')} />
+                      </div>
+                      <div>
+                        {t('tryOur')}&nbsp;
+                        <span className="home__subheader-link--tooltip-content-text-bold">
+                          {t('betaPortfolioSite')}
+                        </span>
+                        &nbsp;{t('keepTapsOnTokens')}
+                      </div>
+                    </div>
+                  }
+                >
+                  <ButtonLink
+                    className="home__subheader-link"
+                    data-testid="home__portfolio-site"
+                    onClick={async () => {
+                      const portfolioUrl = process.env.PORTFOLIO_URL;
+                      global.platform.openTab({
+                        url: `${portfolioUrl}?metamaskEntry=ext`,
+                      });
+                      this.context.trackEvent(
+                        {
+                          category: EVENT.CATEGORIES.HOME,
+                          event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                          properties: {
+                            url: portfolioUrl,
+                          },
+                        },
+                        {
+                          contextPropsIntoEventProperties: [
+                            CONTEXT_PROPS.PAGE_TITLE,
+                          ],
+                        },
+                      );
+                    }}
+                    iconName={ICON_NAMES.DIAGRAM}
+                    width={BLOCK_SIZES.FULL}
+                    size={Size.MD}
+                    textProps={{ variant: TextVariant.bodySm }}
+                  >
+                    {t('portfolioSite')}
+                  </ButtonLink>
+                </Tooltip>
+              }
+>>>>>>> 1a6699c40 (UX: Icon: Stop using fa-times)
             >
               <Tab
                 activeClassName="home__tab--active"

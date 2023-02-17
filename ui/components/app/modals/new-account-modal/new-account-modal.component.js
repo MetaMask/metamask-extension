@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../ui/button/button.component';
+import { ButtonIcon } from '../../../component-library';
 
 export default class NewAccountModal extends Component {
   static contextTypes = {
@@ -43,11 +44,8 @@ export default class NewAccountModal extends Component {
         <div className="new-account-modal__content">
           <div className="new-account-modal__content__header">
             {t('newAccount')}
-            <button
-              className="fas fa-times new-account-modal__content__header-close"
-              title={t('close')}
-              onClick={this.props.hideModal}
-            />
+            <ButtonIcon className="new-account-modal__content__header-close" ariaLabel={t('close')}
+              onClick={this.props.hideModal} />
           </div>
           <div className="new-account-modal__input-label">
             {t('accountName')}

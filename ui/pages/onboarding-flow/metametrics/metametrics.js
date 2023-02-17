@@ -104,7 +104,7 @@ export default function OnboardingMetametrics() {
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
-          <i className="fa fa-times" />
+          <Icon name={ICON_NAMES.CLOSE} color={IconColor.errorDefault} />
           {t('onboardingMetametricsNeverCollect', [
             <Typography
               variant={TypographyVariant.Span}
@@ -116,7 +116,7 @@ export default function OnboardingMetametrics() {
           ])}
         </li>
         <li>
-          <i className="fa fa-times" />
+        <Icon name={ICON_NAMES.CLOSE} color={IconColor.errorDefault} />
           {t('onboardingMetametricsNeverCollectIP', [
             <Typography
               variant={TypographyVariant.Span}
@@ -128,7 +128,7 @@ export default function OnboardingMetametrics() {
           ])}
         </li>
         <li>
-          <i className="fa fa-times" />
+        <Icon name={ICON_NAMES.CLOSE} color={IconColor.errorDefault} />
           {t('onboardingMetametricsNeverSellData', [
             <Typography
               variant={TypographyVariant.Span}
