@@ -68,10 +68,6 @@
         margin-inline-end: 16px;
         flex: 0 0 18px;
         color: var(--color-icon-alternative);
-
-        @include screen-sm-min {
-          flex: 0 0 14px;
-        }
       }
     }
 
