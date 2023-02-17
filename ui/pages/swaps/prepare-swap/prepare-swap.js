@@ -9,7 +9,6 @@ import React, {
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
@@ -126,6 +125,7 @@ import {
   ICON_SIZES,
 } from '../../../components/component-library';
 import SwapsFooter from '../swaps-footer';
+import SwapsBannerAlert from './swaps-banner-alert';
 import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
 
@@ -343,7 +343,6 @@ export default function PrepareSwap({
         swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
       ) {
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
-        history.push(SWAPS_ERROR_ROUTE);
       }
     };
 
@@ -991,6 +990,11 @@ export default function PrepareSwap({
             </div>
           </Box>
         )}
+        {swapsErrorKey && (
+          <Box display={DISPLAY.FLEX} marginTop={2}>
+            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
+          </Box>
+        )}
         {!areQuotesPresent && (
           <SwapsFooter
             submitText={mainButtonText}
@@ -999,7 +1003,7 @@ export default function PrepareSwap({
             showTermsOfService
           />
         )}
-        {!isReviewSwapButtonDisabled && areQuotesPresent && (
+        {!isReviewSwapButtonDisabled && areQuotesPresent && !swapsErrorKey && (
           <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
         )}
       </div>

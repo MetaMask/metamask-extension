@@ -4162,15 +4162,15 @@
   "swapSlippageNegativeTitle": {
     "message": "Increase slippage to continue"
   },
+  "swapSlippageOverLimitDescription": {
+    "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
+  },
+  "swapSlippageOverLimitTitle": {
+    "message": "Reduce slippage to continue"
+  },
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageReduceDescription": {
-    "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
-  },
-  "swapSlippageReduceTitle": {
-    "message": "Reduce slippage to continue"
   },
   "swapSlippageTooLowDescription": {
     "message": "Max slippage is too low which may cause your transaction to fail."
@@ -4182,7 +4182,7 @@
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
   "swapSlippageVeryHighDescription": {
-    "message": "$1% considered very high and may result in a bad rate",
+    "message": "$1% is considered very high and may result in a bad rate",
     "description": "$1 is the amount of % for slippage"
   },
   "swapSlippageVeryHighTitle": {

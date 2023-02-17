@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
@@ -17,8 +18,15 @@ import {
   SEVERITIES,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
-import { Slippage } from '../../../../shared/constants/swaps';
+import {
+  Slippage,
+  SLIPPAGE_OVER_LIMIT_ERROR,
+  SLIPPAGE_VERY_HIGH_ERROR,
+  SLIPPAGE_TOO_LOW_ERROR,
+  SLIPPAGE_NEGATIVE_ERROR,
+} from '../../../../shared/constants/swaps';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
+import { setSwapsErrorKey } from '../../../store/actions';
 
 export default function TransactionSettings({
   onSelect,
@@ -32,6 +40,7 @@ export default function TransactionSettings({
   isDirectWrappingEnabled,
 }) {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
   const [customValue, setCustomValue] = useState(() => {
     if (
       typeof currentSlippage === 'number' &&
@@ -61,20 +70,26 @@ export default function TransactionSettings({
     if (Number(customValue) < 0) {
       errorText = t('swapSlippageNegativeDescription');
       errorTitle = t('swapSlippageNegativeTitle');
+      dispatch(setSwapsErrorKey(SLIPPAGE_NEGATIVE_ERROR));
     } else if (Number(customValue) > 0 && Number(customValue) <= 1) {
       // We will not show this warning for 0% slippage, because we will only
       // return non-slippage quotes from off-chain makers.
       errorText = t('swapSlippageTooLowDescription');
       errorTitle = t('swapSlippageTooLowTitle');
+      dispatch(setSwapsErrorKey(SLIPPAGE_TOO_LOW_ERROR));
     } else if (
       Number(customValue) >= 5 &&
       Number(customValue) <= maxAllowedSlippage
     ) {
       errorText = t('swapSlippageVeryHighDescription', [Number(customValue)]);
       errorTitle = t('swapSlippageVeryHighTitle');
+      dispatch(setSwapsErrorKey(SLIPPAGE_VERY_HIGH_ERROR));
     } else if (Number(customValue) > maxAllowedSlippage) {
-      errorText = t('swapSlippageReduceDescription');
-      errorTitle = t('swapSlippageReduceTitle');
+      errorText = t('swapSlippageOverLimitDescription');
+      errorTitle = t('swapSlippageOverLimitTitle');
+      dispatch(setSwapsErrorKey(SLIPPAGE_OVER_LIMIT_ERROR));
+    } else {
+      dispatch(setSwapsErrorKey(''));
     }
   }
 
@@ -258,7 +273,9 @@ export default function TransactionSettings({
           {errorText && (
             <Box marginTop={5}>
               <BannerAlert severity={SEVERITIES.DANGER} title={errorTitle}>
-                {errorText}
+                <Typography variant={TypographyVariant.H6}>
+                  {errorText}
+                </Typography>
               </BannerAlert>
             </Box>
             // <div className="transaction-settings__error-text">{errorText}</div>
