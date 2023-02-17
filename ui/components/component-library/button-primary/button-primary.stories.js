@@ -61,11 +61,6 @@ export default {
       control: 'boolean',
       table: { category: 'button base props' },
     },
-    iconName: {
-      control: 'select',
-      options: Object.values(ICON_NAMES),
-      table: { category: 'button base props' },
-    },
     startIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),

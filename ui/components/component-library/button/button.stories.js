@@ -213,8 +213,14 @@ Loading.args = {
   loading: true,
 };
 
-export const Icon = (args) => (
-  <Button {...args} icon={ICON_NAMES.ADD_SQUARE}>
+export const StartIconName = (args) => (
+  <Button {...args} startIconName={ICON_NAMES.ADD_SQUARE}>
+    Button
+  </Button>
+);
+
+export const EndIconName = (args) => (
+  <Button {...args} endIconName={ICON_NAMES.ARROW_2_RIGHT}>
     Button
   </Button>
 );
