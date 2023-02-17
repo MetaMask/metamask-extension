@@ -3,22 +3,18 @@
 exports[`HardwareWalletState Component should call onUpdate handler 1`] = `
 <div>
   <div
-    class="actionable-message actionable-message--danger hardware-wallet-state__error actionable-message--with-icon"
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
   >
-    <svg
-      viewBox="0 0 10 10"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-        fill="var(--color-error-default)"
-      />
-    </svg>
-    
     <div
-      class="actionable-message__message"
-    >
-      Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened.
+      class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      >
+        Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened.
+      </p>
     </div>
   </div>
 </div>
@@ -27,22 +23,18 @@ exports[`HardwareWalletState Component should call onUpdate handler 1`] = `
 exports[`HardwareWalletState Component should match default snapshot 1`] = `
 <div>
   <div
-    class="actionable-message actionable-message--danger hardware-wallet-state__error actionable-message--with-icon"
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
   >
-    <svg
-      viewBox="0 0 10 10"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-        fill="var(--color-error-default)"
-      />
-    </svg>
-    
     <div
-      class="actionable-message__message"
-    >
-      Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened.
+      class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      >
+        Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened.
+      </p>
     </div>
   </div>
 </div>
@@ -53,22 +45,18 @@ exports[`HardwareWalletState Component should render empty with unlocked state 1
 exports[`HardwareWalletState Component should render message with locked state 1`] = `
 <div>
   <div
-    class="actionable-message actionable-message--danger hardware-wallet-state__error actionable-message--with-icon"
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
   >
-    <svg
-      viewBox="0 0 10 10"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-        fill="var(--color-error-default)"
-      />
-    </svg>
-    
     <div
-      class="actionable-message__message"
-    >
-      Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened.
+      class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      >
+        Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened.
+      </p>
     </div>
   </div>
 </div>
