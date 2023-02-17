@@ -54,6 +54,10 @@ const ConfirmTransaction = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [pollingToken, setPollingToken] = useState();
 
+  const [transactionId, setTransactionId] = useState();
+  const [isValidERC20TokenMethod, setIsValidERC20TokenMethod] = useState(false);
+  const [isValidTransactionId, setIsValidTransactionId] = useState(false);
+
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
@@ -63,11 +67,21 @@ const ConfirmTransaction = () => {
   const totalUnapproved = unconfirmedTxs.length || 0;
 
   const transaction = useMemo(() => {
-    return totalUnapproved
+    const tx = totalUnapproved
       ? unapprovedTxs[paramsTransactionId] ||
-          unconfirmedMessages[paramsTransactionId] ||
-          unconfirmedTxs[0]
+        unconfirmedMessages[paramsTransactionId] ||
+        unconfirmedTxs[0]
       : {};
+
+    const txId = tx.id && String(tx.id);
+
+    setTransactionId(txId);
+    setIsValidERC20TokenMethod(isTokenMethodAction(tx.type));
+    setIsValidTransactionId(
+      txId && (!paramsTransactionId || paramsTransactionId === txId),
+    );
+
+    return tx;
   }, [
     paramsTransactionId,
     totalUnapproved,
@@ -75,13 +89,6 @@ const ConfirmTransaction = () => {
     unconfirmedMessages,
     unconfirmedTxs,
   ]);
-
-  const { id, type } = transaction;
-  const transactionId = id && String(id);
-  const isValidERC20TokenMethod = isTokenMethodAction(type);
-  const isValidTransactionId =
-    transactionId &&
-    (!paramsTransactionId || paramsTransactionId === transactionId);
 
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
