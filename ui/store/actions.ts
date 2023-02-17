@@ -1360,6 +1360,16 @@ export function markNotificationsAsRead(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+export function setSnapsTrustLevel(
+  trustLevel: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    await submitRequestToBackground('setSnapsTrustLevel', [trustLevel]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 ///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(

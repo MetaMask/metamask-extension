@@ -23,12 +23,13 @@ enum StatusReasonMessage {
   Blocked = 'This Snap is blocked',
   Depracted = 'This Snap is deprecated',
   Unregistered = "This Snap hasn't been registered",
+  Open = 'The Snaps Trust Status is set to open',
 }
 
 // Trust level which conditions the level of verification require before installing snaps
 enum SnapsTrustLevel {
   AuditedOnly = 'AuditedOnly',
-  SafeAccessOnly = 'SafeAccessOnly',
+  SafePermissionsOnly = 'SafePermissionsOnly',
   Open = 'Open',
 }
 
@@ -88,9 +89,6 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
         'log: The prefered snaps trust level is configured to ',
         this.#getSnapsTrustLevel(),
       );
-      console.log(
-        `${this.#getSnapsTrustLevel()}===${SnapsTrustLevel.AuditedOnly}`,
-      );
       if (this.#getSnapsTrustLevel() === SnapsTrustLevel.AuditedOnly) {
         return await Object.entries(snaps).reduce<
           Promise<Record<SnapId, SnapsRegistryResult>>
@@ -103,11 +101,29 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
           return accumulator;
         }, Promise.resolve({}));
       } else if (
-        this.#getSnapsTrustLevel() === SnapsTrustLevel.SafeAccessOnly
+        this.#getSnapsTrustLevel() === SnapsTrustLevel.SafePermissionsOnly
       ) {
-        return Promise.resolve({}); // TODO
+        throw new Error(
+          'SafePermissionsOnly trust level to be implemented ☠️☠️☠️',
+        );
+      } else if (this.#getSnapsTrustLevel() === SnapsTrustLevel.Open) {
+        console.log(
+          'log: Snaps Trust Level being open the installation proceed',
+        );
+        return await Object.entries(snaps).reduce<
+          Promise<Record<SnapId, SnapsRegistryResult>>
+        >(async (accumulator, [snapId, snapInfo]) => {
+          console.log(
+            `log: Verification of the following Snap 🔎🔎🔎: ${snapId} version ${snapInfo.version}`,
+          );
+          (await accumulator)[snapId] = {
+            status: SnapsRegistryStatus.Unverified,
+            reason: { explanation: StatusReasonMessage.Open },
+          };
+          return accumulator;
+        }, Promise.resolve({}));
       }
-      return Promise.resolve({});
+      throw new Error('Unknown trust level ☠️☠️☠️');
 
       // Verify if the availability of the registry is mantadory to install snaps
     } else if (this.#failOnUnavailableRegistry) {
@@ -115,6 +131,9 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
         'The configured snaps registry is unavailable, snaps installation blocked ☠️☠️☠️',
       );
     } else {
+      console.log(
+        'log: Fail on unavailable registry is false the installation proceed',
+      );
       return Promise.resolve({});
     }
   }
@@ -135,6 +154,11 @@ export class DecentralizedSnapsRegistry implements SnapsRegistry {
       // Return the Snap blocked status and the status reason
       switch (status) {
         case 0:
+          return {
+            status: SnapsRegistryStatus.Unverified,
+            reason: { explanation: StatusReasonMessage.Unverified },
+          };
+        case 1:
           return {
             status: SnapsRegistryStatus.Unverified,
             reason: { explanation: StatusReasonMessage.Unverified },

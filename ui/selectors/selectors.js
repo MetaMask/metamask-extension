@@ -986,6 +986,11 @@ export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,
 );
+
+export function getSnapsTrustLevel(state) {
+  return state.metamask.snapsTrustLevel;
+}
+
 ///: END:ONLY_INCLUDE_IN
 
 /**
