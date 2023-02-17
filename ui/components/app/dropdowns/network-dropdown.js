@@ -247,7 +247,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <Icon name={ICON_NAMES.CLOSE} color={Color.successDefault} />
+          <Icon name={ICON_NAMES.CHECK} color={Color.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}
