@@ -13,7 +13,7 @@ import {
 import {
   getTokens,
   getNativeCurrency,
-  getCollectibles,
+  getNfts,
 } from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
@@ -27,7 +27,6 @@ import {
 import { formatDateWithYearContext } from '../helpers/utils/util';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
-import * as useAssetDetailsHooks from './useAssetDetails';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
 
 const expectedResults = [
@@ -162,7 +161,7 @@ const expectedResults = [
   },
 ];
 
-let useSelector, useI18nContext, useTokenFiatAmount, useAssetDetails;
+let useSelector, useI18nContext, useTokenFiatAmount;
 
 const renderHookWithRouter = (cb, tokenAddress) => {
   const initialEntries = [
@@ -184,16 +183,6 @@ describe('useTransactionDisplayData', () => {
       'useTokenFiatAmount',
     );
     useTokenFiatAmount.returns(undefined);
-    useAssetDetails = sinon.stub(useAssetDetailsHooks, 'useAssetDetails');
-    useAssetDetails.returns((isTokenCategory) => {
-      return isTokenCategory
-        ? {
-            tokenSymbol: 'ABC',
-            decimals: 18,
-            toAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
-          }
-        : undefined;
-    });
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
@@ -219,7 +208,7 @@ describe('useTransactionDisplayData', () => {
         return 'ETH';
       } else if (selector === getCurrentChainId) {
         return CHAIN_IDS.MAINNET;
-      } else if (selector === getCollectibles) {
+      } else if (selector === getNfts) {
         return [];
       }
       return null;

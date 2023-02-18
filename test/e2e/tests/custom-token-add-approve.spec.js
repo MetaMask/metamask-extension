@@ -193,15 +193,14 @@ describe('Create token, approve token and approve token without gas', function (
           return pendingTxes.length === 1;
         }, 10000);
 
-        await driver.waitForElementNotPresent('.loading-overlay');
         const approveTokenTask = await driver.waitForSelector({
           // Selects only the very first transaction list item immediately following the 'Pending' header
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve TST spending cap',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve TST spending cap',
+          'Approve token spending cap',
         );
       },
     );
@@ -340,11 +339,11 @@ describe('Create token, approve token and approve token without gas', function (
         const approveTokenTask = await driver.waitForSelector({
           // Select only the heading of the first entry in the transaction list.
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve TST spending cap',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve TST spending cap',
+          'Approve token spending cap',
         );
       },
     );
@@ -385,7 +384,6 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.switchToWindow(extension);
         await driver.clickElement({ tag: 'button', text: 'Activity' });
 
-        await driver.waitForElementNotPresent('.loading-overlay');
         const pendingTxes = await driver.findElements(
           '.transaction-list__pending-transactions .transaction-list-item',
         );
@@ -425,15 +423,14 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'Approve',
         });
 
-        await driver.waitForElementNotPresent('.loading-overlay');
         const approveTokenTask = await driver.waitForSelector({
           // Select only the heading of the first entry in the transaction list.
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve TST spending cap',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve TST spending cap',
+          'Approve token spending cap',
         );
       },
     );
@@ -475,7 +472,6 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.switchToWindow(extension);
         await driver.clickElement({ tag: 'button', text: 'Activity' });
 
-        await driver.waitForElementNotPresent('.loading-overlay');
         const pendingTxes = await driver.findElements('.transaction-list-item');
         pendingTxes[0].click();
         // set spending cap
@@ -490,16 +486,15 @@ describe('Create token, approve token and approve token without gas', function (
 
         await driver.delay(500);
         await driver.clickElement({ text: 'Approve', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay');
 
         // check transaction in Activity tab
         const approveTokenTask = await driver.waitForSelector({
           css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
-          text: 'Approve TST spending cap',
+          text: 'Approve token spending cap',
         });
         assert.equal(
           await approveTokenTask.getText(),
-          'Approve TST spending cap',
+          'Approve token spending cap',
         );
       },
     );

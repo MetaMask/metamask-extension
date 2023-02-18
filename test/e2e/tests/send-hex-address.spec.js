@@ -45,10 +45,11 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay');
-        await driver.clickElement(
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
+        await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
@@ -89,10 +90,11 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay');
-        await driver.clickElement(
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        const sendTransactionListItem = await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item',
         );
+        await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
@@ -160,7 +162,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.switchToWindow(extension);
 
         // Send TST
-        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__asset-tab"]');
         await driver.clickElement('.token-cell');
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -183,10 +184,15 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay');
-        await driver.clickElement(
-          '.transaction-list__completed-transactions .transaction-list-item',
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForSelector(
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          { timeout: 10000 },
         );
+        const sendTransactionListItem = await driver.waitForSelector(
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+        );
+        await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
@@ -240,7 +246,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.switchToWindow(extension);
 
         // Send TST
-        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="home__asset-tab"]');
         await driver.clickElement('.token-cell');
         await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -263,11 +268,15 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay');
-
-        await driver.clickElement(
-          '.transaction-list__completed-transactions .transaction-list-item',
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForSelector(
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          { timeout: 10000 },
         );
+        const sendTransactionListItem = await driver.waitForSelector(
+          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+        );
+        await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 

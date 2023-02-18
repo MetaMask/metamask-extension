@@ -56,17 +56,15 @@ describe('NFTs', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
-        await driver.waitForElementNotPresent('.loading-overlay');
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Send TDC');
+        assert.equal(completedTxText, 'Send Token');
       },
     );
   });
@@ -125,12 +123,10 @@ describe('NFTs', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
-        await driver.waitForElementNotPresent('.loading-overlay');
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
@@ -196,12 +192,10 @@ describe('NFTs', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
-        await driver.waitForElementNotPresent('.loading-overlay');
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
@@ -270,12 +264,10 @@ describe('NFTs', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
           { timeout: 10000 },
         );
-        await driver.waitForElementNotPresent('.loading-overlay');
 
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');

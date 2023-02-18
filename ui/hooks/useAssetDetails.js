@@ -8,12 +8,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { usePrevious } from './usePrevious';
 import { useTokenTracker } from './useTokenTracker';
 
-export function useAssetDetails(
-  tokenAddress,
-  userAddress,
-  transactionData,
-  opts = { isTokenCategory: false },
-) {
+export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const dispatch = useDispatch();
   // state selectors
   const nfts = useSelector(getNfts);
@@ -47,11 +42,10 @@ export function useAssetDetails(
       dispatch(hideLoadingIndication());
     }
     if (
-      opts.isTokenCategory &&
-      (tokenAddress !== prevTokenAddress ||
-        userAddress !== prevUserAddress ||
-        transactionData !== prevTransactionData ||
-        (prevTokenBalance && prevTokenBalance !== tokensWithBalances))
+      tokenAddress !== prevTokenAddress ||
+      userAddress !== prevUserAddress ||
+      transactionData !== prevTransactionData ||
+      (prevTokenBalance && prevTokenBalance !== tokensWithBalances)
     ) {
       getAndSetAssetDetails();
     }
@@ -66,7 +60,6 @@ export function useAssetDetails(
     nfts,
     tokensWithBalances,
     prevTokenBalance,
-    opts.isTokenCategory,
   ]);
 
   if (currentAsset) {
