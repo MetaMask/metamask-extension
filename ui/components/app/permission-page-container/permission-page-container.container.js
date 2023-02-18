@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
   const { selectedIdentities, request } = ownProps;
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const currentPermissions = getPermissions(state, request.metadata?.origin);
-  ///: END:ONLY_INCLUDE_IN(flask)
+  ///: END:ONLY_INCLUDE_IN
   const allIdentities = getMetaMaskIdentities(state);
   const allIdentitiesSelected =
     Object.keys(selectedIdentities).length ===
