@@ -128,8 +128,12 @@ export default class DomainInput extends Component {
                   </div>
                 )}
               </div>
-              <ButtonIcon name={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={this.props.onReset}
-                className="ens-input__wrapper__action-icon-button" />
+              <ButtonIcon
+                name={ICON_NAMES.CLOSE}
+                ariaLabel={t('close')}
+                onClick={this.props.onReset}
+                className="ens-input__wrapper__action-icon-button"
+              />
             </>
           ) : (
             <>

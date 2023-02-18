@@ -5,8 +5,7 @@ import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Typography from '../typography';
-import { ButtonIcon } from '../../component-library';
-import { ICON_NAMES } from '../../component-library';
+import { ButtonIcon, ICON_NAMES } from '../../component-library';
 
 export default function Callout({
   severity,
@@ -43,14 +42,18 @@ export default function Callout({
         {children}
       </Typography>
       {dismiss && (
-        <ButtonIcon iconName={ICON_NAMES.CLOSE} className="callout__close-button" onClick={() => {
-          setRemoved(true);
-        }}
-        onKeyUp={(event) => {
-          if (event.key === 'Enter') {
+        <ButtonIcon
+          iconName={ICON_NAMES.CLOSE}
+          className="callout__close-button"
+          onClick={() => {
             setRemoved(true);
-          }
-        }} />
+          }}
+          onKeyUp={(event) => {
+            if (event.key === 'Enter') {
+              setRemoved(true);
+            }
+          }}
+        />
       )}
     </div>
   );

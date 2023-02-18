@@ -32,7 +32,10 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
-import { ButtonIcon, ICON_NAMES } from '../../components/component-library';
+import {
+  ButtonIcon,
+  ICON_NAMES,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -337,7 +340,11 @@ export default class Home extends PureComponent {
                 >
                   {t('newNftAddedMessage')}
                 </Typography>
-                <ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={onAutoHide}/>
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  ariaLabel={t('close')}
+                  onClick={onAutoHide}
+                />
               </Box>
             }
           />
@@ -358,7 +365,11 @@ export default class Home extends PureComponent {
                 >
                   {t('removeNftMessage')}
                 </Typography>
-                <ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={onAutoHide}/>
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  ariaLabel={t('close')}
+                  onClick={onAutoHide}
+                />
               </Box>
             }
           />
@@ -376,7 +387,12 @@ export default class Home extends PureComponent {
                 >
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
-                <ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={() => setNewNetworkAdded('')} className="home__new-network-notification-close" />
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  ariaLabel={t('close')}
+                  onClick={() => setNewNetworkAdded('')}
+                  className="home__new-network-notification-close"
+                />
               </Box>
             }
           />
@@ -405,7 +421,12 @@ export default class Home extends PureComponent {
                   </Typography>
                 </Box>
 
-<ButtonIcon iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')} onClick={() => setNewTokensImported('')} className="home__new-tokens-imported-notification-close" />
+                <ButtonIcon
+                  iconName={ICON_NAMES.CLOSE}
+                  ariaLabel={t('close')}
+                  onClick={() => setNewTokensImported('')}
+                  className="home__new-tokens-imported-notification-close"
+                />
               </Box>
             }
           />
@@ -643,8 +664,6 @@ export default class Home extends PureComponent {
               defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
-<<<<<<< HEAD
-=======
               subHeader={
                 <Tooltip
                   position="bottom"
@@ -662,10 +681,14 @@ export default class Home extends PureComponent {
                         <div className="home__subheader-link--tooltip-content-header-text">
                           {t('new')}
                         </div>
-                        <ButtonIcon iconName={ICON_NAMES.CLOSE} className="home__subheader-link--tooltip-content-header-button"
+                        <ButtonIcon
+                          iconName={ICON_NAMES.CLOSE}
+                          className="home__subheader-link--tooltip-content-header-button"
                           onClick={() => {
                             hidePortfolioTooltip();
-                          }} ariaLabel={t('close')} />
+                          }}
+                          ariaLabel={t('close')}
+                        />
                       </div>
                       <div>
                         {t('tryOur')}&nbsp;
@@ -709,7 +732,6 @@ export default class Home extends PureComponent {
                   </ButtonLink>
                 </Tooltip>
               }
->>>>>>> 1a6699c40 (UX: Icon: Stop using fa-times)
             >
               <Tab
                 activeClassName="home__tab--active"

@@ -154,8 +154,12 @@ export default function AddNft() {
                     >
                       {t('nftAddFailedMessage')}
                     </Typography>
-                    <ButtonIcon className="add-nft__close" iconName={ICON_NAMES.CLOSE} ariaLabel={t('close')}
-                      onClick={() => setNftAddFailed(false)} />
+                    <ButtonIcon
+                      className="add-nft__close"
+                      iconName={ICON_NAMES.CLOSE}
+                      ariaLabel={t('close')}
+                      onClick={() => setNftAddFailed(false)}
+                    />
                   </Box>
                 }
               />

@@ -44,8 +44,11 @@ export default class NewAccountModal extends Component {
         <div className="new-account-modal__content">
           <div className="new-account-modal__content__header">
             {t('newAccount')}
-            <ButtonIcon className="new-account-modal__content__header-close" ariaLabel={t('close')}
-              onClick={this.props.hideModal} />
+            <ButtonIcon
+              className="new-account-modal__content__header-close"
+              ariaLabel={t('close')}
+              onClick={this.props.hideModal}
+            />
           </div>
           <div className="new-account-modal__input-label">
             {t('accountName')}

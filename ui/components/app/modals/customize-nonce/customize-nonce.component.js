@@ -53,8 +53,12 @@ const CustomizeNonce = ({
           >
             {t('editNonceField')}
           </Typography>
-          <ButtonIcon iconName={ICON_NAMES.CLOSE} className="customize-nonce-modal__close" ariaLabel={t('close')}
-            onClick={hideModal} />
+          <ButtonIcon
+            iconName={ICON_NAMES.CLOSE}
+            className="customize-nonce-modal__close"
+            ariaLabel={t('close')}
+            onClick={hideModal}
+          />
         </div>
         <Box
           marginTop={2}

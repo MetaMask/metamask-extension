@@ -58,7 +58,10 @@ export default function CustomContentSearch({
             position="end"
             onClick={() => handleSearch('')}
           >
-            <Icon name={ICON_NAMES.CLOSE} className="networks-tab__imageclose" />
+            <Icon
+              name={ICON_NAMES.CLOSE}
+              className="networks-tab__imageclose"
+            />
           </InputAdornment>
         )}
       </>

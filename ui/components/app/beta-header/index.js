@@ -43,10 +43,15 @@ const BetaHeader = () => {
           </a>,
         ])}
       </Typography>
-      <ButtonIcon iconName={ICON_NAMES.CLOSE} className="beta-header__button" data-testid="beta-header-close" onClick={() => {
+      <ButtonIcon
+        iconName={ICON_NAMES.CLOSE}
+        className="beta-header__button"
+        data-testid="beta-header-close"
+        onClick={() => {
           hideBetaHeader();
         }}
-        aria-label={t('close')} />
+        aria-label={t('close')}
+      />
     </Box>
   );
 };

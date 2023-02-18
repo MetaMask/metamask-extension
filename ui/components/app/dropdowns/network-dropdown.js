@@ -26,6 +26,7 @@ import {
 import { Icon, ICON_NAMES } from '../../component-library';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 import { ButtonIcon } from '../../component-library';
+import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -197,12 +198,17 @@ class NetworkDropdown extends Component {
             {nickname || rpcUrl}
           </span>
           {isCurrentRpcTarget ? null : (
-            <ButtonIcon className="delete" ariaLabel={t('delete')} onClick={(e) => {
-              e.stopPropagation();
-              this.props.showConfirmDeleteNetworkModal({
-                target: rpcUrl,
-                onConfirm: () => undefined,
-              })}} />
+            <ButtonIcon
+              className="delete"
+              ariaLabel={this.context.t('delete')}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.props.showConfirmDeleteNetworkModal({
+                  target: rpcUrl,
+                  onConfirm: () => undefined,
+                });
+              }}
+            />
           )}
         </DropdownMenuItem>
       );
