@@ -266,9 +266,6 @@
   "address": {
     "message": "Adresse"
   },
-  "addressBookIcon": {
-    "message": "Icône du carnet d’adresses"
-  },
   "advanced": {
     "message": "Paramètres avancés"
   },
@@ -1573,7 +1570,7 @@
     "message": "page Importer des NFT"
   },
   "importNFTTokenIdToolTip": {
-    "message": "L’ID d’un collectible est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
+    "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
   },
   "importNFTs": {
     "message": "Importer des NFT"
@@ -2112,7 +2109,7 @@
     "message": "« $1 » a été ajouté avec succès !"
   },
   "newNftAddedMessage": {
-    "message": "Le collectible a été ajouté avec succès !"
+    "message": "Le NFT a été ajouté avec succès !"
   },
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
@@ -2922,14 +2919,9 @@
   "revealSeedWords": {
     "message": "Révéler la phrase secrète de récupération"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si jamais vous changez de navigateur ou d’ordinateur, vous aurez besoin de cette phrase secrète de récupération pour accéder à vos comptes. Sauvegardez-la dans un emplacement sûr et secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Ne communiquez PAS cette phrase à quelqu’un !"
+    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Révéler la phrase mnémonique"
@@ -2960,9 +2952,6 @@
   },
   "save": {
     "message": "Enregistrer"
-  },
-  "saveAsCsvFile": {
-    "message": "Enregistrer comme fichier CSV"
   },
   "scanInstructions": {
     "message": "Placez le code QR devant votre appareil photo"
@@ -4168,7 +4157,7 @@
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
-    "message": "L’envoi de jetons collectibles (ERC-721) n’est pas pris en charge actuellement",
+    "message": "L’envoi de jetons NFTs (ERC-721) n’est pas pris en charge actuellement",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {

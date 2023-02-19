@@ -21,11 +21,11 @@ import {
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
-  getNewCollectibleAddedMessage,
+  getNewNftAddedMessage,
   getNewTokensImported,
   getShowPortfolioTooltip,
   getShouldShowSeedPhraseReminder,
-  getRemoveCollectibleMessage,
+  getRemoveNftMessage,
 } from '../../selectors';
 
 import {
@@ -39,8 +39,8 @@ import {
   setRecoveryPhraseReminderLastShown,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewCollectibleAddedMessage,
-  setRemoveCollectibleMessage,
+  setNewNftAddedMessage,
+  setRemoveNftMessage,
   setNewTokensImported,
   setRpcTarget,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -151,8 +151,8 @@ const mapStateToProps = (state) => {
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
-    newNftAddedMessage: getNewCollectibleAddedMessage(state),
-    removeNftMessage: getRemoveCollectibleMessage(state),
+    newNftAddedMessage: getNewNftAddedMessage(state),
+    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
     onboardedInThisUISession: appState.onboardedInThisUISession,
@@ -184,11 +184,11 @@ const mapDispatchToProps = (dispatch) => ({
     console.log({ newNetwork });
     dispatch(setNewNetworkAdded(newNetwork));
   },
-  setNewCollectibleAddedMessage: (message) => {
-    dispatch(setNewCollectibleAddedMessage(message));
+  setNewNftAddedMessage: (message) => {
+    dispatch(setNewNftAddedMessage(message));
   },
-  setRemoveCollectibleMessage: (message) => {
-    dispatch(setRemoveCollectibleMessage(message));
+  setRemoveNftMessage: (message) => {
+    dispatch(setRemoveNftMessage(message));
   },
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
