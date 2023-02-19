@@ -14,9 +14,9 @@ import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
-import Typography from '../../components/ui/typography';
+import { Text } from '../../component-library'
 import {
-  TypographyVariant,
+  TextVariant,
   FONT_WEIGHT,
   DISPLAY,
   TEXT_ALIGN,
@@ -69,11 +69,11 @@ export default function TokenDetailsPage() {
   return (
     <Box className="page-container token-details">
       <Box marginLeft={5} marginRight={6}>
-        <Typography
+        <Text
           fontWeight={FONT_WEIGHT.BOLD}
           margin={0}
           marginTop={4}
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           color={TextColor.textDefault}
           className="token-details__title"
         >
@@ -83,19 +83,19 @@ export default function TokenDetailsPage() {
             onClick={() => history.push(`${ASSET_ROUTE}/${token.address}`)}
             className="token-details__closeButton"
           />
-        </Typography>
+        </Text>
         <Box display={DISPLAY.FLEX} marginTop={4}>
-          <Typography
+          <Text
             align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
             margin={0}
             marginRight={5}
-            variant={TypographyVariant.H4}
+            variant={TextVariant.headingSm}
             color={TextColor.textDefault}
             className="token-details__token-value"
           >
             {tokenBalance || ''}
-          </Typography>
+          </Text>
           <Box marginTop={1}>
             <Identicon
               diameter={32}
@@ -104,26 +104,26 @@ export default function TokenDetailsPage() {
             />
           </Box>
         </Box>
-        <Typography
+        <Text
           margin={0}
           marginTop={4}
-          variant={TypographyVariant.H7}
+          variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
         >
           {tokenCurrencyBalance || ''}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           margin={0}
           marginTop={6}
-          variant={TypographyVariant.H9}
+          variant={TextVariant.bodyXs}
           color={TextColor.textAlternative}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenContractAddress')}
-        </Typography>
+        </Text>
         <Box display={DISPLAY.FLEX}>
-          <Typography
-            variant={TypographyVariant.H7}
+          <Text
+            variant={TextVariant.bodySm}
             margin={0}
             marginTop={2}
             color={TextColor.textDefault}
@@ -131,7 +131,7 @@ export default function TokenDetailsPage() {
             className="token-details__token-address"
           >
             {token.address}
-          </Typography>
+          </Text>
           <Tooltip
             position="bottom"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
@@ -147,34 +147,34 @@ export default function TokenDetailsPage() {
             />
           </Tooltip>
         </Box>
-        <Typography
-          variant={TypographyVariant.H9}
+        <Text
+          variant={TextVariant.bodyXs}
           margin={0}
           marginTop={4}
           color={TextColor.textAlternative}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('tokenDecimalTitle')}
-        </Typography>
-        <Typography
-          variant={TypographyVariant.H7}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
           margin={0}
           marginTop={1}
           color={TextColor.textDefault}
         >
           {token.decimals}
-        </Typography>
-        <Typography
-          variant={TypographyVariant.H9}
+        </Text>
+        <Text
+          variant={TextVariant.bodyXs}
           margin={0}
           marginTop={4}
           color={TextColor.textAlternative}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('network')}
-        </Typography>
-        <Typography
-          variant={TypographyVariant.H7}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
           margin={1}
           marginTop={0}
           color={TextColor.textDefault}
@@ -182,26 +182,26 @@ export default function TokenDetailsPage() {
           {networkType === NETWORK_TYPES.RPC
             ? networkNickname ?? t('privateNetwork')
             : t(networkType)}
-        </Typography>
+        </Text>
         {aggregators && (
           <>
-            <Typography
-              variant={TypographyVariant.H9}
+            <Text
+              variant={TextVariant.bodyXs}
               margin={0}
               marginTop={4}
               color={TextColor.textAlternative}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('tokenList')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H7}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
               margin={0}
               marginTop={1}
               color={TextColor.textDefault}
             >
               {`${aggregators}.`}
-            </Typography>
+            </Text>
           </>
         )}
         <Button
@@ -213,12 +213,12 @@ export default function TokenDetailsPage() {
             );
           }}
         >
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
             color={TextColor.primaryDefault}
           >
             {t('hideToken')}
-          </Typography>
+          </Text>
         </Button>
       </Box>
     </Box>
