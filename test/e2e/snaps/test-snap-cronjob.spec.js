@@ -76,11 +76,8 @@ describe('Test Snap Cronjob', function () {
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        // wait for 40 seconds
-        await driver.delay(57000);
-
-        // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        // switch to dialog popup, wait for a maximum of 65 seconds
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 65000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
