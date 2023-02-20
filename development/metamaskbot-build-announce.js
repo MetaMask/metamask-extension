@@ -53,7 +53,7 @@ async function start() {
     .join(', ');
   const flaskBuildLinks = platforms
     .map((platform) => {
-      const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}.zip`;
+      const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
