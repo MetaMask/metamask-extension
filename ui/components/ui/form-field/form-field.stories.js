@@ -5,6 +5,7 @@ import Typography from '../typography';
 import Tooltip from '../tooltip';
 import Box from '../box';
 
+import { Icon, ICON_NAMES } from '../../component-library';
 import README from './README.mdx';
 import FormField from '.';
 
@@ -106,7 +107,9 @@ export const CustomComponents = (args) => {
             position="top"
             html={<Typography>Custom tooltip</Typography>}
           >
-            <Box as="i" marginLeft={2} className="fa fa-question-circle" />
+            <Box as="i" marginLeft={2}>
+              <Icon name={ICON_NAMES.QUESTION}></Icon>
+            </Box>
           </Tooltip>
         }
         titleDetail={<Typography>TitleDetail</Typography>}
