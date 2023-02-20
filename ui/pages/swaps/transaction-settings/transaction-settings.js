@@ -113,6 +113,13 @@ export default function TransactionSettings({
     }
   }, [inputRef, enteringCustomValue]);
 
+  useEffect(() => {
+    if (activeButtonIndex !== 2) {
+      // If it's not a custom slippage, remove an error key.
+      dispatch(setSwapsErrorKey(''));
+    }
+  }, [activeButtonIndex]);
+
   return (
     <div className="transaction-settings">
       <Popover title={t('transactionSettings')} onClose={() => onModalClose()}>
