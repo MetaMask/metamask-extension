@@ -4527,5 +4527,141 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "allCustodianAccountsConnectedSubtitle": {
+    "message": "You have either already connected all your custodian accounts or don't have any account to connect to MetaMask Institutional."
+  },
+  "allCustodianAccountsConnectedTitle": {
+    "message": "No accounts available to connect"
+  },
+  "portfolio": {
+    "message": "Portfolio"
+  },
+  "portfolioDashboard": {
+    "message": "Portfolio Dashboard"
+  },
+  "viewPortfolioDashboard": {
+    "message": "View Portfolio Dashboard"
+  },
+  "betaMetamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Beta Version"
+  },
+  "custodianAccountAddedDesc": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianAccountAddedTitle": {
+    "message": "Selected custodian accounts have been added."
+  },
+  "custodyApiUrl": {
+    "message": "$1 API URL"
+  },
+  "custodyDeeplinkDescription": {
+    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
+  },
+  "custodyWrongChain": {
+    "message": "This account is not set up for use with $1"
+  },
+  "enterCustodianToken": {
+    "message": "Enter your $1 token or add a new token"
+  },
+  "historicalReportsLongerThanUsual": {
+    "message": "Fetching compliance reports is taking longer than usual. Please make sure your connection is stable and contact us if problem continues."
+  },
+  "login": {
+    "message": "Login"
+  },
+  "metamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Version"
+  },
+  "mmiBuiltAroundTheWorld": {
+    "message": "MetaMask Institutional is designed and built around the world."
+  },
+  "note": {
+    "message": "Note"
+  },
+  "notePlaceholder": {
+    "message": "The approver will see this note when approving the transaction at the custodian."
+  },
+  "openCustodianApp": {
+    "message": "Open $1 app"
+  },
+  "mismatchAccount": {
+    "message": "Your connected account ($1) is different than the account trying to sign ($2)"
+  },
+  "removeJWT": {
+    "message": "Remove custodian token"
+  },
+  "removeJWTDescription": {
+    "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
+  "report": {
+    "message": "Report"
+  },
+  "reportLastRun": {
+    "message": "Report last run"
+  },
+  "reportLastRunTooltip": {
+    "message": "The date and time of when the last AML/CFT report was run"
+  },
+  "runReport": {
+    "message": "Run report"
+  },
+  "selectAllAccounts": {
+    "message": "Select all accounts"
+  },
+  "selectAnAccountHelp": {
+    "message": "Select the custodian accounts to use in MetaMask Institutional."
+  },
+  "selectJWT": {
+    "message": "Select token"
+  },
+  "showReport": {
+    "message": "Show report"
+  },
+  "swapIncludesMMIFee": {
+    "message": "Includes a $1% fee.",
+    "description": "Provides information about the fee that MMI takes for swaps. $1 is a decimal number."
+  },
+  "operationFailed": {
+    "message": "Operation Failed"
+  },
+  "transactionNote": {
+    "message": "Transaction note"
+  },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
+  },
+  "custodyRefreshTokenModalDescription": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodyRefreshTokenModalDescription1": {
+    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
+  },
+  "custodyRefreshTokenModalDescription2": {
+    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
+  },
+  "custodyRefreshTokenModalSubtitle": {
+    "message": "Why am I seeing this?"
+  },
+  "custodySessionExpired": {
+    "message": "Custodian session expired"
+  },
+  "custodianReplaceRefreshTokenTitle": {
+    "message": "Replace custodian token"
+  },
+  "custodianReplaceRefreshTokenSubtitle": {
+    "message": "This is will replace the custodian token for the following address:"
+  },
+  "custodianReplaceRefreshTokenChangedTitle": {
+    "message": "Your custodian token has been refreshed"
+  },
+  "custodianReplaceRefreshTokenChangedSubtitle": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianReplaceRefreshTokenChangedFailed": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   }
 }
