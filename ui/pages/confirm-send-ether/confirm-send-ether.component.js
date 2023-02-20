@@ -11,7 +11,6 @@ export default class ConfirmSendEther extends Component {
   static propTypes = {
     editTransaction: PropTypes.func,
     history: PropTypes.object,
-    txParams: PropTypes.object,
   };
 
   handleEdit({ txData }) {

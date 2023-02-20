@@ -57,4 +57,9 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
   );
 };
 
+ConfirmData.propTypes = {
+  txData: PropTypes.object,
+  dataHexComponent: PropTypes.element,
+};
+
 export default ConfirmHexData;

@@ -44,4 +44,9 @@ const ConfirmData = ({ txData, dataComponent }) => {
   );
 };
 
+ConfirmData.propTypes = {
+  txData: PropTypes.object,
+  dataComponent: PropTypes.element,
+};
+
 export default ConfirmData;
