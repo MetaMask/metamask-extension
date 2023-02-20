@@ -58,7 +58,7 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
   );
 };
 
-ConfirmData.propTypes = {
+ConfirmHexData.propTypes = {
   txData: PropTypes.object,
   dataHexComponent: PropTypes.element,
 };
