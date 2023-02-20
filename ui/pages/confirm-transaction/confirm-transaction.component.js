@@ -55,7 +55,7 @@ const ConfirmTransaction = () => {
   const [pollingToken, setPollingToken] = useState();
 
   const [transactionId, setTransactionId] = useState();
-  const [isValidERC20TokenMethod, setIsValidERC20TokenMethod] = useState(false);
+  const [isValidTokenMethod, setIsValidTokenMethod] = useState(false);
   const [isValidTransactionId, setIsValidTransactionId] = useState(false);
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -76,7 +76,7 @@ const ConfirmTransaction = () => {
     const txId = tx.id && String(tx.id);
 
     setTransactionId(txId);
-    setIsValidERC20TokenMethod(isTokenMethodAction(tx.type));
+    setIsValidTokenMethod(isTokenMethodAction(tx.type));
     setIsValidTransactionId(
       txId && (!paramsTransactionId || paramsTransactionId === txId),
     );
@@ -175,7 +175,7 @@ const ConfirmTransaction = () => {
     transactionId,
   ]);
 
-  if (isValidERC20TokenMethod && isValidTransactionId) {
+  if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
