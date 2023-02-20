@@ -3666,6 +3666,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/desktop@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/desktop@npm:0.2.0"
+  dependencies:
+    "@metamask/obs-store": ^5.0.0
+    eciesjs: ^0.3.15
+    end-of-stream: ^1.4.4
+    extension-port-stream: ^2.0.0
+    loglevel: ^1.8.0
+    obj-multiplex: ^1.0.0
+    otpauth: ^8.0.3
+    uuid: ^8.3.2
+    webextension-polyfill: ^0.8.0
+    ws: ^7.4.6
+  checksum: 052d5dd58951c77733b538d9c392a5aa5b7d87bb600cf04a97e3213048f84936a4446adbf901258417c8eed01dbc68eb2c7117a53b6af7a416ecea975460ffb7
+  languageName: node
+  linkType: hard
+
 "@metamask/eslint-config-jest@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/eslint-config-jest@npm:9.0.0"
@@ -7537,7 +7555,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/secp256k1@npm:^4.0.1":
+"@types/secp256k1@npm:^4.0.1, @types/secp256k1@npm:^4.0.3":
   version: 4.0.3
   resolution: "@types/secp256k1@npm:4.0.3"
   dependencies:
@@ -14292,6 +14310,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eciesjs@npm:^0.3.15":
+  version: 0.3.16
+  resolution: "eciesjs@npm:0.3.16"
+  dependencies:
+    "@types/secp256k1": ^4.0.3
+    futoin-hkdf: ^1.5.1
+    secp256k1: ^4.0.3
+  checksum: e5e6b8d8d27d8ca4aed89f79c581f7b9bd329551a2332b0a70d61c9b4e378ad98058cd7a16c9cee10cce8bef26a203865dc514ef10d732af3137ba5c13e4254d
+  languageName: node
+  linkType: hard
+
 "ee-first@npm:1.1.1":
   version: 1.1.1
   resolution: "ee-first@npm:1.1.1"
@@ -17472,6 +17501,13 @@ __metadata:
   version: 3.6.1
   resolution: "fuse.js@npm:3.6.1"
   checksum: 958aa877ace65dc900df776becd39a03df68d7eebc7890b5fd2fc8c5d88e2fff238f60c37f80013ce70e9d9e7ac8efa9f503695fdd23d1eca3cc983797b50191
+  languageName: node
+  linkType: hard
+
+"futoin-hkdf@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "futoin-hkdf@npm:1.5.1"
+  checksum: 1912bbf6013e56ff2866590242c9493ab1fe83dc132a175378890b75008ca844524a61dbc20b3fe2c7276ea214589f92f3f0cd48e26d5f5d00c404a6201c5e23
   languageName: node
   linkType: hard
 
@@ -22386,6 +22422,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jssha@npm:~3.2.0":
+  version: 3.2.0
+  resolution: "jssha@npm:3.2.0"
+  checksum: 2adb8a9a57a79360379e843c0548e240d072c2ef12aef39ef6a784315686bd6f65501e9353fdd2f3a604f64af07e7eab04a0ed92b221cdfea97d671d7b8e14f4
+  languageName: node
+  linkType: hard
+
 "jsx-ast-utils@npm:^2.4.1 || ^3.0.0":
   version: 3.3.2
   resolution: "jsx-ast-utils@npm:3.3.2"
@@ -23270,7 +23313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loglevel@npm:^1.8.1":
+"loglevel@npm:^1.8.0, loglevel@npm:^1.8.1":
   version: 1.8.1
   resolution: "loglevel@npm:1.8.1"
   checksum: a1a62db40291aaeaef2f612334c49e531bff71cc1d01a2acab689ab80d59e092f852ab164a5aedc1a752fdc46b7b162cb097d8a9eb2cf0b299511106c29af61d
@@ -24019,6 +24062,7 @@ __metadata:
     "@metamask/contract-metadata": ^2.2.0
     "@metamask/controller-utils": ^1.0.0
     "@metamask/design-tokens": ^1.9.0
+    "@metamask/desktop": ^0.2.0
     "@metamask/eslint-config": ^9.0.0
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-mocha": ^9.0.0
@@ -26176,6 +26220,15 @@ __metadata:
     os-homedir: ^1.0.0
     os-tmpdir: ^1.0.0
   checksum: 779d261920f2a13e5e18cf02446484f12747d3f2ff82280912f52b213162d43d312647a40c332373cbccd5e3fb8126915d3bfea8dde4827f70f82da76e52d359
+  languageName: node
+  linkType: hard
+
+"otpauth@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "otpauth@npm:8.0.3"
+  dependencies:
+    jssha: ~3.2.0
+  checksum: bc5f95194c7c942eb1d17fa0d515934803ef7db951a2e89bc31b75dfff03c47403346147b54664861720bdff82e0849ad48914e47fd84776b014d5f7ed73763c
   languageName: node
   linkType: hard
 
@@ -30405,7 +30458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"secp256k1@npm:^4.0.0, secp256k1@npm:^4.0.1":
+"secp256k1@npm:^4.0.0, secp256k1@npm:^4.0.1, secp256k1@npm:^4.0.3":
   version: 4.0.3
   resolution: "secp256k1@npm:4.0.3"
   dependencies:
