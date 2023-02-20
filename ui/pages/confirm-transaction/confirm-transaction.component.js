@@ -64,9 +64,7 @@ const ConfirmTransaction = () => {
   const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
 
-  const totalUnapproved = useMemo(() => {
-    return unconfirmedTxs.length || 0;
-  }, [unconfirmedTxs.length]);
+  const totalUnapproved = unconfirmedTxs.length || 0;
 
   const transaction = useMemo(() => {
     const tx = totalUnapproved
