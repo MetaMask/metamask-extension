@@ -76,7 +76,7 @@ export function renderWithProvider(component, store, pathname = '/') {
 }
 
 export function renderHookWithProvider(hook, state, pathname = '/') {
-  let store = state ? configureStore(state) : undefined;
+  const store = state ? configureStore(state) : undefined;
   const { history, Wrapper } = createProviderWrapper(store, pathname);
   return {
     ...renderHook(hook, { wrapper: Wrapper }),
