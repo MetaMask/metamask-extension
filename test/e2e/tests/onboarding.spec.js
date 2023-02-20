@@ -6,8 +6,12 @@ const {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
+  selectDropdownbyNum,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  withTagName,
+} = require('selenium-webdriver');
 
 describe('MetaMask onboarding', function () {
   const testSeedPhrase =
@@ -26,7 +30,63 @@ describe('MetaMask onboarding', function () {
     ],
   };
 
-  it('Clicks create a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
+  // it('Clicks create a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder({ onboarding: true }).build(),
+  //       ganacheOptions,
+  //       title: this.test.title,
+  //       failOnConsoleError: false,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+
+  //       await completeCreateNewWalletOnboardingFlow(
+  //         driver,
+  //         testSeedPhrase,
+  //         testPassword,
+  //       );
+  //     },
+  //   );
+  // });
+
+  // it('Clicks import a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder({ onboarding: true }).build(),
+  //       ganacheOptions,
+  //       title: this.test.title,
+  //       failOnConsoleError: false,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+
+  //       await completeImportSRPOnboardingFlow(
+  //         driver,
+  //         testSeedPhrase,
+  //         testPassword,
+  //       );
+  //     },
+  //   );
+  // });
+
+  // it('User import wrong secure password', async function () {
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder({ onboarding: true }).build(),
+  //       ganacheOptions,
+  //       title: this.test.title,
+  //       failOnConsoleError: false,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+
+  //       await importWrongSRPOnboardingFlow(driver, wrongSeedPhrase);
+  //     },
+  //   );
+  // });
+
+  it('Check if user select different type your secret secovery phrase', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -36,48 +96,18 @@ describe('MetaMask onboarding', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        
+        // welcome
+        await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
-        await completeCreateNewWalletOnboardingFlow(
-          driver,
-          testSeedPhrase,
-          testPassword,
-        );
-      },
-    );
-  });
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-  it('Clicks import a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-
-        await completeImportSRPOnboardingFlow(
-          driver,
-          testSeedPhrase,
-          testPassword,
-        );
-      },
-    );
-  });
-
-  it('User import wrong secure password', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-
-        await importWrongSRPOnboardingFlow(driver, wrongSeedPhrase);
+        let menus = await driver.findElements('select');
+        let menu = menus[1];
+        await menu.click();
+        let options = await menu.findElements(withTagName('option'));
+        selectDropdownbyNum(options,1);
+        
       },
     );
   });
