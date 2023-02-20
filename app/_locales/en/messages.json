@@ -339,6 +339,10 @@
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
   },
+  "appDescriptionMMI": {
+    "message": "An Ethereum Wallet for Institutional Investors",
+    "description": "The description of the application"
+  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -350,6 +354,10 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
+  },
+  "appNameMMI": {
+    "message": "MetaMask Institutional",
+    "description": "The name of the application (MMI)"
   },
   "approve": {
     "message": "Approve spend limit"
