@@ -4,7 +4,7 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Send NFT', function () {
-  const smartContract = SMART_CONTRACTS.COLLECTIBLES;
+  const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [
       {
@@ -40,7 +40,7 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
         // Fill the send NFT form and confirm the transaction
-        await driver.clickElement('.collectibles-items__item-image');
+        await driver.clickElement('.nfts-items__item-image');
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
@@ -49,7 +49,7 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        // When transaction complete, check the send nft item is displayed in activity tab
+        // When transaction complete, check the send NFT is displayed in activity tab
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .transaction-list-item',

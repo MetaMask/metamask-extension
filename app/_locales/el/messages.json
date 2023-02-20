@@ -266,9 +266,6 @@
   "address": {
     "message": "Διεύθυνση"
   },
-  "addressBookIcon": {
-    "message": "Εικονίδιο βιβλίου διευθύνσεων"
-  },
   "advanced": {
     "message": "Σύνθετες"
   },
@@ -2050,7 +2047,7 @@
     "message": "Το “$1” προστέθηκε με επιτυχία!"
   },
   "newNftAddedMessage": {
-    "message": "Το Collectible προστέθηκε με επιτυχία!"
+    "message": "Το Nft προστέθηκε με επιτυχία!"
   },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"

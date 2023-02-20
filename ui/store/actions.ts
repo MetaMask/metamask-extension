@@ -2097,10 +2097,10 @@ export function addNft(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add collectible without address');
+      throw new Error('MetaMask - Cannot add NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add collectible without tokenID');
+      throw new Error('MetaMask - Cannot add NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2124,10 +2124,10 @@ export function addNftVerifyOwnership(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot add collectible without address');
+      throw new Error('MetaMask - Cannot add NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot add collectible without tokenID');
+      throw new Error('MetaMask - Cannot add NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2162,10 +2162,10 @@ export function removeAndIgnoreNft(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot ignore collectible without address');
+      throw new Error('MetaMask - Cannot ignore NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
+      throw new Error('MetaMask - Cannot ignore NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2189,10 +2189,10 @@ export function removeNft(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     if (!address) {
-      throw new Error('MetaMask - Cannot remove collectible without address');
+      throw new Error('MetaMask - Cannot remove NFT without address');
     }
     if (!tokenID) {
-      throw new Error('MetaMask - Cannot remove collectible without tokenID');
+      throw new Error('MetaMask - Cannot remove NFT without tokenID');
     }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
@@ -2215,13 +2215,13 @@ export async function checkAndUpdateAllNftsOwnershipStatus() {
 
 export async function isNftOwner(
   ownerAddress: string,
-  collectibleAddress: string,
-  collectibleId: string,
+  nftAddress: string,
+  nftId: string,
 ): Promise<boolean> {
   return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
-    collectibleAddress,
-    collectibleId,
+    nftAddress,
+    nftId,
   ]);
 }
 
@@ -2666,19 +2666,19 @@ export function hideAlert(): Action {
 /**
  * TODO: this should be moved somewhere else when it makese sense to do so
  */
-interface CollectibleDropDownState {
+interface NftDropDownState {
   [address: string]: {
     [chainId: string]: {
-      [collectibleAddress: string]: boolean;
+      [nftAddress: string]: boolean;
     };
   };
 }
 
-export function updateCollectibleDropDownState(
-  value: CollectibleDropDownState,
+export function updateNftDropDownState(
+  value: NftDropDownState,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    await submitRequestToBackground('updateCollectibleDropDownState', [value]);
+    await submitRequestToBackground('updateNftDropDownState', [value]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3752,20 +3752,20 @@ export function setNewNetworkAdded(
   };
 }
 
-export function setNewCollectibleAddedMessage(
+export function setNewNftAddedMessage(
   newNftAddedMessage: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
+    type: actionConstants.SET_NEW_NFT_ADDED_MESSAGE,
     payload: newNftAddedMessage,
   };
 }
 
-export function setRemoveCollectibleMessage(
+export function setRemoveNftMessage(
   removeNftMessage: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE,
+    type: actionConstants.SET_REMOVE_NFT_MESSAGE,
     payload: removeNftMessage,
   };
 }

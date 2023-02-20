@@ -266,9 +266,6 @@
   "address": {
     "message": "地址"
   },
-  "addressBookIcon": {
-    "message": "地址簿图标"
-  },
   "advanced": {
     "message": "高级"
   },

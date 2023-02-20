@@ -960,8 +960,8 @@ export default class MetamaskController extends EventEmitter {
 
         const { txReceipt } = txMeta;
 
-        // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
-        // in which case we will want to check and update ownership status of the transferred collectible.
+        // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
+        // in which case we will want to check and update ownership status of the transferred NFT.
         if (
           txMeta.type === TransactionType.tokenMethodTransferFrom &&
           txMeta.txParams !== undefined
@@ -982,19 +982,17 @@ export default class MetamaskController extends EventEmitter {
           const { allNfts } = this.nftController.state;
 
           const chainIdAsDecimal = hexToDecimal(chainId);
-          // check if its a known collectible
-          const knownCollectible = allNfts?.[userAddress]?.[
-            chainIdAsDecimal
-          ]?.find(
+          // check if its a known NFT
+          const knownNft = allNfts?.[userAddress]?.[chainIdAsDecimal]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
           );
 
           // if it is we check and update ownership status.
-          if (knownCollectible) {
+          if (knownNft) {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-              knownCollectible,
+              knownNft,
               false,
               { userAddress, chainId: chainIdAsDecimal },
             );
@@ -1904,10 +1902,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowPortfolioTooltip.bind(appStateController),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
-      updateCollectibleDropDownState:
-        appStateController.updateCollectibleDropDownState.bind(
-          appStateController,
-        ),
+      updateNftDropDownState:
+        appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
       // EnsController
@@ -2144,7 +2140,7 @@ export default class MetamaskController extends EventEmitter {
         detectTokensController,
       ),
 
-      // DetectCollectibleController
+      // DetectNftController
       detectNfts: process.env.NFTS_V1
         ? nftDetectionController.detectNfts.bind(nftDetectionController)
         : null,
