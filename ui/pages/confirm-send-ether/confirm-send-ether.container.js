@@ -6,8 +6,6 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 import { AssetType } from '../../../shared/constants/transaction';
 import ConfirmSendEther from './confirm-send-ether.component';
 
-const mapStateToProps = () => {};
-
 const mapDispatchToProps = (dispatch) => {
   return {
     editTransaction: async (txData) => {
@@ -20,5 +18,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(undefined, mapDispatchToProps),
 )(ConfirmSendEther);
