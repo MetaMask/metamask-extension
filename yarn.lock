@@ -4313,15 +4313,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.3.1, @metamask/utils@npm:^3.4.0, @metamask/utils@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "@metamask/utils@npm:3.4.1"
+"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.3.1, @metamask/utils@npm:^3.4.0, @metamask/utils@npm:^3.4.1, @metamask/utils@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
     "@types/debug": ^4.1.7
     debug: ^4.3.4
     semver: ^7.3.8
     superstruct: ^1.0.3
-  checksum: 0799cefc17effecba4b4cd34879113f9f826a7aff4d21bfdcca64ef31c117be3e6a30cdd49c0b91289f22efbf7e56901322f4ce1b4d638dd2fc3bc3e81e3c87d
+  checksum: 1ebc6677bb017e4d09d4af143621fe27194d8ed815234cfd76469c3c734dc1db2ea7b577c01a2096c21c04d8c9c4d721d3035b5353fe2ded3b4737f326755e43
   languageName: node
   linkType: hard
 
@@ -24096,7 +24096,7 @@ __metadata:
     "@metamask/snaps-utils": ^0.28.0
     "@metamask/subject-metadata-controller": ^1.0.0
     "@metamask/test-dapp": ^5.4.0
-    "@metamask/utils": ^3.4.1
+    "@metamask/utils": ^3.6.0
     "@ngraveio/bc-ur": ^1.1.6
     "@popperjs/core": ^2.4.0
     "@reduxjs/toolkit": ^1.6.2
