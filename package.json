@@ -204,8 +204,7 @@
     "async-done@~1.3.2": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "async-done@^1.2.0": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
     "async-done@^1.2.2": "patch:async-done@npm%3A1.3.2#./.yarn/patches/async-done-npm-1.3.2-1f0a4a8997.patch",
-    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
-    "eth-trezor-keyring@^0.10.0": "patch:eth-trezor-keyring@npm%3A0.10.0#./.yarn/patches/eth-trezor-keyring-npm-0.10.0-1bf9aa3f4d.patch"
+    "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
