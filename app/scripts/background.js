@@ -54,6 +54,16 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
+/* eslint-disable import/order */
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+import {
+  CONNECTION_TYPE_EXTERNAL,
+  CONNECTION_TYPE_INTERNAL,
+} from '@metamask/desktop/dist/constants';
+import DesktopManager from '@metamask/desktop/dist/desktop-manager';
+///: END:ONLY_INCLUDE_IN
+/* eslint-enable import/order */
+
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
@@ -96,6 +106,13 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+const OVERRIDE_ORIGIN = {
+  EXTENSION: 'EXTENSION',
+  DESKTOP: 'DESKTOP_APP',
+};
+///: END:ONLY_INCLUDE_IN
 
 // Event emitter for state persistence
 export const statePersistenceEvents = new EventEmitter();
@@ -245,6 +262,11 @@ async function initialize() {
   try {
     const initState = await loadStateFromPersistence();
     const initLangCode = await getFirstPreferredLangCode();
+
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    await DesktopManager.init(platform.getVersion());
+    ///: END:ONLY_INCLUDE_IN
+
     setupController(initState, initLangCode);
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -482,6 +504,26 @@ export function setupController(initState, initLangCode, overrides) {
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    if (
+      DesktopManager.isDesktopEnabled() &&
+      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
+    ) {
+      DesktopManager.createStream(remotePort, CONNECTION_TYPE_INTERNAL).then(
+        () => {
+          // When in Desktop Mode the responsibility to send CONNECTION_READY is on the desktop app side
+          if (isManifestV3) {
+            // Message below if captured by UI code in app/scripts/ui.js which will trigger UI initialisation
+            // This ensures that UI is initialised only after background is ready
+            // It fixes the issue of blank screen coming when extension is loaded, the issue is very frequent in MV3
+            remotePort.postMessage({ name: 'CONNECTION_READY' });
+          }
+        },
+      );
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -584,6 +626,16 @@ export function setupController(initState, initLangCode, overrides) {
 
   // communication with page or other extension
   connectExternal = (remotePort) => {
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    if (
+      DesktopManager.isDesktopEnabled() &&
+      OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
+    ) {
+      DesktopManager.createStream(remotePort, CONNECTION_TYPE_EXTERNAL);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
     controller.setupUntrustedCommunication({
@@ -762,6 +814,14 @@ export function setupController(initState, initLangCode, overrides) {
 
     updateBadge();
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  if (OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()) {
+    controller.store.subscribe((state) => {
+      DesktopManager.setState(state);
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 }
 
 //
