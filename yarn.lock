@@ -15351,16 +15351,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-filters@npm:^5.0.0, eth-json-rpc-filters@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "eth-json-rpc-filters@npm:5.1.0"
+"eth-json-rpc-filters@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "eth-json-rpc-filters@npm:6.0.0"
   dependencies:
     "@metamask/safe-event-emitter": ^2.0.0
     async-mutex: ^0.2.6
     eth-query: ^2.1.2
     json-rpc-engine: ^6.1.0
     pify: ^5.0.0
-  checksum: 864092e96277953c399a139df66572b864bd41247c5c1d18e6529973804d4fd8962658d8b10571152554802fa8daaa1003588aee79ffce754e0bc57c39b771d5
+  checksum: 59e21288b0d8f5c22b19cf1eceb8b09671c783d0c78b0e5bedc4ab777ddde8b5c2818e11bbe060966612737870abf9e4c25632d5efea49ebd16b5d082ce9d80f
   languageName: node
   linkType: hard
 
@@ -24155,7 +24155,7 @@ __metadata:
     eslint-plugin-storybook: ^0.6.4
     eth-block-tracker: ^6.0.0
     eth-ens-namehash: ^2.0.8
-    eth-json-rpc-filters: ^5.1.0
+    eth-json-rpc-filters: ^6.0.0
     eth-json-rpc-middleware: ^9.0.1
     eth-lattice-keyring: ^0.12.3
     eth-method-registry: ^2.0.0
