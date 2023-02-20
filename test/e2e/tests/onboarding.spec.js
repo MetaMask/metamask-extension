@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const {
   convertToHexValue,
   withFixtures,
@@ -6,12 +7,9 @@ const {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
-  selectDropdownbyNum,
+  selectDropdownByNum,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const {
-  withTagName,
-} = require('selenium-webdriver');
 
 describe('MetaMask onboarding', function () {
   const testSeedPhrase =
@@ -30,61 +28,61 @@ describe('MetaMask onboarding', function () {
     ],
   };
 
-  // it('Clicks create a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
-  //   await withFixtures(
-  //     {
-  //       fixtures: new FixtureBuilder({ onboarding: true }).build(),
-  //       ganacheOptions,
-  //       title: this.test.title,
-  //       failOnConsoleError: false,
-  //     },
-  //     async ({ driver }) => {
-  //       await driver.navigate();
+  it('Clicks create a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
 
-  //       await completeCreateNewWalletOnboardingFlow(
-  //         driver,
-  //         testSeedPhrase,
-  //         testPassword,
-  //       );
-  //     },
-  //   );
-  // });
+        await completeCreateNewWalletOnboardingFlow(
+          driver,
+          testSeedPhrase,
+          testPassword,
+        );
+      },
+    );
+  });
 
-  // it('Clicks import a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
-  //   await withFixtures(
-  //     {
-  //       fixtures: new FixtureBuilder({ onboarding: true }).build(),
-  //       ganacheOptions,
-  //       title: this.test.title,
-  //       failOnConsoleError: false,
-  //     },
-  //     async ({ driver }) => {
-  //       await driver.navigate();
+  it('Clicks import a new wallet, accepts a secure password, reveals the Secret Recovery Phrase, confirm SRP', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
 
-  //       await completeImportSRPOnboardingFlow(
-  //         driver,
-  //         testSeedPhrase,
-  //         testPassword,
-  //       );
-  //     },
-  //   );
-  // });
+        await completeImportSRPOnboardingFlow(
+          driver,
+          testSeedPhrase,
+          testPassword,
+        );
+      },
+    );
+  });
 
-  // it('User import wrong secure password', async function () {
-  //   await withFixtures(
-  //     {
-  //       fixtures: new FixtureBuilder({ onboarding: true }).build(),
-  //       ganacheOptions,
-  //       title: this.test.title,
-  //       failOnConsoleError: false,
-  //     },
-  //     async ({ driver }) => {
-  //       await driver.navigate();
+  it('User import wrong secure password', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
 
-  //       await importWrongSRPOnboardingFlow(driver, wrongSeedPhrase);
-  //     },
-  //   );
-  // });
+        await importWrongSRPOnboardingFlow(driver, wrongSeedPhrase);
+      },
+    );
+  });
 
   it('Check if user select different type your secret secovery phrase', async function () {
     await withFixtures(
@@ -96,18 +94,30 @@ describe('MetaMask onboarding', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        
+
         // welcome
         await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-        let menus = await driver.findElements('select');
-        let menu = menus[1];
-        await menu.click();
-        let options = await menu.findElements(withTagName('option'));
-        selectDropdownbyNum(options,1);
-        
+        const dropdowns = await driver.findElements('select');
+        const dropdownElement = dropdowns[1];
+        await dropdownElement.click();
+        const options = await dropdownElement.findElements(
+          By.tagName('option'),
+        );
+
+        for (let i = 0; i <= 4; i++) {
+          selectDropdownByNum(options, i);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const formFields = await driver.findElements(
+            '.import-srp__srp-word-label',
+          );
+          const expectedNumFields = 12 + i * 3;
+          const actualNumFields = formFields.length;
+          assert.equal(actualNumFields, expectedNumFields);
+        }
       },
     );
   });

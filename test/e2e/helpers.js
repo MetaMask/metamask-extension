@@ -392,11 +392,8 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   assert.equal(await confirmSeedPhrase.isEnabled(), false);
 };
 
-var selectDropdownbyNum = function (elements,index) {
-
-  elements[index].click();
-  
- 
+const selectDropdownByNum = async function (elements, index) {
+  await elements[index].click();
 };
 
 module.exports = {
@@ -413,5 +410,5 @@ module.exports = {
   completeCreateNewWalletOnboardingFlow,
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
-  selectDropdownbyNum,
+  selectDropdownByNum,
 };
