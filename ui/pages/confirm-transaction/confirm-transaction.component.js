@@ -59,15 +59,24 @@ const ConfirmTransaction = () => {
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
-
   const totalUnapproved = unconfirmedTxs.length || 0;
+  const [transaction, setTransaction] = useState(() => totalUnapproved
+  ? unapprovedTxs[paramsTransactionId] ||
+      unconfirmedMessages[paramsTransactionId] ||
+      unconfirmedTxs[0]
+  : {});
 
-  const transaction = useMemo(() => {
-    return totalUnapproved
+
+  useEffect(() => {
+    const transaction = totalUnapproved
       ? unapprovedTxs[paramsTransactionId] ||
           unconfirmedMessages[paramsTransactionId] ||
           unconfirmedTxs[0]
       : {};
+    setTransaction(transaction);
+    if (transaction?.id) {
+      dispatch(setTransactionToConfirm(transaction.id));
+    }
   }, [
     paramsTransactionId,
     totalUnapproved,
