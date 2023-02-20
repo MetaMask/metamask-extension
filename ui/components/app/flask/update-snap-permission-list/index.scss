@@ -48,6 +48,7 @@
   .permission {
     &__tooltip-icon {
       margin-left: auto !important;
+      padding-left: 16px;
 
       i {
         color: var(--color-icon-muted);

@@ -14,9 +14,14 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
-import { Icon, ICON_NAMES } from '../../components/component-library';
-import { Color } from '../constants/design-system';
+import {
+  Icon,
+  ICON_NAMES,
+  AvatarIcon,
+  ICON_SIZES,
+} from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { IconColor } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -26,12 +31,38 @@ import {
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
+const RIGHT_WARNING_ICON = (
+  <Icon
+    name={ICON_NAMES.DANGER}
+    size={ICON_SIZES.SM}
+    color={IconColor.warningDefault}
+  />
+);
+
+const RIGHT_INFO_ICON = (
+  <Icon
+    name={ICON_NAMES.INFO}
+    size={ICON_SIZES.SM}
+    color={IconColor.iconMuted}
+  />
+);
+
+function getLeftIcon(iconName) {
+  return (
+    <AvatarIcon
+      iconName={iconName}
+      size={ICON_SIZES.SM}
+      iconProps={{
+        size: ICON_SIZES.XS,
+      }}
+    />
+  );
+}
+
 const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: (t) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: (
-      <Icon name={ICON_NAMES.EYE} margin={4} color={Color.iconAlternative} />
-    ),
+    leftIcon: getLeftIcon(ICON_NAMES.ETHEREUM),
     rightIcon: null,
     weight: 2,
   }),
@@ -39,35 +70,29 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.snap_confirm]: (t) => ({
     label: t('permission_customConfirmation'),
     description: t('permission_customConfirmationDescription'),
-    leftIcon: 'fas fa-user-check',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.SECURITY_TICK),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_dialog]: (t) => ({
     label: t('permission_dialog'),
     description: t('permission_dialogDescription'),
-    leftIcon: 'fas fa-user-check',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.MESSAGES),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_notify]: (t) => ({
     label: t('permission_notifications'),
     description: t('permission_notificationsDescription'),
-    leftIcon: <Icon name={ICON_NAMES.NOTIFICATION} />,
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.NOTIFICATION),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_getBip32PublicKey]: (t, _, permissionValue) =>
     permissionValue.caveats[0].value.map(({ path, curve }) => {
       const baseDescription = {
-        leftIcon: (
-          <Icon
-            name={ICON_NAMES.EYE}
-            margin={4}
-            color={Color.iconAlternative}
-          />
-        ),
-        rightIcon: 'fa fa-exclamation-triangle',
+        leftIcon: getLeftIcon(ICON_NAMES.SECURITY_SEARCH),
+        rightIcon: RIGHT_WARNING_ICON,
         weight: 1,
       };
 
@@ -115,8 +140,8 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.snap_getBip32Entropy]: (t, _, permissionValue) =>
     permissionValue.caveats[0].value.map(({ path, curve }) => {
       const baseDescription = {
-        leftIcon: 'fas fa-door-open',
-        rightIcon: 'fa fa-exclamation-triangle',
+        leftIcon: getLeftIcon(ICON_NAMES.KEY),
+        rightIcon: RIGHT_WARNING_ICON,
         weight: 1,
       };
 
@@ -178,29 +203,29 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
             `${coinType} (Unrecognized protocol)`}
         </span>,
       ]),
-      leftIcon: 'fas fa-door-open',
-      rightIcon: 'fa fa-exclamation-triangle',
+      leftIcon: getLeftIcon(ICON_NAMES.KEY),
+      rightIcon: RIGHT_WARNING_ICON,
       weight: 1,
     })),
   [RestrictedMethods.snap_getEntropy]: (t) => ({
     label: t('permission_getEntropy'),
     description: t('permission_getEntropyDescription'),
-    leftIcon: 'fas fa-key',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.SECURITY_KEY),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_manageState]: (t) => ({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
-    leftIcon: 'fas fa-download',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.ADD_SQUARE),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.wallet_snap]: (t, _, permissionValue) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
-      leftIcon: 'fas fa-bolt',
-      rightIcon: 'fas fa-info-circle',
+      leftIcon: getLeftIcon(ICON_NAMES.FLASH),
+      rightIcon: RIGHT_INFO_ICON,
     };
 
     return Object.keys(snaps).map((snapId) => {
@@ -226,8 +251,8 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:network-access']]: (t) => ({
     label: t('permission_accessNetwork'),
     description: t('permission_accessNetworkDescription'),
-    leftIcon: 'fas fa-wifi',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.GLOBAL),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:webassembly']]: (t) => ({
@@ -239,8 +264,8 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:long-running']]: (t) => ({
     label: t('permission_longRunning'),
     description: t('permission_longRunningDescription'),
-    leftIcon: 'fas fa-infinity',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.LINK),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [EndowmentPermissions['endowment:transaction-insight']]: (
@@ -249,8 +274,8 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     permissionValue,
   ) => {
     const baseDescription = {
-      leftIcon: 'fas fa-info',
-      rightIcon: 'fas fa-info-circle',
+      leftIcon: getLeftIcon(ICON_NAMES.SPEEDOMETER),
+      rightIcon: RIGHT_INFO_ICON,
       weight: 3,
     };
 
@@ -271,7 +296,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
         ...baseDescription,
         label: t('permission_transactionInsightOrigin'),
         description: t('permission_transactionInsightOriginDescription'),
-        leftIcon: 'fas fa-compass',
+        leftIcon: getLeftIcon(ICON_NAMES.EXPLORE),
       });
     }
 
@@ -280,21 +305,21 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:cronjob']]: (t) => ({
     label: t('permission_cronjob'),
     description: t('permission_cronjobDescription'),
-    leftIcon: 'fas fa-clock',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.CLOCK),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:ethereum-provider']]: (t) => ({
     label: t('permission_ethereumProvider'),
     description: t('permission_ethereumProviderDescription'),
-    leftIcon: 'fab fa-ethereum',
-    rightIcon: 'fas fa-info-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.ETHEREUM),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 1,
   }),
   [EndowmentPermissions['endowment:rpc']]: (t, _, permissionValue) => {
     const baseDescription = {
-      leftIcon: 'fas fa-plug',
-      rightIcon: 'fas fa-info-circle',
+      leftIcon: getLeftIcon(ICON_NAMES.HIERARCHY),
+      rightIcon: RIGHT_INFO_ICON,
       weight: 2,
     };
 
@@ -322,7 +347,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: (t, permissionName) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
-    leftIcon: 'fas fa-times-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.QUESTION),
     rightIcon: null,
     weight: 4,
   }),
@@ -397,7 +422,7 @@ export function getWeightedPermissions(t, permissions) {
  * If the weight is 1, the icon will be rendered with a warning color.
  *
  * @param {PermissionLabelObject} permission - The permission object.
- * @param {string} permission.rightIcon - The right icon.
+ * @param {JSX.Element | string} permission.rightIcon - The right icon.
  * @param {string} permission.description - The description.
  * @param {number} permission.weight - The weight.
  * @returns {JSX.Element | null} The right icon, or null if there's no
@@ -414,13 +439,23 @@ export function getRightIcon({ rightIcon, description, weight }) {
         html={<div>{description}</div>}
         position="bottom"
       >
-        <i className={rightIcon} />
+        {typeof rightIcon === 'string' ? (
+          <i className={rightIcon} />
+        ) : (
+          rightIcon
+        )}
       </Tooltip>
     );
   }
 
   if (rightIcon) {
-    return <i className={classnames(rightIcon, 'permission__tooltip-icon')} />;
+    if (typeof rightIcon === 'string') {
+      return (
+        <i className={classnames(rightIcon, 'permission__tooltip-icon')} />
+      );
+    }
+
+    return rightIcon;
   }
 
   return null;
