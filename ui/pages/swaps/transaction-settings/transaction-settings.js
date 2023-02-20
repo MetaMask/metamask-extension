@@ -63,35 +63,43 @@ export default function TransactionSettings({
   });
   const [inputRef, setInputRef] = useState(null);
 
-  let errorText = '';
-  let errorTitle = '';
+  let notificationText = '';
+  let notificationTitle = '';
+  let notificationSeverity = SEVERITIES.INFO;
   if (customValue) {
     // customValue is a string, e.g. '0'
     if (Number(customValue) < 0) {
-      errorText = t('swapSlippageNegativeDescription');
-      errorTitle = t('swapSlippageNegativeTitle');
+      notificationSeverity = SEVERITIES.DANGER;
+      notificationText = t('swapSlippageNegativeDescription');
+      notificationTitle = t('swapSlippageNegativeTitle');
       dispatch(setSwapsErrorKey(SLIPPAGE_NEGATIVE_ERROR));
     } else if (Number(customValue) > 0 && Number(customValue) <= 1) {
       // We will not show this warning for 0% slippage, because we will only
       // return non-slippage quotes from off-chain makers.
-      errorText = t('swapSlippageTooLowDescription');
-      errorTitle = t('swapSlippageTooLowTitle');
-      dispatch(setSwapsErrorKey(SLIPPAGE_TOO_LOW_ERROR));
+      notificationSeverity = SEVERITIES.WARNING;
+      notificationText = t('swapSlippageTooLowDescription');
+      notificationTitle = t('swapSlippageTooLowTitle');
     } else if (
       Number(customValue) >= 5 &&
       Number(customValue) <= maxAllowedSlippage
     ) {
-      errorText = t('swapSlippageVeryHighDescription', [Number(customValue)]);
-      errorTitle = t('swapSlippageVeryHighTitle');
-      dispatch(setSwapsErrorKey(SLIPPAGE_VERY_HIGH_ERROR));
+      notificationSeverity = SEVERITIES.WARNING;
+      notificationText = t('swapSlippageVeryHighDescription');
+      notificationTitle = t('swapSlippageVeryHighTitle');
     } else if (Number(customValue) > maxAllowedSlippage) {
-      errorText = t('swapSlippageOverLimitDescription');
-      errorTitle = t('swapSlippageOverLimitTitle');
+      notificationSeverity = SEVERITIES.DANGER;
+      notificationText = t('swapSlippageOverLimitDescription');
+      notificationTitle = t('swapSlippageOverLimitTitle');
       dispatch(setSwapsErrorKey(SLIPPAGE_OVER_LIMIT_ERROR));
+    } else if (Number(customValue) === 0) {
+      notificationSeverity = SEVERITIES.INFO;
+      notificationText = t('swapSlippageZeroDescription');
+      notificationTitle = t('swapSlippageZeroTitle');
     } else {
       dispatch(setSwapsErrorKey(''));
     }
   }
+  const isDangerSeverity = notificationSeverity === SEVERITIES.DANGER;
 
   const customValueText = customValue || t('swapCustom');
 
@@ -219,7 +227,7 @@ export default function TransactionSettings({
                       className={classnames(
                         'transaction-settings__button-group-custom-button',
                         {
-                          'radio-button--danger': errorText,
+                          'radio-button--danger': isDangerSeverity,
                         },
                       )}
                       onClick={() => {
@@ -233,7 +241,7 @@ export default function TransactionSettings({
                             'transaction-settings__custom-input',
                             {
                               'transaction-settings__custom-input--danger':
-                                errorText,
+                                isDangerSeverity,
                             },
                           )}
                         >
@@ -270,15 +278,17 @@ export default function TransactionSettings({
               </>
             )}
           </>
-          {errorText && (
+          {notificationText && (
             <Box marginTop={5}>
-              <BannerAlert severity={SEVERITIES.DANGER} title={errorTitle}>
+              <BannerAlert
+                severity={notificationSeverity}
+                title={notificationTitle}
+              >
                 <Typography variant={TypographyVariant.H6}>
-                  {errorText}
+                  {notificationText}
                 </Typography>
               </BannerAlert>
             </Box>
-            // <div className="transaction-settings__error-text">{errorText}</div>
           )}
         </div>
       </Popover>

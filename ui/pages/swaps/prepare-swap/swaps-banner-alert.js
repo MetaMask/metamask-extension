@@ -37,7 +37,7 @@ import { setTransactionSettingsOpened } from '../../../ducks/swaps/swaps';
 export default function SwapsBannerAlert({ swapsErrorKey }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const severity = SEVERITIES.DANGER;
+  let severity = SEVERITIES.DANGER;
   let title;
   let description;
   switch (swapsErrorKey) {
@@ -65,6 +65,7 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
       );
       break;
     case SLIPPAGE_VERY_HIGH_ERROR:
+      severity = SEVERITIES.WARNING;
       title = t('swapSlippageVeryHighTitle');
       description = (
         <Typography variant={TypographyVariant.H6}>
@@ -73,6 +74,7 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
       );
       break;
     case SLIPPAGE_TOO_LOW_ERROR:
+      severity = SEVERITIES.WARNING;
       title = t('swapSlippageTooLowTitle');
       description = (
         <Typography variant={TypographyVariant.H6}>

@@ -4176,17 +4176,22 @@
     "message": "Max slippage is too low which may cause your transaction to fail."
   },
   "swapSlippageTooLowTitle": {
-    "message": "Slippage is too low"
+    "message": "Increase slippage to avoid transaction failure"
   },
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
   },
   "swapSlippageVeryHighDescription": {
-    "message": "$1% is considered very high and may result in a bad rate",
-    "description": "$1 is the amount of % for slippage"
+    "message": "The slippage entered is considered very high and may result in a bad rate"
   },
   "swapSlippageVeryHighTitle": {
     "message": "Very high slippage"
+  },
+  "swapSlippageZeroDescription": {
+    "message": "There are fewer zero-slippage quote providers which will result in a less competitive quote."
+  },
+  "swapSlippageZeroTitle": {
+    "message": "Sourcing zero-slippage providers"
   },
   "swapSource": {
     "message": "Liquidity source"
