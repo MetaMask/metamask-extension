@@ -107,8 +107,8 @@ export const CustomComponents = (args) => {
             position="top"
             html={<Typography>Custom tooltip</Typography>}
           >
-            <Box as="i" marginLeft={2}>
-              <Icon name={ICON_NAMES.QUESTION}></Icon>
+            <Box marginLeft={2}>
+              <Icon name={ICON_NAMES.QUESTION} />
             </Box>
           </Tooltip>
         }
