@@ -150,17 +150,17 @@ export function useTransactionDisplayData(transactionGroup) {
   }
   useEffect(() => {
     async function getAndSetAssetDetails() {
-      const assetDetails = await getAssetDetails(
-        recipientAddress,
-        senderAddress,
-        initialTransaction?.txParams?.data,
-        knownNfts,
-      );
-      setCurrentAssetDetails(assetDetails);
+      if (isTokenCategory && !token) {
+        const assetDetails = await getAssetDetails(
+          recipientAddress,
+          senderAddress,
+          initialTransaction?.txParams?.data,
+          knownNfts,
+        );
+        setCurrentAssetDetails(assetDetails);
+      }
     }
-    if (isTokenCategory && !token) {
-      getAndSetAssetDetails();
-    }
+    getAndSetAssetDetails();
   }, [
     isTokenCategory,
     token,
