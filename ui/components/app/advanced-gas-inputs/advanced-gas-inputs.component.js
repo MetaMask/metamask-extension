@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import Tooltip from '../../ui/tooltip';
 import { Icon, ICON_NAMES } from '../../component-library';
+import { IconColor } from 'ui/helpers/constants/design-system';
 
 export default class AdvancedGasInputs extends Component {
   static contextTypes = {
@@ -139,7 +140,11 @@ export default class AdvancedGasInputs extends Component {
         <div className="advanced-gas-inputs__gas-edit-row__label">
           {label}
           <Tooltip title={tooltipTitle} position="top" arrow>
-            <Icon name={ICON_NAMES.INFO} />
+            <Icon
+              name={ICON_NAMES.INFO}
+              color={IconColor.iconAlternative}
+              className="info-circle"
+            />
           </Tooltip>
         </div>
         <div className="advanced-gas-inputs__gas-edit-row__input-wrapper">
