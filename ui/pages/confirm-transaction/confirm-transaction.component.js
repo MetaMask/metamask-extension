@@ -168,7 +168,8 @@ const ConfirmTransaction = () => {
     } else if (
       prevTransactionId &&
       transactionId &&
-      prevTransactionId !== transactionId
+      prevTransactionId !== transactionId &&
+      paramsTransactionId !== transactionId
     ) {
       history.replace(mostRecentOverviewPage);
     }
