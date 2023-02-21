@@ -75,12 +75,6 @@
   "asset": {
     "message": "Актив"
   },
-  "attemptToCancel": {
-    "message": "Опит за отказ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Подаването на този опит не гарантира, че първоначалната транзакция ще бъде анулирана. Ако опитът за анулиране е успешен, ще ви бъде начислена таксата за транзакцията по-горе."
-  },
   "attemptingConnect": {
     "message": "Опит за свързване с blockchain."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Отказ"
-  },
-  "cancellationGasFee": {
-    "message": "Такса в газ за анулиране "
   },
   "cancelled": {
     "message": "Отменен"
@@ -918,9 +909,6 @@
   },
   "welcomeBack": {
     "message": "Добре дошли отново!"
-  },
-  "yesLetsTry": {
-    "message": "Да, нека опитаме"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Трябва да разрешите достъпа на камерата, за да използвате тази функция."
