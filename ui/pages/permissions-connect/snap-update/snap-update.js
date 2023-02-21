@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
-import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
-import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
-import Box from '../../../../components/ui/box/box';
+import { PageContainerFooter } from '../../../components/ui/page-container';
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
+import PermissionConnectHeader from '../../../components/app/permissions-connect-header';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import SnapInstallWarning from '../../../components/app/snap-install-warning';
+import Box from '../../../components/ui/box/box';
 import {
   AlignItems,
   BLOCK_SIZES,
@@ -13,9 +13,9 @@ import {
   FLEX_DIRECTION,
   JustifyContent,
   TypographyVariant,
-} from '../../../../helpers/constants/design-system';
-import Typography from '../../../../components/ui/typography';
-import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
+} from '../../../helpers/constants/design-system';
+import Typography from '../../../components/ui/typography';
+import UpdateSnapPermissionList from '../../../components/app/update-snap-permission-list';
 import { getSnapInstallWarnings } from '../util';
 
 export default function SnapUpdate({

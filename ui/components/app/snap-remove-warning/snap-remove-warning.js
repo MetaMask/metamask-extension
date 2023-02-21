@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Typography from '../../../ui/typography/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box/box';
-import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import Typography from '../../ui/typography/typography';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+import Box from '../../ui/box/box';
+import Popover from '../../ui/popover';
+import Button from '../../ui/button';
 
 export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
   const t = useI18nContext();

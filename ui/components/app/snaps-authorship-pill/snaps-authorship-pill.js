@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Chip from '../../../ui/chip';
-import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
+import Chip from '../../ui/chip';
+import Box from '../../ui/box';
+import Typography from '../../ui/typography';
 import {
   TypographyVariant,
   TEXT_ALIGN,
   BackgroundColor,
   TextColor,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SNAPS_METADATA } from '../../../../shared/constants/snaps';
 
 const snapIdPrefixes = ['npm:', 'local:'];
 

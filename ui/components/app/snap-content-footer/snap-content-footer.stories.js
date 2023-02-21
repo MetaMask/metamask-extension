@@ -3,7 +3,7 @@ import React from 'react';
 import SnapContentFooter from '.';
 
 export default {
-  title: 'Components/App/Flask/SnapContentFooter',
+  title: 'Components/App/SnapContentFooter',
 
   component: SnapContentFooter,
   args: {

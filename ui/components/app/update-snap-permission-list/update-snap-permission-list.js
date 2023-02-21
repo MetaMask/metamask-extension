@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isFunction } from 'lodash';
-import { getWeightedPermissions } from '../../../../helpers/utils/permission';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatDate } from '../../../../helpers/utils/util';
-import Typography from '../../../ui/typography/typography';
-import { TextColor } from '../../../../helpers/constants/design-system';
+import { getWeightedPermissions } from '../../../helpers/utils/permission';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { formatDate } from '../../../helpers/utils/util';
+import Typography from '../../ui/typography/typography';
+import { TextColor } from '../../../helpers/constants/design-system';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,

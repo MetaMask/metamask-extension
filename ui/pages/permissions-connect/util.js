@@ -1,5 +1,5 @@
 import { flatMap } from '@metamask/snaps-utils';
-import { coinTypeToProtocolName } from '../../../helpers/utils/util';
+import { coinTypeToProtocolName } from '../../helpers/utils/util';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
   const bip32EntropyPermissions =

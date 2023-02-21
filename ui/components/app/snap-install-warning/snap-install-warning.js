@@ -2,12 +2,12 @@ import React, { useCallback, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { produce } from 'immer';
 import classnames from 'classnames';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CheckBox from '../../../ui/check-box/check-box.component';
-import Typography from '../../../ui/typography/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
-import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import CheckBox from '../../ui/check-box/check-box.component';
+import Typography from '../../ui/typography/typography';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+import Popover from '../../ui/popover';
+import Button from '../../ui/button';
 
 /**
  * a very simple reducer using produce from Immer to keep checkboxes state manipulation

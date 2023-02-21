@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import nanoid from 'nanoid';
 import { isComponent } from '@metamask/snaps-ui';
-import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
+import MetaMaskTemplateRenderer from '../metamask-template-renderer/metamask-template-renderer';
 import {
   TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
   FLEX_DIRECTION,
-} from '../../../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import ActionableMessage from '../../../ui/actionable-message/actionable-message';
-import Box from '../../../ui/box';
-import { getSnap } from '../../../../selectors';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import Box from '../../ui/box';
+import { getSnap } from '../../../selectors';
 
 export const UI_MAPPING = {
   panel: (props) => ({

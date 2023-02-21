@@ -2,7 +2,7 @@ import React from 'react';
 import SnapsAuthorshipPill from '.';
 
 export default {
-  title: 'Components/App/Flask/SnapsAuthorshipPill',
+  title: 'Components/App/SnapsAuthorshipPill',
 
   component: SnapsAuthorshipPill,
   argTypes: {

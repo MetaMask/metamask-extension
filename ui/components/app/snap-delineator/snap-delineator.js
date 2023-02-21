@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BorderStyle,
   Size,
@@ -11,9 +11,9 @@ import {
   IconColor,
   TextVariant,
   TextColor,
-} from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
-import { Icon, Text } from '../../../component-library';
+} from '../../../helpers/constants/design-system';
+import Box from '../../ui/box';
+import { Icon, Text } from '../../component-library';
 
 export const SnapDelineator = ({ snapName, children }) => {
   const t = useI18nContext();

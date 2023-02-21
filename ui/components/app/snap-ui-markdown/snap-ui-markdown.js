@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
-import Typography from '../../../ui/typography/typography';
+import { TypographyVariant } from '../../../helpers/constants/design-system';
+import Typography from '../../ui/typography/typography';
 
 const Paragraph = (props) => (
   <Typography

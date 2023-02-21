@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { object } from '@storybook/addon-knobs';
 import { panel, text, heading, divider, copyable } from '@metamask/snaps-ui';
-import configureStore from '../../../../store/store';
-import testData from '../../../../../.storybook/test-data';
+import configureStore from '../../../store/store';
+import testData from '../../../../.storybook/test-data';
 import { SnapUIRenderer } from '.';
 
 const store = configureStore(testData);

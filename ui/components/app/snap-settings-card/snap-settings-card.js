@@ -2,18 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Card from '../../../ui/card';
-import Box from '../../../ui/box';
-import IconWithFallback from '../../../ui/icon-with-fallback';
-import IconBorder from '../../../ui/icon-border';
-import Typography from '../../../ui/typography/typography';
-import ToggleButton from '../../../ui/toggle-button';
-import Chip from '../../../ui/chip';
-import ColorIndicator from '../../../ui/color-indicator';
-import Button from '../../../ui/button';
-import Tooltip from '../../../ui/tooltip';
+import Card from '../../ui/card';
+import Box from '../../ui/box';
+import IconWithFallback from '../../ui/icon-with-fallback';
+import IconBorder from '../../ui/icon-border';
+import Typography from '../../ui/typography/typography';
+import ToggleButton from '../../ui/toggle-button';
+import Chip from '../../ui/chip';
+import ColorIndicator from '../../ui/color-indicator';
+import Button from '../../ui/button';
+import Tooltip from '../../ui/tooltip';
 
 import {
   Color,
@@ -25,7 +25,7 @@ import {
   TEXT_ALIGN,
   TextColor,
   BackgroundColor,
-} from '../../../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 
 const STATUSES = {
   INSTALLING: 'installing',

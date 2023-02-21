@@ -6,7 +6,7 @@ import {
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
-} from '../../../../../shared/constants/permissions';
+} from '../../../../shared/constants/permissions';
 
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
