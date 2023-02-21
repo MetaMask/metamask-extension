@@ -127,10 +127,7 @@ describe('AddNft', () => {
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
-    const { getByTestId, getByText } = renderWithProvider(
-      <AddNft />,
-      store,
-    );
+    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
     });
