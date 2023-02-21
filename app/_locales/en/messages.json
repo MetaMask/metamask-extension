@@ -403,12 +403,6 @@
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
-  "attemptToCancel": {
-    "message": "Attempt to cancel?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction fee above."
-  },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
@@ -482,9 +476,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
-  },
-  "betaPortfolioSite": {
-    "message": "beta portfolio site"
   },
   "betaTerms": {
     "message": "Beta Terms of use"
@@ -603,9 +594,6 @@
   },
   "cancelSwapForFree": {
     "message": "Cancel swap for free"
-  },
-  "cancellationGasFee": {
-    "message": "Cancellation gas fee"
   },
   "cancelled": {
     "message": "Cancelled"
@@ -1772,9 +1760,6 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "to keep tabs on your tokens and NFTs across accounts and networks."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2809,8 +2794,8 @@
   "popularCustomNetworks": {
     "message": "Popular custom networks"
   },
-  "portfolioSite": {
-    "message": "Portfolio site"
+  "portfolio": {
+    "message": "Portfolio"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -4232,9 +4217,6 @@
   "tryAgain": {
     "message": "Try again"
   },
-  "tryOur": {
-    "message": "Try our"
-  },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
@@ -4502,9 +4484,6 @@
   },
   "yes": {
     "message": "Yes"
-  },
-  "yesLetsTry": {
-    "message": "Yes, let's try"
   },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",

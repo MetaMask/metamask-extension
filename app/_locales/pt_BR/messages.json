@@ -235,12 +235,6 @@
   "assets": {
     "message": "Ativos"
   },
-  "attemptToCancel": {
-    "message": "Tentar cancelar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar essa tentativa não garante que a transação original será cancelada. Se a tentativa de cancelamento tiver sucesso, será cobrada a taxa de transação acima."
-  },
   "attemptingConnect": {
     "message": "Tentando conexão com o blockchain."
   },
@@ -357,9 +351,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Para $1 uma transação, a taxa de gás deve ser aumentada em pelo menos 10% para que seja reconhecida pela rede.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancellationGasFee": {
-    "message": "Taxa de gás por cancelamento"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -3022,9 +3013,6 @@
   "xOfYPending": {
     "message": "$1 de $2 pendente",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Sim, vamos tentar"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Você precisa permitir o acesso à câmera para usar esse recurso."

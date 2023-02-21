@@ -27,7 +27,11 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -193,6 +197,35 @@ const EthOverview = ({ className }) => {
                       </Tooltip>
                     )
               }
+            />
+            <IconButton
+              className="eth-overview__button"
+              data-testid="home__portfolio-site"
+              Icon={
+                <Icon
+                  name={ICON_NAMES.DIAGRAM}
+                  color={IconColor.primaryInverse}
+                />
+              }
+              label={t('portfolio')}
+              onClick={() => {
+                const portfolioUrl = process.env.PORTFOLIO_URL;
+                global.platform.openTab({
+                  url: `${portfolioUrl}?metamaskEntry=ext`,
+                });
+                trackEvent(
+                  {
+                    category: EVENT.CATEGORIES.HOME,
+                    event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                    properties: {
+                      url: portfolioUrl,
+                    },
+                  },
+                  {
+                    contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                  },
+                );
+              }}
             />
           </>
         }

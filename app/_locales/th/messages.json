@@ -57,9 +57,6 @@
   "cancel": {
     "message": "ยกเลิก"
   },
-  "cancellationGasFee": {
-    "message": "ค่าธรรมเนียม Gas การยกเลิก"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "คุณต้องใช้ MetaMask บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
   },

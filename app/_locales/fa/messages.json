@@ -75,12 +75,6 @@
   "asset": {
     "message": "سرمایه"
   },
-  "attemptToCancel": {
-    "message": "تلاش یا لغو؟"
-  },
-  "attemptToCancelDescription": {
-    "message": "تسلیم این تلاش لغو معامله اصلی تان را تضمین نمیکند. در صورتیکه تلاش لغو موفق باشد، بر شما فیس معامله فوق الذکر چارج خواهد شد."
-  },
   "attemptingConnect": {
     "message": "در حال تلاش برای اتصال با زنجیره بلوکی"
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "لغو"
-  },
-  "cancellationGasFee": {
-    "message": "لغو فیس گاز"
   },
   "cancelled": {
     "message": "لغو شد"
@@ -922,9 +913,6 @@
   },
   "welcomeBack": {
     "message": "بازگشت شما را خوش‌آمد می‌گوییم!"
-  },
-  "yesLetsTry": {
-    "message": "بلی، بیایید امتحان کنیم"
   },
   "youNeedToAllowCameraAccess": {
     "message": "لازم است تا شما جهت استفاده از این مشخصه، به کمره اجازه دسترسی بدهید."

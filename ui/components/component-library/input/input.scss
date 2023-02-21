@@ -1,0 +1,16 @@
+.mm-input {
+  --input-opacity-disabled: 0.5;
+
+  box-sizing: content-box;
+
+  &--disable-state-styles {
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &--disabled {
+    opacity: var(--input-opacity-disabled);
+  }
+}
