@@ -14,8 +14,8 @@ import {
 } from '../../components/component-library';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
-import SnapInstall from './flask/snap-install';
-import SnapUpdate from './flask/snap-update';
+import SnapInstall from './snap-install';
+import SnapUpdate from './snap-update';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 

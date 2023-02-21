@@ -1,5 +1,5 @@
-import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
-import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
+import { mapToTemplate } from '../../../../components/app/snap-ui-renderer';
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 function getValues(pendingApproval, t, actions, _history, setInputState) {
   const {

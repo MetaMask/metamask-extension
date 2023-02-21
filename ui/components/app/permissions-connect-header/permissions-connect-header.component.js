@@ -7,7 +7,7 @@ import {
   FLEX_DIRECTION,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
+import SnapsAuthorshipPill from '../snaps-authorship-pill';
 
 export default class PermissionsConnectHeader extends Component {
   static contextTypes = {

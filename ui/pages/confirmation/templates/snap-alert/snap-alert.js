@@ -1,4 +1,4 @@
-import { mapToTemplate } from '../../../../../components/app/flask/snap-ui-renderer';
+import { mapToTemplate } from '../../../../components/app/snap-ui-renderer';
 
 function getValues(pendingApproval, t, actions) {
   const {

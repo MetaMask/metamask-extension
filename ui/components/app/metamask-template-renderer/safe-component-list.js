@@ -12,10 +12,10 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { SnapDelineator } from '../flask/snap-delineator';
-import { Copyable } from '../flask/copyable';
+import { SnapDelineator } from '../snap-delineator';
+import { Copyable } from '../copyable';
 import Spinner from '../../ui/spinner';
-import { SnapUIMarkdown } from '../flask/snap-ui-markdown';
+import { SnapUIMarkdown } from '../snap-ui-markdown';
 
 export const safeComponentList = {
   a: 'a',

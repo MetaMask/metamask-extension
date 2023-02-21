@@ -7,4 +7,4 @@ export {
   default as ConfirmPageContainerContent,
   ConfirmPageContainerSummary,
 } from './confirm-page-container-content';
-export { SnapInsight } from './flask/snap-insight';
+export { SnapInsight } from './snap-insight';

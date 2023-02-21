@@ -1,21 +1,21 @@
 import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Typography from '../../../../components/ui/typography/typography';
+import SnapSettingsCard from '../../../components/app/snap-settings-card';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import Typography from '../../../components/ui/typography/typography';
 import {
   TypographyVariant,
   FLEX_DIRECTION,
   JustifyContent,
   AlignItems,
   TextColor,
-} from '../../../../helpers/constants/design-system';
-import Box from '../../../../components/ui/box';
-import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
-import { disableSnap, enableSnap } from '../../../../store/actions';
-import { getSnaps } from '../../../../selectors';
-import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
+} from '../../../helpers/constants/design-system';
+import Box from '../../../components/ui/box';
+import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
+import { disableSnap, enableSnap } from '../../../store/actions';
+import { getSnaps } from '../../../selectors';
+import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 
 const SnapListTab = () => {
   const t = useI18nContext();

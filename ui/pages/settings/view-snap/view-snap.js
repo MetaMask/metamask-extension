@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Button from '../../../../components/ui/button';
-import Typography from '../../../../components/ui/typography';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Button from '../../../components/ui/button';
+import Typography from '../../../components/ui/typography';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TypographyVariant,
   TEXT_ALIGN,
   FRACTIONS,
   TextColor,
-} from '../../../../helpers/constants/design-system';
-import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
-import Box from '../../../../components/ui/box';
-import SnapRemoveWarning from '../../../../components/app/flask/snap-remove-warning';
-import ToggleButton from '../../../../components/ui/toggle-button';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
-import ConnectedSitesList from '../../../../components/app/connected-sites-list';
-import Tooltip from '../../../../components/ui/tooltip';
-import { SNAPS_LIST_ROUTE } from '../../../../helpers/constants/routes';
+} from '../../../helpers/constants/design-system';
+import SnapsAuthorshipPill from '../../../components/app/snaps-authorship-pill';
+import Box from '../../../components/ui/box';
+import SnapRemoveWarning from '../../../components/app/snap-remove-warning';
+import ToggleButton from '../../../components/ui/toggle-button';
+import PermissionsConnectPermissionList from '../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
+import ConnectedSitesList from '../../../components/app/connected-sites-list';
+import Tooltip from '../../../components/ui/tooltip';
+import { SNAPS_LIST_ROUTE } from '../../../helpers/constants/routes';
 import {
   disableSnap,
   enableSnap,
   removeSnap,
   removePermissionsFor,
-} from '../../../../store/actions';
+} from '../../../store/actions';
 import {
   getSnaps,
   getSubjectsWithPermission,
   getPermissions,
-} from '../../../../selectors';
-import { formatDate } from '../../../../helpers/utils/util';
+} from '../../../selectors';
+import { formatDate } from '../../../helpers/utils/util';
 
 function ViewSnap() {
   const t = useI18nContext();

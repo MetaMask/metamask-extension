@@ -4,4 +4,4 @@ export * from './enums';
 export * from './permission-log';
 export * from './specifications';
 export * from './selectors';
-export * from './flask/snap-permissions';
+export * from './snap-permissions';

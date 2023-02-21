@@ -12,10 +12,10 @@ import {
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionInsightSnap } from '../../../../hooks/flask/useTransactionInsightSnap';
+import { useTransactionInsightSnap } from '../../../../hooks/useTransactionInsightSnap';
 import Box from '../../../ui/box/box';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
-import { SnapUIRenderer } from '../../flask/snap-ui-renderer';
+import { SnapUIRenderer } from '../../snap-ui-renderer';
 
 export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
   const t = useI18nContext();

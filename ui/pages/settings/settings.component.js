@@ -40,8 +40,8 @@ import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
-import SnapListTab from './flask/snaps-list-tab';
-import ViewSnap from './flask/view-snap';
+import SnapListTab from './snaps-list-tab';
+import ViewSnap from './view-snap';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
 
