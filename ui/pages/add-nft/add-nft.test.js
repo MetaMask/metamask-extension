@@ -127,7 +127,7 @@ describe('AddNft', () => {
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
-    const { getByTestId, getByText, queryByTitle } = renderWithProvider(
+    const { getByTestId, getByText } = renderWithProvider(
       <AddNft />,
       store,
     );
@@ -145,7 +145,7 @@ describe('AddNft', () => {
       expect(setNewNftAddedMessage).toHaveBeenCalledWith('error');
     });
 
-    const addNftClose = queryByTitle('Close');
+    const addNftClose = getByTestId('add-nft-error-close');
 
     fireEvent.click(addNftClose);
   });
