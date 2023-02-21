@@ -4,9 +4,7 @@ import { withRouter } from 'react-router-dom';
 import {
   activeTabHasPermissions,
   getFirstPermissionRequest,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getFirstSnapInstallOrUpdateRequest,
-  ///: END:ONLY_INCLUDE_IN
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -43,9 +41,7 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setRpcTarget,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -92,14 +88,11 @@ const mapStateToProps = (state) => {
   firstPermissionsRequest = getFirstPermissionRequest(state);
   firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
 
-  // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
-
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  // TODO: getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
   if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
-  ///: END:ONLY_INCLUDE_IN
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -137,10 +130,8 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: metamask.snapErrors,
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
-    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showPortfolioTooltip: getShowPortfolioTooltip(state),
     portfolioTooltipWasShownInThisSession:
@@ -161,9 +152,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   closeNotificationPopup: () => closeNotificationPopup(),
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError: async (id) => await removeSnapError(id),
-  ///: END:ONLY_INCLUDE_IN
   setConnectedStatusPopoverHasBeenShown: () =>
     dispatch(setConnectedStatusPopoverHasBeenShown()),
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),

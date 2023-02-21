@@ -4,7 +4,6 @@ export const CaveatTypes = Object.freeze({
 
 export const RestrictedMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   snap_confirm: 'snap_confirm',
   snap_dialog: 'snap_dialog',
   snap_notify: 'snap_notify',
@@ -14,10 +13,8 @@ export const RestrictedMethods = Object.freeze({
   snap_getBip44Entropy: 'snap_getBip44Entropy',
   snap_getEntropy: 'snap_getEntropy',
   'wallet_snap_*': 'wallet_snap_*',
-  ///: END:ONLY_INCLUDE_IN
 } as const);
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 /**
  * Exclude permissions by code fencing them to avoid any potential usage of excluded permissions at runtime. See: https://github.com/MetaMask/metamask-extension/pull/17321#pullrequestreview-1287014285.
  * This is a fix for https://github.com/MetaMask/snaps-monorepo/issues/1103 and https://github.com/MetaMask/snaps-monorepo/issues/990.
@@ -33,7 +30,9 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   'endowment:long-running': 'endowment:long-running',
+  ///: END:ONLY_INCLUDE_IN
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
@@ -46,4 +45,3 @@ export const ExcludedSnapEndowments = Object.freeze({
   'endowment:keyring':
     'This endowment is still in development therefore not available.',
 });
-///: END:ONLY_INCLUDE_IN

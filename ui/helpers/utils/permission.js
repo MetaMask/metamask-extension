@@ -1,22 +1,16 @@
 import deepFreeze from 'deep-freeze-strict';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import React from 'react';
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IN
 import {
   RestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
   PermissionNamespaces,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_METADATA } from '../../../shared/constants/snaps';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
-///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
@@ -27,7 +21,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 2,
   }),
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   [RestrictedMethods.snap_confirm]: (t) => ({
     label: t('permission_customConfirmation'),
     leftIcon: 'fas fa-user-check',
@@ -231,7 +224,6 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       weight: 2,
     }));
   },
-  ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: (t, permissionName) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
     leftIcon: 'fas fa-times-circle',
@@ -266,13 +258,11 @@ export const getPermissionDescription = (
   if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
     value = PERMISSION_DESCRIPTIONS[permissionName];
   }
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   for (const namespace of Object.keys(PermissionNamespaces)) {
     if (permissionName.startsWith(namespace)) {
       value = PERMISSION_DESCRIPTIONS[PermissionNamespaces[namespace]];
     }
   }
-  ///: END:ONLY_INCLUDE_IN
 
   const result = value(t, permissionName, permissionValue);
   if (!Array.isArray(result)) {

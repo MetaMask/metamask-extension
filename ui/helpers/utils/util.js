@@ -19,9 +19,7 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -529,7 +527,6 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 /**
  * @param {string[]} path
  * @param {string} curve
@@ -544,7 +541,6 @@ export function getSnapDerivationPathName(path, curve) {
 
   return pathMetadata?.name ?? null;
 }
-///: END:ONLY_INCLUDE_IN
 
 /**
  * The method escape RTL character in string

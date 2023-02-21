@@ -1,7 +1,5 @@
 import React, { useState, useContext } from 'react';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { useSelector } from 'react-redux';
-///: END:ONLY_INCLUDE_IN
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -9,9 +7,7 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/icon/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getSnapsRouteObjects } from '../../../selectors';
-///: END:ONLY_INCLUDE_IN
 
 export default function SettingsSearch({
   onSearch,
@@ -26,10 +22,8 @@ export default function SettingsSearch({
   );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const snaps = useSelector(getSnapsRouteObjects);
   settingsRoutesListArray.push(...snaps);
-  ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
     threshold: 0.2,

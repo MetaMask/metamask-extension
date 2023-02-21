@@ -18,9 +18,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
 import {
@@ -793,7 +791,6 @@ export function setupController(initState, initLangCode, overrides) {
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
           case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
             controller.approvalController.accept(id, null);
@@ -801,7 +798,6 @@ export function setupController(initState, initLangCode, overrides) {
           case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
             controller.approvalController.accept(id, false);
             break;
-          ///: END:ONLY_INCLUDE_IN
           default:
             controller.approvalController.reject(
               id,

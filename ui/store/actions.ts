@@ -29,9 +29,7 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getNotifications,
-  ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -62,9 +60,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-///: END:ONLY_INCLUDE_IN
 import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import {
   fetchLocale,
@@ -1264,7 +1260,6 @@ export function updateTransactionParams(txId: number, txParams: TxParams) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1357,7 +1352,6 @@ export function markNotificationsAsRead(
     await forceUpdateMetamaskState(dispatch);
   };
 }
-///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(
   msgData: TemporaryMessageDataType,

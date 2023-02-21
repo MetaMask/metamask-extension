@@ -280,7 +280,6 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
@@ -293,7 +292,6 @@ export function getSnapInstallOrUpdateRequests(state) {
 export function getFirstSnapInstallOrUpdateRequest(state) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
-///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {
   return Object.values(state.metamask.pendingApprovals)

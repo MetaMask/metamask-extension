@@ -114,11 +114,9 @@ export default class Home extends PureComponent {
     portfolioTooltipWasShownInThisSession: PropTypes.bool.isRequired,
     setPortfolioTooltipWasShownInThisSession: PropTypes.func.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
     removeSnapError: PropTypes.func.isRequired,
-    ///: END:ONLY_INCLUDE_IN
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -266,11 +264,9 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       removeSnapError,
       errorsToShow,
       shouldShowErrors,
-      ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       showOutdatedBrowserWarning,
       newNetworkAdded,
@@ -295,43 +291,39 @@ export default class Home extends PureComponent {
 
     return (
       <MultipleNotifications>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          shouldShowErrors
-            ? Object.entries(errorsToShow).map(([errorId, error]) => {
-                return (
-                  <HomeNotification
-                    classNames={['home__error-message']}
-                    infoText={error.data.snapId}
-                    descriptionText={
-                      <>
-                        <Typography
-                          color={TextColor.textAlternative}
-                          variant={TypographyVariant.H5}
-                          fontWeight={FONT_WEIGHT.NORMAL}
-                        >
-                          {t('somethingWentWrong')}
-                        </Typography>
-                        <Typography
-                          color={TextColor.textAlternative}
-                          variant={TypographyVariant.H7}
-                          fontWeight={FONT_WEIGHT.NORMAL}
-                        >
-                          {t('snapError', [error.message, error.code])}
-                        </Typography>
-                      </>
-                    }
-                    onIgnore={async () => {
-                      await removeSnapError(errorId);
-                    }}
-                    ignoreText="Dismiss"
-                    key="home-error-message"
-                  />
-                );
-              })
-            : null
-          ///: END:ONLY_INCLUDE_IN
-        }
+        {shouldShowErrors
+          ? Object.entries(errorsToShow).map(([errorId, error]) => {
+              return (
+                <HomeNotification
+                  classNames={['home__error-message']}
+                  infoText={error.data.snapId}
+                  descriptionText={
+                    <>
+                      <Typography
+                        color={TextColor.textAlternative}
+                        variant={TypographyVariant.H5}
+                        fontWeight={FONT_WEIGHT.NORMAL}
+                      >
+                        {t('somethingWentWrong')}
+                      </Typography>
+                      <Typography
+                        color={TextColor.textAlternative}
+                        variant={TypographyVariant.H7}
+                        fontWeight={FONT_WEIGHT.NORMAL}
+                      >
+                        {t('snapError', [error.message, error.code])}
+                      </Typography>
+                    </>
+                  }
+                  onIgnore={async () => {
+                    await removeSnapError(errorId);
+                  }}
+                  ignoreText="Dismiss"
+                  key="home-error-message"
+                />
+              );
+            })
+          : null}
         {newNftAddedMessage === 'success' ? (
           <ActionableMessage
             type="success"

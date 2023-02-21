@@ -33,11 +33,9 @@ const SEND_ROUTE = '/send';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const NOTIFICATIONS_ROUTE = '/notifications';
-///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 const SWAPS_ROUTE = '/swaps';
@@ -206,11 +204,9 @@ export {
   ADD_POPULAR_CUSTOM_NETWORK,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   NOTIFICATIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,

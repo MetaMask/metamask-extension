@@ -8,9 +8,7 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAPS_LIST_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
 } from './routes';
 
 export const SETTINGS_CONSTANTS = [
@@ -147,7 +145,6 @@ export const SETTINGS_CONSTANTS = [
     route: CONTACT_LIST_ROUTE,
     icon: ICON_NAMES.BOOK,
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   {
     tabMessage: (t) => t('snaps'),
     sectionMessage: (t) => t('snaps'),
@@ -155,7 +152,6 @@ export const SETTINGS_CONSTANTS = [
     route: SNAPS_LIST_ROUTE,
     icon: 'fa fa-flask',
   },
-  ///: END:ONLY_INCLUDE_IN
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('revealSeedWords'),

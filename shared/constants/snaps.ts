@@ -1,4 +1,3 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import type { SupportedCurve } from '@metamask/key-tree';
 
 type SnapsMetadata = {
@@ -61,4 +60,3 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Test BIP-32 Path (ed25519)',
   },
 ];
-///: END:ONLY_INCLUDE_IN

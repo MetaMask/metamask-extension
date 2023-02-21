@@ -26,9 +26,7 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import IconCheck from '../../ui/icon/icon-check';
@@ -39,13 +37,7 @@ import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { Color } from '../../../helpers/constants/design-system';
-import {
-  Icon,
-  ICON_NAMES,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  ICON_SIZES,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../component-library';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -96,9 +88,7 @@ export default class AccountMenu extends Component {
     toggleAccountMenu: PropTypes.func,
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount: PropTypes.number,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   accountsRef;
@@ -314,9 +304,7 @@ export default class AccountMenu extends Component {
       toggleAccountMenu,
       lockMetamask,
       history,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       unreadNotificationsCount,
-      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     if (!isAccountMenuOpen) {
@@ -427,30 +415,24 @@ export default class AccountMenu extends Component {
           text={t('connectHardwareWallet')}
         />
         <div className="account-menu__divider" />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          <>
-            <AccountMenuItem
-              onClick={() => {
-                toggleAccountMenu();
-                history.push(NOTIFICATIONS_ROUTE);
-              }}
-              icon={
-                <div className="account-menu__notifications">
-                  <Icon name={ICON_NAMES.NOTIFICATION} size={ICON_SIZES.LG} />
-                  {unreadNotificationsCount > 0 && (
-                    <div className="account-menu__notifications__count">
-                      {unreadNotificationsCount}
-                    </div>
-                  )}
+        <AccountMenuItem
+          onClick={() => {
+            toggleAccountMenu();
+            history.push(NOTIFICATIONS_ROUTE);
+          }}
+          icon={
+            <div className="account-menu__notifications">
+              <Icon name={ICON_NAMES.NOTIFICATION} size={ICON_SIZES.LG} />
+              {unreadNotificationsCount > 0 && (
+                <div className="account-menu__notifications__count">
+                  {unreadNotificationsCount}
                 </div>
-              }
-              text={t('notifications')}
-            />
-            <div className="account-menu__divider" />
-          </>
-          ///: END:ONLY_INCLUDE_IN
-        }
+              )}
+            </div>
+          }
+          text={t('notifications')}
+        />
+        <div className="account-menu__divider" />
         <AccountMenuItem
           onClick={() => {
             trackEvent(

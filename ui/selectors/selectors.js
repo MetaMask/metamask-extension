@@ -1,17 +1,10 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SubjectType } from '@metamask/subject-metadata-controller';
-///: END:ONLY_INCLUDE_IN
 import {
   createSelector,
   createSelectorCreator,
   defaultMemoize,
 } from 'reselect';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  memoize,
-  ///: END:ONLY_INCLUDE_IN
-  isEqual,
-} from 'lodash';
+import { memoize, isEqual } from 'lodash';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -71,10 +64,8 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
-///: END:ONLY_INCLUDE_IN
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -625,7 +616,6 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -633,12 +623,10 @@ export function getSubjectMetadata(state) {
 const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
-///: END:ONLY_INCLUDE_IN
 
 export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
@@ -646,7 +634,7 @@ export function getTargetSubjectMetadata(state, origin) {
       iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
     };
   }
-  ///: END:ONLY_INCLUDE_IN
+
   return metadata;
 }
 
@@ -903,7 +891,6 @@ export const getFullTxData = createDeepEqualSelector(
   },
 );
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
@@ -982,7 +969,6 @@ export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,
 );
-///: END:ONLY_INCLUDE_IN
 
 /**
  * Get an object of announcement IDs and if they are allowed or not.

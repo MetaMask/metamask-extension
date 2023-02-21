@@ -24,9 +24,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getSnap,
-  ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
 } from '../../selectors';
@@ -178,7 +176,6 @@ export default function ConfirmationPage({
     setInputStates((currentState) => ({ ...currentState, [key]: value }));
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const snap = useSelector((state) =>
     getSnap(state, pendingConfirmation?.origin),
   );
@@ -193,13 +190,8 @@ export default function ConfirmationPage({
   ];
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
-  ///: END:ONLY_INCLUDE_IN
 
-  const INPUT_STATE_CONFIRMATIONS = [
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
-    ///: END:ONLY_INCLUDE_IN
-  ];
+  const INPUT_STATE_CONFIRMATIONS = [MESSAGE_TYPE.SNAP_DIALOG_PROMPT];
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
@@ -208,9 +200,7 @@ export default function ConfirmationPage({
     return pendingConfirmation
       ? getTemplateValues(
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
             snapName: isSnapDialog && proposedName,
-            ///: END:ONLY_INCLUDE_IN
             ...pendingConfirmation,
           },
           t,
@@ -219,16 +209,7 @@ export default function ConfirmationPage({
           setInputState,
         )
       : {};
-  }, [
-    pendingConfirmation,
-    t,
-    dispatch,
-    history,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    isSnapDialog,
-    proposedName,
-    ///: END:ONLY_INCLUDE_IN
-  ]);
+  }, [pendingConfirmation, t, dispatch, history, isSnapDialog, proposedName]);
 
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user

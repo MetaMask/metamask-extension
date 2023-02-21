@@ -12,10 +12,8 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAPS_VIEW_ROUTE,
   SNAPS_LIST_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -42,10 +40,8 @@ import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapListTab from './flask/snaps-list-tab';
 import ViewSnap from './flask/view-snap';
-///: END:ONLY_INCLUDE_IN
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
 
@@ -279,7 +275,6 @@ class SettingsPage extends PureComponent {
         icon: <Icon name={ICON_NAMES.BOOK} />,
         key: CONTACT_LIST_ROUTE,
       },
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       {
         content: t('snaps'),
         icon: (
@@ -287,7 +282,6 @@ class SettingsPage extends PureComponent {
         ),
         key: SNAPS_LIST_ROUTE,
       },
-      ///: END:ONLY_INCLUDE_IN
       {
         content: t('securityAndPrivacy'),
         icon: <i className="fa fa-lock" />,
@@ -380,16 +374,8 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          <Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />
-          ///: END:ONLY_INCLUDE_IN
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          <Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />
-          ///: END:ONLY_INCLUDE_IN
-        }
+        {<Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />}
+        {<Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />}
         <Route
           render={(routeProps) => (
             <SettingsTab

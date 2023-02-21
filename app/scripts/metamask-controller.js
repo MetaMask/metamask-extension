@@ -50,18 +50,14 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/subject-metadata-controller';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
-///: END:ONLY_INCLUDE_IN
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
   CronjobController,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
-///: END:ONLY_INCLUDE_IN
 
 import browser from 'webextension-polyfill';
 import {
@@ -83,11 +79,9 @@ import {
 import {
   CaveatTypes,
   RestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
   ExcludedSnapPermissions,
   ExcludedSnapEndowments,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import {
@@ -97,10 +91,8 @@ import {
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   MESSAGE_TYPE,
   SNAP_DIALOG_TYPES,
-  ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
@@ -112,9 +104,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { isMain, isFlask } from '../../shared/constants/environment';
-///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -125,9 +115,7 @@ import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   createSnapMethodMiddleware,
-  ///: END:ONLY_INCLUDE_IN
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
@@ -168,10 +156,8 @@ import {
   NOTIFICATION_NAMES,
   PermissionLogController,
   unrestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-  ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
@@ -733,9 +719,7 @@ export default class MetamaskController extends EventEmitter {
             );
           },
         }),
-        ///: BEGIN:ONLY_INCLUDE_IN(flask)
         ...this.getSnapPermissionSpecifications(),
-        ///: END:ONLY_INCLUDE_IN
       },
       unrestrictedMethods,
     });
@@ -754,7 +738,6 @@ export default class MetamaskController extends EventEmitter {
       subjectCacheLimit: 100,
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/0.12.0',
@@ -849,7 +832,6 @@ export default class MetamaskController extends EventEmitter {
         },
       },
     });
-    // --- Snaps Cronjob Controller configuration
     const cronjobControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'CronjobController',
       allowedEvents: [
@@ -867,7 +849,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.CronjobController,
       messenger: cronjobControllerMessenger,
     });
-    ///: END:ONLY_INCLUDE_IN
 
     this.detectTokensController = new DetectTokensController({
       preferences: this.preferencesController,
@@ -1237,11 +1218,9 @@ export default class MetamaskController extends EventEmitter {
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
-      ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
@@ -1272,11 +1251,9 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
-        ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
-        ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
@@ -1381,7 +1358,6 @@ export default class MetamaskController extends EventEmitter {
     globalThis.isFirstTimeProfileLoaded = false;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * Constructor helper for getting Snap permission specifications.
    */
@@ -1463,8 +1439,6 @@ export default class MetamaskController extends EventEmitter {
     this.notificationController.markRead(ids);
   }
 
-  ///: END:ONLY_INCLUDE_IN
-
   /**
    * Sets up BaseController V2 event subscriptions. Currently, this includes
    * the subscriptions necessary to notify permission subjects of account
@@ -1529,7 +1503,6 @@ export default class MetamaskController extends EventEmitter {
       getPermittedAccountsByOrigin,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     // Record Snap metadata whenever a Snap is added to state.
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapAdded`,
@@ -1611,8 +1584,6 @@ export default class MetamaskController extends EventEmitter {
         this.dismissNotifications(notificationIds);
       },
     );
-
-    ///: END:ONLY_INCLUDE_IN
   }
 
   /**
@@ -2019,7 +1990,6 @@ export default class MetamaskController extends EventEmitter {
       rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
 
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       // snaps
       removeSnapError: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -2043,7 +2013,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
-      ///: END:ONLY_INCLUDE_IN
 
       // swaps
       fetchAndSetQuotes:
@@ -2335,12 +2304,11 @@ export default class MetamaskController extends EventEmitter {
       // clear permissions
       this.permissionController.clearState();
 
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       // Clear snap state
       this.snapController.clearState();
+
       // Clear notification state
       this.notificationController.clear();
-      ///: END:ONLY_INCLUDE_IN
 
       // clear accounts in accountTracker
       this.accountTracker.clearAccounts();
@@ -3133,32 +3101,6 @@ export default class MetamaskController extends EventEmitter {
     return await promise;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  /**
-   * Gets an "app key" corresponding to an Ethereum address. An app key is more
-   * or less an addrdess hashed together with some string, in this case a
-   * subject identifier / origin.
-   *
-   * @todo Figure out a way to derive app keys that doesn't depend on the user's
-   * Ethereum addresses.
-   * @param {string} subject - The identifier of the subject whose app key to
-   * retrieve.
-   * @param {string} [requestedAccount] - The account whose app key to retrieve.
-   * The first account in the keyring will be used by default.
-   */
-  async getAppKeyForSubject(subject, requestedAccount) {
-    let account;
-
-    if (requestedAccount) {
-      account = requestedAccount;
-    } else {
-      [account] = await this.keyringController.getAccounts();
-    }
-
-    return this.keyringController.exportAppKeyForAddress(account, subject);
-  }
-  ///: END:ONLY_INCLUDE_IN
-
   /**
    * Signifies user intent to complete an eth_sign method.
    *
@@ -3828,13 +3770,9 @@ export default class MetamaskController extends EventEmitter {
     let origin;
     if (subjectType === SubjectType.Internal) {
       origin = ORIGIN_METAMASK;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    else if (subjectType === SubjectType.Snap) {
+    } else if (subjectType === SubjectType.Snap) {
       origin = sender.snapId;
-    }
-    ///: END:ONLY_INCLUDE_IN
-    else {
+    } else {
       origin = new URL(sender.url).origin;
     }
 
@@ -3877,7 +3815,6 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * For snaps running in workers.
    *
@@ -3891,7 +3828,6 @@ export default class MetamaskController extends EventEmitter {
       subjectType: SubjectType.Snap,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
 
   /**
    * A method for creating a provider that is safely restricted for the requesting subject.
@@ -4056,10 +3992,8 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
       createSnapMethodMiddleware(subjectType === SubjectType.Snap, {
-        getAppKey: this.getAppKeyForSubject.bind(this, origin),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
@@ -4089,7 +4023,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       }),
     );
-    ///: END:ONLY_INCLUDE_IN
 
     if (subjectType !== SubjectType.Internal) {
       // permissions
