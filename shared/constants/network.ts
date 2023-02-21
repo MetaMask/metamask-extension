@@ -20,11 +20,6 @@ export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 export type CurrencySymbol =
   typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
 /**
- * A type that is a union type for the supported symbols on different onramp providers.
- */
-type SupportedCurrencySymbol =
-  typeof SUPPORTED_CURRENCY_SYMBOLS[keyof typeof SUPPORTED_CURRENCY_SYMBOLS];
-/**
  * Test networks have special symbols that combine the network name and 'ETH'
  * so that they are distinct from mainnet and other networks that use 'ETH'.
  */
@@ -219,133 +214,6 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
-} as const;
-
-/**
- * An object containing the token symbols for various tokens that are supported
- * on different on ramp providers. This object is meant for internal consumption,
- * hence why it is not exported.
- */
-const SUPPORTED_CURRENCY_SYMBOLS = {
-  ...CURRENCY_SYMBOLS,
-  '1INCH': '1INCH',
-  AAVE: 'AAVE',
-  ABT: 'ABT',
-  ACH: 'ACH',
-  AGEUR: 'AGEUR',
-  AGLD: 'AGLD',
-  AMP: 'AMP',
-  ANKR: 'ANKR',
-  APE: 'APE',
-  ARPA: 'ARPA',
-  ASM: 'ASM',
-  AUCTION: 'AUCTION',
-  AXS: 'AXS',
-  AVAX: 'AVAX',
-  AVAXC: 'AVAXC',
-  AVAXCUSDC: 'AVAXCUSDC',
-  BADGER: 'BADGER',
-  BAL: 'BAL',
-  BAND: 'BAND',
-  BAT: 'BAT',
-  BNT: 'BNT',
-  BOBA: 'BOBA',
-  BOND: 'BOND',
-  BTRST: 'BTRST',
-  CHAIN: 'CHAIN',
-  CHZ: 'CHZ',
-  CLV: 'CLV',
-  COMP: 'COMP',
-  COTI: 'COTI',
-  CRO: 'CRO',
-  CRV: 'CRV',
-  CTSI: 'CTSI',
-  CVC: 'CVC',
-  DAO: 'DAO',
-  DDX: 'DDX',
-  DNT: 'DNT',
-  ENJ: 'ENJ',
-  ENS: 'ENS',
-  EURT: 'EURT',
-  FARM: 'FARM',
-  FET: 'FET',
-  FORTH: 'FORTH',
-  FX: 'FX',
-  GNO: 'GNO',
-  GRT: 'GRT',
-  GTC: 'GTC',
-  GTH: 'GTH',
-  GUSD: 'GUSD',
-  GYEN: 'GYEN',
-  HEX: 'HEX',
-  IOTX: 'IOTX',
-  IMX: 'IMX',
-  JASMY: 'JASMY',
-  KEEP: 'KEEP',
-  KNC: 'KNC',
-  KRL: 'KRL',
-  LCX: 'LCX',
-  LINK: 'LINK',
-  LPT: 'LPT',
-  LRC: 'LRC',
-  MANA: 'MANA',
-  MASK: 'MASK',
-  MINDS: 'MINDS',
-  MIR: 'MIR',
-  MKR: 'MKR',
-  MLN: 'MLN',
-  MTL: 'MTL',
-  MUSDC: 'mUSDC',
-  NKN: 'NKN',
-  NMR: 'NMR',
-  NU: 'NU',
-  OGN: 'OGN',
-  OMG: 'OMG',
-  ORN: 'ORN',
-  OXT: 'OXT',
-  PAX: 'PAX',
-  PERP: 'PERP',
-  PLA: 'PLA',
-  POLS: 'POLS',
-  POLY: 'POLY',
-  QNT: 'QNT',
-  QUICK: 'QUICK',
-  RAD: 'RAD',
-  RAI: 'RAI',
-  RARI: 'RARI',
-  REN: 'REN',
-  REP: 'REP',
-  REQ: 'REQ',
-  RLC: 'RLC',
-  RLY: 'RLY',
-  SAND: 'SAND',
-  SHIB: 'SHIB',
-  SKL: 'SKL',
-  SNX: 'SNX',
-  SPA: 'SPA',
-  STETH: 'STETH',
-  STORJ: 'STORJ',
-  SUKU: 'SUKU',
-  SUSHI: 'SUSHI',
-  SWAP: 'SWAP',
-  SWFTC: 'SWFTC',
-  TRAC: 'TRAC',
-  TRB: 'TRB',
-  TRIBE: 'TRIBE',
-  TRU: 'TRU',
-  TXL: 'TXL',
-  UMA: 'UMA',
-  UNI: 'UNI',
-  USDS: 'USDS',
-  VRA: 'VRA',
-  WBTC: 'WBTC',
-  WCFG: 'WCFG',
-  XYO: 'XYO',
-  YFII: 'YFII',
-  YFI: 'YFI',
-  YLD: 'YLD',
-  ZRX: 'ZRX',
-  ZUSD: 'ZUSD',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -632,6 +500,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.MOONBEAM
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
     | typeof CHAIN_IDS.MOONRIVER
+    | typeof CHAIN_IDS.AURORA
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
