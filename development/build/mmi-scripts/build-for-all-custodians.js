@@ -1,15 +1,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable node/no-extraneous-require */
 const { spawn } = require('child_process');
-const axios = require('axios');
 
 const CONFIG_URL =
   'https://mmi-configuration-api.codefi.network/v1/configuration';
 
 async function go() {
-  const custodians = await axios
-    .get(`${CONFIG_URL}/default`)
-    .then((r) => r.data.custodians);
+  const custodians = await fetch(`${CONFIG_URL}/default`)
+    .then((response) => response.json())
+    .then((data) => data.custodians);
 
   const custodianPrefixes = new Set();
 
