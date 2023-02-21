@@ -254,7 +254,8 @@ export default function WhatsNewPopup({ onClose }) {
           const notification = getTranslatedUINotifications(t, locale)[id];
           const isLast = index === notifications.length - 1;
           // Display the swaps notification with full image
-          return index === 0 || id === 1
+          // Displays the NFTs notification id: 18 with full image
+          return index === 0 || id === 1 || id === 18
             ? renderFirstNotification(notification, idRefMap, history, isLast)
             : renderSubsequentNotification(
                 notification,
