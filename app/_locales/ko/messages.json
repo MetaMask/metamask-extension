@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "MetaMask 베타 버전"
   },
-  "betaPortfolioSite": {
-    "message": "베타 포트폴리오 사이트"
-  },
   "betaTerms": {
     "message": "베타 이용약관"
   },
@@ -1717,9 +1714,6 @@
     "message": "JSON 파일",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "계정 및 네트워크 전반의 토큰과 NFT를 관리할 수 있습니다."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2708,6 @@
   },
   "popularCustomNetworks": {
     "message": "인기 사용자 정의 네트워크"
-  },
-  "portfolioSite": {
-    "message": "포트폴리오 사이트"
   },
   "preferredLedgerConnectionType": {
     "message": "선호하는 Ledger 연결 유형",
@@ -4089,9 +4080,6 @@
   },
   "tryAgain": {
     "message": "다시 시도"
-  },
-  "tryOur": {
-    "message": "다음을 체험하기:"
   },
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"

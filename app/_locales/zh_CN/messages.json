@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "MetaMask 测试版本"
   },
-  "betaPortfolioSite": {
-    "message": "投资组合网站测试版"
-  },
   "betaTerms": {
     "message": "测试版使用条款"
   },
@@ -1717,9 +1714,6 @@
     "message": "JSON 文件",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "以记录您在各账户和各网络中的代币和NFT。"
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2708,6 @@
   },
   "popularCustomNetworks": {
     "message": "流行自定义网络"
-  },
-  "portfolioSite": {
-    "message": "投资组合网站"
   },
   "preferredLedgerConnectionType": {
     "message": "首选 Ledger 连接类型",
@@ -4089,9 +4080,6 @@
   },
   "tryAgain": {
     "message": "重试"
-  },
-  "tryOur": {
-    "message": "试试我们的"
   },
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"
