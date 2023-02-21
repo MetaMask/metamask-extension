@@ -59,24 +59,15 @@ const ConfirmTransaction = () => {
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
+
   const totalUnapproved = unconfirmedTxs.length || 0;
-  const [transaction, setTransaction] = useState(() => totalUnapproved
-  ? unapprovedTxs[paramsTransactionId] ||
-      unconfirmedMessages[paramsTransactionId] ||
-      unconfirmedTxs[0]
-  : {});
 
-
-  useEffect(() => {
-    const transaction = totalUnapproved
+  const transaction = useMemo(() => {
+    return totalUnapproved
       ? unapprovedTxs[paramsTransactionId] ||
           unconfirmedMessages[paramsTransactionId] ||
           unconfirmedTxs[0]
       : {};
-    setTransaction(transaction);
-    if (transaction?.id) {
-      dispatch(setTransactionToConfirm(transaction.id));
-    }
   }, [
     paramsTransactionId,
     totalUnapproved,
@@ -87,7 +78,7 @@ const ConfirmTransaction = () => {
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
-  const isValidERC20TokenMethod = isTokenMethodAction(type);
+  const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =
     transactionId &&
     (!paramsTransactionId || paramsTransactionId === transactionId);
@@ -177,7 +168,7 @@ const ConfirmTransaction = () => {
     transactionId,
   ]);
 
-  if (isValidERC20TokenMethod && isValidTransactionId) {
+  if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
