@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
 
@@ -59,22 +59,32 @@ const ConfirmTransaction = () => {
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
+
   const totalUnapproved = unconfirmedTxs.length || 0;
-  const getTransaction = () =>
-    totalUnapproved
+  const getTransaction = useCallback(() => {
+    return totalUnapproved
       ? unapprovedTxs[paramsTransactionId] ||
-        unconfirmedMessages[paramsTransactionId] ||
-        unconfirmedTxs[0]
+          unconfirmedMessages[paramsTransactionId] ||
+          unconfirmedTxs[0]
       : {};
+  }, [
+    paramsTransactionId,
+    totalUnapproved,
+    unapprovedTxs,
+    unconfirmedMessages,
+    unconfirmedTxs,
+  ]);
   const [transaction, setTransaction] = useState(getTransaction);
 
   useEffect(() => {
-    const transaction = getTransaction();
-    setTransaction(transaction);
-    if (transaction?.id) {
-      dispatch(setTransactionToConfirm(transaction.id));
+    const tx = getTransaction();
+    setTransaction(tx);
+    if (tx?.id) {
+      dispatch(setTransactionToConfirm(tx.id));
     }
   }, [
+    dispatch,
+    getTransaction,
     paramsTransactionId,
     totalUnapproved,
     unapprovedTxs,
