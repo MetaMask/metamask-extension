@@ -1,7 +1,7 @@
 import {
   EndowmentPermissions,
   RestrictedMethods,
-} from '../../../../../shared/constants/permissions';
+} from '../../../../shared/constants/permissions';
 import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,

@@ -374,8 +374,8 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
-        {<Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />}
-        {<Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />}
+        <Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />
+        <Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />
         <Route
           render={(routeProps) => (
             <SettingsTab

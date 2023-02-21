@@ -187,7 +187,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        {<Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />}
+        <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
         <Authenticated
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
