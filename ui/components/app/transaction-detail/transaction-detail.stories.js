@@ -2,9 +2,9 @@ import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
+import { Icon, ICON_NAMES } from '../../component-library';
 import README from './README.mdx';
 import TransactionDetail from '.';
-import { Icon, ICON_NAMES } from 'ui/components/component-library';
 
 export default {
   title: 'Components/App/TransactionDetail',
