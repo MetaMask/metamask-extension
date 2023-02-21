@@ -266,9 +266,6 @@
   "address": {
     "message": "Διεύθυνση"
   },
-  "addressBookIcon": {
-    "message": "Εικονίδιο βιβλίου διευθύνσεων"
-  },
   "advanced": {
     "message": "Σύνθετες"
   },
@@ -479,29 +476,6 @@
     "message": "Αυτή είναι μια δοκιμαστική έκδοση. Παρακαλώ αναφέρετε σφάλματα $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
-  "betaMetamaskDescription": {
-    "message": "Αξιόπιστο για εκατομμύρια, το MetaMask είναι ένα ασφαλές πορτοφόλι που καθιστά τον κόσμο του web3 προσβάσιμο σε όλους."
-  },
-  "betaMetamaskDescriptionDisclaimerHeading": {
-    "message": "Αποποίηση ευθυνών για τη δοκιμαστική έκδοση"
-  },
-  "betaMetamaskDescriptionExplanation": {
-    "message": "Αυτή η έκδοση σας επιτρέπει να δοκιμάσετε τις επερχόμενες λειτουργίες πριν από την κυκλοφορία τους κάτι το οποίο κάνει το MetaMask ακόμα καλύτερο. Όπως και με όλες τις δοκιμαστικές εκδόσεις, μπορεί να υπάρχει αυξημένος κίνδυνος σφαλμάτων. Το Δοκιμαστικό MetaMask υπόκειται στα $1 και στα $2 μας.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2": {
-    "message": "Συνεχίζοντας, αποδέχεστε και αναγνωρίζετε αυτούς τους κινδύνους, $1 και $2.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
-    "message": "Όροι της Δοκιμαστικής Έκδοσης"
-  },
-  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Συμπληρωματικοί Όροι Δοκιμαστικής Έκδοσης"
-  },
-  "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Όροι"
-  },
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
   },
@@ -516,9 +490,6 @@
   },
   "betaWalletCreationSuccessReminder2": {
     "message": "Η δοκιμαστική έκδοση του MetaMask δεν θα σας ζητήσει ποτέ τη Μυστική Φράση Ανάκτησής σας."
-  },
-  "betaWelcome": {
-    "message": "Καλώς ήλθατε στη Δοκιμαστική Έκδοση MetaMask"
   },
   "blockExplorerAccountAction": {
     "message": "Λογαριασμός",
@@ -665,18 +636,8 @@
   "clickToManuallyAdd": {
     "message": "Κάντε κλικ εδώ για να προσθέσετε χειροκίνητα τα tokens."
   },
-  "clickToRevealSeed": {
-    "message": "Κάντε κλικ εδώ για να αποκαλύψετε μυστικές λέξεις"
-  },
   "close": {
     "message": "Κλείσιμο"
-  },
-  "collectibleAddFailedMessage": {
-    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
-  },
-  "collectibleAddressError": {
-    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
-    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "Επιβεβαίωση"
@@ -686,9 +647,6 @@
   },
   "confirmRecoveryPhrase": {
     "message": "Επιβεβαιώστε τη Μυστική Φράση Ανάκτησης"
-  },
-  "confirmSecretBackupPhrase": {
-    "message": "Επιβεβαιώστε τη Μυστική Φράση Αντιγράφου Ασφαλείας"
   },
   "confirmed": {
     "message": "Επιβεβαιωμένο"
@@ -701,9 +659,6 @@
   },
   "confusingEnsDomain": {
     "message": "Εντοπίσαμε έναν παράξενο χαρακτήρα στο όνομα ENS. Ελέγξτε το όνομα ENS για να αποφύγετε μια πιθανή απάτη."
-  },
-  "congratulations": {
-    "message": "Συγχαρητήρια"
   },
   "connect": {
     "message": "Σύνδεση"
@@ -870,9 +825,6 @@
   },
   "create": {
     "message": "Δημιουργία"
-  },
-  "createAWallet": {
-    "message": "Δημιουργήστε ένα Πορτοφόλι"
   },
   "createAccount": {
     "message": "Δημιουργία Λογαριασμού"
@@ -1088,9 +1040,6 @@
   "downloadNow": {
     "message": "Λήψη Τώρα"
   },
-  "downloadSecretBackup": {
-    "message": "Κατεβάστε αυτήν τη Μυστική Φράση Αντιγράφου Ασφαλείας και κρατήστε την αποθηκευμένη με ασφάλεια σε έναν εξωτερικό κρυπτογραφημένο σκληρό δίσκο ή μέσο αποθήκευσης."
-  },
   "downloadStateLogs": {
     "message": "Λήψη Αρχείων Καταγραφής Κατάστασης"
   },
@@ -1217,37 +1166,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "Αίτηση δημόσιου κλειδιού κρυπτογράφησης"
-  },
-  "endOfFlowMessage1": {
-    "message": "Περάσατε τη δοκιμή - κρατήστε τη Μυστική Φράση Ανάκτησής σας ασφαλή, είναι δική σας ευθύνη!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Όλα Έτοιμα"
-  },
-  "endOfFlowMessage2": {
-    "message": "Συμβουλές για την ασφαλή αποθήκευσή του"
-  },
-  "endOfFlowMessage3": {
-    "message": "Αποθηκεύστε ένα αντίγραφο ασφαλείας σε πολλαπλές τοποθεσίες."
-  },
-  "endOfFlowMessage4": {
-    "message": "Μην μοιράζεστε ποτέ τη φράση με κανέναν."
-  },
-  "endOfFlowMessage5": {
-    "message": "Προσέξτε το ηλεκτρονικό \"ψάρεμα\"! Το MetaMask δεν θα ζητήσει ποτέ από μόνο του τη Μυστική Φράση Ανάκτησής σας."
-  },
-  "endOfFlowMessage6": {
-    "message": "Αν χρειάζεται να δημιουργήσετε ξανά αντίγραφο της φράσης επαναφοράς σας, μπορείτε να τη βρείτε στο Ρυθμίσεις -> Ασφάλεια."
-  },
-  "endOfFlowMessage7": {
-    "message": "Αν έχετε ποτέ ερωτήσεις ή δείτε κάτι ύποπτο, επικοινωνήστε με την υποστήριξή μας $1.",
-    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "endOfFlowMessage8": {
-    "message": "Το MetaMask δεν μπορεί να ανακτήσει τη Μυστική Φράση Ανάκτησής σας. Μάθετε περισσότερα."
-  },
-  "endOfFlowMessage9": {
-    "message": "Μάθετε περισσότερα."
   },
   "endpointReturnedDifferentChainId": {
     "message": "Το τελικό σημείο επέστρεψε ένα διαφορετικό αναγνωριστικό αλυσίδας: $1",
@@ -1544,9 +1462,6 @@
     "message": "Πάρτε Ether από μια πηγή για το $1.",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Έναρξη"
-  },
   "goBack": {
     "message": "Μετάβαση Πίσω"
   },
@@ -1561,9 +1476,6 @@
   },
   "gwei": {
     "message": "GWEI"
-  },
-  "happyToSeeYou": {
-    "message": "Χαιρόμαστε που σας βλέπουμε."
   },
   "hardware": {
     "message": "Υλικό"
@@ -1645,9 +1557,6 @@
   "importAccountMsg": {
     "message": "Οι λογαριασμοί που εισάγονται δεν θα συσχετιστούν με τη Μυστική Φράση Ανάκτησης του λογαριασμού σας MetaTask που δημιουργήθηκε αρχικά. Μάθετε περισσότερα για τους εισηγμένους λογαριασμούς"
   },
-  "importAccountSeedPhrase": {
-    "message": "Εισαγωγή λογαριασμού με Μυστική Φράση Ανάκτησης"
-  },
   "importMyWallet": {
     "message": "Εισαγωγή Πορτοφολιού μου"
   },
@@ -1684,15 +1593,9 @@
   "importTokensCamelCase": {
     "message": "Εισαγωγή Token"
   },
-  "importWallet": {
-    "message": "Εισαγωγή Πορτοφολιού"
-  },
   "importWithCount": {
     "message": "Εισαγωγή $1",
     "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
-  },
-  "importYourExisting": {
-    "message": "Εισαγωγή υπάρχοντος πορτοφολιού με Μυστική Φράση Ανάκτησης"
   },
   "imported": {
     "message": "Έγινε εισαγωγή",
@@ -1894,9 +1797,6 @@
     "message": "Η συσκευή ledger δεν συνδέθηκε. Αν θέλετε να συνδέσετε το Ledger, παρακαλώ κάντε κλικ στο 'Συνέχεια' ξανά και εγκρίνετε τη σύνδεση HID",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "letsGoSetUp": {
-    "message": "Ναι, ας το εγκαταστήσουμε!"
-  },
   "levelArrow": {
     "message": "βέλος αλλαγής επιπέδου"
   },
@@ -1991,9 +1891,6 @@
   "memo": {
     "message": "σημείωμα"
   },
-  "memorizePhrase": {
-    "message": "Απομνημονεύστε αυτή τη φράση."
-  },
   "message": {
     "message": "Μήνυμα"
   },
@@ -2005,9 +1902,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Το κουμπί κατάστασης σύνδεσης εμφανίζει αν η ιστοσελίδα που επισκέπτεστε είναι συνδεδεμένη με τον τρέχοντα επιλεγμένο λογαριασμό σας."
-  },
-  "metamaskDescription": {
-    "message": "Σύνδεση με το Ethereum και τον Αποκεντρωμένο Ιστό."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Συντήρηση των ανταλλαγών MetaMask. Παρακαλούμε ελέγξτε αργότερα."
@@ -2199,9 +2093,6 @@
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddedMessage": {
-    "message": "Το Collectible προστέθηκε με επιτυχία!"
-  },
   "newContact": {
     "message": "Νέα Επαφή"
   },
@@ -2217,11 +2108,11 @@
   "newNetworkAdded": {
     "message": "Το “$1” προστέθηκε με επιτυχία!"
   },
+  "newNftAddedMessage": {
+    "message": "Το Nft προστέθηκε με επιτυχία!"
+  },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
-  },
-  "newToMetaMask": {
-    "message": "Καινούριος στο MetaMask;"
   },
   "newTokensImportedMessage": {
     "message": "Εισάγατε επιτυχώς το $1.",
@@ -2242,6 +2133,13 @@
   },
   "nft": {
     "message": "NFT"
+  },
+  "nftAddFailedMessage": {
+    "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
+  },
+  "nftAddressError": {
+    "message": "Αυτό το token είναι NFT. Προσθήκη στο $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "nftTokenIdPlaceholder": {
     "message": "Εισάγετε το συλλεκτικό αναγνωριστικό"
@@ -2268,9 +2166,6 @@
   },
   "noAddressForName": {
     "message": "Δεν έχει ορισθεί καμιά διεύθυνση γ' αυτό το όνομα."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Όχι, έχω ήδη μια Μυστική Φράση Ανάκτησης"
   },
   "noConversionDateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ημερομηνία Ισοτιμίας Μετατροπής Νομίσματος"
@@ -2629,10 +2524,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Η εγκατάσταση του MetaMask ολοκληρώθηκε!"
   },
-  "onboardingReturnNotice": {
-    "message": "Το \"$1\" θα κλείσει αυτή την καρτέλα και θα επιστρέψει στο $2",
-    "description": "Return the user to the site that initiated onboarding"
-  },
   "onboardingShowIncomingTransactionsDescription": {
     "message": "Η εμφάνιση των εισερχόμενων συναλλαγών στο πορτοφόλι σας βασίζεται σε επικοινωνία με το $1. Το Etherscan θα έχει πρόσβαση στη διεύθυνση Ethereum σας και τη διεύθυνση IP σας. Δείτε $2.",
     "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
@@ -2955,9 +2846,6 @@
   "remember": {
     "message": "Θυμηθείτε:"
   },
-  "remindMeLater": {
-    "message": "Θυμίστε μου αργότερα"
-  },
   "remove": {
     "message": "Κατάργηση"
   },
@@ -2991,12 +2879,6 @@
   },
   "reset": {
     "message": "Επαναφορά"
-  },
-  "resetAccount": {
-    "message": "Επαναφορά Λογαριασμού"
-  },
-  "resetAccountDescription": {
-    "message": "Με την επαναφορά του λογαριασμού σας εκκαθαρίζεται το ιστορικό των συναλλαγών σας."
   },
   "resetWallet": {
     "message": "Επαναφορά Πορτοφολιού"
@@ -3037,14 +2919,9 @@
   "revealSeedWords": {
     "message": "Αποκάλυψη Λέξεων Μυστικής Φράσης Ανάκτησης"
   },
-  "revealSeedWordsDescription": {
-    "message": "Εάν αλλάξετε ποτέ προγράμματα περιήγησης ή μετακινήσετε υπολογιστές, θα χρειαστείτε αυτήν τη Μυστική Φράση Ανάκτησης για να αποκτήσετε πρόσβαση στους λογαριασμούς σας. Αποθηκεύστε την κάπου με ασφάλεια και μυστικότητα."
-  },
   "revealSeedWordsWarning": {
-    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ΜΗΝ ΜΟΙΡΑΣΤΕΙΤΕ αυτήν τη φράση με κανέναν!"
+    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Αποκάλυψη φράσης ανάκτησης"
@@ -3058,7 +2935,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "Με την ανάκληση της άδειας, το ακόλουθο $1 δεν θα έχει πλέον πρόσβαση στο $2 σας",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Ανάκληση του ανώτατου ορίου δαπανών για το $1",
@@ -3075,9 +2952,6 @@
   },
   "save": {
     "message": "Αποθήκευση"
-  },
-  "saveAsCsvFile": {
-    "message": "Αποθηκεύστε ως Αρχείο CSV"
   },
   "scanInstructions": {
     "message": "Τοποθετήστε τον κώδικα QR μπροστά από την κάμερά σας"
@@ -3102,15 +2976,6 @@
   },
   "searchTokens": {
     "message": "Αναζήτηση Tokens"
-  },
-  "secretBackupPhraseDescription": {
-    "message": "Η μυστική φράση δημιουργίας αντιγράφων ασφαλείας σας διευκολύνει να δημιουργήσετε αντίγραφα ασφαλείας και να επαναφέρετε τον λογαριασμού σας."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Ποτέ μην αποκαλύπτετε την εφεδρική φράση. Όποιος έχει αυτή τη φράση μπορεί να πάρει τα Ether σας για πάντα."
-  },
-  "secretPhrase": {
-    "message": "Μόνο ο πρώτος λογαριασμός σε αυτό το πορτοφόλι θα φορτώσει αυτόματα. Μετά την ολοκλήρωση αυτής της διαδικασίας, για να προσθέσετε επιπλέον λογαριασμούς, κάντε κλικ στο αναπτυσσόμενο μενού και, στη συνέχεια, επιλέξτε Δημιουργία Λογαριασμού."
   },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
@@ -3144,9 +3009,6 @@
   },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "Να φυλάσσεται σε χρηματοκιβώτιο."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Κατάστημα σε θησαυ/κιο τράπεζας."
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Η Μυστική Φράση Ανάκτησης είναι μια φράση 12 λέξεων που είναι το «κύριο κλειδί» στο πορτοφόλι σας και τα χρήματά σας"
@@ -3192,9 +3054,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Αυτός ο λογαριασμός έχει ήδη συνδεθεί με το MetaMask"
-  },
-  "selectEachPhrase": {
-    "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."
   },
   "selectHdPath": {
     "message": "Επιλέξτε Διαδρομή HD"
@@ -3542,9 +3401,6 @@
   },
   "stillGettingMessage": {
     "message": "Λαμβάνετε ακόμα αυτό το μήνυμα;"
-  },
-  "storePhrase": {
-    "message": "Αποθηκεύστε αυτήν τη φράση σε έναν διαχειριστή κωδικών πρόσβασης όπως το 1Password."
   },
   "strong": {
     "message": "Ισχυρός"
@@ -4031,9 +3887,6 @@
   "thingsToKeep": {
     "message": "Πράγματα που πρέπει να έχετε υπόψη σας:"
   },
-  "thisWillCreate": {
-    "message": "Αυτό θα δημιουργήσει ένα νέο πορτοφόλι και Μυστική Φράση Ανάκτησης"
-  },
   "time": {
     "message": "Ώρα"
   },
@@ -4080,9 +3933,6 @@
   },
   "tokenList": {
     "message": "Λίστες token:"
-  },
-  "tokenNftAutoDetection": {
-    "message": "Αυτόματη ανίχνευση token και NFT"
   },
   "tokenScamSecurityRisk": {
     "message": "απάτες token και κίνδυνοι για την ασφάλεια"
@@ -4308,7 +4158,7 @@
   },
   "unsendableAsset": {
     "message": "Η αποστολή συλλεκτικών (ERC-721) δεν υποστηρίζεται προς το παρόν",
-    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+    "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
     "message": "Δεν μπορούμε να επαληθεύσουμε αυτή τη σύμβαση. Βεβαιωθείτε ότι εμπιστεύεστε αυτήν τη διεύθυνση."
@@ -4325,21 +4175,6 @@
   "urlExistsErrorMsg": {
     "message": "Αυτό το URL χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
   },
-  "useCollectibleDetection": {
-    "message": "Αυτόματη Ανίχνευση NFT"
-  },
-  "useCollectibleDetectionDescription": {
-    "message": "Η εμφάνιση πολυμέσων και δεδομένων NFT μπορεί να εκθέσει τη διεύθυνση IP σας σε κεντρικούς διακομιστές. Τα API τρίτων (όπως το OpenSea) χρησιμοποιούνται για την ανίχνευση NFT στο πορτοφόλι σας. Αυτό εκθέτει τη διεύθυνση του λογαριασμού σας με αυτές τις υπηρεσίες. Αφήστε το απενεργοποιημένο αν δεν θέλετε η εφαρμογή να τραβήξει δεδομένα από αυτές τις υπηρεσίες."
-  },
-  "useCollectibleDetectionDescriptionLine2": {
-    "message": "Επιπλέον, λάβετε υπόψη ότι:"
-  },
-  "useCollectibleDetectionDescriptionLine3": {
-    "message": "Τα μεταδεδομένα των NFT ενδέχεται να περιέχουν συνδέσμους προς ιστοσελίδες απάτης ή ηλεκτρονικού «ψαρέματος»."
-  },
-  "useCollectibleDetectionDescriptionLine4": {
-    "message": "Οποιοσδήποτε μπορεί να στείλει NFT στον λογαριασμό σας. Αυτό μπορεί να περιλαμβάνει προσβλητικό περιεχόμενο που μπορεί να εμφανίζεται αυτόματα στο πορτοφόλι σας."
-  },
   "useDefault": {
     "message": "Χρήση προκαθορισμένου"
   },
@@ -4348,6 +4183,21 @@
   },
   "useMultiAccountBalanceCheckerDescription": {
     "message": "Συγκεντρώνουμε τους λογαριασμούς και ζητάμε από την Infura να εμφανίσει το υπόλοιπό σας. Αν το απενεργοποιήσετε αυτό, θα ζητηθούν μόνο οι ενεργοί λογαριασμοί. Ορισμένες αποκεντρωμένες εφαρμογές δεν θα λειτουργούν αν δεν συνδέσετε το πορτοφόλι σας."
+  },
+  "useNftDetection": {
+    "message": "Αυτόματη Ανίχνευση NFT"
+  },
+  "useNftDetectionDescription": {
+    "message": "Η εμφάνιση πολυμέσων και δεδομένων NFT μπορεί να εκθέσει τη διεύθυνση IP σας σε κεντρικούς διακομιστές. Τα API τρίτων (όπως το OpenSea) χρησιμοποιούνται για την ανίχνευση NFT στο πορτοφόλι σας. Αυτό εκθέτει τη διεύθυνση του λογαριασμού σας με αυτές τις υπηρεσίες. Αφήστε το απενεργοποιημένο αν δεν θέλετε η εφαρμογή να τραβήξει δεδομένα από αυτές τις υπηρεσίες."
+  },
+  "useNftDetectionDescriptionLine2": {
+    "message": "Επιπλέον, λάβετε υπόψη ότι:"
+  },
+  "useNftDetectionDescriptionLine3": {
+    "message": "Τα μεταδεδομένα των NFT ενδέχεται να περιέχουν συνδέσμους προς ιστοσελίδες απάτης ή ηλεκτρονικού «ψαρέματος»."
+  },
+  "useNftDetectionDescriptionLine4": {
+    "message": "Οποιοσδήποτε μπορεί να στείλει NFT στον λογαριασμό σας. Αυτό μπορεί να περιλαμβάνει προσβλητικό περιεχόμενο που μπορεί να εμφανίζεται αυτόματα στο πορτοφόλι σας."
   },
   "usePhishingDetection": {
     "message": "Χρήση Ανίχνευσης Απάτης Ηλεκτρονικού Ψαρέματος"
@@ -4469,9 +4319,6 @@
     "message": "ιστότοποι",
     "description": "Used in the 'permission_rpc' message."
   },
-  "welcome": {
-    "message": "Καλώς ήλθατε στο MetaMask"
-  },
   "welcomeBack": {
     "message": "Καλώς Ήλθατε και Πάλι!"
   },
@@ -4499,9 +4346,6 @@
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"
-  },
-  "writePhrase": {
-    "message": "Γράψτε αυτήν τη φάση σε ένα κομμάτι χαρτί και αποθηκεύστε την σε μια ασφαλή τοποθεσία. Εάν θέλετε ακόμη περισσότερη ασφάλεια, γράψτε την σε περισσότερα κομμάτια χαρτί και αποθηκεύστε καθένα από αυτά σε 2-3 διαφορετικές τοποθεσίες."
   },
   "xOfY": {
     "message": "$1 από $2",

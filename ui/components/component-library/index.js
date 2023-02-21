@@ -26,15 +26,10 @@ export { Label } from './label';
 export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
-export { Text, TEXT_VARIANTS, TEXT_DIRECTIONS } from './text';
+export { Text, TEXT_DIRECTIONS } from './text';
 export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
-export {
-  TextFieldBase,
-  TEXT_FIELD_BASE_SIZES,
-  TEXT_FIELD_BASE_TYPES,
-} from './text-field-base';
 export { TextFieldSearch } from './text-field-search';
 
 // Molecules
 export { BannerBase } from './banner-base';
-export { Banner, BANNER_SEVERITIES } from './banner';
+export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';

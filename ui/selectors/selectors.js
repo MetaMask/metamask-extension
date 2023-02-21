@@ -176,10 +176,6 @@ export function getCurrentKeyring(state) {
   return keyring;
 }
 
-export function getParticipateInMetaMetrics(state) {
-  return Boolean(state.metamask.participateInMetaMetrics);
-}
-
 export function isEIP1559Account() {
   return true;
 }
@@ -531,6 +527,20 @@ export function getTotalUnapprovedMessagesCount(state) {
   );
 }
 
+export function getTotalUnapprovedSignatureRequestCount(state) {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = state.metamask;
+
+  return (
+    unapprovedMsgCount +
+    unapprovedPersonalMsgCount +
+    unapprovedTypedMessagesCount
+  );
+}
+
 export function getUnapprovedTxCount(state) {
   const { unapprovedTxs = {} } = state.metamask;
   return Object.keys(unapprovedTxs).length;
@@ -839,7 +849,7 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
 export const getUnapprovedTransactions = (state) =>
   state.metamask.unapprovedTxs;
 
-const getCurrentNetworkTransactionList = (state) =>
+export const getCurrentNetworkTransactionList = (state) =>
   state.metamask.currentNetworkTxList;
 
 export const getTxData = (state) => state.confirmTransaction.txData;
@@ -1050,6 +1060,15 @@ export function getShowRecoveryPhraseReminder(state) {
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
+export function getShowOutdatedBrowserWarning(state) {
+  const { outdatedBrowserWarningLastShown } = state.metamask;
+  if (!outdatedBrowserWarningLastShown) {
+    return true;
+  }
+  const currentTime = new Date().getTime();
+  return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
+}
+
 export function getShowPortfolioTooltip(state) {
   return state.metamask.showPortfolioTooltip;
 }
@@ -1131,12 +1150,12 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
-export function getNewCollectibleAddedMessage(state) {
-  return state.appState.newCollectibleAddedMessage;
+export function getNewNftAddedMessage(state) {
+  return state.appState.newNftAddedMessage;
 }
 
-export function getRemoveCollectibleMessage(state) {
-  return state.appState.removeCollectibleMessage;
+export function getRemoveNftMessage(state) {
+  return state.appState.removeNftMessage;
 }
 
 /**

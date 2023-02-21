@@ -9,6 +9,11 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -23,7 +28,6 @@ export default class PermissionConnect extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     getRequestAccountTabIds: PropTypes.func.isRequired,
-    getCurrentWindowTab: PropTypes.func.isRequired,
     accounts: PropTypes.array.isRequired,
     currentAddress: PropTypes.string.isRequired,
     origin: PropTypes.string,
@@ -100,13 +104,11 @@ export default class PermissionConnect extends Component {
       snapUpdatePath,
       isSnap,
       ///: END:ONLY_INCLUDE_IN
-      getCurrentWindowTab,
       getRequestAccountTabIds,
       permissionsRequest,
       history,
       isRequestingAccounts,
     } = this.props;
-    getCurrentWindowTab();
     getRequestAccountTabIds();
 
     if (!permissionsRequest) {
@@ -234,7 +236,11 @@ export default class PermissionConnect extends Component {
             className="permissions-connect__back"
             onClick={() => this.goBack()}
           >
-            <i className="fas fa-chevron-left"></i>
+            <Icon
+              name={ICON_NAMES.ARROW_RIGHT}
+              marginInlineEnd={1}
+              size={ICON_SIZES.XS}
+            />
             {t('back')}
           </div>
         ) : null}

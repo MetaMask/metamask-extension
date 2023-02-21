@@ -1,6 +1,6 @@
 const path = require('path');
 const { PassThrough, Transform } = require('stream');
-const { BuildType } = require('../../lib/build-type');
+const { BuildType, BuildTypeInheritance } = require('../../lib/build-type');
 const { lintTransformedFile } = require('./utils');
 
 const hasKey = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
@@ -337,7 +337,16 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
       // Throws an error if the command parameters are invalid
       CommandValidators[command](parameters, filePath);
 
-      if (parameters.includes(typeOfCurrentBuild)) {
+      const validBuildTypes = [
+        typeOfCurrentBuild,
+        ...(BuildTypeInheritance[typeOfCurrentBuild] || []),
+      ];
+
+      const buildTypeMatches = validBuildTypes.some((validBuildType) =>
+        parameters.includes(validBuildType),
+      );
+
+      if (buildTypeMatches) {
         shouldSplice = false;
       } else {
         shouldSplice = true;

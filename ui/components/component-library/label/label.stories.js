@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  COLORS,
-  SIZES,
-  ALIGN_ITEMS,
+  Size,
+  AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
@@ -31,9 +31,6 @@ export default {
     required: {
       control: 'boolean',
     },
-    disabled: {
-      control: 'boolean',
-    },
     children: {
       control: 'text',
     },
@@ -58,19 +55,19 @@ export const Children = (args) => (
     gap={2}
   >
     <Label {...args}>Plain text</Label>
-    <Label {...args} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.FLEX_START}>
+    <Label {...args} display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>
       Text and icon
       <Icon
-        color={COLORS.ICON_ALTERNATIVE}
+        color={IconColor.iconAlternative}
         name={ICON_NAMES.INFO}
-        size={SIZES.AUTO}
+        size={Size.inherit}
       />
     </Label>
     <Label
       {...args}
       display={DISPLAY.INLINE_FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      alignItems={ALIGN_ITEMS.FLEX_START}
+      alignItems={AlignItems.flexStart}
     >
       Label that wraps an input
       <TextField placeholder="Click label to focus" />
@@ -103,9 +100,4 @@ HtmlFor.args = {
 export const Required = Template.bind({});
 Required.args = {
   required: true,
-};
-
-export const Disabled = Template.bind({});
-Disabled.args = {
-  disabled: true,
 };

@@ -3,12 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import { waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import mockState from '../../../../test/data/mock-state.json';
 
 import GasTiming from '.';
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
@@ -18,7 +18,7 @@ describe('Gas timing', () => {
     const nullGasState = {
       metamask: {
         gasFeeEstimates: null,
-        gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        gasEstimateType: GasEstimateTypes.feeMarket,
       },
     };
 

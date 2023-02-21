@@ -32,15 +32,20 @@ import {
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import IconCheck from '../../ui/icon/icon-check';
-import IconSpeechBubbles from '../../ui/icon/icon-speech-bubbles';
-import IconConnect from '../../ui/icon/icon-connect';
 import IconCog from '../../ui/icon/icon-cog';
-import IconPlus from '../../ui/icon/icon-plus';
 import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { Color } from '../../../helpers/constants/design-system';
+import {
+  Icon,
+  ICON_NAMES,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ICON_SIZES,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -87,7 +92,7 @@ export default class AccountMenu extends Component {
     keyrings: PropTypes.array,
     lockMetamask: PropTypes.func,
     selectedAddress: PropTypes.string,
-    showAccountDetail: PropTypes.func,
+    setSelectedAccount: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
     addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
@@ -173,7 +178,7 @@ export default class AccountMenu extends Component {
       accounts,
       selectedAddress,
       keyrings,
-      showAccountDetail,
+      setSelectedAccount,
       addressConnectedSubjectMap,
       originOfCurrentTab,
     } = this.props;
@@ -219,7 +224,7 @@ export default class AccountMenu extends Component {
                 location: 'Main Menu',
               },
             });
-            showAccountDetail(identity.address);
+            setSelectedAccount(identity.address);
           }}
           key={identity.address}
           data-testid="account-menu__account"
@@ -369,7 +374,13 @@ export default class AccountMenu extends Component {
             });
             history.push(NEW_ACCOUNT_ROUTE);
           }}
-          icon={<IconPlus color="var(--color-icon-alternative)" />}
+          icon={
+            <Icon
+              name={ICON_NAMES.ADD}
+              color={Color.iconAlternative}
+              ariaLabel={t('createAccount')}
+            />
+          }
           text={t('createAccount')}
         />
         <AccountMenuItem
@@ -411,10 +422,7 @@ export default class AccountMenu extends Component {
             }
           }}
           icon={
-            <IconConnect
-              color="var(--color-icon-alternative)"
-              ariaLabel={t('connectHardwareWallet')}
-            />
+            <Icon name={ICON_NAMES.HARDWARE} color={Color.iconAlternative} />
           }
           text={t('connectHardwareWallet')}
         />
@@ -429,7 +437,7 @@ export default class AccountMenu extends Component {
               }}
               icon={
                 <div className="account-menu__notifications">
-                  <i className="fa fa-bell fa-xl" />
+                  <Icon name={ICON_NAMES.NOTIFICATION} size={ICON_SIZES.LG} />
                   {unreadNotificationsCount > 0 && (
                     <div className="account-menu__notifications__count">
                       {unreadNotificationsCount}
@@ -460,10 +468,7 @@ export default class AccountMenu extends Component {
             global.platform.openTab({ url: supportLink });
           }}
           icon={
-            <IconSpeechBubbles
-              color="var(--color-icon-alternative)"
-              ariaLabel={supportText}
-            />
+            <Icon name={ICON_NAMES.MESSAGES} color={Color.iconAlternative} />
           }
           text={supportText}
         />

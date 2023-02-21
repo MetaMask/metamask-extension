@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import {
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import { isNullish } from '../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
@@ -30,11 +30,11 @@ const NetworkStatistics = () => {
   return (
     <div className="network-statistics">
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         fontWeight={FONT_WEIGHT.BOLD}
         marginTop={3}
         marginBottom={3}
-        variant={TYPOGRAPHY.H8}
+        variant={TypographyVariant.H8}
       >
         {t('networkStatus')}
       </Typography>

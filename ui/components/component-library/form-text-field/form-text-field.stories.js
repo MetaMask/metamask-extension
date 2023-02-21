@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  SIZES,
+  Size,
   DISPLAY,
-  COLORS,
-  ALIGN_ITEMS,
-  TEXT,
-  JUSTIFY_CONTENT,
+  AlignItems,
+  TextVariant,
+  JustifyContent,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -72,18 +73,6 @@ export default {
     helpTextProps: {
       control: 'object',
     },
-    showClearButton: {
-      control: 'boolean',
-      table: { category: 'text field props' },
-    },
-    clearButtonOnClick: {
-      action: 'clearButtonOnClick',
-      table: { category: 'text field props' },
-    },
-    clearButtonProps: {
-      control: 'object',
-      table: { category: 'text field props' },
-    },
     autoComplete: {
       control: 'boolean',
       table: { category: 'text field base props' },
@@ -112,7 +101,7 @@ export default {
       control: 'object',
       table: { category: 'text field base props' },
     },
-    leftAccessory: {
+    startAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
@@ -156,7 +145,7 @@ export default {
       control: 'boolean',
       table: { category: 'text field base props' },
     },
-    rightAccessory: {
+    endAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
@@ -208,17 +197,7 @@ const Template = (args) => {
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
-  const handleOnClear = () => {
-    updateArgs({ value: '' });
-  };
-  return (
-    <FormTextField
-      {...args}
-      value={value}
-      onChange={handleOnChange}
-      clearButtonOnClick={handleOnClear}
-    />
-  );
+  return <FormTextField {...args} value={value} onChange={handleOnChange} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -244,9 +223,6 @@ export const HelpTextStory = (args) => {
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
-  const handleOnClear = () => {
-    updateArgs({ value: '' });
-  };
   return (
     <>
       <FormTextField
@@ -254,7 +230,6 @@ export const HelpTextStory = (args) => {
         id="input-with-help-text"
         value={value}
         onChange={handleOnChange}
-        clearButtonOnClick={handleOnClear}
         marginBottom={4}
       />
       <FormTextField
@@ -264,7 +239,6 @@ export const HelpTextStory = (args) => {
         helpText="When error is true the help text will be rendered as an error message"
         value={value}
         onChange={handleOnChange}
-        clearButtonOnClick={handleOnClear}
       />
     </>
   );
@@ -396,7 +370,7 @@ export const FormExample = () => {
           error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
           helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
         />
-        <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} gap={1}>
+        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
@@ -405,8 +379,8 @@ export const FormExample = () => {
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
         <Text
-          variant={TEXT.BODY_LG}
-          color={COLORS.SUCCESS_DEFAULT}
+          variant={TextVariant.bodyLgMedium}
+          color={TextColor.successDefault}
           marginTop={4}
         >
           Form successfully submitted!
@@ -424,10 +398,10 @@ export const CustomLabelOrHelpText = () => (
     </Text>
     <Box
       display={DISPLAY.FLEX}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-      alignItems={ALIGN_ITEMS.FLEX_END}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.flexEnd}
     >
-      <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
@@ -436,17 +410,17 @@ export const CustomLabelOrHelpText = () => (
         </Label>
         <Icon
           name={ICON_NAMES.INFO}
-          size={SIZES.SM}
+          size={Size.SM}
           marginLeft={1}
-          color={COLORS.ICON_ALTERNATIVE}
+          color={IconColor.iconAlternative}
         />
       </Box>
-      <ButtonLink size={SIZES.AUTO}>Use default</ButtonLink>
+      <ButtonLink>Use default</ButtonLink>
     </Box>
     <FormTextField
       id="custom-spending-cap"
       placeholder="Enter a number"
-      rightAccessory={<ButtonLink size={SIZES.AUTO}>Max</ButtonLink>}
+      endAccessory={<ButtonLink>Max</ButtonLink>}
       marginBottom={4}
       type={TEXT_FIELD_TYPES.NUMBER}
     />
@@ -457,8 +431,8 @@ export const CustomLabelOrHelpText = () => (
     />
     <Box
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.FLEX_START}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      alignItems={AlignItems.flexStart}
+      justifyContent={JustifyContent.spaceBetween}
     >
       {/* If you need a custom help text
        or require adding some form of customization
@@ -469,7 +443,7 @@ export const CustomLabelOrHelpText = () => (
         accessing now or in the future. You can always increase the token limit
         later.
       </HelpText>
-      <ButtonLink size={SIZES.AUTO} marginLeft="auto" marginTop={1}>
+      <ButtonLink marginLeft="auto" marginTop={1}>
         Max
       </ButtonLink>
     </Box>

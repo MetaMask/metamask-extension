@@ -17,14 +17,15 @@ import {
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
+  getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
-  getNewCollectibleAddedMessage,
+  getNewNftAddedMessage,
   getNewTokensImported,
   getShowPortfolioTooltip,
   getShouldShowSeedPhraseReminder,
-  getRemoveCollectibleMessage,
+  getRemoveNftMessage,
 } from '../../selectors';
 
 import {
@@ -36,9 +37,10 @@ import {
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
+  setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewCollectibleAddedMessage,
-  setRemoveCollectibleMessage,
+  setNewNftAddedMessage,
+  setRemoveNftMessage,
   setNewTokensImported,
   setRpcTarget,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -54,13 +56,14 @@ import {
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
 import {
-  ALERT_TYPES,
-  WEB3_SHIM_USAGE_ALERT_STATES,
+  AlertTypes,
+  Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import Home from './home.component';
 
@@ -76,7 +79,7 @@ const mapStateToProps = (state) => {
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
-  const { forgottenPassword } = appState;
+  const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
@@ -104,7 +107,7 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageAlertEnabledness(state) &&
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
-      WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
+      Web3ShimUsageAlertStates.recorded;
 
   const isSigningQRHardwareTransaction =
     hasUnsignedQRHardwareTransaction(state) ||
@@ -143,11 +146,13 @@ const mapStateToProps = (state) => {
     portfolioTooltipWasShownInThisSession:
       getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
+    showOutdatedBrowserWarning:
+      getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
-    newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
-    removeCollectibleMessage: getRemoveCollectibleMessage(state),
+    newNftAddedMessage: getNewNftAddedMessage(state),
+    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
     onboardedInThisUISession: appState.onboardedInThisUISession,
@@ -165,21 +170,25 @@ const mapDispatchToProps = (dispatch) => ({
   setWeb3ShimUsageAlertDismissed: (origin) =>
     setWeb3ShimUsageAlertDismissed(origin),
   disableWeb3ShimUsageAlert: () =>
-    setAlertEnabledness(ALERT_TYPES.web3ShimUsage, false),
+    setAlertEnabledness(AlertTypes.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
   hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+  setOutdatedBrowserWarningLastShown: (lastShown) => {
+    dispatch(setOutdatedBrowserWarningLastShown(lastShown));
+  },
   setNewNetworkAdded: (newNetwork) => {
+    console.log({ newNetwork });
     dispatch(setNewNetworkAdded(newNetwork));
   },
-  setNewCollectibleAddedMessage: (message) => {
-    dispatch(setNewCollectibleAddedMessage(message));
+  setNewNftAddedMessage: (message) => {
+    dispatch(setNewNftAddedMessage(message));
   },
-  setRemoveCollectibleMessage: (message) => {
-    dispatch(setRemoveCollectibleMessage(message));
+  setRemoveNftMessage: (message) => {
+    dispatch(setRemoveNftMessage(message));
   },
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));

@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -360,6 +361,65 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           text: '0.000000025',
         });
         assert.equal(await baseFeeValue.getText(), '0.000000025');
+      },
+    );
+  });
+});
+
+describe('Send ETH from inside MetaMask to a Multisig Address', function () {
+  const smartContract = SMART_CONTRACTS.MULTISIG;
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: convertToHexValue(25000000000000000000),
+      },
+    ],
+  };
+  it('finds the transaction in the transactions list', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        smartContract,
+        title: this.test.title,
+      },
+      async ({ driver, contractRegistry }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.clickElement('[data-testid="eth-overview-send"]');
+
+        await driver.fill(
+          'input[placeholder="Search, public address (0x), or ENS"]',
+          contractAddress,
+        );
+
+        const inputAmount = await driver.findElement('.unit-input__input');
+        await inputAmount.fill('1');
+
+        // Continue to next screen
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.wait(async () => {
+          const confirmedTxes = await driver.findElements(
+            '.transaction-list__completed-transactions .transaction-list-item',
+          );
+          return confirmedTxes.length === 1;
+        }, 10000);
+
+        const failedTx = await driver.isElementPresent(
+          '.transaction-status-label--failed',
+        );
+        assert.equal(failedTx, false, 'Transaction failed');
       },
     );
   });

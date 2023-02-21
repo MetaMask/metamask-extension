@@ -7,7 +7,7 @@ import {
   decimalToHex,
   getValueFromWeiHex,
 } from '../../../shared/modules/conversion.utils';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -571,6 +571,8 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  * the send slice. It returns the values that might change from this action and
  * those values are written to the slice in the `initializeSendState.fulfilled`
  * action handler.
+ *
+ * @type {import('@reduxjs/toolkit').AsyncThunk<any, { chainHasChanged: boolean }, {}>}
  */
 export const initializeSendState = createAsyncThunk(
   'send/initializeSendState',
@@ -626,11 +628,11 @@ export const initializeSendState = createAsyncThunk(
       // Because we are only interested in getting a gasLimit estimation we only
       // need to worry about gasPrice. So we use maxFeePerGas as gasPrice if we
       // have a fee market estimation.
-      if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      if (gasEstimateType === GasEstimateTypes.legacy) {
         gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
         gasPrice = getRoundedGasPrice(gasFeeEstimates.gasPrice);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+      } else if (gasEstimateType === GasEstimateTypes.feeMarket) {
         gasPrice = getGasPriceInHexWei(
           gasFeeEstimates.medium.suggestedMaxFeePerGas,
         );
@@ -644,7 +646,7 @@ export const initializeSendState = createAsyncThunk(
     // Set a basic gasLimit in the event that other estimation fails
     let { gasLimit } = draftTransaction.gas;
     if (
-      gasEstimateType !== GAS_ESTIMATE_TYPES.NONE &&
+      gasEstimateType !== GasEstimateTypes.none &&
       sendState.stage !== SEND_STAGES.EDIT &&
       draftTransaction.recipient.address
     ) {
@@ -973,7 +975,7 @@ const slice = createSlice({
       const { gasFeeEstimates, gasEstimateType } = action.payload;
       let gasPriceEstimate = '0x0';
       switch (gasEstimateType) {
-        case GAS_ESTIMATE_TYPES.FEE_MARKET:
+        case GasEstimateTypes.feeMarket:
           slice.caseReducers.updateGasFees(state, {
             payload: {
               transactionType: TransactionEnvelopeType.feeMarket,
@@ -986,7 +988,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.LEGACY:
+        case GasEstimateTypes.legacy:
           gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.medium);
           slice.caseReducers.updateGasFees(state, {
             payload: {
@@ -996,7 +998,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+        case GasEstimateTypes.ethGasPrice:
           gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.gasPrice);
           slice.caseReducers.updateGasFees(state, {
             payload: {
@@ -1006,7 +1008,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.NONE:
+        case GasEstimateTypes.none:
         default:
           break;
       }
@@ -2118,7 +2120,7 @@ export function updateSendAsset(
           } catch (err) {
             if (err.message.includes('Unable to verify ownership.')) {
               // this would indicate that either our attempts to verify ownership failed because of network issues,
-              // or, somehow a token has been added to collectibles state with an incorrect chainId.
+              // or, somehow a token has been added to NFTs state with an incorrect chainId.
             } else {
               // Any other error is unexpected and should be surfaced.
               dispatch(displayWarning(err.message));
@@ -2130,7 +2132,7 @@ export function updateSendAsset(
             asset.balance = '0x1';
           } else {
             throw new Error(
-              'Send slice initialized as collectible send with a collectible not currently owned by the select account',
+              'Send slice initialized as NFT send with an NFT not currently owned by the select account',
             );
           }
           await dispatch(
@@ -2502,7 +2504,7 @@ export function getGasInputMode(state) {
   // mainnet or IN_TEST.
   if (
     (isMainnet || process.env.IN_TEST) &&
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE
+    gasEstimateType === GasEstimateTypes.ethGasPrice
   ) {
     return GAS_INPUT_MODES.INLINE;
   }

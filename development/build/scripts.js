@@ -1110,7 +1110,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
       environment,
       testing,
     }),
-    METAMASK_DEBUG: devMode,
+    METAMASK_DEBUG: devMode || config.METAMASK_DEBUG === '1',
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
@@ -1123,10 +1123,13 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, config, environment }),
     SENTRY_DSN: config.SENTRY_DSN,
     SENTRY_DSN_DEV: config.SENTRY_DSN_DEV,
-    SIWE_V1: config.SIWE_V1 === '1',
     SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
     TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
     TRANSACTION_SECURITY_PROVIDER: config.TRANSACTION_SECURITY_PROVIDER === '1',
+    // Desktop
+    COMPATIBILITY_VERSION_EXTENSION: config.COMPATIBILITY_VERSION_EXTENSION,
+    DISABLE_WEB_SOCKET_ENCRYPTION: config.DISABLE_WEB_SOCKET_ENCRYPTION === '1',
+    SKIP_OTP_PAIRING_FLOW: config.SKIP_OTP_PAIRING_FLOW === '1',
   };
 }
 

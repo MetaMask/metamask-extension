@@ -1,15 +1,12 @@
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
 
+import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
-} from '../../../../shared/constants/gas';
-import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
@@ -55,10 +52,10 @@ const CancelSpeedupPopover = () => {
       gasEstimateGreaterThanGasUsedPlusTenPercent(
         transaction.txParams,
         gasFeeEstimates,
-        PRIORITY_LEVELS.MEDIUM,
+        PriorityLevels.medium,
       );
     if (gasUsedLessThanMedium) {
-      updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM);
+      updateTransactionUsingEstimate(PriorityLevels.medium);
       return;
     }
     updateTransactionToTenPercentIncreasedGasFee(true);
@@ -78,7 +75,7 @@ const CancelSpeedupPopover = () => {
   }
 
   const submitTransactionChange = () => {
-    if (editGasMode === EDIT_GAS_MODES.CANCEL) {
+    if (editGasMode === EditGasModes.cancel) {
       cancelTransaction();
     } else {
       speedUpTransaction();
@@ -90,7 +87,7 @@ const CancelSpeedupPopover = () => {
     <Popover
       title={
         <>
-          {editGasMode === EDIT_GAS_MODES.CANCEL
+          {editGasMode === EditGasModes.cancel
             ? `❌${t('cancel')}`
             : `🚀${t('speedUp')}`}
         </>
@@ -101,8 +98,8 @@ const CancelSpeedupPopover = () => {
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
       <div className="cancel-speedup-popover__wrapper">
         <Typography
-          boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
-          variant={TYPOGRAPHY.H6}
+          boxProps={{ alignItems: AlignItems.center, display: DISPLAY.FLEX }}
+          variant={TypographyVariant.H6}
           marginTop={0}
           marginBottom={2}
         >
@@ -114,7 +111,7 @@ const CancelSpeedupPopover = () => {
             contentText={
               <Box>
                 {t('cancelSpeedUpTransactionTooltip', [
-                  editGasMode === EDIT_GAS_MODES.CANCEL
+                  editGasMode === EditGasModes.cancel
                     ? t('cancel')
                     : t('speedUp'),
                 ])}
@@ -134,7 +131,7 @@ const CancelSpeedupPopover = () => {
         <div className="cancel-speedup-popover__separator" />
         <Box
           display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
+          alignItems={AlignItems.center}
           flexDirection={FLEX_DIRECTION.COLUMN}
           marginTop={4}
         >

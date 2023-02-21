@@ -37,7 +37,7 @@
     --size: 32px;
   }
 
-  &--size-auto {
+  &--size-inherit {
     --size: 1em; // Inherits parent font-size
 
     position: relative; // Fixes vertical alignment
