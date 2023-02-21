@@ -4,6 +4,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
+import Link from '../../../ui/link';
 import { EVENT } from '../../../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
@@ -54,7 +55,7 @@ export default class ConfirmRemoveAccount extends Component {
           </span>
         </div>
         <div className="confirm-remove-account__account__link">
-          <a
+          <Link
             onClick={() => {
               const accountLink = getAccountLink(
                 identity.address,
@@ -75,7 +76,7 @@ export default class ConfirmRemoveAccount extends Component {
               });
             }}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
             title={t('etherscanView')}
           >
             <i
@@ -83,7 +84,7 @@ export default class ConfirmRemoveAccount extends Component {
               style={{ color: 'var(--color-icon-muted)' }}
               title={t('etherscanView')}
             />
-          </a>
+          </Link>
         </div>
       </div>
     );

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ICON_NAMES } from '../../component-library';
 import { MenuItem } from '../../ui/menu';
+import Link from '../../ui/link';
 import ConnectedAccountsListItem from './connected-accounts-list-item';
 import ConnectedAccountsListOptions from './connected-accounts-list-options';
 
@@ -84,12 +85,12 @@ export default class ConnectedAccountsList extends PureComponent {
         name={`${name} (…${address.substr(-4, 4)})`}
         status={t('statusNotConnected')}
         action={
-          <a
+          <Link
             className="connected-accounts-list__account-status-link"
             onClick={() => connectAccount(accountToConnect.address)}
           >
             {t('connect')}
-          </a>
+          </Link>
         }
       />
     );
@@ -116,12 +117,12 @@ export default class ConnectedAccountsList extends PureComponent {
     const { t } = this.context;
 
     return (
-      <a
+      <Link
         className="connected-accounts-list__account-status-link"
         onClick={() => this.switchAccount(address)}
       >
         {t('switchToThisAccount')}
-      </a>
+      </Link>
     );
   }
 

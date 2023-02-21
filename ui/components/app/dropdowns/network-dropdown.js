@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import Button from '../../ui/button';
+import Link from '../../ui/link';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
 import {
@@ -325,7 +326,7 @@ class NetworkDropdown extends Component {
           {showTestnetMessageInDropdown && !hideElementsForOnboarding ? (
             <div className="network-dropdown-content">
               {t('toggleTestNetworks', [
-                <a
+                <Link
                   href="#"
                   key="advancedSettingsLink"
                   className="network-dropdown-content--link"
@@ -336,7 +337,7 @@ class NetworkDropdown extends Component {
                   }}
                 >
                   {t('showHide')}
-                </a>,
+                </Link>,
               ])}
               <Button
                 onClick={hideTestNetMessage}

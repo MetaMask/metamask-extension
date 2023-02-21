@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
 import Button from '../../../ui/button';
+import Link from '../../../ui/link';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
@@ -261,7 +262,7 @@ export default class ConfirmPageContainerContent extends Component {
           disabled={disabled}
         >
           {unapprovedTxCount > 1 ? (
-            <a onClick={onCancelAll}>{rejectNText}</a>
+            <Link onClick={onCancelAll}>{rejectNText}</Link>
           ) : null}
         </PageContainerFooter>
       </div>

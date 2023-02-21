@@ -4,6 +4,7 @@ import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import Box from '../../ui/box';
+import Link from '../../ui/link';
 import ErrorMessage from '../../ui/error-message';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography/typography';
@@ -92,14 +93,14 @@ const EditGasFeePopover = () => {
                 variant={TypographyVariant.H7}
               >
                 {t('learnMoreAboutGas', [
-                  <a
+                  <Link
                     key="learnMoreLink"
                     target="_blank"
                     rel="noopener noreferrer"
                     href={ZENDESK_URLS.USER_GUIDE_GAS}
                   >
                     {t('learnMore')}
-                  </a>,
+                  </Link>,
                 ])}
               </Typography>
             </Box>

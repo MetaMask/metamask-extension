@@ -5,6 +5,7 @@ import { TypographyVariant } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsMainnet } from '../../../../selectors';
 import Box from '../../../ui/box';
+import Link from '../../../ui/link';
 import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
 import Typography from '../../../ui/typography/typography';
 
@@ -30,13 +31,13 @@ const GasDetailsItemTitle = () => {
               {t('transactionDetailGasTooltipExplanation')}
             </Typography>
             <Typography variant={TypographyVariant.H7}>
-              <a
+              <Link
                 href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
               >
                 {t('transactionDetailGasTooltipConversion')}
-              </a>
+              </Link>
             </Typography>
           </>
         }

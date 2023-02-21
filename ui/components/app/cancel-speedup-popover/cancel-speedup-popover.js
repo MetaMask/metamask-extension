@@ -16,6 +16,7 @@ import { useTransactionModalContext } from '../../../contexts/transaction-modal'
 import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
+import Link from '../../ui/link';
 import Button from '../../ui/button';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
@@ -116,13 +117,13 @@ const CancelSpeedupPopover = () => {
                     : t('speedUp'),
                 ])}
                 <div>
-                  <a
+                  <Link
                     href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noreferrer"
                   >
                     {t('learnMoreUpperCase')}
-                  </a>
+                  </Link>
                 </div>
               </Box>
             }

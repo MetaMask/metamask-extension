@@ -2,6 +2,7 @@ import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../ui/box/box';
+import Link from '../../ui/link';
 import Typography from '../../ui/typography/typography';
 import {
   TypographyVariant,
@@ -32,14 +33,14 @@ const BetaHeader = () => {
         color={Color.warningInverse}
       >
         {t('betaHeaderText', [
-          <a
+          <Link
             href={BETA_BUGS_URL}
             key="link"
             target="_blank"
             rel="noreferrer noopener"
           >
             {t('here')}
-          </a>,
+          </Link>,
         ])}
       </Typography>
       <button

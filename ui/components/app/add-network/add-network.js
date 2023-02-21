@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
+import Link from '../../ui/link';
 import Typography from '../../ui/typography';
 import {
   AlignItems,
@@ -96,7 +97,7 @@ const AddNetwork = () => {
           <Box>
             <Typography variant={TypographyVariant.H7}>
               {t('youHaveAddedAll', [
-                <a
+                <Link
                   key="link"
                   className="add-network__edge-case-box__link"
                   href="https://chainlist.wtf/"
@@ -104,7 +105,7 @@ const AddNetwork = () => {
                   rel="noreferrer"
                 >
                   {t('here')}.
-                </a>,
+                </Link>,
                 <Button
                   key="button"
                   type="inline"
@@ -222,14 +223,14 @@ const AddNetwork = () => {
                             className="add-network__warning-tooltip"
                           >
                             {t('addNetworkTooltipWarning', [
-                              <a
+                              <Link
                                 key="zendesk_page_link"
                                 href={ZENDESK_URLS.UNKNOWN_NETWORK}
                                 rel="noreferrer"
                                 target="_blank"
                               >
                                 {t('learnMoreUpperCase')}
-                              </a>,
+                              </Link>,
                             ])}
                           </Box>
                         }

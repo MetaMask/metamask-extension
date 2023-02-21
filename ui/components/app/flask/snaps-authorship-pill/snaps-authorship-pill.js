@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
+import Link from '../../../ui/link';
 import Typography from '../../../ui/typography';
 import {
   TypographyVariant,
@@ -35,7 +36,7 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
   const friendlyName = SNAPS_METADATA[snapId]?.name ?? packageName;
 
   return (
-    <a
+    <Link
       href={url}
       target="_blank"
       rel="noopener noreferrer"
@@ -79,7 +80,7 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
           {friendlyName}
         </Typography>
       </Chip>
-    </a>
+    </Link>
   );
 };
 
