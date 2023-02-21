@@ -79,12 +79,6 @@
   "asset": {
     "message": "الأصل"
   },
-  "attemptToCancel": {
-    "message": "هل تحاول الإلغاء؟"
-  },
-  "attemptToCancelDescription": {
-    "message": "تقديم هذه المحاولة لا يضمن أنه سيتم إلغاء معاملتك الأصلية. إذا نجحت محاولة الإلغاء ، فسيتم فرض رسوم المعاملة المذكورة أعلاه."
-  },
   "attemptingConnect": {
     "message": "محاولة الاتصال بسلسلة الكتل."
   },
@@ -145,9 +139,6 @@
   },
   "cancel": {
     "message": "إلغاء"
-  },
-  "cancellationGasFee": {
-    "message": "رسوم الإلغاء بعملة جاس"
   },
   "cancelled": {
     "message": "تم الإلغاء"
@@ -919,9 +910,6 @@
   },
   "welcomeBack": {
     "message": "نرحب بعودتك!"
-  },
-  "yesLetsTry": {
-    "message": "نعم، دعنا نجرب"
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."

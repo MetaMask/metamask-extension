@@ -72,12 +72,6 @@
   "approved": {
     "message": "Schváleno"
   },
-  "attemptToCancel": {
-    "message": "Pokus o zrušenie?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Odoslanie tohto pokusu nezaručuje, že vaša pôvodná transakcia bude zrušená. Ak je pokus o zrušenie úspešný, naúčtujeme vám vyššie uvedený transakčný poplatok."
-  },
   "attemptingConnect": {
     "message": "Pokouším se připojit k blockchainu."
   },
@@ -135,9 +129,6 @@
   },
   "cancel": {
     "message": "Zrušit"
-  },
-  "cancellationGasFee": {
-    "message": "Storno poplatok za GAS"
   },
   "cancelled": {
     "message": "Zrušený"
@@ -888,9 +879,6 @@
   },
   "welcomeBack": {
     "message": "Vitajte späť!"
-  },
-  "yesLetsTry": {
-    "message": "Áno, skúsme to"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
