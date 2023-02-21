@@ -37,7 +37,7 @@ async function go() {
     await execute('mv', [
       'builds/metamask-mmi-chrome-10.18.1-mmi.3.zip',
       `builds/${prefix}-metamask-mmi-chrome-10.18.1-mmi.3.zip`,
-    ]); // TODO this should work with all versions
+    ]);
 
     console.log('done with', prefix);
   }
