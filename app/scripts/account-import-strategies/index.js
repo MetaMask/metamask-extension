@@ -1,5 +1,10 @@
 import { isValidMnemonic } from '@ethersproject/hdnode';
-import { bufferToHex, isValidPrivate, toBuffer } from 'ethereumjs-util';
+import {
+  bufferToHex,
+  getBinarySize,
+  isValidPrivate,
+  toBuffer,
+} from 'ethereumjs-util';
 import Wallet from 'ethereumjs-wallet';
 import importers from 'ethereumjs-wallet/thirdparty';
 import log from 'loglevel';
@@ -35,7 +40,10 @@ const accountImporter = {
       }
 
       try {
-        if (!isValidPrivate(buffer)) {
+        if (
+          !isValidPrivate(buffer) ||
+          getBinarySize(prefixedPrivateKey) !== 66 // isValidPrivate() will let a key of 63 hex digits through without complaining, this line ensures 64 hex digits + '0x' = 66 digits
+        ) {
           throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
         }
       } catch (e) {
