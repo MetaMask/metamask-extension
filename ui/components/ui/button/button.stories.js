@@ -132,6 +132,11 @@ TypeInline.args = {
 };
 
 export const Icon = (args) => <Button {...args}>{args.children}</Button>;
+Icon.args = {
+  type: 'primary',
+  icon: <IconTokenSearch />,
+  children: 'Search',
+};
 
 export const Submit = (args) => (
   <Button type={args.type} submit={args.submit}>
