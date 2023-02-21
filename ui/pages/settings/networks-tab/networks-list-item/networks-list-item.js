@@ -21,7 +21,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../../../components/component-library';
-import { Color } from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 const NetworksListItem = ({
   network,
@@ -76,9 +76,9 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <Icon name={ICON_NAMES.CHECK} color={Color.successDefault} />
+        <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
       ) : (
-        <Icon name={ICON_NAMES.CHECK} color={Color.transparent} />
+        <Icon name={ICON_NAMES.CHECK} color={IconColor.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -120,7 +120,7 @@ const NetworksListItem = ({
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
             name={ICON_NAMES.LOCK}
-            color={Color.iconMuted}
+            color={IconColor.iconMuted}
             size={ICON_SIZES.AUTO}
             marginInlineStart={2}
           />
