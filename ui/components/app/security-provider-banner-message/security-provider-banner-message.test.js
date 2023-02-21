@@ -119,4 +119,71 @@ describe('Security Provider Banner Message', () => {
 
     expect(link.closest('a')).toHaveAttribute('href', 'https://opensea.io/');
   });
+
+  it('should render SecurityProviderBannerMessage component properly, with predefined reason message, when a request is malicious and there is no reason given', () => {
+    const securityProviderResponse = {
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS,
+      reason: '',
+      reason_header: 'Some reason header...',
+    };
+
+    const reason = 'The security provider has not shared additional details';
+
+    const { getByText } = renderWithProvider(
+      <SecurityProviderBannerMessage
+        securityProviderResponse={securityProviderResponse}
+      />,
+      store,
+    );
+
+    expect(
+      getByText(securityProviderResponse.reason_header),
+    ).toBeInTheDocument();
+    expect(getByText(reason)).toBeInTheDocument();
+    expect(getByText(thisIsBasedOnText)).toBeInTheDocument();
+  });
+
+  it('should render SecurityProviderBannerMessage component properly, with predefined reason_header message, when a request is malicious and there is no reason header given', () => {
+    const securityProviderResponse = {
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS,
+      reason: 'Some reason...',
+      reason_header: '',
+    };
+
+    const reasonHeader = 'Request flagged as malicious';
+
+    const { getByText } = renderWithProvider(
+      <SecurityProviderBannerMessage
+        securityProviderResponse={securityProviderResponse}
+      />,
+      store,
+    );
+
+    expect(getByText(reasonHeader)).toBeInTheDocument();
+    expect(getByText(securityProviderResponse.reason)).toBeInTheDocument();
+    expect(getByText(thisIsBasedOnText)).toBeInTheDocument();
+  });
+
+  it('should render SecurityProviderBannerMessage component properly, with predefined reason and reason_header messages, when a request is malicious and there are no reason and reason header given', () => {
+    const securityProviderResponse = {
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS,
+      reason: '',
+      reason_header: '',
+    };
+
+    const reasonHeader = 'Request flagged as malicious';
+
+    const reason = 'The security provider has not shared additional details';
+
+    const { getByText } = renderWithProvider(
+      <SecurityProviderBannerMessage
+        securityProviderResponse={securityProviderResponse}
+      />,
+      store,
+    );
+
+    expect(getByText(reasonHeader)).toBeInTheDocument();
+    expect(getByText(reason)).toBeInTheDocument();
+    expect(getByText(thisIsBasedOnText)).toBeInTheDocument();
+  });
 });
