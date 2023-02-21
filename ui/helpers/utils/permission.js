@@ -231,11 +231,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       weight: 2,
     }));
   },
-  [EndowmentPermissions['endowment:webhid']]: {
-    label: (t) => 'WebHID',
-    leftIcon: 'fab fa-ethereum',
+  [EndowmentPermissions['endowment:webhid']]: (t) => ({
+    label: t('permission_webhid'),
+    leftIcon: 'fab fa-usb',
     rightIcon: null,
-  },
+  }),
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: (t, permissionName) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
