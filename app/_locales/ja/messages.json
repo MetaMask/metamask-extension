@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "1 つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
   },
-  "attemptToCancel": {
-    "message": "キャンセルを試みますか?"
-  },
-  "attemptToCancelDescription": {
-    "message": "この試みを送信しても、元のトランザクションのキャンセルは保証されません。キャンセルの試みが成功した場合、上記のトランザクション手数料が課金されます。"
-  },
   "attemptingConnect": {
     "message": "ブロックチェーンへの接続を試みています。"
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "無料でスワップをキャンセル"
-  },
-  "cancellationGasFee": {
-    "message": "キャンセルのガス代"
   },
   "cancelled": {
     "message": "キャンセル済み"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "はい"
-  },
-  "yesLetsTry": {
-    "message": "はい、やってみます"
   },
   "youHaveAddedAll": {
     "message": "すべての人気ネットワークを追加しました。$1で他のネットワークを発見するか、$2できます。",

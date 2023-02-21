@@ -75,12 +75,6 @@
   "asset": {
     "message": "Składnik aktywów"
   },
-  "attemptToCancel": {
-    "message": "Podjąć próbę anulowania?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Wykonanie tego działania nie gwarantuje, że pierwotna transakcja zostanie anulowana. Jeśli próba anulowania się powiedzie, zostaniesz obciążony opłatą transakcyjną wskazaną powyżej."
-  },
   "attemptingConnect": {
     "message": "Próba połączenia z blockchainem."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Anuluj"
-  },
-  "cancellationGasFee": {
-    "message": "Opłata za gaz za anulowanie"
   },
   "cancelled": {
     "message": "Anulowano"
@@ -910,9 +901,6 @@
   },
   "welcomeBack": {
     "message": "Witaj z powrotem!"
-  },
-  "yesLetsTry": {
-    "message": "Tak, spróbuj"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"

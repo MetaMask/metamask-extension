@@ -75,12 +75,6 @@
   "asset": {
     "message": "Aset"
   },
-  "attemptToCancel": {
-    "message": "Cuba untuk Batalkan?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Menghantar percubaan ini tidak akan menjamin transaksi asal anda dibatalkan. Jika percubaan pembatalan berjaya, anda akan dikenakan yuran transaksi di atas."
-  },
   "attemptingConnect": {
     "message": "Sedang cuba menyambungkan kepada rantaian blok."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Batal"
-  },
-  "cancellationGasFee": {
-    "message": "Fi Gas Pembatalan"
   },
   "cancelled": {
     "message": "Dibatalkan"
@@ -899,9 +890,6 @@
   },
   "welcomeBack": {
     "message": "Selamat Kembali!"
-  },
-  "yesLetsTry": {
-    "message": "Ya, mari cuba"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."

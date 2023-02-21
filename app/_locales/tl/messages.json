@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng tulay."
   },
-  "attemptToCancel": {
-    "message": "Subukang Kanselahin?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kapag isinumite ang pagsubok na ito, hindi nito magagarantiyang makakansela ang iyong orihinal na transaksyon. Kung magiging matagumpay ang pagsubok na magkansela, sisingilin ka para sa bayarin sa transaksyon sa itaas."
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Kanselahin ang swap nang libre"
-  },
-  "cancellationGasFee": {
-    "message": "Bayarin sa Gasolina para sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "Oo"
-  },
-  "yesLetsTry": {
-    "message": "Oo, subukan natin"
   },
   "youHaveAddedAll": {
     "message": "Idinagdag mo ang lahat ng sikat na network. Maaari kang makatuklas ng higit pang mga network $1 O maaari kang",

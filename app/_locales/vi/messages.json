@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
-  "attemptToCancel": {
-    "message": "Cố gắng hủy?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Việc gửi lần thử này không đảm bảo rằng giao dịch gốc của bạn sẽ được hủy. Nếu lần hủy này thành công, bạn sẽ chịu phí giao dịch nêu ở trên."
-  },
   "attemptingConnect": {
     "message": "Đang cố gắng kết nối với chuỗi khối."
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Hủy hoán đổi miễn phí"
-  },
-  "cancellationGasFee": {
-    "message": "Phí gas hủy"
   },
   "cancelled": {
     "message": "Đã hủy"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "Có"
-  },
-  "yesLetsTry": {
-    "message": "Có, hãy thử"
   },
   "youHaveAddedAll": {
     "message": "Bạn đã thêm tất cả các mạng phổ biến. Bạn có thể khám phá thêm nhiều mạng khác $1 Hoặc bạn có thể $2",

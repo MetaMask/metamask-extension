@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "한 네트워크에서 다른 네트워크로 자산을 직접 전송하면 자산이 영구적으로 손실될 수 있습니다. 반드시 브릿지를 이용하세요."
   },
-  "attemptToCancel": {
-    "message": "취소할까요?"
-  },
-  "attemptToCancelDescription": {
-    "message": "이 시도를 제출한다고 해서 원래 거래가 반드시 취소되지는 않습니다. 취소 시도가 성공하면 위의 거래 수수료가 부과됩니다."
-  },
   "attemptingConnect": {
     "message": "블록체인에 연결 중입니다."
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "무료로 스왑 취소"
-  },
-  "cancellationGasFee": {
-    "message": "가스 수수료 취소"
   },
   "cancelled": {
     "message": "취소됨"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "예"
-  },
-  "yesLetsTry": {
-    "message": "예, 시도하겠습니다."
   },
   "youHaveAddedAll": {
     "message": "모든 인기 네트워크를 추가했습니다. $1에서 더 많은 네트워크를 확인하거나 $2을(를) 할 수 있습니다.",
