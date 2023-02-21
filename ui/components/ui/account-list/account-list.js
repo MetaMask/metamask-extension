@@ -9,7 +9,7 @@ import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-
 import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../tooltip';
 import { Icon, ICON_NAMES } from '../../component-library';
-import { IconColor } from 'ui/helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 const AccountList = ({
   selectNewAccountViaModal,

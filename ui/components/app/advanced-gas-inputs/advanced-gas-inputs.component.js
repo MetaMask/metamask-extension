@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { debounce } from 'lodash';
 import Tooltip from '../../ui/tooltip';
 import { Icon, ICON_NAMES } from '../../component-library';
-import { IconColor } from 'ui/helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 export default class AdvancedGasInputs extends Component {
   static contextTypes = {

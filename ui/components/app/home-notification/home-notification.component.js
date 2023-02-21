@@ -5,7 +5,7 @@ import Button from '../../ui/button';
 import Checkbox from '../../ui/check-box';
 import Tooltip from '../../ui/tooltip';
 import { Icon, ICON_NAMES } from '../../component-library';
-import { IconColor } from 'ui/helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 
 const HomeNotification = ({
   acceptText,
