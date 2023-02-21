@@ -12,7 +12,7 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { ButtonIcon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
@@ -45,6 +45,7 @@ const BetaHeader = () => {
       </Typography>
       <ButtonIcon
         iconName={ICON_NAMES.CLOSE}
+        size={ICON_SIZES.XS}
         className="beta-header__button"
         data-testid="beta-header-close"
         onClick={() => {

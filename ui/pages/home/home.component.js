@@ -32,7 +32,11 @@ import {
   TextColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
-import { ButtonIcon, ICON_NAMES } from '../../components/component-library';
+import {
+  ButtonIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -339,6 +343,7 @@ export default class Home extends PureComponent {
                 </Typography>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.XS}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -364,6 +369,7 @@ export default class Home extends PureComponent {
                 </Typography>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.XS}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -386,6 +392,7 @@ export default class Home extends PureComponent {
                 </Typography>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.XS}
                   ariaLabel={t('close')}
                   onClick={() => setNewNetworkAdded('')}
                   className="home__new-network-notification-close"
@@ -420,6 +427,7 @@ export default class Home extends PureComponent {
 
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
+                  size={ICON_SIZES.XS}
                   ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
                   className="home__new-tokens-imported-notification-close"
