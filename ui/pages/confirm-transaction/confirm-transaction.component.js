@@ -94,7 +94,7 @@ const ConfirmTransaction = () => {
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
-  const isValidERC20TokenMethod = isTokenMethodAction(type);
+  const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =
     transactionId &&
     (!paramsTransactionId || paramsTransactionId === transactionId);
@@ -185,7 +185,7 @@ const ConfirmTransaction = () => {
     transactionId,
   ]);
 
-  if (isValidERC20TokenMethod && isValidTransactionId) {
+  if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
