@@ -866,7 +866,7 @@ Always_Included
 Always_Included
 `,
         true,
-      ]
+      ],
     },
 
     validOutputsWithExtraContent: {
@@ -944,7 +944,8 @@ Always_Included
 `,
         true,
       ],
-      mmi: [`
+      mmi: [
+        `
 Always_Included
 Always_Included
 Always_Included
