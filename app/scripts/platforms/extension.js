@@ -182,11 +182,12 @@ export default class ExtensionPlatform {
     this._showNotification(title, message);
   }
 
-  _showNotification(title, message, url) {
+  async _showNotification(title, message, url) {
+    const iconUrl = await browser.runtime.getURL('../../images/icon-64.png');
     browser.notifications.create(url, {
       type: 'basic',
       title,
-      iconUrl: browser.runtime.getURL('../../images/icon-64.png'),
+      iconUrl,
       message,
     });
   }
