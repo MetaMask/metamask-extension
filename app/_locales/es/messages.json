@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Si intenta enviar activos directamente de una red a otra, esto puede provocar la pérdida permanente de activos. Asegúrese de utilizar un puente."
   },
-  "attemptToCancel": {
-    "message": "¿Intentar cancelar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar este intento no garantiza que se cancelará la transacción original. Si el intento de cancelación se completa correctamente, se le cobrará la cuota de transacción anterior."
-  },
   "attemptingConnect": {
     "message": "Intentando una conexión a la cadena de bloques."
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Cancelar el swap gratuitamente"
-  },
-  "cancellationGasFee": {
-    "message": "Cuota de gas por cancelación"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "Sí"
-  },
-  "yesLetsTry": {
-    "message": "Sí, intentémoslo"
   },
   "youHaveAddedAll": {
     "message": "Ha agregado todas las redes populares. Puede descubrir más redes $1 o puede $2",

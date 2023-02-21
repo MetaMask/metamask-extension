@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
   },
-  "attemptToCancel": {
-    "message": "İptal etmeyi Dene?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Bu denemenin gönderilmesi asıl işleminizin iptal edileceğini garanti etmez. İptal etme denemesi başarılı olursa sizden yukarıdaki ücret tahsil edilir."
-  },
   "attemptingConnect": {
     "message": "Blockzincire bağlanmaya çalışılıyor."
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal edin"
-  },
-  "cancellationGasFee": {
-    "message": "İptal İşlemi Gaz Ücreti"
   },
   "cancelled": {
     "message": "İptal edildi"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "Evet"
-  },
-  "yesLetsTry": {
-    "message": "Evet, deneyelim"
   },
   "youHaveAddedAll": {
     "message": "Tüm popüler ağları eklediniz. $1 daha fazla ağ gekşefedebilir veya $2 seçeneğini seçebilirsiniz",

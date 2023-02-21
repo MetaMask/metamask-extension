@@ -403,12 +403,6 @@
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
-  "attemptToCancel": {
-    "message": "Attempt to cancel?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Submitting this attempt does not guarantee your original transaction will be cancelled. If the cancellation attempt is successful, you will be charged the transaction fee above."
-  },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
@@ -600,9 +594,6 @@
   },
   "cancelSwapForFree": {
     "message": "Cancel swap for free"
-  },
-  "cancellationGasFee": {
-    "message": "Cancellation gas fee"
   },
   "cancelled": {
     "message": "Cancelled"
@@ -4493,9 +4484,6 @@
   },
   "yes": {
     "message": "Yes"
-  },
-  "yesLetsTry": {
-    "message": "Yes, let's try"
   },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",

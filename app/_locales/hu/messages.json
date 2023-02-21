@@ -75,12 +75,6 @@
   "asset": {
     "message": "Eszköz"
   },
-  "attemptToCancel": {
-    "message": "Megpróbálja törölni?"
-  },
-  "attemptToCancelDescription": {
-    "message": "A próbálkozás elküldése nem garantálja, hogy az eredeti tranzakció törlésre kerül. Ha a törlési kísérlet sikeres, akkor a fenti tranzakciós díjat számítjuk fel önnek."
-  },
   "attemptingConnect": {
     "message": "Próbálunk csatlakozni a blokklánchoz."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Mégse"
-  },
-  "cancellationGasFee": {
-    "message": "A törlés gázára"
   },
   "cancelled": {
     "message": "Megszakítva"
@@ -912,9 +903,6 @@
   },
   "welcomeBack": {
     "message": "Üdvözöljük újra!"
-  },
-  "yesLetsTry": {
-    "message": "Igen, próbáljuk ki!"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."

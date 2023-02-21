@@ -75,12 +75,6 @@
   "asset": {
     "message": "সম্পদ"
   },
-  "attemptToCancel": {
-    "message": "বাতিল করার চেষ্টা করছেন?"
-  },
-  "attemptToCancelDescription": {
-    "message": "এই প্রচেষ্টাটি জমা দেওয়া আপনার প্রকৃত লেনদেনটি বাতিল হয়ে যাবে এমন নিশ্চয়তা দেয় না। বাতিল করার প্রচেষ্টাটি সফল হলে, আপনাকে উপরের লেনদেন ফী চার্জ করা হবে।"
-  },
   "attemptingConnect": {
     "message": "ব্লকচেনে সংযোগ করার চেষ্টা করছে।"
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "বাতিল করুন"
-  },
-  "cancellationGasFee": {
-    "message": "বাতিল করার গ্যাস ফী"
   },
   "cancelled": {
     "message": "বাতিল করা হয়েছে"
@@ -922,9 +913,6 @@
   },
   "welcomeBack": {
     "message": "পুনরায় স্বাগত!"
-  },
-  "yesLetsTry": {
-    "message": "হ্যাঁ, চেষ্টা করা যাক"
   },
   "youNeedToAllowCameraAccess": {
     "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"

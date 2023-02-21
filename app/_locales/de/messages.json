@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Wenn Sie versuchen, Assets direkt von einem Netzwerk in ein anderes zu senden, kann dies zu einem dauerhaften Asset-Verlust führen. Verwenden Sie unbedingt eine Bridge."
   },
-  "attemptToCancel": {
-    "message": "Stornierung versuchen?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Dieser Versuch garantiert nicht, dass Ihre ursprüngliche Transaktion storniert wird. Bei Erfolg des Stornierungsversuchs wird Ihnen die oben genannte Transaktionsgebühr in Rechnung gestellt."
-  },
   "attemptingConnect": {
     "message": "Versuch mit der Blockchain zu verbinden."
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Tausch kostenlos abbrechen"
-  },
-  "cancellationGasFee": {
-    "message": "Stornierungs-Gasgebühr"
   },
   "cancelled": {
     "message": "Abgebrochen"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "Ja"
-  },
-  "yesLetsTry": {
-    "message": "Ja, versuchen wir es"
   },
   "youHaveAddedAll": {
     "message": "Sie haben alle beliebten Netzwerke hinzugefügt. Sie können weitere Netzwerke entdecken $1 oder Sie können $2",
