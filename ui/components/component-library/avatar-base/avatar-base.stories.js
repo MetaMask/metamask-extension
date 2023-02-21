@@ -5,10 +5,12 @@ import {
   TextColor,
   BackgroundColor,
   BorderColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
+import { Icon, ICON_NAMES } from '../icon';
 import README from './README.mdx';
 import { AvatarBase } from './avatar-base';
 import { AVATAR_BASE_SIZES } from './avatar-base.constants';
@@ -121,10 +123,7 @@ export const Children = (args) => (
       backgroundColor={BackgroundColor.infoMuted}
       borderColor={BorderColor.infoMuted}
     >
-      <i
-        className="fa fa-user"
-        style={{ color: 'var(--color-info-default)' }}
-      />
+      <Icon name={ICON_NAMES.USER} color={Color.infoDefault} />
     </AvatarBase>
   </Box>
 );
