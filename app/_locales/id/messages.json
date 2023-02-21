@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "Versi Beta MetaMask"
   },
-  "betaPortfolioSite": {
-    "message": "situs portofolio beta"
-  },
   "betaTerms": {
     "message": "Syarat penggunaan Beta"
   },
@@ -1659,9 +1656,6 @@
     "message": "File JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "untuk mengawasi token dan NFT Anda di seluruh akun dan jaringan."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2652,9 +2646,6 @@
   },
   "popularCustomNetworks": {
     "message": "Jaringan khusus populer"
-  },
-  "portfolioSite": {
-    "message": "Situs portofolio"
   },
   "preferredLedgerConnectionType": {
     "message": "Jenis koneksi Ledger Pilihan",
@@ -4024,9 +4015,6 @@
   },
   "tryAgain": {
     "message": "Coba lagi"
-  },
-  "tryOur": {
-    "message": "Cobalah"
   },
   "turnOnTokenDetection": {
     "message": "Nyalakan deteksi token yang ditingkatkan"

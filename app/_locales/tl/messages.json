@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "Bersyon ng MetaMask Beta"
   },
-  "betaPortfolioSite": {
-    "message": "site ng beta portfolio"
-  },
   "betaTerms": {
     "message": "Mga tuntunin sa paggamit ng Beta"
   },
@@ -1659,9 +1656,6 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "upang masubaybayan ang iyong mga token at NFT sa mga account at network."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2652,9 +2646,6 @@
   },
   "popularCustomNetworks": {
     "message": "Mga sikat na custom na network"
-  },
-  "portfolioSite": {
-    "message": "Site ng portfolio"
   },
   "preferredLedgerConnectionType": {
     "message": "Napiling Uri ng Ledger Connection",
@@ -4024,9 +4015,6 @@
   },
   "tryAgain": {
     "message": "Subukan ulit"
-  },
-  "tryOur": {
-    "message": "Subukan ang aming"
   },
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"

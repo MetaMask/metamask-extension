@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
   },
-  "betaPortfolioSite": {
-    "message": "δοκιμαστική ιστοσελίδα χαρτοφυλακίου"
-  },
   "betaTerms": {
     "message": "Όροι Χρήσης της Δοκιμαστικής Έκδοσης"
   },
@@ -1659,9 +1656,6 @@
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "για να παρακολουθείτε τα token και τα NFT σε όλους τους λογαριασμούς και τα δίκτυα."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2652,9 +2646,6 @@
   },
   "popularCustomNetworks": {
     "message": "Δημοφιλή προσαρμοσμένα δίκτυα"
-  },
-  "portfolioSite": {
-    "message": "Ιστότοπος χαρτοφυλακίου"
   },
   "preferredLedgerConnectionType": {
     "message": "Προτιμώμενος Τύπος Σύνδεσης Ledger",
@@ -4024,9 +4015,6 @@
   },
   "tryAgain": {
     "message": "Δοκιμάστε ξανά"
-  },
-  "tryOur": {
-    "message": "Δοκιμάστε το"
   },
   "turnOnTokenDetection": {
     "message": "Ενεργοποιήστε την ενισχυμένη ανίχνευση token"
