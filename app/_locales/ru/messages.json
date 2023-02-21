@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "Бета-версия MetaMask"
   },
-  "betaPortfolioSite": {
-    "message": "бета-версия сайта портфолио"
-  },
   "betaTerms": {
     "message": "Условия использования бета-версии"
   },
@@ -1717,9 +1714,6 @@
     "message": "Файл JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "чтобы следить за вашими токенами и NFT на разных счетах и в разных сетях."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2708,6 @@
   },
   "popularCustomNetworks": {
     "message": "Популярные пользовательские сети"
-  },
-  "portfolioSite": {
-    "message": "Сайт портфеля"
   },
   "preferredLedgerConnectionType": {
     "message": "Предпочтительный тип подключения к леджеру",
@@ -4089,9 +4080,6 @@
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"
-  },
-  "tryOur": {
-    "message": "Попробуйте наше"
   },
   "turnOnTokenDetection": {
     "message": "Включите расширенное обнаружение токенов"

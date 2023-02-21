@@ -479,9 +479,6 @@
   "betaMetamaskVersion": {
     "message": "MetaMaskベータバージョン"
   },
-  "betaPortfolioSite": {
-    "message": "ベータポートフォリオサイト"
-  },
   "betaTerms": {
     "message": "ベータ版利用規約"
   },
@@ -1717,9 +1714,6 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "複数のアカウントやネットワークのトークンや NFT を監視するには。"
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2708,6 @@
   },
   "popularCustomNetworks": {
     "message": "人気のカスタムネットワーク"
-  },
-  "portfolioSite": {
-    "message": "ポートフォリオサイト"
   },
   "preferredLedgerConnectionType": {
     "message": "優先Ledger接続タイプ",
@@ -4089,9 +4080,6 @@
   },
   "tryAgain": {
     "message": "再試行"
-  },
-  "tryOur": {
-    "message": "こちらをお試しください:"
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
