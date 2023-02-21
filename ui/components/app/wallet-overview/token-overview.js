@@ -163,7 +163,7 @@ const TokenOverview = ({ className, token }) => {
               }}
               Icon={
                 <Icon
-                  name={ICON_NAMES.SEND_1}
+                  name={ICON_NAMES.ARROW_2_RIGHT}
                   color={IconColor.primaryInverse}
                 />
               }

@@ -49,7 +49,7 @@ const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
-const ADD_COLLECTIBLE_ROUTE = '/add-collectible';
+const ADD_NFT_ROUTE = '/add-nft';
 
 const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -223,7 +223,7 @@ export {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,

@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import {
   DISPLAY,
   FLEX_DIRECTION,
+  SEVERITIES,
   Size,
 } from '../../../helpers/constants/design-system';
 
@@ -28,7 +29,7 @@ export const FormTextField = ({
   inputRef,
   label,
   labelProps,
-  leftAccessory,
+  startAccessory,
   maxLength,
   name,
   onBlur,
@@ -37,13 +38,10 @@ export const FormTextField = ({
   placeholder,
   readOnly,
   required,
-  rightAccessory,
+  endAccessory,
   size = Size.MD,
   textFieldProps,
   truncate,
-  showClearButton,
-  clearButtonOnClick,
-  clearButtonProps,
   type = 'text',
   value,
   ...props
@@ -86,7 +84,7 @@ export const FormTextField = ({
         id,
         inputProps,
         inputRef,
-        leftAccessory,
+        startAccessory,
         maxLength,
         name,
         onBlur,
@@ -95,10 +93,7 @@ export const FormTextField = ({
         placeholder,
         readOnly,
         required,
-        rightAccessory,
-        showClearButton,
-        clearButtonOnClick,
-        clearButtonProps,
+        endAccessory,
         size,
         truncate,
         type,
@@ -109,6 +104,7 @@ export const FormTextField = ({
     {helpText && (
       <HelpText
         error={error}
+        severity={error && SEVERITIES.DANGER}
         marginTop={1}
         {...helpTextProps}
         className={classnames(

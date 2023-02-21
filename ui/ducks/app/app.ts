@@ -350,13 +350,13 @@ export default function reduceApp(
         newTokensImported: action.payload,
       };
 
-    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
+    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
       return {
         ...appState,
         newNftAddedMessage: action.payload,
       };
 
-    case actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE:
+    case actionConstants.SET_REMOVE_NFT_MESSAGE:
       return {
         ...appState,
         removeNftMessage: action.payload,

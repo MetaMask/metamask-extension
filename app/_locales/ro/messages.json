@@ -632,23 +632,15 @@
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "Dacă schimbați vreodată browserele sau vă mutați la alt computer, veți avea nevoie de această expresie sursă pentru a vă accesa conturile. Salvați-o într-un loc sigur și secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NU împărtășiți această expresie nimănui!"
+    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "URL RPC nou"
   },
   "save": {
     "message": "Salvează"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvați ca fișier CSV "
   },
   "scanInstructions": {
     "message": "Așezați codul QR în fața camerei"
