@@ -14,7 +14,7 @@ import {
   BorderRadius,
   BackgroundColor,
   TextColor,
-  Color,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
@@ -240,7 +240,7 @@ const AddNetwork = () => {
                         <Icon
                           className="add-network__warning-icon"
                           name={ICON_NAMES.DANGER}
-                          color={Color.iconMuted}
+                          color={IconColor.iconMuted}
                           size={ICON_SIZES.SM}
                         />
                       </Tooltip>
