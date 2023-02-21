@@ -2971,6 +2971,12 @@
   "replace": {
     "message": "replace"
   },
+  "requestFlaggedAsMaliciousFallbackCopyReason": {
+    "message": "The security provider has not shared additional details"
+  },
+  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
+    "message": "Request flagged as malicious"
+  },
   "requestMayNotBeSafe": {
     "message": "Request may not be safe"
   },

@@ -227,13 +227,15 @@ export default class SignatureRequest extends PureComponent {
           />
         </div>
         <div className="signature-request-content">
-          {txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
-              SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS && (
-              <SecurityProviderBannerMessage
-                securityProviderResponse={txData.securityProviderResponse}
-              />
-            )}
+              SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+          (txData?.securityProviderResponse &&
+            Object.keys(txData.securityProviderResponse).length === 0) ? (
+            <SecurityProviderBannerMessage
+              securityProviderResponse={txData.securityProviderResponse}
+            />
+          ) : null}
           <div className="signature-request__origin">
             <SiteOrigin
               siteOrigin={origin}

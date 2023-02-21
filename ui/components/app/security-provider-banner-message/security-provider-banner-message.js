@@ -24,8 +24,14 @@ export default function SecurityProviderBannerMessage({
     securityProviderResponse.flagAsDangerous ===
     SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS
   ) {
-    messageTitle = securityProviderResponse.reason_header;
-    messageText = securityProviderResponse.reason;
+    messageTitle =
+      securityProviderResponse.reason_header === ''
+        ? t('requestFlaggedAsMaliciousFallbackCopyReasonTitle')
+        : securityProviderResponse.reason_header;
+    messageText =
+      securityProviderResponse.reason === ''
+        ? t('requestFlaggedAsMaliciousFallbackCopyReason')
+        : securityProviderResponse.reason;
     severity = SEVERITIES.DANGER;
   } else if (
     securityProviderResponse.flagAsDangerous ===
