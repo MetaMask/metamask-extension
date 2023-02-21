@@ -8,8 +8,8 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     <button
       class="asset-breadcrumb"
     >
-      <div
-        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--flex-direction-row box--color-inherit"
+      <span
+        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-inherit"
         data-testid="asset__back"
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
@@ -29,8 +29,8 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box mm-button-icon mm-button-icon--size-lg nft-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
         data-testid="nft-options__button"
       >
-        <div
-          class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-inherit"
+        <span
+          class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
           style="mask-image: url('./images/icons/more-vertical.svg');"
         />
       </button>
@@ -137,8 +137,8 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                 class="box mm-button-icon mm-button-icon--size-lg nft-details__contract-copy-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-alternative box--background-color-transparent box--rounded-lg"
                 data-testid="nft-address-copy"
               >
-                <div
-                  class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-inherit"
+                <span
+                  class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
