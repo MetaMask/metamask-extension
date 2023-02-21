@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。必须使用桥来进行。"
   },
-  "attemptToCancel": {
-    "message": "尝试取消吗？"
-  },
-  "attemptToCancelDescription": {
-    "message": "提交此尝试不能保证将会取消您的初始交易。如果取消尝试成功，将向您收取以上交易费。"
-  },
   "attemptingConnect": {
     "message": "正在尝试连接到区块链。"
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "免费取消兑换"
-  },
-  "cancellationGasFee": {
-    "message": "取消燃料费"
   },
   "cancelled": {
     "message": "已取消"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "是"
-  },
-  "yesLetsTry": {
-    "message": "是的，我们试一下"
   },
   "youHaveAddedAll": {
     "message": "您已经添加了所有热门网络。您可以探索更多网络$1，或者您可以$2",

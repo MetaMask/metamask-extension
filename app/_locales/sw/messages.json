@@ -75,12 +75,6 @@
   "asset": {
     "message": "Rasilimali"
   },
-  "attemptToCancel": {
-    "message": "Unajaribu Kubatilisha?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kuwasilisha jaribio hili hakukuhakikishii muamala wako wa awali utabatilishwa. Ikiwa jaribio la kuffuta litafanikiwa, utatozwa ada ya muamala hapo juu."
-  },
   "attemptingConnect": {
     "message": "Inajaribu kuunganisha kwenye blockchain."
   },
@@ -135,9 +129,6 @@
   },
   "cancel": {
     "message": "Ghairi"
-  },
-  "cancellationGasFee": {
-    "message": "Ada ya Kubatilisha Gesi"
   },
   "cancelled": {
     "message": "Imebatilishwa"
@@ -900,9 +891,6 @@
   },
   "welcomeBack": {
     "message": "Karibu Tena!"
-  },
-  "yesLetsTry": {
-    "message": "Ndiyo, ngoja tujaribu"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Unapaswa kuruhusu kamera ili utumie kipengele hiki."

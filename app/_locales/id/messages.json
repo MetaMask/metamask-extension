@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan penghubung."
   },
-  "attemptToCancel": {
-    "message": "Coba membatalkan?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Mengupayakan hal ini tidak menjamin transaksi asli Anda akan dibatalkan. Jika upaya pembatalan berhasil, Anda akan dikenakan biaya transaksi di atas."
-  },
   "attemptingConnect": {
     "message": "Mencoba terhubung ke blockchain."
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Batalkan swap gratis"
-  },
-  "cancellationGasFee": {
-    "message": "Biaya gas pembatalan"
   },
   "cancelled": {
     "message": "Dibatalkan"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "Ya"
-  },
-  "yesLetsTry": {
-    "message": "Ya, mari kita coba"
   },
   "youHaveAddedAll": {
     "message": "Anda telah menambahkan semua jaringan populer. Anda dapat menemukan lebih banyak jaringan $1 atau dapat $2",

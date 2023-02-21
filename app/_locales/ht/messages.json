@@ -60,12 +60,6 @@
   "approved": {
     "message": "Apwouve"
   },
-  "attemptToCancel": {
-    "message": "Eseye anile?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Soumèt tantativ sa a pa garanti ke yo pral anile tranzaksyon ou anile. Si tantativ anile an gen siksè, ou pral chaje frè yo tranzaksyon pi wo a."
-  },
   "attemptingConnect": {
     "message": "Eseye konekte nan blockchain."
   },
@@ -83,9 +77,6 @@
   },
   "cancel": {
     "message": "Anile"
-  },
-  "cancellationGasFee": {
-    "message": "Anilasyon Gaz Chaj"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Ou bezwen sèvi ak MetaMask sou Google Chrome yo nan lòd yo konekte sou Hardware Wallet."
@@ -636,9 +627,6 @@
   },
   "welcomeBack": {
     "message": "Bon Retou!"
-  },
-  "yesLetsTry": {
-    "message": "Wi, ann eseye"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."

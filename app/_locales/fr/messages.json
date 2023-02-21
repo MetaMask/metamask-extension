@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancel": {
-    "message": "Tenter d’annuler ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Faire une demande d’annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l’annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
@@ -596,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annuler le swap gratuitement"
-  },
-  "cancellationGasFee": {
-    "message": "Frais d’annulation de la transaction"
   },
   "cancelled": {
     "message": "Annulé"
@@ -4345,9 +4336,6 @@
   },
   "yes": {
     "message": "Oui"
-  },
-  "yesLetsTry": {
-    "message": "Oui, essayons"
   },
   "youHaveAddedAll": {
     "message": "Vous avez ajouté tous les réseaux populaires. Vous pouvez découvrir d’autres réseaux $1 ou $2",

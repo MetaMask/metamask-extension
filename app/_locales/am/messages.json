@@ -69,12 +69,6 @@
   "asset": {
     "message": "ሐብት"
   },
-  "attemptToCancel": {
-    "message": "ለመሰረዝ ይሞክራሉ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "ይህን ሙከራ ማቅረብ የመጀመሪያው ግብይትዎ እንደሚሰረዝ ዋስትና አይሰጥም። የመሰረዝ ሙከራው ከተሳካ፣ ከላይ የተጠቀሰውን የግብይት ክፍያ እንዲከፍሉ ይደረጋሉ።"
-  },
   "attemptingConnect": {
     "message": "ከ blockchain ጋር ለመገናኘት መሞከር።"
   },
@@ -135,9 +129,6 @@
   },
   "cancel": {
     "message": "ሰርዝ"
-  },
-  "cancellationGasFee": {
-    "message": "የስረዛ ነዳጅ ወጪ"
   },
   "cancelled": {
     "message": "ተሰርዟል"
@@ -907,9 +898,6 @@
   },
   "welcomeBack": {
     "message": "እንኳን በደህና ተመለሱ"
-  },
-  "yesLetsTry": {
-    "message": "አዎ፣ እንሞክር"
   },
   "youNeedToAllowCameraAccess": {
     "message": "ይህን ባህርይ ለመጠቀም የካሜራን መድረስ መፍቀድ አለብዎት።"
