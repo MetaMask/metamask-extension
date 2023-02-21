@@ -122,6 +122,7 @@ export default function OnboardingMetametrics() {
                 variant={TypographyVariant.span}
                 key="never"
                 fontWeight={FONT_WEIGHT.BOLD}
+                marginTop={0}
               >
                 {t('onboardingMetametricsNeverEmphasis')}
               </Typography>,
