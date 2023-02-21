@@ -392,7 +392,9 @@ export default class AccountMenu extends Component {
             });
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
-          icon={<Icon name={ICON_NAMES.IMPORT} color={Color.iconAlternative} />}
+          icon={
+            <Icon name={ICON_NAMES.IMPORT} color={IconColor.iconAlternative} />
+          }
           text={t('importAccount')}
         />
         <AccountMenuItem
