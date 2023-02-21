@@ -27,7 +27,7 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { _setBackgroundConnection } from './store/action-queue';
 
-log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
 let reduxStore;
 
@@ -53,9 +53,9 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   let desktopEnabled = false;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   backgroundConnection.getDesktopEnabled(function (err, result) {
     if (err) {
       return;
@@ -68,12 +68,27 @@ export default function launchMetamaskUi(opts, cb) {
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
     if (err) {
-      cb(err, { ...metamaskState, desktopEnabled }, backgroundConnection);
+      cb(
+        err,
+        {
+          ...metamaskState,
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          desktopEnabled,
+          ///: END:ONLY_INCLUDE_IN
+        },
+        backgroundConnection,
+      );
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
       setupDebuggingHelpers(store);
-      cb(null, store, backgroundConnection);
+      cb(
+        null,
+        store,
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        backgroundConnection,
+        ///: END:ONLY_INCLUDE_IN
+      );
     });
   });
 }

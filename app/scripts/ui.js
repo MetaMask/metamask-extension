@@ -22,7 +22,9 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   registerDesktopErrorActions,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/lib/error-utils';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -256,26 +258,41 @@ async function start() {
   }
 
   function initializeUiWithTab(tab) {
-    initializeUi(tab, connectionStream, (err, store, backgroundConnection) => {
-      if (err) {
-        // if there's an error, store will be = metamaskState
-        displayCriticalError(
-          'troubleStarting',
-          err,
-          store,
-          backgroundConnection,
-        );
-        return;
-      }
-      isUIInitialised = true;
+    initializeUi(
+      tab,
+      connectionStream,
+      (
+        err,
+        store,
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        backgroundConnection,
+        ///: END:ONLY_INCLUDE_IN
+      ) => {
+        if (err) {
+          // if there's an error, store will be = metamaskState
+          displayCriticalError(
+            'troubleStarting',
+            err,
+            store,
+            ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+            backgroundConnection,
+            ///: END:ONLY_INCLUDE_IN
+          );
+          return;
+        }
+        isUIInitialised = true;
 
-      const state = store.getState();
-      const { metamask: { completedOnboarding } = {} } = state;
+        const state = store.getState();
+        const { metamask: { completedOnboarding } = {} } = state;
 
-      if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
-        global.platform.openExtensionInBrowser();
-      }
-    });
+        if (
+          !completedOnboarding &&
+          windowType !== ENVIRONMENT_TYPE_FULLSCREEN
+        ) {
+          global.platform.openExtensionInBrowser();
+        }
+      },
+    );
   }
 
   // Function to update new backgroundConnection in the UI
@@ -285,8 +302,10 @@ async function start() {
         displayCriticalError(
           'troubleStarting',
           err,
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           undefined,
           backgroundConnection,
+          ///: END:ONLY_INCLUDE_IN
         );
         return;
       }
@@ -323,7 +342,13 @@ async function queryCurrentActiveTab(windowType) {
 function initializeUi(activeTab, connectionStream, cb) {
   connectToAccountManager(connectionStream, (err, backgroundConnection) => {
     if (err) {
-      cb(err, null, backgroundConnection);
+      cb(
+        err,
+        null,
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        backgroundConnection,
+        ///: END:ONLY_INCLUDE_IN
+      );
       return;
     }
 
@@ -342,13 +367,24 @@ async function displayCriticalError(
   errorKey,
   err,
   metamaskState,
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   backgroundConnection,
+  ///: END:ONLY_INCLUDE_IN
 ) {
-  const html = await getErrorHtml(errorKey, SUPPORT_LINK, metamaskState, err);
+  const html = await getErrorHtml(
+    errorKey,
+    SUPPORT_LINK,
+    metamaskState,
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    err,
+    ///: END:ONLY_INCLUDE_IN
+  );
 
   container.innerHTML = html;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   registerDesktopErrorActions(backgroundConnection, browser);
+  ///: END:ONLY_INCLUDE_IN
 
   const button = document.getElementById('critical-error-button');
 

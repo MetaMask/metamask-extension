@@ -1,14 +1,18 @@
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import browser from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IN
 import { memoize } from 'lodash';
 import getFirstPreferredLangCode from '../../app/scripts/lib/get-first-preferred-lang-code';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../../ui/helpers/utils/i18n-helper';
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { renderDesktopError } from '../../ui/pages/desktop-error/render-desktop-error';
 import { EXTENSION_ERROR_PAGE_TYPES } from '../constants/desktop';
-import switchDirection from './switch-direction';
 import { openCustomProtocol } from './deep-linking';
+///: END:ONLY_INCLUDE_IN
+import switchDirection from './switch-direction';
 
 const _setupLocale = async (currentLocale) => {
   const currentLocaleMessages = currentLocale
@@ -36,7 +40,14 @@ const getLocaleContext = (currentLocaleMessages, enLocaleMessages) => {
   };
 };
 
-export async function getErrorHtml(errorKey, supportLink, metamaskState, err) {
+export async function getErrorHtml(
+  errorKey,
+  supportLink,
+  metamaskState,
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  err,
+  ///: END:ONLY_INCLUDE_IN
+) {
   let response, preferredLocale;
   if (metamaskState?.currentLocale) {
     preferredLocale = metamaskState.currentLocale;
@@ -54,6 +65,7 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState, err) {
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   const isDesktopEnabled = metamaskState?.desktopEnabled === true;
 
   if (isDesktopEnabled) {
@@ -69,7 +81,7 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState, err) {
       isHtmlError: true,
     });
   }
-
+  ///: END:ONLY_INCLUDE_IN
   /**
    * The pattern ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
    * is neccessary because we we need linter to see the string
@@ -108,6 +120,7 @@ export async function getErrorHtml(errorKey, supportLink, metamaskState, err) {
     `;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 function disableDesktop(backgroundConnection) {
   backgroundConnection.disableDesktopError();
 }
@@ -161,3 +174,4 @@ export function registerDesktopErrorActions(backgroundConnection) {
     openOrDownloadMMD();
   });
 }
+///: END:ONLY_INCLUDE_IN

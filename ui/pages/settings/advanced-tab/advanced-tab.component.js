@@ -60,7 +60,9 @@ export default class AdvancedTab extends PureComponent {
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -467,12 +469,16 @@ export default class AdvancedTab extends PureComponent {
       ledgerTransportType,
       setLedgerTransportPreference,
       userHasALedgerAccount,
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       desktopEnabled,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (desktopEnabled) {
       return null;
     }
+    ///: END:ONLY_INCLUDE_IN
 
     const LEDGER_TRANSPORT_NAMES = {
       LIVE: t('ledgerLive'),
