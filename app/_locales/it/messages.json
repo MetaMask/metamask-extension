@@ -324,12 +324,6 @@
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
   },
-  "attemptToCancel": {
-    "message": "Tentativo di Annullamento?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Tentare di annullare non garantisce che la transazione verrà annullata. Se annullata, è comunque richiesto pagare alla rete la commissione sulla transazione."
-  },
   "attemptingConnect": {
     "message": "Tentativo di connessione alla blockchain."
   },
@@ -475,9 +469,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annulla scambio gratuitamente"
-  },
-  "cancellationGasFee": {
-    "message": "Costo di Annullamento in Gas"
   },
   "cancelled": {
     "message": "Annullata"
@@ -2079,9 +2070,6 @@
   "xOfY": {
     "message": "$1 di $2",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Si, proviamo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."

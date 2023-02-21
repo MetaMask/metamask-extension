@@ -82,9 +82,6 @@
     color: var(--color-text-alternative);
   }
 
-  &__button {
-    margin-right: 24px;
-  }
 
   &__button:last-of-type {
     margin-right: 0;
@@ -126,10 +123,6 @@
     @include H5;
 
     color: var(--color-text-alternative);
-  }
-
-  &__button {
-    margin-right: 24px;
   }
 
   &__button:last-of-type {

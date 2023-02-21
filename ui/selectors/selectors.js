@@ -1071,10 +1071,6 @@ export function getShowOutdatedBrowserWarning(state) {
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
-export function getShowPortfolioTooltip(state) {
-  return state.metamask.showPortfolioTooltip;
-}
-
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
