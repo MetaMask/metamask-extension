@@ -66,7 +66,7 @@ const ConfirmTransaction = () => {
         unconfirmedMessages[paramsTransactionId] ||
         unconfirmedTxs[0]
       : {};
-  const [transaction, setTransaction] = useState(() => getTransaction());
+  const [transaction, setTransaction] = useState(getTransaction);
 
   useEffect(() => {
     const transaction = getTransaction();
