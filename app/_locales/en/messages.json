@@ -2764,6 +2764,10 @@
     "message": "View your public key for $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
+  "permission_webhid": {
+    "message": "Grant access to use webhid.",
+    "description": "The description for the `endowment:webhid` permission. It allows a snap to access usb devices using webhid."
+  },
   "permissions": {
     "message": "Permissions"
   },
