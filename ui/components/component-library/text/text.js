@@ -75,7 +75,7 @@ export const Text = React.forwardRef(
       },
     );
 
-    // // Set a default tag based on variant
+    // Set a default tag based on variant
     const splitTag = Tag.split('-')[0];
     if (splitTag === 'body') {
       Tag = 'p';
