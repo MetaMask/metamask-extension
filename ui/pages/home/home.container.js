@@ -23,14 +23,12 @@ import {
   hasUnsignedQRHardwareMessage,
   getNewNftAddedMessage,
   getNewTokensImported,
-  getShowPortfolioTooltip,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
 } from '../../selectors';
 
 import {
   closeNotificationPopup,
-  hidePortfolioTooltip,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -50,8 +48,6 @@ import {
 import {
   hideWhatsNewPopup,
   setNewCustomNetworkAdded,
-  getPortfolioTooltipWasShownInThisSession,
-  setPortfolioTooltipWasShownInThisSession,
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
@@ -142,9 +138,6 @@ const mapStateToProps = (state) => {
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
-    showPortfolioTooltip: getShowPortfolioTooltip(state),
-    portfolioTooltipWasShownInThisSession:
-      getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showOutdatedBrowserWarning:
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
@@ -172,7 +165,6 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(AlertTypes.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
-  hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
@@ -199,8 +191,6 @@ const mapDispatchToProps = (dispatch) => ({
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
     dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
-  setPortfolioTooltipWasShownInThisSession: () =>
-    dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
 
 export default compose(

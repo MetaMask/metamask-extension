@@ -4496,10 +4496,6 @@ export function hideTestNetMessage() {
   return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
 }
 
-export function hidePortfolioTooltip() {
-  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
-}
-
 export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }

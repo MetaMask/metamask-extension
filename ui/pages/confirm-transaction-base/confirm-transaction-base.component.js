@@ -882,6 +882,10 @@ export default class ConfirmTransactionBase extends Component {
         sendTransaction(txData)
           .then(() => {
             clearConfirmTransaction();
+            if (!this._isMounted) {
+              return;
+            }
+
             this.setState(
               {
                 submitting: false,
@@ -893,6 +897,10 @@ export default class ConfirmTransactionBase extends Component {
             );
           })
           .catch((error) => {
+            if (!this._isMounted) {
+              return;
+            }
+
             this.setState({
               submitting: false,
               submitError: error.message,

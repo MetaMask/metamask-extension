@@ -78,6 +78,9 @@ class SettingsPage extends PureComponent {
     searchText: '',
   };
 
+  shouldRenderExperimentalTab =
+    process.env.TRANSACTION_SECURITY_PROVIDER || process.env.NFTS_V1;
+
   componentDidMount() {
     this.handleConversionDate();
   }
@@ -260,63 +263,65 @@ class SettingsPage extends PureComponent {
   renderTabs() {
     const { history, currentPath } = this.props;
     const { t } = this.context;
+    const tabs = [
+      {
+        content: t('general'),
+        icon: <i className="fa fa-cog" />,
+        key: GENERAL_ROUTE,
+      },
+      {
+        content: t('advanced'),
+        icon: <i className="fas fa-sliders-h" />,
+        key: ADVANCED_ROUTE,
+      },
+      {
+        content: t('contacts'),
+        icon: <Icon name={ICON_NAMES.BOOK} />,
+        key: CONTACT_LIST_ROUTE,
+      },
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      {
+        content: t('snaps'),
+        icon: (
+          <i className="fa fa-flask" title={t('snapsSettingsDescription')} />
+        ),
+        key: SNAPS_LIST_ROUTE,
+      },
+      ///: END:ONLY_INCLUDE_IN
+      {
+        content: t('securityAndPrivacy'),
+        icon: <i className="fa fa-lock" />,
+        key: SECURITY_ROUTE,
+      },
+      {
+        content: t('alerts'),
+        icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
+        key: ALERTS_ROUTE,
+      },
+      {
+        content: t('networks'),
+        icon: <i className="fa fa-plug" />,
+        key: NETWORKS_ROUTE,
+      },
+    ];
+
+    if (this.shouldRenderExperimentalTab) {
+      tabs.push({
+        content: t('experimental'),
+        icon: <i className="fa fa-flask" />,
+        key: EXPERIMENTAL_ROUTE,
+      });
+    }
+
+    tabs.push({
+      content: t('about'),
+      icon: <i className="fa fa-info-circle" />,
+      key: ABOUT_US_ROUTE,
+    });
 
     return (
       <TabBar
-        tabs={[
-          {
-            content: t('general'),
-            icon: <i className="fa fa-cog" />,
-            key: GENERAL_ROUTE,
-          },
-          {
-            content: t('advanced'),
-            icon: <i className="fas fa-sliders-h" />,
-            key: ADVANCED_ROUTE,
-          },
-          {
-            content: t('contacts'),
-            icon: <Icon name={ICON_NAMES.BOOK} />,
-            key: CONTACT_LIST_ROUTE,
-          },
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          {
-            content: t('snaps'),
-            icon: (
-              <i
-                className="fa fa-flask"
-                title={t('snapsSettingsDescription')}
-              />
-            ),
-            key: SNAPS_LIST_ROUTE,
-          },
-          ///: END:ONLY_INCLUDE_IN
-          {
-            content: t('securityAndPrivacy'),
-            icon: <i className="fa fa-lock" />,
-            key: SECURITY_ROUTE,
-          },
-          {
-            content: t('alerts'),
-            icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
-            key: ALERTS_ROUTE,
-          },
-          {
-            content: t('networks'),
-            icon: <i className="fa fa-plug" />,
-            key: NETWORKS_ROUTE,
-          },
-          {
-            content: t('experimental'),
-            icon: <i className="fa fa-flask" />,
-            key: EXPERIMENTAL_ROUTE,
-          },
-          {
-            content: t('about'),
-            icon: <i className="fa fa-info-circle" />,
-            key: ABOUT_US_ROUTE,
-          },
-        ]}
+        tabs={tabs}
         isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;
@@ -360,7 +365,9 @@ class SettingsPage extends PureComponent {
           render={() => <AddNetwork />}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
-        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        {this.shouldRenderExperimentalTab ? (
+          <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        ) : null}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
