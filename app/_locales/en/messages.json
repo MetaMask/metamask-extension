@@ -314,6 +314,12 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allCustodianAccountsConnectedSubtitle": {
+    "message": "You have either already connected all your custodian accounts or don't have any account to connect to MetaMask Institutional."
+  },
+  "allCustodianAccountsConnectedTitle": {
+    "message": "No accounts available to connect"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -487,6 +493,9 @@
   "betaHeaderText": {
     "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
+  },
+  "betaMetamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Beta Version"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -666,6 +675,51 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "compliance": {
+    "message": "Compliance"
+  },
+  "complianceActivatedDesc": {
+    "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
+  },
+  "complianceActivatedTitle": {
+    "message": "Your compliance feature is activated"
+  },
+  "complianceAnalysisNotRun": {
+    "message": "No report has been run on this address. Please click on the tile below to run a report."
+  },
+  "complianceAnalysisRun": {
+    "message": "A compliance analysis has $1 been run within the last 8 hours."
+  },
+  "complianceBlurb0": {
+    "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
+  },
+  "complianceBlurb1": {
+    "message": "Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting."
+  },
+  "complianceBlurbStep1": {
+    "message": "Sign up to Codefi Compliance below"
+  },
+  "complianceBlurbStep2": {
+    "message": "Create an organisation"
+  },
+  "complianceBlurbStep3": {
+    "message": "Create a project"
+  },
+  "complianceBlurbStep4": {
+    "message": "Set your compliance settings"
+  },
+  "complianceBlurbStep5": {
+    "message": "Click the \"Enable Compliance in MMI\" button"
+  },
+  "complianceBlurpStep0": {
+    "message": "Steps to enable AML/CFT Compliance:"
+  },
+  "complianceButtonText": {
+    "message": "AML/CFT Compliance for Ethereum Powered Digital Assets"
+  },
+  "complianceSettingsExplanation": {
+    "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
+  },
   "confirm": {
     "message": "Confirm"
   },
@@ -693,8 +747,23 @@
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },
+  "connectCustodialAccountMenu": {
+    "message": "Connect Custodial Account"
+  },
+  "connectCustodialAccountMsg": {
+    "message": "Please choose the custodian you want to connect in order to add or refresh a token."
+  },
+  "connectCustodialAccountTitle": {
+    "message": "Custodial Accounts"
+  },
+  "connectCustodialSelect": {
+    "message": "Select"
+  },
   "connectHardwareWallet": {
     "message": "Connect hardware wallet"
+  },
+  "connectInstitutionalFeatures": {
+    "message": "Connect Institutional Features"
   },
   "connectManually": {
     "message": "Manually connect to current site"
@@ -907,6 +976,54 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodianAccountAddedDesc": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianAccountAddedTitle": {
+    "message": "Selected custodian accounts have been added."
+  },
+  "custodianReplaceRefreshTokenChangedFailed": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodianReplaceRefreshTokenChangedSubtitle": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianReplaceRefreshTokenChangedTitle": {
+    "message": "Your custodian token has been refreshed"
+  },
+  "custodianReplaceRefreshTokenSubtitle": {
+    "message": "This is will replace the custodian token for the following address:"
+  },
+  "custodianReplaceRefreshTokenTitle": {
+    "message": "Replace custodian token"
+  },
+  "custodyApiUrl": {
+    "message": "$1 API URL"
+  },
+  "custodyDeeplinkDescription": {
+    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
+  },
+  "custodyRefreshTokenModalDescription": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodyRefreshTokenModalDescription1": {
+    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
+  },
+  "custodyRefreshTokenModalDescription2": {
+    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
+  },
+  "custodyRefreshTokenModalSubtitle": {
+    "message": "Why am I seeing this?"
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
+  },
+  "custodySessionExpired": {
+    "message": "Custodian session expired"
+  },
+  "custodyWrongChain": {
+    "message": "This account is not set up for use with $1"
   },
   "custom": {
     "message": "Advanced"
@@ -1228,6 +1345,9 @@
   },
   "enterANumber": {
     "message": "Enter a number"
+  },
+  "enterCustodianToken": {
+    "message": "Enter your $1 token or add a new token"
   },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
@@ -1572,6 +1692,9 @@
   "highLowercase": {
     "message": "high"
   },
+  "historicalReportsLongerThanUsual": {
+    "message": "Fetching compliance reports is taking longer than usual. Please make sure your connection is stable and contact us if problem continues."
+  },
   "history": {
     "message": "History"
   },
@@ -1664,6 +1787,9 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "inCustody": {
+    "message": "In custody"
+  },
   "inYourSettings": {
     "message": "in your Settings"
   },
@@ -1686,6 +1812,9 @@
   },
   "install": {
     "message": "Install"
+  },
+  "institutionalFeatures": {
+    "message": "Institutional Features"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
@@ -1902,6 +2031,9 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "login": {
+    "message": "Login"
+  },
   "logo": {
     "message": "$1 logo",
     "description": "$1 is the name of the ticker"
@@ -1972,6 +2104,9 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Version"
+  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
   },
@@ -2012,6 +2147,9 @@
   "metrics": {
     "message": "Metrics"
   },
+  "mismatchAccount": {
+    "message": "Your connected account ($1) is different than the account trying to sign ($2)"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2040,6 +2178,15 @@
   },
   "missingToken": {
     "message": "Don't see your token?"
+  },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
+  "mmiAuthenticate": {
+    "message": "The page at $1 would like to authorise the following project's compliance settings in MetaMask Institutional"
+  },
+  "mmiBuiltAroundTheWorld": {
+    "message": "MetaMask Institutional is designed and built around the world."
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
@@ -2189,6 +2336,9 @@
   "newPassword": {
     "message": "New password (8 characters min)"
   },
+  "newToMetaMask": {
+    "message": "New to MetaMask Institutional?"
+  },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -2295,6 +2445,12 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
+  },
+  "note": {
+    "message": "Note"
+  },
+  "notePlaceholder": {
+    "message": "The approver will see this note when approving the transaction at the custodian."
   },
   "notifications": {
     "message": "Notifications"
@@ -2619,6 +2775,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openCustodianApp": {
+    "message": "Open $1 app"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2628,6 +2787,9 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
+  },
+  "operationFailed": {
+    "message": "Operation Failed"
   },
   "optional": {
     "message": "Optional"
@@ -2817,6 +2979,12 @@
   "popularCustomNetworks": {
     "message": "Popular custom networks"
   },
+  "portfolio": {
+    "message": "Portfolio"
+  },
+  "portfolioDashboard": {
+    "message": "Portfolio Dashboard"
+  },
   "portfolioSite": {
     "message": "Portfolio site"
   },
@@ -2957,6 +3125,12 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeJWT": {
+    "message": "Remove custodian token"
+  },
+  "removeJWTDescription": {
+    "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
   "removeNFT": {
     "message": "Remove NFT"
   },
@@ -2975,6 +3149,15 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "report": {
+    "message": "Report"
+  },
+  "reportLastRun": {
+    "message": "Report last run"
+  },
+  "reportLastRunTooltip": {
+    "message": "The date and time of when the last AML/CFT report was run"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -3079,6 +3262,9 @@
   "rpcUrl": {
     "message": "New RPC URL"
   },
+  "runReport": {
+    "message": "Run report"
+  },
   "safeTransferFrom": {
     "message": "Safe transfer from"
   },
@@ -3181,14 +3367,23 @@
   "selectAll": {
     "message": "Select all"
   },
+  "selectAllAccounts": {
+    "message": "Select all accounts"
+  },
   "selectAnAccount": {
     "message": "Select an account"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
+  "selectAnAccountHelp": {
+    "message": "Select the custodian accounts to use in MetaMask Institutional."
+  },
   "selectHdPath": {
     "message": "Select HD path"
+  },
+  "selectJWT": {
+    "message": "Select token"
   },
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
@@ -3295,6 +3490,9 @@
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
+  },
+  "showReport": {
+    "message": "Show report"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -3750,6 +3948,10 @@
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
+  "swapIncludesMMIFee": {
+    "message": "Includes a $1% fee.",
+    "description": "Provides information about the fee that MMI takes for swaps. $1 is a decimal number."
+  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
@@ -4196,6 +4398,9 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
+  "transactionNote": {
+    "message": "Transaction note"
+  },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
@@ -4417,6 +4622,12 @@
   "viewOnOpensea": {
     "message": "View on Opensea"
   },
+  "viewPortfolioDashboard": {
+    "message": "View Portfolio Dashboard"
+  },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
+  },
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
@@ -4471,6 +4682,9 @@
   "websites": {
     "message": "websites",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "welcome": {
+    "message": "Welcome to MetaMask Institutional"
   },
   "welcomeBack": {
     "message": "Welcome back!"
@@ -4535,141 +4749,5 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
-  },
-  "allCustodianAccountsConnectedSubtitle": {
-    "message": "You have either already connected all your custodian accounts or don't have any account to connect to MetaMask Institutional."
-  },
-  "allCustodianAccountsConnectedTitle": {
-    "message": "No accounts available to connect"
-  },
-  "portfolio": {
-    "message": "Portfolio"
-  },
-  "portfolioDashboard": {
-    "message": "Portfolio Dashboard"
-  },
-  "viewPortfolioDashboard": {
-    "message": "View Portfolio Dashboard"
-  },
-  "betaMetamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional Beta Version"
-  },
-  "custodianAccountAddedDesc": {
-    "message": "You can now use your custodian accounts in MetaMask Institutional."
-  },
-  "custodianAccountAddedTitle": {
-    "message": "Selected custodian accounts have been added."
-  },
-  "custodyApiUrl": {
-    "message": "$1 API URL"
-  },
-  "custodyDeeplinkDescription": {
-    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
-  },
-  "custodyWrongChain": {
-    "message": "This account is not set up for use with $1"
-  },
-  "enterCustodianToken": {
-    "message": "Enter your $1 token or add a new token"
-  },
-  "historicalReportsLongerThanUsual": {
-    "message": "Fetching compliance reports is taking longer than usual. Please make sure your connection is stable and contact us if problem continues."
-  },
-  "login": {
-    "message": "Login"
-  },
-  "metamaskInstitutionalVersion": {
-    "message": "MetaMask Institutional Version"
-  },
-  "mmiBuiltAroundTheWorld": {
-    "message": "MetaMask Institutional is designed and built around the world."
-  },
-  "note": {
-    "message": "Note"
-  },
-  "notePlaceholder": {
-    "message": "The approver will see this note when approving the transaction at the custodian."
-  },
-  "openCustodianApp": {
-    "message": "Open $1 app"
-  },
-  "mismatchAccount": {
-    "message": "Your connected account ($1) is different than the account trying to sign ($2)"
-  },
-  "removeJWT": {
-    "message": "Remove custodian token"
-  },
-  "removeJWTDescription": {
-    "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
-  },
-  "report": {
-    "message": "Report"
-  },
-  "reportLastRun": {
-    "message": "Report last run"
-  },
-  "reportLastRunTooltip": {
-    "message": "The date and time of when the last AML/CFT report was run"
-  },
-  "runReport": {
-    "message": "Run report"
-  },
-  "selectAllAccounts": {
-    "message": "Select all accounts"
-  },
-  "selectAnAccountHelp": {
-    "message": "Select the custodian accounts to use in MetaMask Institutional."
-  },
-  "selectJWT": {
-    "message": "Select token"
-  },
-  "showReport": {
-    "message": "Show report"
-  },
-  "swapIncludesMMIFee": {
-    "message": "Includes a $1% fee.",
-    "description": "Provides information about the fee that MMI takes for swaps. $1 is a decimal number."
-  },
-  "operationFailed": {
-    "message": "Operation Failed"
-  },
-  "transactionNote": {
-    "message": "Transaction note"
-  },
-  "viewinCustodianApp": {
-    "message": "View in custodian app"
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Your custodian session has expired"
-  },
-  "custodyRefreshTokenModalDescription": {
-    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
-  },
-  "custodyRefreshTokenModalDescription1": {
-    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
-  },
-  "custodyRefreshTokenModalDescription2": {
-    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
-  },
-  "custodyRefreshTokenModalSubtitle": {
-    "message": "Why am I seeing this?"
-  },
-  "custodySessionExpired": {
-    "message": "Custodian session expired"
-  },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Replace custodian token"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "This is will replace the custodian token for the following address:"
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Your custodian token has been refreshed"
-  },
-  "custodianReplaceRefreshTokenChangedSubtitle": {
-    "message": "You can now use your custodian accounts in MetaMask Institutional."
-  },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   }
 }
