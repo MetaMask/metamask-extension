@@ -1,6 +1,6 @@
 import React from 'react';
+import { sanitizeMessage } from '../../../../helpers/utils/util';
 import SignatureRequestData from './signature-request-data';
-import { sanitizeMessage } from 'ui/helpers/utils/util';
 
 export default {
   title: 'Components/App/SignatureRequest/SignatureRequestData',
