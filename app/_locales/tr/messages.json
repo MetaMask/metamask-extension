@@ -266,9 +266,6 @@
   "address": {
     "message": "Adres"
   },
-  "addressBookIcon": {
-    "message": "Adres defteri simgesi"
-  },
   "advanced": {
     "message": "Gelişmiş"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
   },
-  "attemptToCancel": {
-    "message": "İptal etmeyi Dene?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Bu denemenin gönderilmesi asıl işleminizin iptal edileceğini garanti etmez. İptal etme denemesi başarılı olursa sizden yukarıdaki ücret tahsil edilir."
-  },
   "attemptingConnect": {
     "message": "Blockzincire bağlanmaya çalışılıyor."
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
-  },
-  "betaPortfolioSite": {
-    "message": "beta portföy sitesi"
   },
   "betaTerms": {
     "message": "Beta Kullanım koşulları"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal edin"
-  },
-  "cancellationGasFee": {
-    "message": "İptal İşlemi Gaz Ücreti"
   },
   "cancelled": {
     "message": "İptal edildi"
@@ -1720,9 +1705,6 @@
     "message": "JSON Dosyası",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "hesaplar ve ağlar arasında tokenlerinizin ve NFT'lerinizin sekmelerini korumak için."
-  },
   "keystone": {
     "message": "Ana İlke"
   },
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "Popüler özel ağlar"
   },
-  "portfolioSite": {
-    "message": "Portföy sitesi"
-  },
   "preferredLedgerConnectionType": {
     "message": "Tercih Edilen Kayıt Defteri bağlantı türü",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "Gizli Kurtarma İfadesini Göster"
   },
-  "revealSeedWordsDescription": {
-    "message": "Tarayıcı değiştirirseniz veya başka bir bilgisayar kullanmaya başlarsanız hesaplarınıza erişim sağlamak için bu Gizli Kurtarma İfadesine ihtiyacınız olacaktır. Güvenli ve gizli bir yerde saklayın."
-  },
   "revealSeedWordsWarning": {
-    "message": "Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Bu ifadeyi hiç kimseyle PAYLAŞMAYIN!"
+    "message": "Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "Kaydet"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV dosyası olarak kaydet"
   },
   "scanInstructions": {
     "message": "QR kodu kameranızın önüne getirin"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "Tekrar dene"
   },
-  "tryOur": {
-    "message": "Dene:"
-  },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
   },
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "Evet"
-  },
-  "yesLetsTry": {
-    "message": "Evet, deneyelim"
   },
   "youHaveAddedAll": {
     "message": "Tüm popüler ağları eklediniz. $1 daha fazla ağ gekşefedebilir veya $2 seçeneğini seçebilirsiniz",

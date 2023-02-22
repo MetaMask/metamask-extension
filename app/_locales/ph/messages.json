@@ -146,12 +146,6 @@
   "assets": {
     "message": "Mga Asset"
   },
-  "attemptToCancel": {
-    "message": "Subukang Kanselahin?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kapag isinumite ang pagsubok na ito, hindi nito magagarantiyang makakansela ang iyong orihinal na transaksyon. Kung magiging matagumpay ang pagsubok na magkansela, sisingilin ka para sa bayarin sa transaksyon sa itaas."
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -227,9 +221,6 @@
   },
   "cancel": {
     "message": "Kanselahin"
-  },
-  "cancellationGasFee": {
-    "message": "Bayarin sa Gas para sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -1277,23 +1268,15 @@
   "revealSeedWords": {
     "message": "Ipakita ang Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kung magpapalit ka man ng browser o computer, kakailanganin mo ang Secret Recovery Phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang ligtas at sikretong lugar."
-  },
   "revealSeedWordsWarning": {
-    "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Huwag ibahagi ang phrase na ito sa kahit sino!"
+    "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Bagong RPC URL"
   },
   "save": {
     "message": "I-save"
-  },
-  "saveAsCsvFile": {
-    "message": "I-save bilang CSV File"
   },
   "scanInstructions": {
     "message": "Itapat ang QR code sa iyong camera"
@@ -2018,9 +2001,6 @@
   "xOfYPending": {
     "message": "$1 sa $2 ang nakabinbin",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Oo, subukan natin"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."

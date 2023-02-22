@@ -75,12 +75,6 @@
   "asset": {
     "message": "Turtas"
   },
-  "attemptToCancel": {
-    "message": "Mėginti atšaukti?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Šis mėginimas negarantuoja, kad jūsų pradinė operacija bus atšaukta. Jeigu mėginimas atšaukti yra sėkmingas, jums bus taikomas pirmiau minėtas operacijos mokestis."
-  },
   "attemptingConnect": {
     "message": "Mėginama prisijungti prie „blockchain“."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Atšaukti"
-  },
-  "cancellationGasFee": {
-    "message": "Dujų mokesčio atšaukimas"
   },
   "cancelled": {
     "message": "Atšaukta"
@@ -645,23 +636,15 @@
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jei imsite naudotis kita naršykle arba kitu kompiuteriu, šios atkūrimo frazės jums reikės paskyroms pasiekti. Saugokite ją saugioje ir slaptoje vietoje."
-  },
   "revealSeedWordsWarning": {
-    "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Šia fraze su niekuo NESIDALINKITE!"
+    "message": "Šiuos žodžius galima panaudoti visoms jūsų paskyroms pavogti.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Naujas RPC URL"
   },
   "save": {
     "message": "Išsaugoti"
-  },
-  "saveAsCsvFile": {
-    "message": "Įrašyti kaip CSV failą"
   },
   "scanInstructions": {
     "message": "Laikykite QR kodą priešais kamerą"
@@ -930,9 +913,6 @@
   },
   "welcomeBack": {
     "message": "Sveiki sugrįžę!"
-  },
-  "yesLetsTry": {
-    "message": "Taip, mėginkime"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."

@@ -266,9 +266,6 @@
   "address": {
     "message": "Adresse"
   },
-  "addressBookIcon": {
-    "message": "Icône du carnet d’adresses"
-  },
   "advanced": {
     "message": "Paramètres avancés"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancel": {
-    "message": "Tenter d’annuler ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Faire une demande d’annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l’annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "site de portefeuille bêta"
   },
   "betaTerms": {
     "message": "Conditions d’utilisation de la version bêta"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annuler le swap gratuitement"
-  },
-  "cancellationGasFee": {
-    "message": "Frais d’annulation de la transaction"
   },
   "cancelled": {
     "message": "Annulé"
@@ -1573,7 +1558,7 @@
     "message": "page Importer des NFT"
   },
   "importNFTTokenIdToolTip": {
-    "message": "L’ID d’un collectible est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
+    "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
   },
   "importNFTs": {
     "message": "Importer des NFT"
@@ -1719,9 +1704,6 @@
   "jsonFile": {
     "message": "Fichier JSON",
     "description": "format for importing an account"
-  },
-  "keepTapsOnTokens": {
-    "message": "pour garder un œil sur vos jetons et vos NFT sur l’ensemble de vos comptes et réseaux."
   },
   "keystone": {
     "message": "Keystone"
@@ -2112,7 +2094,7 @@
     "message": "« $1 » a été ajouté avec succès !"
   },
   "newNftAddedMessage": {
-    "message": "Le collectible a été ajouté avec succès !"
+    "message": "Le NFT a été ajouté avec succès !"
   },
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "Réseaux personnalisés populaires"
   },
-  "portfolioSite": {
-    "message": "Site du portefeuille"
-  },
   "preferredLedgerConnectionType": {
     "message": "Type de connexion préférée au Ledger",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "Révéler la phrase secrète de récupération"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si jamais vous changez de navigateur ou d’ordinateur, vous aurez besoin de cette phrase secrète de récupération pour accéder à vos comptes. Sauvegardez-la dans un emplacement sûr et secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Ne communiquez PAS cette phrase à quelqu’un !"
+    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Révéler la phrase mnémonique"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "Enregistrer"
-  },
-  "saveAsCsvFile": {
-    "message": "Enregistrer comme fichier CSV"
   },
   "scanInstructions": {
     "message": "Placez le code QR devant votre appareil photo"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "Réessayez"
   },
-  "tryOur": {
-    "message": "Essayez notre"
-  },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
   },
@@ -4168,7 +4136,7 @@
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
-    "message": "L’envoi de jetons collectibles (ERC-721) n’est pas pris en charge actuellement",
+    "message": "L’envoi de jetons NFTs (ERC-721) n’est pas pris en charge actuellement",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "Oui"
-  },
-  "yesLetsTry": {
-    "message": "Oui, essayons"
   },
   "youHaveAddedAll": {
     "message": "Vous avez ajouté tous les réseaux populaires. Vous pouvez découvrir d’autres réseaux $1 ou $2",

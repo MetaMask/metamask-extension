@@ -75,12 +75,6 @@
   "asset": {
     "message": "Eszköz"
   },
-  "attemptToCancel": {
-    "message": "Megpróbálja törölni?"
-  },
-  "attemptToCancelDescription": {
-    "message": "A próbálkozás elküldése nem garantálja, hogy az eredeti tranzakció törlésre kerül. Ha a törlési kísérlet sikeres, akkor a fenti tranzakciós díjat számítjuk fel önnek."
-  },
   "attemptingConnect": {
     "message": "Próbálunk csatlakozni a blokklánchoz."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Mégse"
-  },
-  "cancellationGasFee": {
-    "message": "A törlés gázára"
   },
   "cancelled": {
     "message": "Megszakítva"
@@ -638,23 +629,15 @@
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ha valamikor böngészőt váltasz, vagy számítógépet cserélsz, a fiókjaid használatához szükséged lesz erre a kulcsszóláncra. Őrizd őket egy biztonságos és titkos helyen."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NE ossza meg ezt a mondatot senkivel!"
+    "message": "Ezekkel a szavakkal ellophatóak a fiókjai.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Új RPC URL"
   },
   "save": {
     "message": "Mentés"
-  },
-  "saveAsCsvFile": {
-    "message": "Mentés CSV-fájlként"
   },
   "scanInstructions": {
     "message": "Helyezze a QR-kódot a fényképezőgép elé"
@@ -920,9 +903,6 @@
   },
   "welcomeBack": {
     "message": "Üdvözöljük újra!"
-  },
-  "yesLetsTry": {
-    "message": "Igen, próbáljuk ki!"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ennek a funkciónak a használatához engedélyeznie kell a kamerához való hozzáférést."

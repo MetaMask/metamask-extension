@@ -266,9 +266,6 @@
   "address": {
     "message": "Dirección"
   },
-  "addressBookIcon": {
-    "message": "Icono de libreta de direcciones"
-  },
   "advanced": {
     "message": "Avanzado"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Si intenta enviar activos directamente de una red a otra, esto puede provocar la pérdida permanente de activos. Asegúrese de utilizar un puente."
   },
-  "attemptToCancel": {
-    "message": "¿Intentar cancelar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar este intento no garantiza que se cancelará la transacción original. Si el intento de cancelación se completa correctamente, se le cobrará la cuota de transacción anterior."
-  },
   "attemptingConnect": {
     "message": "Intentando una conexión a la cadena de bloques."
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Versión Beta de MetaMask"
-  },
-  "betaPortfolioSite": {
-    "message": "sitio de portafolio beta"
   },
   "betaTerms": {
     "message": "Términos de uso de beta"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Cancelar el swap gratuitamente"
-  },
-  "cancellationGasFee": {
-    "message": "Cuota de gas por cancelación"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -1720,9 +1705,6 @@
     "message": "Archivo JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "para controlar sus tokens y NFT en todas las cuentas y redes."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "Redes populares personalizadas"
   },
-  "portfolioSite": {
-    "message": "Sitio del portafolio"
-  },
   "preferredLedgerConnectionType": {
     "message": "Tipo de conexión a Ledger preferida",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "Revelar frase secreta de recuperación"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si alguna vez cambia de explorador o de equipo, necesitará esta frase secreta de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
-  },
   "revealSeedWordsWarning": {
-    "message": "Estas palabras pueden usarse para robar todas sus cuentas."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NO comparta esta frase con nadie."
+    "message": "Estas palabras pueden usarse para robar todas sus cuentas.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Revelar frase semilla"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "Guardar"
-  },
-  "saveAsCsvFile": {
-    "message": "Guardar como archivo CSV"
   },
   "scanInstructions": {
     "message": "Ponga el código QR frente a la cámara"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "Vuelva a intentarlo"
   },
-  "tryOur": {
-    "message": "Pruebe nuestro"
-  },
   "turnOnTokenDetection": {
     "message": "Activar la detección mejorada de tokens"
   },
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "Sí"
-  },
-  "yesLetsTry": {
-    "message": "Sí, intentémoslo"
   },
   "youHaveAddedAll": {
     "message": "Ha agregado todas las redes populares. Puede descubrir más redes $1 o puede $2",

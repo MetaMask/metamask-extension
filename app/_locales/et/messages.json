@@ -75,12 +75,6 @@
   "asset": {
     "message": "Vara"
   },
-  "attemptToCancel": {
-    "message": "Tühistamiskatse?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Selle katse esitamine ei taga teie originaaltehingu tühistamist. Kui tühistamiskatse on edukas, võetakse teilt ülaltoodud tehingutasu."
-  },
   "attemptingConnect": {
     "message": "Plokiahelaga ühenduse loomise katse."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Tühista"
-  },
-  "cancellationGasFee": {
-    "message": "Tühistamise gaasitasu"
   },
   "cancelled": {
     "message": "Tühistatud"
@@ -635,23 +626,15 @@
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kui vahetate veebilehitsejat või arvutit, vajate oma kontodele ligipääsemiseks seemnefraasi. Hoidke seda turvalises ja salajases kohas."
-  },
   "revealSeedWordsWarning": {
-    "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ÄRGE jagage seda fraasi mitte kellegagi!"
+    "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Uus RPC URL"
   },
   "save": {
     "message": "Salvesta"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvesta CSV-failina"
   },
   "scanInstructions": {
     "message": "Asetage QR-kood kaamera ette"
@@ -920,9 +903,6 @@
   },
   "welcomeBack": {
     "message": "Tere tulemast tagasi!"
-  },
-  "yesLetsTry": {
-    "message": "Jah, proovime"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Selle funktsiooni kasutamiseks peate lubaga kaamera ligipääsu."

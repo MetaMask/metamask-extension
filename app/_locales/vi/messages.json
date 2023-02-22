@@ -266,9 +266,6 @@
   "address": {
     "message": "Địa chỉ"
   },
-  "addressBookIcon": {
-    "message": "Biểu tượng sổ địa chỉ"
-  },
   "advanced": {
     "message": "Nâng cao"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
-  "attemptToCancel": {
-    "message": "Cố gắng hủy?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Việc gửi lần thử này không đảm bảo rằng giao dịch gốc của bạn sẽ được hủy. Nếu lần hủy này thành công, bạn sẽ chịu phí giao dịch nêu ở trên."
-  },
   "attemptingConnect": {
     "message": "Đang cố gắng kết nối với chuỗi khối."
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Phiên Bản MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "trang web danh mục đầu tư beta"
   },
   "betaTerms": {
     "message": "Điều khoản Sử dụng Beta"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Hủy hoán đổi miễn phí"
-  },
-  "cancellationGasFee": {
-    "message": "Phí gas hủy"
   },
   "cancelled": {
     "message": "Đã hủy"
@@ -1720,9 +1705,6 @@
     "message": "Tập tin JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "để giữ lại thẻ trên token và NFT của bạn trong các tài khoản và mạng."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "Mạng tùy chỉnh phổ biến"
   },
-  "portfolioSite": {
-    "message": "Trang web danh mục đầu tư"
-  },
   "preferredLedgerConnectionType": {
     "message": "Dạng kết nối Ledger ưu tiên",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "Hiện Cụm mật khẩu khôi phục bí mật"
   },
-  "revealSeedWordsDescription": {
-    "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu Cụm mật khẩu khôi phục bí mật này ở nơi an toàn và bí mật."
-  },
   "revealSeedWordsWarning": {
-    "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "KHÔNG chia sẻ cụm mật khẩu này với bất kỳ ai!"
+    "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Hiện cụm từ khôi phục bí mật"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "Lưu"
-  },
-  "saveAsCsvFile": {
-    "message": "Lưu dưới dạng tập tin CSV"
   },
   "scanInstructions": {
     "message": "Đặt mã QR vào trước máy ảnh"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "Thử lại"
   },
-  "tryOur": {
-    "message": "Thử ngay"
-  },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"
   },
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "Có"
-  },
-  "yesLetsTry": {
-    "message": "Có, hãy thử"
   },
   "youHaveAddedAll": {
     "message": "Bạn đã thêm tất cả các mạng phổ biến. Bạn có thể khám phá thêm nhiều mạng khác $1 Hoặc bạn có thể $2",

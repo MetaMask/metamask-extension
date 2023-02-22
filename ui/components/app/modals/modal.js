@@ -14,10 +14,10 @@ import ExportPrivateKeyModal from './export-private-key-modal';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
+import HoldToRevealModal from './hold-to-reveal-modal';
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
 import TransactionConfirmed from './transaction-confirmed';
-import CancelTransaction from './cancel-transaction';
 
 import FadeModal from './fade-modal';
 import MetaMetricsOptInModal from './metametrics-opt-in-modal';
@@ -116,6 +116,19 @@ const MODALS = {
   EXPORT_PRIVATE_KEY: {
     contents: <ExportPrivateKeyModal />,
     ...accountModalStyle,
+  },
+
+  HOLD_TO_REVEAL_SRP: {
+    contents: <HoldToRevealModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
   },
 
   HIDE_TOKEN_CONFIRMATION: {
@@ -245,19 +258,6 @@ const MODALS = {
 
   QR_SCANNER: {
     contents: <QRScanner />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  CANCEL_TRANSACTION: {
-    contents: <CancelTransaction />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

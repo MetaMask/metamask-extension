@@ -75,12 +75,6 @@
   "asset": {
     "message": "সম্পদ"
   },
-  "attemptToCancel": {
-    "message": "বাতিল করার চেষ্টা করছেন?"
-  },
-  "attemptToCancelDescription": {
-    "message": "এই প্রচেষ্টাটি জমা দেওয়া আপনার প্রকৃত লেনদেনটি বাতিল হয়ে যাবে এমন নিশ্চয়তা দেয় না। বাতিল করার প্রচেষ্টাটি সফল হলে, আপনাকে উপরের লেনদেন ফী চার্জ করা হবে।"
-  },
   "attemptingConnect": {
     "message": "ব্লকচেনে সংযোগ করার চেষ্টা করছে।"
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "বাতিল করুন"
-  },
-  "cancellationGasFee": {
-    "message": "বাতিল করার গ্যাস ফী"
   },
   "cancelled": {
     "message": "বাতিল করা হয়েছে"
@@ -645,23 +636,15 @@
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
-  "revealSeedWordsDescription": {
-    "message": "আপনি কখনও ব্রাউজার পরিবর্তন করলে বা এক কম্পিউটার থেকে অন্য কম্পিউটারে গেলে, আপনাকে আপনার অ্যাকাউন্ট অ্যাক্সেস করার জন্য এই সীড ফ্রেজটি লাগবে। সেগুলি নিরাপদ ও গোপনীয় কোনো স্থানে সংরক্ষণ করুন।  "
-  },
   "revealSeedWordsWarning": {
-    "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "এই ফ্রেজটি কারোর সাথে শেয়ার করবেন না!"
+    "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "নতুন RPC URL"
   },
   "save": {
     "message": "সেভ করুন"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV ফাইল হিসাবে সংরক্ষণ করুন"
   },
   "scanInstructions": {
     "message": "QR কোডটি আপনার ক্যামেরার সামনে ধরুন"
@@ -930,9 +913,6 @@
   },
   "welcomeBack": {
     "message": "পুনরায় স্বাগত!"
-  },
-  "yesLetsTry": {
-    "message": "হ্যাঁ, চেষ্টা করা যাক"
   },
   "youNeedToAllowCameraAccess": {
     "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"

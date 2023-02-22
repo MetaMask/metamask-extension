@@ -266,9 +266,6 @@
   "address": {
     "message": "Address"
   },
-  "addressBookIcon": {
-    "message": "Icon ng address book"
-  },
   "advanced": {
     "message": "Makabago"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng tulay."
   },
-  "attemptToCancel": {
-    "message": "Subukang Kanselahin?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kapag isinumite ang pagsubok na ito, hindi nito magagarantiyang makakansela ang iyong orihinal na transaksyon. Kung magiging matagumpay ang pagsubok na magkansela, sisingilin ka para sa bayarin sa transaksyon sa itaas."
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Bersyon ng MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "site ng beta portfolio"
   },
   "betaTerms": {
     "message": "Mga tuntunin sa paggamit ng Beta"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Kanselahin ang swap nang libre"
-  },
-  "cancellationGasFee": {
-    "message": "Bayarin sa Gasolina para sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -1573,7 +1558,7 @@
     "message": "I-import ang pahina ng NFT"
   },
   "importNFTTokenIdToolTip": {
-    "message": "Ang ID ng collectible ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
+    "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
   "importNFTs": {
     "message": "I-import ang mga NFT"
@@ -1719,9 +1704,6 @@
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
-  },
-  "keepTapsOnTokens": {
-    "message": "upang masubaybayan ang iyong mga token at NFT sa mga account at network."
   },
   "keystone": {
     "message": "Keystone"
@@ -2112,7 +2094,7 @@
     "message": "Ang “$1” matagumpay na naidagdag!"
   },
   "newNftAddedMessage": {
-    "message": "Ang collectible ay tagumpay na naidagdag!"
+    "message": "Ang NFT ay tagumpay na naidagdag!"
   },
   "newPassword": {
     "message": "Bagong password (min na 8 char)"
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "Mga sikat na custom na network"
   },
-  "portfolioSite": {
-    "message": "Site ng portfolio"
-  },
   "preferredLedgerConnectionType": {
     "message": "Napiling Uri ng Ledger Connection",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "Ipakita ang Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kung magpapalit ka man ng browser o computer, kakailanganin mo ang Secret Recovery Phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang ligtas at sikretong lugar."
-  },
   "revealSeedWordsWarning": {
-    "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Huwag ibahagi ang phrase na ito sa sinuman!"
+    "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Ipakita ang seed phrase"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "I-save"
-  },
-  "saveAsCsvFile": {
-    "message": "I-save bilang CSV File"
   },
   "scanInstructions": {
     "message": "Itapat ang QR code sa iyong camera"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "Subukan ulit"
   },
-  "tryOur": {
-    "message": "Subukan ang aming"
-  },
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"
   },
@@ -4168,7 +4136,7 @@
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
-    "message": "Ang pagpapadala ng collectible (ERC-721) token ay kasalukuyang hindi magagamit",
+    "message": "Ang pagpapadala ng NFT (ERC-721) token ay kasalukuyang hindi magagamit",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "Oo"
-  },
-  "yesLetsTry": {
-    "message": "Oo, subukan natin"
   },
   "youHaveAddedAll": {
     "message": "Idinagdag mo ang lahat ng sikat na network. Maaari kang makatuklas ng higit pang mga network $1 O maaari kang",

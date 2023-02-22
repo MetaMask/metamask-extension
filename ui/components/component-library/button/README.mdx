@@ -49,30 +49,30 @@ import { Button, BUTTON_TYPES } from '../ui/component-library/button';
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `SIZES.MD`
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `Button`. Defaults to `Size.MD`
 
-Optional: `BUTTON_SIZES` from `./button` object can be used instead of `SIZES`.
+Optional: `BUTTON_SIZES` from `./button` object can be used instead of `Size`.
 
 Possible sizes include:
 
 - `Size.inherit` inherits the font-size of the parent element. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
-- `Size.auti` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
+- `Size.auto` inherits auto height, but keeps the same button font-size. For [ButtonLink](/docs/components-componentlibrary-buttonlink--default-story) uses only
 - `Size.SM` 32px
 - `Size.MD` 40px
 - `Size.LG` 48px
 
 <Canvas>
-  <Story id="components-componentlibrary-button--size" />
+  <Story id="components-componentlibrary-button--size-story" />
 </Canvas>
 
 ```jsx
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 import { Button } from '../ui/component-library';
 
-<Button size={SIZES.INHERIT} />
-<Button size={SIZES.SM} />
-<Button size={SIZES.MD} />
-<Button size={SIZES.LG} />
+<Button size={Size.inherit} />
+<Button size={Size.SM} />
+<Button size={Size.MD} />
+<Button size={Size.LG} />
 ```
 
 ### Danger

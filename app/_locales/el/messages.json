@@ -266,9 +266,6 @@
   "address": {
     "message": "Διεύθυνση"
   },
-  "addressBookIcon": {
-    "message": "Εικονίδιο βιβλίου διευθύνσεων"
-  },
   "advanced": {
     "message": "Σύνθετες"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Εάν επιχειρήσετε να στείλετε περιουσιακά στοιχεία απευθείας από ένα δίκτυο σε ένα άλλο, αυτό ενδέχεται να οδηγήσει σε μόνιμη απώλεια περιουσιακών στοιχείων. Βεβαιωθείτε ότι χρησιμοποιείτε μια διασύνδεση."
   },
-  "attemptToCancel": {
-    "message": "Προσπάθεια Ακύρωσης;"
-  },
-  "attemptToCancelDescription": {
-    "message": "Η υποβολή αυτής της προσπάθειας δεν εγγυάται ότι η αρχική σας συναλλαγή θα ακυρωθεί. Αν η προσπάθεια ακύρωσης είναι επιτυχής, θα χρεωθείτε με το παραπάνω τέλος συναλλαγής."
-  },
   "attemptingConnect": {
     "message": "Προσπάθεια σύνδεσης στην αλυσίδα μπλοκ."
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
-  },
-  "betaPortfolioSite": {
-    "message": "δοκιμαστική ιστοσελίδα χαρτοφυλακίου"
   },
   "betaTerms": {
     "message": "Όροι Χρήσης της Δοκιμαστικής Έκδοσης"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Ακυρώστε τη συναλλαγή δωρεάν"
-  },
-  "cancellationGasFee": {
-    "message": "Ακύρωση Χρέωσης Αερίου"
   },
   "cancelled": {
     "message": "Ακυρώθηκε"
@@ -1720,9 +1705,6 @@
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "για να παρακολουθείτε τα token και τα NFT σε όλους τους λογαριασμούς και τα δίκτυα."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2112,7 +2094,7 @@
     "message": "Το “$1” προστέθηκε με επιτυχία!"
   },
   "newNftAddedMessage": {
-    "message": "Το Collectible προστέθηκε με επιτυχία!"
+    "message": "Το Nft προστέθηκε με επιτυχία!"
   },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "Δημοφιλή προσαρμοσμένα δίκτυα"
   },
-  "portfolioSite": {
-    "message": "Ιστότοπος χαρτοφυλακίου"
-  },
   "preferredLedgerConnectionType": {
     "message": "Προτιμώμενος Τύπος Σύνδεσης Ledger",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "Αποκάλυψη Λέξεων Μυστικής Φράσης Ανάκτησης"
   },
-  "revealSeedWordsDescription": {
-    "message": "Εάν αλλάξετε ποτέ προγράμματα περιήγησης ή μετακινήσετε υπολογιστές, θα χρειαστείτε αυτήν τη Μυστική Φράση Ανάκτησης για να αποκτήσετε πρόσβαση στους λογαριασμούς σας. Αποθηκεύστε την κάπου με ασφάλεια και μυστικότητα."
-  },
   "revealSeedWordsWarning": {
-    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ΜΗΝ ΜΟΙΡΑΣΤΕΙΤΕ αυτήν τη φράση με κανέναν!"
+    "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Αποκάλυψη φράσης ανάκτησης"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "Αποθήκευση"
-  },
-  "saveAsCsvFile": {
-    "message": "Αποθηκεύστε ως Αρχείο CSV"
   },
   "scanInstructions": {
     "message": "Τοποθετήστε τον κώδικα QR μπροστά από την κάμερά σας"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "Δοκιμάστε ξανά"
   },
-  "tryOur": {
-    "message": "Δοκιμάστε το"
-  },
   "turnOnTokenDetection": {
     "message": "Ενεργοποιήστε την ενισχυμένη ανίχνευση token"
   },
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "Ναι"
-  },
-  "yesLetsTry": {
-    "message": "Ναι, ας δοκιμάσουμε"
   },
   "youHaveAddedAll": {
     "message": "Προσθέσατε όλα τα δημοφιλή δίκτυα. Μπορείτε να ανακαλύψετε περισσότερα δίκτυα $1 Ή μπορείτε να \n $2",

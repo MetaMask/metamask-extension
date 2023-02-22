@@ -207,9 +207,6 @@
   "address": {
     "message": "Indirizzo"
   },
-  "addressBookIcon": {
-    "message": "Icona rubrica indirizzo"
-  },
   "advanced": {
     "message": "Avanzate"
   },
@@ -326,12 +323,6 @@
   },
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
-  },
-  "attemptToCancel": {
-    "message": "Tentativo di Annullamento?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Tentare di annullare non garantisce che la transazione verrà annullata. Se annullata, è comunque richiesto pagare alla rete la commissione sulla transazione."
   },
   "attemptingConnect": {
     "message": "Tentativo di connessione alla blockchain."
@@ -478,9 +469,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annulla scambio gratuitamente"
-  },
-  "cancellationGasFee": {
-    "message": "Costo di Annullamento in Gas"
   },
   "cancelled": {
     "message": "Annullata"
@@ -1508,23 +1496,15 @@
   "revealSeedWords": {
     "message": "Rivela Frase Seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "Se cambierai browser o computer, ti servirà questa frase seed per accedere ai tuoi account. Salvala in un posto sicuro e segreto."
-  },
   "revealSeedWordsWarning": {
-    "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NON CONDIVIDERE questa frase con nessuno!"
+    "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nuovo URL RPC"
   },
   "save": {
     "message": "Salva"
-  },
-  "saveAsCsvFile": {
-    "message": "Salva Come File CSV"
   },
   "scanInstructions": {
     "message": "Posizione il codice QR davanti alla fotocamera"
@@ -2090,9 +2070,6 @@
   "xOfY": {
     "message": "$1 di $2",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Si, proviamo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."

@@ -266,9 +266,6 @@
   "address": {
     "message": "地址"
   },
-  "addressBookIcon": {
-    "message": "地址簿图标"
-  },
   "advanced": {
     "message": "高级"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。必须使用桥来进行。"
   },
-  "attemptToCancel": {
-    "message": "尝试取消吗？"
-  },
-  "attemptToCancelDescription": {
-    "message": "提交此尝试不能保证将会取消您的初始交易。如果取消尝试成功，将向您收取以上交易费。"
-  },
   "attemptingConnect": {
     "message": "正在尝试连接到区块链。"
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMask 测试版本"
-  },
-  "betaPortfolioSite": {
-    "message": "投资组合网站测试版"
   },
   "betaTerms": {
     "message": "测试版使用条款"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "免费取消兑换"
-  },
-  "cancellationGasFee": {
-    "message": "取消燃料费"
   },
   "cancelled": {
     "message": "已取消"
@@ -1720,9 +1705,6 @@
     "message": "JSON 文件",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "以记录您在各账户和各网络中的代币和NFT。"
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "流行自定义网络"
   },
-  "portfolioSite": {
-    "message": "投资组合网站"
-  },
   "preferredLedgerConnectionType": {
     "message": "首选 Ledger 连接类型",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "显示助记词"
   },
-  "revealSeedWordsDescription": {
-    "message": "如果更改浏览器或移动计算机，您将需要此助记词才能访问账户。将它们保存在安全、秘密的地方。"
-  },
   "revealSeedWordsWarning": {
-    "message": "这些账户助记词可以用来窃取您的所有账户。"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "切勿与任何人分享此账户助记词！"
+    "message": "这些账户助记词可以用来窃取您的所有账户。",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "显示助记词"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "保存"
-  },
-  "saveAsCsvFile": {
-    "message": "保存为 CSV 文件"
   },
   "scanInstructions": {
     "message": "将二维码放在摄像头前"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "重试"
   },
-  "tryOur": {
-    "message": "试试我们的"
-  },
   "turnOnTokenDetection": {
     "message": "开启增强型代币检测"
   },
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "是"
-  },
-  "yesLetsTry": {
-    "message": "是的，我们试一下"
   },
   "youHaveAddedAll": {
     "message": "您已经添加了所有热门网络。您可以探索更多网络$1，或者您可以$2",

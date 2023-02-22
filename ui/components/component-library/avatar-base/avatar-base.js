@@ -44,12 +44,12 @@ AvatarBase.propTypes = {
   children: PropTypes.node,
   /**
    * The background color of the AvatarBase
-   * Defaults to COLORS.BACKGROUND_ALTERNATIVE
+   * Defaults to Color.backgroundAlternative
    */
   backgroundColor: Box.propTypes.backgroundColor,
   /**
    * The background color of the AvatarBase
-   * Defaults to COLORS.BORDER_DEFAULT
+   * Defaults to Color.borderDefault
    */
   borderColor: Box.propTypes.borderColor,
   /**

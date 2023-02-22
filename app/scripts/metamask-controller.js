@@ -85,6 +85,8 @@ import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
+  ExcludedSnapPermissions,
+  ExcludedSnapEndowments,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
@@ -110,6 +112,9 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { isMain, isFlask } from '../../shared/constants/environment';
+///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -170,6 +175,16 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
+
+/* eslint-disable import/first */
+/* eslint-disable import/order */
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
+///: END:ONLY_INCLUDE_IN
+
+/* eslint-enable import/first */
+/* eslint-enable import/order */
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -645,10 +660,12 @@ export default class MetamaskController extends EventEmitter {
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
     if (this.canUseHardwareWallets()) {
+      const keyringOverrides = this.opts.overrides?.keyrings;
+
       const additionalKeyringTypes = [
-        TrezorKeyring,
-        LedgerBridgeKeyring,
-        LatticeKeyring,
+        keyringOverrides?.trezor || TrezorKeyring,
+        keyringOverrides?.ledger || LedgerBridgeKeyring,
+        keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
@@ -738,7 +755,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    this.snapExecutionService = new IframeExecutionService({
+    const snapExecutionServiceArgs = {
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/0.12.0',
       ),
@@ -746,7 +763,11 @@ export default class MetamaskController extends EventEmitter {
         name: 'ExecutionService',
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
-    });
+    };
+    this.snapExecutionService =
+      this.opts.overrides?.createSnapExecutionService?.(
+        snapExecutionServiceArgs,
+      ) || new IframeExecutionService(snapExecutionServiceArgs);
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
@@ -775,11 +796,12 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    const isMain = process.env.METAMASK_BUILD_TYPE === 'main';
-    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
-
     this.snapController = new SnapController({
       environmentEndowmentPermissions: Object.values(EndowmentPermissions),
+      excludedPermissions: {
+        ...ExcludedSnapPermissions,
+        ...ExcludedSnapEndowments,
+      },
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
@@ -846,6 +868,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: cronjobControllerMessenger,
     });
     ///: END:ONLY_INCLUDE_IN
+
     this.detectTokensController = new DetectTokensController({
       preferences: this.preferencesController,
       tokensController: this.tokensController,
@@ -954,8 +977,8 @@ export default class MetamaskController extends EventEmitter {
 
         const { txReceipt } = txMeta;
 
-        // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
-        // in which case we will want to check and update ownership status of the transferred collectible.
+        // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
+        // in which case we will want to check and update ownership status of the transferred NFT.
         if (
           txMeta.type === TransactionType.tokenMethodTransferFrom &&
           txMeta.txParams !== undefined
@@ -976,19 +999,17 @@ export default class MetamaskController extends EventEmitter {
           const { allNfts } = this.nftController.state;
 
           const chainIdAsDecimal = hexToDecimal(chainId);
-          // check if its a known collectible
-          const knownCollectible = allNfts?.[userAddress]?.[
-            chainIdAsDecimal
-          ]?.find(
+          // check if its a known NFT
+          const knownNft = allNfts?.[userAddress]?.[chainIdAsDecimal]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
           );
 
           // if it is we check and update ownership status.
-          if (knownCollectible) {
+          if (knownNft) {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-              knownCollectible,
+              knownNft,
               false,
               { userAddress, chainId: chainIdAsDecimal },
             );
@@ -1108,6 +1129,12 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    this.desktopController = new DesktopController({
+      initState: initState.DesktopController,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.accountTracker._updateAccounts();
@@ -1215,6 +1242,9 @@ export default class MetamaskController extends EventEmitter {
       CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      DesktopController: this.desktopController.store,
+      ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
 
@@ -1246,6 +1276,9 @@ export default class MetamaskController extends EventEmitter {
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
       },
@@ -1894,14 +1927,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowTestnetMessageInDropdown.bind(
           appStateController,
         ),
-      setShowPortfolioTooltip:
-        appStateController.setShowPortfolioTooltip.bind(appStateController),
       setShowBetaHeader:
         appStateController.setShowBetaHeader.bind(appStateController),
-      updateCollectibleDropDownState:
-        appStateController.updateCollectibleDropDownState.bind(
-          appStateController,
-        ),
+      updateNftDropDownState:
+        appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
       // EnsController
@@ -2138,7 +2167,7 @@ export default class MetamaskController extends EventEmitter {
         detectTokensController,
       ),
 
-      // DetectCollectibleController
+      // DetectNftController
       detectNfts: process.env.NFTS_V1
         ? nftDetectionController.detectNfts.bind(nftDetectionController)
         : null,
@@ -2152,6 +2181,24 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
+
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      generateOtp: this.desktopController.generateOtp.bind(
+        this.desktopController,
+      ),
+      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
+        this.desktopController,
+      ),
+      disableDesktop: this.desktopController.disableDesktop.bind(
+        this.desktopController,
+      ),
+      ///: END:ONLY_INCLUDE_IN
     };
   }
 
@@ -2621,6 +2668,7 @@ export default class MetamaskController extends EventEmitter {
   //
 
   async getKeyringForDevice(deviceName, hdPath = null) {
+    const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
     if (
       deviceName !== HardwareDeviceNames.QR &&
@@ -2630,16 +2678,17 @@ export default class MetamaskController extends EventEmitter {
     }
     switch (deviceName) {
       case HardwareDeviceNames.trezor:
-        keyringName = TrezorKeyring.type;
+        keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringName = LedgerBridgeKeyring.type;
+        keyringName =
+          keyringOverrides?.ledger?.type || LedgerBridgeKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringName = QRHardwareKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
-        keyringName = LatticeKeyring.type;
+        keyringName = keyringOverrides?.lattice?.type || LatticeKeyring.type;
         break;
       default:
         throw new Error(
@@ -3997,6 +4046,11 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
+
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        testDesktopConnection: this.desktopController.testDesktopConnection,
+        generateOtp: this.desktopController.generateOtp,
+        ///: END:ONLY_INCLUDE_IN
       }),
     );
 

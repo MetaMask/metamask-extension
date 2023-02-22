@@ -266,9 +266,6 @@
   "address": {
     "message": "Alamat"
   },
-  "addressBookIcon": {
-    "message": "Ikon buku alamat"
-  },
   "advanced": {
     "message": "Lanjutan"
   },
@@ -402,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan penghubung."
   },
-  "attemptToCancel": {
-    "message": "Coba membatalkan?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Mengupayakan hal ini tidak menjamin transaksi asli Anda akan dibatalkan. Jika upaya pembatalan berhasil, Anda akan dikenakan biaya transaksi di atas."
-  },
   "attemptingConnect": {
     "message": "Mencoba terhubung ke blockchain."
   },
@@ -481,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Versi Beta MetaMask"
-  },
-  "betaPortfolioSite": {
-    "message": "situs portofolio beta"
   },
   "betaTerms": {
     "message": "Syarat penggunaan Beta"
@@ -602,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Batalkan swap gratis"
-  },
-  "cancellationGasFee": {
-    "message": "Biaya gas pembatalan"
   },
   "cancelled": {
     "message": "Dibatalkan"
@@ -1720,9 +1705,6 @@
     "message": "File JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "untuk mengawasi token dan NFT Anda di seluruh akun dan jaringan."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2718,9 +2700,6 @@
   "popularCustomNetworks": {
     "message": "Jaringan khusus populer"
   },
-  "portfolioSite": {
-    "message": "Situs portofolio"
-  },
   "preferredLedgerConnectionType": {
     "message": "Jenis koneksi Ledger Pilihan",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2922,14 +2901,9 @@
   "revealSeedWords": {
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jika Anda pernah mengubah peramban atau mengganti komputer, Frasa Pemulihan Rahasia ini akan berguna untuk mengakses akun Anda. Simpan di tempat yang aman dan rahasia."
-  },
   "revealSeedWordsWarning": {
-    "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "JANGAN bagikan frasa ini kepada siapa pun!"
+    "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Ungkap frasa seed"
@@ -2960,9 +2934,6 @@
   },
   "save": {
     "message": "Simpan"
-  },
-  "saveAsCsvFile": {
-    "message": "Simpan sebagai file CSV"
   },
   "scanInstructions": {
     "message": "Tempatkan kode QR di bagian depan kamera Anda"
@@ -4101,9 +4072,6 @@
   "tryAgain": {
     "message": "Coba lagi"
   },
-  "tryOur": {
-    "message": "Cobalah"
-  },
   "turnOnTokenDetection": {
     "message": "Nyalakan deteksi token yang ditingkatkan"
   },
@@ -4368,9 +4336,6 @@
   },
   "yes": {
     "message": "Ya"
-  },
-  "yesLetsTry": {
-    "message": "Ya, mari kita coba"
   },
   "youHaveAddedAll": {
     "message": "Anda telah menambahkan semua jaringan populer. Anda dapat menemukan lebih banyak jaringan $1 atau dapat $2",

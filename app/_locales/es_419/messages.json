@@ -142,9 +142,6 @@
   "address": {
     "message": "Dirección"
   },
-  "addressBookIcon": {
-    "message": "Icono de libreta de direcciones"
-  },
   "advanced": {
     "message": "Avanzado"
   },
@@ -237,12 +234,6 @@
   },
   "assets": {
     "message": "Activos"
-  },
-  "attemptToCancel": {
-    "message": "¿Intentar cancelar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar este intento no garantiza que se cancelará la transacción original. Si el intento de cancelación se realiza correctamente, se le cobrará la tarifa de transacción anterior."
   },
   "attemptingConnect": {
     "message": "Intentando una conexión a la cadena de bloques."
@@ -360,9 +351,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Para $1 una transacción, la tarifa de gas debe aumentar al menos un 10% para que sea reconocida por la red.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancellationGasFee": {
-    "message": "Tarifa de gas por cancelación"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -1990,23 +1978,15 @@
   "revealSeedWords": {
     "message": "Revelar frase secreta de recuperación"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si alguna vez cambia de explorador o de equipo, necesitará esta frase secreta de recuperación para acceder a sus cuentas. Guárdela en un lugar seguro y secreto."
-  },
   "revealSeedWordsWarning": {
-    "message": "Estas palabras pueden usarse para robar todas sus cuentas."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "¡NO comparta esta frase con nadie!"
+    "message": "Estas palabras pueden usarse para robar todas sus cuentas.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nueva dirección URL de RPC"
   },
   "save": {
     "message": "Guardar"
-  },
-  "saveAsCsvFile": {
-    "message": "Guardar como archivo CSV"
   },
   "scanInstructions": {
     "message": "Ponga el código QR frente a la cámara"
@@ -3033,9 +3013,6 @@
   "xOfYPending": {
     "message": "$1 de $2 están pendientes",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Sí, intentémoslo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Necesita permitir el acceso a la cámara para usar esta función."

@@ -75,12 +75,6 @@
   "asset": {
     "message": "Imovina"
   },
-  "attemptToCancel": {
-    "message": "Pokušati otkazati?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Slanjem ovog pokušaja ne jamči se da će se vaša izvorna transakcija otkazati. Ako je pokušaj otkazivanja uspješan, naplaćuje vam se prethodno navedena naknada za prijenos."
-  },
   "attemptingConnect": {
     "message": "Pokušaj povezivanja na podatkovni blok."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Odustani"
-  },
-  "cancellationGasFee": {
-    "message": "Otkazivanje naknade za gorivo"
   },
   "cancelled": {
     "message": "Otkazano"
@@ -638,23 +629,15 @@
   "revealSeedWords": {
     "message": "Otkrij početne riječi"
   },
-  "revealSeedWordsDescription": {
-    "message": "Ako ikada promijenite preglednike ili računala, trebate ovu početnu rečenicu za pristupanje svojim računima. Spremite ih negdje na sigurno i tajno mjesto."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NE DIJELITE ovu rečenicu ni s kim!"
+    "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Novi URL RPC-a"
   },
   "save": {
     "message": "Spremi"
-  },
-  "saveAsCsvFile": {
-    "message": "Spremi kao datoteku CSV"
   },
   "scanInstructions": {
     "message": "Postavite kôd QR ispred kamere"
@@ -920,9 +903,6 @@
   },
   "welcomeBack": {
     "message": "Dobro došli natrag!"
-  },
-  "yesLetsTry": {
-    "message": "Da, isprobajmo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebate dopustiti pristupanje kameri za korištenje ovom funkcijom."
