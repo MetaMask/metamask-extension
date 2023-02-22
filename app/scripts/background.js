@@ -52,6 +52,7 @@ import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
+
 /* eslint-enable import/first */
 
 const { sentry } = global;
@@ -68,7 +69,6 @@ const metamaskBlockedPorts = ['trezor-connect'];
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
-
 const notificationManager = new NotificationManager();
 global.METAMASK_NOTIFIER = notificationManager;
 
@@ -789,7 +789,12 @@ async function triggerUi() {
   ) {
     uiIsTriggering = true;
     try {
-      await notificationManager.showPopup();
+      const currentPopupId = controller.appStateController.getCurrentPopupId();
+      await notificationManager.showPopup(
+        (newPopupId) =>
+          controller.appStateController.setCurrentPopupId(newPopupId),
+        currentPopupId,
+      );
     } finally {
       uiIsTriggering = false;
     }
