@@ -57,7 +57,7 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
       >
         <Icon
           name={ICON_NAMES.DANGER}
-          color={Color.errorDefault}
+          color={IconColor.errorDefault}
           className="confirmation-warning-modal__content__header__warning-icon"
           size={ICON_SIZES.XL}
         />
