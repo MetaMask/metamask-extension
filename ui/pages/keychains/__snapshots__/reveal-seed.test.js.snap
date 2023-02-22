@@ -64,8 +64,8 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     <div
       class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
     >
-      <div
-        class="box mm-icon mm-icon--size-lg box--flex-direction-row box--color-error-default"
+      <span
+        class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
         style="mask-image: url('./images/icons/danger.svg');"
       />
       <div>
