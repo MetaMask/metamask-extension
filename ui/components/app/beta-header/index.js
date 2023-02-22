@@ -8,6 +8,8 @@ import {
   Color,
   BLOCK_SIZES,
   DISPLAY,
+  AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
@@ -24,6 +26,7 @@ const BetaHeader = () => {
       backgroundColor={Color.warningDefault}
       padding={2}
       className="beta-header"
+      alignItems={AlignItems.center}
     >
       <Typography
         variant={TypographyVariant.H7}
@@ -45,7 +48,8 @@ const BetaHeader = () => {
       </Typography>
       <ButtonIcon
         iconName={ICON_NAMES.CLOSE}
-        size={ICON_SIZES.XS}
+        size={ICON_SIZES.SM}
+        color={IconColor.warningInverse}
         className="beta-header__button"
         data-testid="beta-header-close"
         onClick={() => {
