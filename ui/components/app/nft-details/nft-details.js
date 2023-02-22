@@ -36,6 +36,7 @@ import {
   checkAndUpdateSingleNftOwnershipStatus,
   removeAndIgnoreNft,
   setRemoveNftMessage,
+  setNewNftAddedMessage,
 } from '../../../store/actions';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -92,6 +93,7 @@ export default function NftDetails({ nft }) {
 
   const onRemove = () => {
     dispatch(removeAndIgnoreNft(address, tokenId));
+    dispatch(setNewNftAddedMessage(''));
     dispatch(setRemoveNftMessage('success'));
     history.push(DEFAULT_ROUTE);
   };
