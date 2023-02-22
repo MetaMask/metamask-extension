@@ -26,8 +26,8 @@ Use the `logoType` prop with the `BANNER_TIP_LOGOS` object from `../../component
 
 Possible options:
 
-- `BANNER_TIP_LOGOS.INFO` Default
-- `BANNER_TIP_LOGOS.EMPTY`
+- `BANNER_TIP_LOGOS.GREETING` Default
+- `BANNER_TIP_LOGOS.CHAT`
 
 <Canvas>
   <Story id="components-componentlibrary-bannertip--logo-type" />
@@ -37,11 +37,11 @@ Possible options:
 import { BannerTip } from '../../component-library';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
-<BannerTip title="Info">
-  This is a demo of severity Info.
+<BannerTip logoType={BANNER_TIP_LOGOS.GREETING}>
+  This is a demo of greeting.
 </BannerTip>
-<BannerTip logoType={BANNER_TIP_LOGOS.EMPTY} title="Warning">
-  This is a demo of severity Warning.
+<BannerTip logoType={BANNER_TIP_LOGOS.CHAT}>
+  This is a demo of chat.
 </BannerTip>
 ```
 

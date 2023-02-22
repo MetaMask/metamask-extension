@@ -13,7 +13,7 @@ import { BANNER_TIP_LOGOS } from './banner-tip.constants';
 export const BannerTip = ({
   children,
   className,
-  logoType = BANNER_TIP_LOGOS.EMPTY,
+  logoType = BANNER_TIP_LOGOS.GREETING,
   logoWrapperProps,
   logoProps,
   ...props

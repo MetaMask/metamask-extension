@@ -104,14 +104,18 @@ DefaultStory.args = {
 
 DefaultStory.storyName = 'Default';
 
-export const Type = (args) => {
+export const LogoType = (args) => {
   return (
     <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={3}>
-      <BannerTip {...args} logoType={BANNER_TIP_LOGOS.INFO} title="Info">
-        This is a demo of info.
+      <BannerTip
+        {...args}
+        logoType={BANNER_TIP_LOGOS.GREETING}
+        title="Greeting"
+      >
+        This is a demo of greeting.
       </BannerTip>
-      <BannerTip {...args} logoType={BANNER_TIP_LOGOS.EMPTY} title="Warning">
-        This is a demo of empty.
+      <BannerTip {...args} logoType={BANNER_TIP_LOGOS.CHAT} title="Chat">
+        This is a demo of chat.
       </BannerTip>
     </Box>
   );
