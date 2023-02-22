@@ -12,6 +12,8 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import classnames from 'classnames';
+
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
@@ -20,8 +22,8 @@ import {
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
 import DropdownInputPair from '../dropdown-input-pair';
-import DropdownSearchList from '../dropdown-search-list';
 import TransactionSettings from '../transaction-settings';
+import ListWithSearch from '../list-with-search';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
@@ -37,7 +39,6 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { SWAPS_ERROR_ROUTE } from '../../../helpers/constants/routes';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -125,15 +126,10 @@ import {
   ICON_SIZES,
 } from '../../../components/component-library';
 import SwapsFooter from '../swaps-footer';
+import UrlIcon from '../../../components/ui/url-icon';
 import SwapsBannerAlert from './swaps-banner-alert';
 import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
-
-const fuseSearchKeys = [
-  { name: 'name', weight: 0.499 },
-  { name: 'symbol', weight: 0.499 },
-  { name: 'address', weight: 0.002 },
-];
 
 const MAX_ALLOWED_SLIPPAGE = 15;
 
@@ -462,11 +458,6 @@ export default function PrepareSwap({
     [dispatch, destinationTokenAddedForSwap, toAddress],
   );
 
-  const hideDropdownItemIf = useCallback(
-    (item) => isEqualCaseInsensitive(item.address, fromTokenAddress),
-    [fromTokenAddress],
-  );
-
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
     isEqualCaseInsensitive(token.address, fromToken?.address),
   );
@@ -670,6 +661,32 @@ export default function PrepareSwap({
   return (
     <div className="prepare-swap">
       <div className="prepare-swap__content">
+        {isSwapToOpen && (
+          <Popover
+            title={t('swapSwapTo')}
+            className="smart-transactions-popover"
+            onClose={onSwapToClose}
+          >
+            <Box
+              paddingRight={6}
+              paddingLeft={6}
+              paddingTop={0}
+              paddingBottom={0}
+              display={DISPLAY.FLEX}
+              className="smart-transactions-popover__content"
+            >
+              <ListWithSearch
+                selectedItem={selectedToToken}
+                itemsToSearch={tokensToSearchSwapTo}
+                onClickItem={(item) => {
+                  onToSelect?.(item);
+                  onSwapToClose();
+                }}
+                maxListItems={30}
+              />
+            </Box>
+          </Popover>
+        )}
         {showSmartTransactionsOptInPopover && (
           <Popover
             title={t('stxAreHere')}
@@ -866,31 +883,49 @@ export default function PrepareSwap({
         </div>
         <div className="prepare-swap__swap-to-content">
           <div className="dropdown-input-pair dropdown-input-pair__to">
-            <DropdownSearchList
-              startingItem={selectedToToken}
-              itemsToSearch={tokensToSearchSwapTo}
-              fuseSearchKeys={fuseSearchKeys}
-              selectPlaceHolderText={t('swapSelectAToken')}
-              maxListItems={30}
-              onSelect={onToSelect}
-              loading={
-                loading &&
-                (!tokensToSearchSwapTo?.length ||
-                  !topAssets ||
-                  !Object.keys(topAssets).length)
-              }
-              onOpen={onSwapToOpen}
-              onClose={onSwapToClose}
-              className={
-                isSwapToOpen ? 'dropdown-input-pair__list--full-width' : ''
-              }
-              externallySelectedItem={selectedToToken}
-              hideItemIf={hideDropdownItemIf}
-              listContainerClassName="prepare-swap__open-to-dropdown"
-              hideRightLabels
-              defaultToAll
-              shouldSearchForImports
-            />
+            {!isSwapToOpen && (
+              <div
+                className={classnames(
+                  'dropdown-search-list',
+                  'dropdown-search-list__selector-closed-container',
+                  'dropdown-input-pair__selector--closed',
+                )}
+                onClick={onSwapToOpen}
+              >
+                <div className="dropdown-search-list__selector-closed">
+                  {selectedToToken?.iconUrl && (
+                    <UrlIcon
+                      url={selectedToToken.iconUrl}
+                      className="dropdown-search-list__selector-closed-icon"
+                      name={selectedToToken?.symbol}
+                    />
+                  )}
+                  {!selectedToToken?.iconUrl && (
+                    <div className="dropdown-search-list__default-dropdown-icon" />
+                  )}
+                  <div className="dropdown-search-list__labels">
+                    <div className="dropdown-search-list__item-labels">
+                      <span
+                        className={classnames(
+                          'dropdown-search-list__closed-primary-label',
+                          {
+                            'dropdown-search-list__select-default':
+                              !selectedToToken?.symbol,
+                          },
+                        )}
+                      >
+                        {selectedToToken?.symbol || t('swapSelectAToken')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <Icon
+                  name={ICON_NAMES.ARROW_DOWN}
+                  size={ICON_SIZES.XS}
+                  marginRight={3}
+                />
+              </div>
+            )}
             <Box>
               <Typography variant={TypographyVariant.H4}>
                 {receiveToAmount}
@@ -946,6 +981,11 @@ export default function PrepareSwap({
               }}
             />
           )}
+        {swapsErrorKey && (
+          <Box display={DISPLAY.FLEX} marginTop={2}>
+            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
+          </Box>
+        )}
         {!isReviewSwapButtonDisabled && !areQuotesPresent && (
           <Box
             marginTop={4}
@@ -988,11 +1028,6 @@ export default function PrepareSwap({
                 />
               </div>
             </div>
-          </Box>
-        )}
-        {swapsErrorKey && (
-          <Box display={DISPLAY.FLEX} marginTop={2}>
-            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
           </Box>
         )}
         {!areQuotesPresent && (
