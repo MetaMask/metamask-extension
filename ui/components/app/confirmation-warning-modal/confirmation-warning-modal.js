@@ -13,7 +13,7 @@ import {
   JustifyContent,
   TypographyVariant,
   AlignItems,
-  Color,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 

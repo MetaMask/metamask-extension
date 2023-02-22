@@ -20,7 +20,7 @@ import {
   Size,
   BackgroundColor,
   TextColor,
-  Color,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { Numeric } from '../../../../shared/modules/Numeric';
 

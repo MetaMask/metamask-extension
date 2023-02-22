@@ -9,7 +9,7 @@ import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
   AlignItems,
-  Color,
+  IconColor,
   FLEX_DIRECTION,
   FONT_WEIGHT,
   JustifyContent,

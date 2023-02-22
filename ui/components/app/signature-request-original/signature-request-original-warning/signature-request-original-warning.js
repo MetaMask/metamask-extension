@@ -7,7 +7,7 @@ import Box from '../../../ui/box';
 import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
 import {
-  Color,
+  IconColor,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
