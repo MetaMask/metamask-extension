@@ -19,7 +19,7 @@ function capitalizeFirstLetter(string) {
 function executeGitCommand(command) {
   return execSync(command)
     .toString('utf8')
-    .replace(/[\n\r\s]+$/u, '');
+    .trim();
 }
 
 async function start() {
