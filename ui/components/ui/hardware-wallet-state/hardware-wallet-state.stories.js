@@ -3,7 +3,6 @@ import HardwareWalletState from '.';
 
 export default {
   title: 'Components/App/HardwareWalletState',
-
   argTypes: {
     pollingRateMs: {
       control: 'number',
