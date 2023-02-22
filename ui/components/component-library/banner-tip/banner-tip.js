@@ -7,7 +7,6 @@ import {
   AlignItems,
   BorderColor,
   DISPLAY,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { BANNER_TIP_LOGOS } from './banner-tip.constants';
 
@@ -15,6 +14,8 @@ export const BannerTip = ({
   children,
   className,
   logoType = BANNER_TIP_LOGOS.EMPTY,
+  logoWrapperProps,
+  logoProps,
   ...props
 }) => {
   return (
@@ -22,26 +23,20 @@ export const BannerTip = ({
       startAccessory={
         <Box
           display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
+          {...logoWrapperProps}
         >
           <Box
             as="img"
             className="mm-banner-tip--logo"
             src={`images/fox-${logoType}.png`}
             alt={`${logoType} fox logo`}
+            {...logoProps}
           />
         </Box>
       }
       borderColor={BorderColor.borderDefault}
-      className={classnames(
-        'mm-banner-tip',
-        {
-          [`mm-banner-tip--logo-${logoType}`]:
-            Object.values(BANNER_TIP_LOGOS).includes(logoType),
-        },
-        className,
-      )}
+      className={classnames('mm-banner-tip', className)}
       {...props}
     >
       {children}
@@ -59,6 +54,14 @@ BannerTip.propTypes = {
    * Possible options: `BANNER_TIP_LOGOS.INFO`(Default), `BANNER_TIP_LOGOS.EMPTY`,
    */
   logoType: PropTypes.oneOf(Object.values(BANNER_TIP_LOGOS)),
+  /**
+   * logoProps accepts all the props from Box
+   */
+  logoProps: PropTypes.shape(Box.propTypes),
+  /**
+   * logoWrapperProps accepts all the props from Box
+   */
+  logoWrapperProps: PropTypes.shape(Box.propTypes),
   /**
    * BannerTip accepts all the props from BannerBase
    */
