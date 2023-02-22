@@ -7,7 +7,7 @@ import {
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
-  METAMASK_MMI_LIVE_CHROME_ID,
+  METAMASK_MMI_CHROME_ID,
 } from '../../shared/constants/app';
 import {
   checkForMultipleVersionsRunning,
@@ -54,7 +54,7 @@ describe('multiple instances running detector', function () {
       assert(
         sendMessageStub
           .getCall(2)
-          .calledWithExactly(METAMASK_MMI_LIVE_CHROME_ID, PING_MESSAGE),
+          .calledWithExactly(METAMASK_MMI_CHROME_ID, PING_MESSAGE),
       );
     });
 
