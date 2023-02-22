@@ -7,7 +7,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../../../components/component-library';
-import { IconColor, Color } from '../../../../helpers/constants/design-system';
+import { Color } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -80,7 +80,7 @@ const NetworksListItem = ({
           <Icon
             name={ICON_NAMES.CHECK}
             className="networks-tab__content__icon-check"
-            color={IconColor.successDefault}
+            color={Color.successDefault}
             aria-label={t('active')}
           />
         </>
@@ -89,7 +89,7 @@ const NetworksListItem = ({
           <Icon
             name={ICON_NAMES.CHECK}
             className="networks-tab__content__icon-check"
-            color={IconColor.successDefault}
+            color={Color.successDefault}
             aria-hidden="true"
           />
         </>

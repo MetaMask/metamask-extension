@@ -1,16 +1,19 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
+import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import classnames from 'classnames';
-import Fuse from 'fuse.js';
-import { debounce } from 'lodash';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
-  CONTEXT_PROPS,
   EVENT,
   EVENT_NAMES,
+  CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import Identicon from '../../ui/identicon';
+import SiteIcon from '../../ui/site-icon';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 import {
@@ -30,10 +33,7 @@ import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
-import Identicon from '../../ui/identicon';
-import SiteIcon from '../../ui/site-icon';
 import TextField from '../../ui/text-field';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
