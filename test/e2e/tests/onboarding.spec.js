@@ -17,6 +17,7 @@ describe('MetaMask onboarding', function () {
   const testPassword = 'correct horse battery staple';
   const wrongSeedPhrase =
     'test test test test test test test test test test test test';
+  const wrongTestPassword = 'test test test test';
 
   const ganacheOptions = {
     accounts: [
@@ -110,6 +111,44 @@ describe('MetaMask onboarding', function () {
         const iterations = options.length;
 
         await testDropdownIterations(options, driver, iterations);
+      },
+    );
+  });
+
+  it('User enters the wrong password during password creation', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+
+        // metrics
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+        // Fill in confirm password field with incorrect password
+        await driver.fill('[data-testid="create-password-new"]', testPassword);
+        await driver.fill(
+          '[data-testid="create-password-confirm"]',
+          wrongTestPassword,
+        );
+
+        // Check that the error message is displayed for the password fields
+        const errorMessages = await driver.findElements('h6');
+        const pwdErrorMsg = errorMessages[4];
+        assert.equal(await pwdErrorMsg.isDisplayed(), true);
+        assert.equal(await pwdErrorMsg.getText(), "Passwords don't match");
+
+        // Check that the "Confirm Password" button is disabled
+        const confirmPasswordButton = await driver.findElement(
+          '[data-testid="create-password-wallet"]',
+        );
+        assert.equal(await confirmPasswordButton.isEnabled(), false);
       },
     );
   });
