@@ -154,7 +154,7 @@ export default function AddNft() {
                     <Typography
                       variant={TypographyVariant.H7}
                       fontWeight={FONT_WEIGHT.NORMAL}
-                      margin={0}
+                      marginTop={0}
                     >
                       {t('nftAddFailedMessage')}
                     </Typography>
