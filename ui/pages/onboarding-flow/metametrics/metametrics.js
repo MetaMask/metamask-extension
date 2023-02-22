@@ -115,7 +115,7 @@ export default function OnboardingMetametrics() {
               marginInlineEnd={2}
               name={ICON_NAMES.CLOSE}
               size={ICON_SIZES.SM}
-              color={Color.errorDefault}
+              color={IconColor.errorDefault}
             />
             {t('onboardingMetametricsNeverCollect', [
               <Typography
@@ -135,7 +135,7 @@ export default function OnboardingMetametrics() {
               marginInlineEnd={2}
               name={ICON_NAMES.CLOSE}
               size={ICON_SIZES.SM}
-              color={Color.errorDefault}
+              color={IconColor.errorDefault}
             />
             {t('onboardingMetametricsNeverCollectIP', [
               <Typography
@@ -154,7 +154,7 @@ export default function OnboardingMetametrics() {
               marginInlineEnd={2}
               name={ICON_NAMES.CLOSE}
               size={ICON_SIZES.SM}
-              color={Color.errorDefault}
+              color={IconColor.errorDefault}
             />
             {t('onboardingMetametricsNeverSellData', [
               <Typography
