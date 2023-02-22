@@ -84,7 +84,7 @@ export default function SkipSRPBackup({ handleClose }) {
           name={ICON_NAMES.DANGER}
           size={ICON_SIZES.XL}
           className="skip-srp-backup-popover__icon"
-          color={Color.errorDefault}
+          color={IconColor.errorDefault}
         />
         <Typography
           variant={TypographyVariant.h3}
