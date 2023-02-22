@@ -14,7 +14,6 @@ export default {
       action: 'onUpdate',
     },
   },
-
   args: {
     pollingRateMs: 2000,
     initialStatus: 'locked',
