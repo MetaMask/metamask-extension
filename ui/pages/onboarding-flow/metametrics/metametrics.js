@@ -8,7 +8,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
-  ICON_COLORS,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -90,7 +90,7 @@ export default function OnboardingMetametrics() {
         <li>
           <Icon
             name={ICON_NAMES.CHECK}
-            color={ICON_COLORS.SUCCESS_DEFAULT}
+            color={IconColor.successDefault}
             marginRight={2}
           />
           {t('onboardingMetametricsAllowOptOut')}
@@ -98,7 +98,7 @@ export default function OnboardingMetametrics() {
         <li>
           <Icon
             name={ICON_NAMES.CHECK}
-            color={ICON_COLORS.SUCCESS_DEFAULT}
+            color={IconColor.successDefault}
             marginRight={2}
           />
           {t('onboardingMetametricsSendAnonymize')}

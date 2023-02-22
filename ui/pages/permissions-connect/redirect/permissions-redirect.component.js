@@ -9,7 +9,7 @@ import {
   DISPLAY,
   JustifyContent,
   AlignItems,
-  SIZES,
+  Size,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -40,7 +40,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
           >
             <Icon
               name={ICON_NAMES.CONFIRMATION}
-              size={SIZES.XL}
+              size={Size.XL}
               className="permissions-redirect__check"
             />
             <div className="permissions-redirect__dashed-line" />

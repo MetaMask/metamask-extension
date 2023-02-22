@@ -2,8 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon, ICON_NAMES } from '../../../../components/component-library';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../../components/component-library';
+import { IconColor, Color } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -18,12 +22,6 @@ import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
-import {
-  Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../../components/component-library';
-import { Color } from '../../../../helpers/constants/design-system';
 
 const NetworksListItem = ({
   network,

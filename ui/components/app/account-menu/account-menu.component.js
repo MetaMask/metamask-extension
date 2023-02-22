@@ -11,11 +11,8 @@ import {
   EVENT_NAMES,
 } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ICON_COLORS } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../../component-library';
-import Identicon from '../../ui/identicon';
-import SiteIcon from '../../ui/site-icon';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 import {
   PRIMARY,
   SUPPORT_REQUEST_LINK,
@@ -29,10 +26,8 @@ import {
   NOTIFICATIONS_ROUTE,
   SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
-import TextField from '../../ui/text-field';
 import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
@@ -231,10 +226,7 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <Icon
-                name={ICON_NAMES.CHECK}
-                color={ICON_COLORS.SUCCESS_DEFAULT}
-              />
+              <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />

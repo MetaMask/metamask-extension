@@ -15,7 +15,6 @@ import { isPrefixedFormattedHexString } from '../../../../shared/modules/network
 
 import ColorIndicator from '../../ui/color-indicator';
 import { IconColor, Size } from '../../../helpers/constants/design-system';
-import { ICON_COLORS } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -176,7 +175,7 @@ class NetworkDropdown extends Component {
           }}
         >
           {isCurrentRpcTarget ? (
-            <Icon name={ICON_NAMES.CHECK} color={ICON_COLORS.SUCCESS_DEFAULT} />
+            <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
@@ -244,7 +243,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <Icon name={ICON_NAMES.CHECK} color={ICON_COLORS.SUCCESS_DEFAULT} />
+          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}

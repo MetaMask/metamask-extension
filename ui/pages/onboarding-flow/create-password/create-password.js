@@ -13,7 +13,7 @@ import {
   JustifyContent,
   FONT_WEIGHT,
   AlignItems,
-  ICON_COLORS,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -224,7 +224,7 @@ export default function CreatePassword({
                 <div className="create-password__form--checkmark">
                   <Icon
                     name={ICON_NAMES.CHECK}
-                    color={ICON_COLORS.SUCCESS_DEFAULT}
+                    color={IconColor.successDefault}
                   />
                 </div>
               )
