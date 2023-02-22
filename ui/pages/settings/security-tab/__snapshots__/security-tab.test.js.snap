@@ -151,7 +151,7 @@ exports[`Security Tab should match snapshot 1`] = `
               We use 
               <a
                 href="https://www.coingecko.com/"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 target="_blank"
               >
                 CoinGecko
@@ -159,7 +159,7 @@ exports[`Security Tab should match snapshot 1`] = `
                and 
               <a
                 href="https://www.cryptocompare.com/"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 target="_blank"
               >
                 CryptoCompare
@@ -167,7 +167,7 @@ exports[`Security Tab should match snapshot 1`] = `
                APIs to display your balance and token price. 
               <a
                 href="https://consensys.net/privacy-policy/"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 target="_blank"
               >
                 Privacy policy

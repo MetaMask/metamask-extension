@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Link should render link element correctly fully controlled 1`] = `
+exports[`Link should render link element correctly target rel referer 1`] = `
 <div>
   <a
     href="https://metamask.io/"
