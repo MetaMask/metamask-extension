@@ -8,7 +8,8 @@ export default {
       control: 'number',
     },
     initialStatus: {
-      control: 'text',
+      control: 'select',
+      options: ['locked', 'unlocked'],
     },
     onUpdate: {
       action: 'onUpdate',
