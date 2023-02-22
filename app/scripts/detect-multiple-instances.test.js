@@ -8,6 +8,7 @@ import {
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
   METAMASK_MMI_PROD_CHROME_ID,
+  METAMASK_MMI_BETA_CHROME_ID,
 } from '../../shared/constants/app';
 import {
   checkForMultipleVersionsRunning,
@@ -39,7 +40,7 @@ describe('multiple instances running detector', function () {
     it('should send ping message to multiple instances', async function () {
       await checkForMultipleVersionsRunning();
 
-      assert(sendMessageStub.calledThrice);
+      assert(sendMessageStub.callCount === 4);
       assert(
         sendMessageStub
           .getCall(0)
@@ -50,10 +51,14 @@ describe('multiple instances running detector', function () {
           .getCall(1)
           .calledWithExactly(METAMASK_FLASK_CHROME_ID, PING_MESSAGE),
       );
-
       assert(
         sendMessageStub
           .getCall(2)
+          .calledWithExactly(METAMASK_MMI_BETA_CHROME_ID, PING_MESSAGE),
+      );
+      assert(
+        sendMessageStub
+          .getCall(3)
           .calledWithExactly(METAMASK_MMI_PROD_CHROME_ID, PING_MESSAGE),
       );
     });
