@@ -6,14 +6,13 @@ import {
   DISPLAY,
   Size,
   AlignItems,
-  TextVariant,
   BorderRadius,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Text } from '../text';
+import { Input } from '../input';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
 
@@ -42,7 +41,7 @@ export const TextField = ({
   type = 'text',
   truncate = true,
   value,
-  InputComponent = Text,
+  InputComponent = Input,
   ...props
 }) => {
   const internalInputRef = useRef(null);
@@ -114,8 +113,7 @@ export const TextField = ({
       {startAccessory}
       <InputComponent
         aria-invalid={error}
-        as="input"
-        autoComplete={autoComplete ? 'on' : 'off'}
+        autoComplete={autoComplete}
         autoFocus={autoFocus}
         backgroundColor={BackgroundColor.transparent}
         defaultValue={defaultValue}
@@ -136,7 +134,6 @@ export const TextField = ({
         ref={handleInputRef}
         required={required}
         value={value}
-        variant={TextVariant.bodyMd}
         type={type}
         {...inputProps} // before className so input className isn't overridden
         className={classnames('mm-text-field__input', inputProps?.className)}

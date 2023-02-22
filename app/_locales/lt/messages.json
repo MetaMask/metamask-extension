@@ -75,12 +75,6 @@
   "asset": {
     "message": "Turtas"
   },
-  "attemptToCancel": {
-    "message": "Mėginti atšaukti?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Šis mėginimas negarantuoja, kad jūsų pradinė operacija bus atšaukta. Jeigu mėginimas atšaukti yra sėkmingas, jums bus taikomas pirmiau minėtas operacijos mokestis."
-  },
   "attemptingConnect": {
     "message": "Mėginama prisijungti prie „blockchain“."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Atšaukti"
-  },
-  "cancellationGasFee": {
-    "message": "Dujų mokesčio atšaukimas"
   },
   "cancelled": {
     "message": "Atšaukta"
@@ -922,9 +913,6 @@
   },
   "welcomeBack": {
     "message": "Sveiki sugrįžę!"
-  },
-  "yesLetsTry": {
-    "message": "Taip, mėginkime"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Norint naudotis šia funkcija, reikia leisti prieigą prie kameros.."

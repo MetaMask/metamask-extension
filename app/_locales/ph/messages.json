@@ -146,12 +146,6 @@
   "assets": {
     "message": "Mga Asset"
   },
-  "attemptToCancel": {
-    "message": "Subukang Kanselahin?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kapag isinumite ang pagsubok na ito, hindi nito magagarantiyang makakansela ang iyong orihinal na transaksyon. Kung magiging matagumpay ang pagsubok na magkansela, sisingilin ka para sa bayarin sa transaksyon sa itaas."
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -227,9 +221,6 @@
   },
   "cancel": {
     "message": "Kanselahin"
-  },
-  "cancellationGasFee": {
-    "message": "Bayarin sa Gas para sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -2010,9 +2001,6 @@
   "xOfYPending": {
     "message": "$1 sa $2 ang nakabinbin",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Oo, subukan natin"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang pag-access sa camera para magamit ang feature na ito."
