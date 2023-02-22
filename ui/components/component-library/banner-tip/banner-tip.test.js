@@ -21,23 +21,23 @@ describe('BannerTip', () => {
     const { getByTestId } = render(
       <>
         <BannerTip
-          className="mm-banner-tip--info"
-          data-testid="banner-tip-info"
-          logoType={BANNER_TIP_LOGOS.INFO}
+          logoType={BANNER_TIP_LOGOS.GREETING}
+          logoProps={{ 'data-testid': 'banner-tip-greeting' }}
         >
           should render BannerTip element correctly
         </BannerTip>
         <BannerTip
-          className="mm-banner-tip--empty"
-          data-testid="banner-tip-empty"
-          logoType={BANNER_TIP_LOGOS.EMPTY}
+          logoType={BANNER_TIP_LOGOS.CHAT}
+          logoProps={{ 'data-testid': 'banner-tip-chat' }}
         >
           should render BannerTip element correctly
         </BannerTip>
       </>,
     );
-    expect(getByTestId('banner-tip-info')).toHaveClass('mm-banner-tip--info');
-    expect(getByTestId('banner-tip-empty')).toHaveClass('mm-banner-tip--empty');
+    expect(getByTestId('banner-tip-greeting')).toHaveClass(
+      'mm-banner-tip--logo',
+    );
+    expect(getByTestId('banner-tip-chat')).toHaveClass('mm-banner-tip--logo');
   });
 
   it('should render with added classname', () => {

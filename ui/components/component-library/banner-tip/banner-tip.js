@@ -30,7 +30,7 @@ export const BannerTip = ({
             as="img"
             className="mm-banner-tip--logo"
             src={`images/fox-${logoType}.png`}
-            alt={`${logoType} fox logo`}
+            alt={`${logoType}`}
             {...logoProps}
           />
         </Box>
