@@ -75,12 +75,6 @@
   "asset": {
     "message": "Omaisuuserä"
   },
-  "attemptToCancel": {
-    "message": "Yritetäänkö peruuttaa?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Tämän yrityksen lähettäminen ei takaa, että alkuperäinen tapahtuma peruutettaisiin. Mikäli peruutusyritys onnistuu, sinulta veloitetaan yllä mainittu tapahtumamaksu."
-  },
   "attemptingConnect": {
     "message": "Yritetään yhdistää lohkoketjuun."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Peruuta"
-  },
-  "cancellationGasFee": {
-    "message": "Peruutuksen gas-maksu"
   },
   "cancelled": {
     "message": "Peruttu"
@@ -919,9 +910,6 @@
   },
   "welcomeBack": {
     "message": "Tervetuloa takaisin!"
-  },
-  "yesLetsTry": {
-    "message": "Kyllä, kokeillaan"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."

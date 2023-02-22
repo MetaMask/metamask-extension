@@ -29,7 +29,11 @@ import IconButton from '../../ui/icon-button';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import DepositPopover from '../deposit-popover';
 
@@ -221,6 +225,35 @@ const TokenOverview = ({ className, token }) => {
                       </Tooltip>
                     )
               }
+            />
+            <IconButton
+              className="eth-overview__button"
+              Icon={
+                <Icon
+                  name={ICON_NAMES.DIAGRAM}
+                  color={IconColor.primaryInverse}
+                />
+              }
+              label={t('portfolio')}
+              data-testid="home__portfolio-site"
+              onClick={() => {
+                const portfolioUrl = process.env.PORTFOLIO_URL;
+                global.platform.openTab({
+                  url: `${portfolioUrl}?metamaskEntry=ext`,
+                });
+                trackEvent(
+                  {
+                    category: EVENT.CATEGORIES.HOME,
+                    event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                    properties: {
+                      url: portfolioUrl,
+                    },
+                  },
+                  {
+                    contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                  },
+                );
+              }}
             />
           </>
         }

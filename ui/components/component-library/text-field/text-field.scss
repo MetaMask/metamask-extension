@@ -38,17 +38,7 @@
   }
 
   &__input {
-    border: none;
-    height: 100%;
     width: 100%;
     flex-grow: 1;
-    box-sizing: content-box;
-    margin: 0;
-    padding: 0;
-
-    &:focus,
-    &:focus-visible {
-      outline: none;
-    }
   }
 }
