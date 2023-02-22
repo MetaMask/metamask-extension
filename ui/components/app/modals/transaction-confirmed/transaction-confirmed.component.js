@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../modal';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
-import { Color } from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class TransactionConfirmed extends PureComponent {
   static contextTypes = {
@@ -32,7 +32,7 @@ export default class TransactionConfirmed extends PureComponent {
         <div className="transaction-confirmed__content">
           <Icon
             name={ICON_NAMES.CHECK}
-            color={Color.successDefault}
+            color={IconColor.successDefault}
             size={ICON_SIZES.XL}
           />
           <div className="transaction-confirmed__title">

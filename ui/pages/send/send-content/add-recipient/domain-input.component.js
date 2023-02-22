@@ -107,7 +107,7 @@ export default class DomainInput extends Component {
             <Icon
               className="ens-input__wrapper__status-icon"
               name={ICON_NAMES.CHECK}
-              color={Color.successDefault}
+              color={IconColor.successDefault}
             />
           ) : (
             <Icon
