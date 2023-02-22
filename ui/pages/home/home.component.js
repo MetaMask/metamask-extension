@@ -343,7 +343,7 @@ export default class Home extends PureComponent {
                 </Typography>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.XS}
+                  size={ICON_SIZES.SM}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -369,7 +369,7 @@ export default class Home extends PureComponent {
                 </Typography>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.XS}
+                  size={ICON_SIZES.SM}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -392,7 +392,7 @@ export default class Home extends PureComponent {
                 </Typography>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.XS}
+                  size={ICON_SIZES.SM}
                   ariaLabel={t('close')}
                   onClick={() => setNewNetworkAdded('')}
                   className="home__new-network-notification-close"
@@ -427,7 +427,7 @@ export default class Home extends PureComponent {
 
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.XS}
+                  size={ICON_SIZES.SM}
                   ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
                   className="home__new-tokens-imported-notification-close"
