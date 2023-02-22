@@ -21,7 +21,7 @@ async function _makeBundle (bundleConfig) {
   
   const commonDependencies = {}
   const endoIgnore = [
-    // false positives due to cjs parsing
+    // react-native environment testing 
     'NativeModules'
   ]
   endoIgnore.forEach(specifier => {
