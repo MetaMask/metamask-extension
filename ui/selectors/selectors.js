@@ -1071,10 +1071,6 @@ export function getShowOutdatedBrowserWarning(state) {
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
-export function getShowPortfolioTooltip(state) {
-  return state.metamask.showPortfolioTooltip;
-}
-
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
@@ -1152,11 +1148,11 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
-export function getNewCollectibleAddedMessage(state) {
+export function getNewNftAddedMessage(state) {
   return state.appState.newNftAddedMessage;
 }
 
-export function getRemoveCollectibleMessage(state) {
+export function getRemoveNftMessage(state) {
   return state.appState.removeNftMessage;
 }
 

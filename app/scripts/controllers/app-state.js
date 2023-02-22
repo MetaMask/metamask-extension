@@ -38,14 +38,13 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
       outdatedBrowserWarningLastShown: new Date().getTime(),
-      collectiblesDetectionNoticeDismissed: false,
+      nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
-      showPortfolioTooltip: true,
       showBetaHeader: isBeta(),
       trezorModel: null,
       ...initState,
       qrHardware: {},
-      collectiblesDropdownState: {},
+      nftsDropdownState: {},
       usedNetworks: {
         '0x1': true,
         '0x5': true,
@@ -303,15 +302,6 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets whether the portfolio site tooltip should be shown on the home page
-   *
-   * @param showPortfolioTooltip
-   */
-  setShowPortfolioTooltip(showPortfolioTooltip) {
-    this.store.updateState({ showPortfolioTooltip });
-  }
-
-  /**
    * Sets whether the beta notification heading on the home page
    *
    * @param showBetaHeader
@@ -330,13 +320,13 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * A setter for the `collectiblesDropdownState` property
+   * A setter for the `nftsDropdownState` property
    *
-   * @param collectiblesDropdownState
+   * @param nftsDropdownState
    */
-  updateCollectibleDropDownState(collectiblesDropdownState) {
+  updateNftDropDownState(nftsDropdownState) {
     this.store.updateState({
-      collectiblesDropdownState,
+      nftsDropdownState,
     });
   }
 

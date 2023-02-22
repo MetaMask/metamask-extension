@@ -115,7 +115,7 @@ function defaultFixture() {
       },
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDropdownState: {},
+        nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
@@ -125,7 +125,6 @@ function defaultFixture() {
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        showPortfolioTooltip: false,
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {
@@ -281,7 +280,7 @@ function onboardingFixture() {
     data: {
       AppStateController: {
         browserEnvironment: {},
-        collectiblesDropdownState: {},
+        nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
@@ -291,7 +290,6 @@ function onboardingFixture() {
         recoveryPhraseReminderHasBeenShown: false,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        showPortfolioTooltip: true,
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {
@@ -411,7 +409,7 @@ class FixtureBuilder {
     return this;
   }
 
-  withCollectiblesController(data) {
+  withNftsController(data) {
     merge(
       this.fixture.data.NftController
         ? this.fixture.data.NftController
