@@ -251,6 +251,7 @@ export default class MetamaskController extends EventEmitter {
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
+        allowedActions: [`SnapController:install`],
       }),
       showApprovalRequest: opts.showUserConfirmation,
     });
