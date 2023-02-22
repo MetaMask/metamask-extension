@@ -37,7 +37,7 @@ const SignatureRequestOriginalWarning = ({
       >
         <Icon
           name={ICON_NAMES.DANGER}
-          color={Color.errorDefault}
+          color={IconColor.errorDefault}
           className="signature-request-warning__content__header__warning-icon"
         />
         <Typography
