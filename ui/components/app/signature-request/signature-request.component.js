@@ -7,7 +7,6 @@ import { EVENT } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
-import HardwareWalletState from '../../ui/hardware-wallet-state';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
   TypographyVariant,
@@ -20,6 +19,7 @@ import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import HardwareWalletState from '../hardware-wallet-state';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 

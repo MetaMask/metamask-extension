@@ -5,7 +5,6 @@ import log from 'loglevel';
 import ActionableMessage from '../../ui/actionable-message';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
-import HardwareWalletState from '../../ui/hardware-wallet-state';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
@@ -17,6 +16,7 @@ import { getAccountByAddress } from '../../../helpers/utils/util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import { Icon } from '../../component-library/icon/icon';
 import { IconColor } from '../../../helpers/constants/design-system';
+import HardwareWalletState from '../hardware-wallet-state';
 
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';

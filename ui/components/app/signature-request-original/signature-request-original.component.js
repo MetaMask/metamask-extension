@@ -8,7 +8,6 @@ import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
-import HardwareWalletState from '../../ui/hardware-wallet-state';
 import SiteOrigin from '../../ui/site-origin';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import Typography from '../../ui/typography/typography';
@@ -23,6 +22,7 @@ import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import HardwareWalletState from '../hardware-wallet-state';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
