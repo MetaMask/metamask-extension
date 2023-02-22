@@ -14,7 +14,6 @@ import {
   FONT_WEIGHT,
   IconColor,
   AlignItems,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,

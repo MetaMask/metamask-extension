@@ -10,7 +10,6 @@ import {
   Size,
   JustifyContent,
   AlignItems,
-  Size,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 
