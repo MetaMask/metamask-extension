@@ -1988,13 +1988,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/common@npm:^2.3.1, @ethereumjs/common@npm:^2.4.0, @ethereumjs/common@npm:^2.6.3":
+"@ethereumjs/common@npm:^2.4.0, @ethereumjs/common@npm:^2.6.3":
   version: 2.6.5
   resolution: "@ethereumjs/common@npm:2.6.5"
   dependencies:
     crc-32: ^1.2.0
     ethereumjs-util: ^7.1.5
   checksum: 0143386f267ef01b7a8bb1847596f964ad58643c084e5fd8e3a0271a7bf8428605dbf38cbb92c84f6622080ad095abeb765f178c02d86ec52abf9e8a4c0e4ecf
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/common@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@ethereumjs/common@npm:3.0.2"
+  dependencies:
+    "@ethereumjs/util": ^8.0.3
+    crc-32: ^1.2.0
+  checksum: d939cefec1f1132d2cf91e827c17f22913296372a07834ed8fae597b8f14c758ec0a6c264be3161a44656d0b7aeb382a54b330e7df7bcb8c5ade263d4956c0f5
   languageName: node
   linkType: hard
 
@@ -2027,7 +2037,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.2":
+"@ethereumjs/util@npm:^8.0.0, @ethereumjs/util@npm:^8.0.2, @ethereumjs/util@npm:^8.0.3":
   version: 8.0.3
   resolution: "@ethereumjs/util@npm:8.0.3"
   dependencies:
@@ -24038,7 +24048,7 @@ __metadata:
     "@babel/runtime": ^7.5.5
     "@download/blockies": ^1.0.3
     "@ensdomains/content-hash": ^2.5.6
-    "@ethereumjs/common": ^2.3.1
+    "@ethereumjs/common": ^3.0.2
     "@ethereumjs/tx": ^3.2.1
     "@ethersproject/abi": ^5.6.4
     "@ethersproject/bignumber": ^5.7.0
