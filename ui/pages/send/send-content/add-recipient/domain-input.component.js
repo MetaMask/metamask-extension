@@ -13,7 +13,7 @@ import {
   Icon,
   ICON_NAMES,
 } from '../../../../components/component-library';
-import { Color, IconColor } from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
   static contextTypes = {
