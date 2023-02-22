@@ -33,6 +33,11 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import ComplianceFeaturePage from '../mmi/institutional-features';
+import InstitutionalEntityDonePage from '../mmi/institutional-entity-done-page';
+import InteractiveReplacementTokenNotification from '../../components/app/mmi/interactive-replacement-token-notification';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
@@ -60,6 +65,14 @@ import {
   ADD_NFT_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  COMPLIANCE_FEATURE_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  CUSTODY_ACCOUNT_DONE_ROUTE,
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
@@ -78,6 +91,11 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import ConfirmAddInstitutionalFeature from '../mmi/confirm-add-institutional-feature';
+import ConfirmAddCustodianToken from '../mmi/confirm-add-custodian-token';
+import InteractiveReplacementTokenPage from '../mmi/interactive-replacement-token-page';
+///: END:ONLY_INCLUDE_IN
 
 export default class Routes extends Component {
   static propTypes = {
@@ -232,6 +250,44 @@ export default class Routes extends Component {
           path={CONFIRMATION_V_NEXT_ROUTE}
           component={ConfirmationPage}
         />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        }
+        <Authenticated
+          path={CUSTODY_ACCOUNT_DONE_ROUTE}
+          component={InstitutionalEntityDonePage}
+          exact
+        />
+        <Authenticated
+          path={INSTITUTIONAL_FEATURES_DONE_ROUTE}
+          component={InstitutionalEntityDonePage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+          component={ConfirmAddCustodianToken}
+          exact
+        />
+        <Authenticated
+          path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
+          component={InteractiveReplacementTokenPage}
+          exact
+        />
+        <Authenticated
+          path={COMPLIANCE_FEATURE_ROUTE}
+          component={ComplianceFeaturePage}
+        />
+        <Authenticated
+          path={CONFIRM_INSTITUTIONAL_FEATURE_CONNECT}
+          component={ConfirmAddInstitutionalFeature}
+        />
+        <Authenticated
+          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
+          component={ConfirmAddCustodianToken}
+        />
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
@@ -426,6 +482,11 @@ export default class Routes extends Component {
         )}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          isUnlocked ? <InteractiveReplacementTokenNotification /> : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         <AccountMenu />
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
