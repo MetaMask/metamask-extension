@@ -4,6 +4,10 @@ let _supportLink = 'https://support.metamask.io';
 _supportLink = 'https://metamask-flask.zendesk.com/hc';
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+_supportLink = 'https://mmi-support.zendesk.com/hc/en-us';
+///: END:ONLY_INCLUDE_IN
+
 export const SUPPORT_LINK = _supportLink;
 
 export const COINGECKO_LINK = 'https://www.coingecko.com/';
