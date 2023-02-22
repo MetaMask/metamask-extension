@@ -1,6 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import React from 'react';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
@@ -14,10 +15,10 @@ import {
 } from '../../../shared/constants/permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_METADATA } from '../../../shared/constants/snaps';
-import { Icon, ICON_NAMES } from '../../components/component-library';
-import { Color } from '../constants/design-system';
 import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
 ///: END:ONLY_INCLUDE_IN
+import { Icon, ICON_NAMES } from '../../components/component-library';
+import { Color } from '../constants/design-system';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
