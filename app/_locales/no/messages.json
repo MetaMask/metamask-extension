@@ -75,12 +75,6 @@
   "asset": {
     "message": "Ressurs"
   },
-  "attemptToCancel": {
-    "message": "Forsøk å avbryte"
-  },
-  "attemptToCancelDescription": {
-    "message": "Å sende inn dette forsøket garanterer ikke at den opprinnelige transaksjonen blir kansellert. Hvis kanselleringsforsøket lykkes, vil du bli belastet transaksjonsgebyret ovenfor."
-  },
   "attemptingConnect": {
     "message": "Prøver å opprette forbindelse med blokkjede"
   },
@@ -138,9 +132,6 @@
   },
   "cancel": {
     "message": "Avbryt"
-  },
-  "cancellationGasFee": {
-    "message": "Kansellering gassavgift"
   },
   "cancelled": {
     "message": "Avbrutt"
@@ -900,9 +891,6 @@
   },
   "welcomeBack": {
     "message": "Velkommen tilbake!"
-  },
-  "yesLetsTry": {
-    "message": "Ja, la oss prøve"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."

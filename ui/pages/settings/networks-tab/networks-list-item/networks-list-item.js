@@ -19,6 +19,12 @@ import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../../components/component-library';
+import { Color } from '../../../../helpers/constants/design-system';
 
 const NetworksListItem = ({
   network,
@@ -129,7 +135,12 @@ const NetworksListItem = ({
       >
         {label || t(labelKey)}
         {currentProviderType !== NETWORK_TYPES.RPC && (
-          <LockIcon width="14px" height="17px" fill="var(--color-icon-muted)" />
+          <Icon
+            name={ICON_NAMES.LOCK}
+            color={Color.iconMuted}
+            size={ICON_SIZES.AUTO}
+            marginInlineStart={2}
+          />
         )}
       </div>
     </div>

@@ -75,12 +75,6 @@
   "asset": {
     "message": "Activ"
   },
-  "attemptToCancel": {
-    "message": "Încercați să anulați?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Trimiterea acestei încercări nu garantează că tranzacția dvs. originală va fi anulată. Dacă încercarea de anulare va reuși, vi se va percepe taxa tranzacției de mai sus."
-  },
   "attemptingConnect": {
     "message": "Se încearcă conectarea la blockchain."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Anulare"
-  },
-  "cancellationGasFee": {
-    "message": "Taxă de anulare în gaz"
   },
   "cancelled": {
     "message": "Anulat"
@@ -903,9 +894,6 @@
   },
   "welcomeBack": {
     "message": "Bine ai revenit!"
-  },
-  "yesLetsTry": {
-    "message": "Da, să încercăm"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."

@@ -1,3 +1,3 @@
-export const getCollectibleImageAlt = ({ name, tokenId, description }) => {
+export const getNftImageAlt = ({ name, tokenId, description }) => {
   return description ?? `${name} ${tokenId}`;
 };

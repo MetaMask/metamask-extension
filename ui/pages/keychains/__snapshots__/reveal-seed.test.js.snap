@@ -98,7 +98,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       >
         <input
           autocomplete="off"
-          class="box mm-text mm-text-field__input mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent"
+          class="box mm-text mm-input mm-text-field__input mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent box--border-style-none"
           data-testid="input-password"
           focused="true"
           id="password-box"
