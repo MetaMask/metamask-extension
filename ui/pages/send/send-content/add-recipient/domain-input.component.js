@@ -12,6 +12,7 @@ import {
   ButtonIcon,
   Icon,
   ICON_NAMES,
+  ICON_SIZES,
 } from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
 
@@ -129,10 +130,11 @@ export default class DomainInput extends Component {
                 )}
               </div>
               <ButtonIcon
-                name={ICON_NAMES.CLOSE}
+                iconName={ICON_NAMES.CLOSE}
                 ariaLabel={t('close')}
                 onClick={this.props.onReset}
                 className="ens-input__wrapper__action-icon-button"
+                size={ICON_SIZES.SM}
               />
             </>
           ) : (
