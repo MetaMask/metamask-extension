@@ -17,9 +17,7 @@ function capitalizeFirstLetter(string) {
 }
 
 function executeGitCommand(command) {
-  return execSync(command)
-    .toString('utf8')
-    .trim();
+  return execSync(command).toString('utf8').trim();
 }
 
 async function start() {

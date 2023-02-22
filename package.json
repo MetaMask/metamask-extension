@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.25.0-beta.3",
+  "version": "10.25.0-beta.4",
   "private": true,
   "repository": {
     "type": "git",
@@ -600,5 +600,5 @@
     }
   },
   "packageManager": "yarn@3.2.4",
-  "stableVersion": "10.25.0-beta.2"
+  "stableVersion": "10.25.0-beta.3"
 }
