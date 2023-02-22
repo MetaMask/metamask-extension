@@ -56,7 +56,10 @@ export default function HardwareWalletState({
 }
 
 HardwareWalletState.propTypes = {
+  // number of milliseconds between polling checks
   pollingRateMs: PropTypes.number,
+  // initial status prior to first polling (locked/unlocked)
   initialStatus: PropTypes.string,
+  // invoked with each updated status (locked/unlocked)
   onUpdate: PropTypes.func,
 };

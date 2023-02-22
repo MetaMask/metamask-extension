@@ -16,7 +16,7 @@ import CopyRawData from '../../components/app/transaction-decoding/components/ui
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import HardwareWalletState from '../../components/ui/hardware-wallet-state';
+import HardwareWalletState from '../../components/app/hardware-wallet-state';
 import Disclosure from '../../components/ui/disclosure';
 import { EVENT } from '../../../shared/constants/metametrics';
 import {
