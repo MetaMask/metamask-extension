@@ -11,8 +11,7 @@ _supportRequestLink =
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-_supportRequestLink =
-  'https://mmi-support.zendesk.com/hc/en-us/requests/new';
+_supportRequestLink = 'https://mmi-support.zendesk.com/hc/en-us/requests/new';
 const _mmiWebSite = 'https://metamask.io/institutions/';
 export const MMI_WEB_SITE = _mmiWebSite;
 ///: END:ONLY_INCLUDE_IN
