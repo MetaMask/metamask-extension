@@ -58,8 +58,7 @@ describe('BannerBase', () => {
         title="Action prop demo"
         actionButtonLabel="Action"
         actionButtonProps={{
-          icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
-          iconPositionRight: true,
+          endIconName: ICON_NAMES.ARROW_2_RIGHT,
           'data-testid': 'action',
           className: 'mm-banner-base__action',
         }}
