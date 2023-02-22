@@ -68,16 +68,21 @@ export default {
     href: {
       control: 'text',
     },
-    iconName: {
+    startIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconPositionRight: {
-      control: 'boolean',
+    endIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconProps: {
+    startIconProps: {
+      control: 'object',
+      table: { category: 'button base props' },
+    },
+    endIconProps: {
       control: 'object',
       table: { category: 'button base props' },
     },
