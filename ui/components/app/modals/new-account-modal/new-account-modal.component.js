@@ -48,6 +48,7 @@ export default class NewAccountModal extends Component {
               className="new-account-modal__content__header-close"
               ariaLabel={t('close')}
               onClick={this.props.hideModal}
+              iconName={ICON_NAMES.CLOSE}
             />
           </div>
           <div className="new-account-modal__input-label">
