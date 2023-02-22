@@ -34,9 +34,11 @@ const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
 const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
 const COMPLIANCE_FEATURE_ROUTE = '/compliance-feature';
 const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
-const CONFIRM_INSTITUTIONAL_FEATURE_CONNECT = '/confirm-institutional-feature-connect';
+const CONFIRM_INSTITUTIONAL_FEATURE_CONNECT =
+  '/confirm-institutional-feature-connect';
 const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
-const INTERACTIVE_REPLACEMENT_TOKEN_PAGE = '/interactive-replacement-token-page';
+const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
+  '/interactive-replacement-token-page';
 ///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
 const TOKEN_DETAILS = '/token-details';
@@ -132,7 +134,8 @@ const PATH_NAME_MAP = {
   [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
   [COMPLIANCE_FEATURE_ROUTE]: 'Compliance Feature Page',
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional features done',
-  [CONFIRM_INSTITUTIONAL_FEATURE_CONNECT]: 'Confirm Institutional Feature Connect',
+  [CONFIRM_INSTITUTIONAL_FEATURE_CONNECT]:
+    'Confirm Institutional Feature Connect',
   [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
   [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
   ///: END:ONLY_INCLUDE_IN
