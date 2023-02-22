@@ -12,6 +12,7 @@ import {
   TypographyVariant,
   JustifyContent,
   FONT_WEIGHT,
+  IconColor,
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';

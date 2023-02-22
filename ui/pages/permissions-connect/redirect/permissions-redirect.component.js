@@ -7,6 +7,7 @@ import Typography from '../../../components/ui/typography/typography';
 import {
   TypographyVariant,
   DISPLAY,
+  Size,
   JustifyContent,
   AlignItems,
   Size,

@@ -28,7 +28,6 @@ import {
 } from '../../../helpers/constants/routes';
 import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
-
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import Identicon from '../../ui/identicon';
