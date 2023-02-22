@@ -98,7 +98,7 @@ export default function ReviewSpendingCap({
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__warning-icon"
                   name={ICON_NAMES.DANGER}
-                  color={Color.errorDefault}
+                  color={IconColor.errorDefault}
                   size={ICON_SIZES.SM}
                   style={{ 'vertical-align': 'middle' }}
                 />
