@@ -8,6 +8,7 @@ import {
   CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import Link from '../../../components/ui/link';
 
 const FlaskHomeFooter = () => {
   const t = useI18nContext();
@@ -15,9 +16,7 @@ const FlaskHomeFooter = () => {
 
   return (
     <>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
+      <Link
         href={SUPPORT_REQUEST_LINK}
         onClick={() => {
           trackEvent(
@@ -35,15 +34,11 @@ const FlaskHomeFooter = () => {
         }}
       >
         {t('needHelpSubmitTicket')}
-      </a>{' '}
+      </Link>{' '}
       |{' '}
-      <a
-        href="https://community.metamask.io/c/metamask-flask"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <Link href="https://community.metamask.io/c/metamask-flask">
         {t('needHelpFeedback')}
-      </a>
+      </Link>
     </>
   );
 };

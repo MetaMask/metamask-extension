@@ -11,6 +11,7 @@ import InfoTooltip from '../../../components/ui/info-tooltip';
 import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
+import Link from '../../../components/ui/link';
 import {
   TypographyVariant,
   DISPLAY,
@@ -187,13 +188,9 @@ export default function GasDisplay({ gasError }) {
                           {t('transactionDetailGasTooltipExplanation')}
                         </Typography>
                         <Typography variant={TypographyVariant.H7}>
-                          <a
-                            href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
+                          <Link href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172">
                             {t('transactionDetailGasTooltipConversion')}
-                          </a>
+                          </Link>
                         </Typography>
                       </>
                     }

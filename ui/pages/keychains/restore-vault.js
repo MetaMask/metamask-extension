@@ -9,7 +9,9 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
+import Link from '../../components/ui/link';
 import Typography from '../../components/ui/typography';
+
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   TextColor,
@@ -59,7 +61,7 @@ class RestoreVaultPage extends Component {
       <Box className="first-view-main-wrapper">
         <Box className="first-view-main">
           <Box className="import-account">
-            <a
+            <Link
               className="import-account__back-button"
               onClick={(e) => {
                 e.preventDefault();
@@ -69,7 +71,7 @@ class RestoreVaultPage extends Component {
               href="#"
             >
               {`< ${t('back')}`}
-            </a>
+            </Link>
             <Typography
               variant={TypographyVariant.H1}
               color={TextColor.textDefault}

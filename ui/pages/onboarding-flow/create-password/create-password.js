@@ -5,6 +5,7 @@ import zxcvbn from 'zxcvbn';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
+import Link from '../../../components/ui/link';
 import Typography from '../../../components/ui/typography';
 import {
   TEXT_ALIGN,
@@ -197,7 +198,7 @@ export default function CreatePassword({
             value={password}
             titleDetail={
               <Typography variant={TypographyVariant.H7}>
-                <a
+                <Link
                   href=""
                   className="create-password__form--password-button"
                   onClick={(e) => {
@@ -206,7 +207,7 @@ export default function CreatePassword({
                   }}
                 >
                   {showPassword ? t('hide') : t('show')}
-                </a>
+                </Link>
               </Typography>
             }
           />
@@ -241,17 +242,15 @@ export default function CreatePassword({
                 boxProps={{ marginLeft: 3 }}
               >
                 {t('passwordTermsWarning', [
-                  <a
+                  <Link
                     onClick={(e) => e.stopPropagation()}
                     key="create-password__link-text"
                     href={ZENDESK_URLS.PASSWORD_ARTICLE}
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     <span className="create-password__link-text">
                       {t('learnMoreUpperCase')}
                     </span>
-                  </a>,
+                  </Link>,
                 ])}
               </Typography>
             </label>

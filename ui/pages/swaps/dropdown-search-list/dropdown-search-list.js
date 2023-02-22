@@ -12,6 +12,7 @@ import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import Link from '../../../components/ui/link';
 import UrlIcon from '../../../components/ui/url-icon';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
@@ -239,7 +240,7 @@ export default function DropdownSearchList({
                     >
                       <ActionableMessage
                         message={t('addCustomTokenByContractAddress', [
-                          <a
+                          <Link
                             key="dropdown-search-list__etherscan-link"
                             onClick={() => {
                               trackEvent({
@@ -259,7 +260,7 @@ export default function DropdownSearchList({
                             rel="noopener noreferrer"
                           >
                             {blockExplorerHostName}
-                          </a>,
+                          </Link>,
                         ])}
                       />
                     </div>

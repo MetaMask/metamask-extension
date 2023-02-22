@@ -8,6 +8,7 @@ import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
+import Link from '../../../components/ui/link';
 import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
@@ -408,15 +409,14 @@ export default class ConfirmApproveContent extends Component {
       );
       const blockExplorerElement = (
         <>
-          <a
+          <Link
             href={blockExplorerLink}
             target="_blank"
-            rel="noopener noreferrer"
             title={tokenAddress}
             className="confirm-approve-content__approval-asset-link"
           >
             {titleTokenDescription}
-          </a>
+          </Link>
           {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
         </>
       );

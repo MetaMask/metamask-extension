@@ -106,14 +106,14 @@ export default class ConfirmRemoveAccount extends Component {
           {this.renderSelectedAccount()}
           <div className="confirm-remove-account__description">
             {t('removeAccountDescription')}
-            <a
+            <Link
               className="confirm-remove-account__link"
               rel="noopener noreferrer"
               target="_blank"
               href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
             >
               {t('learnMore')}
-            </a>
+            </Link>
           </div>
         </div>
       </Modal>

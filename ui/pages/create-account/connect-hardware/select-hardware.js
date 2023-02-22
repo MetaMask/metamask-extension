@@ -6,7 +6,6 @@ import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';
 import LogoLattice from '../../../components/ui/logo/logo-lattice';
-
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
@@ -17,6 +16,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import { openWindow } from '../../../helpers/utils/window';
+import Link from '../../../components/ui/link';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -199,15 +199,14 @@ export default class SelectHardware extends Component {
         renderButtons: false,
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
-          <a
+          <Link
             className="hw-connect__msg-link"
             href="https://www.ledger.com/ledger-live"
-            rel="noopener noreferrer"
             target="_blank"
             key="ledger-live-app-link"
           >
             {this.context.t('ledgerLiveApp')}
-          </a>,
+          </Link>,
         ]),
       });
     }
@@ -218,15 +217,14 @@ export default class SelectHardware extends Component {
       dimensions: { width: '225px', height: '75px' },
       title: this.context.t('step2LedgerWallet'),
       message: this.context.t('step2LedgerWalletMsg', [
-        <a
+        <Link
           className="hw-connect__msg-link"
           href={ZENDESK_URLS.HARDWARE_CONNECTION}
-          rel="noopener noreferrer"
           target="_blank"
           key="ledger-support-link"
         >
           {this.context.t('hardwareWalletSupportLinkConversion')}
-        </a>,
+        </Link>,
       ]),
     });
 
@@ -287,15 +285,14 @@ export default class SelectHardware extends Component {
         dimensions: { width: '225px', height: '75px' },
         title: this.context.t('step1LatticeWallet'),
         message: this.context.t('step1LatticeWalletMsg', [
-          <a
+          <Link
             className="hw-connect__msg-link"
             href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            rel="noopener noreferrer"
             target="_blank"
             key="lattice-setup-link"
           >
             {this.context.t('hardwareWalletSupportLinkConversion')}
-          </a>,
+          </Link>,
         ]),
       },
     ];
@@ -353,15 +350,14 @@ export default class SelectHardware extends Component {
         dimensions: { width: '225px', height: '75px' },
         title: this.context.t('step1TrezorWallet'),
         message: this.context.t('step1TrezorWalletMsg', [
-          <a
+          <Link
             className="hw-connect__msg-link"
             href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            rel="noopener noreferrer"
             target="_blank"
             key="trezor-support-link"
           >
             {this.context.t('hardwareWalletSupportLinkConversion')}
-          </a>,
+          </Link>,
         ]),
       },
     ];

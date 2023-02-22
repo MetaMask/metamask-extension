@@ -8,6 +8,7 @@ import {
   CONTEXT_PROPS,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import Link from '../../../components/ui/link';
 
 const BetaHomeFooter = () => {
   const t = useI18nContext();
@@ -18,9 +19,7 @@ const BetaHomeFooter = () => {
 
   return (
     <>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
+      <Link
         href={SUPPORT_LINK}
         onClick={() => {
           trackEvent(
@@ -38,11 +37,8 @@ const BetaHomeFooter = () => {
         }}
       >
         {t('needHelpSubmitTicket')}
-      </a>{' '}
-      |{' '}
-      <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
-        {t('needHelpFeedback')}
-      </a>
+      </Link>{' '}
+      | <Link href={SUPPORT_LINK}>{t('needHelpFeedback')}</Link>
     </>
   );
 };

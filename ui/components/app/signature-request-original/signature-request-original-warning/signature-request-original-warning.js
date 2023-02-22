@@ -5,6 +5,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
+import Link from '../../../ui/link';
 import Typography from '../../../ui/typography';
 import {
   DISPLAY,
@@ -67,16 +68,15 @@ const SignatureRequestOriginalWarning = ({
         variant={TypographyVariant.H6}
       >
         {t('signatureRequestWarning', [
-          <a
+          <Link
             href="https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/"
             target="_blank"
             type="link"
             key="non_custodial_link"
-            rel="noopener noreferrer"
             style={{ color: 'var(--color-primary-default)' }}
           >
             {t('learnMoreUpperCase')}
-          </a>,
+          </Link>,
         ])}
       </Typography>
 

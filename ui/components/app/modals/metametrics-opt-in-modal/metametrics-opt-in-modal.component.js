@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import MetaFoxLogo from '../../../ui/metafox-logo';
+import Link from '../../../ui/link';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer';
 import {
   EVENT,
@@ -98,14 +99,13 @@ export default class MetaMetricsOptInModal extends Component {
             </div>
             <div className="metametrics-opt-in__bottom-text">
               {t('gdprMessage', [
-                <a
+                <Link
                   key="metametrics-bottom-text-wrapper"
                   href="https://metamask.io/privacy.html"
                   target="_blank"
-                  rel="noopener noreferrer"
                 >
                   {t('gdprMessagePrivacyPolicy')}
-                </a>,
+                </Link>,
               ])}
             </div>
           </div>

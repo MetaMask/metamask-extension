@@ -6,6 +6,8 @@ import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon';
 import Box from '../box';
+import Link from '../link';
+
 import {
   AlignItems,
   Color,
@@ -168,10 +170,9 @@ const NewNetworkInfo = () => {
             className="new-network-info__bullet-paragraph__text"
           >
             {t('attemptSendingAssets')}{' '}
-            <a
+            <Link
               href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
               target="_blank"
-              rel="noreferrer"
             >
               <Typography
                 variant={TypographyVariant.H7}
@@ -180,7 +181,7 @@ const NewNetworkInfo = () => {
               >
                 {t('learnMoreUpperCase')}
               </Typography>
-            </a>
+            </Link>
           </Typography>
         </Box>
         {!autoDetectToken || !tokenDetectionSupported ? (

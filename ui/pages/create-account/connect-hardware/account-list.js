@@ -5,7 +5,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
-
+import Link from '../../../components/ui/link';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
@@ -128,7 +128,7 @@ class AccountList extends Component {
                   <span className="hw-account-list__item__balance">{`${account.balance}`}</span>
                 </label>
               </div>
-              <a
+              <Link
                 className="hw-account-list__item__link"
                 onClick={() => {
                   const accountLink = getAccountLink(
@@ -150,14 +150,14 @@ class AccountList extends Component {
                   });
                 }}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noreferrer"
                 title={this.context.t('etherscanView')}
               >
                 <i
                   className="fa fa-share-square"
                   style={{ color: 'var(--color-icon-default)' }}
                 />
-              </a>
+              </Link>
             </div>
           );
         })}
@@ -221,9 +221,9 @@ class AccountList extends Component {
   renderForgetDevice() {
     return (
       <div className="hw-forget-device-container">
-        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>
+        <Link onClick={this.props.onForgetDevice.bind(this, this.props.device)}>
           {this.context.t('forgetDevice')}
-        </a>
+        </Link>
       </div>
     );
   }

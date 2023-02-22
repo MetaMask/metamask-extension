@@ -34,6 +34,7 @@ import {
 } from '../../../helpers/constants/routes';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
+import Link from '../../../components/ui/link';
 import UrlIcon from '../../../components/ui/url-icon';
 import {
   BLOCK_SIZES,
@@ -255,15 +256,13 @@ export default function SmartTransactionStatusPage() {
   } else if (smartTransactionStatus === 'reverted') {
     headerText = t('stxFailure');
     description = t('stxFailureDescription', [
-      <a
+      <Link
         className="smart-transaction-status__support-link"
         key="smart-transaction-status-support-link"
         href="https://support.metamask.io"
-        target="_blank"
-        rel="noopener noreferrer"
       >
         {t('customerSupport')}
-      </a>,
+      </Link>,
     ]);
     icon = <RevertedIcon />;
   }
@@ -291,7 +290,7 @@ export default function SmartTransactionStatusPage() {
     }
     return (
       <Box marginBottom={0}>
-        <a
+        <Link
           className="smart-transaction-status__cancel-swap-link"
           href="#"
           onClick={(e) => {
@@ -308,7 +307,7 @@ export default function SmartTransactionStatusPage() {
           {feeInFiat
             ? t('cancelSwapForFee', [feeInFiat])
             : t('cancelSwapForFree')}
-        </a>
+        </Link>
       </Box>
     );
   };

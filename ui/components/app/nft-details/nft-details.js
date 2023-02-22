@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Card from '../../ui/card';
+import Link from '../../ui/link';
 import Typography from '../../ui/typography/typography';
 import {
   TextColor,
@@ -329,14 +330,9 @@ export default function NftDetails({ nft }) {
               {isDataURI ? (
                 <>{nftImageURL}</>
               ) : (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={nftImageURL}
-                  title={nftImageURL}
-                >
+                <Link target="_blank" href={nftImageURL} title={nftImageURL}>
                   {nftImageURL}
-                </a>
+                </Link>
               )}
             </Typography>
           </Box>
@@ -366,14 +362,9 @@ export default function NftDetails({ nft }) {
                   isDataURI ? TextColor.textDefault : TextColor.primaryDefault
                 }
               >
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={nftImageURL}
-                  title={nftImageURL}
-                >
+                <Link target="_blank" href={nftImageURL} title={nftImageURL}>
                   {imageThumbnail}
-                </a>
+                </Link>
               </Typography>
             </Box>
           ) : null}

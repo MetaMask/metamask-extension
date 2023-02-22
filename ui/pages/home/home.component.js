@@ -23,6 +23,7 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
+import Link from '../../components/ui/link';
 import {
   TypographyVariant,
   FONT_WEIGHT,
@@ -581,13 +582,9 @@ export default class Home extends PureComponent {
         }}
         footer={
           <>
-            <a
-              href={ZENDESK_URLS.USER_GUIDE_DAPPS}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link href={ZENDESK_URLS.USER_GUIDE_DAPPS}>
               {t('learnMoreUpperCase')}
-            </a>
+            </Link>
             <Button
               type="primary"
               onClick={setConnectedStatusPopoverHasBeenShown}
@@ -784,10 +781,8 @@ export default class Home extends PureComponent {
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(main)
                 t('needHelp', [
-                  <a
+                  <Link
                     href={SUPPORT_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     key="need-help-link"
                     onClick={() => {
                       this.context.trackEvent(
@@ -807,7 +802,7 @@ export default class Home extends PureComponent {
                     }}
                   >
                     {t('needHelpLinkText')}
-                  </a>,
+                  </Link>,
                 ])
                 ///: END:ONLY_INCLUDE_IN
               }

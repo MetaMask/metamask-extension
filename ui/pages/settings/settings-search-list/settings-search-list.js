@@ -5,6 +5,7 @@ import { highlightSearchedText } from '../../../helpers/utils/settings-search';
 import { I18nContext } from '../../../contexts/i18n';
 import { Icon, ICON_NAMES } from '../../../components/component-library';
 import { Size } from '../../../helpers/constants/design-system';
+import Link from '../../../components/ui/link';
 
 export default function SettingsSearchList({ results, onClickSetting }) {
   const t = useContext(I18nContext);
@@ -84,15 +85,13 @@ export default function SettingsSearchList({ results, onClickSetting }) {
         <span className="settings-page__header__search__list__item__request">
           {t('missingSetting')}
         </span>
-        <a
+        <Link
           href="https://community.metamask.io/c/feature-requests-ideas/13"
-          target="_blank"
-          rel="noopener noreferrer"
           key="need-help-link"
           className="settings-page__header__search__list__item__link"
         >
           {t('missingSettingRequest')}
-        </a>
+        </Link>
       </div>
     </div>
   );

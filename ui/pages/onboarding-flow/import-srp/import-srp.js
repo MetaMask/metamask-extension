@@ -8,6 +8,7 @@ import {
 } from '../../../components/app/step-progress-bar';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import Link from '../../../components/ui/link';
 import Typography from '../../../components/ui/typography';
 import {
   FONT_WEIGHT,
@@ -52,15 +53,13 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       <div className="import-srp__description">
         <Typography variant={TypographyVariant.H4}>
           {t('accessYourWalletWithSRPDescription', [
-            <a
+            <Link
               key="learnMore"
               type="link"
               href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
-              target="_blank"
-              rel="noopener noreferrer"
             >
               {t('learnMoreUpperCase')}
-            </a>,
+            </Link>,
           ])}
         </Typography>
       </div>

@@ -8,6 +8,7 @@ import {
   REVEAL_SEED_ROUTE,
 } from '../../../helpers/constants/routes';
 import Button from '../../../components/ui/button';
+import Link from '../../../components/ui/link';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
@@ -140,23 +141,16 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-description">
             {t('showIncomingTransactionsDescription', [
               // TODO: Update to use real link
-              <a
-                href={ETHERSCAN_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="etherscan-privacy-link"
-              >
+              <Link href={ETHERSCAN_PRIVACY_LINK} key="etherscan-privacy-link">
                 {t('etherscan')}
-              </a>,
+              </Link>,
               // TODO: Update to use real link
-              <a
+              <Link
                 href={CONSENSYS_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
                 key="ic-consensys-privacy-link"
               >
                 {t('privacyMsg')}
-              </a>,
+              </Link>,
             ])}
           </div>
         </div>
@@ -243,14 +237,12 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-description">
             {t('chooseYourNetworkDescription', [
               // TODO: Update to use real link
-              <a
+              <Link
                 href={CONSENSYS_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
                 key="cyn-consensys-privacy-link"
               >
                 {t('privacyMsg')}
-              </a>,
+              </Link>,
             ])}
           </div>
         </div>
@@ -358,14 +350,12 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-description">
             {t('autoDetectTokensDescription', [
               // TODO: Update to use real link
-              <a
+              <Link
                 href={AUTO_DETECT_TOKEN_LEARN_MORE_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
                 key="cyn-consensys-privacy-link"
               >
                 {startCase(t('learnMore'))}
-              </a>,
+              </Link>,
             ])}
           </div>
         </div>
@@ -434,30 +424,15 @@ export default class SecurityTab extends PureComponent {
           <span>{t('currencyRateCheckToggle')}</span>
           <div className="settings-page__content-description">
             {t('currencyRateCheckToggleDescription', [
-              <a
-                key="coingecko_link"
-                href={COINGECKO_LINK}
-                rel="noreferrer"
-                target="_blank"
-              >
+              <Link key="coingecko_link" href={COINGECKO_LINK}>
                 {t('coingecko')}
-              </a>,
-              <a
-                key="cryptocompare_link"
-                href={CRYPTOCOMPARE_LINK}
-                rel="noreferrer"
-                target="_blank"
-              >
+              </Link>,
+              <Link key="cryptocompare_link" href={CRYPTOCOMPARE_LINK}>
                 {t('cryptoCompare')}
-              </a>,
-              <a
-                key="privacy_policy_link"
-                href={PRIVACY_POLICY_LINK}
-                rel="noreferrer"
-                target="_blank"
-              >
+              </Link>,
+              <Link key="privacy_policy_link" href={PRIVACY_POLICY_LINK}>
                 {t('privacyMsg')}
-              </a>,
+              </Link>,
             ])}
           </div>
         </div>

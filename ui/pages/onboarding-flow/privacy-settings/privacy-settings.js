@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Box from '../../../components/ui/box/box';
 import Button from '../../../components/ui/button';
+import Link from '../../../components/ui/link';
 import Typography from '../../../components/ui/typography';
 import {
   FONT_WEIGHT,
@@ -125,22 +126,12 @@ export default function PrivacySettings() {
             setValue={setShowIncomingTransactions}
             title={t('showIncomingTransactions')}
             description={t('onboardingShowIncomingTransactionsDescription', [
-              <a
-                key="etherscan"
-                href="https://etherscan.io/"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <Link key="etherscan" href="https://etherscan.io/">
                 {t('etherscan')}
-              </a>,
-              <a
-                href="https://etherscan.io/privacyPolicy"
-                target="_blank"
-                rel="noreferrer"
-                key="privacyMsg"
-              >
+              </Link>,
+              <Link href="https://etherscan.io/privacyPolicy" key="privacyMsg">
                 {t('privacyMsg')}
-              </a>,
+              </Link>,
             ])}
           />
           <Setting
@@ -148,22 +139,15 @@ export default function PrivacySettings() {
             setValue={setUsePhishingDetection}
             title={t('usePhishingDetection')}
             description={t('onboardingUsePhishingDetectionDescription', [
-              <a
-                href="https://www.jsdelivr.com"
-                target="_blank"
-                rel="noreferrer"
-                key="jsDeliver"
-              >
+              <Link href="https://www.jsdelivr.com" key="jsDeliver">
                 {t('jsDeliver')}
-              </a>,
-              <a
+              </Link>,
+              <Link
                 href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-com"
-                target="_blank"
-                rel="noreferrer"
                 key="privacyMsg"
               >
                 {t('privacyMsg')}
-              </a>,
+              </Link>,
             ])}
           />
           <Setting
@@ -184,14 +168,9 @@ export default function PrivacySettings() {
             description={
               <>
                 {t('onboardingAdvancedPrivacyNetworkDescription', [
-                  <a
-                    href="https://consensys.net/privacy-policy/"
-                    key="link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <Link href="https://consensys.net/privacy-policy/" key="link">
                     {t('privacyMsg')}
-                  </a>,
+                  </Link>,
                 ])}
 
                 <Box paddingTop={2}>
@@ -271,30 +250,15 @@ export default function PrivacySettings() {
             setValue={setTurnOnCurrencyRateCheck}
             title={t('currencyRateCheckToggle')}
             description={t('currencyRateCheckToggleDescription', [
-              <a
-                key="coingecko_link"
-                href={COINGECKO_LINK}
-                rel="noreferrer"
-                target="_blank"
-              >
+              <Link key="coingecko_link" href={COINGECKO_LINK}>
                 {t('coingecko')}
-              </a>,
-              <a
-                key="cryptocompare_link"
-                href={CRYPTOCOMPARE_LINK}
-                rel="noreferrer"
-                target="_blank"
-              >
+              </Link>,
+              <Link key="cryptocompare_link" href={CRYPTOCOMPARE_LINK}>
                 {t('cryptoCompare')}
-              </a>,
-              <a
-                key="privacy_policy_link"
-                href={PRIVACY_POLICY_LINK}
-                rel="noreferrer"
-                target="_blank"
-              >
+              </Link>,
+              <Link key="privacy_policy_link" href={PRIVACY_POLICY_LINK}>
                 {t('privacyMsg')}
-              </a>,
+              </Link>,
             ])}
           />
         </div>

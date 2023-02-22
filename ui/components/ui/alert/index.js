@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { MILLISECOND } from '../../../../shared/constants/time';
+import Link from '../link';
 
 function Alert(props) {
   const [visible, setVisible] = useState(false);
@@ -36,7 +37,7 @@ function Alert(props) {
 
   return (
     <div className={classnames('global-alert', className)}>
-      <a className="msg">{props.msg}</a>
+      <Link className="msg">{props.msg}</Link>
     </div>
   );
 }

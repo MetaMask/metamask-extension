@@ -22,6 +22,7 @@ import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
+import Link from '../../../components/ui/link';
 import Typography from '../../../components/ui/typography';
 import {
   TypographyVariant,
@@ -481,7 +482,7 @@ export default function BuildQuote({
 
   const BlockExplorerLink = () => {
     return (
-      <a
+      <Link
         className="build-quote__token-etherscan-link build-quote__underline"
         key="build-quote-etherscan-link"
         onClick={() => {
@@ -503,7 +504,7 @@ export default function BuildQuote({
         rel="noopener noreferrer"
       >
         {blockExplorerLabel}
-      </a>
+      </Link>
     );
   };
 
@@ -813,7 +814,7 @@ export default function BuildQuote({
               {blockExplorerTokenLink && (
                 <>
                   {t('swapTokenVerificationMessage', [
-                    <a
+                    <Link
                       className="build-quote__token-etherscan-link"
                       key="build-quote-etherscan-link"
                       onClick={() => {
@@ -837,7 +838,7 @@ export default function BuildQuote({
                       rel="noopener noreferrer"
                     >
                       {blockExplorerLabel}
-                    </a>,
+                    </Link>,
                   ])}
                   <InfoTooltip
                     position="top"

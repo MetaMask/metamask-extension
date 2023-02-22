@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component';
 import Dialog from '../../../components/ui/dialog';
 import ActionableMessage from '../../../components/ui/actionable-message';
+import Link from '../../../components/ui/link';
 import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
@@ -115,15 +116,13 @@ export default class SendContent extends Component {
             onClick: acknowledgeRecipientWarning,
           }}
           message={t('sendingToTokenContractWarning', [
-            <a
+            <Link
               key="contractWarningSupport"
-              target="_blank"
-              rel="noopener noreferrer"
               className="send__warning-container__link"
               href={CONTRACT_ADDRESS_LINK}
             >
               {t('learnMoreUpperCase')}
-            </a>,
+            </Link>,
           ])}
           roundedButtons
         />

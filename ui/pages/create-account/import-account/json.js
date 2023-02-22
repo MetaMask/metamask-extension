@@ -10,6 +10,7 @@ import Button from '../../../components/ui/button';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import Link from '../../../components/ui/link';
 
 class JsonImportSubview extends Component {
   state = {
@@ -26,14 +27,12 @@ class JsonImportSubview extends Component {
     return (
       <div className="new-account-import-form__json">
         <p>{this.context.t('usedByClients')}</p>
-        <a
+        <Link
           className="new-account-import-form__help-link"
           href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
-          target="_blank"
-          rel="noopener noreferrer"
         >
           {this.context.t('fileImportFail')}
-        </a>
+        </Link>
         <FileInput
           readAs="text"
           onLoad={this.onLoad.bind(this)}

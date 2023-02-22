@@ -26,6 +26,7 @@ import {
 import Button from '../../components/ui/button';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
+import Link from '../../components/ui/link';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
 
@@ -313,7 +314,7 @@ class ImportToken extends Component {
         (standard === 'ERC1155' || standard === 'ERC721'):
         this.setState({
           nftAddressError: this.context.t('nftAddressError', [
-            <a
+            <Link
               className="import-token__nft-address-error-link"
               onClick={() =>
                 this.props.history.push({
@@ -326,7 +327,7 @@ class ImportToken extends Component {
               key="nftAddressError"
             >
               {this.context.t('importNFTPage')}
-            </a>,
+            </Link>,
           ]),
         });
 

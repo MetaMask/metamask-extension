@@ -17,6 +17,7 @@ import {
   LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import Link from '../../../components/ui/link';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -288,7 +289,7 @@ class ConnectHardwareForm extends Component {
           {this.context.t('troubleConnectingToWallet', [
             this.state.device,
             // eslint-disable-next-line react/jsx-key
-            <a
+            <Link
               href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="hardware-connection-guide"
               target="_blank"
@@ -297,7 +298,7 @@ class ConnectHardwareForm extends Component {
               style={{ marginLeft: '5px', marginRight: '5px' }}
             >
               {this.context.t('walletConnectionGuide')}
-            </a>,
+            </Link>,
           ])}
         </p>
       );

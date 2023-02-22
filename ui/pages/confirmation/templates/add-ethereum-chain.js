@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import Link from '../../../components/ui/link';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   SEVERITIES,
@@ -236,15 +237,14 @@ function getValues(pendingApproval, t, actions, history) {
                       }}
                     >
                       {t('someNetworksMayPoseSecurity')}{' '}
-                      <a
+                      <Link
                         key="zendesk_page_link"
                         href={ZENDESK_URLS.UNKNOWN_NETWORK}
-                        rel="noreferrer"
                         target="_blank"
                         style={{ color: 'var(--color-primary-default)' }}
                       >
                         {t('learnMoreUpperCase')}
-                      </a>
+                      </Link>
                     </div>
                   ),
                 },

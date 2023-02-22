@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ConnectedSitesList from '../../components/app/connected-sites-list';
 import Popover from '../../components/ui/popover/popover.component';
 import Button from '../../components/ui/button';
+import Link from '../../components/ui/link';
 
 export default class ConnectedSites extends Component {
   static contextTypes = {
@@ -97,12 +98,12 @@ export default class ConnectedSites extends Component {
         onClose={closePopover}
         footer={
           tabToConnect ? (
-            <a
+            <Link
               className="connected-sites__text-button"
               onClick={requestAccountsPermission}
             >
               {t('connectManually')}
-            </a>
+            </Link>
           ) : null
         }
         footerClassName="connected-sites__add-site-manually"
@@ -139,12 +140,12 @@ export default class ConnectedSites extends Component {
             </div>
             {numPermittedAccounts > 1 ? (
               <div className="connected-sites__footer-row">
-                <a
+                <Link
                   className="connected-sites__text-button"
                   onClick={this.disconnectAllAccounts}
                 >
                   {t('disconnectAllAccounts')}
-                </a>
+                </Link>
               </div>
             ) : null}
           </>

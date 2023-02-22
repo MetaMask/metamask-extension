@@ -9,6 +9,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
+import Link from '../../../components/ui/link';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
@@ -145,22 +146,15 @@ export default function OnboardingMetametrics() {
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
-          <a
+          <Link
             href="https://consensys.net/blog/news/consensys-data-retention-update/"
-            target="_blank"
-            rel="noopener noreferrer"
             key="retention-link"
           >
             {t('onboardingMetametricsInfuraTermsPolicyLink')}
-          </a>,
-          <a
-            href="https://metamask.io/privacy.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            key="privacy-link"
-          >
+          </Link>,
+          <Link href="https://metamask.io/privacy.html" key="privacy-link">
             {t('onboardingMetametricsInfuraTermsPolicy')}
-          </a>,
+          </Link>,
         ])}
       </Typography>
 

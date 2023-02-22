@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import Link from '../../../components/ui/link';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
@@ -89,7 +90,7 @@ export default function FeeCard({
                           {t('swapGasFeesDetails')}
                         </p>
                         <p className="fee-card__info-tooltip-paragraph">
-                          <a
+                          <Link
                             className="fee-card__link"
                             onClick={() => {
                               /* istanbul ignore next */
@@ -105,7 +106,7 @@ export default function FeeCard({
                             rel="noopener noreferrer"
                           >
                             {t('swapGasFeesLearnMore')}
-                          </a>
+                          </Link>
                         </p>
                       </>
                     }

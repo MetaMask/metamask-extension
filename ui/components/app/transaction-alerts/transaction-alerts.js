@@ -9,6 +9,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SimulationErrorMessage from '../../ui/simulation-error-message';
 import Typography from '../../ui/typography';
+import Link from '../../ui/link';
 import { TypographyVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
@@ -48,14 +49,13 @@ const TransactionAlerts = ({
               </strong>{' '}
               {t('pendingTransactionInfo')}
               {t('learnCancelSpeeedup', [
-                <a
+                <Link
                   key="cancelSpeedUpInfo"
                   href={ZENDESK_URLS.SPEEDUP_CANCEL}
-                  rel="noopener noreferrer"
                   target="_blank"
                 >
                   {t('cancelSpeedUp')}
-                </a>,
+                </Link>,
               ])}
             </Typography>
           }

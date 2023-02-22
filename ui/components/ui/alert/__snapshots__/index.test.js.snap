@@ -9,6 +9,7 @@ exports[`Alert renders with visible boolean in state 1`] = `
   >
     <a
       class="msg"
+      rel="noopener"
     />
   </div>
 </div>

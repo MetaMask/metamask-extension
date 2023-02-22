@@ -5,7 +5,9 @@ import classnames from 'classnames';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 import Button from '../../../../components/ui/button';
+import Link from '../../../../components/ui/link';
 import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
+
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getCurrentChainId,
@@ -149,7 +151,7 @@ export default function ItemList({
           >
             <ActionableMessage
               message={t('addCustomTokenByContractAddress', [
-                <a
+                <Link
                   key="searchable-item-list__etherscan-link"
                   onClick={() => {
                     /* istanbul ignore next */
@@ -170,7 +172,7 @@ export default function ItemList({
                   rel="noopener noreferrer"
                 >
                   {blockExplorerHostName}
-                </a>,
+                </Link>,
               ])}
             />
           </div>

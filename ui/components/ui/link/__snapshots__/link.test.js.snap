@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Link should render link element correctly fully controlled 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener nofollow"
+    target="self"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with href 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with id 1`] = `
+<div>
+  <a
+    id="test-link"
+    rel="noopener"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with referer 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener license"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with res 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener license noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with target 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener noreferrer"
+    target="_self"
+  >
+    Link
+  </a>
+</div>
+`;

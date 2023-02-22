@@ -39,6 +39,7 @@ import {
   getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
+import Link from '../../../components/ui/link';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -159,12 +160,10 @@ export default function AwaitingSwap({
   } else if (errorKey === SWAP_FAILED_ERROR) {
     headerText = t('swapFailedErrorTitle');
     descriptionText = t('swapFailedErrorDescriptionWithSupportLink', [
-      <a
+      <Link
         className="awaiting-swap__support-link"
         key="awaiting-swap-support-link"
         href={SUPPORT_LINK}
-        target="_blank"
-        rel="noopener noreferrer"
         onClick={() => {
           trackEvent(
             {
@@ -181,7 +180,7 @@ export default function AwaitingSwap({
         }}
       >
         {new URL(SUPPORT_LINK).hostname}
-      </a>,
+      </Link>,
     ]);
     submitText = t('tryAgain');
     statusImage = <SwapFailureIcon />;

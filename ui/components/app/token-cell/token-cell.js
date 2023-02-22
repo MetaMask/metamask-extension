@@ -6,6 +6,7 @@ import AssetListItem from '../asset-list-item';
 import { getSelectedAddress } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import Link from '../../ui/link';
 
 export default function TokenCell({
   address,
@@ -24,15 +25,14 @@ export default function TokenCell({
   const warning = balanceError ? (
     <span>
       {t('troubleTokenBalances')}
-      <a
+      <Link
         href={`https://ethplorer.io/address/${userAddress}`}
-        rel="noopener noreferrer"
         target="_blank"
         onClick={(event) => event.stopPropagation()}
         style={{ color: 'var(--color-warning-default)' }}
       >
         {t('here')}
-      </a>
+      </Link>
     </span>
   ) : null;
 

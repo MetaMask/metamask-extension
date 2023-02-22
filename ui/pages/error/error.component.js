@@ -8,6 +8,7 @@ import {
   EVENT_NAMES,
   CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
+import Link from '../../components/ui/link';
 
 class ErrorPage extends PureComponent {
   static contextTypes = {
@@ -42,7 +43,7 @@ class ErrorPage extends PureComponent {
 
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
     const supportLink = (
-      <a
+      <Link
         target="_blank"
         key="metamaskSupportLink"
         rel="noopener noreferrer"
@@ -63,7 +64,7 @@ class ErrorPage extends PureComponent {
         }}
       >
         <span className="error-page__link-text">{this.context.t('here')}</span>
-      </a>
+      </Link>
     );
     const message = isPopup
       ? t('errorPagePopupMessage', [supportLink])

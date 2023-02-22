@@ -15,6 +15,7 @@ import CopyRawData from '../../components/app/transaction-decoding/components/ui
 
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
+import Link from '../../components/ui/link';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import Disclosure from '../../components/ui/disclosure';
 import { EVENT } from '../../../shared/constants/metametrics';
@@ -474,13 +475,12 @@ export default class ConfirmTransactionBase extends Component {
                       </p>
                       <p>{t('transactionDetailGasTooltipExplanation')}</p>
                       <p>
-                        <a
+                        <Link
                           href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                           target="_blank"
-                          rel="noopener noreferrer"
                         >
                           {t('transactionDetailGasTooltipConversion')}
-                        </a>
+                        </Link>
                       </p>
                     </>
                   }
