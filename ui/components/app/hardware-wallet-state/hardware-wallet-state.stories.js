@@ -3,19 +3,18 @@ import HardwareWalletState from '.';
 
 export default {
   title: 'Components/App/HardwareWalletState',
-
   argTypes: {
     pollingRateMs: {
       control: 'number',
     },
     initialStatus: {
-      control: 'text',
+      control: 'select',
+      options: ['locked', 'unlocked'],
     },
     onUpdate: {
       action: 'onUpdate',
     },
   },
-
   args: {
     pollingRateMs: 2000,
     initialStatus: 'locked',
