@@ -392,8 +392,20 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   assert.equal(await confirmSeedPhrase.isEnabled(), false);
 };
 
-const selectDropdownByNum = async function (elements, index) {
+const selectDropdownByNum = async (elements, index) => {
   await elements[index].click();
+};
+
+const testDropdownIterations = async (options, driver, iterations) => {
+  for (let i = 0; i < iterations; i++) {
+    await selectDropdownByNum(options, i);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const formFields = await driver.findElements('.import-srp__srp-word-label');
+    const expectedNumFields = 12 + i * 3;
+    const actualNumFields = formFields.length;
+    assert.equal(actualNumFields, expectedNumFields);
+  }
 };
 
 module.exports = {
@@ -410,5 +422,5 @@ module.exports = {
   completeCreateNewWalletOnboardingFlow,
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
-  selectDropdownByNum,
+  testDropdownIterations,
 };

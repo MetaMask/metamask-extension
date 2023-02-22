@@ -7,7 +7,7 @@ const {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
-  selectDropdownByNum,
+  testDropdownIterations,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -84,7 +84,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('Check if user select different type your secret secovery phrase', async function () {
+  it('Check if user select different type your secret recovery phrase', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -107,17 +107,9 @@ describe('MetaMask onboarding', function () {
           By.tagName('option'),
         );
 
-        for (let i = 0; i <= 4; i++) {
-          selectDropdownByNum(options, i);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+        const iterations = options.length;
 
-          const formFields = await driver.findElements(
-            '.import-srp__srp-word-label',
-          );
-          const expectedNumFields = 12 + i * 3;
-          const actualNumFields = formFields.length;
-          assert.equal(actualNumFields, expectedNumFields);
-        }
+        await testDropdownIterations(options, driver, iterations);
       },
     );
   });
