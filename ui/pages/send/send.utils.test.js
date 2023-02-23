@@ -1,8 +1,9 @@
 import { rawEncode } from 'ethereumjs-abi';
-
+import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../../shared/constants/gas';
 import {
   generateERC20TransferData,
   isBalanceSufficient,
+  gasIsExcessive,
   isTokenBalanceSufficient,
   ellipsify,
 } from './send.utils';
@@ -56,6 +57,19 @@ describe('send utils', () => {
         conversionRate: 3,
         gasTotal: 17,
         primaryCurrency: 'ABC',
+      });
+      expect(result).toStrictEqual(true);
+    });
+  });
+
+  describe('gasIsExcessive()', () => {
+    it('should correctly check if custom gas is 1.5 times greater than the fastest estimate', () => {
+      const result = gasIsExcessive({
+        customPrice: '0x30e4f9b400',
+        gasFeeEstimates: {
+          high: '139',
+        },
+        gasEstimateType: GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy,
       });
       expect(result).toStrictEqual(true);
     });

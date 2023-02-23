@@ -267,7 +267,10 @@ export default function GasDisplay({ gasError }) {
                 />
               }
             />,
-            (gasError || isInsufficientTokenError) && (
+            (gasError ||
+              isInsufficientTokenError ||
+              draftTransaction.asset.balance === '0x0' ||
+              draftTransaction.asset.balance === '0x00') && (
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
@@ -316,74 +319,78 @@ export default function GasDisplay({ gasError }) {
           ]}
         />
       </Box>
-      {(gasError || isInsufficientTokenError) && currentNetworkName && (
-        <Box
-          className="gas-display__warning-message"
-          data-testid="gas-warning-message"
-        >
+      {(gasError ||
+        isInsufficientTokenError ||
+        draftTransaction.asset.balance === '0x0' ||
+        draftTransaction.asset.balance === '0x00') &&
+        currentNetworkName && (
           <Box
-            paddingTop={0}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingLeft={4}
-            className="gas-display__confirm-approve-content__warning"
+            className="gas-display__warning-message"
+            data-testid="gas-warning-message"
           >
-            <ActionableMessage
-              message={
-                isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
-                  <Typography variant={TypographyVariant.H7} align="left">
-                    {t('insufficientCurrencyBuyOrReceive', [
-                      nativeCurrency,
-                      currentNetworkName,
-                      <Button
-                        type="inline"
-                        className="confirm-page-container-content__link"
-                        onClick={() => {
-                          setShowDepositPopover(true);
-                        }}
-                        key={`${nativeCurrency}-buy-button`}
-                      >
-                        {t('buyAsset', [nativeCurrency])}
-                      </Button>,
-                      <Button
-                        type="inline"
-                        className="gas-display__link"
-                        onClick={() =>
-                          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
-                        }
-                        key="receive-button"
-                      >
-                        {t('deposit')}
-                      </Button>,
-                    ])}
-                  </Typography>
-                ) : (
-                  <Typography variant={TypographyVariant.H7} align="left">
-                    {t('insufficientCurrencyBuyOrReceive', [
-                      nativeCurrency,
-                      currentNetworkName,
-                      `${t('buyAsset', [nativeCurrency])}`,
-                      <Button
-                        type="inline"
-                        className="gas-display__link"
-                        onClick={() =>
-                          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
-                        }
-                        key="receive-button"
-                      >
-                        {t('deposit')}
-                      </Button>,
-                    ])}
-                  </Typography>
-                )
-              }
-              useIcon
-              iconFillColor="var(--color-error-default)"
-              type="danger"
-            />
+            <Box
+              paddingTop={0}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingLeft={4}
+              className="gas-display__confirm-approve-content__warning"
+            >
+              <ActionableMessage
+                message={
+                  isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
+                    <Typography variant={TypographyVariant.H7} align="left">
+                      {t('insufficientCurrencyBuyOrReceive', [
+                        nativeCurrency,
+                        currentNetworkName,
+                        <Button
+                          type="inline"
+                          className="confirm-page-container-content__link"
+                          onClick={() => {
+                            setShowDepositPopover(true);
+                          }}
+                          key={`${nativeCurrency}-buy-button`}
+                        >
+                          {t('buyAsset', [nativeCurrency])}
+                        </Button>,
+                        <Button
+                          type="inline"
+                          className="gas-display__link"
+                          onClick={() =>
+                            dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
+                          }
+                          key="receive-button"
+                        >
+                          {t('deposit')}
+                        </Button>,
+                      ])}
+                    </Typography>
+                  ) : (
+                    <Typography variant={TypographyVariant.H7} align="left">
+                      {t('insufficientCurrencyBuyOrReceive', [
+                        nativeCurrency,
+                        currentNetworkName,
+                        `${t('buyAsset', [nativeCurrency])}`,
+                        <Button
+                          type="inline"
+                          className="gas-display__link"
+                          onClick={() =>
+                            dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
+                          }
+                          key="receive-button"
+                        >
+                          {t('deposit')}
+                        </Button>,
+                      ])}
+                    </Typography>
+                  )
+                }
+                useIcon
+                iconFillColor="var(--color-error-default)"
+                type="danger"
+              />
+            </Box>
           </Box>
-        </Box>
-      )}
+        )}
     </>
   );
 }

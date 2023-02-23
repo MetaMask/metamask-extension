@@ -12,6 +12,8 @@ import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
+  GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+  GAS_PRICE_EXCESSIVE_ERROR_KEY,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
@@ -22,6 +24,7 @@ import {
 
 import {
   isBalanceSufficient,
+  gasIsExcessive,
   isTokenBalanceSufficient,
 } from '../../pages/send/send.utils';
 import {
@@ -1250,15 +1253,34 @@ const slice = createSlice({
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
+     * @param {GasEstimateUpdatePayload} action - The gas fee update payload
      * @returns {void}
      */
-    validateAmountField: (state) => {
+    validateAmountField: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
 
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
+      const isPriceExcessive = gasIsExcessive({
+        customPrice: draftTransaction.gas.gasPrice,
+        gasFeeEstimates: action?.payload?.gasFeeEstimates,
+        gasEstimateType: action?.payload?.gasEstimateType,
+      });
+
       switch (true) {
+        // set error to GAS_PRICE_EXCESSIVE_ERROR_KEY if custom gas 1.5 times
+        // greater than the fastest estimate.
+        case draftTransaction.asset.type === AssetType.native &&
+          isPriceExcessive:
+          draftTransaction.amount.error = GAS_PRICE_EXCESSIVE_ERROR_KEY;
+          break;
+        // set error to GAS_PRICE_FETCH_FAILURE_ERROR_KEY if gas fee estimate is
+        // loading.
+        case draftTransaction.asset.type === AssetType.native &&
+          action?.payload?.gasEstimateType === GasEstimateTypes.none:
+          draftTransaction.amount.error = GAS_PRICE_FETCH_FAILURE_ERROR_KEY;
+          break;
         // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
         // than the total price of the transaction inclusive of gas fees.
         case draftTransaction.asset.type === AssetType.native &&
@@ -1607,7 +1629,12 @@ const slice = createSlice({
         if (state.amountMode === AMOUNT_MODES.MAX) {
           slice.caseReducers.updateAmountToMax(state);
         }
-        slice.caseReducers.validateAmountField(state);
+        slice.caseReducers.validateAmountField(state, {
+          payload: {
+            gasFeeEstimates: action.payload.gasFeeEstimates,
+            gasEstimateType: action.payload.gasEstimateType,
+          },
+        });
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })

@@ -3,6 +3,8 @@ import abi from 'ethereumjs-abi';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { EtherDenomination } from '../../../shared/constants/common';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,
@@ -14,6 +16,7 @@ export {
   generateERC20TransferData,
   generateERC721TransferData,
   isBalanceSufficient,
+  gasIsExcessive,
   isTokenBalanceSufficient,
   ellipsify,
 };
@@ -25,7 +28,12 @@ function isBalanceSufficient({
   gasTotal = '0x0',
   primaryCurrency,
 }) {
-  let totalAmount = new Numeric(amount, 16).add(new Numeric(gasTotal, 16));
+  let totalAmount;
+  if (amount === '0x0') {
+    totalAmount = new Numeric(amount, 16);
+  } else {
+    totalAmount = new Numeric(amount, 16).add(new Numeric(gasTotal, 16));
+  }
   let balanceNumeric = new Numeric(balance, 16);
 
   if (typeof primaryCurrency !== 'undefined' && primaryCurrency !== null) {
@@ -34,6 +42,26 @@ function isBalanceSufficient({
   }
 
   return balanceNumeric.greaterThanOrEqualTo(totalAmount);
+}
+
+function gasIsExcessive({
+  customPrice = '0x0',
+  gasFeeEstimates = { high: '1' },
+  gasEstimateType = GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none,
+}) {
+  const fastPrice =
+    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
+      ? gasFeeEstimates?.high
+      : null;
+
+  const customPriceExcessive = new Numeric(
+    customPrice,
+    16,
+    EtherDenomination.WEI,
+  )
+    .toDenomination(EtherDenomination.GWEI)
+    .greaterThan(Math.floor(fastPrice * 1.5), 10);
+  return customPriceExcessive;
 }
 
 function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
