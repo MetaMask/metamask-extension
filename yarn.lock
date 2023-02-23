@@ -5,6 +5,17 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@agoric/babel-generator@npm:^7.17.6":
+  version: 7.17.6
+  resolution: "@agoric/babel-generator@npm:7.17.6"
+  dependencies:
+    "@babel/types": ^7.17.0
+    jsesc: ^2.5.1
+    source-map: ^0.5.0
+  checksum: ffc35c0df5089a7a8fbe57526049931e59c67f658ca37f8c0cca9a57fc61855f582f0223494fc270fe24c012be951f3d952eb983238b74185e144e7310f53d3a
+  languageName: node
+  linkType: hard
+
 "@agoric/babel-standalone@npm:^7.9.5":
   version: 7.9.5
   resolution: "@agoric/babel-standalone@npm:7.9.5"
@@ -152,6 +163,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/generator@npm:^7.21.0":
+  version: 7.21.1
+  resolution: "@babel/generator@npm:7.21.1"
+  dependencies:
+    "@babel/types": ^7.21.0
+    "@jridgewell/gen-mapping": ^0.3.2
+    "@jridgewell/trace-mapping": ^0.3.17
+    jsesc: ^2.5.1
+  checksum: 69085a211ff91a7a608ee3f86e6fcb9cf5e724b756d792a713b0c328a671cd3e423e1ef1b12533f366baba0616caffe0a7ba9d328727eab484de5961badbef00
+  languageName: node
+  linkType: hard
+
 "@babel/helper-annotate-as-pure@npm:^7.18.6":
   version: 7.18.6
   resolution: "@babel/helper-annotate-as-pure@npm:7.18.6"
@@ -272,6 +295,16 @@ __metadata:
     "@babel/template": ^7.18.10
     "@babel/types": ^7.19.0
   checksum: eac1f5db428ba546270c2b8d750c24eb528b8fcfe50c81de2e0bdebf0e20f24bec688d4331533b782e4a907fad435244621ca2193cfcf80a86731299840e0f6e
+  languageName: node
+  linkType: hard
+
+"@babel/helper-function-name@npm:^7.21.0":
+  version: 7.21.0
+  resolution: "@babel/helper-function-name@npm:7.21.0"
+  dependencies:
+    "@babel/template": ^7.20.7
+    "@babel/types": ^7.21.0
+  checksum: d63e63c3e0e3e8b3138fa47b0cd321148a300ef12b8ee951196994dcd2a492cc708aeda94c2c53759a5c9177fffaac0fd8778791286746f72a000976968daf4e
   languageName: node
   linkType: hard
 
@@ -466,6 +499,15 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: 25b5266e3bd4be837092685f6b7ef886f1308ff72659a24342eb646ae5014f61ed1771ce8fc20636c890fcae19304fc72c069564ca6075207b7fbf3f75367275
+  languageName: node
+  linkType: hard
+
+"@babel/parser@npm:^7.17.3, @babel/parser@npm:^7.21.0":
+  version: 7.21.1
+  resolution: "@babel/parser@npm:7.21.1"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: a564cff6dec4201a611d1f2ae5af8d7436ce80550e75a77ee72dca6b094df6188b5a4ccfae6a98c85991b56a51e6c48159e466cc5a374c7a37af706fcb5a6bc2
   languageName: node
   linkType: hard
 
@@ -1654,6 +1696,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/traverse@npm:^7.17.3":
+  version: 7.21.0
+  resolution: "@babel/traverse@npm:7.21.0"
+  dependencies:
+    "@babel/code-frame": ^7.18.6
+    "@babel/generator": ^7.21.0
+    "@babel/helper-environment-visitor": ^7.18.9
+    "@babel/helper-function-name": ^7.21.0
+    "@babel/helper-hoist-variables": ^7.18.6
+    "@babel/helper-split-export-declaration": ^7.18.6
+    "@babel/parser": ^7.21.0
+    "@babel/types": ^7.21.0
+    debug: ^4.1.0
+    globals: ^11.1.0
+  checksum: 99241b22db509d2f01a9af51bfab1d68e73cd3b66bbc2560f0f65e49880f68a05ead913e72a4e464152430a027f0c7822f126d6f1bcc3bc3e01ef8b8558a6dc6
+  languageName: node
+  linkType: hard
+
 "@babel/types@npm:^7.0.0, @babel/types@npm:^7.12.0, @babel/types@npm:^7.12.11, @babel/types@npm:^7.12.7, @babel/types@npm:^7.13.0, @babel/types@npm:^7.14.8, @babel/types@npm:^7.18.6, @babel/types@npm:^7.18.7, @babel/types@npm:^7.18.9, @babel/types@npm:^7.19.0, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.2, @babel/types@npm:^7.20.7, @babel/types@npm:^7.3.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.20.7
   resolution: "@babel/types@npm:7.20.7"
@@ -1662,6 +1722,17 @@ __metadata:
     "@babel/helper-validator-identifier": ^7.19.1
     to-fast-properties: ^2.0.0
   checksum: b39af241f0b72bba67fd6d0d23914f6faec8c0eba8015c181cbd5ea92e59fc91a52a1ab490d3520c7dbd19ddb9ebb76c476308f6388764f16d8201e37fae6811
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:^7.17.0, @babel/types@npm:^7.21.0":
+  version: 7.21.0
+  resolution: "@babel/types@npm:7.21.0"
+  dependencies:
+    "@babel/helper-string-parser": ^7.19.4
+    "@babel/helper-validator-identifier": ^7.19.1
+    to-fast-properties: ^2.0.0
+  checksum: dbcdda202b3a2bfd59e4de880ce38652f1f8957893a9751be069ac86e47ad751222070fe6cd92220214d77973f1474e4e1111c16dc48199dfca1489c0ee8c0c5
   languageName: node
   linkType: hard
 
@@ -1874,6 +1945,33 @@ __metadata:
   version: 0.2.5
   resolution: "@emotion/weak-memoize@npm:0.2.5"
   checksum: 27d402b0c683b94658220b6d47840346ee582329ca2a15ec9c233492e0f1a27687ccb233b76eedc922f2e185e444cc89f7b97a81a1d3e5ae9f075bab08e965ea
+  languageName: node
+  linkType: hard
+
+"@endo/cjs-module-analyzer@npm:^0.2.29":
+  version: 0.2.29
+  resolution: "@endo/cjs-module-analyzer@npm:0.2.29"
+  checksum: 4cf77f73189de9e8622f18eac5d956a8571f256e896706249ad52bc3fdb2b30ffd09313876e4da6f70b03733bfc28d08037f204942626a48822e45577680913c
+  languageName: node
+  linkType: hard
+
+"@endo/static-module-record@npm:^0.7.16":
+  version: 0.7.16
+  resolution: "@endo/static-module-record@npm:0.7.16"
+  dependencies:
+    "@agoric/babel-generator": ^7.17.6
+    "@babel/parser": ^7.17.3
+    "@babel/traverse": ^7.17.3
+    "@babel/types": ^7.17.0
+    ses: ^0.18.1
+  checksum: 78d605e1faa0d8656fcae3f5c721f2a4f7e2c38fd264ec950ad8af030b86408b05ba03bc3213b34cee6fba2dcc4cf3390a0105c4a7f0e7a1970a1cf1bce73d36
+  languageName: node
+  linkType: hard
+
+"@endo/zip@npm:^0.2.29":
+  version: 0.2.29
+  resolution: "@endo/zip@npm:0.2.29"
+  checksum: aae852fc5e5169f7140bcdae7442a38f5d4c8978542abc4241bce24a0f68b2362fa5ac833602a1de561faaea782accb72287ce11cf1ab6819ff9c4369758482f
   languageName: node
   linkType: hard
 
@@ -3226,7 +3324,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.13, @jridgewell/trace-mapping@npm:^0.3.14, @jridgewell/trace-mapping@npm:^0.3.15, @jridgewell/trace-mapping@npm:^0.3.9":
+"@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.13, @jridgewell/trace-mapping@npm:^0.3.14, @jridgewell/trace-mapping@npm:^0.3.15, @jridgewell/trace-mapping@npm:^0.3.17, @jridgewell/trace-mapping@npm:^0.3.9":
   version: 0.3.17
   resolution: "@jridgewell/trace-mapping@npm:0.3.17"
   dependencies:
@@ -3360,6 +3458,20 @@ __metadata:
   dependencies:
     is-cross-origin: ^1.0.1
   checksum: d4dcd9907bb4caa7ac7fc130dbe7eff0295a992769136895c222b8e823edb0de44aa822e467670515ef70e85b9e5edb93c4ca9ffc05735ed18528304e478754a
+  languageName: node
+  linkType: hard
+
+"@lavamoat/webpack-plugin-endo-archive@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@lavamoat/webpack-plugin-endo-archive@npm:1.0.1"
+  dependencies:
+    "@endo/cjs-module-analyzer": ^0.2.29
+    "@endo/static-module-record": ^0.7.16
+    "@endo/zip": ^0.2.29
+    ses: ^0.18.1
+    webpack: ^5.75.0
+    webpack-sources: ^3.2.3
+  checksum: 21cf89c9de02ec61d3cc0750335efb18e0ec5c185759baf58391cc3c3f8dc838cc6b73324b7eafeb6b2e23e501bf253ba1011c05b3092df5fe768ce63b5a356f
   languageName: node
   linkType: hard
 
@@ -24132,6 +24244,7 @@ __metadata:
     "@lavamoat/allow-scripts": ^2.0.3
     "@lavamoat/lavapack": ^5.0.0
     "@lavamoat/snow": ^1.4.1
+    "@lavamoat/webpack-plugin-endo-archive": ^1.0.1
     "@material-ui/core": ^4.11.0
     "@metamask/address-book-controller": ^1.0.0
     "@metamask/announcement-controller": ^1.0.0
@@ -24401,7 +24514,7 @@ __metadata:
     selenium-webdriver: ^4.3.1
     semver: ^7.3.5
     serve-handler: ^6.1.2
-    ses: ^0.12.4
+    ses: ^0.18.1
     single-call-balance-checker-abi: ^1.0.0
     sinon: ^9.0.0
     source-map: ^0.7.2
@@ -30761,7 +30874,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:0.12.4, ses@npm:^0.12.4":
+"ses@npm:0.12.4":
   version: 0.12.4
   resolution: "ses@npm:0.12.4"
   dependencies:
@@ -30772,10 +30885,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^0.18.1":
+"ses@npm:0.18.1":
   version: 0.18.1
   resolution: "ses@npm:0.18.1"
   checksum: 70ad6918da240833d445434e324f7ec29b1b7efc44ce8c0d75c5521cc1629810397903aec8e9adfe65d1486a19ac715c5254501e25de8925ae58c9f7f582dd76
+  languageName: node
+  linkType: hard
+
+"ses@patch:ses@npm%3A0.18.1#./.yarn/patches/ses-npm-0.18.1-baa7a46fbf.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.18.1
+  resolution: "ses@patch:ses@npm%3A0.18.1#./.yarn/patches/ses-npm-0.18.1-baa7a46fbf.patch::version=0.18.1&hash=334e33&locator=metamask-crx%40workspace%3A."
+  checksum: 0c47be2c3b14d56c31fbf41728101da70e29bca022f330cacab6ea5838762ba5662c8a982169422771cabac434feaf4561693d09dbfe2bbfbc76e1cae62e1449
   languageName: node
   linkType: hard
 
