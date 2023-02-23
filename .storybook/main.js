@@ -20,6 +20,7 @@ module.exports = {
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
     '@storybook/addon-knobs',
+    // '@whitespace/storybook-addon-html',
     './i18n-party-addon/register.js',
     'storybook-dark-mode',
   ],

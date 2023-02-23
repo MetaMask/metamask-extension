@@ -381,6 +381,7 @@
     "@storybook/addon-actions": "^6.5.13",
     "@storybook/addon-essentials": "^6.5.13",
     "@storybook/addon-knobs": "^6.4.0",
+    "@whitespace/storybook-addon-html": "^5.1.1",
     "@storybook/addons": "^6.5.13",
     "@storybook/api": "^6.5.13",
     "@storybook/builder-webpack5": "^6.5.13",

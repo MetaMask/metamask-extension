@@ -38,6 +38,12 @@ addParameters({
       ],
     },
   },
+  html: {
+    highlighter: {
+      showLineNumbers: true, // default: false
+      wrapLines: false, // default: true
+    },
+  },
 });
 
 export const globalTypes = {
