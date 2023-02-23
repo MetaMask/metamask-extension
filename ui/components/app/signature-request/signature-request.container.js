@@ -32,12 +32,8 @@ function mapStateToProps(state, ownProps) {
   const isLedgerWallet = isAddressLedger(state, from);
   const chainId = getCurrentChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
-  const subjectMetadata = getSubjectMetadata(state);
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
-
-  const { iconUrl: siteImage = '' } =
-    subjectMetadata[txData.msgParams.origin] || {};
 
   return {
     provider,
@@ -45,7 +41,6 @@ function mapStateToProps(state, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
@@ -85,7 +80,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
     conversionRate,
     nativeCurrency,
     provider,
@@ -138,7 +132,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
     conversionRate,
     nativeCurrency,
     provider,
