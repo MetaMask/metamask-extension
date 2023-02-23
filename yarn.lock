@@ -3631,6 +3631,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@metamask/base-controller@npm:^1.1.2":
   version: 1.1.2
   resolution: "@metamask/base-controller@npm:1.1.2"
@@ -3641,6 +3642,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> 4382f7e68 (update snap packages)
 "@metamask/base-controller@npm:~1.0.0":
   version: 1.0.0
   resolution: "@metamask/base-controller@npm:1.0.0"
@@ -4139,9 +4142,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@metamask/phishing-controller@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/phishing-controller@npm:2.0.0"
+=======
+"@metamask/phishing-controller@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@metamask/phishing-controller@npm:1.1.2"
+>>>>>>> 4382f7e68 (update snap packages)
   dependencies:
     "@metamask/base-controller": ^1.1.2
     "@metamask/controller-utils": ^2.0.0
@@ -4404,10 +4413,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@metamask/test-dapp@npm:^5.6.0":
   version: 5.6.0
   resolution: "@metamask/test-dapp@npm:5.6.0"
   checksum: 352399ee03a9bee7a2a1045a102d4993a3b4b17a4c2c87b77265924dc6b04659b743f79a08f91bfbeeea3b7cbb9d1a88dc251ec32366877312e9eaa01ce0c82f
+=======
+"@metamask/test-dapp@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "@metamask/test-dapp@npm:5.4.0"
+  checksum: dd21652f8478befe7e7b1ccd3c04d6fe49efa29867476b1d83680d2babd2a616361ade11a0f86a1e13a55848299b6ab6ddfae2335d7b4bab692efb350fa1523b
+>>>>>>> 4382f7e68 (update snap packages)
   languageName: node
   linkType: hard
 
