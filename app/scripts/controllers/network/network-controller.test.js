@@ -580,6 +580,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID
+                  // of the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -606,6 +609,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID
+                  // of the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -631,6 +637,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID
+                  // of the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -650,6 +659,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID
+                  // of the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
               networkDetails: {
@@ -1120,6 +1132,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID
+                    // of the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                 },
               },
@@ -1167,6 +1182,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID
+                    // of the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                 },
               },
@@ -1228,6 +1246,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID
+                    // of the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                 },
               },
@@ -1266,6 +1287,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID
+                    // of the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                 },
               },
@@ -1330,6 +1354,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID
+                    // of the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                 },
               },
@@ -1369,6 +1396,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -1400,6 +1430,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -1444,6 +1477,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                   networkDetails: {
                     EIPS: {},
@@ -1471,6 +1507,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                   networkDetails: {
                     EIPS: {},
@@ -1503,6 +1542,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                   networkDetails: {
                     EIPS: {},
@@ -1560,6 +1602,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                 },
               },
@@ -1673,6 +1718,9 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
                   },
                 },
               },
@@ -3124,6 +3172,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3149,6 +3200,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3183,6 +3237,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3226,6 +3283,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3252,6 +3312,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3276,6 +3339,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3301,6 +3367,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3326,6 +3395,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3351,6 +3423,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3679,6 +3754,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID
+                  // of the network selected, it just needs to exist
+                  chainId: '0x999',
                 },
               },
             },
@@ -3716,7 +3794,7 @@ describe('NetworkController', () => {
               expect(controller.store.getState().provider).toStrictEqual({
                 type: networkType,
                 rpcUrl: 'https://mock-rpc-url',
-                chainId: '0x1337',
+                chainId: '0x999',
                 ticker: 'ETH',
                 nickname: '',
                 rpcPrefs: undefined,
@@ -3731,6 +3809,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3774,6 +3855,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3827,6 +3911,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3886,6 +3973,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3930,6 +4020,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -3971,6 +4064,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -4014,6 +4110,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -4058,6 +4157,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },
@@ -4103,6 +4205,9 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
+                  // NOTE: This doesn't need to match the logical chain ID of
+                  // the network selected, it just needs to exist
+                  chainId: '0x9999999',
                 },
               },
             },

@@ -12,7 +12,6 @@ package
 
 # IDEs
 .idea
-.vscode
 .sublime-project
 
 *.bak
