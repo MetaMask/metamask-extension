@@ -27,6 +27,7 @@ export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
  */
 export const BuildType = {
   beta: 'beta',
+  desktop: 'desktop',
   flask: 'flask',
   main: 'main',
 } as const;
@@ -59,6 +60,9 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ENABLE_DESKTOP: `metamask_enableDesktop`,
   ///: END:ONLY_INCLUDE_IN
 } as const;
 

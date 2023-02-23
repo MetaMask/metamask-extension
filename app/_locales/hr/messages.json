@@ -75,12 +75,6 @@
   "asset": {
     "message": "Imovina"
   },
-  "attemptToCancel": {
-    "message": "Pokušati otkazati?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Slanjem ovog pokušaja ne jamči se da će se vaša izvorna transakcija otkazati. Ako je pokušaj otkazivanja uspješan, naplaćuje vam se prethodno navedena naknada za prijenos."
-  },
   "attemptingConnect": {
     "message": "Pokušaj povezivanja na podatkovni blok."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Odustani"
-  },
-  "cancellationGasFee": {
-    "message": "Otkazivanje naknade za gorivo"
   },
   "cancelled": {
     "message": "Otkazano"
@@ -912,9 +903,6 @@
   },
   "welcomeBack": {
     "message": "Dobro došli natrag!"
-  },
-  "yesLetsTry": {
-    "message": "Da, isprobajmo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Trebate dopustiti pristupanje kameri za korištenje ovom funkcijom."
