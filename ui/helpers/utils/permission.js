@@ -15,10 +15,10 @@ import {
 } from '../../../shared/constants/permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAPS_METADATA } from '../../../shared/constants/snaps';
-import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
 ///: END:ONLY_INCLUDE_IN
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import { Color } from '../constants/design-system';
+import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
