@@ -1265,7 +1265,7 @@ describe('Actions', () => {
 
       await store.dispatch(
         actions.editAndSetNetworkConfiguration({
-          uuid: 'uuid',
+          networkConfigurationId: 'networkConfigurationId',
           rpcUrl: 'newRpc',
           chainId: '0x',
           ticker: 'ETH',
@@ -1279,7 +1279,7 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'UPDATE_NETWORK_TARGET',
-          value: { rpcUrl: 'newRpc', uuid: 'uuid' },
+          value: { rpcUrl: 'newRpc', networkConfigurationId: 'networkConfigurationId' },
         },
       ];
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -1309,7 +1309,7 @@ describe('Actions', () => {
 
       await store.dispatch(
         actions.editAndSetNetworkConfiguration({
-          uuid: 'uuid',
+          networkConfigurationId: 'networkConfigurationId',
           rpcUrl: 'newRpc',
           chainId: '0x',
           ticker: 'ETH',
