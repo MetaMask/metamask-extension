@@ -1002,6 +1002,105 @@
   "description": {
     "message": "Description"
   },
+  "desktopConnectionCriticalErrorDescription": {
+    "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
+  },
+  "desktopConnectionCriticalErrorTitle": {
+    "message": "MetaMask had trouble starting"
+  },
+  "desktopConnectionLostErrorDescription": {
+    "message": "Please make sure you have the desktop app up and running or disable MetaMask Desktop."
+  },
+  "desktopConnectionLostErrorTitle": {
+    "message": "MetaMask Desktop connection was lost"
+  },
+  "desktopDisableButton": {
+    "message": "Disable Desktop App"
+  },
+  "desktopDisableErrorCTA": {
+    "message": "Disable MetaMask Desktop"
+  },
+  "desktopEnableButton": {
+    "message": "Enable Desktop App"
+  },
+  "desktopEnableButtonDescription": {
+    "message": "Click to run all background processes in the desktop app."
+  },
+  "desktopErrorNavigateSettingsCTA": {
+    "message": "Return to Settings Page"
+  },
+  "desktopErrorRestartMMCTA": {
+    "message": "Restart MetaMask"
+  },
+  "desktopNotFoundErrorCTA": {
+    "message": "Download MetaMask Desktop"
+  },
+  "desktopNotFoundErrorDescription1": {
+    "message": "Please make sure you have the desktop app up and running."
+  },
+  "desktopNotFoundErrorDescription2": {
+    "message": "If you have no desktop app installed, please download it on the MetaMask website."
+  },
+  "desktopNotFoundErrorTitle": {
+    "message": "MetaMask Desktop was not found"
+  },
+  "desktopOpenOrDownloadCTA": {
+    "message": "Open MetaMask Desktop"
+  },
+  "desktopOutdatedErrorCTA": {
+    "message": "Update MetaMask Desktop"
+  },
+  "desktopOutdatedErrorDescription": {
+    "message": "Your MetaMask desktop app needs to be upgraded."
+  },
+  "desktopOutdatedErrorTitle": {
+    "message": "MetaMask Desktop is outdated"
+  },
+  "desktopOutdatedExtensionErrorCTA": {
+    "message": "Update MetaMask Extension"
+  },
+  "desktopOutdatedExtensionErrorDescription": {
+    "message": "Your MetaMask extension needs to be upgraded."
+  },
+  "desktopOutdatedExtensionErrorTitle": {
+    "message": "MetaMask Extension is outdated"
+  },
+  "desktopPageDescription": {
+    "message": "If the pairing is successful, extension will restart and you'll have to re-enter your password."
+  },
+  "desktopPageSubTitle": {
+    "message": "Open your MetaMask Desktop and type this code"
+  },
+  "desktopPageTitle": {
+    "message": "Pair with Desktop"
+  },
+  "desktopPairedWarningDeepLink": {
+    "message": "Go to Settings in MetaMask Desktop"
+  },
+  "desktopPairedWarningDescription": {
+    "message": "If you want to start a new pairing, please remove the current connection."
+  },
+  "desktopPairedWarningTitle": {
+    "message": "MM Desktop is already paired"
+  },
+  "desktopPairingExpireMessage": {
+    "message": "Code expires in $1 seconds"
+  },
+  "desktopRouteNotFoundErrorDescription": {
+    "message": "desktopRouteNotFoundErrorDescription"
+  },
+  "desktopRouteNotFoundErrorTitle": {
+    "message": "desktopRouteNotFoundErrorTitle"
+  },
+  "desktopUnexpectedErrorCTA": {
+    "message": "Return MetaMask Home"
+  },
+  "desktopUnexpectedErrorDescription": {
+    "message": "Check your MetaMask Desktop to restore connection"
+  },
+  "desktopUnexpectedErrorTitle": {
+    "message": "Something went wrong..."
+  },
   "details": {
     "message": "Details"
   },

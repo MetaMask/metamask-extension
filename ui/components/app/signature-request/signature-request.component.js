@@ -62,10 +62,6 @@ export default class SignatureRequest extends PureComponent {
      * RPC prefs of the current network
      */
     rpcPrefs: PropTypes.object,
-    /**
-     * Dapp image
-     */
-    siteImage: PropTypes.string,
     conversionRate: PropTypes.number,
     nativeCurrency: PropTypes.string,
     provider: PropTypes.object,
@@ -157,7 +153,6 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
       chainId,
       rpcPrefs,
-      siteImage,
       txData,
       subjectMetadata,
       conversionRate,
@@ -309,8 +304,6 @@ export default class SignatureRequest extends PureComponent {
             toAddress={verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
-            origin={origin}
-            siteImage={siteImage}
             onClose={() => this.setState({ showContractDetails: false })}
             isContractRequestingSignature
           />
