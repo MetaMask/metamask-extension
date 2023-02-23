@@ -814,6 +814,58 @@
         "fetch": true
       }
     },
+    "@metamask/desktop": {
+      "globals": {
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.digest": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.generateKey": true,
+        "crypto.subtle.importKey": true,
+        "isDesktopApp": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/desktop>eciesjs": true,
+        "@metamask/desktop>otpauth": true,
+        "@metamask/obs-store": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>stream-browserify": true,
+        "end-of-stream": true,
+        "extension-port-stream": true,
+        "loglevel": true,
+        "obj-multiplex": true,
+        "uuid": true,
+        "webextension-polyfill": true
+      }
+    },
+    "@metamask/desktop>eciesjs": {
+      "packages": {
+        "@metamask/desktop>eciesjs>futoin-hkdf": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+      }
+    },
+    "@metamask/desktop>eciesjs>futoin-hkdf": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true
+      }
+    },
+    "@metamask/desktop>otpauth": {
+      "globals": {
+        "__GLOBALTHIS__": true,
+        "define": true
+      }
+    },
     "@metamask/eth-json-rpc-infura": {
       "globals": {
         "setTimeout": true
@@ -1258,6 +1310,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/permission-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
@@ -1388,6 +1441,9 @@
       }
     },
     "@metamask/rpc-methods": {
+      "globals": {
+        "console.warn": true
+      },
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
@@ -1497,6 +1553,10 @@
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
         "clearTimeout": true,
+        "console.error": true,
+        "console.info": true,
+        "console.log": true,
+        "console.warn": true,
         "document.getElementById": true,
         "fetch.bind": true,
         "setTimeout": true
@@ -1508,6 +1568,8 @@
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@metamask/subject-metadata-controller": true,
+        "@metamask/base-controller": true,
+        "@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>gunzip-maybe": true,
@@ -1515,6 +1577,7 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-utils": true,
+        "@metamask/subject-metadata-controller": true,
         "@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,

@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Se você tentar enviar ativos diretamente de uma rede para outra, isso poderá resultar na perda permanente deles. Certifique-se de usar uma ponte."
   },
-  "attemptToCancel": {
-    "message": "Tentar cancelar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar essa tentativa não garante que sua transação original será cancelada. Caso a tentativa de cancelamento seja bem-sucedida, será cobrada a taxa de transação acima."
-  },
   "attemptingConnect": {
     "message": "A tentar ligar à blockchain."
   },
@@ -478,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Versão Beta da MetaMask"
-  },
-  "betaPortfolioSite": {
-    "message": "site de portfólio beta"
   },
   "betaTerms": {
     "message": "Termos de uso do Beta"
@@ -599,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Cancelar swap gratuitamente"
-  },
-  "cancellationGasFee": {
-    "message": "Taxa de gás por cancelamento"
   },
   "cancelled": {
     "message": "Cancelada"
@@ -1717,9 +1705,6 @@
     "message": "Ficheiro JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "para manter o controle dos seus tokens e NFTs em diferentes contas e redes."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2699,6 @@
   },
   "popularCustomNetworks": {
     "message": "Redes personalizadas populares"
-  },
-  "portfolioSite": {
-    "message": "Site do portfólio"
   },
   "preferredLedgerConnectionType": {
     "message": "Tipo de conexão preferencial com o Ledger",
@@ -4090,9 +4072,6 @@
   "tryAgain": {
     "message": "Tente novamente"
   },
-  "tryOur": {
-    "message": "Experimente nosso"
-  },
   "turnOnTokenDetection": {
     "message": "Ativar detecção avançada de token"
   },
@@ -4357,9 +4336,6 @@
   },
   "yes": {
     "message": "Sim"
-  },
-  "yesLetsTry": {
-    "message": "Sim, vamos tentar"
   },
   "youHaveAddedAll": {
     "message": "Você adicionou todas as redes populares. Você pode descobrir mais redes $1 Ou você pode $2",

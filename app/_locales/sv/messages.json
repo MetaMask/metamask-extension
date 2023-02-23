@@ -75,12 +75,6 @@
   "asset": {
     "message": "Tillgång"
   },
-  "attemptToCancel": {
-    "message": "Vill du försöka att avbryta?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Att godkänna detta avbrytningsförsök garanterar inte att din ursprungliga överföring avbryts. Om avbrytningsförsöket lyckas kommer du att debiteras överföringsavgiften som nämns ovan."
-  },
   "attemptingConnect": {
     "message": "Försöker ansluta till blockkedja."
   },
@@ -138,9 +132,6 @@
   },
   "cancel": {
     "message": "Avbryt"
-  },
-  "cancellationGasFee": {
-    "message": "Gasavgift för avbrytning"
   },
   "cancelled": {
     "message": "Avbruten"
@@ -897,9 +888,6 @@
   },
   "welcomeBack": {
     "message": "Välkommen tillbaka!"
-  },
-  "yesLetsTry": {
-    "message": "Ja, låt oss försöka"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."

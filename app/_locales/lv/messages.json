@@ -75,12 +75,6 @@
   "asset": {
     "message": "Aktīvs"
   },
-  "attemptToCancel": {
-    "message": "Vai mēģināt atcelt?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Šī mēģinājuma iesniegšana negarantē sākotnējā darījuma atcelšanu. Ja atcelšanas mēģinājums izdosies, no jums tiks pieprasīta iepriekš norādītā darījuma nodeva."
-  },
   "attemptingConnect": {
     "message": "Mēģina izveidot savienojumu ar bloku ķēdi."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Atcelt"
-  },
-  "cancellationGasFee": {
-    "message": "Atcelšanas maksājums par Gas"
   },
   "cancelled": {
     "message": "Atcelts"
@@ -918,9 +909,6 @@
   },
   "welcomeBack": {
     "message": "Ar atgriešanos!"
-  },
-  "yesLetsTry": {
-    "message": "Jā, pamēģināsim"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."

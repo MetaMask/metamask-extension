@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan penghubung."
   },
-  "attemptToCancel": {
-    "message": "Coba membatalkan?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Mengupayakan hal ini tidak menjamin transaksi asli Anda akan dibatalkan. Jika upaya pembatalan berhasil, Anda akan dikenakan biaya transaksi di atas."
-  },
   "attemptingConnect": {
     "message": "Mencoba terhubung ke blockchain."
   },
@@ -478,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Versi Beta MetaMask"
-  },
-  "betaPortfolioSite": {
-    "message": "situs portofolio beta"
   },
   "betaTerms": {
     "message": "Syarat penggunaan Beta"
@@ -599,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Batalkan swap gratis"
-  },
-  "cancellationGasFee": {
-    "message": "Biaya gas pembatalan"
   },
   "cancelled": {
     "message": "Dibatalkan"
@@ -1717,9 +1705,6 @@
     "message": "File JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "untuk mengawasi token dan NFT Anda di seluruh akun dan jaringan."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2699,6 @@
   },
   "popularCustomNetworks": {
     "message": "Jaringan khusus populer"
-  },
-  "portfolioSite": {
-    "message": "Situs portofolio"
   },
   "preferredLedgerConnectionType": {
     "message": "Jenis koneksi Ledger Pilihan",
@@ -4090,9 +4072,6 @@
   "tryAgain": {
     "message": "Coba lagi"
   },
-  "tryOur": {
-    "message": "Cobalah"
-  },
   "turnOnTokenDetection": {
     "message": "Nyalakan deteksi token yang ditingkatkan"
   },
@@ -4357,9 +4336,6 @@
   },
   "yes": {
     "message": "Ya"
-  },
-  "yesLetsTry": {
-    "message": "Ya, mari kita coba"
   },
   "youHaveAddedAll": {
     "message": "Anda telah menambahkan semua jaringan populer. Anda dapat menemukan lebih banyak jaringan $1 atau dapat $2",

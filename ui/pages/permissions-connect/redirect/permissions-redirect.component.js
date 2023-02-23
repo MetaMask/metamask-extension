@@ -10,6 +10,11 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../components/component-library';
 
 export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);
@@ -36,7 +41,11 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            <i className="fa fa-check fa-lg permissions-redirect__check" />
+            <Icon
+              name={ICON_NAMES.CHECK}
+              size={ICON_SIZES.LG}
+              className="permissions-redirect__check"
+            />
             <div className="permissions-redirect__dashed-line" />
           </Box>
           <SiteIcon

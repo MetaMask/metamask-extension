@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancel": {
-    "message": "Tenter d’annuler ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Faire une demande d’annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l’annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
@@ -478,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "site de portefeuille bêta"
   },
   "betaTerms": {
     "message": "Conditions d’utilisation de la version bêta"
@@ -599,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annuler le swap gratuitement"
-  },
-  "cancellationGasFee": {
-    "message": "Frais d’annulation de la transaction"
   },
   "cancelled": {
     "message": "Annulé"
@@ -1717,9 +1705,6 @@
     "message": "Fichier JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "pour garder un œil sur vos jetons et vos NFT sur l’ensemble de vos comptes et réseaux."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2699,6 @@
   },
   "popularCustomNetworks": {
     "message": "Réseaux personnalisés populaires"
-  },
-  "portfolioSite": {
-    "message": "Site du portefeuille"
   },
   "preferredLedgerConnectionType": {
     "message": "Type de connexion préférée au Ledger",
@@ -4090,9 +4072,6 @@
   "tryAgain": {
     "message": "Réessayez"
   },
-  "tryOur": {
-    "message": "Essayez notre"
-  },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
   },
@@ -4357,9 +4336,6 @@
   },
   "yes": {
     "message": "Oui"
-  },
-  "yesLetsTry": {
-    "message": "Oui, essayons"
   },
   "youHaveAddedAll": {
     "message": "Vous avez ajouté tous les réseaux populaires. Vous pouvez découvrir d’autres réseaux $1 ou $2",

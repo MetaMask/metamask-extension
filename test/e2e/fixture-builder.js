@@ -129,7 +129,6 @@ function defaultFixture() {
         recoveryPhraseReminderHasBeenShown: true,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        showPortfolioTooltip: false,
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {
@@ -295,7 +294,6 @@ function onboardingFixture() {
         recoveryPhraseReminderHasBeenShown: false,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        showPortfolioTooltip: true,
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {

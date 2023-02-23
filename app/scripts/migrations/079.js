@@ -1,15 +1,10 @@
 import { cloneDeep } from 'lodash';
-import {
-  WALLET_SNAP_PERMISSION_KEY,
-  SnapCaveatType,
-} from '@metamask/rpc-methods';
 
 const version = 79;
 
 /**
- * Prior to this migration, snap <> dapp permissions were wildcards i.e. `wallet_snap_*`.
- * Now the permission has been changed to `wallet_snap` and the current snap permissions
- * that are under wildcards will be added as caveats to a parent `wallet_snap` permission.
+ * The portfolio tooltip has been moved to a button on the home screen so
+ * this property is no longer needed in state
  */
 export default {
   version,
@@ -24,44 +19,8 @@ export default {
 };
 
 function transformState(state) {
-  const PermissionController = state?.PermissionController || {};
-
-  const { subjects } = PermissionController;
-
-  const snapPrefix = 'wallet_snap_';
-
-  for (const [subjectName, subject] of Object.entries(subjects)) {
-    // we keep track of the latest permission's date and associated id
-    // to assign to the wallet_snap permission
-    let date = 1;
-    let id;
-    const { permissions } = subject;
-    const updatedPermissions = { ...permissions };
-    for (const [permissionName, permission] of Object.entries(permissions)) {
-      if (permissionName.startsWith(snapPrefix)) {
-        if (!updatedPermissions[WALLET_SNAP_PERMISSION_KEY]) {
-          updatedPermissions[WALLET_SNAP_PERMISSION_KEY] = {
-            caveats: [{ type: SnapCaveatType.SnapIds, value: {} }],
-            invoker: subjectName,
-            parentCapability: WALLET_SNAP_PERMISSION_KEY,
-          };
-        }
-        const snapId = permissionName.slice(snapPrefix.length);
-        const caveat =
-          updatedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0];
-        caveat.value[snapId] = {};
-        if (permission.date > date) {
-          date = permission.date;
-          id = permission.id;
-        }
-        delete updatedPermissions[permissionName];
-      }
-    }
-    if (updatedPermissions[WALLET_SNAP_PERMISSION_KEY]) {
-      updatedPermissions[WALLET_SNAP_PERMISSION_KEY].date = date;
-      updatedPermissions[WALLET_SNAP_PERMISSION_KEY].id = id;
-      subject.permissions = updatedPermissions;
-    }
+  if (state?.metamask?.showPortfolioTooltip !== undefined) {
+    delete state.metamask.showPortfolioTooltip;
   }
 
   return state;

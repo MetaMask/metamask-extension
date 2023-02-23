@@ -75,12 +75,6 @@
   "asset": {
     "message": "Actius"
   },
-  "attemptToCancel": {
-    "message": "Estàs provant de cancel·lar?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Enviar aquesta temptativa no garanteix que la teva transacció original sigui cancel·lada. Si la temptativa de cancel·lació té èxit, se't carregarà la tarifa de transacció de més amunt."
-  },
   "attemptingConnect": {
     "message": "Intentant conectar a blockchain."
   },
@@ -138,9 +132,6 @@
   },
   "cancel": {
     "message": "Cancel·la"
-  },
-  "cancellationGasFee": {
-    "message": "Preu de cancel·lació del gas"
   },
   "cancelled": {
     "message": "Cancel·lat"
@@ -891,9 +882,6 @@
   },
   "welcomeBack": {
     "message": "Benvingut de nou!"
-  },
-  "yesLetsTry": {
-    "message": "Sí, provem"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Has de permetre l'accés a la càmera per fer servir aquesta característica."

@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "1 つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
   },
-  "attemptToCancel": {
-    "message": "キャンセルを試みますか?"
-  },
-  "attemptToCancelDescription": {
-    "message": "この試みを送信しても、元のトランザクションのキャンセルは保証されません。キャンセルの試みが成功した場合、上記のトランザクション手数料が課金されます。"
-  },
   "attemptingConnect": {
     "message": "ブロックチェーンへの接続を試みています。"
   },
@@ -478,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMaskベータバージョン"
-  },
-  "betaPortfolioSite": {
-    "message": "ベータポートフォリオサイト"
   },
   "betaTerms": {
     "message": "ベータ版利用規約"
@@ -599,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "無料でスワップをキャンセル"
-  },
-  "cancellationGasFee": {
-    "message": "キャンセルのガス代"
   },
   "cancelled": {
     "message": "キャンセル済み"
@@ -1717,9 +1705,6 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "複数のアカウントやネットワークのトークンや NFT を監視するには。"
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2699,6 @@
   },
   "popularCustomNetworks": {
     "message": "人気のカスタムネットワーク"
-  },
-  "portfolioSite": {
-    "message": "ポートフォリオサイト"
   },
   "preferredLedgerConnectionType": {
     "message": "優先Ledger接続タイプ",
@@ -4090,9 +4072,6 @@
   "tryAgain": {
     "message": "再試行"
   },
-  "tryOur": {
-    "message": "こちらをお試しください:"
-  },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
   },
@@ -4357,9 +4336,6 @@
   },
   "yes": {
     "message": "はい"
-  },
-  "yesLetsTry": {
-    "message": "はい、やってみます"
   },
   "youHaveAddedAll": {
     "message": "すべての人気ネットワークを追加しました。$1で他のネットワークを発見するか、$2できます。",

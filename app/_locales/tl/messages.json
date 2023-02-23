@@ -399,12 +399,6 @@
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng tulay."
   },
-  "attemptToCancel": {
-    "message": "Subukang Kanselahin?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Kapag isinumite ang pagsubok na ito, hindi nito magagarantiyang makakansela ang iyong orihinal na transaksyon. Kung magiging matagumpay ang pagsubok na magkansela, sisingilin ka para sa bayarin sa transaksyon sa itaas."
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -478,9 +472,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Bersyon ng MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "site ng beta portfolio"
   },
   "betaTerms": {
     "message": "Mga tuntunin sa paggamit ng Beta"
@@ -599,9 +590,6 @@
   },
   "cancelSwapForFree": {
     "message": "Kanselahin ang swap nang libre"
-  },
-  "cancellationGasFee": {
-    "message": "Bayarin sa Gasolina para sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -1717,9 +1705,6 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "upang masubaybayan ang iyong mga token at NFT sa mga account at network."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -2714,9 +2699,6 @@
   },
   "popularCustomNetworks": {
     "message": "Mga sikat na custom na network"
-  },
-  "portfolioSite": {
-    "message": "Site ng portfolio"
   },
   "preferredLedgerConnectionType": {
     "message": "Napiling Uri ng Ledger Connection",
@@ -4090,9 +4072,6 @@
   "tryAgain": {
     "message": "Subukan ulit"
   },
-  "tryOur": {
-    "message": "Subukan ang aming"
-  },
   "turnOnTokenDetection": {
     "message": "I-on ang pinahusay na pag-detect ng token"
   },
@@ -4357,9 +4336,6 @@
   },
   "yes": {
     "message": "Oo"
-  },
-  "yesLetsTry": {
-    "message": "Oo, subukan natin"
   },
   "youHaveAddedAll": {
     "message": "Idinagdag mo ang lahat ng sikat na network. Maaari kang makatuklas ng higit pang mga network $1 O maaari kang",
