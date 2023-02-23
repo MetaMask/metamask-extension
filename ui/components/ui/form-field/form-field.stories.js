@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { Icon, ICON_NAMES } from '../../component-library';
 import Typography from '../typography';
 import Tooltip from '../tooltip';
-import Box from '../box';
 
+import { Icon, ICON_NAMES } from '../../component-library';
+import { AlignItems } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import FormField from '.';
 
@@ -95,6 +96,7 @@ export const CustomComponents = (args) => {
     <div style={{ width: '600px' }}>
       <FormField
         {...args}
+        titleHeadingWrapperProps={{ alignItems: AlignItems.center }}
         TitleTextCustomComponent={
           <Typography>TitleTextCustomComponent</Typography>
         }
@@ -107,7 +109,7 @@ export const CustomComponents = (args) => {
             position="top"
             html={<Typography>Custom tooltip</Typography>}
           >
-            <Box as="i" marginLeft={2} className="fa fa-question-circle" />
+            <Icon name={ICON_NAMES.QUESTION} marginLeft={2} />
           </Tooltip>
         }
         titleDetail={<Typography>TitleDetail</Typography>}

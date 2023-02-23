@@ -58,12 +58,13 @@ export default class EditableLabel extends Component {
           })}
           autoFocus
         />
-        <button
+        <ButtonIcon
+          iconName={ICON_NAMES.CHECK}
           className="editable-label__icon-button"
           onClick={() => this.handleSubmit(isValidAccountName)}
         >
           <Icon name={ICON_NAMES.CHECK} className="editable-label__icon" />
-        </button>
+        </ButtonIcon>
         <div className="editable-label__error editable-label__error-amount">
           {errorMessage}
         </div>

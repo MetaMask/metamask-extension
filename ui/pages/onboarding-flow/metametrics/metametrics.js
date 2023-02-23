@@ -21,6 +21,7 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();

@@ -8,6 +8,7 @@ import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
+import { Icon, ICON_NAMES } from '../../../component-library';
 
 export default class MetaMetricsOptInModal extends Component {
   static propTypes = {

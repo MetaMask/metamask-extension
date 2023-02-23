@@ -34,6 +34,7 @@ import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 
 export default function CreatePassword({
   createNewAccount,

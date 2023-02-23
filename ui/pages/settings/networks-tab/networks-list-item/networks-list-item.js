@@ -7,7 +7,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../../../components/component-library';
-import { Color } from '../../../../helpers/constants/design-system';
+import { Color, IconColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -134,7 +134,7 @@ const NetworksListItem = ({
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
             name={ICON_NAMES.LOCK}
-            color={Color.iconMuted}
+            color={IconColor.iconMuted}
             size={ICON_SIZES.AUTO}
             marginInlineStart={2}
           />
