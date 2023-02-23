@@ -240,7 +240,6 @@ function getValues(pendingApproval, t, actions, history) {
                       <Link
                         key="zendesk_page_link"
                         href={ZENDESK_URLS.UNKNOWN_NETWORK}
-                        target="_blank"
                         style={{ color: 'var(--color-primary-default)' }}
                       >
                         {t('learnMoreUpperCase')}

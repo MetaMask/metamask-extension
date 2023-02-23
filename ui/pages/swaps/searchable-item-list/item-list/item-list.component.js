@@ -168,8 +168,6 @@ export default function ItemList({
                       url: blockExplorerLink,
                     });
                   }}
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   {blockExplorerHostName}
                 </Link>,

@@ -292,8 +292,6 @@ class ConnectHardwareForm extends Component {
             <Link
               href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="hardware-connection-guide"
-              target="_blank"
-              rel="noopener noreferrer"
               className="hw-connect__link"
               style={{ marginLeft: '5px', marginRight: '5px' }}
             >

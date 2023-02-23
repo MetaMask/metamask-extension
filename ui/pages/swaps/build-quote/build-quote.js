@@ -500,8 +500,6 @@ export default function BuildQuote({
             url: blockExplorerTokenLink,
           });
         }}
-        target="_blank"
-        rel="noopener noreferrer"
       >
         {blockExplorerLabel}
       </Link>
@@ -834,8 +832,6 @@ export default function BuildQuote({
                           url: blockExplorerTokenLink,
                         });
                       }}
-                      target="_blank"
-                      rel="noopener noreferrer"
                     >
                       {blockExplorerLabel}
                     </Link>,

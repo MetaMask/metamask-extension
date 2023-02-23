@@ -31,11 +31,7 @@ const GasDetailsItemTitle = () => {
               {t('transactionDetailGasTooltipExplanation')}
             </Typography>
             <Typography variant={TypographyVariant.H7}>
-              <Link
-                href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <Link href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172">
                 {t('transactionDetailGasTooltipConversion')}
               </Link>
             </Typography>

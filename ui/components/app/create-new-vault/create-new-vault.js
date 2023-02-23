@@ -90,8 +90,6 @@ export default function CreateNewVault({
       className="create-new-vault__terms-link"
       key="create-new-vault__link-text"
       href="https://metamask.io/terms.html"
-      target="_blank"
-      rel="noreferrer"
     >
       {t('terms')}
     </Link>,

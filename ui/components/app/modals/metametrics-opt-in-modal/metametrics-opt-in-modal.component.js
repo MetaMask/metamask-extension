@@ -102,7 +102,7 @@ export default class MetaMetricsOptInModal extends Component {
                 <Link
                   key="metametrics-bottom-text-wrapper"
                   href="https://metamask.io/privacy.html"
-                  target="_blank"
+                  referer
                 >
                   {t('gdprMessagePrivacyPolicy')}
                 </Link>,

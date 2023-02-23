@@ -93,12 +93,7 @@ const EditGasFeePopover = () => {
                 variant={TypographyVariant.H7}
               >
                 {t('learnMoreAboutGas', [
-                  <Link
-                    key="learnMoreLink"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={ZENDESK_URLS.USER_GUIDE_GAS}
-                  >
+                  <Link key="learnMoreLink" href={ZENDESK_URLS.USER_GUIDE_GAS}>
                     {t('learnMore')}
                   </Link>,
                 ])}

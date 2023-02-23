@@ -102,8 +102,6 @@ export default function FeeCard({
                                 url: GAS_FEES_LEARN_MORE_URL,
                               });
                             }}
-                            target="_blank"
-                            rel="noopener noreferrer"
                           >
                             {t('swapGasFeesLearnMore')}
                           </Link>

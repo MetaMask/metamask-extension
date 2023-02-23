@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 const Link = ({ href, rel, target, referer, ...props }) => {
   const _rel = 'noopener'
+    .concat(referer ? '' : ' noreferrer')
     .concat(rel ? ` ${rel}` : '')
-    .concat(href && href.startsWith('http') && !referer ? ' noreferrer' : '')
     .split(' ');
-  const _target = target || (href && href.startsWith('http') ? '_blank' : null);
+  const _target = target || '_blank';
 
   const anchorProps = { ...props };
   if (_target) {
@@ -22,7 +22,7 @@ const Link = ({ href, rel, target, referer, ...props }) => {
 Link.propTypes = {
   referer: PropTypes.bool,
   children: PropTypes.node,
-  key: PropTypes.string,
+  // key: PropTypes.string,
   className: PropTypes.string,
   href: PropTypes.string,
   target: PropTypes.string,

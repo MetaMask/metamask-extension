@@ -108,8 +108,6 @@ export default class ConfirmRemoveAccount extends Component {
             {t('removeAccountDescription')}
             <Link
               className="confirm-remove-account__link"
-              rel="noopener noreferrer"
-              target="_blank"
               href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
             >
               {t('learnMore')}

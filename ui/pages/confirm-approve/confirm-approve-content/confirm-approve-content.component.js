@@ -411,7 +411,6 @@ export default class ConfirmApproveContent extends Component {
         <>
           <Link
             href={blockExplorerLink}
-            target="_blank"
             title={tokenAddress}
             className="confirm-approve-content__approval-asset-link"
           >

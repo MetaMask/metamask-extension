@@ -44,9 +44,7 @@ class ErrorPage extends PureComponent {
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
     const supportLink = (
       <Link
-        target="_blank"
         key="metamaskSupportLink"
-        rel="noopener noreferrer"
         href={SUPPORT_REQUEST_LINK}
         onClick={() => {
           this.context.trackEvent(

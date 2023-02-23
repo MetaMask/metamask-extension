@@ -33,12 +33,7 @@ const BetaHeader = () => {
         color={Color.warningInverse}
       >
         {t('betaHeaderText', [
-          <Link
-            href={BETA_BUGS_URL}
-            key="link"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
+          <Link href={BETA_BUGS_URL} key="link">
             {t('here')}
           </Link>,
         ])}

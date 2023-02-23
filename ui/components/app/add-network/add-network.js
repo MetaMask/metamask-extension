@@ -101,8 +101,6 @@ const AddNetwork = () => {
                   key="link"
                   className="add-network__edge-case-box__link"
                   href="https://chainlist.wtf/"
-                  target="_blank"
-                  rel="noreferrer"
                 >
                   {t('here')}.
                 </Link>,
@@ -226,8 +224,6 @@ const AddNetwork = () => {
                               <Link
                                 key="zendesk_page_link"
                                 href={ZENDESK_URLS.UNKNOWN_NETWORK}
-                                rel="noreferrer"
-                                target="_blank"
                               >
                                 {t('learnMoreUpperCase')}
                               </Link>,

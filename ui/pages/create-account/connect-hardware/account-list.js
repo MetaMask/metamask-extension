@@ -149,8 +149,6 @@ class AccountList extends Component {
                     url: accountLink,
                   });
                 }}
-                target="_blank"
-                rel="noreferrer"
                 title={this.context.t('etherscanView')}
               >
                 <i

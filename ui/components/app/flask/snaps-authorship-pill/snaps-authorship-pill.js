@@ -36,12 +36,7 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
   const friendlyName = SNAPS_METADATA[snapId]?.name ?? packageName;
 
   return (
-    <Link
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={classnames(className, `snaps-authorship-pill`)}
-    >
+    <Link href={url} className={classnames(className, `snaps-authorship-pill`)}>
       <Chip
         leftIcon={
           <Box paddingLeft={2}>

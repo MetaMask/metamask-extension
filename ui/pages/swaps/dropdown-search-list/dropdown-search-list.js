@@ -256,8 +256,6 @@ export default function DropdownSearchList({
                                 url: blockExplorerLink,
                               });
                             }}
-                            target="_blank"
-                            rel="noopener noreferrer"
                           >
                             {blockExplorerHostName}
                           </Link>,

@@ -52,7 +52,6 @@ const TransactionAlerts = ({
                 <Link
                   key="cancelSpeedUpInfo"
                   href={ZENDESK_URLS.SPEEDUP_CANCEL}
-                  target="_blank"
                 >
                   {t('cancelSpeedUp')}
                 </Link>,

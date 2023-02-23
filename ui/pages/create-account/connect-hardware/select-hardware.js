@@ -202,7 +202,6 @@ export default class SelectHardware extends Component {
           <Link
             className="hw-connect__msg-link"
             href="https://www.ledger.com/ledger-live"
-            target="_blank"
             key="ledger-live-app-link"
           >
             {this.context.t('ledgerLiveApp')}
@@ -220,7 +219,6 @@ export default class SelectHardware extends Component {
         <Link
           className="hw-connect__msg-link"
           href={ZENDESK_URLS.HARDWARE_CONNECTION}
-          target="_blank"
           key="ledger-support-link"
         >
           {this.context.t('hardwareWalletSupportLinkConversion')}
@@ -288,7 +286,6 @@ export default class SelectHardware extends Component {
           <Link
             className="hw-connect__msg-link"
             href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            target="_blank"
             key="lattice-setup-link"
           >
             {this.context.t('hardwareWalletSupportLinkConversion')}
@@ -353,7 +350,6 @@ export default class SelectHardware extends Component {
           <Link
             className="hw-connect__msg-link"
             href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            target="_blank"
             key="trezor-support-link"
           >
             {this.context.t('hardwareWalletSupportLinkConversion')}

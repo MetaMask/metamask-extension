@@ -27,7 +27,6 @@ export default function TokenCell({
       {t('troubleTokenBalances')}
       <Link
         href={`https://ethplorer.io/address/${userAddress}`}
-        target="_blank"
         onClick={(event) => event.stopPropagation()}
         style={{ color: 'var(--color-warning-default)' }}
       >
