@@ -31,6 +31,9 @@ export default class AppHeader extends PureComponent {
     showBetaHeader: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
     onClick: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    desktopEnabled: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -122,6 +125,9 @@ export default class AppHeader extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IN(beta)
       showBetaHeader,
       ///: END:ONLY_INCLUDE_IN(beta)
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      desktopEnabled,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     return (
@@ -143,6 +149,18 @@ export default class AppHeader extends PureComponent {
                 history.push(DEFAULT_ROUTE);
               }}
             />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+              desktopEnabled && process.env.METAMASK_DEBUG && (
+                <div data-testid="app-header-desktop-dev-logo">
+                  <MetaFoxLogo
+                    unsetIconHeight
+                    src="./images/logo/desktop.svg"
+                  />
+                </div>
+              )
+              ///: END:ONLY_INCLUDE_IN
+            }
             <div className="app-header__account-menu-container">
               {!hideNetworkIndicator && (
                 <div className="app-header__network-component-wrapper">
