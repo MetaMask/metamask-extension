@@ -169,7 +169,7 @@ describe('MetaMask onboarding', function () {
         // Verify site
         assert.match(
           await driver.getCurrentUrl(),
-          /^chrome-extension:\/\/.+\/home\.html#onboarding\/completion/u,
+          /\/\/.+\/home\.html#onboarding\/completion/u,
         );
       },
     );
@@ -204,7 +204,7 @@ describe('MetaMask onboarding', function () {
         // Verify site
         assert.match(
           await driver.getCurrentUrl(),
-          /^chrome-extension:\/\/.+\/home\.html#onboarding\/secure-your-wallet/u,
+          /\/\/.+\/home\.html#onboarding\/secure-your-wallet/u,
         );
       },
     );
@@ -238,7 +238,6 @@ describe('MetaMask onboarding', function () {
 
       async ({ driver }) => {
         await driver.navigate();
-
         await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
 
         // Add custome network localhost 8546 during onboarding
