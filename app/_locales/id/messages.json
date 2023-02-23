@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
-  "affirmAgree": {
-    "message": "Saya setuju"
-  },
   "airgapVault": {
     "message": "Brankas AirGap"
   },
@@ -1432,14 +1429,6 @@
   "gasUsed": {
     "message": "Gas yang digunakan"
   },
-  "gdprMessage": {
-    "message": "Data ini dikumpulkan dan oleh karenanya bersifat anonim untuk tujuan Peraturan Perlindungan Data Umum (UE) 2016/679. Untuk informasi selengkapnya sehubungan dengan praktik privasi kami, lihat $1 kami.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Kebijakan privasi di sini",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Umum"
   },
@@ -1894,37 +1883,6 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Selalu izinkan Anda untuk keluar melalui Pengaturan"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Jangan",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask akan.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 mengumpulkan alamat IP lengkap Anda",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 mengumpulkan kunci, alamat, transaksi, saldo, hash, atau informasi pribadi lainnya",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 menjual data untuk mendapatkan keuntungan. Jangan pernah!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Kirim kejadian pageview & klik anonim"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Bantu Kami Menyempurnakan MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna berinteraksi dengan ekstensi. Data ini akan digunakan untuk meningkatkan kegunaan dan pengalaman pengguna atas produk kami dan ekosistem Ethereum secara berkala."
-  },
   "mismatchedChainLinkText": {
     "message": "memverifikasi detail jaringan",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2163,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Belum ada Snap yang diinstal"
-  },
-  "noThanks": {
-    "message": "Tidak, terima kasih"
   },
   "noThanksVariant2": {
     "message": "Tidak, terima kasih."
