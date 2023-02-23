@@ -46,13 +46,17 @@ function isBalanceSufficient({
 
 function gasIsExcessive({
   customPrice = '0x0',
-  gasFeeEstimates = { high: '1' },
+  gasFeeEstimates = {},
   gasEstimateType = GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none,
 }) {
   const fastPrice =
     gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
       ? gasFeeEstimates?.high
       : null;
+
+  if (!customPrice || !fastPrice) {
+    return false;
+  }
 
   const customPriceExcessive = new Numeric(
     customPrice,
