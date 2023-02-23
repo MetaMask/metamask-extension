@@ -1391,10 +1391,10 @@
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "@metamask/rpc-methods>@metamask/snaps-ui": true,
+        "@metamask/rpc-methods>@metamask/permission-controller": true,
         "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-ui": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true,
@@ -1415,36 +1415,34 @@
         "browserify>buffer": true
       }
     },
-    "@metamask/rpc-methods>@metamask/snaps-ui": {
+    "@metamask/rpc-methods>@metamask/permission-controller": {
       "packages": {
-        "@metamask/utils": true,
-        "@metamask/utils>superstruct": true
+        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": true,
+        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
+        "@metamask/rpc-methods>nanoid": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "immer": true,
+        "json-rpc-engine": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree": {
+    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": {
       "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true,
-        "@metamask/utils": true
+        "immer": true
       }
     },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
+    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
       "globals": {
-        "crypto": true
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
       },
       "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -1504,11 +1502,12 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/base-controller": true,
+        "@metamask/snaps-controllers>@metamask/permission-controller": true,
+        "@metamask/snaps-controllers>@metamask/subject-metadata-controller": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>gunzip-maybe": true,
@@ -1516,12 +1515,46 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-utils": true,
-        "@metamask/subject-metadata-controller": true,
         "@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "pump": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/permission-controller": {
+      "packages": {
+        "@metamask/snaps-controllers>@metamask/base-controller": true,
+        "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils": true,
+        "@metamask/snaps-controllers>nanoid": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "immer": true,
+        "json-rpc-engine": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/subject-metadata-controller": {
+      "packages": {
+        "@metamask/snaps-controllers>@metamask/base-controller": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
