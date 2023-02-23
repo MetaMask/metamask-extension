@@ -167,9 +167,9 @@ describe('MetaMask onboarding', function () {
         await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Verify site
-        assert.equal(
+        assert.match(
           await driver.getCurrentUrl(),
-          'chrome-extension://lcnbangcbnamibckjlapoogdhnpocoba/home.html#onboarding/completion',
+          /\/home.html#onboarding\/completion/,
         );
       },
     );
@@ -202,9 +202,9 @@ describe('MetaMask onboarding', function () {
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Verify site
-        assert.equal(
+        assert.match(
           await driver.getCurrentUrl(),
-          'chrome-extension://lcnbangcbnamibckjlapoogdhnpocoba/home.html#onboarding/secure-your-wallet',
+          /\/home.html#onboarding\/secure-your-wallet/,
         );
       },
     );
