@@ -1410,3 +1410,15 @@ export function getCustomTokenAmount(state) {
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+/**
+ * To get the `desktopEnabled` value which determines whether we use the desktop app
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsDesktopEnabled(state) {
+  return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
