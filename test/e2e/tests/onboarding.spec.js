@@ -169,7 +169,7 @@ describe('MetaMask onboarding', function () {
         // Verify site
         assert.match(
           await driver.getCurrentUrl(),
-          /\/home.html#onboarding\/completion/,
+          /\/home.html#onboarding\/completion/u,
         );
       },
     );
@@ -204,7 +204,7 @@ describe('MetaMask onboarding', function () {
         // Verify site
         assert.match(
           await driver.getCurrentUrl(),
-          /\/home.html#onboarding\/secure-your-wallet/,
+          /\/home.html#onboarding\/secure-your-walletu/u,
         );
       },
     );
