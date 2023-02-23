@@ -14,6 +14,7 @@ import {
   BorderRadius,
   BackgroundColor,
   TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
@@ -36,6 +37,7 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 const AddNetwork = () => {
   const t = useContext(I18nContext);
@@ -235,9 +237,11 @@ const AddNetwork = () => {
                         }
                         trigger="mouseenter"
                       >
-                        <i
-                          className="fa fa-exclamation-triangle add-network__warning-icon"
-                          title={t('warning')}
+                        <Icon
+                          className="add-network__warning-icon"
+                          name={ICON_NAMES.DANGER}
+                          color={IconColor.iconMuted}
+                          size={ICON_SIZES.SM}
                         />
                       </Tooltip>
                     )
