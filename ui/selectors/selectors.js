@@ -651,7 +651,8 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { networkConfigurations, provider: { networkConfigurationId } = {} } = state.metamask;
+  const { networkConfigurations, provider: { networkConfigurationId } = {} } =
+    state.metamask;
   const selectRpcInfo = networkConfigurations[networkConfigurationId];
   const { rpcPrefs = {} } = selectRpcInfo || {};
   return rpcPrefs;

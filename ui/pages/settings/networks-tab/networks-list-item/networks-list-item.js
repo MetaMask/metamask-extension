@@ -44,7 +44,8 @@ const NetworksListItem = ({
   } = network;
 
   const listItemNetworkIsSelected =
-    selectedNetworkConfigurationId && selectedNetworkConfigurationId === networkConfigurationId;
+    selectedNetworkConfigurationId &&
+    selectedNetworkConfigurationId === networkConfigurationId;
   const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
     provider.type !== NETWORK_TYPES.RPC &&

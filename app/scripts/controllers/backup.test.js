@@ -71,7 +71,7 @@ function getMockNetworkController() {
   return mcState;
 }
 
-const data = JSON.stringify({
+const jsonData = JSON.stringify({
   addressBook: {
     addressBook: {
       '0x61': {

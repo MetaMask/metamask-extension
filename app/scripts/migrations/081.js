@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { v4 } from 'uuid';
 
-const version = 80;
+const version = 81;
 
 /**
  * Migrate the frequentRpcListDetail from the PreferencesController to the NetworkController, convert it from an array to an object
