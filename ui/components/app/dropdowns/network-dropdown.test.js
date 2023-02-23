@@ -103,6 +103,13 @@ describe('Network Dropdown', () => {
       expect(localhostColorIndicator).toBeInTheDocument();
     });
 
+    it('checks background color for seventh ColorIndicator', () => {
+      const consensysZkevmColorIndicator = screen.queryByTestId(
+        'color-icon-consensyszkevm',
+      );
+      expect(consensysZkevmColorIndicator).toBeInTheDocument();
+    });
+
     it('checks that Add Network button is rendered', () => {
       const addNetworkButton = screen.queryByText('Add network');
       expect(addNetworkButton).toBeInTheDocument();
@@ -111,7 +118,7 @@ describe('Network Dropdown', () => {
     it('shows test networks in the dropdown', () => {
       const networkItems = screen.queryAllByTestId(/network-item/u);
 
-      expect(networkItems).toHaveLength(6);
+      expect(networkItems).toHaveLength(7);
     });
   });
 

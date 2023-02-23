@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
+  "connectingToConsensysZkevm": {
+    "message": "در حال اتصال به شبکه آزمایشی ConsenSys zkEVM"
+  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
   },
@@ -320,6 +323,9 @@
   },
   "goerli": {
     "message": "شبکه آزمایشی Goerli"
+  },
+  "consensyszkevm": {
+    "message": "شبکه آزمایشی ConsenSys zkEVM"
   },
   "hardware": {
     "message": "سخت افزار"

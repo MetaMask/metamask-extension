@@ -231,6 +231,8 @@ class NetworkDropdown extends Component {
         return t('goerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('sepolia');
+      case NETWORK_TYPES.CONSENSYS_ZKEVM:
+        return t('consensyszkevm');
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
@@ -371,6 +373,7 @@ class NetworkDropdown extends Component {
             <>
               {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
               {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
+              {this.renderNetworkEntry(NETWORK_TYPES.CONSENSYS_ZKEVM)}
               {this.renderCustomRpcList(
                 rpcListDetailForLocalHost,
                 this.props.provider,

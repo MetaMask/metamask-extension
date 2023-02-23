@@ -557,6 +557,9 @@
   "connectingToSepolia": {
     "message": "Connessione alla Rete di test Sepolia"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Connessione alla Rete di test ConsenSys zkEVM"
+  },
   "contactUs": {
     "message": "Contattaci!"
   },
@@ -991,6 +994,9 @@
   },
   "goerli": {
     "message": "Rete di test Goerli"
+  },
+  "consensyszkevm": {
+    "message": "Rete di test ConsenSys zkEVM"
   },
   "hardware": {
     "message": "hardware"

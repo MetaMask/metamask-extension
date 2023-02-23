@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Povezovanje na testno omrežje ConsenSys zkEVM"
+  },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
   },
@@ -317,6 +320,9 @@
   },
   "goerli": {
     "message": "Testno omrežje Goerli"
+  },
+  "consensyszkevm": {
+    "message": "Testno omrežje ConsenSys zkEVM"
   },
   "hardware": {
     "message": "strojna"

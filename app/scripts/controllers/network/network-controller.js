@@ -17,6 +17,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
+  CONSENSYS_ZKEVM_RPC_URL,
 } from '../../../../shared/constants/network';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
@@ -208,7 +209,9 @@ export default class NetworkController extends EventEmitter {
     // Ping the RPC endpoint so we can confirm that it works
     const initialNetwork = this.networkStore.getState();
     const { type } = this.providerStore.getState();
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
+    const isInfura =
+      INFURA_PROVIDER_TYPES.includes(type) &&
+      type !== NETWORK_TYPES.CONSENSYS_ZKEVM;
 
     if (isInfura) {
       this._checkInfuraAvailability(type);
@@ -426,12 +429,17 @@ export default class NetworkController extends EventEmitter {
 
   _configureProvider({ type, rpcUrl, chainId }) {
     // infura type-based endpoints
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
+    const isInfura =
+      INFURA_PROVIDER_TYPES.includes(type) &&
+      type !== NETWORK_TYPES.CONSENSYS_ZKEVM;
+
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId);
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPES.RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
+    } else if (type === NETWORK_TYPES.CONSENSYS_ZKEVM) {
+      this._configureStandardProvider(CONSENSYS_ZKEVM_RPC_URL, chainId);
     } else {
       throw new Error(
         `NetworkController - _configureProvider - unknown type "${type}"`,

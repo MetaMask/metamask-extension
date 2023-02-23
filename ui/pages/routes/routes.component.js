@@ -522,6 +522,8 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
+      case NETWORK_TYPES.CONSENSYS_ZKEVM:
+        return t('connectingToConsensysZkevm');
       default:
         return t('connectingTo', [providerId]);
     }

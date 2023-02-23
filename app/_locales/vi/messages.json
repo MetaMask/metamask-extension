@@ -717,6 +717,9 @@
   "connectingToSepolia": {
     "message": "Đang kết nối với mạng thử nghiệm Sepolia"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Đang kết nối với mạng thử nghiệm ConsenSys zkEVM"
+  },
   "contactUs": {
     "message": "Liên hệ với chúng tôi"
   },
@@ -3240,6 +3243,9 @@
   },
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
+  },
+  "consensyszkevm": {
+    "message": "Mạng thử nghiệm ConsenSys zkEVM"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."

@@ -160,6 +160,9 @@
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Oppretter forbindelse med ConsenSys zkEVM Test Network"
+  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
   },

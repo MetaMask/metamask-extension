@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Menyambung kepada Rangkaian Ujian ConsenSys zkEVM"
+  },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
   },
@@ -313,6 +316,9 @@
   },
   "goerli": {
     "message": "Rangkaian Ujian Goerli"
+  },
+  "consensyszkevm": {
+    "message": "Rangkaian Ujian ConsenSys zkEVM"
   },
   "hardware": {
     "message": "perkakasan"

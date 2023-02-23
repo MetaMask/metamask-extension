@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Yhdistetään ConsenSys zkEVM testiverkostoon"
+  },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
   },
@@ -320,6 +323,9 @@
   },
   "goerli": {
     "message": "Goerli-testiverkko"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys zkEVM-testiverkko"
   },
   "hardware": {
     "message": "laitteisto"

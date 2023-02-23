@@ -717,6 +717,9 @@
   "connectingToSepolia": {
     "message": "Sepolia 테스트 네트워크에 연결 중"
   },
+  "connectingToConsensysZkevm": {
+    "message": "ConsenSys zkEVM 테스트 네트워크에 연결 중"
+  },
   "contactUs": {
     "message": "문의하기"
   },
@@ -3240,6 +3243,9 @@
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys zkEVM 테스트 네트워크"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."

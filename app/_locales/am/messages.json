@@ -157,6 +157,9 @@
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
+  "connectingToConsensysZkevm": {
+    "message": "ከ ConsenSys zkEVM የሙከራ አውታረ መረብ ጋር መገናኘት"
+  },
   "connectingToMainnet": {
     "message": "ከዋናው የ Ethereum አውታረ መረብ ጋር መገናኘት"
   },
@@ -311,6 +314,9 @@
   },
   "goerli": {
     "message": "የ Goerli የሙከራ አውታረ መረብ"
+  },
+  "consensyszkevm": {
+    "message": "የ ConsenSys zkEVM የሙከራ አውታረ መረብ"
   },
   "hardware": {
     "message": "ሃርድዌር"

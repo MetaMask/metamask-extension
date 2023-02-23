@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
+  "connectingToConsensysZkevm": {
+    "message": "ConsenSys zkEVM ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
+  },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -320,6 +323,9 @@
   },
   "goerli": {
     "message": "Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys zkEVM ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "hardware": {
     "message": "ಹಾರ್ಡ್‌ವೇರ್"

@@ -319,6 +319,9 @@
   "connectingToSepolia": {
     "message": "連線到 Sepolia 測試網路"
   },
+  "connectingToConsensysZkevm": {
+    "message": "連線到 ConsenSys zkEVM 測試網路"
+  },
   "contactUs": {
     "message": "聯絡我們"
   },
@@ -655,6 +658,9 @@
   },
   "goerli": {
     "message": "Goerli 測試網路"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys zkEVM 測試網路"
   },
   "hardware": {
     "message": "硬體"

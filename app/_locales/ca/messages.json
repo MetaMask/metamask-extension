@@ -160,6 +160,9 @@
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Connectant a Xarxa de Prova ConsenSys zkEVM"
+  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
   },
@@ -310,6 +313,9 @@
   },
   "goerli": {
     "message": "Xarxa de test Goerli"
+  },
+  "consensyszkevm": {
+    "message": "Xarxa de test ConsenSys zkEVM"
   },
   "hardwareWalletConnected": {
     "message": "Moneder hardware connectat"

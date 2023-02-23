@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Ühendamine ConsenSys zkEVM testvõrguga"
+  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
   },
@@ -316,6 +319,9 @@
   },
   "goerli": {
     "message": "Goerli testvõrk"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys zkEVM testvõrk"
   },
   "hardware": {
     "message": "riistvara"

@@ -717,6 +717,9 @@
   "connectingToSepolia": {
     "message": "Menghubungkan ke jaringan uji Sepolia"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Menghubungkan ke jaringan uji ConsenSys zkEVM"
+  },
   "contactUs": {
     "message": "Hubungi kami"
   },
@@ -3240,6 +3243,9 @@
   },
   "sepolia": {
     "message": "Jaringan uji Sepolia"
+  },
+  "consensyszkevm": {
+    "message": "Jaringan uji ConsenSys zkEVM"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."

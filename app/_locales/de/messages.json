@@ -717,6 +717,9 @@
   "connectingToSepolia": {
     "message": "Verbindungsaufbau zum Sepolia-Testnetzwerk"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Verbindungsaufbau zum ConsenSys-zkEVM-Testnetzwerk"
+  },
   "contactUs": {
     "message": "Kontaktaufnahme"
   },
@@ -3240,6 +3243,9 @@
   },
   "sepolia": {
     "message": "Sepolia-Testnetzwerk"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys-zkEVM-Testnetzwerk"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask nutzt diese vertrauenswürdigen Dienstleistungen von Drittanbietern, um die Benutzerfreundlichkeit und Sicherheit der Produkte zu verbessern."

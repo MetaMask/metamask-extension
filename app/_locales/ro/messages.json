@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Se conectează la rețeaua de test ConsenSys zkEVM"
+  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
   },
@@ -313,6 +316,9 @@
   },
   "goerli": {
     "message": "Rețea de test Goerli"
+  },
+  "consensyszkevm": {
+    "message": "Rețea de test ConsenSys zkEVM"
   },
   "hardwareWalletConnected": {
     "message": "Portofelul hardware a fost conectat"

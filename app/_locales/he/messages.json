@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
+  "connectingToConsensysZkevm": {
+    "message": "מתחבר ל-ConsenSys zkEVM Test Network"
+  },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
   },
@@ -320,6 +323,9 @@
   },
   "goerli": {
     "message": "רשת בדיקה Goerli "
+  },
+  "consensyszkevm": {
+    "message": "רשת בדיקה ConsenSys zkEVM"
   },
   "hardware": {
     "message": "חומרה"

@@ -4,6 +4,7 @@ import {
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
   NETWORK_TYPES,
+  CONSENSYS_ZKEVM_RPC_URL,
 } from '../../../../shared/constants/network';
 
 const defaultNetworksData = [
@@ -42,6 +43,15 @@ const defaultNetworksData = [
     chainId: CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: 'https://sepolia.etherscan.io',
+  },
+  {
+    labelKey: NETWORK_TYPES.CONSENSYS_ZKEVM,
+    iconColor: '#234FD5',
+    providerType: NETWORK_TYPES.CONSENSYS_ZKEVM,
+    rpcUrl: CONSENSYS_ZKEVM_RPC_URL,
+    chainId: CHAIN_IDS.CONSENSYS_ZKEVM,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.CONSENSYS_ZKEVM],
+    blockExplorerUrl: ' https://explorer.goerli.zkevm.consensys.net',
   },
 ];
 

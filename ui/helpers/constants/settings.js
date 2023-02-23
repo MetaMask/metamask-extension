@@ -256,6 +256,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('consensyszkevm'),
+    descriptionMessage: (t) => t('consensyszkevm'),
+    route: `${NETWORKS_ROUTE}#networks-consensys-zkevm`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('localhost'),
     descriptionMessage: (t) => t('localhost'),
     route: `${NETWORKS_ROUTE}#networks-localhost`,

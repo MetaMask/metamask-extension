@@ -33,6 +33,8 @@ export const ValidColors = [
   Color.sepolia,
   Color.goerliInverse,
   Color.sepoliaInverse,
+  Color.consensysZkEvm,
+  Color.consensysZkEvmInverse,
 ];
 
 export const ValidTags = [

@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Свързване с тестова мрежа на ConsenSys zkEVM"
+  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
   },
@@ -316,6 +319,9 @@
   },
   "goerli": {
     "message": "Тестова мрежа на Goerli"
+  },
+  "consensyszkevm": {
+    "message": "Тестова мрежа на ConsenSys zkEVM"
   },
   "hardware": {
     "message": "хардуер"

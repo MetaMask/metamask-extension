@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Pieslēdzas ConsenSys zkEVM testa tīklam"
+  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
   },
@@ -316,6 +319,9 @@
   },
   "goerli": {
     "message": "Goerli testa tīkls"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys zkEVM testa tīkls"
   },
   "hardware": {
     "message": "aparatūra"

@@ -167,6 +167,9 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
+  "connectingToConsensysZkevm": {
+    "message": "الاتصال بشبكة اختبار ConsenSys zkEVM"
+  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
   },
@@ -320,6 +323,9 @@
   },
   "goerli": {
     "message": "شبكة اختبار Goerli "
+  },
+  "consensyszkevm": {
+    "message": "شبكة اختبار ConsenSys zkEVM"
   },
   "hardware": {
     "message": "أجهزة"

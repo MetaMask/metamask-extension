@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Opretter forbindelse til ConsenSys zkEVM Testnetværk"
+  },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Ethereum Netværk"
   },
@@ -316,6 +319,9 @@
   },
   "goerli": {
     "message": "Goerli-testnetværk"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys-zkEVM-testnetværk"
   },
   "hardwareWalletConnected": {
     "message": "Hardware-tegnebog tilsluttet"

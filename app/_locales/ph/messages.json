@@ -314,6 +314,9 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
+  "connectingToConsensysZkevm": {
+    "message": "Kumokonekta sa ConsenSys zkEVM Test Network"
+  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
@@ -644,6 +647,9 @@
   },
   "goerli": {
     "message": "Goerli Test Network"
+  },
+  "consensyszkevm": {
+    "message": "ConsenSys zkEVM Test Network"
   },
   "hardware": {
     "message": "Hardware"
