@@ -80,7 +80,10 @@ export default function ReviewSpendingCap({
                         fontWeight={FONT_WEIGHT.BOLD}
                         color={TextColor.errorDefault}
                       >
-                        <Icon name={ICON_NAMES.WARNING} />
+                        <Icon
+                          name={ICON_NAMES.WARNING}
+                          style={{ verticalAlign: 'middle' }}
+                        />
                         {t('beCareful')}
                       </Typography>,
                     ])}
