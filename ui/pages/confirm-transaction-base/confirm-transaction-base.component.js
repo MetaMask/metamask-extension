@@ -56,8 +56,8 @@ import {
   hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
 import TransactionAlerts from '../../components/app/transaction-alerts';
-import ConfirmHexData from '../../components/app/confirm-hexdata';
-import ConfirmData from '../../components/app/confirm-data';
+import { ConfirmHexData } from '../../components/app/confirm-hexdata';
+import { ConfirmData } from '../../components/app/confirm-data';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
