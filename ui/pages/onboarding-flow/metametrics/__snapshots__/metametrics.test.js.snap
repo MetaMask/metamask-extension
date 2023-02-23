@@ -23,14 +23,16 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     </p>
     <ul>
       <li>
-        <i
-          class="fa fa-check"
+        <span
+          class="box mm-icon mm-icon--size-md box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-success-default"
+          style="mask-image: url('./images/icons/check.svg');"
         />
         Always allow you to opt-out via Settings
       </li>
       <li>
-        <i
-          class="fa fa-check"
+        <span
+          class="box mm-icon mm-icon--size-md box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-success-default"
+          style="mask-image: url('./images/icons/check.svg');"
         />
         Send anonymized click and pageview events
       </li>
