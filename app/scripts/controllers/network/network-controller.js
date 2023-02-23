@@ -241,7 +241,7 @@ export default class NetworkController extends EventEmitter {
    * @param {string} uuid - the universal unique identifier that corresponds to the network configuration we wish to set as selected.
    * @returns {Promise<string>} The rpcUrl of the network that was just set
    */
-  setNetworkTarget(uuid) {
+  setCurrentNetwork(uuid) {
     let configUUID = uuid;
     if (typeof uuid === 'object') {
       configUUID = uuid.uuid;

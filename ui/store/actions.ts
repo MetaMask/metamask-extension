@@ -2549,13 +2549,13 @@ export function editAndSetNetworkConfiguration({
   };
 }
 
-export function setNetworkTarget(
+export function setCurrentNetwork(
   uuid: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.setNetworkTarget: ${uuid}`);
+    log.debug(`background.setCurrentNetwork: ${uuid}`);
     try {
-      await submitRequestToBackground('setNetworkTarget', [uuid]);
+      await submitRequestToBackground('setCurrentNetwork', [uuid]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));

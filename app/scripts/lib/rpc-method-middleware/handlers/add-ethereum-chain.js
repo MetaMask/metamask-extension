@@ -20,7 +20,7 @@ const addEthereumChain = {
     getCurrentChainId: true,
     getCurrentRpcUrl: true,
     findNetworkConfigurationBy: true,
-    setNetworkTarget: true,
+    setCurrentNetwork: true,
     requestUserApproval: true,
     sendMetrics: true,
   },
@@ -37,7 +37,7 @@ async function addEthereumChainHandler(
     getCurrentChainId,
     getCurrentRpcUrl,
     findNetworkConfigurationBy,
-    setNetworkTarget,
+    setCurrentNetwork,
     requestUserApproval,
     sendMetrics,
   },
@@ -158,7 +158,7 @@ async function addEthereumChainHandler(
     // If this network is already added with but is not the currently selected network
     // Ask the user to switch the network
     try {
-      await setNetworkTarget(
+      await setCurrentNetwork(
         await requestUserApproval({
           origin,
           type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
@@ -302,7 +302,7 @@ async function addEthereumChainHandler(
 
   // Ask the user to switch the network
   try {
-    await setNetworkTarget(
+    await setCurrentNetwork(
       await requestUserApproval({
         origin,
         type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,

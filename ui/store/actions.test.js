@@ -1198,34 +1198,34 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setNetworkTarget', () => {
+  describe('#setCurrentNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setNetworkTarget', async () => {
+    it('calls setCurrentNetwork', async () => {
       const store = mockStore();
 
-      const setNetworkTargetStub = sinon.stub().callsFake((_, cb) => cb());
+      const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        setNetworkTarget: setNetworkTargetStub,
+        setCurrentNetwork: setCurrentNetworkStub,
       });
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setNetworkTarget('http://localhost:8545'));
-      expect(setNetworkTargetStub.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setCurrentNetwork('http://localhost:8545'));
+      expect(setCurrentNetworkStub.callCount).toStrictEqual(1);
     });
 
-    it('displays warning when setNetworkTarget throws', async () => {
+    it('displays warning when setCurrentNetwork throws', async () => {
       const store = mockStore();
 
-      const setNetworkTargetStub = sinon
+      const setCurrentNetworkStub = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
-        setNetworkTarget: setNetworkTargetStub,
+        setCurrentNetwork: setCurrentNetworkStub,
       });
       _setBackgroundConnection(background.getApi());
 
@@ -1236,7 +1236,7 @@ describe('Actions', () => {
         },
       ];
 
-      await store.dispatch(actions.setNetworkTarget());
+      await store.dispatch(actions.setCurrentNetwork());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });

@@ -40,7 +40,7 @@ import {
   setNewNftAddedMessage,
   setRemoveNftMessage,
   setNewTokensImported,
-  setNetworkTarget,
+  setCurrentNetwork,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
@@ -185,8 +185,8 @@ const mapDispatchToProps = (dispatch) => ({
   clearNewNetworkAdded: () => {
     dispatch(setNewNetworkAdded({}));
   },
-  setNetworkTarget: (uuid) => {
-    dispatch(setNetworkTarget(uuid));
+  setCurrentNetwork: (uuid) => {
+    dispatch(setCurrentNetwork(uuid));
   },
 });
 
