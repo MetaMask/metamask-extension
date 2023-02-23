@@ -18,7 +18,7 @@ import { SNAPS_METADATA } from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import { Color } from '../constants/design-system';
-import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
+import { coinTypeToProtocolName, getSnapDerivationPathName } from './util'; // eslint-disable-line no-unused-vars
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
