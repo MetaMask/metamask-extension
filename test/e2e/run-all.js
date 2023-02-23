@@ -54,6 +54,10 @@ async function main() {
             description: `run nft specific e2e tests`,
             type: 'boolean',
           })
+          .option('erc1155', {
+            description: `run erc1155 specific e2e tests`,
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -63,7 +67,7 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3, nft } = argv;
+  const { browser, debug, retries, snaps, mv3, nft, erc1155 } = argv;
 
   let testPaths;
 
@@ -72,6 +76,9 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (nft) {
     const testDir = path.join(__dirname, 'nft');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (erc1155) {
+    const testDir = path.join(__dirname, 'erc1155');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
