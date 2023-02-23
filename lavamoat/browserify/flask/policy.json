@@ -1498,8 +1498,8 @@
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/permission-controller": true,
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
+<<<<<<< HEAD
 <<<<<<< HEAD
         "@metamask/rpc-methods>@metamask/permission-controller": true,
 <<<<<<< HEAD
@@ -1508,7 +1508,11 @@
 >>>>>>> d50ec2b73 (update policy)
         "@metamask/rpc-methods>@metamask/snaps-ui": true,
 >>>>>>> 5d00502af (more policy updates)
+=======
+        "@metamask/rpc-methods>@metamask/permission-controller": true,
+>>>>>>> f58d1f0f3 (update policies)
         "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-ui": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true,
@@ -1529,6 +1533,7 @@
         "browserify>buffer": true
       }
     },
+<<<<<<< HEAD
 <<<<<<< HEAD
     "@metamask/rpc-methods>@metamask/permission-controller": {
       "packages": {
@@ -1576,12 +1581,42 @@
 =======
 >>>>>>> d50ec2b73 (update policy)
     "@metamask/rpc-methods>@metamask/snaps-ui": {
+=======
+    "@metamask/rpc-methods>@metamask/permission-controller": {
+>>>>>>> f58d1f0f3 (update policies)
       "packages": {
-        "@metamask/utils": true,
-        "@metamask/utils>superstruct": true
+        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": true,
+        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
+        "@metamask/rpc-methods>nanoid": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "immer": true,
+        "json-rpc-engine": true
       }
     },
+<<<<<<< HEAD
 >>>>>>> 5d00502af (more policy updates)
+=======
+    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+      }
+    },
+>>>>>>> f58d1f0f3 (update policies)
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1640,6 +1675,7 @@
       },
       "packages": {
 <<<<<<< HEAD
+<<<<<<< HEAD
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/rpc-methods": true,
@@ -1657,6 +1693,14 @@
 >>>>>>> 5d00502af (more policy updates)
 =======
 >>>>>>> d50ec2b73 (update policy)
+=======
+        "@metamask/post-message-stream": true,
+        "@metamask/providers>@metamask/object-multiplex": true,
+        "@metamask/rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/base-controller": true,
+        "@metamask/snaps-controllers>@metamask/permission-controller": true,
+        "@metamask/snaps-controllers>@metamask/subject-metadata-controller": true,
+>>>>>>> f58d1f0f3 (update policies)
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>gunzip-maybe": true,
@@ -1673,6 +1717,9 @@
     },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f58d1f0f3 (update policies)
     "@metamask/snaps-controllers>@metamask/base-controller": {
       "packages": {
         "immer": true
@@ -1696,12 +1743,15 @@
       "packages": {
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/base-controller>@metamask/controller-utils": true,
+<<<<<<< HEAD
 =======
     "@metamask/snaps-controllers>@metamask/permission-controller": {
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/permission-controller>@metamask/controller-utils": true,
 >>>>>>> 5d00502af (more policy updates)
+=======
+>>>>>>> f58d1f0f3 (update policies)
         "@metamask/snaps-controllers>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
@@ -1709,6 +1759,7 @@
         "json-rpc-engine": true
       }
     },
+<<<<<<< HEAD
 <<<<<<< HEAD
     "@metamask/snaps-controllers>@metamask/subject-metadata-controller": {
       "packages": {
@@ -1732,6 +1783,13 @@
     },
 =======
 >>>>>>> d50ec2b73 (update policy)
+=======
+    "@metamask/snaps-controllers>@metamask/subject-metadata-controller": {
+      "packages": {
+        "@metamask/snaps-controllers>@metamask/base-controller": true
+      }
+    },
+>>>>>>> f58d1f0f3 (update policies)
     "@metamask/snaps-controllers>concat-stream": {
       "packages": {
         "@metamask/snaps-controllers>concat-stream>readable-stream": true,

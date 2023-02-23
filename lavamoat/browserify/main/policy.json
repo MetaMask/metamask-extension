@@ -1364,15 +1364,19 @@
         "@metamask/key-tree>@noble/hashes": true,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true
 =======
 =======
         "@metamask/permission-controller": true,
 >>>>>>> d50ec2b73 (update policy)
+=======
+>>>>>>> f58d1f0f3 (update policies)
         "@metamask/rpc-methods>@metamask/browser-passworder": true,
-        "@metamask/rpc-methods>@metamask/snaps-ui": true,
+        "@metamask/rpc-methods>@metamask/permission-controller": true,
         "@metamask/rpc-methods>nanoid": true,
+        "@metamask/snaps-ui": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true,
@@ -1394,12 +1398,39 @@
         "browserify>buffer": true
       }
     },
-    "@metamask/rpc-methods>@metamask/snaps-ui": {
+    "@metamask/rpc-methods>@metamask/permission-controller": {
       "packages": {
-        "@metamask/utils": true,
-        "@metamask/utils>superstruct": true
+        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": true,
+        "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": true,
+        "@metamask/rpc-methods>nanoid": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "immer": true,
+        "json-rpc-engine": true
       }
     },
+<<<<<<< HEAD
+=======
+    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/rpc-methods>@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+      }
+    },
+>>>>>>> f58d1f0f3 (update policies)
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -1449,6 +1480,12 @@
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-ui": {
+      "packages": {
+        "@metamask/utils": true,
+        "@metamask/utils>superstruct": true
       }
     },
     "@metamask/snaps-utils": {
