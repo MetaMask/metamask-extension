@@ -26,6 +26,7 @@ import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
@@ -103,7 +104,11 @@ const NewNetworkInfo = () => {
           primaryTokenImage ? (
             <Identicon image={primaryTokenImage} diameter={14} />
           ) : (
-            <i className="fa fa-question-circle" />
+            <Icon
+              className="question"
+              name={ICON_NAMES.QUESTION}
+              color={Color.iconDefault}
+            />
           )
         }
       />

@@ -4,7 +4,11 @@ import classnames from 'classnames';
 
 import Box from '../../ui/box/box';
 
-import { Size, IconColor } from '../../../helpers/constants/design-system';
+import {
+  Size,
+  IconColor,
+  DISPLAY,
+} from '../../../helpers/constants/design-system';
 
 import { ICON_SIZES, ICON_NAMES } from './icon.constants';
 
@@ -18,8 +22,10 @@ export const Icon = ({
 }) => {
   return (
     <Box
-      color={color}
       className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
+      as="span"
+      display={DISPLAY.INLINE_BLOCK}
+      color={color}
       style={{
         /**
          * To reduce the possibility of injection attacks
