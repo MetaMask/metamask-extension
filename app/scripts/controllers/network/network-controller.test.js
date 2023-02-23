@@ -3740,7 +3740,7 @@ describe('NetworkController', () => {
     });
   });
 
-  describe.only('rollbackToPreviousProvider', () => {
+  describe('rollbackToPreviousProvider', () => {
     for (const {
       networkName,
       networkType,
