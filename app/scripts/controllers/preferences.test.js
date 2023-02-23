@@ -19,8 +19,10 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
+    const networkControllerMessenger = new ControllerMessenger();
     network = new NetworkController({
       infuraProjectId: 'foo',
+      messenger: networkControllerMessenger,
       state: {
         provider: {
           type: 'mainnet',
@@ -50,6 +52,8 @@ describe('preferences controller', function () {
       network,
       provider,
       tokenListController,
+      onInfuraIsBlocked: sinon.spy(),
+      onInfuraIsUnblocked: sinon.spy(),
     });
   });
 

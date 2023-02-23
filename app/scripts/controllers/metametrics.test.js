@@ -15,7 +15,6 @@ import {
 } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
-import { NETWORK_EVENTS } from './network';
 
 const segment = createSegmentMock(2, 10000);
 
@@ -72,17 +71,17 @@ function getMockNetworkController() {
     },
     network: 'loading',
   };
-  const on = sinon.stub().withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE);
+  const onNetworkDidChange = sinon.stub();
   const updateState = (newState) => {
     state = { ...state, ...newState };
-    on.getCall(0).args[1]();
+    onNetworkDidChange.getCall(0).args[0]();
   };
   return {
     store: {
       getState: () => state,
       updateState,
     },
-    on,
+    onNetworkDidChange,
   };
 }
 
@@ -136,10 +135,8 @@ function getMetaMetricsController({
     segment: segmentInstance || segment,
     getCurrentChainId: () =>
       networkController.store.getState().provider.chainId,
-    onNetworkDidChange: networkController.on.bind(
-      networkController,
-      NETWORK_EVENTS.NETWORK_DID_CHANGE,
-    ),
+    onNetworkDidChange:
+      networkController.onNetworkDidChange.bind(networkController),
     preferencesStore,
     version: '0.0.1',
     environment: 'test',
