@@ -407,6 +407,7 @@
     "@types/gulp-autoprefixer": "^0.0.33",
     "@types/gulp-dart-sass": "^1.0.1",
     "@types/gulp-sourcemaps": "^0.0.35",
+    "@types/jest": "^29.1.2",
     "@types/madge": "^5.0.0",
     "@types/node": "^17.0.21",
     "@types/pify": "^5.0.1",
