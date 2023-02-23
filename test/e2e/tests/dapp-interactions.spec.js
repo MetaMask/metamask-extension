@@ -109,7 +109,7 @@ describe('Dapp interactions', function () {
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );
-        await driver.clickElement({ text: 'Connected sites', tag: 'span' });
+        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
         const connectedDapp1 = await driver.isElementPresent({
           text: 'http://127.0.0.1:8080',
           tag: 'bdi',

@@ -20,8 +20,10 @@ const MenuItem = ({
     {iconName ? (
       <Icon name={iconName} size={ICON_SIZES.SM} marginRight={2} />
     ) : null}
-    <span>{children}</span>
-    {subtitle}
+    <div>
+      <div>{children}</div>
+      {subtitle ? <div>{subtitle}</div> : null}
+    </div>
   </button>
 );
 
