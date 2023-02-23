@@ -31,21 +31,14 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import IconCheck from '../../ui/icon/icon-check';
 import IconCog from '../../ui/icon/icon-cog';
 import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-import { Color } from '../../../helpers/constants/design-system';
-import {
-  Icon,
-  ICON_NAMES,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  ICON_SIZES,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -231,7 +224,11 @@ export default class AccountMenu extends Component {
         >
           <div className="account-menu__check-mark">
             {isSelected ? (
-              <IconCheck color="var(--color-success-default)" />
+              <Icon
+                color={IconColor.successDefault}
+                name={ICON_NAMES.CHECK}
+                size={ICON_SIZES.LG}
+              />
             ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
@@ -377,7 +374,7 @@ export default class AccountMenu extends Component {
           icon={
             <Icon
               name={ICON_NAMES.ADD}
-              color={Color.iconAlternative}
+              color={IconColor.iconAlternative}
               ariaLabel={t('createAccount')}
             />
           }
@@ -422,7 +419,10 @@ export default class AccountMenu extends Component {
             }
           }}
           icon={
-            <Icon name={ICON_NAMES.HARDWARE} color={Color.iconAlternative} />
+            <Icon
+              name={ICON_NAMES.HARDWARE}
+              color={IconColor.iconAlternative}
+            />
           }
           text={t('connectHardwareWallet')}
         />
@@ -468,7 +468,10 @@ export default class AccountMenu extends Component {
             global.platform.openTab({ url: supportLink });
           }}
           icon={
-            <Icon name={ICON_NAMES.MESSAGES} color={Color.iconAlternative} />
+            <Icon
+              name={ICON_NAMES.MESSAGES}
+              color={IconColor.iconAlternative}
+            />
           }
           text={supportText}
         />

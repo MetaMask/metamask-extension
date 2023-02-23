@@ -145,4 +145,38 @@ describe('App Header', () => {
       expect(mockToggleAccountMenu).not.toHaveBeenCalled();
     });
   });
+
+  describe('App Header Desktop dev mode Logo', () => {
+    const tempDebug = process.env.METAMASK_DEBUG;
+
+    beforeEach(() => {
+      process.env.METAMASK_DEBUG = true;
+    });
+
+    afterEach(() => {
+      process.env.METAMASK_DEBUG = tempDebug;
+    });
+
+    it('displays desktop icon when in dev mode', () => {
+      const desktopEnabledState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          desktopEnabled: true,
+        },
+      };
+
+      const desktopEnabledStore = configureMockStore([thunk])(
+        desktopEnabledState,
+      );
+      const { queryByTestId } = renderWithProvider(
+        <AppHeader />,
+        desktopEnabledStore,
+      );
+
+      const desktopDevLogo = queryByTestId('app-header-desktop-dev-logo');
+
+      expect(desktopDevLogo).not.toBeNull();
+    });
+  });
 });
