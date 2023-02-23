@@ -107,7 +107,7 @@ export default function ReviewSpendingCap({
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__question-icon"
                   name={ICON_NAMES.QUESTION}
-                  color={Color.iconDefault}
+                  color={IconColor.iconDefault}
                 />
               )}
             </Tooltip>
