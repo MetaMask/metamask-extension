@@ -153,6 +153,63 @@ describe('MetaMask onboarding', function () {
     );
   });
 
+  it('Verify that the user has been redirected to the correct page after importing their wallet', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Verify site
+        assert.equal(
+          await driver.getCurrentUrl(),
+          'chrome-extension://lcnbangcbnamibckjlapoogdhnpocoba/home.html#onboarding/completion',
+        );
+      },
+    );
+  });
+
+  it('Verify that the user has been redirected to the correct page after creating a password for their new wallet', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+
+        // metrics
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+        // Fill in confirm password field with incorrect password
+        await driver.fill('[data-testid="create-password-new"]', testPassword);
+        await driver.fill(
+          '[data-testid="create-password-confirm"]',
+          testPassword,
+        );
+        await driver.clickElement('[data-testid="create-password-terms"]');
+        await driver.clickElement('[data-testid="create-password-wallet"]');
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Verify site
+        assert.equal(
+          await driver.getCurrentUrl(),
+          'chrome-extension://lcnbangcbnamibckjlapoogdhnpocoba/home.html#onboarding/secure-your-wallet',
+        );
+      },
+    );
+  });
+
   const ganacheOptions2 = {
     accounts: [
       {
@@ -181,6 +238,7 @@ describe('MetaMask onboarding', function () {
 
       async ({ driver }) => {
         await driver.navigate();
+
         await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
 
         // Add custome network localhost 8546 during onboarding
