@@ -32,7 +32,6 @@ import {
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 import IconCog from '../../ui/icon/icon-cog';
-import IconImport from '../../ui/icon/icon-import';
 
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
@@ -394,10 +393,7 @@ export default class AccountMenu extends Component {
             history.push(IMPORT_ACCOUNT_ROUTE);
           }}
           icon={
-            <IconImport
-              color="var(--color-icon-alternative)"
-              ariaLabel={t('importAccount')}
-            />
+            <Icon name={ICON_NAMES.IMPORT} color={IconColor.iconAlternative} />
           }
           text={t('importAccount')}
         />

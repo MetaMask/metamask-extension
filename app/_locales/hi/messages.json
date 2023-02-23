@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "प्राथमिकता शुल्क (उर्फ \"माइनर टिप\") सीधे खनिकों के पास जाता है और उन्हें आपके लेन-देन को प्राथमिकता देने के लिए प्रोत्साहित करता है।"
   },
-  "affirmAgree": {
-    "message": "मैं सहमत हूं"
-  },
   "airgapVault": {
     "message": "AirGap का वॉल्ट"
   },
@@ -1432,14 +1429,6 @@
   "gasUsed": {
     "message": "प्रयुक्त गैस"
   },
-  "gdprMessage": {
-    "message": "यह डेटा समेकित किया गया है और इसलिए सामान्य डेटा संरक्षण विनियमन (EU) 2016/679 के प्रयोजनों के लिए बेनाम है। हमारी गोपनीयता प्रक्रियाओं के संबंध में अधिक जानकारी के लिए, कृपया हमारे $1 देखें।",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "गोपनीयता नीति यहां है",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "सामान्य"
   },
@@ -1894,37 +1883,6 @@
   "metamaskVersion": {
     "message": "MetaMask संस्करण"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "हमेशा आपको सेटिंग्स के माध्यम से ऑप्ट-आउट करने की अनुमति देगा"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "कभी नहीं",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask निम्न चीजें करेगा.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 आपका पूरा IP पता एकत्र करेगा",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 कुंजी, पते, लेनदेन, शेषराशि, हैश या कोई भी व्यक्तिगत जानकारी एकत्र करता है",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 लाभ के लिए डेटा बेचता है। कभी भी!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "बेनाम क्लिक और पेजव्यू ईवेंट भेजता है"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask इस बात की बेहतर समझ प्राप्त करने के लिए डेटा एकत्र करना चाहता है कि हमारे उपयोगकर्ता विस्तार के साथ कैसे सहभागिता करते हैं। इस डेटा का उपयोग हमारे उत्पाद और Ethereum पारिस्थितिकी तंत्र की उपयोगिता और उपयोगकर्ता अनुभव को लगातार सुधारने के लिए किया जाएगा।"
-  },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण सत्यापित करें",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2163,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "कोई स्नैप इंस्टाल नहीं किया गया"
-  },
-  "noThanks": {
-    "message": "जी नहीं, धन्यवाद"
   },
   "noThanksVariant2": {
     "message": "नहीं, धन्यवाद।"

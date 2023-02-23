@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
-  "affirmAgree": {
-    "message": "Συμφωνώ"
-  },
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
@@ -1432,14 +1429,6 @@
   "gasUsed": {
     "message": "Τέλος συναλλαγής που Χρησιμοποιήθηκε"
   },
-  "gdprMessage": {
-    "message": "Τα δεδομένα αυτά συγκεντρωτικά και, ως εκ τούτου, είναι ανώνυμα για τους σκοπούς του Γενικού Κανονισμού για την Προστασία Δεδομένων GDPR (ΕΕ) 2016/679. Για περισσότερες πληροφορίες σχετικά με τις πρακτικές απορρήτου μας, ανατρέξτε στο $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Πολιτική Απορρήτου εδώ",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Γενικά"
   },
@@ -1894,37 +1883,6 @@
   "metamaskVersion": {
     "message": "Έκδοση MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Ποτέ δεν",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "Το MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 συλλέγει την πλήρη διεύθυνση IP σας",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$ συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 πουλά δεδομένα για το κέρδος. Ποτέ!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Στείλτε ανώνυμα γεγονότα κλικ και προβολής ιστοσελίδων"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "Το MetaMask θα ήθελε να συγκεντρώσει δεδομένα χρήσης για να κατανοήσει καλύτερα πώς οι χρήστες μας αλληλεπιδρούν με την επέκταση. Τα δεδομένα αυτά θα χρησιμοποιηθούν για τη συνεχή βελτίωση της χρηστικότητας και της εμπειρίας χρήσης του προϊόντος μας και του οικοσυστήματος Ethereum."
-  },
   "mismatchedChainLinkText": {
     "message": "επαληθεύστε τα στοιχεία δικτύου",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2163,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Δεν εγκαταστάθηκαν Snaps"
-  },
-  "noThanks": {
-    "message": "Όχι Ευχαριστώ"
   },
   "noThanksVariant2": {
     "message": "Όχι, ευχαριστώ."
