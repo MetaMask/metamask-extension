@@ -212,8 +212,8 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
             English
           </option>
         </select>
-        <div
-          class="box dropdown__icon-caret-down mm-icon mm-icon--size-sm box--flex-direction-row box--color-inherit"
+        <span
+          class="box dropdown__icon-caret-down mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
           style="mask-image: url('./images/icons/arrow-down.svg');"
         />
       </div>
