@@ -133,12 +133,17 @@ describe('MetaMask Reducers', () => {
       {},
       {
         type: actionConstants.UPDATE_NETWORK_TARGET,
-        value: { rpcUrl: 'https://custom.rpc', networkConfigurationId: 'test-networkConfigurationId' },
+        value: {
+          rpcUrl: 'https://custom.rpc',
+          networkConfigurationId: 'test-networkConfigurationId',
+        },
       },
     );
 
     expect(state.provider.rpcUrl).toStrictEqual('https://custom.rpc');
-    expect(state.provider.networkConfigurationId).toStrictEqual('test-networkConfigurationId');
+    expect(state.provider.networkConfigurationId).toStrictEqual(
+      'test-networkConfigurationId',
+    );
   });
 
   it('sets provider type', () => {

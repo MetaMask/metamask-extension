@@ -27,7 +27,9 @@ describe('Redux actionConstants', () => {
       const result = reducers(initialState, action);
       expect(result.metamask.provider.type).toStrictEqual(NETWORK_TYPES.RPC);
       expect(result.metamask.provider.rpcUrl).toStrictEqual('foo');
-      expect(result.metamask.provider.networkConfigurationId).toStrictEqual('baz');
+      expect(result.metamask.provider.networkConfigurationId).toStrictEqual(
+        'baz',
+      );
     });
   });
 

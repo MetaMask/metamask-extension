@@ -37,17 +37,16 @@ describe('TransactionActivityLog container', () => {
           conversionRate: 280.45,
           nativeCurrency: 'ETH',
           networkConfigurations: {
-            uuid: {
+            networkConfigurationId: {
               rpcUrl: 'https://customnetwork.com/',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://customblockexplorer.com/',
-              },
             },
           },
           provider: {
             rpcUrl: 'https://customnetwork.com/',
             ticker: 'ETH',
-            uuid: 'uuid',
+            rpcPrefs: {
+              blockExplorerUrl: 'https://customblockexplorer.com/',
+            },
           },
         },
       };

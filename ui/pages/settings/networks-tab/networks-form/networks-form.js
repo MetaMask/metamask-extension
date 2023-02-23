@@ -546,7 +546,12 @@ const NetworksForm = ({
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
           },
         });
-        dispatch(setNewNetworkAdded({ chainName: networkName, networkConfigurationId }));
+        dispatch(
+          setNewNetworkAdded({
+            chainName: networkName,
+            networkConfigurationId,
+          }),
+        );
 
         submitCallback?.();
       }

@@ -248,9 +248,14 @@ export default class NetworkController extends EventEmitter {
     }
     const targetNetwork = this.networkConfigurations.getState()[id];
 
+    if (!targetNetwork) {
+      throw new Error(
+        `networkConfigurationId ${networkConfigurationId} does not match a configured networkConfiguration`,
+      );
+    }
+
     this._setProviderConfig({
       type: NETWORK_TYPES.RPC,
-      networkConfigurationId: id,
       ...targetNetwork,
     });
 
@@ -261,7 +266,7 @@ export default class NetworkController extends EventEmitter {
     assert.notStrictEqual(
       type,
       NETWORK_TYPES.RPC,
-      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setRpcTarget"`,
+      `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setCurrentNetwork"`,
     );
     assert.ok(
       INFURA_PROVIDER_TYPES.includes(type),

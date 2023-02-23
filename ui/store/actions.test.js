@@ -1279,7 +1279,10 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'UPDATE_NETWORK_TARGET',
-          value: { rpcUrl: 'newRpc', networkConfigurationId: 'networkConfigurationId' },
+          value: {
+            rpcUrl: 'newRpc',
+            networkConfigurationId: 'networkConfigurationId',
+          },
         },
       ];
       expect(store.getActions()).toStrictEqual(expectedActions);

@@ -2521,9 +2521,13 @@ export function editAndSetNetworkConfiguration({
   ticker: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
-    log.debug(`background.removeNetworkConfiguration: ${networkConfigurationId}`);
+    log.debug(
+      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+    );
     try {
-      await submitRequestToBackground('removeNetworkConfiguration', [networkConfigurationId]);
+      await submitRequestToBackground('removeNetworkConfiguration', [
+        networkConfigurationId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem removing network!'));
@@ -2555,7 +2559,9 @@ export function setCurrentNetwork(
   return async (dispatch) => {
     log.debug(`background.setCurrentNetwork: ${networkConfigurationId}`);
     try {
-      await submitRequestToBackground('setCurrentNetwork', [networkConfigurationId]);
+      await submitRequestToBackground('setCurrentNetwork', [
+        networkConfigurationId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));
@@ -2583,17 +2589,23 @@ export function removeNetworkConfiguration(
   networkConfigurationId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch) => {
-    log.debug(`background.removeNetworkConfiguration: ${networkConfigurationId}`);
+    log.debug(
+      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+    );
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('removeNetworkConfiguration', [networkConfigurationId], (err) => {
-        if (err) {
-          logErrorWithMessage(err);
-          dispatch(displayWarning('Had a problem removing network!'));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
+      callBackgroundMethod(
+        'removeNetworkConfiguration',
+        [networkConfigurationId],
+        (err) => {
+          if (err) {
+            logErrorWithMessage(err);
+            dispatch(displayWarning('Had a problem removing network!'));
+            reject(err);
+            return;
+          }
+          resolve();
+        },
+      );
     });
   };
 }
@@ -3813,7 +3825,10 @@ export function setNewNetworkAdded({
   };
 }
 
-export function updateNetworkTarget(rpcUrl: string, networkConfigurationId: string) {
+export function updateNetworkTarget(
+  rpcUrl: string,
+  networkConfigurationId: string,
+) {
   return {
     type: actionConstants.UPDATE_NETWORK_TARGET,
     value: { rpcUrl, networkConfigurationId },
@@ -4606,7 +4621,12 @@ export function requestAddNetworkApproval(
         'requestAddNetworkApproval',
         [customRpc, originIsMetaMask],
       );
-      dispatch(setNewNetworkAdded({ networkConfigurationId, chainName: customRpc.chainName }));
+      dispatch(
+        setNewNetworkAdded({
+          networkConfigurationId,
+          chainName: customRpc.chainName,
+        }),
+      );
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem changing networks!'));

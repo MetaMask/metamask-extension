@@ -151,64 +151,67 @@ class NetworkDropdown extends Component {
   }
 
   renderCustomRpcList(networkConfigurations, provider, opts = {}) {
-    return Object.entries(networkConfigurations).map(([networkConfigurationId, entry]) => {
-      const { rpcUrl, chainId, chainName = '' } = entry;
-      const isCurrentRpcTarget =
-        provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
-
-      return (
-        <DropdownMenuItem
-          key={`common${rpcUrl}`}
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => {
-            if (isPrefixedFormattedHexString(chainId)) {
-              this.props.setCurrentNetwork(networkConfigurationId);
-            } else {
-              this.props.displayInvalidCustomNetworkAlert(chainName || rpcUrl);
-            }
-          }}
-          style={{
-            fontSize: '16px',
-            lineHeight: '20px',
-            padding: '16px',
-          }}
-        >
-          {isCurrentRpcTarget ? (
-            <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : IconColor.iconMuted}
-            size={Size.LG}
-            type={ColorIndicator.TYPES.FILLED}
-          />
-          <span
-            className="network-name-item"
-            data-testid={`${chainName}-network-item`}
+    return Object.entries(networkConfigurations).map(
+      ([networkConfigurationId, entry]) => {
+        const { rpcUrl, chainId, chainName = '' } = entry;
+        const isCurrentRpcTarget =
+          provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
+        return (
+          <DropdownMenuItem
+            key={`common${rpcUrl}`}
+            closeMenu={() => this.props.hideNetworkDropdown()}
+            onClick={() => {
+              if (isPrefixedFormattedHexString(chainId)) {
+                this.props.setCurrentNetwork(networkConfigurationId);
+              } else {
+                this.props.displayInvalidCustomNetworkAlert(
+                  chainName || rpcUrl,
+                );
+              }
+            }}
             style={{
-              color: isCurrentRpcTarget
-                ? 'var(--color-text-default)'
-                : 'var(--color-text-alternative)',
+              fontSize: '16px',
+              lineHeight: '20px',
+              padding: '16px',
             }}
           >
-            {chainName || rpcUrl}
-          </span>
-          {isCurrentRpcTarget ? null : (
-            <i
-              className="fa fa-times delete"
-              onClick={(e) => {
-                e.stopPropagation();
-                this.props.showConfirmDeleteNetworkModal({
-                  target: networkConfigurationId,
-                  onConfirm: () => undefined,
-                });
-              }}
+            {isCurrentRpcTarget ? (
+              <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+            ) : (
+              <div className="network-check__transparent">✓</div>
+            )}
+            <ColorIndicator
+              color={opts.isLocalHost ? 'localhost' : IconColor.iconMuted}
+              size={Size.LG}
+              type={ColorIndicator.TYPES.FILLED}
             />
-          )}
-        </DropdownMenuItem>
-      );
-    });
+            <span
+              className="network-name-item"
+              data-testid={`${chainName}-network-item`}
+              style={{
+                color: isCurrentRpcTarget
+                  ? 'var(--color-text-default)'
+                  : 'var(--color-text-alternative)',
+              }}
+            >
+              {chainName || rpcUrl}
+            </span>
+            {isCurrentRpcTarget ? null : (
+              <i
+                className="fa fa-times delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.props.showConfirmDeleteNetworkModal({
+                    target: networkConfigurationId,
+                    onConfirm: () => undefined,
+                  });
+                }}
+              />
+            )}
+          </DropdownMenuItem>
+        );
+      },
+    );
   }
 
   getNetworkName() {
