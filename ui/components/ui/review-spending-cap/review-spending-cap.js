@@ -80,7 +80,7 @@ export default function ReviewSpendingCap({
                         fontWeight={FONT_WEIGHT.BOLD}
                         color={TextColor.errorDefault}
                       >
-                        <i className="fa fa-exclamation-circle" />{' '}
+                        <Icon name={ICON_NAMES.WARNING} />
                         {t('beCareful')}
                       </Typography>,
                     ])}
