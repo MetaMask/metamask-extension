@@ -83,13 +83,13 @@ export default function reduceMetamask(state = initialState, action) {
       };
 
     case actionConstants.UPDATE_NETWORK_TARGET: {
-      const { uuid, rpcUrl } = action.value;
+      const { networkConfigurationId, rpcUrl } = action.value;
       return {
         ...metamaskState,
         provider: {
           type: NETWORK_TYPES.RPC,
           rpcUrl,
-          uuid,
+          networkConfigurationId,
         },
       };
     }

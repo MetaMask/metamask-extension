@@ -58,8 +58,8 @@ interface AppState {
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
-  newNetworkAddedUUID: string;
-  selectedNetworkUUID: string;
+  newNetworkAddedConfigurationId: string;
+  selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
   onboardedInThisUISession: boolean;
@@ -120,8 +120,8 @@ const initialState: AppState = {
   newNftAddedMessage: '',
   removeNftMessage: '',
   newNetworkAddedName: '',
-  newNetworkAddedUUID: '',
-  selectedNetworkUUID: '',
+  newNetworkAddedConfigurationId: '',
+  selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
   onboardedInThisUISession: false,
@@ -331,18 +331,18 @@ export default function reduceApp(
         isMouseUser: action.payload,
       };
 
-    case actionConstants.SET_SELECTED_NETWORK_UUID:
+    case actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID:
       return {
         ...appState,
-        selectedNetworkUUID: action.payload,
+        selectedNetworkConfigurationId: action.payload,
       };
 
     case actionConstants.SET_NEW_NETWORK_ADDED: {
-      const { uuid, chainName } = action.payload;
+      const { networkConfigurationId, chainName } = action.payload;
       return {
         ...appState,
         newNetworkAddedName: chainName,
-        newNetworkAddedUUID: uuid,
+        newNetworkAddedConfigurationId: networkConfigurationId,
       };
     }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
@@ -412,10 +412,10 @@ export default function reduceApp(
         ...appState,
         sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
       };
-    case actionConstants.SET_ADDED_NETWORK_UUID:
+    case actionConstants.SET_ADDED_NETWORK_CONFIGURATION_ID:
       return {
         ...appState,
-        newNetworkAddedUUID: action.value,
+        newNetworkAddedConfigurationId: action.value,
       };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {

@@ -3782,7 +3782,7 @@ describe('NetworkController', () => {
                 chainId: '0x1337',
                 ticker: 'ETH',
                 chainName: '',
-                uuid: '',
+                networkConfigurationId: '',
               });
 
               await waitForLookupNetworkToComplete({
@@ -4289,7 +4289,7 @@ describe('NetworkController', () => {
               chainId: '0x5',
               ticker: 'GoerliETH',
               chainName: '',
-              uuid: '',
+              networkConfigurationId: '',
             });
 
             await waitForLookupNetworkToComplete({
@@ -4777,7 +4777,7 @@ describe('NetworkController', () => {
         {
           state: {
             networkConfigurations: {
-              testUUID: {
+              networkConfigurationId: {
                 rpcUrl: 'test_rpc_url',
                 ticker: 'old_rpc_ticker',
                 chainName: 'old_rpc_chainName',
@@ -4812,12 +4812,12 @@ describe('NetworkController', () => {
 
     describe('removeNetworkConfigurations', () => {
       it('should remove a network configuration', async () => {
-        const testUUID = 'testUUID';
+        const networkConfigurationId = 'networkConfigurationId';
         await withController(
           {
             state: {
               networkConfigurations: {
-                [testUUID]: {
+                [networkConfigurationId]: {
                   rpcUrl: 'test_rpc_url',
                   ticker: 'old_rpc_ticker',
                   chainName: 'old_rpc_chainName',
@@ -4839,7 +4839,7 @@ describe('NetworkController', () => {
                 chainId: '1',
               },
             ]);
-            controller.removeNetworkConfiguration(testUUID);
+            controller.removeNetworkConfiguration(networkConfigurationId);
             expect(controller.networkConfigurations.getState()).toStrictEqual(
               {},
             );

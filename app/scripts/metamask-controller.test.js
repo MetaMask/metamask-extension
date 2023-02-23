@@ -76,8 +76,8 @@ const ALT_MAINNET_RPC_URL = 'https://testrpc.com';
 const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-const NETWORK_CONFIG_UUID = 'test1';
-const NETWORK_CONFIG_UUID2 = 'test2';
+const NETWORK_CONFIGURATION_ID_1 = 'test1';
+const NETWORK_CONFIGURATION_ID_2 = 'test2';
 const firstTimeState = {
   config: {},
   NetworkController: {
@@ -87,14 +87,14 @@ const firstTimeState = {
       chainId: CUSTOM_RPC_CHAIN_ID,
     },
     networkConfigurations: {
-      [NETWORK_CONFIG_UUID]: {
+      [NETWORK_CONFIGURATION_ID_1]: {
         rpcUrl: ALT_MAINNET_RPC_URL,
         type: NETWORK_TYPES.RPC,
         chainId: '0x1',
         ticker: 'ETH',
         chainName: 'alt mainnet',
       },
-      [NETWORK_CONFIG_UUID2]: {
+      [NETWORK_CONFIGURATION_ID_2]: {
         rpcUrl: POLYGON_RPC_URL,
         type: NETWORK_TYPES.RPC,
         chainId: '0x89',

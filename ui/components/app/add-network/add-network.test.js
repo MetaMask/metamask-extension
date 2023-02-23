@@ -7,14 +7,14 @@ import AddNetwork from './add-network';
 
 jest.mock('../../../selectors', () => ({
   getNetworkConfigurations: () => ({
-    testUUID: {
+    networkConfigurationId: {
       chainId: '0x539',
       chainName: 'Localhost 8545',
       rpcPrefs: {},
       rpcUrl: 'http://localhost:8545',
       ticker: 'ETH',
     },
-    testUUID2: {
+    networkConfigurationId2: {
       chainId: '0xA4B1',
       chainName: 'Arbitrum One',
       rpcPrefs: { blockExplorerUrl: 'https://explorer.arbitrum.io' },

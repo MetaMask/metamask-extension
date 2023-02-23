@@ -146,7 +146,7 @@ const mapStateToProps = (state) => {
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
-    newNetworkAddedUUID: appState.newNetworkAddedUUID,
+    newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
   };
 };
@@ -185,8 +185,8 @@ const mapDispatchToProps = (dispatch) => ({
   clearNewNetworkAdded: () => {
     dispatch(setNewNetworkAdded({}));
   },
-  setCurrentNetwork: (uuid) => {
-    dispatch(setCurrentNetwork(uuid));
+  setCurrentNetwork: (networkConfigurationId) => {
+    dispatch(setCurrentNetwork(networkConfigurationId));
   },
 });
 

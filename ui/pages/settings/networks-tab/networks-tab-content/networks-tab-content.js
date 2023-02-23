@@ -27,7 +27,7 @@ const NetworksTabContent = ({
         networkDefaultedToProvider={networkDefaultedToProvider}
         networkIsSelected={networkIsSelected}
         networksToRender={networksToRender}
-        selectedNetworkUUID={selectedNetwork.uuid}
+        selectedNetworkConfigurationId={selectedNetwork.networkConfigurationId}
       />
       {shouldRenderNetworkForm ? (
         <NetworksForm

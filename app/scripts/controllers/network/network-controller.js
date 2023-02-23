@@ -236,21 +236,21 @@ export default class NetworkController extends EventEmitter {
   }
 
   /**
-   * A method for setting a network provider by UUID.
+   * A method for setting the currently selected network provider by networkConfigurationId.
    *
-   * @param {string} uuid - the universal unique identifier that corresponds to the network configuration we wish to set as selected.
+   * @param {string} networkConfigurationId - the universal unique identifier that corresponds to the network configuration we wish to set as selected.
    * @returns {Promise<string>} The rpcUrl of the network that was just set
    */
-  setCurrentNetwork(uuid) {
-    let configUUID = uuid;
-    if (typeof uuid === 'object') {
-      configUUID = uuid.uuid;
+  setCurrentNetwork(networkConfigurationId) {
+    let id = networkConfigurationId;
+    if (typeof networkConfigurationId === 'object') {
+      id = networkConfigurationId.networkConfigurationId;
     }
-    const targetNetwork = this.networkConfigurations.getState()[configUUID];
+    const targetNetwork = this.networkConfigurations.getState()[id];
 
     this._setProviderConfig({
       type: NETWORK_TYPES.RPC,
-      uuid: configUUID,
+      networkConfigurationId: id,
       ...targetNetwork,
     });
 
@@ -275,7 +275,6 @@ export default class NetworkController extends EventEmitter {
       ticker: ticker ?? 'ETH',
       chainName: '',
       rpcPrefs: { blockExplorerUrl },
-      uuid: '',
     });
   }
 
@@ -507,7 +506,7 @@ export default class NetworkController extends EventEmitter {
    * @param config.ticker - Currency ticker.
    * @param config.chainName - Personalized network name.
    * @param config.rpcPrefs - Personalized preferences.
-   * @returns uuid for the added or updated network configuration
+   * @returns networkConfigurationId for the added or updated network configuration
    */
   upsertNetworkConfiguration({ rpcUrl, chainId, ticker, chainName, rpcPrefs }) {
     const networkConfigurations = this.networkConfigurations.getState();
@@ -519,34 +518,34 @@ export default class NetworkController extends EventEmitter {
       rpcPrefs,
     };
 
-    for (const [configUUID, networkConfiguration] of Object.entries(
+    for (const [networkConfigurationId, networkConfiguration] of Object.entries(
       networkConfigurations,
     )) {
       if (
         networkConfiguration.rpcUrl?.toLowerCase() === rpcUrl?.toLowerCase()
       ) {
-        networkConfigurations[configUUID] = newNetworkConfiguration;
+        networkConfigurations[networkConfigurationId] = newNetworkConfiguration;
         this.networkConfigurations.updateState(networkConfigurations);
-        return configUUID;
+        return networkConfigurationId;
       }
     }
 
-    const uuid = random();
-    networkConfigurations[uuid] = newNetworkConfiguration;
+    const networkConfigurationId = random();
+    networkConfigurations[networkConfigurationId] = newNetworkConfiguration;
     this.networkConfigurations.updateState(networkConfigurations);
 
-    return uuid;
+    return networkConfigurationId;
   }
 
   /**
    * Removes network configuration from state.
    *
-   * @param uuid - Custom RPC URL.
+   * @param networkConfigurationId - the unique id for the network configuration to remove.
    */
-  removeNetworkConfiguration(uuid) {
-    const networkConfigs = this.networkConfigurations.getState();
-    delete networkConfigs[uuid];
-    this.networkConfigurations.updateState(networkConfigs);
+  removeNetworkConfiguration(networkConfigurationId) {
+    const networkConfigurations = this.networkConfigurations.getState();
+    delete networkConfigurations[networkConfigurationId];
+    this.networkConfigurations.updateState(networkConfigurations);
   }
 
   /**

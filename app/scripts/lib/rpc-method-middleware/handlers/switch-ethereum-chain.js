@@ -65,10 +65,10 @@ async function switchEthereumChainHandler(
 
   const { origin } = req;
 
-  const { chainId, uuid } = req.params[0];
+  const { chainId, networkConfigurationId } = req.params[0];
 
-  if (uuid) {
-    await setCurrentNetwork(uuid);
+  if (networkConfigurationId) {
+    await setCurrentNetwork(networkConfigurationId);
     return end();
   }
 

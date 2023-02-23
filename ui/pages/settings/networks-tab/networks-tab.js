@@ -10,13 +10,13 @@ import {
   DEFAULT_ROUTE,
   NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setSelectedNetworkUUID } from '../../../store/actions';
+import { setSelectedNetworkConfigurationId } from '../../../store/actions';
 import Button from '../../../components/ui/button';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
   getNetworkConfigurations,
-  getNetworksTabSelectedNetworkUUID,
+  getNetworksTabSelectedNetworkConfigurationId,
   getProvider,
 } from '../../../selectors';
 import {
@@ -49,12 +49,12 @@ const NetworksTab = ({ addNewNetwork }) => {
 
   const networkConfigurations = useSelector(getNetworkConfigurations);
   const provider = useSelector(getProvider);
-  const networksTabSelectedNetworkUUID = useSelector(
-    getNetworksTabSelectedNetworkUUID,
+  const networksTabSelectedNetworkConfigurationId = useSelector(
+    getNetworksTabSelectedNetworkConfigurationId,
   );
 
   const networkConfigurationsList = Object.entries(networkConfigurations).map(
-    ([uuid, networkConfig]) => {
+    ([networkConfigurationId, networkConfig]) => {
       return {
         label: networkConfig.chainName,
         iconColor: 'var(--color-icon-alternative)',
@@ -64,7 +64,7 @@ const NetworksTab = ({ addNewNetwork }) => {
         ticker: networkConfig.ticker,
         blockExplorerUrl: networkConfig.rpcPrefs?.blockExplorerUrl || '',
         isATestNetwork: TEST_CHAINS.includes(networkConfig.chainId),
-        uuid,
+        networkConfigurationId,
       };
     },
   );
@@ -72,7 +72,7 @@ const NetworksTab = ({ addNewNetwork }) => {
   const networksToRender = [...defaultNetworks, ...networkConfigurationsList];
   let selectedNetwork =
     networksToRender.find(
-      (network) => network.uuid === networksTabSelectedNetworkUUID,
+      (network) => network.networkConfigurationId === networksTabSelectedNetworkConfigurationId,
     ) || {};
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl);
 
@@ -91,7 +91,7 @@ const NetworksTab = ({ addNewNetwork }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(setSelectedNetworkUUID(''));
+      dispatch(setSelectedNetworkConfigurationId(''));
     };
   }, [dispatch]);
 

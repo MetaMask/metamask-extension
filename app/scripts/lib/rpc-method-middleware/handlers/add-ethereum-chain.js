@@ -167,7 +167,7 @@ async function addEthereumChainHandler(
             chainId: existingNetwork.chainId,
             chainName: existingNetwork.chainName,
             ticker: existingNetwork.ticker,
-            uuid: existingNetwork.uuid,
+            networkConfigurationId: existingNetwork.networkConfigurationId,
           },
         }),
       );
@@ -265,9 +265,9 @@ async function addEthereumChainHandler(
       }),
     );
   }
-  let uuid;
+  let networkConfigurationId;
   try {
-    uuid = await upsertNetworkConfiguration(
+    networkConfigurationId = await upsertNetworkConfiguration(
       await requestUserApproval({
         origin,
         type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
@@ -311,7 +311,7 @@ async function addEthereumChainHandler(
           chainId: _chainId,
           chainName: _chainName,
           ticker,
-          uuid,
+          networkConfigurationId,
         },
       }),
     );

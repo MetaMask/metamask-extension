@@ -22,7 +22,7 @@ import ActionableMessage from '../../../../components/ui/actionable-message';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
 import {
-  setSelectedNetworkUUID,
+  setSelectedNetworkConfigurationId,
   upsertAndSetNetworkConfiguration,
   editAndSetNetworkConfiguration,
   showModal,
@@ -178,7 +178,7 @@ const NetworksForm = ({
       setTicker('');
       setBlockExplorerUrl('');
       setErrors({});
-      dispatch(setSelectedNetworkUUID(''));
+      dispatch(setSelectedNetworkConfigurationId(''));
     };
   }, [
     setNetworkName,
@@ -502,14 +502,14 @@ const NetworksForm = ({
     try {
       const formChainId = chainId.trim().toLowerCase();
       const prefixedChainId = prefixChainId(formChainId);
-      let uuid;
+      let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
           editAndSetNetworkConfiguration({
             rpcUrl,
             ticker,
-            uuid: selectedNetwork.uuid,
+            networkConfigurationId: selectedNetwork.networkConfigurationId,
             chainId: prefixedChainId,
             chainName: networkName,
             rpcPrefs: {
@@ -519,7 +519,7 @@ const NetworksForm = ({
           }),
         );
       } else {
-        uuid = await dispatch(
+        networkConfigurationId = await dispatch(
           upsertAndSetNetworkConfiguration({
             rpcUrl,
             ticker,
@@ -546,7 +546,7 @@ const NetworksForm = ({
             source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
           },
         });
-        dispatch(setNewNetworkAdded({ chainName: networkName, uuid }));
+        dispatch(setNewNetworkAdded({ chainName: networkName, networkConfigurationId }));
 
         submitCallback?.();
       }
@@ -558,7 +558,7 @@ const NetworksForm = ({
 
   const onCancel = () => {
     if (addNewNetwork) {
-      dispatch(setSelectedNetworkUUID(''));
+      dispatch(setSelectedNetworkConfigurationId(''));
       cancelCallback?.();
     } else {
       resetForm();
@@ -569,10 +569,10 @@ const NetworksForm = ({
     dispatch(
       showModal({
         name: 'CONFIRM_DELETE_NETWORK',
-        target: selectedNetwork.uuid,
+        target: selectedNetwork.networkConfigurationId,
         onConfirm: () => {
           resetForm();
-          dispatch(setSelectedNetworkUUID(''));
+          dispatch(setSelectedNetworkConfigurationId(''));
         },
       }),
     );

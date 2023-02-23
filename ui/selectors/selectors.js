@@ -651,8 +651,8 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { networkConfigurations, provider: { uuid } = {} } = state.metamask;
-  const selectRpcInfo = networkConfigurations[uuid];
+  const { networkConfigurations, provider: { networkConfigurationId } = {} } = state.metamask;
+  const selectRpcInfo = networkConfigurations[networkConfigurationId];
   const { rpcPrefs = {} } = selectRpcInfo || {};
   return rpcPrefs;
 }
@@ -1164,8 +1164,8 @@ export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAddedName;
 }
 
-export function getNetworksTabSelectedNetworkUUID(state) {
-  return state.appState.selectedNetworkUUID;
+export function getNetworksTabSelectedNetworkConfigurationId(state) {
+  return state.appState.selectedNetworkConfigurationId;
 }
 
 export function getProvider(state) {

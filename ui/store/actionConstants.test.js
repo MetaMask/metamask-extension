@@ -21,13 +21,13 @@ describe('Redux actionConstants', () => {
     it('sets the state.metamask.rpcUrl property of the state to the action.value', () => {
       const action = {
         type: actionConstants.UPDATE_NETWORK_TARGET,
-        value: { rpcUrl: 'foo', uuid: 'baz' },
+        value: { rpcUrl: 'foo', networkConfigurationId: 'baz' },
       };
 
       const result = reducers(initialState, action);
       expect(result.metamask.provider.type).toStrictEqual(NETWORK_TYPES.RPC);
       expect(result.metamask.provider.rpcUrl).toStrictEqual('foo');
-      expect(result.metamask.provider.uuid).toStrictEqual('baz');
+      expect(result.metamask.provider.networkConfigurationId).toStrictEqual('baz');
     });
   });
 

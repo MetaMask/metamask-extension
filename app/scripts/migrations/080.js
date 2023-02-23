@@ -30,16 +30,16 @@ function transformState(state) {
 
   const networkConfigurations = {};
   frequentRpcListDetail.forEach((rpcDetail) => {
-    const uuid = v4();
-    if (networkConfigurations[uuid] === undefined) {
-      networkConfigurations[uuid] = {};
+    const networkConfigurationId = v4();
+    if (networkConfigurations[networkConfigurationId] === undefined) {
+      networkConfigurations[networkConfigurationId] = {};
     }
-    networkConfigurations[uuid] = {
+    networkConfigurations[networkConfigurationId] = {
       ...rpcDetail,
       chainName: rpcDetail.nickname,
     };
 
-    delete networkConfigurations[uuid]?.nickname;
+    delete networkConfigurations[networkConfigurationId]?.nickname;
   });
 
   if (PreferencesController?.frequentRpcListDetail) {

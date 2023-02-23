@@ -138,7 +138,7 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    newNetworkAddedUUID: PropTypes.string,
+    newNetworkAddedConfigurationId: PropTypes.string,
     clearNewNetworkAdded: PropTypes.func,
     setCurrentNetwork: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
@@ -268,7 +268,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage,
       newTokensImported,
       setNewTokensImported,
-      newNetworkAddedUUID,
+      newNetworkAddedConfigurationId,
       clearNewNetworkAdded,
       setCurrentNetwork,
     } = this.props;
@@ -493,7 +493,7 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {newNetworkAddedUUID && (
+        {newNetworkAddedConfigurationId && (
           <Popover className="home__new-network-added">
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
             <Typography
@@ -511,7 +511,7 @@ export default class Home extends PureComponent {
                 type="primary"
                 className="home__new-network-added__switch-to-button"
                 onClick={() => {
-                  setCurrentNetwork(newNetworkAddedUUID);
+                  setCurrentNetwork(newNetworkAddedConfigurationId);
                   clearNewNetworkAdded();
                 }}
               >
@@ -602,7 +602,7 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       completedOnboarding,
       onboardedInThisUISession,
-      newNetworkAddedUUID,
+      newNetworkAddedConfigurationId,
     } = this.props;
 
     if (forgottenPassword) {
@@ -617,7 +617,7 @@ export default class Home extends PureComponent {
       announcementsToShow &&
       showWhatsNewPopup &&
       !process.env.IN_TEST &&
-      !newNetworkAddedUUID;
+      !newNetworkAddedConfigurationId;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
