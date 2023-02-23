@@ -237,8 +237,8 @@ exports[`MetaMetrics Opt In should match snapshot 1`] = `
             <div
               class="metametrics-opt-in__row"
             >
-              <div
-                class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+              <span
+                class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
                 style="mask-image: url('./images/icons/check.svg');"
               />
               <div
@@ -250,8 +250,8 @@ exports[`MetaMetrics Opt In should match snapshot 1`] = `
             <div
               class="metametrics-opt-in__row"
             >
-              <div
-                class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+              <span
+                class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
                 style="mask-image: url('./images/icons/check.svg');"
               />
               <div
