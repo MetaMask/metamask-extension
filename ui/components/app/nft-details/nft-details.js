@@ -330,7 +330,7 @@ export default function NftDetails({ nft }) {
               {isDataURI ? (
                 <>{nftImageURL}</>
               ) : (
-                  <Link href={nftImageURL} title={nftImageURL}>
+                <Link href={nftImageURL} title={nftImageURL}>
                   {nftImageURL}
                 </Link>
               )}

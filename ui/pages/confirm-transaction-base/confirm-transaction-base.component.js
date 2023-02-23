@@ -475,7 +475,7 @@ export default class ConfirmTransactionBase extends Component {
                       </p>
                       <p>{t('transactionDetailGasTooltipExplanation')}</p>
                       <p>
-                          <Link href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172">
+                        <Link href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172">
                           {t('transactionDetailGasTooltipConversion')}
                         </Link>
                       </p>
