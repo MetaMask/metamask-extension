@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
-  "affirmAgree": {
-    "message": "Ich stimme zu"
-  },
   "airgapVault": {
     "message": "AirGap-Tresor"
   },
@@ -1432,14 +1429,6 @@
   "gasUsed": {
     "message": "Verwendetes Gas"
   },
-  "gdprMessage": {
-    "message": "Diese Daten werden zusammengeführt und sind daher im Sinne der Allgemeinen Datenschutzverordnung (EU) 2016/679 anonym. Weitere Informationen zu unseren Datenschutzpraktiken finden Sie in unserem $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Datenschutzrichtlinie hier",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Allgemein"
   },
@@ -1894,37 +1883,6 @@
   "metamaskVersion": {
     "message": "MetaMask-Version"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Erlaubt Ihnen immer die Abmeldung über Einstellungen"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Nie",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask wird.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 Erfassen Sie Ihre vollständige IP-Adresse",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$ erfassen Sie Schlüssel, Adressen, Transaktionen, Salden, Hashes oder persönliche Informationen",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 Daten für Gewinn verkaufen. Niemals!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Anonymisierte Ereignisse für Klicks und Seitenaufrufe senden"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Hilf uns MetaMask zu verbessern"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask möchte Nutzungsdaten sammeln, um besser zu verstehen, wie unsere Nutzer mit der Erweiterung umgehen. Diese Daten werden verwendet, um die Benutzerfreundlichkeit und das Benutzererlebnis unseres Produkts und des Ethereum-Ökosystems kontinuierlich zu verbessern."
-  },
   "mismatchedChainLinkText": {
     "message": "die Netzwerkdetails überprüfen",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2163,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Keine Snaps installiert"
-  },
-  "noThanks": {
-    "message": "Nein Danke"
   },
   "noThanksVariant2": {
     "message": "Nein, danke."

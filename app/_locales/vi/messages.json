@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"phí khích lệ thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
   },
-  "affirmAgree": {
-    "message": "Tôi đồng ý"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -1432,14 +1429,6 @@
   "gasUsed": {
     "message": "Đã dùng gas"
   },
-  "gdprMessage": {
-    "message": "Đây là dữ liệu tổng hợp, do đó ở trạng thái ẩn danh để phục vụ cho mục đích của Quy định chung về bảo vệ dữ liệu (Liên minh Châu Âu) 2016/679. Để biết thêm thông tin liên quan đến các phương thức bảo vệ quyền riêng tư của chúng tôi, vui lòng xem $1 của chúng tôi.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Chính sách quyền riêng tư tại đây",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Chung"
   },
@@ -1894,37 +1883,6 @@
   "metamaskVersion": {
     "message": "Phiên bản MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Luôn cho phép bạn chọn không tham gia thông qua phần Cài đặt"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Không bao giờ",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask sẽ.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 thu thập địa chỉ IP đầy đủ của bạn",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 thu thập mã khóa, địa chỉ, giao dịch, số dư, mã băm hoặc bất kỳ thông tin cá nhân nào",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 bán dữ liệu để thu lợi. Tuyệt đối không bao giờ!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Gửi các lượt nhấn và xem trang đã được ẩn danh"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Giúp chúng tôi cải thiện MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn về cách người dùng tương tác với tiện ích. Chúng tôi sẽ dùng dữ liệu này để liên tục cải thiện độ hữu ích và trải nghiệm người dùng trên sản phẩm của mình và hệ sinh thái Ethereum."
-  },
   "mismatchedChainLinkText": {
     "message": "xác minh thông tin về mạng",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2163,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Chưa cài đặt Snap nào"
-  },
-  "noThanks": {
-    "message": "Không, cảm ơn"
   },
   "noThanksVariant2": {
     "message": "Không, cảm ơn."

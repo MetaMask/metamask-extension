@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "affirmAgree": {
-    "message": "I agree"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -1560,14 +1557,6 @@
   "gasUsed": {
     "message": "Gas used"
   },
-  "gdprMessage": {
-    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Privacy policy here",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "General"
   },
@@ -2054,37 +2043,6 @@
   "metamaskVersion": {
     "message": "MetaMask Version"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Always allow you to opt-out via Settings"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Never",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask will.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 collect your full IP address",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 collect keys, addresses, transactions, balances, hashes, or any personal information",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 sell data for profit. Ever!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Send anonymized click & pageview events"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Help us improve MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
-  },
   "metrics": {
     "message": "Metrics"
   },
@@ -2335,9 +2293,6 @@
   },
   "noSnaps": {
     "message": "No Snaps installed"
-  },
-  "noThanks": {
-    "message": "No thanks"
   },
   "noThanksVariant2": {
     "message": "No, thanks."
