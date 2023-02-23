@@ -7,6 +7,7 @@ import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
+import { Icon, ICON_NAMES } from '../../../component-library';
 
 export default class MetaMetricsOptInModal extends Component {
   static propTypes = {
@@ -44,13 +45,13 @@ export default class MetaMetricsOptInModal extends Component {
 
               <div className="metametrics-opt-in__committments">
                 <div className="metametrics-opt-in__row">
-                  <i className="fa fa-check" />
+                  <Icon name={ICON_NAMES.CHECK} />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsAllowOptOut')}
                   </div>
                 </div>
                 <div className="metametrics-opt-in__row">
-                  <i className="fa fa-check" />
+                  <Icon name={ICON_NAMES.CHECK} />
                   <div className="metametrics-opt-in__row-description">
                     {t('metametricsCommitmentsSendAnonymizedEvents')}
                   </div>
