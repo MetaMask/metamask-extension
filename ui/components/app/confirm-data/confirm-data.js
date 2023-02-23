@@ -31,10 +31,10 @@ const ConfirmData = ({ txData, dataComponent }) => {
     : '';
 
   return (
-    <div className="confirm-page-container-content__data">
-      <div className="confirm-page-container-content__data-box-label">
+    <div className="confirm-data__data">
+      <div className="confirm-data__data-box-label">
         {`${t('functionType')}:`}
-        <span className="confirm-page-container-content__function-type">
+        <span className="confirm-data__function-type">
           {`${functionType} ${functionParams}`}
         </span>
       </div>

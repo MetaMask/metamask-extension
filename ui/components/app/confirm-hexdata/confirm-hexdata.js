@@ -30,16 +30,16 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
     : '';
 
   return (
-    <div className="confirm-page-container-content__data">
-      <div className="confirm-page-container-content__data-box-label">
+    <div className="confirm-hexdata__data">
+      <div className="confirm-hexdata__data-box-label">
         {`${t('functionType')}:`}
-        <span className="confirm-page-container-content__function-type">
+        <span className="confirm-hexdata__function-type">
           {`${functionType} ${functionParams}`}
         </span>
       </div>
       {params && (
-        <div className="confirm-page-container-content__data-box">
-          <div className="confirm-page-container-content__data-field-label">
+        <div className="confirm-hexdata__data-box">
+          <div className="confirm-hexdata__data-field-label">
             {`${t('parameters')}:`}
           </div>
           <div>
@@ -47,12 +47,10 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
           </div>
         </div>
       )}
-      <div className="confirm-page-container-content__data-box-label">
+      <div className="confirm-hexdata__data-box-label">
         {`${t('hexData')}: ${toBuffer(txParams?.data).length} bytes`}
       </div>
-      <div className="confirm-page-container-content__data-box">
-        {txParams?.data}
-      </div>
+      <div className="confirm-hexdata__data-box">{txParams?.data}</div>
       <CopyRawData data={txParams?.data} />
     </div>
   );

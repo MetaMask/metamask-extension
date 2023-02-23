@@ -309,7 +309,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       const functionType = await driver.findElement(
-        '.confirm-page-container-content__function-type',
+        '.confirm-data__function-type',
       );
       const functionTypeText = await functionType.getText();
       assert(functionTypeText.match('Transfer'));
@@ -321,7 +321,7 @@ describe('MetaMask', function () {
       assert.equal(tokenAmountText, '1 TST');
 
       const confirmDataDiv = await driver.findElement(
-        '.confirm-page-container-content__data-box',
+        '.confirm-data__data-box',
       );
       const confirmDataText = await confirmDataDiv.getText();
 
