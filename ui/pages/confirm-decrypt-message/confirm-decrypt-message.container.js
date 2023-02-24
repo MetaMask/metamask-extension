@@ -31,7 +31,6 @@ function mapStateToProps(state) {
     state,
     txData?.msgParams?.from,
   );
-  console.log('decrypt txData?.msgParams?.from', txData?.msgParams?.from);
 
   return {
     txData,
