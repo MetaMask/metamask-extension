@@ -184,7 +184,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         // Confirm transaction
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__title',
-          text: '0 TST',
+          text: '1 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
@@ -269,7 +269,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         // Confirm transaction
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__title',
-          text: '0 TST',
+          text: '1 TST',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
