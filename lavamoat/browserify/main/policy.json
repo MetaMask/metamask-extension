@@ -1266,7 +1266,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
         "@metamask/phishing-controller>@metamask/controller-utils": true,
-        "@metamask/phishing-controller>eth-phishing-detect": true,
+        "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
       }
     },
@@ -1285,7 +1285,7 @@
         "ethjs>ethjs-unit": true
       }
     },
-    "@metamask/phishing-controller>eth-phishing-detect": {
+    "@metamask/phishing-warning>eth-phishing-detect": {
       "packages": {
         "eslint>optionator>fast-levenshtein": true
       }

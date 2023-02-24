@@ -86,9 +86,7 @@ const ConfirmPageContainer = (props) => {
     currentTransaction,
     supportsEIP1559,
     nativeCurrency,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     txData,
-    ///: END:ONLY_INCLUDE_IN(flask)
     assetStandard,
     isApprovalOrRejection,
   } = props;
@@ -223,6 +221,7 @@ const ConfirmPageContainer = (props) => {
             toAddress={toAddress}
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            txData={txData}
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -346,9 +345,7 @@ ConfirmPageContainer.propTypes = {
   dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   txData: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN(flask)
   tokenAddress: PropTypes.string,
   nonce: PropTypes.string,
   warning: PropTypes.string,

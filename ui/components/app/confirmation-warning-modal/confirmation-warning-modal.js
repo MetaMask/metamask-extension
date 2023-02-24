@@ -13,7 +13,9 @@ import {
   JustifyContent,
   TypographyVariant,
   AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();
@@ -53,7 +55,12 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
         margin={0}
         className="confirmation-warning-modal__content__header"
       >
-        <i className="fa fa-exclamation-triangle confirmation-warning-modal__content__header__warning-icon" />
+        <Icon
+          name={ICON_NAMES.DANGER}
+          color={IconColor.errorDefault}
+          className="confirmation-warning-modal__content__header__warning-icon"
+          size={ICON_SIZES.XL}
+        />
         <Typography
           variant={TypographyVariant.H4}
           fontWeight={FONT_WEIGHT.BOLD}

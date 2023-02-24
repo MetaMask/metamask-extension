@@ -19,7 +19,15 @@ describe('preferences controller', function () {
     const networkControllerProviderConfig = {
       getAccounts: () => undefined,
     };
-    network = new NetworkController({ infuraProjectId: 'foo' });
+    network = new NetworkController({
+      infuraProjectId: 'foo',
+      state: {
+        provider: {
+          type: 'mainnet',
+          chainId: currentChainId,
+        },
+      },
+    });
     network.initializeProvider(networkControllerProviderConfig);
     provider = network.getProviderAndBlockTracker().provider;
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -36,10 +44,6 @@ describe('preferences controller', function () {
     sandbox
       .stub(network, '_getLatestBlock')
       .callsFake(() => Promise.resolve({}));
-    sandbox.stub(network, 'getCurrentChainId').callsFake(() => currentChainId);
-    sandbox
-      .stub(network, 'getProviderConfig')
-      .callsFake(() => ({ type: 'mainnet' }));
 
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',

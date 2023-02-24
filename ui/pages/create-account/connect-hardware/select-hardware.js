@@ -16,6 +16,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { openWindow } from '../../../helpers/utils/window';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -244,7 +245,7 @@ export default class SelectHardware extends Component {
                       category: EVENT.CATEGORIES.NAVIGATION,
                       event: 'Clicked Ledger Buy Now',
                     });
-                    window.open(HardwareAffiliateLinks.ledger, '_blank');
+                    openWindow(HardwareAffiliateLinks.ledger);
                   }}
                 >
                   {this.context.t('buyNow')}
@@ -257,10 +258,7 @@ export default class SelectHardware extends Component {
                       category: EVENT.CATEGORIES.NAVIGATION,
                       event: 'Clicked Ledger Tutorial',
                     });
-                    window.open(
-                      HardwareAffiliateTutorialLinks.ledger,
-                      '_blank',
-                    );
+                    openWindow(HardwareAffiliateTutorialLinks.ledger);
                   }}
                 >
                   {this.context.t('tutorial')}
@@ -315,7 +313,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked GridPlus Buy Now',
                 });
-                window.open(HardwareAffiliateLinks.gridplus, '_blank');
+                openWindow(HardwareAffiliateLinks.gridplus);
               }}
             >
               {this.context.t('buyNow')}
@@ -328,7 +326,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked GidPlus Tutorial',
                 });
-                window.open(HardwareAffiliateTutorialLinks.gridplus, '_blank');
+                openWindow(HardwareAffiliateTutorialLinks.gridplus);
               }}
             >
               {this.context.t('tutorial')}
@@ -381,7 +379,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Trezor Buy Now',
                 });
-                window.open(HardwareAffiliateLinks.trezor, '_blank');
+                openWindow(HardwareAffiliateLinks.trezor);
               }}
             >
               {this.context.t('buyNow')}
@@ -394,7 +392,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Trezor Tutorial',
                 });
-                window.open(HardwareAffiliateTutorialLinks.trezor, '_blank');
+                openWindow(HardwareAffiliateTutorialLinks.trezor);
               }}
             >
               {this.context.t('tutorial')}
@@ -435,7 +433,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Keystone Buy Now',
                 });
-                window.open(HardwareAffiliateLinks.keystone, '_blank');
+                openWindow(HardwareAffiliateLinks.keystone);
               }}
             >
               {this.context.t('buyNow')}
@@ -448,7 +446,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked Keystone Tutorial',
                 });
-                window.open(HardwareAffiliateTutorialLinks.keystone, '_blank');
+                openWindow(HardwareAffiliateTutorialLinks.keystone);
               }}
             >
               {this.context.t('tutorial')}
@@ -470,7 +468,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked AirGap Vault Buy Now',
                 });
-                window.open(HardwareAffiliateLinks.airgap, '_blank');
+                openWindow(HardwareAffiliateLinks.airgap);
               }}
             >
               {this.context.t('downloadNow')}
@@ -483,7 +481,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked AirGap Vault Tutorial',
                 });
-                window.open(HardwareAffiliateTutorialLinks.airgap, '_blank');
+                openWindow(HardwareAffiliateTutorialLinks.airgap);
               }}
             >
               {this.context.t('tutorial')}
@@ -505,7 +503,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked CoolWallet Buy Now',
                 });
-                window.open(HardwareAffiliateLinks.coolwallet, '_blank');
+                openWindow(HardwareAffiliateLinks.coolwallet);
               }}
             >
               {this.context.t('buyNow')}
@@ -518,10 +516,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked CoolWallet Tutorial',
                 });
-                window.open(
-                  HardwareAffiliateTutorialLinks.coolwallet,
-                  '_blank',
-                );
+                openWindow(HardwareAffiliateTutorialLinks.coolwallet);
               }}
             >
               {this.context.t('tutorial')}
@@ -541,7 +536,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked DCent Buy Now',
                 });
-                window.open(HardwareAffiliateLinks.dcent, '_blank');
+                openWindow(HardwareAffiliateLinks.dcent);
               }}
             >
               {this.context.t('buyNow')}
@@ -554,7 +549,7 @@ export default class SelectHardware extends Component {
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: 'Clicked DCent Tutorial',
                 });
-                window.open(HardwareAffiliateTutorialLinks.dcent, '_blank');
+                openWindow(HardwareAffiliateTutorialLinks.dcent);
               }}
             >
               {this.context.t('tutorial')}
