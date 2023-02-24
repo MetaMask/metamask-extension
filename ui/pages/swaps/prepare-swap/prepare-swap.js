@@ -680,6 +680,16 @@ export default function PrepareSwap({
     }
   };
 
+  const hideSwapToTokenIf = useCallback(
+    (item) => isEqualCaseInsensitive(item.address, fromTokenAddress),
+    [fromTokenAddress],
+  );
+
+  const hideSwapFromTokenIf = useCallback(
+    (item) => isEqualCaseInsensitive(item.address, selectedToToken?.address),
+    [selectedToToken?.address],
+  );
+
   return (
     <div className="prepare-swap">
       <div className="prepare-swap__content">
@@ -707,6 +717,7 @@ export default function PrepareSwap({
                 maxListItems={30}
                 searchQuery={swapToSearchQuery}
                 setSearchQuery={setSwapToSearchQuery}
+                hideItemIf={hideSwapToTokenIf}
               />
             </Box>
           </Popover>
@@ -735,6 +746,7 @@ export default function PrepareSwap({
                 maxListItems={30}
                 searchQuery={swapFromSearchQuery}
                 setSearchQuery={setSwapFromSearchQuery}
+                hideItemIf={hideSwapFromTokenIf}
               />
             </Box>
           </Popover>
