@@ -8,10 +8,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionFunctionType } from '../../../hooks/useTransactionFunctionType';
 import {
   Color,
-  DISPLAY,
   OVERFLOW_WRAP,
   TextVariant,
   TEXT_TRANSFORM,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 import { Text } from '../../component-library';
@@ -29,10 +29,9 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
     return dataHexComponent;
   }
 
-  // if (!txParams.data || !txParams.to) {
-  //   return null;
-  // }
-
+  if (!txParams.data || !txParams.to) {
+    return null;
+  }
 
   const { params } = methodData;
   const functionParams = params?.length
@@ -41,16 +40,16 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
 
   return (
     <Box padding={4}>
-      <Text
-        alignItems="center"
-        display={DISPLAY.FLEX}
-        paddingBottom={3}
-        paddingTop={2}
-        textTransform={TEXT_TRANSFORM.UPPERCASE}
-        variant={TextVariant.bodySm}
-      >
-        {`${t('functionType')}:`}
+      <Box paddingBottom={3} paddingTop={2}>
         <Text
+          as={TypographyVariant.span}
+          textTransform={TEXT_TRANSFORM.UPPERCASE}
+          variant={TextVariant.bodySm}
+        >
+          {`${t('functionType')}:`}
+        </Text>
+        <Text
+          as={TypographyVariant.span}
           color={Color.textDefault}
           paddingLeft={1}
           textTransform={TEXT_TRANSFORM.CAPITALIZE}
@@ -58,15 +57,11 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
         >
           {`${functionType} ${functionParams}`}
         </Text>
-      </Text>
+      </Box>
       {params && (
-        <Text
-          backgroundColor={Color.backgroundAlternative}
-          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-          padding={4}
-          variant={TextVariant.bodySm}
-        >
+        <Box backgroundColor={Color.backgroundAlternative} padding={4}>
           <Text
+            as={TypographyVariant.H3}
             paddingBottom={3}
             paddingTop={2}
             textTransform={TEXT_TRANSFORM.UPPERCASE}
@@ -74,12 +69,16 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
           >
             {`${t('parameters')}:`}
           </Text>
-          <div>
+          <Text
+            overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+            variant={TextVariant.bodySm}
+          >
             <pre>{JSON.stringify(params, null, 2)}</pre>
-          </div>
-        </Text>
+          </Text>
+        </Box>
       )}
       <Text
+        as={TypographyVariant.H3}
         paddingBottom={3}
         paddingTop={2}
         textTransform={TEXT_TRANSFORM.UPPERCASE}

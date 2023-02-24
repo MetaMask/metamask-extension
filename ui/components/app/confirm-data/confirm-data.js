@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 
 import {
   Color,
-  DISPLAY,
   TextVariant,
   TEXT_TRANSFORM,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { getKnownMethodData } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,16 +40,16 @@ const ConfirmData = ({ txData, dataComponent }) => {
 
   return (
     <Box color={Color.textAlternative} className="confirm-data" padding={4}>
-      <Text
-        alignItems="center"
-        display={DISPLAY.FLEX}
-        paddingBottom={3}
-        paddingTop={2}
-        textTransform={TEXT_TRANSFORM.UPPERCASE}
-        variant={TextVariant.bodySm}
-      >
-        {`${t('functionType')}:`}
+      <Box paddingBottom={3} paddingTop={2}>
         <Text
+          as={TypographyVariant.span}
+          textTransform={TEXT_TRANSFORM.UPPERCASE}
+          variant={TextVariant.bodySm}
+        >
+          {`${t('functionType')}:`}
+        </Text>
+        <Text
+          as={TypographyVariant.span}
           color={Color.textDefault}
           paddingLeft={1}
           textTransform={TEXT_TRANSFORM.CAPITALIZE}
@@ -57,7 +57,7 @@ const ConfirmData = ({ txData, dataComponent }) => {
         >
           {`${functionType} ${functionParams}`}
         </Text>
-      </Text>
+      </Box>
       <Disclosure>
         <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
       </Disclosure>

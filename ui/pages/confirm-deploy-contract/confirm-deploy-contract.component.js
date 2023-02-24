@@ -10,6 +10,7 @@ import {
   OVERFLOW_WRAP,
   TextVariant,
   TEXT_TRANSFORM,
+  TypographyVariant,
 } from '../../helpers/constants/design-system';
 
 export default class ConfirmDeployContract extends Component {
@@ -27,10 +28,10 @@ export default class ConfirmDeployContract extends Component {
 
     return (
       <Box color={Color.textAlternative} padding={4}>
-        <Text
+        <Box
           backgroundColor={Color.backgroundAlternative}
-          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
           padding={4}
+          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
           variant={TextVariant.bodySm}
         >
           <Box display={DISPLAY.FLEX}>
@@ -42,7 +43,12 @@ export default class ConfirmDeployContract extends Component {
             >
               {`${t('origin')}:`}
             </Text>
-            <div>{origin}</div>
+            <Text
+              overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+              variant={TextVariant.bodySm}
+            >
+              {origin}
+            </Text>
           </Box>
           <Box display={DISPLAY.FLEX}>
             <Text
@@ -52,10 +58,11 @@ export default class ConfirmDeployContract extends Component {
             >
               {`${t('bytes')}:`}
             </Text>
-            <div>{toBuffer(data).length}</div>
+            <Text variant={TextVariant.bodySm}>{toBuffer(data).length}</Text>
           </Box>
-        </Text>
+        </Box>
         <Text
+          as={TypographyVariant.H3}
           paddingBottom={3}
           paddingTop={2}
           textTransform={TEXT_TRANSFORM.UPPERCASE}
