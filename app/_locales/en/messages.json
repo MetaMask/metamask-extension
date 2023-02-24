@@ -4507,7 +4507,7 @@
   },
   "warningTooltipText": {
     "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Weak"
