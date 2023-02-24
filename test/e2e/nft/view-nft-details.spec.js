@@ -27,6 +27,8 @@ describe('View NFT details', function () {
         title: this.test.title,
       },
       async ({ driver, _, contractRegistry }) => {
+        const contractAddress =
+          contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -35,10 +37,7 @@ describe('View NFT details', function () {
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
 
-        await driver.fill(
-          '[data-testid="address"]',
-          contractRegistry.getContractAddress(smartContract),
-        );
+        await driver.fill('[data-testid="address"]', contractAddress);
         await driver.fill('[data-testid="token-id"]', '1');
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
@@ -71,10 +70,10 @@ describe('View NFT details', function () {
         );
         assert.equal(await nftImageSource.getText(), expectedImageSource);
 
-        const contractAddress = await driver.findElement(
+        const nftContract = await driver.findElement(
           '.nft-details__contract-wrapper',
         );
-        assert.equal(await contractAddress.getText(), '0x581...5947');
+        assert.equal(await nftContract.getText(), '0x581...5947');
       },
     );
   });
