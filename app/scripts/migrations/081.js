@@ -4,7 +4,7 @@ import {
   SnapCaveatType,
 } from '@metamask/rpc-methods';
 
-const version = 80;
+const version = 81;
 
 /**
  * Prior to this migration, snap <> dapp permissions were wildcards i.e. `wallet_snap_*`.
