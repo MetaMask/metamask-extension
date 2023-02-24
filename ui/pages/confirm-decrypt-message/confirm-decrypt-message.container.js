@@ -27,11 +27,10 @@ function mapStateToProps(state) {
 
   const txData = unconfirmedTransactions[0];
 
-  const {
-    msgParams: { from },
-  } = txData;
-
-  const fromAccount = getTargetAccountWithSendEtherInfo(state, from);
+  const fromAccount = getTargetAccountWithSendEtherInfo(
+    state,
+    txData?.msgParams?.from,
+  );
 
   return {
     txData,
