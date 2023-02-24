@@ -32,6 +32,6 @@ async function start() {
   // Generate a beta commit message and push changes to github
   // Later on this will be picked up by CircleCI with the format of Version vx.x.x-beta.x
   await exec(
-    `git add . && git commit -m "Version v${betaVersion}" && git push --force`,
+    `git add . && git commit -m "Version v${betaVersion}" && git push`,
   );
 }
