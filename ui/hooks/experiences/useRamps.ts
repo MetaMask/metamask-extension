@@ -5,23 +5,24 @@ import { getCurrentChainId } from '../../selectors';
 
 interface IUseRamps {
   openBuyCryptoInPdapp: VoidFunction;
+  getBuyURI: (chainId: ChainId) => string;
 }
 
 const portfolioUrl = process.env.PORTFOLIO_URL;
 
-const getBuyURI = (chainId: ChainId) => {
-  switch (chainId) {
-    case CHAIN_IDS.GOERLI:
-      return 'https://goerli-faucet.slock.it/';
-    case CHAIN_IDS.SEPOLIA:
-      return 'https://faucet.sepolia.dev/';
-    default:
-      return `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`;
-  }
-};
-
 const useRamps = (): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
+
+  const getBuyURI = useCallback((_chainId: ChainId) => {
+    switch (_chainId) {
+      case CHAIN_IDS.GOERLI:
+        return 'https://goerli-faucet.slock.it/';
+      case CHAIN_IDS.SEPOLIA:
+        return 'https://faucet.sepolia.dev/';
+      default:
+        return `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`;
+    }
+  }, []);
 
   const openBuyCryptoInPdapp = useCallback(() => {
     const buyUrl = getBuyURI(chainId);
@@ -30,7 +31,7 @@ const useRamps = (): IUseRamps => {
     });
   }, []);
 
-  return { openBuyCryptoInPdapp };
+  return { openBuyCryptoInPdapp, getBuyURI };
 };
 
 export default useRamps;
