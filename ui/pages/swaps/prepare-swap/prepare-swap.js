@@ -127,6 +127,7 @@ import {
 } from '../../../components/component-library';
 import SwapsFooter from '../swaps-footer';
 import UrlIcon from '../../../components/ui/url-icon';
+import SelectedToken from '../selected-token';
 import SwapsBannerAlert from './swaps-banner-alert';
 import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
@@ -841,47 +842,10 @@ export default function PrepareSwap({
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
           >
-            <div
-              className={classnames(
-                'dropdown-search-list',
-                'dropdown-search-list__selector-closed-container',
-                'dropdown-input-pair__selector--closed',
-              )}
+            <SelectedToken
               onClick={onSwapFromOpen}
-            >
-              <div className="dropdown-search-list__selector-closed">
-                {selectedFromToken?.iconUrl && (
-                  <UrlIcon
-                    url={selectedFromToken.iconUrl}
-                    className="dropdown-search-list__selector-closed-icon"
-                    name={selectedFromToken?.symbol}
-                  />
-                )}
-                {!selectedFromToken?.iconUrl && (
-                  <div className="dropdown-search-list__default-dropdown-icon" />
-                )}
-                <div className="dropdown-search-list__labels">
-                  <div className="dropdown-search-list__item-labels">
-                    <span
-                      className={classnames(
-                        'dropdown-search-list__closed-primary-label',
-                        {
-                          'dropdown-search-list__select-default':
-                            !selectedFromToken?.symbol,
-                        },
-                      )}
-                    >
-                      {selectedFromToken?.symbol || t('swapSelectAToken')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <Icon
-                name={ICON_NAMES.ARROW_DOWN}
-                size={ICON_SIZES.XS}
-                marginRight={3}
-              />
-            </div>
+              selectedToken={selectedFromToken}
+            />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <TextField
                 className="prepare-swap__from-token-amount"
@@ -980,48 +944,10 @@ export default function PrepareSwap({
         </div>
         <div className="prepare-swap__swap-to-content">
           <div className="dropdown-input-pair dropdown-input-pair__to">
-            <div
-              className={classnames(
-                'dropdown-search-list',
-                'dropdown-search-list__selector-closed-container',
-                'dropdown-input-pair__selector--closed',
-              )}
+            <SelectedToken
               onClick={onSwapToOpen}
-            >
-              <div className="dropdown-search-list__selector-closed">
-                {selectedToToken?.iconUrl && (
-                  <UrlIcon
-                    url={selectedToToken.iconUrl}
-                    className="dropdown-search-list__selector-closed-icon"
-                    name={selectedToToken?.symbol}
-                  />
-                )}
-                {!selectedToToken?.iconUrl && (
-                  <div className="dropdown-search-list__default-dropdown-icon" />
-                )}
-                <div className="dropdown-search-list__labels">
-                  <div className="dropdown-search-list__item-labels">
-                    <span
-                      className={classnames(
-                        'dropdown-search-list__closed-primary-label',
-                        {
-                          'dropdown-search-list__select-default':
-                            !selectedToToken?.symbol,
-                        },
-                      )}
-                    >
-                      {selectedToToken?.symbol || t('swapSelectAToken')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <Icon
-                name={ICON_NAMES.ARROW_DOWN}
-                size={ICON_SIZES.XS}
-                marginRight={3}
-              />
-            </div>
-
+              selectedToken={selectedToToken}
+            />
             <Box>
               <Typography variant={TypographyVariant.H4}>
                 {receiveToAmount}
