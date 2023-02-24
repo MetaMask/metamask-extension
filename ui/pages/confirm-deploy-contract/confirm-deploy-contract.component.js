@@ -7,6 +7,7 @@ import { Text } from '../../components/component-library';
 import {
   Color,
   DISPLAY,
+  OVERFLOW_WRAP,
   TextVariant,
   TEXT_TRANSFORM,
 } from '../../helpers/constants/design-system';
@@ -25,12 +26,12 @@ export default class ConfirmDeployContract extends Component {
     const { txData: { origin, txParams: { data } = {} } = {} } = this.props;
 
     return (
-      <Box color={Color.textAlternative} className="confirm-data" padding={4}>
+      <Box color={Color.textAlternative} padding={4}>
         <Text
           backgroundColor={Color.backgroundAlternative}
+          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
           padding={4}
           variant={TextVariant.bodySm}
-          className="confirm-data__data-box"
         >
           <Box display={DISPLAY.FLEX}>
             <Text
@@ -62,9 +63,9 @@ export default class ConfirmDeployContract extends Component {
         >{`${t('hexData')}:`}</Text>
         <Text
           backgroundColor={Color.backgroundAlternative}
+          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
           padding={4}
           variant={TextVariant.bodySm}
-          className="confirm-data__data-box"
         >
           {data}
         </Text>
