@@ -16,6 +16,7 @@ import Typography from '../../components/ui/typography';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
 import { openCustomProtocol } from '../../../shared/lib/deep-linking';
+import { EVENT } from '../../../shared/constants/metametrics';
 
 export function renderDesktopError({
   type,
@@ -27,6 +28,7 @@ export function renderDesktopError({
   downloadDesktopApp,
   restartExtension,
   openOrDownloadDesktopApp,
+  trackEvent,
 }) {
   let content;
 
@@ -43,6 +45,12 @@ export function renderDesktopError({
   };
 
   const renderHeader = (text) => {
+    if (typeof trackEvent === 'function') {
+      trackEvent({
+        category: EVENT.CATEGORIES.ERROR,
+        event: `Error: ${text}`,
+      });
+    }
     return (
       <Typography
         variant={TypographyVariant.H4}
@@ -64,7 +72,23 @@ export function renderDesktopError({
   const renderCTA = (id, text, onClick) => {
     return (
       <Box marginTop={6}>
-        <Button type="primary" onClick={onClick ?? noop} id={id}>
+        <Button
+          type="primary"
+          onClick={() => {
+            if (onClick) {
+              onClick();
+              if (typeof trackEvent === 'function') {
+                trackEvent({
+                  category: EVENT.CATEGORIES.DESKTOP,
+                  event: `${text} Button Clicked`,
+                });
+              }
+            } else {
+              noop();
+            }
+          }}
+          id={id}
+        >
           {text}
         </Button>
       </Box>

@@ -19,6 +19,8 @@ import {
   disableDesktop,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 const DESKTOP_ERROR_DESKTOP_OUTDATED_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.DESKTOP_OUTDATED}`;
 const DESKTOP_ERROR_EXTENSION_OUTDATED_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.EXTENSION_OUTDATED}`;
@@ -30,6 +32,7 @@ export default function DesktopEnableButton() {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
+  const trackEvent = useContext(MetaMetricsContext);
   const showLoader = () => dispatch(showLoadingIndication());
   const hideLoader = () => dispatch(hideLoadingIndication());
   const desktopEnabled = useSelector(getIsDesktopEnabled);
@@ -81,16 +84,23 @@ export default function DesktopEnableButton() {
     history.push(DESKTOP_PAIRING_ROUTE);
   };
 
+  const getButtonText = (isDesktopEnabled) =>
+    isDesktopEnabled ? t('desktopDisableButton') : t('desktopEnableButton');
+
   return (
     <Button
       type="primary"
       large
       onClick={(event) => {
+        trackEvent({
+          category: EVENT.CATEGORIES.DESKTOP,
+          event: `${getButtonText(desktopEnabled)} Button Clicked`,
+        });
         event.preventDefault();
         onClick();
       }}
     >
-      {desktopEnabled ? t('desktopDisableButton') : t('desktopEnableButton')}
+      {getButtonText(desktopEnabled)}
     </Button>
   );
 }

@@ -171,7 +171,7 @@ function getMetaMetricsController({
       events: {},
     },
     getDesktopEnabled:
-    desktopController.getDesktopEnabled.bind(desktopController),
+      desktopController.getDesktopEnabled.bind(desktopController),
   });
 }
 describe('MetaMetricsController', function () {
