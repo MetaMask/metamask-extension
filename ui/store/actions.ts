@@ -4518,11 +4518,10 @@ export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(): Thun
   unknown,
   AnyAction
 > {
-  return async (dispatch) => {
+  return async () => {
     await submitRequestToBackground(
       'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
     );
-    await forceUpdateMetamaskState(dispatch);
   };
 }
 
