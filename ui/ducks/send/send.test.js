@@ -1141,6 +1141,9 @@ describe('Send Slice', () => {
             gas: {
               gasLimit: GAS_LIMITS.SIMPLE,
             },
+            amount: {
+              value: '0x1',
+            },
           }),
           stage: SEND_STAGES.DRAFT,
           gasEstimateIsLoading: false,

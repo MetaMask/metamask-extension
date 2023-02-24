@@ -1,5 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { GAS_LIMITS } from '../../../shared/constants/gas';
+import {
+  GAS_LIMITS,
+  GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES,
+} from '../../../shared/constants/gas';
 import {
   AssetType,
   TokenStandard,
@@ -11,7 +14,7 @@ import {
   generateERC20TransferData,
   generateERC721TransferData,
 } from '../../pages/send/send.utils';
-import { generateTransactionParams } from './helpers';
+import { generateTransactionParams, gasIsExcessive } from './helpers';
 
 describe('Send Slice Helpers', () => {
   describe('generateTransactionParams', () => {
@@ -158,6 +161,19 @@ describe('Send Slice Helpers', () => {
         maxFeePerGas: '0x2',
         maxPriorityFeePerGas: '0x1',
       });
+    });
+  });
+
+  describe('gasIsExcessive()', () => {
+    it('should correctly check if custom gas is 1.5 times greater than the fastest estimate', () => {
+      const result = gasIsExcessive({
+        customPrice: '0x30e4f9b400',
+        gasFeeEstimates: {
+          high: '139',
+        },
+        gasEstimateType: GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy,
+      });
+      expect(result).toStrictEqual(true);
     });
   });
 });

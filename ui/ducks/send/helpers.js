@@ -1,7 +1,12 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
+import {
+  GAS_LIMITS,
+  MIN_GAS_LIMIT_HEX,
+  GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES,
+} from '../../../shared/constants/gas';
+import { EtherDenomination } from '../../../shared/constants/common';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
@@ -278,4 +283,28 @@ export async function getERC20Balance(token, accountAddress) {
     token.decimals,
   ).toString(16);
   return addHexPrefix(amount);
+}
+
+export function gasIsExcessive({
+  customPrice = '0x0',
+  gasFeeEstimates = {},
+  gasEstimateType = GAS_FEE_CONTROLLER_ESTIMATE_TYPES.none,
+}) {
+  const fastPrice =
+    gasEstimateType === GAS_FEE_CONTROLLER_ESTIMATE_TYPES.legacy
+      ? gasFeeEstimates?.high
+      : null;
+
+  if (!customPrice || !fastPrice) {
+    return false;
+  }
+
+  const customPriceExcessive = new Numeric(
+    customPrice,
+    16,
+    EtherDenomination.WEI,
+  )
+    .toDenomination(EtherDenomination.GWEI)
+    .greaterThan(Math.floor(fastPrice * 1.5), 10);
+  return customPriceExcessive;
 }

@@ -24,7 +24,6 @@ import {
 
 import {
   isBalanceSufficient,
-  gasIsExcessive,
   isTokenBalanceSufficient,
 } from '../../pages/send/send.utils';
 import {
@@ -113,6 +112,7 @@ import {
   estimateGasLimitForSend,
   generateTransactionParams,
   getRoundedGasPrice,
+  gasIsExcessive,
 } from './helpers';
 // typedef import statements
 /**
