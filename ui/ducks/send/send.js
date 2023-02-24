@@ -1441,6 +1441,13 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
+          case draftTransaction.amount.value === '0x0' ||
+            draftTransaction.amount.value === '0x0':
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Asset is in error amount is 0`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case draftTransaction.asset.type === AssetType.token &&
             draftTransaction.asset.details === null:
             slice.caseReducers.addHistoryEntry(state, {
