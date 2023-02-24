@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
+import log from 'loglevel';
 
 import AccountListItem from '../../components/app/account-list-item';
 import Identicon from '../../components/ui/identicon';
@@ -298,6 +299,11 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   render = () => {
+    if (!this.props.txData) {
+      log.warn('ConfirmDecryptMessage Page: Missing txData prop.');
+      return null;
+    }
+
     return (
       <div className="request-decrypt-message__container">
         {this.renderHeader()}
