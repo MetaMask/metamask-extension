@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta charset="utf-8"><title>MetaMask Notification</title><style>#app-content {
+        display: flex;
+        flex-flow: column;
+      }
+
+      #loading__logo {
+        width: 10rem;
+        height: 10rem;
+        align-self: center;
+        margin: 10rem 0 0 0;
+      }
+
+      #loading__spinner {
+        width: 2rem;
+        height: 2rem;
+        align-self: center;
+        margin-top: 1rem;
+      }</style><link rel="stylesheet" href="./index.css" title="ltr"><link rel="stylesheet" href="./index-rtl.css" title="rtl" disabled="disabled"><script defer="defer" src="/static/722.js"></script><script defer="defer" src="/static/693.js"></script><script defer="defer" src="/static/633.js"></script><script defer="defer" src="/static/826.js"></script><script defer="defer" src="/static/760.js"></script><script defer="defer" src="/static/ui.js"></script><link href="/static/styles/ui.css" rel="stylesheet"></head><body class="notification"><div id="app-content"><img id="loading__logo" src="./images/logo/metamask-fox.svg" alt=""/> <img id="loading__spinner" src="./images/spinner.gif" alt=""/></div><div id="popover-content"></div><script src="./snow.js" charset="utf-8"></script><script src="./use-snow.js" charset="utf-8"></script><script src="./globalthis.js" charset="utf-8"></script><script src="./sentry-install.js" charset="utf-8"></script>{{@if(it.applyLavaMoat)}}<script src="./runtime-lavamoat.js" charset="utf-8"></script><script src="./lockdown-more.js" charset="utf-8"></script><script src="./policy-load.js" charset="utf-8"></script>{{#else}}<script src="./lockdown-install.js" charset="utf-8"></script><script src="./lockdown-run.js" charset="utf-8"></script><script src="./lockdown-more.js" charset="utf-8"></script><script src="./runtime-cjs.js" charset="utf-8"></script>{{/if}} {{@each(it.jsBundles) => val}}<script src="{{val}}" charset="utf-8"></script>{{/each}}</body></html>

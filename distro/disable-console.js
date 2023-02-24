@@ -1,0 +1,1 @@
+(()=>{function o(){}"undefined"!=typeof process&&process.env.METAMASK_DEBUG||"undefined"==typeof console||(console.log=o,console.info=o)})();
