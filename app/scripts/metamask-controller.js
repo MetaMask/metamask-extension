@@ -64,6 +64,7 @@ import {
 ///: END:ONLY_INCLUDE_IN
 
 import browser from 'webextension-polyfill';
+import EthContract from 'ethjs-contract';
 import {
   AssetType,
   TransactionStatus,
@@ -104,7 +105,10 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { getTokenIdParam } from '../../shared/lib/token-util';
+import {
+  getTokenIdParam,
+  fetchTokenBalance,
+} from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -260,6 +264,8 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().provider;
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
+
+    this.ethQuery = new EthQuery(this.provider);
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
@@ -944,10 +950,7 @@ export default class MetamaskController extends EventEmitter {
         this.getExternalPendingTransactions.bind(this),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
-      getTokenStandardAndDetails:
-        this.assetsContractController.getTokenStandardAndDetails.bind(
-          this.assetsContractController,
-        ),
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
@@ -2189,12 +2192,31 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const details =
-      await this.assetsContractController.getTokenStandardAndDetails(
+    const contract = new EthContract(this.ethQuery);
+    const { tokenList } = this.tokenListController.state;
+    const tokenListEntry = tokenList[address.toLowerCase()];
+    let details;
+    if (tokenListEntry) {
+      const standard = tokenListEntry.standard?.toUpperCase() ?? 'NONE';
+      let balance;
+      if (standard === 'ERC20') {
+        balance = await fetchTokenBalance(address, userAddress, contract);
+      }
+
+      details = {
+        address,
+        balance,
+        standard,
+        decimals: tokenListEntry.decimals,
+        symbol: tokenListEntry.symbol,
+      };
+    } else {
+      details = await this.assetsContractController.getTokenStandardAndDetails(
         address,
         userAddress,
         tokenId,
       );
+    }
     return {
       ...details,
       decimals: details?.decimals?.toString(10),
@@ -2336,11 +2358,10 @@ export default class MetamaskController extends EventEmitter {
         seedPhraseAsBuffer,
       );
 
-      const ethQuery = new EthQuery(this.provider);
       accounts = await keyringController.getAccounts();
       lastBalance = await this.getBalance(
         accounts[accounts.length - 1],
-        ethQuery,
+        this.ethQuery,
       );
 
       const [primaryKeyring] = keyringController.getKeyringsByType(
@@ -2356,7 +2377,7 @@ export default class MetamaskController extends EventEmitter {
         accounts = await keyringController.getAccounts();
         lastBalance = await this.getBalance(
           accounts[accounts.length - 1],
-          ethQuery,
+          this.ethQuery,
         );
       }
 

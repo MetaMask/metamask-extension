@@ -85,8 +85,28 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
+const MOCK_TOKEN_BALANCE = '888';
+
+function MockEthContract() {
+  return () => {
+    return {
+      at: () => {
+        return {
+          balanceOf: () => MOCK_TOKEN_BALANCE,
+        };
+      },
+    };
+  };
+}
+
+// TODO, Feb 24, 2023:
+// ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
+// this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
+// us set up the test infrastructure for a mocked provider. Github ticket for that is:
+// https://github.com/MetaMask/metamask-extension/issues/17890
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
+  'ethjs-contract': MockEthContract,
 }).default;
 
 const currentNetworkId = '5';
@@ -1270,6 +1290,115 @@ describe('MetaMaskController', function () {
       assert.ok(
         !Object.values(state).includes(NOTIFICATION_ID),
         'Object should not include the deleted notification',
+      );
+    });
+  });
+
+  describe('getTokenStandardAndDetails', function () {
+    it('gets token data from the token list if available, but without a balance if not the erc20 standard', async function () {
+      const tokenData = {
+        standard: 'NotERC20',
+        decimals: 18,
+        symbol: 'DAI',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === undefined,
+        'tokenDetails should not include a balance when standard is not ERC20',
+      );
+    });
+
+    it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const tokenData = {
+        standard: 'ERC20',
+        decimals: 18,
+        symbol: 'DAI',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.balance === MOCK_TOKEN_BALANCE,
+        'tokenDetails should include a balance when standard is ERC20',
+      );
+    });
+
+    it('gets token data from the blockchain, via the assetsContractController, if not available in the tokenList', async function () {
+      const tokenData = {
+        standard: 'ERC20',
+        decimals: 18,
+        symbol: 'DAI',
+        balance: '333',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+          },
+        };
+      });
+
+      sandbox
+        .stub(
+          metamaskController.assetsContractController,
+          'getTokenStandardAndDetails',
+        )
+        .callsFake(() => {
+          return tokenData;
+        });
+
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0xNotInTokenList',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === tokenData.balance,
+        'tokenDetails should include a balance',
       );
     });
   });

@@ -215,17 +215,6 @@ export async function fetchTokenPrice(address: string): Promise<any> {
   return prices?.[address]?.eth;
 }
 
-export async function fetchTokenBalance(
-  address: string,
-  userAddress: string,
-): Promise<any> {
-  const tokenContract = (global as any).eth.contract(abi).at(address);
-  const tokenBalancePromise = tokenContract
-    ? tokenContract.balanceOf(userAddress)
-    : Promise.resolve();
-  return await tokenBalancePromise;
-}
-
 export async function fetchSwapsGasPrices(chainId: any): Promise<
   | any
   | {
