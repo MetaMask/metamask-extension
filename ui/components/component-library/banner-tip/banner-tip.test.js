@@ -4,7 +4,7 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { BannerTip, BANNER_TIP_LOGOS } from '.';
+import { BannerTip, BannerTipLogoType } from '.';
 
 describe('BannerTip', () => {
   it('should render BannerTip element correctly', () => {
@@ -21,19 +21,21 @@ describe('BannerTip', () => {
     const { getByTestId } = render(
       <>
         <BannerTip
-          logoType={BANNER_TIP_LOGOS.GREETING}
+          logoType={BannerTipLogoType.greeting}
           logoProps={{ 'data-testid': 'banner-tip-greeting' }}
         >
           should render BannerTip element correctly
         </BannerTip>
         <BannerTip
-          logoType={BANNER_TIP_LOGOS.CHAT}
+          logoType={BannerTipLogoType.chat}
           logoProps={{ 'data-testid': 'banner-tip-chat' }}
         >
           should render BannerTip element correctly
         </BannerTip>
       </>,
     );
+    const imageElement = getByTestId('banner-tip-greeting');
+    expect(imageElement.tagName).toBe('IMG');
     expect(getByTestId('banner-tip-greeting')).toHaveClass(
       'mm-banner-tip--logo',
     );

@@ -7,7 +7,7 @@ import {
 import Box from '../../ui/box/box';
 import { ButtonLink, ButtonPrimary, ICON_NAMES } from '..';
 import README from './README.mdx';
-import { BannerTip, BANNER_TIP_LOGOS } from '.';
+import { BannerTip, BannerTipLogoType } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -38,35 +38,11 @@ export default {
   },
   argTypes: {
     logoType: {
-      options: Object.values(BANNER_TIP_LOGOS),
+      options: Object.values(BannerTipLogoType),
       control: 'select',
     },
     className: {
       control: 'text',
-    },
-    title: {
-      control: 'text',
-    },
-    description: {
-      control: 'text',
-    },
-    children: {
-      control: 'text',
-    },
-    action: {
-      control: 'func',
-    },
-    actionButtonLabel: {
-      control: 'text',
-    },
-    actionButtonOnClick: {
-      control: 'func',
-    },
-    actionButtonProps: {
-      control: 'object',
-    },
-    onClose: {
-      action: 'onClose',
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -109,12 +85,12 @@ export const LogoType = (args) => {
     <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={3}>
       <BannerTip
         {...args}
-        logoType={BANNER_TIP_LOGOS.GREETING}
+        logoType={BannerTipLogoType.greeting}
         title="Greeting"
       >
         This is a demo of greeting.
       </BannerTip>
-      <BannerTip {...args} logoType={BANNER_TIP_LOGOS.CHAT} title="Chat">
+      <BannerTip {...args} logoType={BannerTipLogoType.chat} title="Chat">
         This is a demo of chat.
       </BannerTip>
     </Box>

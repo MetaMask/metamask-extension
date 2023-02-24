@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../ui/box';
-import { BannerBase } from '..';
 import {
   AlignItems,
   BorderColor,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import { BANNER_TIP_LOGOS } from './banner-tip.constants';
+import Box from '../../ui/box';
+import { BannerBase } from '..';
+import { BannerTipLogoType } from './banner-tip.constants';
 
 export const BannerTip = ({
   children,
   className,
-  logoType = BANNER_TIP_LOGOS.GREETING,
+  logoType = BannerTipLogoType.greeting,
   logoWrapperProps,
   logoProps,
   ...props
@@ -50,10 +50,10 @@ BannerTip.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Use the `logoType` prop with the `BANNER_TIP_LOGOS` object from `../../component-library` to change the logo image of `BannerTip`.
-   * Possible options: `BANNER_TIP_LOGOS.INFO`(Default), `BANNER_TIP_LOGOS.EMPTY`,
+   * Use the `logoType` prop with the `BannerTipLogoType` object from `../../component-library` to change the logo image of `BannerTip`.
+   * Possible options: `BannerTipLogoType.greeting`(Default), `BannerTipLogoType.chat`,
    */
-  logoType: PropTypes.oneOf(Object.values(BANNER_TIP_LOGOS)),
+  logoType: PropTypes.oneOf(Object.values(BannerTipLogoType)),
   /**
    * logoProps accepts all the props from Box
    */

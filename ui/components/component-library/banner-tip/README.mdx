@@ -4,7 +4,7 @@ import { BannerBase } from '..';
 
 # BannerTip
 
-`BannerTip` is an inline notification that notifies users of important information & sometimes time-sensitive changes.
+`BannerTip` is an inline notification that offers users educational tips, knowledge, and helpful links
 
 <Canvas>
   <Story id="components-componentlibrary-bannertip--default-story" />
@@ -22,12 +22,12 @@ The `BannerTip` accepts all `BannerBase` component props below
 
 ### Logo Type
 
-Use the `logoType` prop with the `BANNER_TIP_LOGOS` object from `../../component-library` to change the context of `BannerTip`.
+Use the `logoType` prop with the `BannerTipLogoType` object from `../../component-library` to change the context of `BannerTip`.
 
 Possible options:
 
-- `BANNER_TIP_LOGOS.GREETING` Default
-- `BANNER_TIP_LOGOS.CHAT`
+- `BannerTipLogoType.greeting` Default
+- `BannerTipLogoType.chat`
 
 <Canvas>
   <Story id="components-componentlibrary-bannertip--logo-type" />
@@ -35,12 +35,11 @@ Possible options:
 
 ```jsx
 import { BannerTip } from '../../component-library';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
 
-<BannerTip logoType={BANNER_TIP_LOGOS.GREETING}>
-  This is a demo of greeting.
+<BannerTip logoType={BannerTipLogoType.greeting}>
+  This is a demo of chat.
 </BannerTip>
-<BannerTip logoType={BANNER_TIP_LOGOS.CHAT}>
+<BannerTip logoType={BannerTipLogoType.chat}>
   This is a demo of chat.
 </BannerTip>
 ```
