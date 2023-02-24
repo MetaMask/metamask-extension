@@ -1,0 +1,23 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { ExternalLink } from './external-link';
+
+
+# ExternalLink
+
+The `ExternalLink` component is extending `Link` that provides secure defaults.
+Namely:
+`target="_blank"` causing hte link to open in new tab.
+
+you can still provide your own `rel` and `target` props if you need to overwrite these defaults.
+
+`rel` will be merged with the defaults, and `target` will be overwritten.
+
+passing boolean `referer` will add allow referer header will be sent.
+
+<Canvas>
+  <Story id="components-ui-link--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={ExternalLink} />
