@@ -24,7 +24,6 @@ describe('RestrictedMethods', () => {
   it('has the expected permission keys', () => {
     expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [
-        'eth_accounts',
         ...Object.keys(restrictedMethodPermissionBuilders).filter(
           (targetKey) =>
             !Object.keys(ExcludedSnapPermissions).includes(targetKey),
