@@ -371,10 +371,7 @@ export default class AccountMenu extends Component {
             history.push(NEW_ACCOUNT_ROUTE);
           }}
           icon={
-            <Icon
-              name={ICON_NAMES.ADD}
-              color={IconColor.iconAlternative}
-            />
+            <Icon name={ICON_NAMES.ADD} color={IconColor.iconAlternative} />
           }
           text={t('createAccount')}
         />
