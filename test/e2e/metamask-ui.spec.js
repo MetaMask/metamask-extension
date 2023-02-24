@@ -308,12 +308,10 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      const functionType = await driver.findElement({
+      await driver.findElement({
         tag: 'span',
         text: 'Transfer',
       });
-      const functionTypeText = await functionType.getText();
-      assert(functionTypeText.match('Transfer'));
 
       const tokenAmount = await driver.findElement(
         '.confirm-page-container-summary__title-text',
@@ -321,17 +319,10 @@ describe('MetaMask', function () {
       const tokenAmountText = await tokenAmount.getText();
       assert.equal(tokenAmountText, '1 TST');
 
-      const confirmDataDiv = await driver.findElement(
-        '.confirm-data__data-box',
-      );
-      const confirmDataText = await confirmDataDiv.getText();
-
-      await driver.delay(regularDelayMs);
-      assert(
-        confirmDataText.match(
-          /0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97/u,
-        ),
-      );
+      await driver.waitForSelector({
+        tag: 'p',
+        text: '0xa9059cbb0000000000000000000000002f318c334780961fb129d2a6c30d0763d9a5c97',
+      });
 
       await driver.clickElement({ text: 'Details', tag: 'button' });
       await driver.delay(regularDelayMs);
