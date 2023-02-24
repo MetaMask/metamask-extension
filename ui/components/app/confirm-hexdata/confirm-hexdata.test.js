@@ -4,7 +4,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 
 import configureStore from '../../../store/store';
-import ConfirmHexData from '.';
+import ConfirmHexData from './confirm-hexdata';
 
 jest.mock('../../../../shared/lib/fetch-with-cache');
 

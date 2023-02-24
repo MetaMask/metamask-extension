@@ -2,12 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
+import {
+  Color,
+  DISPLAY,
+  TextVariant,
+  TEXT_TRANSFORM,
+} from '../../../helpers/constants/design-system';
 import { getKnownMethodData } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionFunctionType } from '../../../hooks/useTransactionFunctionType';
 
+import Box from '../../ui/box/box';
 import Disclosure from '../../ui/disclosure';
 import TransactionDecoding from '../transaction-decoding';
+import { Text } from '../../component-library';
 
 const ConfirmData = ({ txData, dataComponent }) => {
   const t = useI18nContext();
@@ -31,17 +39,29 @@ const ConfirmData = ({ txData, dataComponent }) => {
     : '';
 
   return (
-    <div className="confirm-data__data">
-      <div className="confirm-data__data-box-label">
+    <Box color={Color.textAlternative} className="confirm-data" padding={4}>
+      <Text
+        alignItems="center"
+        display={DISPLAY.FLEX}
+        paddingBottom={3}
+        paddingTop={2}
+        textTransform={TEXT_TRANSFORM.UPPERCASE}
+        variant={TextVariant.bodySm}
+      >
         {`${t('functionType')}:`}
-        <span className="confirm-data__function-type">
+        <Text
+          color={Color.textDefault}
+          paddingLeft={1}
+          textTransform={TEXT_TRANSFORM.CAPITALIZE}
+          variant={TextVariant.bodySmBold}
+        >
           {`${functionType} ${functionParams}`}
-        </span>
-      </div>
+        </Text>
+      </Text>
       <Disclosure>
         <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
       </Disclosure>
-    </div>
+    </Box>
   );
 };
 
