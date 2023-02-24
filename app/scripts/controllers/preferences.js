@@ -73,11 +73,19 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    initState.useTokenDetection = Boolean(process.env.TOKEN_DETECTION_V2);
+    ///: END:ONLY_INCLUDE_IN
+
     this.network = opts.network;
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.openPopup = opts.openPopup;
     this.tokenListController = opts.tokenListController;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.handleMmiPortfolio = opts.handleMmiPortfolio;
+    ///: END:ONLY_INCLUDE_IN
 
     this._subscribeToInfuraAvailability();
 
@@ -249,6 +257,10 @@ export default class PreferencesController {
       return ids;
     }, {});
 
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.setMmiPortfolioCookie();
+    ///: END:ONLY_INCLUDE_IN
+
     this.store.updateState({ identities });
   }
 
@@ -273,6 +285,11 @@ export default class PreferencesController {
       const [selected] = Object.keys(identities);
       this.setSelectedAddress(selected);
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.setMmiPortfolioCookie();
+    ///: END:ONLY_INCLUDE_IN
+
     return address;
   }
 
@@ -328,6 +345,10 @@ export default class PreferencesController {
 
     this.store.updateState({ identities, lostIdentities });
     this.addAddresses(addresses);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.setMmiPortfolioCookie();
+    ///: END:ONLY_INCLUDE_IN
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -420,6 +441,10 @@ export default class PreferencesController {
 
     rpcList.push({ rpcUrl, chainId, ticker, nickname, rpcPrefs });
     this.store.updateState({ frequentRpcListDetail: rpcList });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.setMmiPortfolioCookie();
+    ///: END:ONLY_INCLUDE_IN
   }
 
   /**
@@ -437,6 +462,11 @@ export default class PreferencesController {
       rpcList.splice(index, 1);
     }
     this.store.updateState({ frequentRpcListDetail: rpcList });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.setMmiPortfolioCookie();
+    ///: END:ONLY_INCLUDE_IN
+
     return rpcList;
   }
 
@@ -569,6 +599,14 @@ export default class PreferencesController {
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  async setMmiPortfolioCookie() {
+    if (!process.env.IN_TEST) {
+      this.handleMmiPortfolio();
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   //
   // PRIVATE METHODS

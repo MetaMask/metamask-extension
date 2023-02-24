@@ -24,6 +24,14 @@ const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
+const MOCK_EXTENSION_ID = 'testid';
+
+const MOCK_EXTENSION = {
+  runtime: {
+    id: MOCK_EXTENSION_ID,
+    setUninstallURL: () => undefined,
+  },
+};
 
 const MOCK_TRAITS = {
   test_boolean: true,
@@ -40,7 +48,11 @@ const MOCK_INVALID_TRAITS = {
 };
 
 const DEFAULT_TEST_CONTEXT = {
-  app: { name: 'MetaMask Extension', version: VERSION },
+  app: {
+    name: 'MetaMask Extension',
+    version: VERSION,
+    extensionId: MOCK_EXTENSION_ID,
+  },
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
   userAgent: window.navigator.userAgent,
@@ -53,10 +65,12 @@ const DEFAULT_SHARED_PROPERTIES = {
 };
 
 const DEFAULT_EVENT_PROPERTIES = {
+  accountAddress: undefined,
   category: 'Unit Test',
   revenue: undefined,
   value: undefined,
   currency: undefined,
+  extensionId: MOCK_EXTENSION_ID,
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
@@ -151,6 +165,7 @@ function getMetaMetricsController({
       },
       events: {},
     },
+    extension: MOCK_EXTENSION,
   });
 }
 describe('MetaMetricsController', function () {
@@ -961,6 +976,11 @@ describe('MetaMetricsController', function () {
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        [TRAITS.MMI_ACCOUNT_ADDRESS]: null,
+        [TRAITS.MMI_IS_CUSTODIAN]: false,
+        [TRAITS.MMI_EXTENSION_ID]: 'testid',
+        ///: END:ONLY_INCLUDE_IN
       });
     });
 

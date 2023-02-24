@@ -126,6 +126,10 @@ export default class MetaMetricsController {
     this.extension = extension;
     this.environment = environment;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.selectedAddress = prefState.selectedAddress;
+    ///: END:ONLY_INCLUDE_IN
+
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
 
@@ -523,10 +527,12 @@ export default class MetaMetricsController {
         );
       }
 
-      const combinedProperties = merge(
-        payload.sensitiveProperties,
-        payload.properties,
-      );
+      const combinedProperties = merge(payload.sensitiveProperties, {
+        ...payload.properties,
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        accountAddress: this.selectedAddress,
+        ///: END:ONLY_INCLUDE_IN
+      });
 
       events.push(
         this._track(
@@ -540,7 +546,20 @@ export default class MetaMetricsController {
       );
     }
 
-    events.push(this._track(this._buildEventPayload(payload), options));
+    events.push(
+      this._track(
+        this._buildEventPayload({
+          ...payload,
+          properties: {
+            ...payload.properties,
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            accountAddress: this.selectedAddress,
+            ///: END:ONLY_INCLUDE_IN }
+          },
+        }),
+        options,
+      ),
+    );
 
     await Promise.all(events);
   }
@@ -618,10 +637,21 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsContext}
    */
   _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -651,6 +681,15 @@ export default class MetaMetricsController {
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       event,
       messageId: buildUniqueMessageId(rawPayload),
@@ -669,6 +708,9 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       context: this._buildContext(referrer, page),
     };
@@ -682,6 +724,13 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    const mmiAccountAddress =
+      metamaskState.custodyAccountDetails &&
+      Object.keys(metamaskState.custodyAccountDetails).length
+        ? Object.keys(metamaskState.custodyAccountDetails)[0]
+        : null;
+    ///: END:ONLY_INCLUDE_IN
     const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
@@ -716,6 +765,11 @@ export default class MetaMetricsController {
       [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      [TRAITS.MMI_EXTENSION_ID]: this.extension?.runtime?.id,
+      [TRAITS.MMI_ACCOUNT_ADDRESS]: mmiAccountAddress,
+      [TRAITS.MMI_IS_CUSTODIAN]: Boolean(mmiAccountAddress),
+      ///: END:ONLY_INCLUDE_IN
     };
 
     if (!previousUserTraits) {

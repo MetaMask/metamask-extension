@@ -208,6 +208,11 @@ export const TRAITS = {
   THEME: 'theme',
   THREE_BOX_ENABLED: 'three_box_enabled',
   TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  MMI_ACCOUNT_ADDRESS: 'accountAddress',
+  MMI_EXTENSION_ID: 'extensionId',
+  MMI_IS_CUSTODIAN: 'isCustodian',
+  ///: END:ONLY_INCLUDE_IN
 };
 
 /**
