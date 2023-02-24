@@ -655,14 +655,16 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
           },
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012623,
               loadingDefaults: true,
@@ -673,7 +675,8 @@ class FixtureBuilder {
               txParams: {
                 from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
@@ -698,7 +701,8 @@ class FixtureBuilder {
           txParams: {
             from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
@@ -708,14 +712,16 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
           },
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012624,
               loadingDefaults: true,
@@ -726,7 +732,8 @@ class FixtureBuilder {
               txParams: {
                 from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
@@ -751,7 +758,8 @@ class FixtureBuilder {
           txParams: {
             from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
@@ -761,14 +769,16 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
           },
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012625,
               loadingDefaults: true,
@@ -779,7 +789,8 @@ class FixtureBuilder {
               txParams: {
                 from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
@@ -804,7 +815,8 @@ class FixtureBuilder {
           txParams: {
             from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
@@ -814,14 +826,16 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
           },
           history: [
             {
               chainId: CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
               },
               id: 7911313280012626,
               loadingDefaults: true,
@@ -832,7 +846,8 @@ class FixtureBuilder {
               txParams: {
                 from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
                 gas: '0x5208',
-                gasPrice: '0x4a817c800',
+                maxFeePerGas: '0x59682f0c',
+                maxPriorityFeePerGas: '0x59682f00',
                 to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
                 value: '0x29a2241af62c0000',
               },
@@ -857,7 +872,8 @@ class FixtureBuilder {
           txParams: {
             from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             gas: '0x5208',
-            gasPrice: '0x4a817c800',
+            maxFeePerGas: '0x59682f0c',
+            maxPriorityFeePerGas: '0x59682f00',
             to: '0x2f318c334780961fb129d2a6c30d0763d9a5c970',
             value: '0x29a2241af62c0000',
           },
