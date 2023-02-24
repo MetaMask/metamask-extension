@@ -7,6 +7,7 @@ import Box from '../../../ui/box';
 import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
 import {
+  IconColor,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
@@ -16,6 +17,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Identicon from '../../../ui/identicon';
 import { shortenAddress } from '../../../../helpers/utils/util';
+import { Icon, ICON_NAMES } from '../../../component-library';
 
 const SignatureRequestOriginalWarning = ({
   senderAddress,
@@ -33,7 +35,11 @@ const SignatureRequestOriginalWarning = ({
         padding={4}
         className="signature-request-warning__content__header"
       >
-        <i className="fa fa-exclamation-triangle signature-request-warning__content__header__warning-icon" />
+        <Icon
+          name={ICON_NAMES.DANGER}
+          color={IconColor.errorDefault}
+          className="signature-request-warning__content__header__warning-icon"
+        />
         <Typography
           variant={TypographyVariant.H4}
           fontWeight={FONT_WEIGHT.BOLD}
