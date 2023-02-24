@@ -75,12 +75,6 @@
   "asset": {
     "message": "Omaisuuserä"
   },
-  "attemptToCancel": {
-    "message": "Yritetäänkö peruuttaa?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Tämän yrityksen lähettäminen ei takaa, että alkuperäinen tapahtuma peruutettaisiin. Mikäli peruutusyritys onnistuu, sinulta veloitetaan yllä mainittu tapahtumamaksu."
-  },
   "attemptingConnect": {
     "message": "Yritetään yhdistää lohkoketjuun."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Peruuta"
-  },
-  "cancellationGasFee": {
-    "message": "Peruutuksen gas-maksu"
   },
   "cancelled": {
     "message": "Peruttu"
@@ -636,35 +627,21 @@
   "reset": {
     "message": "Tyhjennä"
   },
-  "resetAccount": {
-    "message": "Nollaa tili"
-  },
-  "resetAccountDescription": {
-    "message": "Tilisi nollaaminen tyhjentää tapahtumahistoriasi."
-  },
   "restore": {
     "message": "Palauta"
   },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },
-  "revealSeedWordsDescription": {
-    "message": "Mikäli vaihdat jossakin vaiheessa selainta tai tietokonetta, tarvitset tämän salaustekstin tiliesi käyttämiseen. Tallenna se johonkin turvalliseen ja salaiseen paikkaan."
-  },
   "revealSeedWordsWarning": {
-    "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "ÄLÄ jaa tätä tekstiä kenellekään!"
+    "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Uusi RPC:n URL"
   },
   "save": {
     "message": "Tallenna"
-  },
-  "saveAsCsvFile": {
-    "message": "Tallenna CSV-tiedostona"
   },
   "scanInstructions": {
     "message": "Aseta QR-koodi kamerasi eteen"
@@ -933,9 +910,6 @@
   },
   "welcomeBack": {
     "message": "Tervetuloa takaisin!"
-  },
-  "yesLetsTry": {
-    "message": "Kyllä, kokeillaan"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Käyttääksesi tätä ominaisuutta sinun tarvitsee antaa kameralle käyttöoikeudet."

@@ -13,17 +13,10 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         class="confirm-page-container-header__back-button-container"
         style="visibility: hidden;"
       >
-        <svg
-          fill="currentColor"
-          height="24"
-          viewBox="0 0 512 512"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m335 113c8 8 8 22 0 30l-113 113 113 113c8 8 8 22 0 30-8 8-22 8-30 0l-128-128c-8-8-8-22 0-30l128-128c8-8 22-8 30 0z"
-          />
-        </svg>
+        <span
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-left.svg');"
+        />
         <span
           class="confirm-page-container-header__back-button"
           data-testid="confirm-page-back-edit-button"

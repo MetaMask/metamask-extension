@@ -266,9 +266,6 @@
   "address": {
     "message": "Adresse"
   },
-  "addressBookIcon": {
-    "message": "Icône du carnet d’adresses"
-  },
   "advanced": {
     "message": "Paramètres avancés"
   },
@@ -292,9 +289,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
-  },
-  "affirmAgree": {
-    "message": "Je suis d’accord"
   },
   "airgapVault": {
     "message": "Coffre-fort AirGap"
@@ -402,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancel": {
-    "message": "Tenter d’annuler ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Faire une demande d’annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l’annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
@@ -481,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "site de portefeuille bêta"
   },
   "betaTerms": {
     "message": "Conditions d’utilisation de la version bêta"
@@ -602,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annuler le swap gratuitement"
-  },
-  "cancellationGasFee": {
-    "message": "Frais d’annulation de la transaction"
   },
   "cancelled": {
     "message": "Annulé"
@@ -1447,14 +1429,6 @@
   "gasUsed": {
     "message": "Gaz utilisé"
   },
-  "gdprMessage": {
-    "message": "Ces données sont agrégées et sont donc anonymes aux fins du règlement général sur la protection des données (UE) 2016/679. Pour plus d’informations concernant nos pratiques en matière de confidentialité, veuillez consulter notre $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Politique de confidentialité ici",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Général"
   },
@@ -1573,7 +1547,7 @@
     "message": "page Importer des NFT"
   },
   "importNFTTokenIdToolTip": {
-    "message": "L’ID d’un collectible est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
+    "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
   },
   "importNFTs": {
     "message": "Importer des NFT"
@@ -1719,9 +1693,6 @@
   "jsonFile": {
     "message": "Fichier JSON",
     "description": "format for importing an account"
-  },
-  "keepTapsOnTokens": {
-    "message": "pour garder un œil sur vos jetons et vos NFT sur l’ensemble de vos comptes et réseaux."
   },
   "keystone": {
     "message": "Keystone"
@@ -1912,37 +1883,6 @@
   "metamaskVersion": {
     "message": "Version de MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Toujours pouvoir vous désinscrire via les Paramètres"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Jamais",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask :"
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "Ne collectera $1 votre adresse IP complète",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "Ne collectera $1 vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "Ne vendra $1 de données à des fins lucratives. Jamais !",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Enverra des événements de clics et de pages vues anonymisés"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Aidez-nous à améliorer MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Elles seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
-  },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2112,7 +2052,7 @@
     "message": "« $1 » a été ajouté avec succès !"
   },
   "newNftAddedMessage": {
-    "message": "Le collectible a été ajouté avec succès !"
+    "message": "Le NFT a été ajouté avec succès !"
   },
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
@@ -2181,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
-  },
-  "noThanks": {
-    "message": "Non merci"
   },
   "noThanksVariant2": {
     "message": "Non merci."
@@ -2718,9 +2655,6 @@
   "popularCustomNetworks": {
     "message": "Réseaux personnalisés populaires"
   },
-  "portfolioSite": {
-    "message": "Site du portefeuille"
-  },
   "preferredLedgerConnectionType": {
     "message": "Type de connexion préférée au Ledger",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2883,12 +2817,6 @@
   "reset": {
     "message": "Reinitialiser"
   },
-  "resetAccount": {
-    "message": "Réinitialiser le compte"
-  },
-  "resetAccountDescription": {
-    "message": "La réinitialisation de votre compte effacera l’historique de vos transactions. Les soldes de vos comptes ne seront pas modifiés. Vous ne serez pas obligé de saisir à nouveau votre phrase secrète de récupération."
-  },
   "resetWallet": {
     "message": "Réinitialiser le portefeuille"
   },
@@ -2928,14 +2856,9 @@
   "revealSeedWords": {
     "message": "Révéler la phrase secrète de récupération"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si jamais vous changez de navigateur ou d’ordinateur, vous aurez besoin de cette phrase secrète de récupération pour accéder à vos comptes. Sauvegardez-la dans un emplacement sûr et secret."
-  },
   "revealSeedWordsWarning": {
-    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Ne communiquez PAS cette phrase à quelqu’un !"
+    "message": "Ces mots peuvent être utilisés pour voler tous vos comptes.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Révéler la phrase mnémonique"
@@ -2966,9 +2889,6 @@
   },
   "save": {
     "message": "Enregistrer"
-  },
-  "saveAsCsvFile": {
-    "message": "Enregistrer comme fichier CSV"
   },
   "scanInstructions": {
     "message": "Placez le code QR devant votre appareil photo"
@@ -4107,9 +4027,6 @@
   "tryAgain": {
     "message": "Réessayez"
   },
-  "tryOur": {
-    "message": "Essayez notre"
-  },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
   },
@@ -4174,7 +4091,7 @@
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
-    "message": "L’envoi de jetons collectibles (ERC-721) n’est pas pris en charge actuellement",
+    "message": "L’envoi de jetons NFTs (ERC-721) n’est pas pris en charge actuellement",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
   },
   "unverifiedContractAddressMessage": {
@@ -4374,9 +4291,6 @@
   },
   "yes": {
     "message": "Oui"
-  },
-  "yesLetsTry": {
-    "message": "Oui, essayons"
   },
   "youHaveAddedAll": {
     "message": "Vous avez ajouté tous les réseaux populaires. Vous pouvez découvrir d’autres réseaux $1 ou $2",

@@ -75,12 +75,6 @@
   "asset": {
     "message": "נכס"
   },
-  "attemptToCancel": {
-    "message": "לנסות לבטל?"
-  },
-  "attemptToCancelDescription": {
-    "message": "הגשת ניסיון זה אינה מבטיחה כי העסקה המקורית שלך תבוטל. אם ניסיון הביטול יצליח, תחויב/י בעמלת העסקה המופיעה מעלה."
-  },
   "attemptingConnect": {
     "message": "מנסה להתחבר לבלוקצ'יין."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "ביטול"
-  },
-  "cancellationGasFee": {
-    "message": "עמלת דלק עבור ביטול"
   },
   "cancelled": {
     "message": "מבוטל"
@@ -636,35 +627,21 @@
   "reset": {
     "message": "אפס"
   },
-  "resetAccount": {
-    "message": "אפס חשבון"
-  },
-  "resetAccountDescription": {
-    "message": "איפוס חשבונך ינקה את היסטוריית העסקאות שלך."
-  },
   "restore": {
     "message": "שחזר"
   },
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "אם בעתיד תחליף/י דפדפנים או תעביר/י מחשבים, תצטרך/י seed phrase זה כדי לקבל גישה לחשבונות שלך. יש לשמור אותם במקום בטוח וסודי."
-  },
   "revealSeedWordsWarning": {
-    "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "אין לשתף צירוף מילים זה עם אף אחד!"
+    "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "כתובת URL חדשה של RPC"
   },
   "save": {
     "message": "שמור"
-  },
-  "saveAsCsvFile": {
-    "message": "שמירה כקובץ CSV"
   },
   "scanInstructions": {
     "message": "הצב/י את קוד ה-QR שלך מול המצלמה"
@@ -933,9 +910,6 @@
   },
   "welcomeBack": {
     "message": "ברוך שובך!"
-  },
-  "yesLetsTry": {
-    "message": "כן, בוא ננסה"
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."

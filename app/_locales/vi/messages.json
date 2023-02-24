@@ -266,9 +266,6 @@
   "address": {
     "message": "Địa chỉ"
   },
-  "addressBookIcon": {
-    "message": "Biểu tượng sổ địa chỉ"
-  },
   "advanced": {
     "message": "Nâng cao"
   },
@@ -292,9 +289,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"phí khích lệ thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
-  },
-  "affirmAgree": {
-    "message": "Tôi đồng ý"
   },
   "airgapVault": {
     "message": "AirGap Vault"
@@ -402,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
-  "attemptToCancel": {
-    "message": "Cố gắng hủy?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Việc gửi lần thử này không đảm bảo rằng giao dịch gốc của bạn sẽ được hủy. Nếu lần hủy này thành công, bạn sẽ chịu phí giao dịch nêu ở trên."
-  },
   "attemptingConnect": {
     "message": "Đang cố gắng kết nối với chuỗi khối."
   },
@@ -481,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Phiên Bản MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "trang web danh mục đầu tư beta"
   },
   "betaTerms": {
     "message": "Điều khoản Sử dụng Beta"
@@ -602,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "Hủy hoán đổi miễn phí"
-  },
-  "cancellationGasFee": {
-    "message": "Phí gas hủy"
   },
   "cancelled": {
     "message": "Đã hủy"
@@ -1447,14 +1429,6 @@
   "gasUsed": {
     "message": "Đã dùng gas"
   },
-  "gdprMessage": {
-    "message": "Đây là dữ liệu tổng hợp, do đó ở trạng thái ẩn danh để phục vụ cho mục đích của Quy định chung về bảo vệ dữ liệu (Liên minh Châu Âu) 2016/679. Để biết thêm thông tin liên quan đến các phương thức bảo vệ quyền riêng tư của chúng tôi, vui lòng xem $1 của chúng tôi.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Chính sách quyền riêng tư tại đây",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Chung"
   },
@@ -1720,9 +1694,6 @@
     "message": "Tập tin JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "để giữ lại thẻ trên token và NFT của bạn trong các tài khoản và mạng."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -1911,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "Phiên bản MetaMask"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Luôn cho phép bạn chọn không tham gia thông qua phần Cài đặt"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Không bao giờ",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask sẽ.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 thu thập địa chỉ IP đầy đủ của bạn",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 thu thập mã khóa, địa chỉ, giao dịch, số dư, mã băm hoặc bất kỳ thông tin cá nhân nào",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 bán dữ liệu để thu lợi. Tuyệt đối không bao giờ!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Gửi các lượt nhấn và xem trang đã được ẩn danh"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Giúp chúng tôi cải thiện MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn về cách người dùng tương tác với tiện ích. Chúng tôi sẽ dùng dữ liệu này để liên tục cải thiện độ hữu ích và trải nghiệm người dùng trên sản phẩm của mình và hệ sinh thái Ethereum."
   },
   "mismatchedChainLinkText": {
     "message": "xác minh thông tin về mạng",
@@ -2181,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Chưa cài đặt Snap nào"
-  },
-  "noThanks": {
-    "message": "Không, cảm ơn"
   },
   "noThanksVariant2": {
     "message": "Không, cảm ơn."
@@ -2718,9 +2655,6 @@
   "popularCustomNetworks": {
     "message": "Mạng tùy chỉnh phổ biến"
   },
-  "portfolioSite": {
-    "message": "Trang web danh mục đầu tư"
-  },
   "preferredLedgerConnectionType": {
     "message": "Dạng kết nối Ledger ưu tiên",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2883,12 +2817,6 @@
   "reset": {
     "message": "Đặt lại"
   },
-  "resetAccount": {
-    "message": "Đặt lại tài khoản"
-  },
-  "resetAccountDescription": {
-    "message": "Nếu đặt lại tài khoản của bạn, toàn bộ lịch sử giao dịch sẽ bị xóa. Việc này sẽ không làm thay đổi số dư trong tài khoản của bạn hoặc yêu cầu bạn phải nhập lại Cụm mật khẩu khôi phục bí mật."
-  },
   "resetWallet": {
     "message": "Đặt lại ví"
   },
@@ -2928,14 +2856,9 @@
   "revealSeedWords": {
     "message": "Hiện Cụm mật khẩu khôi phục bí mật"
   },
-  "revealSeedWordsDescription": {
-    "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu Cụm mật khẩu khôi phục bí mật này ở nơi an toàn và bí mật."
-  },
   "revealSeedWordsWarning": {
-    "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "KHÔNG chia sẻ cụm mật khẩu này với bất kỳ ai!"
+    "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Hiện cụm từ khôi phục bí mật"
@@ -2966,9 +2889,6 @@
   },
   "save": {
     "message": "Lưu"
-  },
-  "saveAsCsvFile": {
-    "message": "Lưu dưới dạng tập tin CSV"
   },
   "scanInstructions": {
     "message": "Đặt mã QR vào trước máy ảnh"
@@ -4107,9 +4027,6 @@
   "tryAgain": {
     "message": "Thử lại"
   },
-  "tryOur": {
-    "message": "Thử ngay"
-  },
   "turnOnTokenDetection": {
     "message": "Bật phát hiện token nâng cao"
   },
@@ -4374,9 +4291,6 @@
   },
   "yes": {
     "message": "Có"
-  },
-  "yesLetsTry": {
-    "message": "Có, hãy thử"
   },
   "youHaveAddedAll": {
     "message": "Bạn đã thêm tất cả các mạng phổ biến. Bạn có thể khám phá thêm nhiều mạng khác $1 Hoặc bạn có thể $2",

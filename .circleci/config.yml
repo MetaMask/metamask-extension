@@ -709,6 +709,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -773,6 +774,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -809,6 +811,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -845,6 +848,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -881,6 +885,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -917,6 +922,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

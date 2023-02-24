@@ -266,9 +266,6 @@
   "address": {
     "message": "पता"
   },
-  "addressBookIcon": {
-    "message": "पता पुस्तिका आइकन"
-  },
   "advanced": {
     "message": "उन्नत"
   },
@@ -292,9 +289,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "प्राथमिकता शुल्क (उर्फ \"माइनर टिप\") सीधे खनिकों के पास जाता है और उन्हें आपके लेन-देन को प्राथमिकता देने के लिए प्रोत्साहित करता है।"
-  },
-  "affirmAgree": {
-    "message": "मैं सहमत हूं"
   },
   "airgapVault": {
     "message": "AirGap का वॉल्ट"
@@ -402,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "यदि आप ऐसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने का प्रयास करते हैं, तो इसके परिणामस्वरूप स्थायी ऐसेट्स का नुकसान हो सकता है। ब्रिज का उपयोग करना सुनिश्चित करें।"
   },
-  "attemptToCancel": {
-    "message": "रद्द करने का प्रयास?"
-  },
-  "attemptToCancelDescription": {
-    "message": "इस प्रयास को सबमिट करने से आपके मूल लेनदेन को रद्द करने की गारंटी नहीं होगी। यदि रद्दीकरण का प्रयास सफल होता है, तो आपसे ऊपर दिया गया लेनदेन शुल्क लिया जाएगा।"
-  },
   "attemptingConnect": {
     "message": "ब्लॉकचेन से कनेक्ट करने का प्रयास कर रहे हैं।"
   },
@@ -481,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMask बीटा संस्करण"
-  },
-  "betaPortfolioSite": {
-    "message": "बीटा पोर्टफोलियो साइट"
   },
   "betaTerms": {
     "message": "बीटा के उपयोग की शर्तें"
@@ -602,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "मुफ्त में स्वैप रद्द करें"
-  },
-  "cancellationGasFee": {
-    "message": "रद्दीकरण गैस शुल्क"
   },
   "cancelled": {
     "message": "रद्द किया गया"
@@ -1447,14 +1429,6 @@
   "gasUsed": {
     "message": "प्रयुक्त गैस"
   },
-  "gdprMessage": {
-    "message": "यह डेटा समेकित किया गया है और इसलिए सामान्य डेटा संरक्षण विनियमन (EU) 2016/679 के प्रयोजनों के लिए बेनाम है। हमारी गोपनीयता प्रक्रियाओं के संबंध में अधिक जानकारी के लिए, कृपया हमारे $1 देखें।",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "गोपनीयता नीति यहां है",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "सामान्य"
   },
@@ -1720,9 +1694,6 @@
     "message": "JSON फाइल",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "खातों और नेटवर्क पर अपने टोकन और एनएफटी पर नज़र रखने के लिए।"
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -1911,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask संस्करण"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "हमेशा आपको सेटिंग्स के माध्यम से ऑप्ट-आउट करने की अनुमति देगा"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "कभी नहीं",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask निम्न चीजें करेगा.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 आपका पूरा IP पता एकत्र करेगा",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 कुंजी, पते, लेनदेन, शेषराशि, हैश या कोई भी व्यक्तिगत जानकारी एकत्र करता है",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 लाभ के लिए डेटा बेचता है। कभी भी!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "बेनाम क्लिक और पेजव्यू ईवेंट भेजता है"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask इस बात की बेहतर समझ प्राप्त करने के लिए डेटा एकत्र करना चाहता है कि हमारे उपयोगकर्ता विस्तार के साथ कैसे सहभागिता करते हैं। इस डेटा का उपयोग हमारे उत्पाद और Ethereum पारिस्थितिकी तंत्र की उपयोगिता और उपयोगकर्ता अनुभव को लगातार सुधारने के लिए किया जाएगा।"
   },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण सत्यापित करें",
@@ -2181,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "कोई स्नैप इंस्टाल नहीं किया गया"
-  },
-  "noThanks": {
-    "message": "जी नहीं, धन्यवाद"
   },
   "noThanksVariant2": {
     "message": "नहीं, धन्यवाद।"
@@ -2718,9 +2655,6 @@
   "popularCustomNetworks": {
     "message": "लोकप्रिय कस्टम नेटवर्क"
   },
-  "portfolioSite": {
-    "message": "पोर्टफोलियो साइट"
-  },
   "preferredLedgerConnectionType": {
     "message": "वरीयता वाले लेजर कनेक्शन के प्रकार",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2883,12 +2817,6 @@
   "reset": {
     "message": "रीसेट करें"
   },
-  "resetAccount": {
-    "message": "अकाउंट रीसेट करें"
-  },
-  "resetAccountDescription": {
-    "message": "आपके खाते को रीसेट करने से आपका लेनदेन इतिहास साफ हो जाएगा। इससे आपके खातों में शेषराशि नहीं बदलेगी या आपको अपने गुप्त रिकवरी फ्रेज को फिर से दर्ज करने की आवश्यकता नहीं होगी।"
-  },
   "resetWallet": {
     "message": "वॉलेट रीसेट करें"
   },
@@ -2928,14 +2856,9 @@
   "revealSeedWords": {
     "message": "गुप्त रिकवरी फ्रेज प्रकट करें"
   },
-  "revealSeedWordsDescription": {
-    "message": "यदि आप कभी ब्राउजर बदलते हैं या कंप्यूटर को स्थानांतरित करते हैं, तो आपको अपने खातों तक पहुंचने के लिए इस गुप्त रिकवरी फ्रेज की आवश्यकता होगी। उन्हें कहीं सुरक्षित और गोपनीय तरीके से सहेजें।"
-  },
   "revealSeedWordsWarning": {
-    "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "इस फ्रेज को किसी के साथ साझा न करें!"
+    "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "सीड फ़्रेज़ दिखाएं"
@@ -2966,9 +2889,6 @@
   },
   "save": {
     "message": "सहेजें"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV फाइल के रूप में सहेजें"
   },
   "scanInstructions": {
     "message": "QR कोड को अपने कैमरे के सामने रखें"
@@ -4107,9 +4027,6 @@
   "tryAgain": {
     "message": "पुनः प्रयास करें"
   },
-  "tryOur": {
-    "message": "हमारा आजमाएं"
-  },
   "turnOnTokenDetection": {
     "message": "उन्नत टोकन डिटेक्शन चालू करें"
   },
@@ -4374,9 +4291,6 @@
   },
   "yes": {
     "message": "हां"
-  },
-  "yesLetsTry": {
-    "message": "हां, आइए आजमाते हैं"
   },
   "youHaveAddedAll": {
     "message": "आपने सभी लोकप्रिय नेटवर्क जोड़ लिए हैं। आप अधिक नेटवर्क खोज सकते हैं $1 या आप $2 कर सकते हैं",

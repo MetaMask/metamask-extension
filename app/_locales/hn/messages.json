@@ -266,14 +266,12 @@
   "required": {
     "message": "आवश्यक"
   },
-  "resetAccount": {
-    "message": "खाता रीसेट करें"
-  },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"
   },
   "revealSeedWordsWarning": {
-    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
+    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "save": {
     "message": "सहेजें"

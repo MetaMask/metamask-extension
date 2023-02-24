@@ -75,12 +75,6 @@
   "asset": {
     "message": "Składnik aktywów"
   },
-  "attemptToCancel": {
-    "message": "Podjąć próbę anulowania?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Wykonanie tego działania nie gwarantuje, że pierwotna transakcja zostanie anulowana. Jeśli próba anulowania się powiedzie, zostaniesz obciążony opłatą transakcyjną wskazaną powyżej."
-  },
   "attemptingConnect": {
     "message": "Próba połączenia z blockchainem."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Anuluj"
-  },
-  "cancellationGasFee": {
-    "message": "Opłata za gaz za anulowanie"
   },
   "cancelled": {
     "message": "Anulowano"
@@ -633,35 +624,21 @@
   "reset": {
     "message": "Resetuj"
   },
-  "resetAccount": {
-    "message": "Resetuj konto"
-  },
-  "resetAccountDescription": {
-    "message": "Zresetowanie konta wyczyści Twoją historię transakcji."
-  },
   "restore": {
     "message": "Przywróć"
   },
   "revealSeedWords": {
     "message": "Pokaż słowa seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "Jeśli kiedyś zmienisz przeglądarkę lub komputer, będziesz potrzebować tej frazy seed, żeby dostać się do swoich kont. Zapisz ją w bezpiecznym miejscu."
-  },
   "revealSeedWordsWarning": {
-    "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NIE pokazuj tej frazy nikomu!"
+    "message": "Te słowa mogą być użyte żeby ukraść Twoje konta.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "Nowy adres URL RPC"
   },
   "save": {
     "message": "Zapisz"
-  },
-  "saveAsCsvFile": {
-    "message": "Zapisz jako plik CSV"
   },
   "scanInstructions": {
     "message": "Umieść kod QR na wprost kamery"
@@ -924,9 +901,6 @@
   },
   "welcomeBack": {
     "message": "Witaj z powrotem!"
-  },
-  "yesLetsTry": {
-    "message": "Tak, spróbuj"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Żeby użyć tej opcji należy podłączyć kamerę"

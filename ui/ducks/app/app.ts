@@ -59,7 +59,6 @@ interface AppState {
   newNetworkAdded: string;
   newNftAddedMessage: string;
   removeNftMessage: string;
-  portfolioTooltipWasShownInThisSession: boolean;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
   newCustomNetworkAdded: RPCDefinition | Record<string, any>;
@@ -121,7 +120,6 @@ const initialState: AppState = {
   newNetworkAdded: '',
   newNftAddedMessage: '',
   removeNftMessage: '',
-  portfolioTooltipWasShownInThisSession: false,
   sendInputCurrencySwitched: false,
   newTokensImported: '',
   newCustomNetworkAdded: {},
@@ -350,22 +348,16 @@ export default function reduceApp(
         newTokensImported: action.payload,
       };
 
-    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
+    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
       return {
         ...appState,
         newNftAddedMessage: action.payload,
       };
 
-    case actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE:
+    case actionConstants.SET_REMOVE_NFT_MESSAGE:
       return {
         ...appState,
         removeNftMessage: action.payload,
-      };
-
-    case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:
-      return {
-        ...appState,
-        portfolioTooltipWasShownInThisSession: true,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
@@ -444,12 +436,6 @@ export function hideWhatsNewPopup(): Action {
   };
 }
 
-export function setPortfolioTooltipWasShownInThisSession(): Action {
-  return {
-    type: actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION,
-  };
-}
-
 export function toggleGasLoadingAnimation(
   payload: boolean,
 ): PayloadAction<boolean> {
@@ -509,10 +495,4 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
-}
-
-export function getPortfolioTooltipWasShownInThisSession(
-  state: AppSliceState,
-): boolean {
-  return state.appState.portfolioTooltipWasShownInThisSession;
 }

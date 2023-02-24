@@ -14,7 +14,7 @@ import { BannerBase } from '..';
 
 The `BannerAlert` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
-<ArgsTable of={Banner} />
+<ArgsTable of={BannerAlert} />
 
 The `BannerAlert` accepts all `BannerBase` component props below
 
@@ -124,8 +124,7 @@ import { BannerAlert, ICON_NAMES } from '../../component-library';
   title="Action prop demo"
   actionButtonLabel="Action"
   actionButtonProps={{
-    icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
-    iconPositionRight: true,
+    endIconName: ICON_NAMES.ARROW_2_RIGHT,
   }}
   actionButtonOnClick={() => console.log('ButtonLink actionButtonOnClick demo')}
 >

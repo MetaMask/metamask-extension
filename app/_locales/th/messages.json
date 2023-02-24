@@ -57,9 +57,6 @@
   "cancel": {
     "message": "ยกเลิก"
   },
-  "cancellationGasFee": {
-    "message": "ค่าธรรมเนียม Gas การยกเลิก"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "คุณต้องใช้ MetaMask บน Google Chrome เพื่อเชื่อมต่อกับ Hardware Wallet ของคุณ"
   },
@@ -323,14 +320,12 @@
   "required": {
     "message": "จำเป็น"
   },
-  "resetAccount": {
-    "message": "รีเซ็ตบัญชี"
-  },
   "revealSeedWords": {
     "message": "เปิดเผยกลุ่มคำชีด"
   },
   "revealSeedWordsWarning": {
-    "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ"
+    "message": "อย่าเปิดเผยคำกลุ่มคำชีดของคุณในที่สาธารณะ! คำเหล่านี้สามารถใช้เพื่อขโมยบัญชีทั้งหมดของคุณ",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "save": {
     "message": "บันทึก"

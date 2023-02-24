@@ -93,7 +93,7 @@ export default class ConfirmTransactionBase extends Component {
     sendTransaction: PropTypes.func,
     showTransactionConfirmedModal: PropTypes.func,
     showRejectTransactionsConfirmationModal: PropTypes.func,
-    toAccounts: PropTypes.object,
+    toAccounts: PropTypes.array,
     toAddress: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
@@ -776,14 +776,12 @@ export default class ConfirmTransactionBase extends Component {
       cancelTransaction,
       history,
       mostRecentOverviewPage,
-      clearConfirmTransaction,
       updateCustomNonce,
     } = this.props;
 
     this._removeBeforeUnload();
     updateCustomNonce('');
     cancelTransaction(txData).then(() => {
-      clearConfirmTransaction();
       history.push(mostRecentOverviewPage);
     });
   }
@@ -791,7 +789,6 @@ export default class ConfirmTransactionBase extends Component {
   handleSubmit() {
     const {
       sendTransaction,
-      clearConfirmTransaction,
       txData,
       history,
       mostRecentOverviewPage,
@@ -865,7 +862,10 @@ export default class ConfirmTransactionBase extends Component {
 
         sendTransaction(txData)
           .then(() => {
-            clearConfirmTransaction();
+            if (!this._isMounted) {
+              return;
+            }
+
             this.setState(
               {
                 submitting: false,
@@ -877,6 +877,10 @@ export default class ConfirmTransactionBase extends Component {
             );
           })
           .catch((error) => {
+            if (!this._isMounted) {
+              return;
+            }
+
             this.setState({
               submitting: false,
               submitError: error.message,
@@ -987,6 +991,7 @@ export default class ConfirmTransactionBase extends Component {
   componentWillUnmount() {
     this._beforeUnloadForGasPolling();
     this._removeBeforeUnload();
+    this.props.clearConfirmTransaction();
   }
 
   supportsEIP1559 =

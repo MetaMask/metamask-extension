@@ -7,6 +7,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -14,12 +15,12 @@ import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
-  getParticipateInMetaMetrics,
 } from '../../../selectors';
 
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -29,31 +30,11 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
-
-    const isInitiallyNotParticipating = !participateInMetaMetrics;
-
     try {
-      if (isInitiallyNotParticipating) {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
-            properties: {
-              is_metrics_enabled: true,
-            },
-          },
-          {
-            isOptIn: true,
-            flushImmediately: true,
-          },
-        );
-      }
       trackEvent(
         {
           category: EVENT.CATEGORIES.ONBOARDING,
@@ -78,29 +59,7 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
-
-    const isInitiallyParticipatingOrNotSet =
-      participateInMetaMetrics === null || participateInMetaMetrics;
-
-    try {
-      if (isInitiallyParticipatingOrNotSet) {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
-            properties: {
-              is_metrics_enabled: false,
-            },
-          },
-          {
-            isOptIn: true,
-            flushImmediately: true,
-          },
-        );
-      }
-    } finally {
-      history.push(nextRoute);
-    }
+    history.push(nextRoute);
   };
 
   return (
@@ -129,11 +88,19 @@ export default function OnboardingMetametrics() {
       </Typography>
       <ul>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={IconColor.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={IconColor.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>

@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
+
 import Loading from '../../components/ui/loading-screen';
-import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
-import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
+import ConfirmSendEther from '../confirm-send-ether';
+import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
@@ -18,14 +19,14 @@ import {
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getSendTo } from '../../ducks/send';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
-  SIGNATURE_REQUEST_PATH,
+  CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
-  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   DEFAULT_ROUTE,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  SIGNATURE_REQUEST_PATH,
 } from '../../helpers/constants/routes';
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
@@ -56,29 +57,47 @@ const ConfirmTransaction = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const unconfirmedTransactions = useSelector(
-    unconfirmedTransactionsListSelector,
-  );
+  const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
 
-  const totalUnapprovedCount = unconfirmedTransactions.length || 0;
-  const transaction = useMemo(() => {
-    return totalUnapprovedCount
+  const totalUnapproved = unconfirmedTxs.length || 0;
+  const getTransaction = useCallback(() => {
+    return totalUnapproved
       ? unapprovedTxs[paramsTransactionId] ||
           unconfirmedMessages[paramsTransactionId] ||
-          unconfirmedTransactions[0]
+          unconfirmedTxs[0]
       : {};
   }, [
     paramsTransactionId,
-    totalUnapprovedCount,
+    totalUnapproved,
     unapprovedTxs,
     unconfirmedMessages,
-    unconfirmedTransactions,
+    unconfirmedTxs,
+  ]);
+  const [transaction, setTransaction] = useState(getTransaction);
+
+  useEffect(() => {
+    const tx = getTransaction();
+    setTransaction(tx);
+    if (tx?.id) {
+      dispatch(setTransactionToConfirm(tx.id));
+    }
+  }, [
+    dispatch,
+    getTransaction,
+    paramsTransactionId,
+    totalUnapproved,
+    unapprovedTxs,
+    unconfirmedMessages,
+    unconfirmedTxs,
   ]);
 
   const { id, type } = transaction;
   const transactionId = id && String(id);
-  const isValidERC20TokenMethod = isTokenMethodAction(type);
+  const isValidTokenMethod = isTokenMethodAction(type);
+  const isValidTransactionId =
+    transactionId &&
+    (!paramsTransactionId || paramsTransactionId === transactionId);
 
   const prevParamsTransactionId = usePrevious(paramsTransactionId);
   const prevTransactionId = usePrevious(transactionId);
@@ -95,8 +114,6 @@ const ConfirmTransaction = () => {
   useEffect(() => {
     setIsMounted(true);
 
-    const { txParams: { data } = {}, origin } = transaction;
-
     getGasFeeEstimatesAndStartPolling().then((_pollingToken) => {
       if (isMounted) {
         setPollingToken(_pollingToken);
@@ -109,9 +126,11 @@ const ConfirmTransaction = () => {
 
     window.addEventListener('beforeunload', _beforeUnload);
 
-    if (!totalUnapprovedCount && !sendTo) {
+    if (!totalUnapproved && !sendTo) {
       history.replace(mostRecentOverviewPage);
     } else {
+      const { txParams: { data } = {}, origin } = transaction;
+
       if (origin !== ORIGIN_METAMASK) {
         dispatch(getContractMethodData(data));
       }
@@ -130,52 +149,49 @@ const ConfirmTransaction = () => {
   }, []);
 
   useEffect(() => {
-    const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
-
     if (
       paramsTransactionId &&
       transactionId &&
       prevParamsTransactionId !== paramsTransactionId
     ) {
+      const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
+
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
       if (origin !== ORIGIN_METAMASK) {
         dispatch(getContractMethodData(data));
       }
-    } else if (prevTransactionId && !transactionId && !totalUnapprovedCount) {
+    } else if (prevTransactionId && !transactionId && !totalUnapproved) {
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
         history.replace(DEFAULT_ROUTE);
       });
     } else if (
       prevTransactionId &&
       transactionId &&
-      prevTransactionId !== transactionId
+      prevTransactionId !== transactionId &&
+      paramsTransactionId !== transactionId
     ) {
       history.replace(mostRecentOverviewPage);
     }
   }, [
     dispatch,
-    transaction,
-    paramsTransactionId,
-    transactionId,
     history,
     mostRecentOverviewPage,
+    paramsTransactionId,
     prevParamsTransactionId,
     prevTransactionId,
-    totalUnapprovedCount,
+    totalUnapproved,
+    transaction,
+    transactionId,
   ]);
 
-  const validTransactionId =
-    transactionId &&
-    (!paramsTransactionId || paramsTransactionId === transactionId);
-
-  if (isValidERC20TokenMethod && validTransactionId) {
+  if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-  return validTransactionId ? (
+  return isValidTransactionId ? (
     <Switch>
       <Route
         exact

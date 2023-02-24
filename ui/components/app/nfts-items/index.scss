@@ -1,4 +1,4 @@
-.collectibles-items {
+.nfts-items {
   &__collection {
     margin-bottom: 24px;
 
@@ -26,10 +26,6 @@
       background: var(--color-overlay-alternative);
       color: var(--color-overlay-inverse);
       text-align: center;
-    }
-
-    &__icon-chevron {
-      color: var(--color-icon-default);
     }
   }
 

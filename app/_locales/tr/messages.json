@@ -266,9 +266,6 @@
   "address": {
     "message": "Adres"
   },
-  "addressBookIcon": {
-    "message": "Adres defteri simgesi"
-  },
   "advanced": {
     "message": "Gelişmiş"
   },
@@ -292,9 +289,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
-  },
-  "affirmAgree": {
-    "message": "Kabul Ediyorum"
   },
   "airgapVault": {
     "message": "AirGap Kasası"
@@ -402,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
   },
-  "attemptToCancel": {
-    "message": "İptal etmeyi Dene?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Bu denemenin gönderilmesi asıl işleminizin iptal edileceğini garanti etmez. İptal etme denemesi başarılı olursa sizden yukarıdaki ücret tahsil edilir."
-  },
   "attemptingConnect": {
     "message": "Blockzincire bağlanmaya çalışılıyor."
   },
@@ -481,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
-  },
-  "betaPortfolioSite": {
-    "message": "beta portföy sitesi"
   },
   "betaTerms": {
     "message": "Beta Kullanım koşulları"
@@ -602,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal edin"
-  },
-  "cancellationGasFee": {
-    "message": "İptal İşlemi Gaz Ücreti"
   },
   "cancelled": {
     "message": "İptal edildi"
@@ -1447,14 +1429,6 @@
   "gasUsed": {
     "message": "Kullanılan gaz"
   },
-  "gdprMessage": {
-    "message": "Bu veri toplanmıştır ve bu nedenle 2016/679 sayılı Genel Veri Koruma Düzenlemesi (AB) maksadıyla isimsizdir. Gizlilik uygulamalarımız hakkında daha fazla bilgi edinmek için lütfen $1 bölümümüze bakın.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "buradan Gizlilik politikası",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Genel"
   },
@@ -1720,9 +1694,6 @@
     "message": "JSON Dosyası",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "hesaplar ve ağlar arasında tokenlerinizin ve NFT'lerinizin sekmelerini korumak için."
-  },
   "keystone": {
     "message": "Ana İlke"
   },
@@ -1911,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Sürümü"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Dilediğiniz zaman Ayarlar kısmında vazgeçebilmenize olanak tanır"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Hiçbir zaman",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 IP adresinizin tamamını almaz",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 anahtarları, adresleri, işlemleri, bakiyeleri, doğrulama değerlerini veya kişisel bilgileri toplamaz",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 kâr elde etmek için verilerinizi satmaz. Asla!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "İsimsizleştirilmiş tıklama ve sayfa görüntüleme olaylarını gönder"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "MetaMask'i geliştirmemize yardımcı olun"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask, kullanıcılarımızın uzantıyı nasıl kullandıklarını daha iyi anlamak amacıyla kullanım verilerini toplamak istiyor. Bu veriler ürünümüzün ve Ethereum eko-sisteminin kullanılabilirliği ve kullanıcı deneyimini geliştirmek için sürekli olarak kullanılacaktır."
   },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
@@ -2181,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Hiç Snap yüklü değil"
-  },
-  "noThanks": {
-    "message": "Hayır, teşekkürler"
   },
   "noThanksVariant2": {
     "message": "Hayır, teşekkürler."
@@ -2718,9 +2655,6 @@
   "popularCustomNetworks": {
     "message": "Popüler özel ağlar"
   },
-  "portfolioSite": {
-    "message": "Portföy sitesi"
-  },
   "preferredLedgerConnectionType": {
     "message": "Tercih Edilen Kayıt Defteri bağlantı türü",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
@@ -2883,12 +2817,6 @@
   "reset": {
     "message": "Sıfırla"
   },
-  "resetAccount": {
-    "message": "Hesabı sıfırla"
-  },
-  "resetAccountDescription": {
-    "message": "Hesabınızı sıfırlamak işlem geçmişinizi temizler. Bu işlem, hesaplarınızdaki bakiyeyi değiştirmez veya Gizli Kurtarma İfadenizi yeniden girmenizi gerektirmez."
-  },
   "resetWallet": {
     "message": "Cüzdanı sıfırla"
   },
@@ -2928,14 +2856,9 @@
   "revealSeedWords": {
     "message": "Gizli Kurtarma İfadesini Göster"
   },
-  "revealSeedWordsDescription": {
-    "message": "Tarayıcı değiştirirseniz veya başka bir bilgisayar kullanmaya başlarsanız hesaplarınıza erişim sağlamak için bu Gizli Kurtarma İfadesine ihtiyacınız olacaktır. Güvenli ve gizli bir yerde saklayın."
-  },
   "revealSeedWordsWarning": {
-    "message": "Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Bu ifadeyi hiç kimseyle PAYLAŞMAYIN!"
+    "message": "Bu kelimeler tüm hesaplarınızı çalmak için kullanılabilir.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"
@@ -2966,9 +2889,6 @@
   },
   "save": {
     "message": "Kaydet"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV dosyası olarak kaydet"
   },
   "scanInstructions": {
     "message": "QR kodu kameranızın önüne getirin"
@@ -4107,9 +4027,6 @@
   "tryAgain": {
     "message": "Tekrar dene"
   },
-  "tryOur": {
-    "message": "Dene:"
-  },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
   },
@@ -4374,9 +4291,6 @@
   },
   "yes": {
     "message": "Evet"
-  },
-  "yesLetsTry": {
-    "message": "Evet, deneyelim"
   },
   "youHaveAddedAll": {
     "message": "Tüm popüler ağları eklediniz. $1 daha fazla ağ gekşefedebilir veya $2 seçeneğini seçebilirsiniz",
