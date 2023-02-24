@@ -374,7 +374,6 @@ export default class AccountMenu extends Component {
             <Icon
               name={ICON_NAMES.ADD}
               color={IconColor.iconAlternative}
-              ariaLabel={t('createAccount')}
             />
           }
           text={t('createAccount')}
