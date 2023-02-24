@@ -2672,14 +2672,14 @@
   "openSea": {
     "message": "OpenSea (Beta)"
   },
-  "openSeaNew": {
-    "message": "OpenSea"
-  },
   "openSeaAltText": {
     "message": "OpenSea security provider"
   },
   "openSeaDescription": {
     "message": "OpenSea is the first security provider for this feature. More providers coming soon!"
+  },
+  "openSeaNew": {
+    "message": "OpenSea"
   },
   "optional": {
     "message": "Optional"
