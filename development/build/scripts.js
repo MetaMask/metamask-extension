@@ -685,6 +685,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              isMMI: buildType === 'mmi',
             });
             break;
           }
@@ -1139,6 +1140,7 @@ function renderHtmlFile({
   commonSet,
   browserPlatforms,
   applyLavaMoat,
+  isMMI,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1150,7 +1152,11 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, {
+    jsBundles,
+    applyLavaMoat,
+    isMMI,
+  });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
