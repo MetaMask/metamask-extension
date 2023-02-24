@@ -1253,7 +1253,7 @@ const slice = createSlice({
      *
      * @param {SendStateDraft} state - A writable draft of the send state to be
      *  updated.
-     * @param {GasEstimateUpdatePayload} action - The gas fee update payload
+     * @param {[GasEstimateUpdatePayload]} action - The gas fee update payload
      * @returns {void}
      */
     validateAmountField: (state, action) => {
@@ -1442,7 +1442,7 @@ const slice = createSlice({
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
           case draftTransaction.amount.value === '0x0' ||
-            draftTransaction.amount.value === '0x0':
+            draftTransaction.amount.value === '0x00':
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Asset is in error amount is 0`,
             });

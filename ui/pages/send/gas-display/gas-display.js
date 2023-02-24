@@ -152,6 +152,10 @@ export default function GasDisplay({ gasError }) {
     maxAmount = primaryTotalTextOverrideMaxAmount;
   }
 
+  const assetBalanceIsZero =
+    draftTransaction.asset.balance === '0x0' ||
+    draftTransaction.asset.balance === '0x00';
+
   return (
     <>
       {showDepositPopover && (
@@ -267,10 +271,7 @@ export default function GasDisplay({ gasError }) {
                 />
               }
             />,
-            (gasError ||
-              isInsufficientTokenError ||
-              draftTransaction.asset.balance === '0x0' ||
-              draftTransaction.asset.balance === '0x00') && (
+            (gasError || isInsufficientTokenError || assetBalanceIsZero) && (
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
@@ -319,10 +320,7 @@ export default function GasDisplay({ gasError }) {
           ]}
         />
       </Box>
-      {(gasError ||
-        isInsufficientTokenError ||
-        draftTransaction.asset.balance === '0x0' ||
-        draftTransaction.asset.balance === '0x00') &&
+      {(gasError || isInsufficientTokenError || assetBalanceIsZero) &&
         currentNetworkName && (
           <Box
             className="gas-display__warning-message"
