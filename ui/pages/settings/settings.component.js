@@ -78,8 +78,16 @@ class SettingsPage extends PureComponent {
     searchText: '',
   };
 
-  shouldRenderExperimentalTab =
-    process.env.TRANSACTION_SECURITY_PROVIDER || process.env.NFTS_V1;
+  shouldRenderExperimentalTab() {
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    const desktopAvailable = true;
+    if (desktopAvailable) {
+      return true;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return process.env.TRANSACTION_SECURITY_PROVIDER || process.env.NFTS_V1;
+  }
 
   componentDidMount() {
     this.handleConversionDate();
@@ -305,7 +313,7 @@ class SettingsPage extends PureComponent {
       },
     ];
 
-    if (this.shouldRenderExperimentalTab) {
+    if (this.shouldRenderExperimentalTab()) {
       tabs.push({
         content: t('experimental'),
         icon: <i className="fa fa-flask" />,
@@ -365,7 +373,7 @@ class SettingsPage extends PureComponent {
           render={() => <AddNetwork />}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
-        {this.shouldRenderExperimentalTab ? (
+        {this.shouldRenderExperimentalTab() ? (
           <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         ) : null}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />

@@ -1439,7 +1439,8 @@
         ],
         "origin": "tmashuang.github.io"
       }
-    ]
+    ],
+    "desktopEnabled": false
   },
   "send": {
     "amountMode": "INPUT",
