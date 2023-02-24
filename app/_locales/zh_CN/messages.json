@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先费（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "affirmAgree": {
-    "message": "我同意"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -1432,14 +1429,6 @@
   "gasUsed": {
     "message": "使用的燃料"
   },
-  "gdprMessage": {
-    "message": "这些数据是汇总的，因此，根据《通用数据保护条例》（欧盟）2016/679，这些数据是匿名的。有关我们隐私惯例的更多信息，请参见我们的 $1。",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "隐私政策",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "常规"
   },
@@ -1894,37 +1883,6 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "始终允许您通过“设置”选择退出"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "永不",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 收集您的完整 IP 地址",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 收集密钥、地址、交易记录、余额、哈希或任何个人信息",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 为利益而出售您的数据，永远不会！",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "发送匿名化点击和页面浏览事件"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "帮助我们改进 MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与扩展程序交互。这些数据将被用于持续改进我们产品和以太坊生态系统的可用性和用户体验。"
-  },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2163,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "没有安装Snap"
-  },
-  "noThanks": {
-    "message": "不，谢谢"
   },
   "noThanksVariant2": {
     "message": "不，谢谢."

@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 나와 먼저 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "affirmAgree": {
-    "message": "동의함"
-  },
   "airgapVault": {
     "message": "에어갭 볼트"
   },
@@ -1432,14 +1429,6 @@
   "gasUsed": {
     "message": "가스 사용됨"
   },
-  "gdprMessage": {
-    "message": "이 데이터는 집계 처리된 정보이며 일반 데이터 보호 규정 (EU) 2016/679의 목적에 따라 익명으로 관리됩니다. 당사의 개인정보보호 관행에 관한 자세한 내용은 $1을 참조하세요.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "개인정보처리방침",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "일반"
   },
@@ -1894,37 +1883,6 @@
   "metamaskVersion": {
     "message": "MetaMask 버전"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "절대로",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask에서는.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "전체 IP 주소를 절대 수집하지 않습니다.",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다.",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 수익을 위해 데이터를 판매하지 않습니다!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "익명화된 클릭 및 페이지뷰 이벤트 보내기"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "MetaMask 개선에 참여"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask는 사용자가 확장 프로그램과 상호작용하는 방식을 자세히 이해하기 위해 사용 데이터를 수집하고자 합니다. 수집한 데이터는 당사의 제품과 이더리움 에코시스템의 사용 편의성 및 사용자 경험을 지속적으로 개선하는 데 활용됩니다."
-  },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2163,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
-  },
-  "noThanks": {
-    "message": "괜찮습니다"
   },
   "noThanksVariant2": {
     "message": "아니요, 괜찮습니다."
