@@ -5,7 +5,6 @@ export const CaveatTypes = Object.freeze({
 export const RestrictedMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  snap_confirm: 'snap_confirm',
   snap_dialog: 'snap_dialog',
   snap_notify: 'snap_notify',
   snap_manageState: 'snap_manageState',
@@ -25,7 +24,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
   'endowment:long-running': 'endowment:long-running',
-  'endowment:web-assembly': 'endowment:web-assembly',
+  'endowment:webassembly': 'endowment:webassembly',
 } as const);
 
 // Methods / permissions in external packages that we are temporarily excluding.
