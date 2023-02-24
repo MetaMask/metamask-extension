@@ -1,0 +1,38 @@
+.selected-token-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.confirm-action-jwt {
+  &__description {
+    @include H6;
+
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  &__jwt {
+    border: 1px solid #b7b7b7;
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    width: 100%;
+
+    span {
+      width: 100%;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &__show-more {
+    color: #037dd6;
+    cursor: pointer;
+    margin: 0 0 0 8px;
+  }
+
+  &__accounts-list {
+    width: 110%;
+    margin-left: -5%;
+  }
+}

@@ -1,0 +1,118 @@
+.deposit-ether-modal {
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+
+  &__buy-rows {
+    width: 100%;
+    padding: 0 30px;
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1;
+    align-items: center;
+
+    @media screen and (max-width: $break-small) {
+      height: 0;
+    }
+  }
+
+  &__logo {
+    max-height: 40px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &--lg {
+      max-height: 60px;
+    }
+
+    @media screen and (min-width: $break-large) {
+      height: 60px;
+    }
+  }
+
+  &__buy-row {
+    border-bottom: 1px solid var(--color-border-default);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 auto;
+    padding: 30px 0 20px;
+    min-height: 170px;
+
+    @media screen and (max-width: $break-small) {
+      min-height: 270px;
+      flex-flow: column;
+      justify-content: flex-start;
+    }
+
+    &__back {
+      position: absolute;
+      top: 10px;
+      left: 0;
+    }
+
+    &__logo-container {
+      display: flex;
+      justify-content: center;
+      flex: 0 0 auto;
+      padding: 0 20px;
+
+      @media screen and (min-width: $break-large) {
+        width: 12rem;
+      }
+
+      @media screen and (max-width: $break-small) {
+        width: 100%;
+        max-height: 6rem;
+        padding-bottom: 20px;
+      }
+    }
+
+    &__right {
+      display: flex;
+    }
+
+    &__description {
+      color: var(--color-text-alternative);
+      padding-bottom: 20px;
+      align-self: flex-start;
+
+      @media screen and (min-width: $break-large) {
+        width: 15rem;
+      }
+
+      &__title {
+        @include H4;
+      }
+
+      &__text {
+        @include H6;
+
+        margin-top: 7px;
+      }
+    }
+
+    &__button {
+      display: flex;
+      justify-content: flex-end;
+
+      @media screen and (min-width: $break-large) {
+        min-width: 300px;
+      }
+    }
+  }
+
+  &__buy-row:last-of-type {
+    border-bottom: 0;
+  }
+
+  &__deposit-button {
+    width: 257px !important;
+  }
+}

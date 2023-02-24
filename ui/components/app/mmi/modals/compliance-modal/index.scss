@@ -1,0 +1,46 @@
+.compliance-modal {
+  color: #535a61;
+  font-size: 14px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+
+    &-logo {
+      @include H4;
+
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      color: var(--black);
+
+      &__img {
+        height: 32px;
+        width: 32px;
+        margin: 0 10px 0 0;
+      }
+    }
+  }
+
+  &__header-close::after {
+    content: '\00D7';
+    font-size: 40px;
+    color: var(--color-icon-default);
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    display: block;
+    line-height: 14px;
+  }
+
+  ol {
+    list-style: decimal;
+    list-style-position: inside;
+  }
+}
+
+.compliance-modal-container {
+  .btn-default {
+    display: none;
+  }
+}
