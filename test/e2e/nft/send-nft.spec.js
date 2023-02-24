@@ -46,6 +46,7 @@ describe('Send NFT', function () {
           'input[placeholder="Search, public address (0x), or ENS"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
+        await driver.fill('.unit-input__input', '1');
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
