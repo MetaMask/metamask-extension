@@ -12,7 +12,6 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import classnames from 'classnames';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -126,7 +125,6 @@ import {
   TextField,
 } from '../../../components/component-library';
 import SwapsFooter from '../swaps-footer';
-import UrlIcon from '../../../components/ui/url-icon';
 import SelectedToken from '../selected-token';
 import SwapsBannerAlert from './swaps-banner-alert';
 import MascotBackgroundAnimation from './mascot-background-animation';
@@ -943,17 +941,21 @@ export default function PrepareSwap({
           </Box>
         </div>
         <div className="prepare-swap__swap-to-content">
-          <div className="dropdown-input-pair dropdown-input-pair__to">
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+          >
             <SelectedToken
               onClick={onSwapToOpen}
               selectedToken={selectedToToken}
             />
-            <Box>
+            <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <Typography variant={TypographyVariant.H4}>
                 {receiveToAmount}
               </Typography>
             </Box>
-          </div>
+          </Box>
         </div>
         {toTokenIsNotDefault && occurrences < 2 && (
           <ActionableMessage

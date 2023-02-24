@@ -192,7 +192,7 @@
   flex-flow: column;
   // align-items: center;
   flex: 1;
-  width: 100%;  
+  width: 100%;
 
   &__content {
     display: flex;
@@ -201,7 +201,7 @@
     margin-left: 16px;
     margin-right: 16px;
   }
- 
+
   &__swap-from-content {
     padding: 20px 16px;
     border-radius: 6px 6px 0 0;
@@ -217,11 +217,11 @@
     }
 
     .MuiInputBase-root {
-      padding-right: 0;      
+      padding-right: 0;
     }
   }
 
-  &__swap-to-content {    
+  &__swap-to-content {
     padding: 28px 16px 36px 16px;
     border-radius: 0 0 6px 6px;
     box-shadow: none;
@@ -321,8 +321,8 @@
 
   .dropdown-search-list {
     background-color: #F2F4F6;
-    border-radius: 100px;   
-    
+    border-radius: 100px;
+
     &__select-default {
       color: var(--color-text-default);
     }
@@ -410,6 +410,10 @@
     text-decoration: underline;
   }
 
+  .dropdown-search-list__selector-closed {
+    width: 180px;
+  }
+
   .dropdown-search-list__selector-closed-container {
     border: 0;
     border-radius: 100px;
@@ -442,7 +446,7 @@
   &__from-token-amount {
     border: 0;
     outline: none;
-    
+
     input {
       padding-right: 0;
       text-align: right;
@@ -493,7 +497,7 @@
   flex-flow: column;
   align-items: center;
   flex: 1;
-  width: 100%;  
+  width: 100%;
 
   &__background-1,
   &__background-2 {

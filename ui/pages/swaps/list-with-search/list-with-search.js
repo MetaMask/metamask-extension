@@ -82,7 +82,7 @@ export default function ListWithSearch({
   };
 
   return (
-    <>
+    <Box className="list-with-search">
       <Box
         style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
         display={DISPLAY.FLEX}
@@ -125,7 +125,7 @@ export default function ListWithSearch({
           </Typography>
         </Box>
       )}
-    </>
+    </Box>
   );
 }
 
