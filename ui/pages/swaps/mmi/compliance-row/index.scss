@@ -1,0 +1,117 @@
+.compliance-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  transition: 0.3s all ease-in-out;
+
+  @keyframes load {
+    from {
+      left: -250px;
+    }
+
+    to {
+      left: 100%;
+    }
+  }
+
+  &--container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__loading {
+    position: relative;
+    overflow: hidden;
+    height: 40px;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: -250px;
+      top: 0;
+      height: 100%;
+      width: 250px;
+      background: linear-gradient(to right, transparent 0%, #e8e8e8 50%, transparent 100%);
+      animation: load 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &__progress {
+    font-size: 0.8em;
+    margin-bottom: 10px;
+    align-self: center;
+  }
+
+  &__column {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+
+    &-text {
+      line-height: 26px;
+      font-size: 0.8em;
+      margin-right: 10px;
+      white-space: nowrap;
+    }
+
+    &-risk {
+      background: lightgray;
+      border-radius: 5px;
+      margin-right: 10px;
+      padding: 3px 5px;
+      color: white;
+      font-size: 0.7em;
+      line-height: 20px;
+      max-width: 120px;
+      text-align: center;
+
+      &--green {
+        background: #08cd9f;
+      }
+
+      &--yellow {
+        background: #eabe38;
+      }
+
+      &--orange {
+        background: #e4802d;
+      }
+
+      &--red {
+        background: #e10000;
+      }
+    }
+
+    &-report {
+      height: 26px;
+      width: 26px;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin-right: 10px;
+
+      &--invalid {
+        background-image: url("/images/close-red-solid.svg");
+        width: 20px;
+      }
+
+      &--valid {
+        background-image: url("/images/check-green-solid.svg");
+      }
+    }
+  }
+
+  .info-tooltip {
+    line-height: 26px;
+  }
+}

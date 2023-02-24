@@ -1,0 +1,44 @@
+.drag-and-drop {
+  &__container {
+    display: inline-block;
+    position: relative;
+  }
+
+  &__overlay {
+    border: dashed grey 4px;
+    background-color: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    -moz-animation: fadein 0.5s;
+
+    /* Firefox */
+    -webkit-animation: fadein 0.5s;
+
+    /* Safari and Chrome */
+    -o-animation: fadein 0.5s;
+  }
+
+  &__text-container {
+    position: absolute;
+    top: calc(50% - 8px);
+    right: 0;
+    left: 0;
+    text-align: center;
+    color: grey;
+    font-size: 36;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

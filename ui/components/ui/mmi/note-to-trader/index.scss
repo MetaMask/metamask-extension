@@ -1,0 +1,33 @@
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  line-height: 100%;
+  margin: 0 0 5px 0;
+
+  &__counter {
+    color: #535a61;
+    font-size: 14px;
+  }
+
+  label {
+    color: var(--black);
+    margin: 0 0 4px 0;
+  }
+}
+
+.note-field {
+  display: flex;
+  flex-direction: column;
+
+  textarea {
+    min-height: 90px;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 12px;
+    resize: none;
+
+    &::placeholder {
+      color: #6a737d;
+    }
+  }
+}

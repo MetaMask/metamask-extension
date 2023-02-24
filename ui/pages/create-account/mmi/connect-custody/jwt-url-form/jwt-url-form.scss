@@ -1,0 +1,80 @@
+// MMI styles in place
+.jwt-url-form {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  margin-bottom: 34px;
+
+  &__jwt-container {
+    width: 100%;
+    margin: 0 0 24px 0;
+  }
+
+  &__jwt-apiUrlInput {
+    width: 100%;
+  }
+
+  &__btn__container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: 10px 0;
+    width: 100%;
+
+    & > span {
+      padding-bottom: 10px;
+    }
+  }
+
+  &__instruction {
+    @include Paragraph;
+
+    color: var(--scorpion);
+    align-self: flex-start;
+    display: block;
+    font-size: 14px;
+  }
+
+  &__input {
+    @include Paragraph;
+
+    height: 54px;
+    width: 100%;
+    border: 1px solid #d2d8dd;
+    border-radius: 4px;
+    background-color: $white;
+    margin-top: 16px;
+    color: var(--scorpion);
+    padding: 0 10px;
+
+    &__status-icon {
+      position: relative;
+      top: 40px;
+      left: 10px;
+      background-image: url("/images/search-black.svg");
+      width: 1.125rem;
+      height: 1.125rem;
+      margin: 0.25rem 0.5rem 0.25rem 0.25rem;
+    }
+  }
+
+  &__input-jwt-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  &__input-jwt {
+    @include Paragraph;
+
+    height: 154px;
+    width: 100%;
+    border: 1px solid #d2d8dd;
+    border-radius: 4px;
+    background-color: $white;
+    color: var(--scorpion);
+    padding: 10px;
+  }
+}

@@ -1,0 +1,130 @@
+.interactive-replacement-token-page {
+  font-size: 14px;
+  height: auto;
+  margin: 0 32px;
+  overflow-wrap: break-word;
+  color: var(--oslo-gray);
+  opacity: 0.8;
+
+  &__accounts {
+    display: flex;
+    flex: 1;
+    flex-flow: column;
+    width: 100%;
+    max-height: 50vh;
+    overflow: auto;
+
+    &__item {
+      display: flex;
+      flex-flow: row;
+      border-bottom: 1px solid #d2d8dd;
+
+      &__radio {
+        display: flex;
+        align-items: flex-start;
+
+        input {
+          margin: 12px 0 0 10px;
+        }
+      }
+
+      &__body {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        flex-flow: column;
+      }
+
+      &__title {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        margin: 12px 10px 0 0;
+      }
+
+      &__subtitle {
+        display: flex;
+        flex-direction: row;
+        font-size: 12px;
+        margin: 5px 10px 0 0;
+      }
+
+      &__name {
+        font-size: 14px;
+        display: block;
+        white-space: nowrap;
+        max-width: 200px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding-right: 5px;
+        color: var(--scorpion);
+      }
+
+      &__address {
+        font-size: 10px;
+        display: flex;
+        flex-direction: row;
+
+        &-link {
+          color: #037dd6;
+          display: flex;
+          align-items: center;
+          font-size: 12px;
+
+          &:hover {
+            color: #037dd6;
+          }
+
+          .link-icon {
+            margin: 0 0 0 5px;
+          }
+        }
+
+        &-clipboard {
+          background-color: transparent;
+        }
+      }
+
+      &-details {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      &__balance {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        font-size: 11px;
+      }
+
+      &__labels {
+        display: flex;
+        flex-flow: row;
+      }
+    }
+
+    &__item:first-child {
+      margin-top: 12px;
+    }
+
+    &__item:last-child {
+      border: 0;
+    }
+
+    &__item:hover {
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    &__title {
+      @include H5;
+
+      margin-bottom: 23px;
+      align-self: flex-start;
+      color: var(--scorpion);
+      font-weight: bold;
+      display: flex;
+      flex: 1;
+    }
+  }
+}

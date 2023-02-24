@@ -1,0 +1,383 @@
+// MMI styles in place
+.institutional-entity {
+  width: 375px;
+  background-color: #fff;
+  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+  z-index: 25;
+  height: unset;
+  overflow: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media screen and (min-width: 576px) {
+    position: absolute;
+  }
+
+  &__container {
+    border-radius: 0;
+  }
+
+  &__title {
+    @include H2;
+
+    color: var(--tundora);
+    font-weight: 500;
+    margin-top: 22px;
+    margin-left: 29px;
+  }
+
+  &__form {
+    padding: 0 30px 30px;
+
+    .pulse-loader {
+      justify-content: center;
+    }
+
+    .error {
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+
+
+  &__footer {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    border-top: 1px solid #d2d8dd;
+    padding: 16px 30px;
+    flex: 0 0 auto;
+
+    button {
+      min-width: 0;
+      margin-right: 16px;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &__content {
+    padding: 0 30px 30px;
+
+    @include H6;
+
+    line-height: 22px;
+    color: #535a61;
+
+    ol {
+      list-style: decimal;
+      list-style-position: inside;
+    }
+  }
+}
+
+.width500 {
+  width: 500px;
+}
+
+.entity-connect {
+  width: 100%;
+
+  &__header {
+    &__title {
+      @include H4;
+
+      color: var(--black);
+      margin: 15px 0;
+      width: 100%;
+    }
+
+    &__msg {
+      @include H6;
+
+      color: #545454;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+  }
+
+  &__title {
+    display: flex;
+    margin-top: 10px;
+    margin-right: 15px;
+  }
+
+  &__msg {
+    @include H6;
+
+    color: #9b9b9b;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+
+  &__btn-wrapper {
+    flex: 1;
+    flex-direction: row;
+    display: flex;
+  }
+
+  &__connect-btn {
+    width: 100%;
+    margin: 20px 0 0 0;
+  }
+
+  &__connect-btn.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &__btn {
+    background: #fbfbfb;
+    border: 1px solid #e5e5e5;
+    height: 115px;
+    width: 150px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 5px;
+    padding: 0;
+
+    &__img {
+      width: 95px;
+      margin-left: 10px;
+    }
+
+    &__text {
+      @include H6;
+
+      font-size: 0.6rem;
+      text-align: left;
+      color: #9b9b9b;
+      margin: 10px 10px 0 10px;
+
+      &--activated {
+        color: white;
+        background: #037dd6;
+        padding: 3px 10px;
+        border-radius: 10px;
+        margin-top: 0;
+      }
+    }
+  }
+
+  &__btn.selected {
+    border-color: #00a8ee;
+    width: 149px;
+  }
+
+  &__btn:first-child {
+    margin-right: 15px;
+  }
+
+  &__btn-more[disabled] {
+    opacity: 0.8;
+    background: transparent;
+    border: 2px dashed #e5e5e5;
+    cursor: default;
+    align-items: center;
+  }
+
+  &__input-jwt-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  &__instruction {
+    @include Paragraph;
+
+    color: var(--scorpion);
+    align-self: flex-start;
+    margin-top: 10px;
+    display: block;
+  }
+
+  &__jwt {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    margin-top: 34px;
+    margin-bottom: 34px;
+  }
+
+  &__jwt-btn__container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: 10px 0;
+    width: 100%;
+
+    & > span {
+      padding-bottom: 10px;
+    }
+  }
+
+  &__input-jwt {
+    @include Paragraph;
+
+    height: 154px;
+    width: 315px;
+    border: 1px solid #d2d8dd;
+    border-radius: 4px;
+    background-color: $white;
+    color: var(--scorpion);
+    padding: 10px;
+  }
+
+  &__input {
+    @include Paragraph;
+
+    height: 54px;
+    width: 315px;
+    border: 1px solid #d2d8dd;
+    border-radius: 4px;
+    background-color: $white;
+    margin-top: 16px;
+    color: var(--scorpion);
+    padding: 0 10px;
+
+    &__status-icon {
+      position: relative;
+      top: 40px;
+      left: 10px;
+      background-image: url("/images/search-black.svg");
+      width: 1.125rem;
+      height: 1.125rem;
+      margin: 0.25rem 0.5rem 0.25rem 0.25rem;
+    }
+  }
+
+  &__search-input-container {
+    .custody-connect__input {
+      margin-top: 0;
+      margin-bottom: 16px;
+      padding-left: 30px;
+    }
+  }
+
+  &__compliance-activated {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__img {
+      max-width: 250px;
+      max-height: 80px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.feature-connect {
+  padding: 20px 30px 10px;
+  border-bottom: 1px solid #d2d8dd;
+  width: 100%;
+
+  &__header {
+    padding: 0 30px 10px;
+    display: flex;
+    flex-direction: column;
+
+    &__back-btn {
+      color: #545454;
+      background: white;
+      width: auto;
+      display: flex;
+      padding: 0;
+      margin: 25px 0 10px 0;
+      line-height: 100%;
+      flex-direction: row;
+      align-items: center;
+
+      &__chevron-left {
+        margin: 0 10px 0 0;
+        font-size: 9px;
+      }
+    }
+
+    &__title {
+      @include H4;
+
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    &__msg {
+      @include H6;
+
+      color: #545454;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+  }
+
+  &__jwt-form {
+    padding: 0 30px 30px;
+  }
+
+  &__list {
+    width: 100%;
+
+    &__list-item {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #d2d8dd;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 0 0 16px 0;
+
+      &__avatar {
+        @include H4;
+
+        display: flex;
+        align-items: center;
+        color: var(--black);
+      }
+
+      &__img {
+        height: 32px;
+        width: 32px;
+        margin: 0 10px 0 0;
+      }
+
+      &__button {
+        height: 32px;
+        width: 88px;
+      }
+    }
+  }
+
+  &__title {
+    display: flex;
+    margin-top: 10px;
+    margin-right: 15px;
+  }
+
+  &__msg {
+    @include H6;
+
+    color: #9b9b9b;
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+
+  &__cancel-btn {
+    margin-right: 16px;
+  }
+
+  &__connect-btn.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
