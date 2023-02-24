@@ -95,8 +95,6 @@ describe('ERC1155', function () {
           windowHandles,
         );
 
-        // assert.equal(true, false)
-
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
