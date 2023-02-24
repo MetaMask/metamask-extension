@@ -77,9 +77,6 @@
   "advanced": {
     "message": "進階"
   },
-  "affirmAgree": {
-    "message": "我同意"
-  },
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
   },
@@ -669,10 +666,6 @@
   "gasUsed": {
     "message": "Gas 用量"
   },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Privacy Policy here",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "一般"
   },
@@ -985,9 +978,6 @@
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
-  },
-  "noThanks": {
-    "message": "不了"
   },
   "noTransactions": {
     "message": "尚未有交易"
