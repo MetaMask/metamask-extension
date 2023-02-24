@@ -308,9 +308,10 @@ describe('MetaMask', function () {
       await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      const functionType = await driver.findElement(
-        '.confirm-data__function-type',
-      );
+      const functionType = await driver.findElement({
+        tag: 'span',
+        text: 'Transfer',
+      });
       const functionTypeText = await functionType.getText();
       assert(functionTypeText.match('Transfer'));
 
