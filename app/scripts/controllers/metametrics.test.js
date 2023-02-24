@@ -50,6 +50,7 @@ const DEFAULT_SHARED_PROPERTIES = {
   chain_id: FAKE_CHAIN_ID,
   locale: LOCALE.replace('_', '-'),
   environment_type: 'background',
+  desktop_paired: false,
 };
 
 const DEFAULT_EVENT_PROPERTIES = {
@@ -102,6 +103,23 @@ function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   };
 }
 
+function getMockDesktopController(getDesktopEnabled = false) {
+  let desktopStore = {
+    getDesktopEnabled,
+  };
+  const subscribe = sinon.stub();
+  const updateState = (newState) => {
+    desktopStore = { ...desktopStore, ...newState };
+    subscribe.getCall(0).args[0](desktopStore);
+  };
+  return {
+    getState: sinon.stub().returns(desktopStore),
+    getDesktopEnabled: () => desktopStore.getDesktopEnabled,
+    updateState,
+    subscribe,
+  };
+}
+
 const SAMPLE_PERSISTED_EVENT = {
   id: 'testid',
   persist: true,
@@ -130,6 +148,7 @@ function getMetaMetricsController({
   preferencesStore = getMockPreferencesStore(),
   networkController = getMockNetworkController(),
   segmentInstance,
+  desktopController = getMockDesktopController(),
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
@@ -151,6 +170,8 @@ function getMetaMetricsController({
       },
       events: {},
     },
+    getDesktopEnabled:
+    desktopController.getDesktopEnabled.bind(desktopController),
   });
 }
 describe('MetaMetricsController', function () {

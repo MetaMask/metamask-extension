@@ -100,6 +100,7 @@ export default class MetaMetricsController {
    * @param {MetaMetricsControllerState} options.initState - State to initialized with
    * @param options.captureException
    */
+  /* eslint-disable-next-line jsdoc/require-param */
   constructor({
     segment,
     preferencesStore,
@@ -110,6 +111,9 @@ export default class MetaMetricsController {
     initState,
     extension,
     captureException = defaultCaptureException,
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    getDesktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
   }) {
     this._captureException = (err) => {
       // This is a temporary measure. Currently there are errors flooding sentry due to a problem in how we are tracking anonymousId
@@ -125,6 +129,9 @@ export default class MetaMetricsController {
       environment === 'production' ? version : `${version}-${environment}`;
     this.extension = extension;
     this.environment = environment;
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    this.getDesktopEnabled = getDesktopEnabled;
+    ///: END:ONLY_INCLUDE_IN
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
@@ -470,6 +477,9 @@ export default class MetaMetricsController {
           locale: this.locale,
           chain_id: this.chainId,
           environment_type: environmentType,
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          desktop_paired: this.getDesktopEnabled(),
+          ///: END:ONLY_INCLUDE_IN
         },
         context: this._buildContext(referrer, page),
       });
@@ -669,6 +679,9 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        desktop_paired: this.getDesktopEnabled(),
+        ///: END:ONLY_INCLUDE_IN
       },
       context: this._buildContext(referrer, page),
     };

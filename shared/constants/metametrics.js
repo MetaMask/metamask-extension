@@ -399,6 +399,7 @@ export const EVENT = {
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+    DESKTOP: 'Desktop',
   },
   EXTERNAL_LINK_TYPES: {
     TRANSACTION_BLOCK_EXPLORER: 'Transaction Block Explorer',

@@ -434,6 +434,12 @@ export default class MetamaskController extends EventEmitter {
         getNftState: () => this.nftController.state,
       }));
 
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    this.desktopController = new DesktopController({
+      initState: initState.DesktopController,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     this.metaMetricsController = new MetaMetricsController({
       segment,
       preferencesStore: this.preferencesController.store,
@@ -453,6 +459,11 @@ export default class MetamaskController extends EventEmitter {
       extension: this.extension,
       initState: initState.MetaMetricsController,
       captureException,
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      ///: END:ONLY_INCLUDE_IN
     });
 
     this.on('update', (update) => {
@@ -1120,12 +1131,6 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SmartTransactionsController,
     );
-
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    this.desktopController = new DesktopController({
-      initState: initState.DesktopController,
-    });
-    ///: END:ONLY_INCLUDE_IN
 
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
