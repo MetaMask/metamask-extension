@@ -4225,13 +4225,18 @@
       "packages": {
         "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
         "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
-        "react-markdown>vfile>unist-util-stringify-position": true,
-        "react-syntax-highlighter>refractor>parse-entities": true
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
+        "react-markdown>vfile>unist-util-stringify-position": true
       }
     },
     "react-markdown>remark-parse>mdast-util-from-markdown>micromark": {
       "packages": {
-        "react-syntax-highlighter>refractor>parse-entities": true
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true
+      }
+    },
+    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": {
+      "globals": {
+        "document.createElement": true
       }
     },
     "react-markdown>remark-rehype": {
@@ -4448,11 +4453,6 @@
       "packages": {
         "prop-types": true,
         "react": true
-      }
-    },
-    "react-syntax-highlighter>refractor>parse-entities": {
-      "globals": {
-        "document.createElement": true
       }
     },
     "react-tippy": {
