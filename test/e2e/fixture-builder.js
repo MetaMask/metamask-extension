@@ -536,7 +536,6 @@ class FixtureBuilder {
                   value: {
                     'npm@metamask/test-snap-bip32': {},
                     'npm@metamask/test-snap-bip44': {},
-                    'npm@metamask/test-snap-confirm': {},
                     'npm@metamask/test-snap-error': {},
                     'npm@metamask/test-snap-managestate': {},
                     'npm@metamask/test-snap-notification': {},
