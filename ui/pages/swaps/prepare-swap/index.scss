@@ -438,6 +438,16 @@
       width: 85%;
     }
   }
+
+  &__from-token-amount {
+    border: 0;
+    outline: none;
+    
+    input {
+      padding-right: 0;
+      text-align: right;
+    }
+  }
 }
 
 @keyframes slide-in {

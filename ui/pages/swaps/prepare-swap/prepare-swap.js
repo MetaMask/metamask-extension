@@ -21,7 +21,6 @@ import {
 } from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
-import DropdownInputPair from '../dropdown-input-pair';
 import TransactionSettings from '../transaction-settings';
 import ListWithSearch from '../list-with-search';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
@@ -124,6 +123,7 @@ import {
   Icon,
   ICON_NAMES,
   ICON_SIZES,
+  TextField,
 } from '../../../components/component-library';
 import SwapsFooter from '../swaps-footer';
 import UrlIcon from '../../../components/ui/url-icon';
@@ -152,6 +152,11 @@ export default function PrepareSwap({
   const [isSwapToOpen, setIsSwapToOpen] = useState(false);
   const onSwapToOpen = () => setIsSwapToOpen(true);
   const onSwapToClose = () => setIsSwapToOpen(false);
+  const [isSwapFromOpen, setIsSwapFromOpen] = useState(false);
+  const onSwapFromOpen = () => setIsSwapFromOpen(true);
+  const onSwapFromClose = () => setIsSwapFromOpen(false);
+  const [swapFromSearchQuery, setSwapFromSearchQuery] = useState('');
+  const [swapToSearchQuery, setSwapToSearchQuery] = useState('');
   const [quoteCount, updateQuoteCount] = useState(0);
   const [prefetchingQuotes, setPrefetchingQuotes] = useState(false);
 
@@ -658,6 +663,23 @@ export default function PrepareSwap({
     mainButtonText = t('swapEnterAmount');
   }
 
+  const onTextFieldChange = (event) => {
+    event.stopPropagation();
+    // Automatically prefix value with 0. if user begins typing .
+    const valueToUse = event.target.value === '.' ? '0.' : event.target.value;
+
+    // Regex that validates strings with only numbers, 'x.', '.x', and 'x.x'
+    const regexp = /^(\.\d+|\d+(\.\d+)?|\d+\.)$/u;
+    // If the value is either empty or contains only numbers and '.' and only has one '.', update input to match
+    if (valueToUse === '' || regexp.test(valueToUse)) {
+      onInputChange(valueToUse, fromTokenBalance);
+    } else {
+      // otherwise, use the previously set inputValue (effectively denying the user from inputting the last char)
+      // or an empty string if we do not yet have an inputValue
+      onInputChange(fromTokenInputValue || '', fromTokenBalance);
+    }
+  };
+
   return (
     <div className="prepare-swap">
       <div className="prepare-swap__content">
@@ -683,6 +705,36 @@ export default function PrepareSwap({
                   onSwapToClose();
                 }}
                 maxListItems={30}
+                searchQuery={swapToSearchQuery}
+                setSearchQuery={setSwapToSearchQuery}
+              />
+            </Box>
+          </Popover>
+        )}
+        {isSwapFromOpen && (
+          <Popover
+            title={t('swapSwapFrom')}
+            className="smart-transactions-popover"
+            onClose={onSwapFromClose}
+          >
+            <Box
+              paddingRight={6}
+              paddingLeft={6}
+              paddingTop={0}
+              paddingBottom={0}
+              display={DISPLAY.FLEX}
+              className="smart-transactions-popover__content"
+            >
+              <ListWithSearch
+                selectedItem={selectedFromToken}
+                itemsToSearch={tokensToSearchSwapFrom}
+                onClickItem={(item) => {
+                  onFromSelect?.(item);
+                  onSwapFromClose();
+                }}
+                maxListItems={30}
+                searchQuery={swapFromSearchQuery}
+                setSearchQuery={setSwapFromSearchQuery}
               />
             </Box>
           </Popover>
@@ -772,29 +824,62 @@ export default function PrepareSwap({
           </Popover>
         )}
         <div className="prepare-swap__swap-from-content">
-          <DropdownInputPair
-            onSelect={onFromSelect}
-            itemsToSearch={tokensToSearchSwapFrom}
-            onInputChange={(value) => {
-              /* istanbul ignore next */
-              onInputChange(value, fromTokenBalance);
-            }}
-            inputValue={fromTokenInputValue}
-            selectedItem={selectedFromToken}
-            maxListItems={30}
-            loading={
-              loading &&
-              (!tokensToSearchSwapFrom?.length ||
-                !topAssets ||
-                !Object.keys(topAssets).length)
-            }
-            selectPlaceHolderText={t('swapSelect')}
-            hideItemIf={(item) =>
-              isEqualCaseInsensitive(item.address, selectedToToken?.address)
-            }
-            listContainerClassName="prepare-swap__open-dropdown"
-            autoFocus
-          />
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+          >
+            <div
+              className={classnames(
+                'dropdown-search-list',
+                'dropdown-search-list__selector-closed-container',
+                'dropdown-input-pair__selector--closed',
+              )}
+              onClick={onSwapFromOpen}
+            >
+              <div className="dropdown-search-list__selector-closed">
+                {selectedFromToken?.iconUrl && (
+                  <UrlIcon
+                    url={selectedFromToken.iconUrl}
+                    className="dropdown-search-list__selector-closed-icon"
+                    name={selectedFromToken?.symbol}
+                  />
+                )}
+                {!selectedFromToken?.iconUrl && (
+                  <div className="dropdown-search-list__default-dropdown-icon" />
+                )}
+                <div className="dropdown-search-list__labels">
+                  <div className="dropdown-search-list__item-labels">
+                    <span
+                      className={classnames(
+                        'dropdown-search-list__closed-primary-label',
+                        {
+                          'dropdown-search-list__select-default':
+                            !selectedFromToken?.symbol,
+                        },
+                      )}
+                    >
+                      {selectedFromToken?.symbol || t('swapSelectAToken')}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <Icon
+                name={ICON_NAMES.ARROW_DOWN}
+                size={ICON_SIZES.XS}
+                marginRight={3}
+              />
+            </div>
+            <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+              <TextField
+                className="prepare-swap__from-token-amount"
+                placeholder="0"
+                onChange={onTextFieldChange}
+                value={fromTokenInputValue}
+                truncate={false}
+              />
+            </Box>
+          </Box>
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
@@ -883,49 +968,48 @@ export default function PrepareSwap({
         </div>
         <div className="prepare-swap__swap-to-content">
           <div className="dropdown-input-pair dropdown-input-pair__to">
-            {!isSwapToOpen && (
-              <div
-                className={classnames(
-                  'dropdown-search-list',
-                  'dropdown-search-list__selector-closed-container',
-                  'dropdown-input-pair__selector--closed',
+            <div
+              className={classnames(
+                'dropdown-search-list',
+                'dropdown-search-list__selector-closed-container',
+                'dropdown-input-pair__selector--closed',
+              )}
+              onClick={onSwapToOpen}
+            >
+              <div className="dropdown-search-list__selector-closed">
+                {selectedToToken?.iconUrl && (
+                  <UrlIcon
+                    url={selectedToToken.iconUrl}
+                    className="dropdown-search-list__selector-closed-icon"
+                    name={selectedToToken?.symbol}
+                  />
                 )}
-                onClick={onSwapToOpen}
-              >
-                <div className="dropdown-search-list__selector-closed">
-                  {selectedToToken?.iconUrl && (
-                    <UrlIcon
-                      url={selectedToToken.iconUrl}
-                      className="dropdown-search-list__selector-closed-icon"
-                      name={selectedToToken?.symbol}
-                    />
-                  )}
-                  {!selectedToToken?.iconUrl && (
-                    <div className="dropdown-search-list__default-dropdown-icon" />
-                  )}
-                  <div className="dropdown-search-list__labels">
-                    <div className="dropdown-search-list__item-labels">
-                      <span
-                        className={classnames(
-                          'dropdown-search-list__closed-primary-label',
-                          {
-                            'dropdown-search-list__select-default':
-                              !selectedToToken?.symbol,
-                          },
-                        )}
-                      >
-                        {selectedToToken?.symbol || t('swapSelectAToken')}
-                      </span>
-                    </div>
+                {!selectedToToken?.iconUrl && (
+                  <div className="dropdown-search-list__default-dropdown-icon" />
+                )}
+                <div className="dropdown-search-list__labels">
+                  <div className="dropdown-search-list__item-labels">
+                    <span
+                      className={classnames(
+                        'dropdown-search-list__closed-primary-label',
+                        {
+                          'dropdown-search-list__select-default':
+                            !selectedToToken?.symbol,
+                        },
+                      )}
+                    >
+                      {selectedToToken?.symbol || t('swapSelectAToken')}
+                    </span>
                   </div>
                 </div>
-                <Icon
-                  name={ICON_NAMES.ARROW_DOWN}
-                  size={ICON_SIZES.XS}
-                  marginRight={3}
-                />
               </div>
-            )}
+              <Icon
+                name={ICON_NAMES.ARROW_DOWN}
+                size={ICON_SIZES.XS}
+                marginRight={3}
+              />
+            </div>
+
             <Box>
               <Typography variant={TypographyVariant.H4}>
                 {receiveToAmount}

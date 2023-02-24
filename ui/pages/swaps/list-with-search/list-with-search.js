@@ -1,14 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash';
 import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography';
 import {
   DISPLAY,
   FLEX_DIRECTION,
+  TextColor,
+  TypographyVariant,
+  JustifyContent,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { TextFieldSearch } from '../../../components/component-library';
 import ItemList from '../searchable-item-list/item-list';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { I18nContext } from '../../../contexts/i18n';
 
 let timeoutIdForSearch;
 
@@ -23,14 +29,16 @@ export default function ListWithSearch({
   hideRightLabels,
   hideItemIf,
   listContainerClassName,
+  searchQuery,
+  setSearchQuery,
 }) {
   const itemListRef = useRef();
+  const t = useContext(I18nContext);
 
-  const [search, setSearch] = useState(selectedItem?.symbol);
   const [items, setItems] = useState(itemsToSearch);
 
   const handleSearch = async (newSearchQuery) => {
-    setSearch(newSearchQuery);
+    setSearchQuery(newSearchQuery);
     if (timeoutIdForSearch) {
       clearTimeout(timeoutIdForSearch);
     }
@@ -65,12 +73,12 @@ export default function ListWithSearch({
   };
 
   useEffect(() => {
-    handleSearch(search);
+    handleSearch(searchQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handleSearch]);
 
   const handleOnClear = () => {
-    setSearch('');
+    setSearchQuery('');
   };
 
   return (
@@ -85,23 +93,38 @@ export default function ListWithSearch({
           marginBottom={4}
           onChange={(e) => handleSearch(e.target.value)}
           clearButtonOnClick={handleOnClear}
-          value={search}
+          value={searchQuery}
           placeholder="Enter token name or paste address"
         />
       </Box>
-      <ItemList
-        searchQuery={search}
-        results={items}
-        onClickItem={onClickItem}
-        onOpenImportTokenModalClick={onOpenImportTokenModalClick}
-        Placeholder={Placeholder}
-        listTitle={listTitle}
-        maxListItems={maxListItems}
-        containerRef={itemListRef}
-        hideRightLabels={hideRightLabels}
-        hideItemIf={hideItemIf}
-        listContainerClassName={listContainerClassName}
-      />
+      {items?.length > 0 && (
+        <ItemList
+          searchQuery={searchQuery}
+          results={items}
+          onClickItem={onClickItem}
+          onOpenImportTokenModalClick={onOpenImportTokenModalClick}
+          Placeholder={Placeholder}
+          listTitle={listTitle}
+          maxListItems={maxListItems}
+          containerRef={itemListRef}
+          hideRightLabels={hideRightLabels}
+          hideItemIf={hideItemIf}
+          listContainerClassName={listContainerClassName}
+        />
+      )}
+      {items?.length === 0 && (
+        <Box
+          marginTop={1}
+          marginBottom={5}
+          display={DISPLAY.FLEX}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+        >
+          <Typography variant={TypographyVariant.H6}>
+            {t('swapBuildQuotePlaceHolderText', [searchQuery])}
+          </Typography>
+        </Box>
+      )}
     </>
   );
 }
