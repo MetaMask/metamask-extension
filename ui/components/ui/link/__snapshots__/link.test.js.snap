@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Link should render link element correctly className 1`] = `
+<div>
+  <a
+    class="test-class"
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly key 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly onCLick 1`] = `
+<div>
+  <a
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <button
+      data-testid="test-label"
+    >
+      test-button
+    </button>
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly target rel referer 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener nofollow"
+    target="self"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with # href 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with http href 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with id 1`] = `
+<div>
+  <a
+    id="test-link"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with onClick target and rel 1`] = `
+<div>
+  <a
+    class="fee-card__link"
+    href="https://metamask.io/"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with referer 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener license"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with rel 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener noreferrer license"
+    target="_blank"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with target 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    id="test-link"
+    rel="noopener noreferrer"
+    target="_self"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with title 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    rel="noopener noreferrer license"
+    target="_blank"
+    title="test-title"
+  >
+    Link
+  </a>
+</div>
+`;
+
+exports[`Link should render link element correctly with type and style 1`] = `
+<div>
+  <a
+    href="https://metamask.io/"
+    rel="noopener"
+    style="color: red;"
+    target="_blank"
+    type="link"
+  >
+    Link
+  </a>
+</div>
+`;
