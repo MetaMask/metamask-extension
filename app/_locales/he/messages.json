@@ -75,12 +75,6 @@
   "asset": {
     "message": "נכס"
   },
-  "attemptToCancel": {
-    "message": "לנסות לבטל?"
-  },
-  "attemptToCancelDescription": {
-    "message": "הגשת ניסיון זה אינה מבטיחה כי העסקה המקורית שלך תבוטל. אם ניסיון הביטול יצליח, תחויב/י בעמלת העסקה המופיעה מעלה."
-  },
   "attemptingConnect": {
     "message": "מנסה להתחבר לבלוקצ'יין."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "ביטול"
-  },
-  "cancellationGasFee": {
-    "message": "עמלת דלק עבור ביטול"
   },
   "cancelled": {
     "message": "מבוטל"
@@ -919,9 +910,6 @@
   },
   "welcomeBack": {
     "message": "ברוך שובך!"
-  },
-  "yesLetsTry": {
-    "message": "כן, בוא ננסה"
   },
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."

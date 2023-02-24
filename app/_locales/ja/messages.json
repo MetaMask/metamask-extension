@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
-  "affirmAgree": {
-    "message": "同意する"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -399,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "1 つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
   },
-  "attemptToCancel": {
-    "message": "キャンセルを試みますか?"
-  },
-  "attemptToCancelDescription": {
-    "message": "この試みを送信しても、元のトランザクションのキャンセルは保証されません。キャンセルの試みが成功した場合、上記のトランザクション手数料が課金されます。"
-  },
   "attemptingConnect": {
     "message": "ブロックチェーンへの接続を試みています。"
   },
@@ -478,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMaskベータバージョン"
-  },
-  "betaPortfolioSite": {
-    "message": "ベータポートフォリオサイト"
   },
   "betaTerms": {
     "message": "ベータ版利用規約"
@@ -599,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "無料でスワップをキャンセル"
-  },
-  "cancellationGasFee": {
-    "message": "キャンセルのガス代"
   },
   "cancelled": {
     "message": "キャンセル済み"
@@ -1444,14 +1429,6 @@
   "gasUsed": {
     "message": "ガス使用量"
   },
-  "gdprMessage": {
-    "message": "このデータは集約されているため、一般データ保護規則 (EU) (規則 2016/679) の目的において匿名とされます。弊社の個人情報の取り扱いに関する詳細については、弊社の$1をご覧ください。",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "プライバシーポリシーはこちら",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "一般"
   },
@@ -1717,9 +1694,6 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "複数のアカウントやネットワークのトークンや NFT を監視するには。"
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -1908,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMaskのバージョン"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "いつでも設定からオプトアウトできるようにします"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "実行しない",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMaskが実行する内容"
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1が完全なIPアドレスを収集することはありません",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1は、キー、アドレス、トランザクション、残高、ハッシュなど、いかなる個人情報も収集しません",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1が営利目的でデータを販売することは決してありません。",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "匿名化されたクリック・ページビューイベントを送信します"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "MetaMaskの品質向上へのご協力のお願い"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMaskでは、ユーザーによる拡張機能の利用状況についてよりよく理解するため、基本的な使用状況データを収集させていただきたいと考えています。このデータは、当社の製品およびイーサリアムエコシステムの使いやすさとユーザーエクスペリエンスを継続的に改善するために使用されます。"
   },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
@@ -2178,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "スナップがインストールされていません"
-  },
-  "noThanks": {
-    "message": "結構です"
   },
   "noThanksVariant2": {
     "message": "結構です。"
@@ -2714,9 +2654,6 @@
   },
   "popularCustomNetworks": {
     "message": "人気のカスタムネットワーク"
-  },
-  "portfolioSite": {
-    "message": "ポートフォリオサイト"
   },
   "preferredLedgerConnectionType": {
     "message": "優先Ledger接続タイプ",
@@ -4090,9 +4027,6 @@
   "tryAgain": {
     "message": "再試行"
   },
-  "tryOur": {
-    "message": "こちらをお試しください:"
-  },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
   },
@@ -4302,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 このコントラクトは今後、通知や承諾なしにトークン残高全額を使用できます。使用限度をより低い金額にカスタマイズして、自分の身を守りましょう。",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "弱"
@@ -4357,9 +4291,6 @@
   },
   "yes": {
     "message": "はい"
-  },
-  "yesLetsTry": {
-    "message": "はい、やってみます"
   },
   "youHaveAddedAll": {
     "message": "すべての人気ネットワークを追加しました。$1で他のネットワークを発見するか、$2できます。",

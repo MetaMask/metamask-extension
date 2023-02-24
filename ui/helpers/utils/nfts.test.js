@@ -1,10 +1,10 @@
-import { getCollectibleImageAlt } from './nfts';
+import { getNftImageAlt } from './nfts';
 
-describe('Collectibles Utils', () => {
-  describe('getCollectibleImageAlt', () => {
+describe('NFTs Utils', () => {
+  describe('getNftImageAlt', () => {
     it('returns the description attribute when it is available', () => {
       expect(
-        getCollectibleImageAlt({
+        getNftImageAlt({
           name: 'Cool NFT',
           tokenId: '555',
           description: 'This is a really cool NFT',
@@ -14,14 +14,14 @@ describe('Collectibles Utils', () => {
 
     it('returns the formatted name and tokenId attributes when a description is not present', () => {
       expect(
-        getCollectibleImageAlt({
+        getNftImageAlt({
           name: 'Cool NFT',
           tokenId: '555',
           description: null,
         }),
       ).toBe('Cool NFT 555');
       expect(
-        getCollectibleImageAlt({
+        getNftImageAlt({
           name: 'Cool NFT',
           tokenId: '555',
         }),

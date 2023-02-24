@@ -21,16 +21,14 @@ import {
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
   hasUnsignedQRHardwareMessage,
-  getNewCollectibleAddedMessage,
+  getNewNftAddedMessage,
   getNewTokensImported,
-  getShowPortfolioTooltip,
   getShouldShowSeedPhraseReminder,
-  getRemoveCollectibleMessage,
+  getRemoveNftMessage,
 } from '../../selectors';
 
 import {
   closeNotificationPopup,
-  hidePortfolioTooltip,
   setConnectedStatusPopoverHasBeenShown,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
@@ -39,8 +37,8 @@ import {
   setRecoveryPhraseReminderLastShown,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewCollectibleAddedMessage,
-  setRemoveCollectibleMessage,
+  setNewNftAddedMessage,
+  setRemoveNftMessage,
   setNewTokensImported,
   setRpcTarget,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -50,8 +48,6 @@ import {
 import {
   hideWhatsNewPopup,
   setNewCustomNetworkAdded,
-  getPortfolioTooltipWasShownInThisSession,
-  setPortfolioTooltipWasShownInThisSession,
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
@@ -142,17 +138,14 @@ const mapStateToProps = (state) => {
     shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
-    showPortfolioTooltip: getShowPortfolioTooltip(state),
-    portfolioTooltipWasShownInThisSession:
-      getPortfolioTooltipWasShownInThisSession(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showOutdatedBrowserWarning:
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
-    newNftAddedMessage: getNewCollectibleAddedMessage(state),
-    removeNftMessage: getRemoveCollectibleMessage(state),
+    newNftAddedMessage: getNewNftAddedMessage(state),
+    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newCustomNetworkAdded: appState.newCustomNetworkAdded,
     onboardedInThisUISession: appState.onboardedInThisUISession,
@@ -172,7 +165,6 @@ const mapDispatchToProps = (dispatch) => ({
   disableWeb3ShimUsageAlert: () =>
     setAlertEnabledness(AlertTypes.web3ShimUsage, false),
   hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
-  hidePortfolioTooltip,
   setRecoveryPhraseReminderHasBeenShown: () =>
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
@@ -184,11 +176,13 @@ const mapDispatchToProps = (dispatch) => ({
     console.log({ newNetwork });
     dispatch(setNewNetworkAdded(newNetwork));
   },
-  setNewCollectibleAddedMessage: (message) => {
-    dispatch(setNewCollectibleAddedMessage(message));
+  setNewNftAddedMessage: (message) => {
+    dispatch(setRemoveNftMessage(''));
+    dispatch(setNewNftAddedMessage(message));
   },
-  setRemoveCollectibleMessage: (message) => {
-    dispatch(setRemoveCollectibleMessage(message));
+  setRemoveNftMessage: (message) => {
+    dispatch(setNewNftAddedMessage(''));
+    dispatch(setRemoveNftMessage(message));
   },
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
@@ -199,8 +193,6 @@ const mapDispatchToProps = (dispatch) => ({
   setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
     dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
   },
-  setPortfolioTooltipWasShownInThisSession: () =>
-    dispatch(setPortfolioTooltipWasShownInThisSession()),
 });
 
 export default compose(

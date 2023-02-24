@@ -1266,7 +1266,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils>isomorphic-fetch": true,
         "@metamask/phishing-controller>@metamask/controller-utils": true,
-        "@metamask/phishing-controller>eth-phishing-detect": true,
+        "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
       }
     },
@@ -1285,7 +1285,7 @@
         "ethjs>ethjs-unit": true
       }
     },
-    "@metamask/phishing-controller>eth-phishing-detect": {
+    "@metamask/phishing-warning>eth-phishing-detect": {
       "packages": {
         "eslint>optionator>fast-levenshtein": true
       }
@@ -1309,32 +1309,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree": {
-      "packages": {
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/snaps-utils>@noble/hashes": true,
-        "@metamask/snaps-utils>@scure/base": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@metamask/rpc-methods>nanoid": {

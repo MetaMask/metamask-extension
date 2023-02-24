@@ -7,7 +7,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
 import Typography from '../../ui/typography';
-import { ButtonLink } from '../../component-library';
+import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
@@ -151,7 +151,7 @@ export default function CustomSpendingCap({
           fontWeight={FONT_WEIGHT.BOLD}
           color={TextColor.errorDefault}
         >
-          <i className="fa fa-exclamation-circle" /> {t('beCareful')}
+          <Icon name={ICON_NAMES.WARNING} /> {t('beCareful')}
         </Typography>,
       ])
     : t('inputLogicEmptyState');

@@ -119,7 +119,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { ICON_NAMES, Icon, Text } from '../../component-library';
+import { ICON_NAMES, Icon, Text, Label } from '../../component-library';
 
 <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
   <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
@@ -158,6 +158,21 @@ import { ICON_NAMES, Icon, Text } from '../../component-library';
     <Icon name={ICON_NAMES.ADD} color={IconColor.iconDefault} marginRight={2} />
     <Text>Create account</Text>
   </Box>
+  <Label>
+    Custom spending cap{' '}
+    <Icon name={ICON_NAMES.INFO} size={ICON_SIZES.AUTO} marginLeft={1} />
+  </Label>
+  <div>
+    <Text>
+      <Icon
+        name={ICON_NAMES.WARNING}
+        size={ICON_SIZES.AUTO}
+        marginLeft={1}
+        color={IconColor.warningDefault}
+      />{' '}
+      Warning
+    </Text>
+  </div>
 </Box>;
 ```
 

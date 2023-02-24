@@ -11,8 +11,9 @@ exports[`Transaction Confirmed should match snapshot 1`] = `
       <div
         class="transaction-confirmed__content"
       >
-        <i
-          class="fa fa-check-circle fa-3x"
+        <span
+          class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-success-default"
+          style="mask-image: url('./images/icons/check.svg');"
         />
         <div
           class="transaction-confirmed__title"
