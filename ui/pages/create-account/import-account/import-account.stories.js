@@ -7,11 +7,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return (
-    <Box className="new-account">
-      <NewAccountImportForm {...args} />
-    </Box>
-  );
+  return <NewAccountImportForm {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
