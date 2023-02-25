@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import FormField from '../../../components/ui/form-field';
 import {
   FormTextField,
   TEXT_FIELD_TYPES,
