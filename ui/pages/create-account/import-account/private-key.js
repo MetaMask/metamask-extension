@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
 import {
   FormTextField,
   TEXT_FIELD_TYPES,
@@ -17,6 +18,10 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
   const [privateKey, setPrivateKey] = useState('');
 
   const warning = useSelector((state) => state.appState.warning);
+
+  function handleOnChange(event) {
+    setPrivateKey(event.target.value);
+  }
 
   function handleKeyPress(event) {
     if (privateKey !== '' && event.key === 'Enter') {
@@ -36,10 +41,10 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
         autoFocus
         type={TEXT_FIELD_TYPES.PASSWORD}
         helpText={warning}
-        helpTextProps={{ error: true }} // TODO: change to severity={SEVERITIES.ERROR} after rebase
+        helpTextProps={{ severity: SEVERITIES.DANGER }}
         label={t('pastePrivateKey')}
         value={privateKey}
-        onChange={setPrivateKey}
+        onChange={handleOnChange}
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
