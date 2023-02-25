@@ -14,7 +14,7 @@ export const Popover = ({
   position = PopoverPosition.bottom,
   hasArrow = true,
   onClick = false,
-  onHover = false,
+  onHover = true,
   onFocus = false,
   matchWidth = false,
   preventOverflow = false,
@@ -26,7 +26,7 @@ export const Popover = ({
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-
+  // Define Popper options
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: position,
     modifiers: [
@@ -53,18 +53,53 @@ export const Popover = ({
       },
     ],
   });
-
+  // Define width to match reference element or auto
   const contentStyle = {
     width: matchWidth ? referenceElement?.clientWidth : 'auto',
   };
 
+  const handleClick = () => {
+    if (onClick) {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (onHover) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (onHover) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleFocus = () => {
+    if (onFocus) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
-      <div ref={setReferenceElement}>
-        <Button onClick={() => setIsOpen(!isOpen)}>{children}</Button>
+      <div
+        className="popover-reference"
+        ref={setReferenceElement}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleClose}
+      >
+        <Button>{children}</Button>
       </div>
-      {
-        // popperElement &&
+      {isOpen &&
         createPortal(
           <Box
             borderColor={Color.borderDefault}
@@ -88,8 +123,7 @@ export const Popover = ({
             )}
           </Box>,
           document.body,
-        )
-      }
+        )}
     </>
   );
 };
