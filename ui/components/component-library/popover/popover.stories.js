@@ -78,6 +78,23 @@ export const DefaultStory = (args) => (
     <Popover placement="bottom" {...args}>
       Example
     </Popover>
+
+    {/* <div>
+        <Popover
+          isOpen={isOpen}
+          position="top"
+          onClick
+          matchWidth
+          content={
+            <div>
+              <h2>Popover Content</h2>
+              <p>This is the content of the popover.</p>
+            </div>
+          }
+        >
+          <button>Open Popover</button>
+        </Popover>
+      </div> */}
   </Box>
 );
 

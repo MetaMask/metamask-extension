@@ -1,23 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { PropTypes } from 'prop-types';
 import { usePopper } from 'react-popper';
 import classnames from 'classnames';
-import Box from '../../ui/box';
+import { BorderRadius, Color } from '../../../helpers/constants/design-system';
+import Box from '../../ui/box/box';
+import { Button } from '..';
+import { PopoverPosition } from '.';
 
-import { Button } from '../button';
-
-import { Color } from '../../../helpers/constants/design-system';
-
-export const Popover = ({ children, className, ...props }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const Popover = ({
+  children,
+  // content,
+  position = PopoverPosition.bottom,
+  hasArrow = true,
+  onClick = false,
+  onHover = false,
+  onFocus = false,
+  matchWidth = false,
+  preventOverflow = false,
+  flip = false,
+  className,
+  ...props
+}) => {
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'auto',
+    placement: position,
     modifiers: [
-      { name: 'arrow', options: { element: arrowElement } },
+      {
+        name: 'preventOverflow',
+        enabled: position === 'auto' ? true : preventOverflow,
+      },
+      {
+        name: 'flip',
+        enabled: position === 'auto' ? true : flip,
+      },
+      {
+        name: 'arrow',
+        enabled: hasArrow,
+        options: {
+          element: arrowElement,
+        },
+      },
       {
         name: 'offset',
         options: {
@@ -27,16 +54,8 @@ export const Popover = ({ children, className, ...props }) => {
     ],
   });
 
-  const handleClickOutside = () => {
-    setIsOpen(false);
-  };
-
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsOpen(false);
+  const contentStyle = {
+    width: matchWidth ? referenceElement?.clientWidth : 'auto',
   };
 
   return (
@@ -44,17 +63,21 @@ export const Popover = ({ children, className, ...props }) => {
       <div ref={setReferenceElement}>
         <Button onClick={() => setIsOpen(!isOpen)}>{children}</Button>
       </div>
-      {isOpen && (
-        <>
-          {createPortal(
-            <Box
-              borderColor={Color.borderDefault}
-              className={classnames('popover', { 'popover--open': isOpen })}
-              ref={setPopperElement}
-              style={styles.popper}
-              {...attributes.popper}
-            >
-              {children} - This is the popper content
+      {
+        // popperElement &&
+        createPortal(
+          <Box
+            borderColor={Color.borderDefault}
+            borderRadius={BorderRadius.XL}
+            backgroundColor={Color.backgroundDefault}
+            padding={4}
+            className={classnames('popover', { 'popover--open': isOpen })}
+            ref={setPopperElement}
+            style={{ ...styles.popper, ...contentStyle }}
+            {...attributes.popper}
+          >
+            {children} - This is the popper content
+            {hasArrow && (
               <Box
                 borderColor={Color.borderDefault}
                 className={classnames('arrow')}
@@ -62,25 +85,11 @@ export const Popover = ({ children, className, ...props }) => {
                 style={styles.arrow}
                 {...attributes.arrow}
               />
-            </Box>,
-            document.body,
-          )}
-
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 0,
-              background: 'red',
-              opacity: '10%',
-            }}
-            onClick={handleClickOutside}
-          />
-        </>
-      )}
+            )}
+          </Box>,
+          document.body,
+        )
+      }
     </>
   );
 };

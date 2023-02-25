@@ -1,0 +1,17 @@
+export enum PopoverPosition {
+  auto = 'auto',
+  autoStart = 'auto-start',
+  autoEnd = 'auto-end',
+  top = 'top',
+  topStart = 'top-start',
+  topEnd = 'top-end',
+  right = 'right',
+  rightStart = 'right-start',
+  rightEnd = 'right-end',
+  bottom = 'bottom',
+  bottomStart = 'bottom-start',
+  bottomEnd = 'bottom-end',
+  left = 'left',
+  leftStart = 'left-start',
+  leftEnd = 'left-end',
+}

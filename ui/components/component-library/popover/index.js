@@ -1,2 +1,2 @@
 export { Popover } from './popover';
-export { POPOVER_POSITIONS } from './popover.constants';
+export { PopoverPosition } from './popover.constants';
