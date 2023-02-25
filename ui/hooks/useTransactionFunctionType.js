@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { TransactionType } from '../../shared/constants/transaction';
 import { getKnownMethodData } from '../selectors';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
@@ -8,13 +9,17 @@ import { getMethodName } from '../helpers/utils/metrics';
 
 import { useI18nContext } from './useI18nContext';
 
-export const useTransactionFunctionType = (txData) => {
+export const useTransactionFunctionType = (txData = {}) => {
   const t = useI18nContext();
   const nativeCurrency = useSelector(getNativeCurrency);
   const { txParams } = txData;
   const methodData = useSelector(
-    (state) => getKnownMethodData(state, txParams.data) || {},
+    (state) => getKnownMethodData(state, txParams?.data) || {},
   );
+
+  if (!txParams) {
+    return {};
+  }
 
   const isTokenApproval =
     txData.type === TransactionType.tokenMethodSetApprovalForAll ||
@@ -23,20 +28,19 @@ export const useTransactionFunctionType = (txData) => {
   const isContractInteraction =
     txData.type === TransactionType.contractInteraction;
 
-  const isContractInteractionFromDapp =
-    (isTokenApproval || isContractInteraction) && txData.origin !== 'metamask';
-  let functionType;
-  if (isContractInteractionFromDapp) {
-    const { name } = methodData;
-    functionType = getMethodName(name);
-  }
+  const isTransactionFromDapp =
+    (isTokenApproval || isContractInteraction) &&
+    txData.origin !== ORIGIN_METAMASK;
+
+  let functionType = isTransactionFromDapp
+    ? getMethodName(methodData?.name)
+    : undefined;
 
   if (!functionType) {
-    if (txData.type) {
-      functionType = getTransactionTypeTitle(t, txData.type, nativeCurrency);
-    } else {
-      functionType = t('contractInteraction');
-    }
+    functionType = txData.type
+      ? getTransactionTypeTitle(t, txData.type, nativeCurrency)
+      : t('contractInteraction');
   }
+
   return { functionType };
 };

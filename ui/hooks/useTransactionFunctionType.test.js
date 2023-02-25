@@ -38,4 +38,11 @@ describe('useTransactionFunctionType', () => {
     );
     expect(result.current.functionType).toStrictEqual('Contract interaction');
   });
+  it('should return undefined is txData is not present', () => {
+    const { result } = renderHookWithProvider(
+      () => useTransactionFunctionType(),
+      mockState,
+    );
+    expect(result.current.functionType).toBeUndefined();
+  });
 });

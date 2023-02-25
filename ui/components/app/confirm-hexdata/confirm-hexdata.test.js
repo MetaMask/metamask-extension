@@ -28,7 +28,7 @@ describe('ConfirmHexData', () => {
     expect(await findByText('Transfer')).toBeInTheDocument();
   });
 
-  it('should return null if transaction has no data', async () => {
+  it('should return null if transaction has no data', () => {
     const { container } = renderWithProvider(
       <ConfirmHexData
         txData={{
@@ -44,7 +44,7 @@ describe('ConfirmHexData', () => {
     expect(container.firstChild).toStrictEqual(null);
   });
 
-  it('should return null if transaction has no to address', async () => {
+  it('should return null if transaction has no to address', () => {
     const { container } = renderWithProvider(
       <ConfirmHexData
         txData={{
@@ -60,7 +60,7 @@ describe('ConfirmHexData', () => {
     expect(container.firstChild).toStrictEqual(null);
   });
 
-  it('should render dataHexComponent if passed', async () => {
+  it('should render dataHexComponent if passed', () => {
     const { getByText } = renderWithProvider(
       <ConfirmHexData
         txData={{

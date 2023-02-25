@@ -27,7 +27,7 @@ describe('ConfirmData', () => {
     expect(await findByText('Transfer')).toBeInTheDocument();
   });
 
-  it('should return null if transaction has no data', async () => {
+  it('should return null if transaction has no data', () => {
     const { container } = renderWithProvider(
       <ConfirmData
         txData={{
@@ -41,7 +41,7 @@ describe('ConfirmData', () => {
     expect(container.firstChild).toStrictEqual(null);
   });
 
-  it('should render dataComponent if passed', async () => {
+  it('should render dataComponent if passed', () => {
     const { getByText } = renderWithProvider(
       <ConfirmData
         txData={{
