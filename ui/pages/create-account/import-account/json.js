@@ -14,6 +14,7 @@ import {
   Size,
   TextVariant,
   TEXT_ALIGN,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -31,6 +32,10 @@ export default function JsonImportSubview({ importAccountFunc }) {
   const [fileContents, setFileContents] = useState('');
 
   const isPrimaryDisabled = password === '' || fileContents === '';
+
+  function handleOnChange(event) {
+    setPassword(event.target.value);
+  }
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -53,7 +58,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
         {t('usedByClients')}
         <ButtonLink
           size={Size.inherit}
-          href={ZENDESK_URLS}
+          href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -74,16 +79,15 @@ export default function JsonImportSubview({ importAccountFunc }) {
       />
 
       <FormTextField
+        id="json-password-box"
         size={TEXT_FIELD_SIZES.LARGE}
         autoFocus
-        id="json-password-box"
         type={TEXT_FIELD_TYPES.PASSWORD}
         helpText={warning}
-        helpTextProps={{ error: true }} // TODO: change to severity={SEVERITIES.ERROR} after rebase
+        helpTextProps={{ severity: SEVERITIES.DANGER }}
         placeholder={t('enterPassword')}
-        id="json-password-box"
         value={password}
-        onChange={setPassword}
+        onChange={handleOnChange}
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
