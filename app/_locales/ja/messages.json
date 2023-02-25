@@ -4236,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 このコントラクトは今後、通知や承諾なしにトークン残高全額を使用できます。使用限度をより低い金額にカスタマイズして、自分の身を守りましょう。",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "弱"

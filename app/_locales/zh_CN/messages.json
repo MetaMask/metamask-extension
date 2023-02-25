@@ -4236,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 合约可能会花费您的全部代币余额，无需进一步通知或同意。请自定义较低的支出上限以保护自己。",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "弱"

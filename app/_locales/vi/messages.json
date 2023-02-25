@@ -4236,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 Hợp đồng có thể chi tiêu toàn bộ số dư token của bạn mà không cần thông báo hoặc chấp thuận. Hãy tự bảo vệ chính mình bằng cách chỉnh hạn mức chi tiêu thấp hơn.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Yếu"
