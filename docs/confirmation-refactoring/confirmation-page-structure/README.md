@@ -11,7 +11,7 @@ Currently we have following confirmation pages mapping to confirmation routes:
 5. pages/confirm-token-transaction-base
 6. pages/confirm-contract-interaction
 
-![Confirmation Pages structure](https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/refactoring/confirmation-page-structure/current.png)
+![Confirmation Pages structure](https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/confirmation-page-structure/current.png)
 
 `confirm-page-container` component helps to define a structure for confirmation pages it includes:
 
