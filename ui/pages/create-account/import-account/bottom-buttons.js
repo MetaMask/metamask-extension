@@ -2,14 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  BUTTON_SECONDARY_SIZES,
   ButtonPrimary,
   ButtonSecondary,
 } from '../../../components/component-library';
 import Box from '../../../components/ui/box/box';
-import {
-  BLOCK_SIZES,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+import { BLOCK_SIZES, DISPLAY } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
 
@@ -24,26 +22,24 @@ export default function BottomButtons({
 }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const warning = useSelector((state) => state.appState.warning);
 
   return (
-    <Box
-      justifyContent={JustifyContent.spaceBetween}
-      marginTop={warning ? 0 : 8} // These buttons need a margin on the top only if there's no warning message
-    >
+    <Box gap={4} display={DISPLAY.FLEX}>
       <ButtonSecondary
-        width={BLOCK_SIZES.FIVE_TWELFTHS}
         onClick={() => {
           dispatch(actions.hideWarning());
           window.history.back();
         }}
+        size={BUTTON_SECONDARY_SIZES.LG}
+        block
       >
         {t('cancel')}
       </ButtonSecondary>
       <ButtonPrimary
-        width={BLOCK_SIZES.FIVE_TWELFTHS}
         onClick={importAccountFunc}
         disabled={isPrimaryDisabled}
+        size={BUTTON_SECONDARY_SIZES.LG}
+        block
       >
         {t('import')}
       </ButtonPrimary>

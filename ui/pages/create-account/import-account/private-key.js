@@ -2,6 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import FormField from '../../../components/ui/form-field';
+import {
+  FormTextField,
+  TEXT_FIELD_TYPES,
+} from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
 
@@ -28,21 +32,24 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
 
   return (
     <>
-      <FormField
+      <FormTextField
         id="private-key-box"
         autoFocus
-        password
-        error={warning}
-        titleText={t('pastePrivateKey')}
+        type={TEXT_FIELD_TYPES.PASSWORD}
+        helpText={warning}
+        helpTextProps={{ error: true }} // TODO: change to severity={SEVERITIES.ERROR} after rebase
+        label={t('pastePrivateKey')}
         value={privateKey}
         onChange={setPrivateKey}
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
+        marginBottom={8}
       />
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={privateKey === ''}
+        marginTop={warning ? 0 : 6}
       />
     </>
   );
