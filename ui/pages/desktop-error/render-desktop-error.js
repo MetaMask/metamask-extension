@@ -45,12 +45,6 @@ export function renderDesktopError({
   };
 
   const renderHeader = (text) => {
-    if (typeof trackEvent === 'function') {
-      trackEvent({
-        category: EVENT.CATEGORIES.ERROR,
-        event: `Error: ${text}`,
-      });
-    }
     return (
       <Typography
         variant={TypographyVariant.H4}
