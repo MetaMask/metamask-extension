@@ -4,17 +4,16 @@ import { useSelector } from 'react-redux';
 import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
+  FormTextField,
+  INVISIBLE_CHARACTER,
+  Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-  Text,
-  FormTextField,
 } from '../../../components/component-library';
-
 import {
   Size,
   TextVariant,
   TEXT_ALIGN,
-  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -32,10 +31,6 @@ export default function JsonImportSubview({ importAccountFunc }) {
   const [fileContents, setFileContents] = useState('');
 
   const isPrimaryDisabled = password === '' || fileContents === '';
-
-  function handleOnChange(event) {
-    setPassword(event.target.value);
-  }
 
   function handleKeyPress(event) {
     if (!isPrimaryDisabled && event.key === 'Enter') {
@@ -83,16 +78,17 @@ export default function JsonImportSubview({ importAccountFunc }) {
         size={TEXT_FIELD_SIZES.LARGE}
         autoFocus
         type={TEXT_FIELD_TYPES.PASSWORD}
-        helpText={warning}
-        helpTextProps={{ severity: SEVERITIES.DANGER }}
+        helpText={warning || INVISIBLE_CHARACTER} // The INVISIBLE_CHARACTER ensures that the error message takes up vertical space even if there's no error message
+        error
         placeholder={t('enterPassword')}
         value={password}
-        onChange={handleOnChange}
+        onChange={(event) => setPassword(event.target.value)}
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
-        marginBottom={8}
+        marginBottom={2}
       />
+
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={isPrimaryDisabled}

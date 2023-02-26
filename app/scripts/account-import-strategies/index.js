@@ -42,7 +42,7 @@ const accountImporter = {
       try {
         if (
           !isValidPrivate(buffer) ||
-          getBinarySize(prefixedPrivateKey) !== 66 // isValidPrivate() will let a key of 63 hex digits through without complaining, this line ensures 64 hex digits + '0x' = 66 digits
+          getBinarySize(prefixedPrivateKey) !== 64 + '0x'.length // Fixes issue #17719 -- isValidPrivate() will let a key of 63 hex digits through without complaining, this line ensures 64 hex digits + '0x' = 66 digits
         ) {
           throw new Error(`t('importAccountErrorNotAValidPrivateKey')`);
         }

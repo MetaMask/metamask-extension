@@ -3,13 +3,7 @@ import JsonImportSubview from './json';
 
 export default {
   title: 'Pages/CreateAccount/ImportAccount/JsonImportSubview',
-  argTypes: {
-    importAccountFunc: {
-      control: {
-        type: 'function',
-      },
-    },
-  },
+  component: JsonImportSubview,
 };
 
 export const DefaultStory = () => <JsonImportSubview />;

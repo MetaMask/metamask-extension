@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
 import {
   FormTextField,
+  INVISIBLE_CHARACTER,
+  TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -18,10 +19,6 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
   const [privateKey, setPrivateKey] = useState('');
 
   const warning = useSelector((state) => state.appState.warning);
-
-  function handleOnChange(event) {
-    setPrivateKey(event.target.value);
-  }
 
   function handleKeyPress(event) {
     if (privateKey !== '' && event.key === 'Enter') {
@@ -38,22 +35,23 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
     <>
       <FormTextField
         id="private-key-box"
+        size={TEXT_FIELD_SIZES.LARGE}
         autoFocus
         type={TEXT_FIELD_TYPES.PASSWORD}
-        helpText={warning}
-        helpTextProps={{ severity: SEVERITIES.DANGER }}
+        helpText={warning || INVISIBLE_CHARACTER} // The INVISIBLE_CHARACTER ensures that the error message takes up vertical space even if there's no error message
+        error
         label={t('pastePrivateKey')}
         value={privateKey}
-        onChange={handleOnChange}
+        onChange={(event) => setPrivateKey(event.target.value)}
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
-        marginBottom={8}
+        marginBottom={2}
       />
+
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={privateKey === ''}
-        marginTop={warning ? 0 : 6}
       />
     </>
   );

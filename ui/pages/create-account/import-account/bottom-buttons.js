@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  BUTTON_SECONDARY_SIZES,
   ButtonPrimary,
   ButtonSecondary,
+  BUTTON_SECONDARY_SIZES,
 } from '../../../components/component-library';
 import Box from '../../../components/ui/box/box';
 import { DISPLAY } from '../../../helpers/constants/design-system';
@@ -24,7 +24,7 @@ export default function BottomButtons({
   const dispatch = useDispatch();
 
   return (
-    <Box gap={4} display={DISPLAY.FLEX}>
+    <Box display={DISPLAY.FLEX}>
       <ButtonSecondary
         onClick={() => {
           dispatch(actions.hideWarning());

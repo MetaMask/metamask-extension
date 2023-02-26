@@ -3,12 +3,8 @@ import BottomButtons from './bottom-buttons';
 
 export default {
   title: 'Pages/CreateAccount/ImportAccount/BottomButtons',
+  component: BottomButtons,
   argTypes: {
-    importAccountFunc: {
-      control: {
-        type: 'function',
-      },
-    },
     isPrimaryDisabled: {
       control: {
         type: 'boolean',

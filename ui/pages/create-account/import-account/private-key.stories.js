@@ -3,6 +3,7 @@ import PrivateKeyImportView from './private-key';
 
 export default {
   title: 'Pages/CreateAccount/ImportAccount/PrivateKeyImportView',
+  component: PrivateKeyImportView,
   argTypes: {
     importAccountFunc: {
       control: {

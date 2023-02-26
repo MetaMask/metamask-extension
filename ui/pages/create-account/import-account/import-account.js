@@ -123,7 +123,7 @@ export default function NewAccountImportForm() {
         borderColor={BorderColor.borderDefault}
       >
         <Text variant={TextVariant.headingLg}>{t('importAccount')}</Text>
-        <Text variant={TextVariant.bodySm}>
+        <Text variant={TextVariant.bodySm} marginTop={2}>
           {t('importAccountMsg')}{' '}
           <ButtonLink
             size={Size.inherit}
