@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   AlignItems,
-  BLOCK_SIZES,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
@@ -31,7 +30,6 @@ export const TokenList = () => {
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
       gap={4}
-      width={BLOCK_SIZES.ONE_THIRD}
     >
       <Box className="token-list__container">
         <Box
