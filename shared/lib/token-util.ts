@@ -12,10 +12,10 @@ import abi from 'human-standard-token-abi';
  * These are the parsed tokenId values returned by `parseStandardTokenTransactionData` as defined
  * in the ERC721 and ERC1155 ABIs from metamask-eth-abis (https://github.com/MetaMask/metamask-eth-abis/tree/main/src/abis)
  *
- * @param {object} tokenData - ethers Interface token data.
- * @returns {string | undefined} A decimal string value.
+ * @param tokenData - ethers Interface token data.
+ * @returns A decimal string value.
  */
-export function getTokenIdParam(tokenData: any = {}): string | undefined  {
+export function getTokenIdParam(tokenData: any = {}): string | undefined {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
   );
