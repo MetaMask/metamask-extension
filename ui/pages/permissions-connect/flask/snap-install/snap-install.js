@@ -23,6 +23,7 @@ export default function SnapInstall({
   approveSnapInstall,
   rejectSnapInstall,
   targetSubjectMetadata,
+  requestState,
 }) {
   const t = useI18nContext();
 
@@ -39,10 +40,11 @@ export default function SnapInstall({
   );
 
   const hasPermissions =
-    request?.permissions && Object.keys(request.permissions).length > 0;
+    requestState?.permissions &&
+    Object.keys(requestState.permissions).length > 0;
 
   const warnings = getSnapInstallWarnings(
-    request?.permissions ?? {},
+    requestState?.permissions ?? {},
     targetSubjectMetadata,
     t,
   );
@@ -72,7 +74,7 @@ export default function SnapInstall({
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: AlignItems.center }}
         />
-        {hasPermissions && (
+        {hasPermissions && !requestState.loading ? (
           <>
             <Typography
               boxProps={{
@@ -84,9 +86,11 @@ export default function SnapInstall({
               {t('snapRequestsPermission')}
             </Typography>
             <PermissionsConnectPermissionList
-              permissions={request.permissions || {}}
+              permissions={requestState.permissions || {}}
             />
           </>
+        ) : (
+          <p>loading</p>
         )}
       </Box>
       <Box
@@ -122,6 +126,7 @@ SnapInstall.propTypes = {
   request: PropTypes.object.isRequired,
   approveSnapInstall: PropTypes.func.isRequired,
   rejectSnapInstall: PropTypes.func.isRequired,
+  requestState: PropTypes.object,
   targetSubjectMetadata: PropTypes.shape({
     iconUrl: PropTypes.string,
     name: PropTypes.string,

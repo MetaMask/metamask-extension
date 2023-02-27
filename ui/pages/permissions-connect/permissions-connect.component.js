@@ -35,6 +35,7 @@ export default class PermissionConnect extends Component {
     newAccountNumber: PropTypes.number.isRequired,
     nativeCurrency: PropTypes.string,
     permissionsRequest: PropTypes.object,
+    requestState: PropTypes.object,
     addressLastConnectedMap: PropTypes.object.isRequired,
     lastConnectedInfo: PropTypes.object.isRequired,
     permissionsRequestId: PropTypes.string,
@@ -263,6 +264,7 @@ export default class PermissionConnect extends Component {
       permissionsRequest,
       addressLastConnectedMap,
       permissionsRequestId,
+      requestState,
       connectPath,
       confirmPermissionPath,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -340,9 +342,11 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapInstall
                   request={permissionsRequest || {}}
+                  requestState={requestState || {}}
                   approveSnapInstall={(requestId) => {
                     approvePendingApproval(requestId, {
                       ...permissionsRequest,
+                      permissions: requestState.permissions,
                       approvedAccounts: [...selectedAccountAddresses],
                     });
                     this.redirect(true);

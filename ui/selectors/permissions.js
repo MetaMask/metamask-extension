@@ -318,6 +318,10 @@ export function getSnapInstallOrUpdateRequests(state) {
 export function getFirstSnapInstallOrUpdateRequest(state) {
   return getSnapInstallOrUpdateRequests(state)?.[0] ?? null;
 }
+
+export function getPermissionRequestState(state, id) {
+  return state.metamask.pendingApprovals[id]?.requestState;
+}
 ///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {

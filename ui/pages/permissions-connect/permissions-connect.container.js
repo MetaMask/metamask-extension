@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
+  getPermissionRequestState,
   getPermissionsRequests,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -72,6 +73,8 @@ const mapStateToProps = (state, ownProps) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const isSnap = targetSubjectMetadata.subjectType === SubjectType.Snap;
+
+  const requestState = getPermissionRequestState(state, permissionsRequestId);
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
@@ -120,6 +123,7 @@ const mapStateToProps = (state, ownProps) => {
     snapUpdatePath,
     ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
+    requestState,
     permissionsRequestId,
     accounts: accountsWithLabels,
     currentAddress,
