@@ -108,9 +108,24 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
     case QUOTES_NOT_AVAILABLE_ERROR:
       title = t('swapQuotesNotAvailableErrorTitle');
       description = (
-        <Typography variant={TypographyVariant.H6}>
-          {t('swapQuotesNotAvailableErrorDescription')}
-        </Typography>
+        <Box>
+          <Typography variant={TypographyVariant.H6}>
+            {t('swapQuotesNotAvailableDescription')}
+          </Typography>
+          <ButtonLink
+            size={Size.SM}
+            textProps={{
+              variant: TextVariant.bodySm,
+              alignItems: AlignItems.flexStart,
+            }}
+            as="a"
+            href="https://metamask.io/swaps/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('swapLearnMore')}
+          </ButtonLink>
+        </Box>
       );
       break;
     case ERROR_FETCHING_QUOTES:

@@ -4053,6 +4053,9 @@
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
+  "swapLearnMore": {
+    "message": "Learn more about Swaps"
+  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
@@ -4113,6 +4116,9 @@
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Quotes timeout"
+  },
+  "swapQuotesNotAvailableDescription": {
+    "message": "Reduce the size of your trade or try again later."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Try adjusting the amount or slippage settings and try again."
