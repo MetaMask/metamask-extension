@@ -2,10 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
 import Box from '../../../ui/box';
-import IconCopy from '../../../ui/icon/icon-copy';
-import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -15,18 +12,20 @@ import Popover from '../../../ui/popover';
 import Typography from '../../../ui/typography';
 import {
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
-  COLORS,
-  JUSTIFY_CONTENT,
-  SIZES,
-  BORDER_STYLE,
+  Size,
+  BorderStyle,
+  BorderColor,
+  TextColor,
+  Color,
+  AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
+import { ButtonIcon, ICON_NAMES } from '../../../component-library';
 
 export default function ContractDetailsModal({
   onClose,
@@ -35,8 +34,6 @@ export default function ContractDetailsModal({
   toAddress,
   chainId,
   rpcPrefs,
-  origin,
-  siteImage,
   tokenId,
   assetName,
   assetStandard,
@@ -67,16 +64,16 @@ export default function ContractDetailsModal({
       >
         <Typography
           fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H5}
+          variant={TypographyVariant.H5}
           display={DISPLAY.FLEX}
           boxProps={{ marginTop: 0, marginBottom: 0 }}
         >
           {t('contractTitle')}
         </Typography>
         <Typography
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           display={DISPLAY.FLEX}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={TextColor.textAlternative}
           boxProps={{ marginTop: 2, marginBottom: 0 }}
         >
           {t('contractDescription')}
@@ -84,7 +81,7 @@ export default function ContractDetailsModal({
         {!isContractRequestingSignature && (
           <>
             <Typography
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               display={DISPLAY.FLEX}
               marginTop={4}
               marginBottom={2}
@@ -93,9 +90,9 @@ export default function ContractDetailsModal({
             </Typography>
             <Box
               display={DISPLAY.FLEX}
-              borderRadius={SIZES.SM}
-              borderStyle={BORDER_STYLE.SOLID}
-              borderColor={COLORS.BORDER_DEFAULT}
+              borderRadius={Size.SM}
+              borderStyle={BorderStyle.solid}
+              borderColor={BorderColor.borderDefault}
               className="contract-details-modal__content__contract"
             >
               {nft ? (
@@ -115,16 +112,16 @@ export default function ContractDetailsModal({
               <Box data-testid="recipient">
                 <Typography
                   fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TYPOGRAPHY.H5}
+                  variant={TypographyVariant.H5}
                   marginTop={4}
                 >
                   {tokenName || ellipsify(tokenAddress)}
                 </Typography>
                 {tokenName && (
                   <Typography
-                    variant={TYPOGRAPHY.H6}
+                    variant={TypographyVariant.H6}
                     display={DISPLAY.FLEX}
-                    color={COLORS.TEXT_ALTERNATIVE}
+                    color={TextColor.textAlternative}
                     marginTop={0}
                     marginBottom={4}
                   >
@@ -133,62 +130,62 @@ export default function ContractDetailsModal({
                 )}
               </Box>
               <Box
-                justifyContent={JUSTIFY_CONTENT.FLEX_END}
-                className="contract-details-modal__content__contract__buttons"
+                alignItems={AlignItems.center}
+                marginLeft="auto"
+                marginRight={4}
+                gap={2}
               >
-                <Box marginTop={4} marginRight={5}>
-                  <Tooltip
-                    position="top"
-                    title={
+                <Tooltip
+                  position="top"
+                  title={
+                    copiedTokenAddress
+                      ? t('copiedExclamation')
+                      : t('copyToClipboard')
+                  }
+                >
+                  <ButtonIcon
+                    display={DISPLAY.FLEX}
+                    iconName={
+                      copiedTokenAddress
+                        ? ICON_NAMES.COPY_SUCCESS
+                        : ICON_NAMES.COPY
+                    }
+                    onClick={() => handleCopyTokenAddress(tokenAddress)}
+                    color={Color.iconMuted}
+                    ariaLabel={
                       copiedTokenAddress
                         ? t('copiedExclamation')
                         : t('copyToClipboard')
                     }
-                  >
-                    <Button
-                      className="contract-details-modal__content__contract__buttons__copy"
-                      type="link"
-                      onClick={() => {
-                        handleCopyTokenAddress(tokenAddress);
-                      }}
-                    >
-                      <IconCopy color="var(--color-icon-muted)" />
-                    </Button>
-                  </Tooltip>
-                </Box>
-                <Box marginTop={5} marginRight={5}>
-                  <Tooltip position="top" title={t('openInBlockExplorer')}>
-                    <Button
-                      className="contract-details-modal__content__contract__buttons__block-explorer"
-                      type="link"
-                      onClick={() => {
-                        const blockExplorerTokenLink = getAccountLink(
-                          tokenAddress,
-                          chainId,
-                          {
-                            blockExplorerUrl:
-                              rpcPrefs?.blockExplorerUrl ?? null,
-                          },
-                          null,
-                        );
-                        global.platform.openTab({
-                          url: blockExplorerTokenLink,
-                        });
-                      }}
-                    >
-                      <IconBlockExplorer
-                        size={16}
-                        color="var(--color-icon-muted)"
-                      />
-                    </Button>
-                  </Tooltip>
-                </Box>
+                  />
+                </Tooltip>
+                <Tooltip position="top" title={t('openInBlockExplorer')}>
+                  <ButtonIcon
+                    display={DISPLAY.FLEX}
+                    iconName={ICON_NAMES.EXPORT}
+                    color={Color.iconMuted}
+                    onClick={() => {
+                      const blockExplorerTokenLink = getAccountLink(
+                        tokenAddress,
+                        chainId,
+                        {
+                          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                        },
+                        null,
+                      );
+                      global.platform.openTab({
+                        url: blockExplorerTokenLink,
+                      });
+                    }}
+                    ariaLabel={t('openInBlockExplorer')}
+                  />
+                </Tooltip>
               </Box>
             </Box>
           </>
         )}
         <Typography
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           display={DISPLAY.FLEX}
           marginTop={4}
           marginBottom={2}
@@ -201,48 +198,29 @@ export default function ContractDetailsModal({
         </Typography>
         <Box
           display={DISPLAY.FLEX}
-          borderRadius={SIZES.SM}
-          borderStyle={BORDER_STYLE.SOLID}
-          borderColor={COLORS.BORDER_DEFAULT}
+          borderRadius={Size.SM}
+          borderStyle={BorderStyle.solid}
+          borderColor={BorderColor.borderDefault}
           className="contract-details-modal__content__contract"
         >
-          {nft ? (
-            <Identicon
-              className="contract-details-modal__content__contract__identicon"
-              diameter={24}
-              address={toAddress}
-            />
-          ) : (
-            <UrlIcon
-              className={classnames({
-                'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                  addressBookEntry?.data?.name === undefined,
-                'contract-details-modal__content__contract__identicon':
-                  addressBookEntry?.data?.name !== undefined,
-              })}
-              fallbackClassName={classnames({
-                'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                  addressBookEntry?.data?.name === undefined,
-                'contract-details-modal__content__contract__identicon':
-                  addressBookEntry?.data?.name !== undefined,
-              })}
-              name={origin}
-              url={siteImage}
-            />
-          )}
+          <Identicon
+            className="contract-details-modal__content__contract__identicon"
+            diameter={24}
+            address={toAddress}
+          />
           <Box data-testid="recipient">
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
-              variant={TYPOGRAPHY.H5}
+              variant={TypographyVariant.H5}
               marginTop={4}
             >
               {addressBookEntry?.data?.name || ellipsify(toAddress)}
             </Typography>
             {addressBookEntry?.data?.name && (
               <Typography
-                variant={TYPOGRAPHY.H6}
+                variant={TypographyVariant.H6}
                 display={DISPLAY.FLEX}
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={TextColor.textAlternative}
                 marginTop={0}
                 marginBottom={4}
               >
@@ -251,55 +229,52 @@ export default function ContractDetailsModal({
             )}
           </Box>
           <Box
-            justifyContent={JUSTIFY_CONTENT.FLEX_END}
-            className="contract-details-modal__content__contract__buttons"
+            alignItems={AlignItems.center}
+            marginLeft="auto"
+            marginRight={4}
+            gap={2}
           >
-            <Box marginTop={4} marginRight={5}>
-              <Tooltip
-                position="top"
-                title={
-                  copiedToAddress
+            <Tooltip
+              position="top"
+              title={
+                copiedToAddress ? t('copiedExclamation') : t('copyToClipboard')
+              }
+            >
+              <ButtonIcon
+                display={DISPLAY.FLEX}
+                iconName={
+                  copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                }
+                onClick={() => handleCopyToAddress(toAddress)}
+                color={Color.iconMuted}
+                ariaLabel={
+                  copiedTokenAddress
                     ? t('copiedExclamation')
                     : t('copyToClipboard')
                 }
-              >
-                <Button
-                  className="contract-details-modal__content__contract__buttons__copy"
-                  type="link"
-                  onClick={() => {
-                    handleCopyToAddress(toAddress);
-                  }}
-                >
-                  <IconCopy color="var(--color-icon-muted)" />
-                </Button>
-              </Tooltip>
-            </Box>
-            <Box marginTop={5} marginRight={5}>
-              <Tooltip position="top" title={t('openInBlockExplorer')}>
-                <Button
-                  className="contract-details-modal__content__contract__buttons__block-explorer"
-                  type="link"
-                  onClick={() => {
-                    const blockExplorerTokenLink = getAccountLink(
-                      toAddress,
-                      chainId,
-                      {
-                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                      },
-                      null,
-                    );
-                    global.platform.openTab({
-                      url: blockExplorerTokenLink,
-                    });
-                  }}
-                >
-                  <IconBlockExplorer
-                    size={16}
-                    color="var(--color-icon-muted)"
-                  />
-                </Button>
-              </Tooltip>
-            </Box>
+              />
+            </Tooltip>
+            <Tooltip position="top" title={t('openInBlockExplorer')}>
+              <ButtonIcon
+                display={DISPLAY.FLEX}
+                iconName={ICON_NAMES.EXPORT}
+                color={Color.iconMuted}
+                onClick={() => {
+                  const blockExplorerTokenLink = getAccountLink(
+                    toAddress,
+                    chainId,
+                    {
+                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                    },
+                    null,
+                  );
+                  global.platform.openTab({
+                    url: blockExplorerTokenLink,
+                  });
+                }}
+                ariaLabel={t('openInBlockExplorer')}
+              />
+            </Tooltip>
           </Box>
         </Box>
       </Box>
@@ -344,15 +319,7 @@ ContractDetailsModal.propTypes = {
    */
   rpcPrefs: PropTypes.object,
   /**
-   * Dapp URL
-   */
-  origin: PropTypes.string,
-  /**
-   * Dapp image
-   */
-  siteImage: PropTypes.string,
-  /**
-   * The token id of the collectible
+   * The token id of the NFT
    */
   tokenId: PropTypes.string,
   /**

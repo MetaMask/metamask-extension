@@ -5,31 +5,36 @@ import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../box';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
+  BackgroundColor,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
+  JustifyContent,
+  Color,
+  DISPLAY,
+  TextVariant,
+  Size,
 } from '../../../helpers/constants/design-system';
+import { ButtonIcon, Text, ICON_NAMES } from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
   display: 'flex',
   flexDirection: FLEX_DIRECTION.COLUMN,
-  backgroundColor: COLORS.BACKGROUND_DEFAULT,
+  backgroundColor: BackgroundColor.backgroundDefault,
   borderRadius: 'xl',
 };
 
 const defaultContentProps = {
   display: 'flex',
   flexDirection: FLEX_DIRECTION.COLUMN,
-  justifyContent: JUSTIFY_CONTENT.FLEX_START,
-  alignItems: ALIGN_ITEMS.STRETCH,
+  justifyContent: JustifyContent.flexStart,
+  alignItems: AlignItems.stretch,
   borderRadius: 'xl',
 };
 
 const defaultFooterProps = {
   display: 'flex',
-  justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN,
+  justifyContent: JustifyContent.spaceBetween,
   padding: [4, 6, 6],
 };
 
@@ -53,43 +58,44 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
-  const Header = () => {
-    return (
+  const Header = () => (
+    <Box
+      {...{ ...defaultHeaderProps, ...headerProps }}
+      className="popover-header"
+    >
       <Box
-        {...{ ...defaultHeaderProps, ...headerProps }}
-        className="popover-header"
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        justifyContent={
+          centerTitle ? JustifyContent.center : JustifyContent.spaceBetween
+        }
+        marginBottom={2}
       >
-        <div
-          className={classnames(
-            'popover-header__title',
-            centerTitle ? 'center' : '',
-          )}
-        >
-          <h2 title="popover">
-            {onBack ? (
-              <button
-                className="fas fa-chevron-left popover-header__button"
-                title={t('back')}
-                onClick={onBack}
-              />
-            ) : null}
-            {title}
-          </h2>
-          {onClose ? (
-            <button
-              className="fas fa-times popover-header__button"
-              title={t('close')}
-              data-testid="popover-close"
-              onClick={onClose}
-            />
-          ) : null}
-        </div>
-        {subtitle ? (
-          <p className="popover-header__subtitle">{subtitle}</p>
+        {onBack ? (
+          <ButtonIcon
+            iconName={ICON_NAMES.ARROW_LEFT}
+            ariaLabel={t('back')}
+            onClick={onBack}
+            color={Color.iconDefault}
+            size={Size.SM}
+          />
+        ) : null}
+        <Text ellipsis variant={TextVariant.headingSm} as="h2">
+          {title}
+        </Text>
+        {onClose ? (
+          <ButtonIcon
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel={t('close')}
+            data-testid="popover-close"
+            onClick={onClose}
+            size={Size.SM}
+          />
         ) : null}
       </Box>
-    );
-  };
+      {subtitle ? <Text variant={TextVariant.bodySm}>{subtitle}</Text> : null}
+    </Box>
+  );
 
   return (
     <div className="popover-container">

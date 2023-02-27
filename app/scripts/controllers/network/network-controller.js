@@ -125,7 +125,9 @@ export default class NetworkController extends EventEmitter {
     }
     this._infuraProjectId = infuraProjectId;
 
-    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
+    this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
+      this.lookupNetwork();
+    });
   }
 
   /**
@@ -138,7 +140,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   async initializeProvider() {
-    const { type, rpcUrl, chainId } = this.getProviderConfig();
+    const { type, rpcUrl, chainId } = this.providerStore.getState();
     this._configureProvider({ type, rpcUrl, chainId });
     await this.lookupNetwork();
   }
@@ -158,6 +160,8 @@ export default class NetworkController extends EventEmitter {
    */
   async getEIP1559Compatibility() {
     const { EIPS } = this.networkDetails.getState();
+    // NOTE: This isn't necessary anymore because the block cache middleware
+    // already prevents duplicate requests from taking place
     if (EIPS[1559] !== undefined) {
       return EIPS[1559];
     }
@@ -166,14 +170,6 @@ export default class NetworkController extends EventEmitter {
       latestBlock && latestBlock.baseFeePerGas !== undefined;
     this._setNetworkEIPSupport(1559, supportsEIP1559);
     return supportsEIP1559;
-  }
-
-  getNetworkState() {
-    return this.networkStore.getState();
-  }
-
-  isNetworkLoading() {
-    return this.getNetworkState() === 'loading';
   }
 
   async lookupNetwork() {
@@ -185,20 +181,19 @@ export default class NetworkController extends EventEmitter {
       return;
     }
 
-    const chainId = this.getCurrentChainId();
+    const { chainId } = this.providerStore.getState();
     if (!chainId) {
       log.warn(
         'NetworkController - lookupNetwork aborted due to missing chainId',
       );
       this._setNetworkState('loading');
-      // keep network details in sync with network state
       this._clearNetworkDetails();
       return;
     }
 
     // Ping the RPC endpoint so we can confirm that it works
-    const initialNetwork = this.getNetworkState();
-    const { type } = this.getProviderConfig();
+    const initialNetwork = this.networkStore.getState();
+    const { type } = this.providerStore.getState();
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
 
     if (isInfura) {
@@ -214,7 +209,7 @@ export default class NetworkController extends EventEmitter {
     } catch (error) {
       networkVersionError = error;
     }
-    if (initialNetwork !== this.getNetworkState()) {
+    if (initialNetwork !== this.networkStore.getState()) {
       return;
     }
 
@@ -227,16 +222,6 @@ export default class NetworkController extends EventEmitter {
       // look up EIP-1559 support
       await this.getEIP1559Compatibility();
     }
-  }
-
-  getCurrentChainId() {
-    const { type, chainId: configChainId } = this.getProviderConfig();
-    return BUILT_IN_NETWORKS[type]?.chainId || configChainId;
-  }
-
-  getCurrentRpcUrl() {
-    const { rpcUrl } = this.getProviderConfig();
-    return rpcUrl;
   }
 
   setRpcTarget(rpcUrl, chainId, ticker = 'ETH', nickname = '', rpcPrefs) {
@@ -279,24 +264,13 @@ export default class NetworkController extends EventEmitter {
   }
 
   resetConnection() {
-    this._setProviderConfig(this.getProviderConfig());
+    this._setProviderConfig(this.providerStore.getState());
   }
 
   rollbackToPreviousProvider() {
     const config = this.previousProviderStore.getState();
     this.providerStore.updateState(config);
     this._switchNetwork(config);
-  }
-
-  getProviderConfig() {
-    return this.providerStore.getState();
-  }
-
-  getNetworkIdentifier() {
-    const provider = this.providerStore.getState();
-    return provider.type === NETWORK_TYPES.RPC
-      ? provider.rpcUrl
-      : provider.type;
   }
 
   //
@@ -373,7 +347,7 @@ export default class NetworkController extends EventEmitter {
    * @param config
    */
   _setProviderConfig(config) {
-    this.previousProviderStore.updateState(this.getProviderConfig());
+    this.previousProviderStore.updateState(this.providerStore.getState());
     this.providerStore.updateState(config);
     this._switchNetwork(config);
   }

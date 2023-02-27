@@ -9,7 +9,7 @@ import {
   renderWithProvider,
   setBackgroundConnection,
 } from '../../../test/jest';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import Send from './send';
@@ -72,7 +72,7 @@ const baseStore = {
         },
       },
     },
-    gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+    gasEstimateType: GasEstimateTypes.legacy,
     gasFeeEstimates: {
       low: '0',
       medium: '1',
@@ -103,6 +103,7 @@ const baseStore = {
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
+    currentNetworkTxList: [],
     cachedBalances: {
       [CHAIN_IDS.GOERLI]: {},
     },

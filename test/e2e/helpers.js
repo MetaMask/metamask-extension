@@ -52,7 +52,6 @@ async function withFixtures(options, testSuite) {
 
   let webDriver;
   let driver;
-  const errors = [];
   let failed = false;
   try {
     await ganacheServer.start(ganacheOptions);
@@ -65,13 +64,14 @@ async function withFixtures(options, testSuite) {
     }
 
     if (ganacheOptions?.concurrent) {
-      const { port, chainId } = ganacheOptions.concurrent;
+      const { port, chainId, ganacheOptions2 } = ganacheOptions.concurrent;
       secondaryGanacheServer = new Ganache();
       await secondaryGanacheServer.start({
         blockTime: 2,
         chain: { chainId },
         port,
         vmErrorsOnRPCResponse: false,
+        ...ganacheOptions2,
       });
     }
     await fixtureServer.start();
@@ -116,7 +116,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions();
+      await driver.checkBrowserForExceptions(failOnConsoleError);
+      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
     }
 
     let driverProxy;
@@ -144,21 +145,6 @@ async function withFixtures(options, testSuite) {
       mockServer,
       contractRegistry,
     });
-
-    if (process.env.SELENIUM_BROWSER === 'chrome') {
-      errors.concat(await driver.checkBrowserForConsoleErrors(driver));
-      if (errors.length) {
-        const errorReports = errors.map((err) => err.message);
-        const errorMessage = `Errors found in browser console:\n${errorReports.join(
-          '\n',
-        )}`;
-        if (failOnConsoleError) {
-          throw new Error(errorMessage);
-        } else {
-          console.error(new Error(errorMessage));
-        }
-      }
-    }
   } catch (error) {
     failed = true;
     if (webDriver) {
@@ -167,21 +153,13 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (
-        errors.length === 0 &&
-        driver.exceptions.length > 0 &&
-        failOnConsoleError
-      ) {
+      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured
          * proving more helpful context
          */
         await driver.navigate(PAGES.BACKGROUND);
-        const errorMessage = `Errors found in browser console including the background:\n${driver.exceptions.join(
-          '\n',
-        )}`;
-        throw Error(errorMessage);
       }
     }
     throw error;
@@ -240,11 +218,7 @@ const getWindowHandles = async (driver, handlesCount) => {
   return { extension, dapp, popup };
 };
 
-const completeImportSRPOnboardingFlow = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
+const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
@@ -263,6 +237,14 @@ const completeImportSRPOnboardingFlow = async (
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+};
+
+const completeImportSRPOnboardingFlow = async (
+  driver,
+  seedPhrase,
+  password,
+) => {
+  await importSRPOnboardingFlow(driver, seedPhrase, password);
 
   // complete
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
@@ -315,6 +297,7 @@ module.exports = {
   largeDelayMs,
   veryLargeDelayMs,
   withFixtures,
+  importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   createDownloadFolder,

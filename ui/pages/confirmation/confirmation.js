@@ -17,9 +17,9 @@ import MetaMaskTemplateRenderer from '../../components/app/metamask-template-ren
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
-  COLORS,
   FLEX_DIRECTION,
-  SIZES,
+  Size,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
@@ -33,6 +33,7 @@ import {
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
+import { Icon, ICON_NAMES } from '../../components/component-library';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -283,7 +284,7 @@ export default function ConfirmationPage({
                 setCurrentPendingConfirmation(currentPendingConfirmation - 1)
               }
             >
-              <i className="fas fa-chevron-left" />
+              <Icon name={ICON_NAMES.ARROW_LEFT} />
             </button>
           )}
           <button
@@ -295,7 +296,7 @@ export default function ConfirmationPage({
               setCurrentPendingConfirmation(currentPendingConfirmation + 1)
             }
           >
-            <i className="fas fa-chevron-right" />
+            <Icon name={ICON_NAMES.ARROW_RIGHT} />
           </button>
         </div>
       )}
@@ -303,8 +304,8 @@ export default function ConfirmationPage({
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
             <NetworkDisplay
-              indicatorSize={SIZES.XS}
-              labelProps={{ color: COLORS.TEXT_DEFAULT }}
+              indicatorSize={Size.XS}
+              labelProps={{ color: TextColor.textDefault }}
             />
           </Box>
         ) : null}

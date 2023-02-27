@@ -7,6 +7,8 @@ const {
   collectiblesBytecode,
   failingContractAbi,
   failingContractBytecode,
+  multisigAbi,
+  multisigBytecode,
 } = require('@metamask/test-dapp/dist/constants.json');
 
 const hstFactory = {
@@ -18,7 +20,7 @@ const hstFactory = {
   abi: hstAbi,
 };
 
-const collectiblesFactory = {
+const nftsFactory = {
   bytecode: collectiblesBytecode,
   abi: collectiblesAbi,
 };
@@ -33,18 +35,25 @@ const failingContract = {
   abi: failingContractAbi,
 };
 
+const multisigFactory = {
+  bytecode: multisigBytecode,
+  abi: multisigAbi,
+};
+
 const SMART_CONTRACTS = {
   HST: 'hst',
-  COLLECTIBLES: 'collectibles',
+  NFTS: 'nfts',
   PIGGYBANK: 'piggybank',
   FAILING: 'failing',
+  MULTISIG: 'multisig',
 };
 
 const contractConfiguration = {
   [SMART_CONTRACTS.HST]: hstFactory,
-  [SMART_CONTRACTS.COLLECTIBLES]: collectiblesFactory,
+  [SMART_CONTRACTS.NFTS]: nftsFactory,
   [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
   [SMART_CONTRACTS.FAILING]: failingContract,
+  [SMART_CONTRACTS.MULTISIG]: multisigFactory,
 };
 
 module.exports = { SMART_CONTRACTS, contractConfiguration };

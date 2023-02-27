@@ -22,19 +22,22 @@ import {
   getIsBuyableChain,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-} from '../../../selectors/selectors';
-import SwapIcon from '../../ui/icon/swap-icon.component';
-import BuyIcon from '../../ui/icon/overview-buy-icon.component';
-import SendIcon from '../../ui/icon/overview-send-icon.component';
+} from '../../../selectors';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+  CONTEXT_PROPS,
+} from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import DepositPopover from '../deposit-popover';
+import { Icon, ICON_NAMES } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -109,7 +112,9 @@ const EthOverview = ({ className }) => {
           <>
             <IconButton
               className="eth-overview__button"
-              Icon={BuyIcon}
+              Icon={
+                <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+              }
               disabled={!isBuyableChain}
               label={t('buy')}
               onClick={() => {
@@ -127,7 +132,12 @@ const EthOverview = ({ className }) => {
             <IconButton
               className="eth-overview__button"
               data-testid="eth-overview-send"
-              Icon={SendIcon}
+              Icon={
+                <Icon
+                  name={ICON_NAMES.ARROW_2_RIGHT}
+                  color={IconColor.primaryInverse}
+                />
+              }
               label={t('send')}
               onClick={() => {
                 trackEvent({
@@ -149,7 +159,12 @@ const EthOverview = ({ className }) => {
             <IconButton
               className="eth-overview__button"
               disabled={!isSwapsChain}
-              Icon={SwapIcon}
+              Icon={
+                <Icon
+                  name={ICON_NAMES.SWAP_HORIZONTAL}
+                  color={IconColor.primaryInverse}
+                />
+              }
               onClick={() => {
                 if (isSwapsChain) {
                   trackEvent({
@@ -182,6 +197,35 @@ const EthOverview = ({ className }) => {
                       </Tooltip>
                     )
               }
+            />
+            <IconButton
+              className="eth-overview__button"
+              data-testid="home__portfolio-site"
+              Icon={
+                <Icon
+                  name={ICON_NAMES.DIAGRAM}
+                  color={IconColor.primaryInverse}
+                />
+              }
+              label={t('portfolio')}
+              onClick={() => {
+                const portfolioUrl = process.env.PORTFOLIO_URL;
+                global.platform.openTab({
+                  url: `${portfolioUrl}?metamaskEntry=ext`,
+                });
+                trackEvent(
+                  {
+                    category: EVENT.CATEGORIES.HOME,
+                    event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                    properties: {
+                      url: portfolioUrl,
+                    },
+                  },
+                  {
+                    contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                  },
+                );
+              }}
             />
           </>
         }

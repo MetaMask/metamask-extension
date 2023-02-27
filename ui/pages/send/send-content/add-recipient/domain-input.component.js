@@ -8,6 +8,12 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+import {
+  ButtonIcon,
+  Icon,
+  ICON_NAMES,
+} from '../../../../components/component-library';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
   static contextTypes = {
@@ -97,17 +103,19 @@ export default class DomainInput extends Component {
             'ens-input__wrapper--valid': hasSelectedAddress,
           })}
         >
-          <i
-            className={classnames('ens-input__wrapper__status-icon', 'fa', {
-              'fa-check-circle': hasSelectedAddress,
-              'fa-search': !hasSelectedAddress,
-            })}
-            style={{
-              color: hasSelectedAddress
-                ? 'var(--color-success-default)'
-                : 'var(--color-icon-muted)',
-            }}
-          />
+          {hasSelectedAddress ? (
+            <Icon
+              className="ens-input__wrapper__status-icon"
+              name={ICON_NAMES.CHECK}
+              color={IconColor.successDefault}
+            />
+          ) : (
+            <Icon
+              name={ICON_NAMES.SEARCH}
+              color={IconColor.iconMuted}
+              className="ens-input__wrapper__status-icon"
+            />
+          )}
           {hasSelectedAddress ? (
             <>
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
@@ -147,7 +155,7 @@ export default class DomainInput extends Component {
                 autoFocus
                 data-testid="ens-input"
               />
-              <button
+              <ButtonIcon
                 className="ens-input__wrapper__action-icon-button"
                 onClick={() => {
                   if (userInput) {
@@ -156,20 +164,14 @@ export default class DomainInput extends Component {
                     this.props.scanQrCode();
                   }
                 }}
-              >
-                <i
-                  className={classnames('fa', {
-                    'fa-times': userInput,
-                    'fa-qrcode': !userInput,
-                  })}
-                  title={t(userInput ? 'close' : 'scanQrCode')}
-                  style={{
-                    color: userInput
-                      ? 'var(--color-icon-default)'
-                      : 'var(--color-primary-default)',
-                  }}
-                />
-              </button>
+                iconName={
+                  userInput ? ICON_NAMES.CLOSE : ICON_NAMES.SCAN_BARCODE
+                }
+                ariaLabel={t(userInput ? 'close' : 'scanQrCode')}
+                color={
+                  userInput ? IconColor.iconDefault : IconColor.primaryDefault
+                }
+              />
             </>
           )}
         </div>

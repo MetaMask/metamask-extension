@@ -4,14 +4,14 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../modal';
 import Typography from '../../../ui/typography';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { TypographyVariant } from '../../../../helpers/constants/design-system';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   ASSET_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { getCollectibles } from '../../../../ducks/metamask/metamask';
+import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
@@ -19,7 +19,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const allNfts = useSelector(getCollectibles);
+  const allNfts = useSelector(getNfts);
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
   );
@@ -40,7 +40,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
           });
         } else {
           history.push({
-            pathname: ADD_COLLECTIBLE_ROUTE,
+            pathname: ADD_NFT_ROUTE,
             state: { tokenAddress },
           });
         }
@@ -52,7 +52,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
     >
       <div className="convert-token-to-nft-modal">
         <Typography
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           boxProps={{
             marginTop: 2,
           }}

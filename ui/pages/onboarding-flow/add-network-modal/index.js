@@ -8,7 +8,7 @@ import Typography from '../../../components/ui/typography/typography';
 import Box from '../../../components/ui/box/box';
 import {
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 
@@ -25,7 +25,7 @@ export default function AddNetworkModal() {
     <>
       <Box paddingTop={4}>
         <Typography
-          variant={TYPOGRAPHY.H4}
+          variant={TypographyVariant.H4}
           align={TEXT_ALIGN.CENTER}
           fontWeight={FONT_WEIGHT.BOLD}
         >

@@ -7,7 +7,7 @@ import UnlockPage from '.';
 
 const mockMarkPasswordForgotten = jest.fn();
 
-jest.mock('../../store/actions.js', () => ({
+jest.mock('../../store/actions.ts', () => ({
   markPasswordForgotten: () => mockMarkPasswordForgotten,
 }));
 
@@ -24,6 +24,8 @@ jest.mock('@metamask/logo', () => () => {
 });
 
 describe('Unlock Page', () => {
+  process.env.METAMASK_BUILD_TYPE = 'main';
+
   const mockState = {
     metamask: {},
   };

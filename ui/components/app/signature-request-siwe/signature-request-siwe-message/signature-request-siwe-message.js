@@ -5,7 +5,7 @@ import Typography from '../../../ui/typography';
 
 import {
   FLEX_DIRECTION,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 
 const SignatureRequestSIWEMessage = ({ data }) => {
@@ -14,12 +14,16 @@ const SignatureRequestSIWEMessage = ({ data }) => {
       <Box flexDirection={FLEX_DIRECTION.COLUMN}>
         {data.map(({ label, value }, i) => (
           <Box key={i.toString()} marginTop={2} marginBottom={2}>
-            <Typography variant={TYPOGRAPHY.H4} marginTop={2} marginBottom={2}>
+            <Typography
+              variant={TypographyVariant.H4}
+              marginTop={2}
+              marginBottom={2}
+            >
               {label}
             </Typography>
             <Typography
               className="signature-request-siwe-message__sub-text"
-              variant={TYPOGRAPHY.H6}
+              variant={TypographyVariant.H6}
               marginTop={2}
               marginBottom={2}
             >

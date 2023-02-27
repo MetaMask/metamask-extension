@@ -12,7 +12,7 @@ import {
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import {
   AssetType,
@@ -1267,7 +1267,7 @@ describe('Send Slice', () => {
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
         getState = jest.fn().mockReturnValue({
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             networkDetails: {
               EIPS: {
@@ -1365,7 +1365,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'GAS_FEE_ESTIMATES_UPDATED',
           payload: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasEstimateType: GasEstimateTypes.legacy,
             gasFeeEstimates: {
               medium: '1',
             },
@@ -2308,7 +2308,7 @@ describe('Send Slice', () => {
             },
           };
 
-          jest.mock('../../store/actions.js');
+          jest.mock('../../store/actions.ts');
 
           const store = mockStore(tokenTransferTxState);
 
@@ -2345,7 +2345,7 @@ describe('Send Slice', () => {
           },
         };
 
-        jest.mock('../../store/actions.js');
+        jest.mock('../../store/actions.ts');
 
         const store = mockStore(editStageSignTxState);
 
@@ -2372,7 +2372,7 @@ describe('Send Slice', () => {
       it('should set up the appropriate state for editing a native asset transaction', async () => {
         const editTransactionState = {
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             provider: {
               chainId: CHAIN_IDS.GOERLI,
@@ -2497,12 +2497,12 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should set up the appropriate state for editing a collectible asset transaction', async () => {
+      it('should set up the appropriate state for editing an NFT asset transaction', async () => {
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({
             standard: 'ERC721',
             balance: '0x1',
-            address: '0xCollectibleAddress',
+            address: '0xNftAddress',
           }),
         );
         const editTransactionState = {
@@ -2539,7 +2539,7 @@ describe('Send Slice', () => {
                     tokenId: BigNumber.from(15000).toString(),
                   }),
                   from: '0xAddress',
-                  to: '0xCollectibleAddress',
+                  to: '0xNftAddress',
                   gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
                   gasPrice: '0x3b9aca00', // 1000000000
                   value: '0x0',
@@ -2621,7 +2621,7 @@ describe('Send Slice', () => {
         expect(actionResult[4]).toStrictEqual({
           type: 'send/addHistoryEntry',
           payload:
-            'sendFlow - user set asset to NFT with tokenId 15000 and address 0xCollectibleAddress',
+            'sendFlow - user set asset to NFT with tokenId 15000 and address 0xNftAddress',
         });
         expect(actionResult[5]).toStrictEqual({
           type: 'send/updateAsset',
@@ -2629,7 +2629,7 @@ describe('Send Slice', () => {
             asset: {
               balance: '0x1',
               details: {
-                address: '0xCollectibleAddress',
+                address: '0xNftAddress',
                 balance: '0x1',
                 standard: TokenStandard.ERC721,
                 tokenId: '15000',
@@ -2952,7 +2952,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),
@@ -2966,7 +2966,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),

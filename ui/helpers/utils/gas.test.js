@@ -1,4 +1,4 @@
-import { PRIORITY_LEVELS } from '../../../shared/constants/gas';
+import { PriorityLevels } from '../../../shared/constants/gas';
 
 import {
   gasEstimateGreaterThanGasUsedPlusTenPercent,
@@ -16,7 +16,7 @@ describe('Gas utils', () => {
         {
           medium: estimateValues,
         },
-        PRIORITY_LEVELS.MEDIUM,
+        PriorityLevels.medium,
       );
     };
 

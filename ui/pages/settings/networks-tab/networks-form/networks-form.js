@@ -574,7 +574,7 @@ const NetworksForm = ({
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
   const chainIdErrorOnFeaturedRpcDuringEdit =
-    selectedNetwork?.rpcUrl && warnings.chainId && chainIdMatchesFeaturedRPC;
+    selectedNetwork?.rpcUrl && errors.chainId && chainIdMatchesFeaturedRPC;
   const isSubmitDisabled =
     hasErrors() ||
     isSubmitting ||

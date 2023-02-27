@@ -6,13 +6,18 @@ import {
   getRpcPrefsForCurrentProvider,
   conversionRateSelector,
   getSubjectMetadata,
+  unconfirmedMessagesHashSelector,
+  getTotalUnapprovedMessagesCount,
 } from '../../../selectors';
 import {
   isAddressLedger,
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
-import { getAccountByAddress } from '../../../helpers/utils/util';
+import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { cancelMsgs, showModal } from '../../../store/actions';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import SignatureRequest from './signature-request.component';
 
 function mapStateToProps(state, ownProps) {
@@ -27,10 +32,8 @@ function mapStateToProps(state, ownProps) {
   const isLedgerWallet = isAddressLedger(state, from);
   const chainId = getCurrentChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
-  const subjectMetadata = getSubjectMetadata(state);
-
-  const { iconUrl: siteImage = '' } =
-    subjectMetadata[txData.msgParams.origin] || {};
+  const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
+  const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
 
   return {
     provider,
@@ -38,12 +41,35 @@ function mapStateToProps(state, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
+    unconfirmedMessagesList,
+    unapprovedMessagesCount,
+    mostRecentOverviewPage: getMostRecentOverviewPage(state),
     conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: unapprovedMessagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: unapprovedMessagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    cancelAll: (unconfirmedMessagesList) =>
+      dispatch(cancelMsgs(unconfirmedMessagesList)),
   };
 }
 
@@ -54,11 +80,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
     conversionRate,
     nativeCurrency,
     provider,
     subjectMetadata,
+    unconfirmedMessagesList,
+    unapprovedMessagesCount,
+    mostRecentOverviewPage,
   } = stateProps;
   const {
     signPersonalMessage,
@@ -69,6 +97,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     cancelMessage,
     txData,
   } = ownProps;
+
+  const { cancelAll: dispatchCancelAll } = dispatchProps;
 
   const {
     type,
@@ -102,12 +132,18 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
     conversionRate,
     nativeCurrency,
     provider,
     subjectMetadata,
+    unapprovedMessagesCount,
+    mostRecentOverviewPage,
+    cancelAll: () => dispatchCancelAll(valuesFor(unconfirmedMessagesList)),
   };
 }
 
-export default connect(mapStateToProps, null, mergeProps)(SignatureRequest);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(SignatureRequest);

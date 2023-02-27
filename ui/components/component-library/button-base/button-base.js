@@ -7,15 +7,14 @@ import { Icon, ICON_NAMES } from '../icon';
 import { Text } from '../text';
 
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  JUSTIFY_CONTENT,
-  TEXT_COLORS,
-  TEXT,
-  SIZES,
-  FLEX_DIRECTION,
-  BORDER_RADIUS,
-  COLORS,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+  Size,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -26,11 +25,12 @@ export const ButtonBase = ({
   className,
   href,
   size = BUTTON_BASE_SIZES.MD,
-  iconName,
-  iconPositionRight,
+  startIconName,
+  startIconProps,
+  endIconName,
+  endIconProps,
   loading,
   disabled,
-  iconProps,
   iconLoadingProps,
   textProps,
   ...props
@@ -39,8 +39,8 @@ export const ButtonBase = ({
   return (
     <Box
       as={Tag}
-      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-      color={COLORS.TEXT_DEFAULT}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      color={TextColor.textDefault}
       href={href}
       paddingLeft={4}
       paddingRight={4}
@@ -57,32 +57,34 @@ export const ButtonBase = ({
       )}
       disabled={disabled}
       display={DISPLAY.INLINE_FLEX}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      alignItems={ALIGN_ITEMS.CENTER}
-      borderRadius={BORDER_RADIUS.PILL}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
       {...props}
     >
       <Text
         as="span"
         className="mm-button-base__content"
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        flexDirection={
-          iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
-        }
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
         gap={2}
-        variant={TEXT.BODY_MD}
-        color={TEXT_COLORS.INHERIT}
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
         {...textProps}
       >
-        {iconName && <Icon name={iconName} size={SIZES.SM} {...iconProps} />}
+        {startIconName && (
+          <Icon name={startIconName} size={Size.SM} {...startIconProps} />
+        )}
         {children}
+        {endIconName && (
+          <Icon name={endIconName} size={Size.SM} {...endIconProps} />
+        )}
       </Text>
       {loading && (
         <Icon
           className="mm-button-base__icon-loading"
           name={ICON_NAMES.LOADING}
-          size={SIZES.MD}
+          size={Size.MD}
           {...iconLoadingProps}
         />
       )}
@@ -120,19 +122,23 @@ ButtonBase.propTypes = {
    */
   href: PropTypes.string,
   /**
-   * Add icon to left side of button text passing icon name
+   * Add icon to start (left side) of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  iconName: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
-  /**
-   * Boolean that when true will position the icon on right of children
-   * Icon default position left
-   */
-  iconPositionRight: PropTypes.bool,
+  startIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps: PropTypes.shape(Icon.PropTypes),
+  startIconProps: PropTypes.shape(Icon.PropTypes),
+  /**
+   * Add icon to end (right side) of button text passing icon name
+   * The name of the icon to display. Should be one of ICON_NAMES
+   */
+  endIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  /**
+   * iconProps accepts all the props from Icon
+   */
+  endIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * iconLoadingProps accepts all the props from Icon
    */
@@ -143,7 +149,7 @@ ButtonBase.propTypes = {
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
+   * Possible values could be 'Size.SM'(32px), 'Size.MD'(40px), 'Size.LG'(48px),
    */
   size: PropTypes.oneOfType([
     PropTypes.shape(BUTTON_BASE_SIZES),

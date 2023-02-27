@@ -3,7 +3,7 @@ import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { THEME_TYPE } from '../../../ui/pages/settings/settings-tab/settings-tab.constant';
+import { ThemeType } from '../../../shared/constants/preferences';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -30,6 +30,9 @@ export default class PreferencesController {
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
+      disabledRpcMethodPreferences: {
+        eth_sign: false,
+      },
       useMultiAccountBalanceChecker: true,
 
       // set to true means the dynamic list from the API is being used
@@ -66,13 +69,14 @@ export default class PreferencesController {
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
-      theme: THEME_TYPE.OS,
+      theme: ThemeType.os,
+      openSeaTransactionSecurityProviderPopoverHasBeenShown: false,
       ...opts.initState,
     };
 
     this.network = opts.network;
     this.store = new ObservableStore(initState);
-    this.store.setMaxListeners(12);
+    this.store.setMaxListeners(13);
     this.openPopup = opts.openPopup;
     this.tokenListController = opts.tokenListController;
 
@@ -148,7 +152,7 @@ export default class PreferencesController {
   /**
    * Setter for the `useNftDetection` property
    *
-   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect collectibles.
+   * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect NFTs.
    */
   setUseNftDetection(useNftDetection) {
     this.store.updateState({ useNftDetection });
@@ -166,7 +170,7 @@ export default class PreferencesController {
   /**
    * Setter for the `openSeaEnabled` property
    *
-   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for collectibles data.
+   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
    */
   setOpenSeaEnabled(openSeaEnabled) {
     this.store.updateState({
@@ -200,6 +204,16 @@ export default class PreferencesController {
   setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
     this.store.updateState({
       transactionSecurityCheckEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `openSeaTransactionSecurityProviderPopoverHasBeenShown` property
+   *
+   */
+  setOpenSeaTransactionSecurityProviderPopoverHasBeenShown() {
+    this.store.updateState({
+      openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
     });
   }
 
@@ -542,6 +556,29 @@ export default class PreferencesController {
     await this.store.updateState({
       dismissSeedBackUpReminder,
     });
+  }
+
+  /**
+   * A setter for the user preference to enable/disable rpc methods
+   *
+   * @param {string} methodName - The RPC method name to change the setting of
+   * @param {bool} isEnabled - true to enable the rpc method
+   */
+  async setDisabledRpcMethodPreference(methodName, isEnabled) {
+    const currentRpcMethodPreferences =
+      this.store.getState().disabledRpcMethodPreferences;
+    const updatedRpcMethodPreferences = {
+      ...currentRpcMethodPreferences,
+      [methodName]: isEnabled,
+    };
+
+    this.store.updateState({
+      disabledRpcMethodPreferences: updatedRpcMethodPreferences,
+    });
+  }
+
+  getRpcMethodPreferences() {
+    return this.store.getState().disabledRpcMethodPreferences;
   }
 
   //

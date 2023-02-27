@@ -13,7 +13,7 @@ import {
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
 import ColorIndicator from '../../ui/color-indicator';
-import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { IconColor, Size } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -22,8 +22,8 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import IconCheck from '../../ui/icon/icon-check';
 
+import { Icon, ICON_NAMES } from '../../component-library';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -175,13 +175,13 @@ class NetworkDropdown extends Component {
           }}
         >
           {isCurrentRpcTarget ? (
-            <IconCheck color="var(--color-success-default)" />
+            <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
           ) : (
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.ICON_MUTED}
-            size={SIZES.LG}
+            color={opts.isLocalHost ? 'localhost' : IconColor.iconMuted}
+            size={Size.LG}
             type={ColorIndicator.TYPES.FILLED}
           />
           <span
@@ -243,13 +243,13 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <IconCheck color="var(--color-success-default)" />
+          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}
         <ColorIndicator
           color={network}
-          size={SIZES.LG}
+          size={Size.LG}
           type={ColorIndicator.TYPES.FILLED}
         />
         <span
