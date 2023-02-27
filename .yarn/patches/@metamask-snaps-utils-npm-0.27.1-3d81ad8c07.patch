@@ -1,0 +1,12 @@
+diff --git a/dist/index.browser.js b/dist/index.browser.js
+index 01d8d04503600e6af4a25109b47bdd2d28a64168..9746bc454e3c80c306a788c132d900689714835c 100644
+--- a/dist/index.browser.js
++++ b/dist/index.browser.js
+@@ -15,6 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ __exportStar(require("./caveats"), exports);
++__exportStar(require("./cronjob"), exports);
+ __exportStar(require("./deep-clone"), exports);
+ __exportStar(require("./default-endowments"), exports);
+ __exportStar(require("./entropy"), exports);

@@ -3914,7 +3914,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^0.27.1":
+"@metamask/snaps-utils@npm:0.27.1":
   version: 0.27.1
   resolution: "@metamask/snaps-utils@npm:0.27.1"
   dependencies:
@@ -3934,6 +3934,29 @@ __metadata:
     superstruct: ^0.16.7
     validate-npm-package-name: ^5.0.0
   checksum: 77b8102449471e834a02a92a8334dff88b186c81a2ecf3a3c46ef9c6ceca8ea588d0ccc24a0c22ef38a111decf7b2f7988d72dbaec088776e42c9153bf62ed13
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-utils@patch:@metamask/snaps-utils@npm%3A0.27.1#./.yarn/patches/@metamask-snaps-utils-npm-0.27.1-3d81ad8c07.patch::locator=metamask-crx%40workspace%3A.":
+  version: 0.27.1
+  resolution: "@metamask/snaps-utils@patch:@metamask/snaps-utils@npm%3A0.27.1#./.yarn/patches/@metamask-snaps-utils-npm-0.27.1-3d81ad8c07.patch::version=0.27.1&hash=e385e2&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@babel/core": ^7.18.6
+    "@babel/types": ^7.18.7
+    "@metamask/providers": ^10.2.1
+    "@metamask/snaps-ui": ^0.27.1
+    "@metamask/utils": ^3.3.1
+    "@noble/hashes": ^1.1.3
+    "@scure/base": ^1.1.1
+    cron-parser: ^4.5.0
+    eth-rpc-errors: ^4.0.3
+    fast-deep-equal: ^3.1.3
+    rfdc: ^1.3.0
+    semver: ^7.3.7
+    ses: ^0.17.0
+    superstruct: ^0.16.7
+    validate-npm-package-name: ^5.0.0
+  checksum: 3653f671154ce648450e5600376440a28dc3b9c5110327f458aac3a8cd00ab27be6adbd61421de1dca551e5358d3bf8480f32ade4879d8c90b7ee3ec21d3796e
   languageName: node
   linkType: hard
 
