@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
@@ -60,6 +61,15 @@ describe('TokenOverview', () => {
   });
 
   describe('TokenOverview', () => {
+    beforeAll(() => {
+      jest.clearAllMocks();
+      Object.defineProperty(global, 'platform', {
+        value: {
+          openTab: jest.fn(),
+        },
+      });
+    });
+
     const token = {
       name: 'test',
       isERC721: false,
@@ -111,7 +121,22 @@ describe('TokenOverview', () => {
       expect(buyButton).toBeInTheDocument();
     });
 
-    it('should have Buy button disabled if chain id is not part of supported buyable chains', () => {
+    it('should always show the Buy button regardless of token type', () => {
+      process.env.NFTS_V1 = true;
+      const nftToken = {
+        ...token,
+        isERC721: true,
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={nftToken} />,
+        store,
+      );
+      const buyButton = queryByTestId('token-overview-buy');
+      expect(buyButton).toBeInTheDocument();
+    });
+
+    it('should have the Buy token button disabled if chain id is not part of supported buyable chains', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
@@ -131,7 +156,7 @@ describe('TokenOverview', () => {
       expect(buyButton).toBeDisabled();
     });
 
-    it('should have Buy button enabled if chain id is part of supported buyable chains', () => {
+    it('should have the Buy token button enabled if chain id is part of supported buyable chains', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
@@ -151,7 +176,7 @@ describe('TokenOverview', () => {
       expect(buyButton).not.toBeDisabled();
     });
 
-    it('should have Buy button disabled for ERC721 tokens', () => {
+    it('should have the Buy token button disabled for ERC721 tokens', () => {
       process.env.NFTS_V1 = true;
       const nftToken = {
         ...token,
@@ -175,6 +200,37 @@ describe('TokenOverview', () => {
       const buyButton = queryByTestId('token-overview-buy');
       expect(buyButton).toBeInTheDocument();
       expect(buyButton).toBeDisabled();
+    });
+
+    it('should open the buy crypto URL for a buyable chain ID', async () => {
+      const mockedStoreWithBuyableChainId = {
+        metamask: {
+          ...mockStore.metamask,
+          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithBuyableChainId,
+      );
+
+      const openTabSpy = jest.spyOn(global.platform, 'openTab');
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenOverview token={token} />,
+        mockedStore,
+      );
+      const buyButton = queryByTestId('token-overview-buy');
+      expect(buyButton).toBeInTheDocument();
+      expect(buyButton).not.toBeDisabled();
+
+      fireEvent.click(buyButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+        }),
+      );
     });
   });
 });
