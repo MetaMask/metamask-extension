@@ -10,6 +10,12 @@ _supportRequestLink =
   'https://metamask-flask.zendesk.com/hc/en-us/requests/new';
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+_supportRequestLink = 'https://mmi-support.zendesk.com/hc/en-us/requests/new';
+export const SUPPORT_LINK = 'https://mmi-support.zendesk.com/hc/en-us';
+export const MMI_WEB_SITE = 'https://metamask.io/institutions/';
+///: END:ONLY_INCLUDE_IN
+
 export const SUPPORT_REQUEST_LINK = _supportRequestLink;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
 export const PASSWORD_MIN_LENGTH = 8;
