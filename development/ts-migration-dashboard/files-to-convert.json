@@ -882,7 +882,6 @@
   "ui/components/ui/icon/approve-icon.component.js",
   "ui/components/ui/icon/copy-icon.component.js",
   "ui/components/ui/icon/icon-check.js",
-  "ui/components/ui/icon/icon-cog.js",
   "ui/components/ui/icon/icon-eye-slash.js",
   "ui/components/ui/icon/icon-eye.js",
   "ui/components/ui/icon/icon-import.js",

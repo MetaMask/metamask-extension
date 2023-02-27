@@ -31,7 +31,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
-import IconCog from '../../ui/icon/icon-cog';
 
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
@@ -485,8 +484,9 @@ export default class AccountMenu extends Component {
             });
           }}
           icon={
-            <IconCog
-              color="var(--color-icon-alternative)"
+            <Icon
+              name={ICON_NAMES.SETTING}
+              color={IconColor.iconAlternative}
               ariaLabel={t('settings')}
             />
           }
