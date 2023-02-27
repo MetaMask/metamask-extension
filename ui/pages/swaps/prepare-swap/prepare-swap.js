@@ -1010,7 +1010,7 @@ export default function PrepareSwap({
             <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
           </Box>
         )}
-        {!isReviewSwapButtonDisabled && !areQuotesPresent && (
+        {!swapsErrorKey && !isReviewSwapButtonDisabled && !areQuotesPresent && (
           <Box
             marginTop={4}
             display={DISPLAY.FLEX}
