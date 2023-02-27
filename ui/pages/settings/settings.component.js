@@ -137,8 +137,8 @@ class SettingsPage extends PureComponent {
             {currentPath !== SETTINGS_ROUTE && (
               <ButtonIcon
                 ariaLabel={t('back')}
-                name={ICON_NAMES.ARROW_LEFT}
-                size={ICON_SIZES.XL}
+                iconName={ICON_NAMES.ARROW_LEFT}
+                size={ICON_SIZES.MD}
                 color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
               />
