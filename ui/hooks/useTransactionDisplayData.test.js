@@ -10,7 +10,11 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
 } from '../selectors';
-import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  getNfts,
+} from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
@@ -143,6 +147,18 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
   },
+  {
+    title: 'Approve ABC spending cap',
+    category: TransactionGroupCategory.approval,
+    subtitle: `metamask.github.io`,
+    subtitleContainsOrigin: true,
+    primaryCurrency: '0.00000000000005 ABC',
+    senderAddress: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+    secondaryCurrency: undefined,
+    displayedStatusKey: TransactionStatus.confirmed,
+    isPending: false,
+  },
 ];
 
 let useSelector, useI18nContext, useTokenFiatAmount;
@@ -166,9 +182,7 @@ describe('useTransactionDisplayData', () => {
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
     );
-    useTokenFiatAmount.returns((tokenAddress) => {
-      return tokenAddress ? '1 TST' : undefined;
-    });
+    useTokenFiatAmount.returns(undefined);
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
@@ -194,6 +208,8 @@ describe('useTransactionDisplayData', () => {
         return 'ETH';
       } else if (selector === getCurrentChainId) {
         return CHAIN_IDS.MAINNET;
+      } else if (selector === getNfts) {
+        return [];
       }
       return null;
     });

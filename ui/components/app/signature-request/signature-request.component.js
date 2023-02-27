@@ -20,6 +20,8 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import HardwareWalletState from '../hardware-wallet-state';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -65,10 +67,6 @@ export default class SignatureRequest extends PureComponent {
      * RPC prefs of the current network
      */
     rpcPrefs: PropTypes.object,
-    /**
-     * Dapp image
-     */
-    siteImage: PropTypes.string,
     conversionRate: PropTypes.number,
     nativeCurrency: PropTypes.string,
     provider: PropTypes.object,
@@ -162,7 +160,6 @@ export default class SignatureRequest extends PureComponent {
       isHardwareWallet,
       chainId,
       rpcPrefs,
-      siteImage,
       txData,
       subjectMetadata,
       conversionRate,
@@ -233,6 +230,15 @@ export default class SignatureRequest extends PureComponent {
           />
         </div>
         <div className="signature-request-content">
+          {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+            txData?.securityProviderResponse?.flagAsDangerous !==
+              SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+          (txData?.securityProviderResponse &&
+            Object.keys(txData.securityProviderResponse).length === 0) ? (
+            <SecurityProviderBannerMessage
+              securityProviderResponse={txData.securityProviderResponse}
+            />
+          ) : null}
           <div className="signature-request__origin">
             <SiteOrigin
               siteOrigin={origin}
@@ -317,8 +323,6 @@ export default class SignatureRequest extends PureComponent {
             toAddress={verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
-            origin={origin}
-            siteImage={siteImage}
             onClose={() => this.setState({ showContractDetails: false })}
             isContractRequestingSignature
           />

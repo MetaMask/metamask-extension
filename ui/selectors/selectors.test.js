@@ -353,4 +353,9 @@ describe('Selectors', () => {
       selectors.getTotalUnapprovedSignatureRequestCount(mockState);
     expect(totalUnapprovedSignatureRequestCount).toStrictEqual(0);
   });
+
+  it('#getIsDesktopEnabled', () => {
+    const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
+    expect(isDesktopEnabled).toBeFalsy();
+  });
 });

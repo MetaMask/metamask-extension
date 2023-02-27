@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "affirmAgree": {
-    "message": "I agree"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -331,6 +328,9 @@
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
+  },
+  "alwaysBeSureTo": {
+    "message": "Always be sure to do your own due diligence before approving any requests."
   },
   "amount": {
     "message": "Amount"
@@ -1002,6 +1002,105 @@
   "description": {
     "message": "Description"
   },
+  "desktopConnectionCriticalErrorDescription": {
+    "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
+  },
+  "desktopConnectionCriticalErrorTitle": {
+    "message": "MetaMask had trouble starting"
+  },
+  "desktopConnectionLostErrorDescription": {
+    "message": "Please make sure you have the desktop app up and running or disable MetaMask Desktop."
+  },
+  "desktopConnectionLostErrorTitle": {
+    "message": "MetaMask Desktop connection was lost"
+  },
+  "desktopDisableButton": {
+    "message": "Disable Desktop App"
+  },
+  "desktopDisableErrorCTA": {
+    "message": "Disable MetaMask Desktop"
+  },
+  "desktopEnableButton": {
+    "message": "Enable Desktop App"
+  },
+  "desktopEnableButtonDescription": {
+    "message": "Click to run all background processes in the desktop app."
+  },
+  "desktopErrorNavigateSettingsCTA": {
+    "message": "Return to Settings Page"
+  },
+  "desktopErrorRestartMMCTA": {
+    "message": "Restart MetaMask"
+  },
+  "desktopNotFoundErrorCTA": {
+    "message": "Download MetaMask Desktop"
+  },
+  "desktopNotFoundErrorDescription1": {
+    "message": "Please make sure you have the desktop app up and running."
+  },
+  "desktopNotFoundErrorDescription2": {
+    "message": "If you have no desktop app installed, please download it on the MetaMask website."
+  },
+  "desktopNotFoundErrorTitle": {
+    "message": "MetaMask Desktop was not found"
+  },
+  "desktopOpenOrDownloadCTA": {
+    "message": "Open MetaMask Desktop"
+  },
+  "desktopOutdatedErrorCTA": {
+    "message": "Update MetaMask Desktop"
+  },
+  "desktopOutdatedErrorDescription": {
+    "message": "Your MetaMask desktop app needs to be upgraded."
+  },
+  "desktopOutdatedErrorTitle": {
+    "message": "MetaMask Desktop is outdated"
+  },
+  "desktopOutdatedExtensionErrorCTA": {
+    "message": "Update MetaMask Extension"
+  },
+  "desktopOutdatedExtensionErrorDescription": {
+    "message": "Your MetaMask extension needs to be upgraded."
+  },
+  "desktopOutdatedExtensionErrorTitle": {
+    "message": "MetaMask Extension is outdated"
+  },
+  "desktopPageDescription": {
+    "message": "If the pairing is successful, extension will restart and you'll have to re-enter your password."
+  },
+  "desktopPageSubTitle": {
+    "message": "Open your MetaMask Desktop and type this code"
+  },
+  "desktopPageTitle": {
+    "message": "Pair with Desktop"
+  },
+  "desktopPairedWarningDeepLink": {
+    "message": "Go to Settings in MetaMask Desktop"
+  },
+  "desktopPairedWarningDescription": {
+    "message": "If you want to start a new pairing, please remove the current connection."
+  },
+  "desktopPairedWarningTitle": {
+    "message": "MM Desktop is already paired"
+  },
+  "desktopPairingExpireMessage": {
+    "message": "Code expires in $1 seconds"
+  },
+  "desktopRouteNotFoundErrorDescription": {
+    "message": "desktopRouteNotFoundErrorDescription"
+  },
+  "desktopRouteNotFoundErrorTitle": {
+    "message": "desktopRouteNotFoundErrorTitle"
+  },
+  "desktopUnexpectedErrorCTA": {
+    "message": "Return MetaMask Home"
+  },
+  "desktopUnexpectedErrorDescription": {
+    "message": "Check your MetaMask Desktop to restore connection"
+  },
+  "desktopUnexpectedErrorTitle": {
+    "message": "Something went wrong..."
+  },
   "details": {
     "message": "Details"
   },
@@ -1169,6 +1268,9 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
+  },
+  "enableOpenSeaSecurityProvider": {
+    "message": "Enable security provider"
   },
   "enableSmartTransactions": {
     "message": "Enable smart transactions"
@@ -1461,14 +1563,6 @@
   "gasUsed": {
     "message": "Gas used"
   },
-  "gdprMessage": {
-    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679. For more information in relation to our privacy practices, please see our $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Privacy policy here",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "General"
   },
@@ -1478,6 +1572,9 @@
   "getEtherFromFaucet": {
     "message": "Get Ether from a faucet for the $1 network.",
     "description": "Displays network name for Ether faucet"
+  },
+  "getWarningsFromOpenSea": {
+    "message": "Get warnings from OpenSea whenever you receive a known malicious request."
   },
   "goBack": {
     "message": "Go back"
@@ -1955,37 +2052,6 @@
   "metamaskVersion": {
     "message": "MetaMask Version"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Always allow you to opt-out via Settings"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Never",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask will.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 collect your full IP address",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 collect keys, addresses, transactions, balances, hashes, or any personal information",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 sell data for profit. Ever!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Send anonymized click & pageview events"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Help us improve MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
-  },
   "metrics": {
     "message": "Metrics"
   },
@@ -2237,9 +2303,6 @@
   "noSnaps": {
     "message": "No Snaps installed"
   },
-  "noThanks": {
-    "message": "No thanks"
-  },
   "noThanksVariant2": {
     "message": "No, thanks."
   },
@@ -2272,6 +2335,9 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
+  },
+  "notNow": {
+    "message": "Not now"
   },
   "notifications": {
     "message": "Notifications"
@@ -2605,6 +2671,15 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
+  },
+  "openSeaAltText": {
+    "message": "OpenSea security provider"
+  },
+  "openSeaDescription": {
+    "message": "OpenSea is the first security provider for this feature. More providers coming soon!"
+  },
+  "openSeaNew": {
+    "message": "OpenSea"
   },
   "optional": {
     "message": "Optional"
@@ -2952,6 +3027,24 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "requestFlaggedAsMaliciousFallbackCopyReason": {
+    "message": "The security provider has not shared additional details"
+  },
+  "requestFlaggedAsMaliciousFallbackCopyReasonTitle": {
+    "message": "Request flagged as malicious"
+  },
+  "requestMayNotBeSafe": {
+    "message": "Request may not be safe"
+  },
+  "requestMayNotBeSafeError": {
+    "message": "The security provider didn't detect any known malicious activity, but it still may not be safe to continue."
+  },
+  "requestNotVerified": {
+    "message": "Request not verified"
+  },
+  "requestNotVerifiedError": {
+    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -3486,6 +3579,9 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
+  "staySafeWithOpenSea": {
+    "message": "Stay safe with OpenSea"
+  },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
   },
@@ -4002,6 +4098,9 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thisIsBasedOn": {
+    "message": "This is based on information from "
+  },
   "thisServiceIsExperimental": {
     "message": "This service is experimental"
   },
@@ -4429,7 +4528,7 @@
   },
   "warningTooltipText": {
     "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Weak"

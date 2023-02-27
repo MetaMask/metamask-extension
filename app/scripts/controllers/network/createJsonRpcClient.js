@@ -6,7 +6,7 @@ import {
   createInflightCacheMiddleware,
   createBlockTrackerInspectorMiddleware,
   providerFromMiddleware,
-} from 'eth-json-rpc-middleware';
+} from '@metamask/eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
 import { SECOND } from '../../../../shared/constants/time';
 

@@ -18,6 +18,8 @@ import { Icon } from '../../component-library/icon/icon';
 import { IconColor } from '../../../helpers/constants/design-system';
 import HardwareWalletState from '../hardware-wallet-state';
 
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -99,6 +101,15 @@ export default function SignatureRequestSIWE({
             onUpdate={(status) => setHardwareLocked(status === 'locked')}
           />
         </div>
+      ) : null}
+      {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+        txData?.securityProviderResponse?.flagAsDangerous !==
+          SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+      (txData?.securityProviderResponse &&
+        Object.keys(txData.securityProviderResponse).length === 0) ? (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
       ) : null}
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (

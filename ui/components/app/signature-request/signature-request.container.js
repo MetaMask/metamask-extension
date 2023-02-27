@@ -34,12 +34,8 @@ function mapStateToProps(state, ownProps) {
   const isHdWallet = isHardwareWallet(state, from);
   const chainId = getCurrentChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
-  const subjectMetadata = getSubjectMetadata(state);
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
-
-  const { iconUrl: siteImage = '' } =
-    subjectMetadata[txData.msgParams.origin] || {};
 
   return {
     provider,
@@ -48,7 +44,6 @@ function mapStateToProps(state, ownProps) {
     isHdWallet,
     chainId,
     rpcPrefs,
-    siteImage,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
@@ -89,7 +84,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     isHdWallet,
     chainId,
     rpcPrefs,
-    siteImage,
     conversionRate,
     nativeCurrency,
     provider,
@@ -143,7 +137,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     isHardwareWallet: isHdWallet,
     chainId,
     rpcPrefs,
-    siteImage,
     conversionRate,
     nativeCurrency,
     provider,
