@@ -228,9 +228,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "La commissione di priorità avanzata (nota anche come \"suggerimento del minatore\") va direttamente ai minatori e li incentiva a dare la priorità alla tua commissione di transazione."
   },
-  "affirmAgree": {
-    "message": "Acconsento"
-  },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
   },
@@ -323,12 +320,6 @@
   },
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
-  },
-  "attemptToCancel": {
-    "message": "Tentativo di Annullamento?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Tentare di annullare non garantisce che la transazione verrà annullata. Se annullata, è comunque richiesto pagare alla rete la commissione sulla transazione."
   },
   "attemptingConnect": {
     "message": "Tentativo di connessione alla blockchain."
@@ -475,9 +466,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annulla scambio gratuitamente"
-  },
-  "cancellationGasFee": {
-    "message": "Costo di Annullamento in Gas"
   },
   "cancelled": {
     "message": "Annullata"
@@ -1049,14 +1037,6 @@
   "gasUsed": {
     "message": "Gas Utilizzato"
   },
-  "gdprMessage": {
-    "message": "Questi dati sono aggregati e sono quindi anonimi per le finalità del Regolamento generale sulla protezione dei dati (UE) 2016/679. Per maggiori informazioni sulla nostra politica sulla privacy, vedi $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Politica Privacy qua",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Generale"
   },
@@ -1248,37 +1228,6 @@
   "metamaskVersion": {
     "message": "versione di MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Ti consentirà sempre di rimuovere il consenso tramite Impostazioni"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Non",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 raccoglierà il tuo indirizzo IP completo",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 raccoglierà chiavi, indirizzi, transazioni, bilanci, hash, o qualsiasi altra informazione personale",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 venderà i tuoi dati per profitto. Mai!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Invierà click e visualizzazioni di pagina in modo anonimo"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Aiutaci a Migliorare MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask vorrebbe raccogliere dati di utilizzo per capire meglio come gli utenti interagiscono con l'estensione. Questi dati verranno usati continuamente per migliorare l'usabilità e l'esperienza utente dei nostri prodotti e dell'ecosistema Ethereum."
-  },
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
   },
@@ -1338,9 +1287,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Tasso di conversione non disponibile"
-  },
-  "noThanks": {
-    "message": "No Grazie"
   },
   "noTransactions": {
     "message": "Nessuna Transazione"
@@ -2079,9 +2025,6 @@
   "xOfY": {
     "message": "$1 di $2",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "Si, proviamo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Devi consentire l'accesso alla fotocamera per usare questa funzionalità."

@@ -1071,10 +1071,6 @@ export function getShowOutdatedBrowserWarning(state) {
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
-export function getShowPortfolioTooltip(state) {
-  return state.metamask.showPortfolioTooltip;
-}
-
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
@@ -1414,3 +1410,15 @@ export function getCustomTokenAmount(state) {
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+/**
+ * To get the `desktopEnabled` value which determines whether we use the desktop app
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsDesktopEnabled(state) {
+  return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN

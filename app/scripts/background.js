@@ -439,9 +439,8 @@ export function setupController(initState, initLangCode, overrides) {
   });
 
   setupEnsIpfsResolver({
-    getCurrentChainId: controller.networkController.getCurrentChainId.bind(
-      controller.networkController,
-    ),
+    getCurrentChainId: () =>
+      controller.networkController.store.getState().provider.chainId,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
