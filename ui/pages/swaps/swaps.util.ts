@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import abi from 'human-standard-token-abi';
 import { Json } from '@metamask/controller-utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import {
