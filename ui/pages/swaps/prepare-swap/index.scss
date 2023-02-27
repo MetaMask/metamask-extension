@@ -34,10 +34,6 @@
     }
   }
 
-  @include screen-sm-min {
-    width: 348px;
-  }
-
   &__new-quote-countdown {
     @include H7;
 

@@ -1041,21 +1041,19 @@ export default function ViewQuote({ setReceiveToAmount }) {
           )
         }
         {isShowingWarning && (
-          <div
-            className={classnames('review-quote__warning-wrapper', {
-              'review-quote__warning-wrapper--thin': !isShowingWarning,
-            })}
-          >
+          <>
             {viewQuotePriceDifferenceComponent}
             {(showInsufficientWarning || tokenBalanceUnavailable) && (
-              <BannerAlert
-                severity={SEVERITIES.INFO}
-                title={t('notEnoughBalance')}
-              >
-                {actionableBalanceErrorMessage}
-              </BannerAlert>
+              <Box display={DISPLAY.FLEX} marginTop={2}>
+                <BannerAlert
+                  severity={SEVERITIES.INFO}
+                  title={t('notEnoughBalance')}
+                >
+                  {actionableBalanceErrorMessage}
+                </BannerAlert>
+              </Box>
             )}
-          </div>
+          </>
         )}
 
         <div className="review-quote__countdown-timer-container">
