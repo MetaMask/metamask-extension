@@ -139,6 +139,7 @@ class SettingsPage extends PureComponent {
                 ariaLabel={t('back')}
                 iconName={ICON_NAMES.ARROW_LEFT}
                 size={ICON_SIZES.MD}
+                className="settings-page__back-button"
                 color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
               />
