@@ -9,3 +9,5 @@ The document details about refactoring confirmation pages. It describes the curr
 3. [Confirmation State Management](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-state-management)
 
 4. [Confirmation Page Structure](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-page=structure)
+
+5. [Confirmation Backend Architecture](https://github.com/MetaMask/metamask-extension/tree/develop/docs/confirmation-refactoring/confirmation-backend-architecture)
