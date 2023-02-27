@@ -3666,9 +3666,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/desktop@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/desktop@npm:0.2.0"
+"@metamask/desktop@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/desktop@npm:0.3.0"
   dependencies:
     "@metamask/obs-store": ^5.0.0
     eciesjs: ^0.3.15
@@ -3680,7 +3680,7 @@ __metadata:
     uuid: ^8.3.2
     webextension-polyfill: ^0.8.0
     ws: ^7.4.6
-  checksum: 052d5dd58951c77733b538d9c392a5aa5b7d87bb600cf04a97e3213048f84936a4446adbf901258417c8eed01dbc68eb2c7117a53b6af7a416ecea975460ffb7
+  checksum: fb0c0582feb326f01ffe98e26dec8e62861aea7fe6fb0ce44e78b81ca95ec37b6b2c12398e3b3d2b5ff6253ff227c17683a72cea3b1532c088c27c8ebaea2c4e
   languageName: node
   linkType: hard
 
@@ -24027,7 +24027,7 @@ __metadata:
     "@metamask/contract-metadata": ^2.2.0
     "@metamask/controller-utils": ^1.0.0
     "@metamask/design-tokens": ^1.9.0
-    "@metamask/desktop": ^0.2.0
+    "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-mocha": ^9.0.0
