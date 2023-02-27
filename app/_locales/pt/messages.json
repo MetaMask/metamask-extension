@@ -1276,7 +1276,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Ver detalhes",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Adicionado em",
@@ -2573,7 +2573,7 @@
   },
   "permission_accessSnap": {
     "message": "Conecte-se ao snap $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Agende e execute ações periódicas.",
