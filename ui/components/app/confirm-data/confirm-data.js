@@ -6,7 +6,6 @@ import {
   Color,
   TextVariant,
   TEXT_TRANSFORM,
-  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { getKnownMethodData } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -42,14 +41,14 @@ const ConfirmData = ({ txData, dataComponent }) => {
     <Box color={Color.textAlternative} className="confirm-data" padding={4}>
       <Box paddingBottom={3} paddingTop={2}>
         <Text
-          as={TypographyVariant.span}
+          as="span"
           textTransform={TEXT_TRANSFORM.UPPERCASE}
           variant={TextVariant.bodySm}
         >
           {`${t('functionType')}:`}
         </Text>
         <Text
-          as={TypographyVariant.span}
+          as="span"
           color={Color.textDefault}
           paddingLeft={1}
           textTransform={TEXT_TRANSFORM.CAPITALIZE}

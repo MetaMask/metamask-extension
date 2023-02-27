@@ -11,7 +11,6 @@ import {
   OVERFLOW_WRAP,
   TextVariant,
   TEXT_TRANSFORM,
-  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 import { Text } from '../../component-library';
@@ -42,14 +41,14 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
     <Box padding={4}>
       <Box paddingBottom={3} paddingTop={2}>
         <Text
-          as={TypographyVariant.span}
+          as="span"
           textTransform={TEXT_TRANSFORM.UPPERCASE}
           variant={TextVariant.bodySm}
         >
           {`${t('functionType')}:`}
         </Text>
         <Text
-          as={TypographyVariant.span}
+          as="span"
           color={Color.textDefault}
           paddingLeft={1}
           textTransform={TEXT_TRANSFORM.CAPITALIZE}
@@ -61,7 +60,7 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
       {params && (
         <Box backgroundColor={Color.backgroundAlternative} padding={4}>
           <Text
-            as={TypographyVariant.H3}
+            as="h3"
             paddingBottom={3}
             paddingTop={2}
             textTransform={TEXT_TRANSFORM.UPPERCASE}
@@ -78,7 +77,7 @@ const ConfirmHexData = ({ txData, dataHexComponent }) => {
         </Box>
       )}
       <Text
-        as={TypographyVariant.H3}
+        as="h3"
         paddingBottom={3}
         paddingTop={2}
         textTransform={TEXT_TRANSFORM.UPPERCASE}
