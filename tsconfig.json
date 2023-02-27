@@ -12,7 +12,8 @@
     "outDir": "tsout",
     "rootDir": ".",
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true
   },
   "exclude": [
     "**/*.test.js",

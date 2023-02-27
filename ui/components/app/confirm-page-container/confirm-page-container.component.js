@@ -30,7 +30,7 @@ import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
-///: END:ONLY_INCLUDE_IN(flask)
+///: END:ONLY_INCLUDE_IN
 import {
   getAccountName,
   getAddressBookEntry,
@@ -88,7 +88,7 @@ const ConfirmPageContainer = (props) => {
     nativeCurrency,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     txData,
-    ///: END:ONLY_INCLUDE_IN(flask)
+    ///: END:ONLY_INCLUDE_IN
     assetStandard,
     isApprovalOrRejection,
   } = props;
@@ -348,7 +348,7 @@ ConfirmPageContainer.propTypes = {
   detailsComponent: PropTypes.node,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   txData: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN(flask)
+  ///: END:ONLY_INCLUDE_IN
   tokenAddress: PropTypes.string,
   nonce: PropTypes.string,
   warning: PropTypes.string,

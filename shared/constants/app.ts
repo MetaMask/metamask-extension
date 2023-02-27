@@ -1,6 +1,5 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { DialogType } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
+import { DialogType } from '@metamask/rpc-methods';
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -25,12 +24,12 @@ export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
  *
  * This should be kept in-sync with the `BuildType` map in `development/build/utils.js`.
  */
-export const BuildType = {
-  beta: 'beta',
-  desktop: 'desktop',
-  flask: 'flask',
-  main: 'main',
-} as const;
+export enum BuildType {
+  beta = 'beta',
+  desktop = 'desktop',
+  flask = 'flask',
+  main = 'main',
+}
 
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';

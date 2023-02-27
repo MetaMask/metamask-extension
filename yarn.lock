@@ -7215,6 +7215,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/ini@npm:^1.3.31":
+  version: 1.3.31
+  resolution: "@types/ini@npm:1.3.31"
+  checksum: aca4fed0cd68f6693fd64e1b7d188a9c8c6f5823b2e3501b0570135555d4184d7d0dfba2c1afb3514c94cb21ece732f4467ea98c827d1b1b98716827ac9de680
+  languageName: node
+  linkType: hard
+
 "@types/insert-module-globals@npm:*":
   version: 7.0.2
   resolution: "@types/insert-module-globals@npm:7.0.2"
@@ -7724,6 +7731,17 @@ __metadata:
     anymatch: ^3.0.0
     source-map: ^0.6.0
   checksum: 8aa4b4ad68bb7a6ee5bd027005014e6242434162ed4c14cd251713ad6041e42bf7629fc56a5edc5a2124b49cc0dce273d6ee3386fae9a9cfe02e1f7e82087ea2
+  languageName: node
+  linkType: hard
+
+"@types/webpack@npm:^5.28.0":
+  version: 5.28.0
+  resolution: "@types/webpack@npm:5.28.0"
+  dependencies:
+    "@types/node": "*"
+    tapable: ^2.2.0
+    webpack: ^5
+  checksum: a038d7e12dd109c6a8d2eb744fd32070ef94f1655e730fb1443b370db98864c3a0e408638b02d12ba08269b9c012b3be8b801117ced2d1102e7676203fd663ed
   languageName: node
   linkType: hard
 
@@ -24465,6 +24483,7 @@ __metadata:
     "@types/gulp-autoprefixer": ^0.0.33
     "@types/gulp-dart-sass": ^1.0.1
     "@types/gulp-sourcemaps": ^0.0.35
+    "@types/ini": ^1.3.31
     "@types/madge": ^5.0.0
     "@types/node": ^17.0.21
     "@types/pify": ^5.0.1
@@ -24474,6 +24493,7 @@ __metadata:
     "@types/remote-redux-devtools": ^0.5.5
     "@types/w3c-web-hid": ^1.0.3
     "@types/watchify": ^3.11.1
+    "@types/webpack": ^5.28.0
     "@types/yargs": ^17.0.8
     "@typescript-eslint/eslint-plugin": ^5.30.7
     "@typescript-eslint/parser": ^5.30.7
@@ -24683,6 +24703,7 @@ __metadata:
     webextension-polyfill: ^0.8.0
     webpack: ^5.75.0
     webpack-cli: ^5.0.1
+    webpack-remove-code-blocks: ^0.1.5
     yargs: ^17.0.1
     zxcvbn: ^4.4.2
   languageName: unknown
@@ -35151,6 +35172,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webpack-remove-code-blocks@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "webpack-remove-code-blocks@npm:0.1.5"
+  dependencies:
+    loader-utils: ^1.1.0
+  peerDependencies:
+    webpack: ">=3.0.0"
+  checksum: a56b48fb208cfd18c31a7c20969c2e45881c5712efb6f50904c17b4aa4c6aee36774851a51079a7a4569fad99cf37740dfa60ffa9d1e015ac76d8d0626b23f32
+  languageName: node
+  linkType: hard
+
 "webpack-sources@npm:^1.4.0, webpack-sources@npm:^1.4.1, webpack-sources@npm:^1.4.3":
   version: 1.4.3
   resolution: "webpack-sources@npm:1.4.3"
@@ -35222,7 +35254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:>=4.43.0 <6.0.0, webpack@npm:^5.75.0, webpack@npm:^5.9.0":
+"webpack@npm:>=4.43.0 <6.0.0, webpack@npm:^5, webpack@npm:^5.75.0, webpack@npm:^5.9.0":
   version: 5.75.0
   resolution: "webpack@npm:5.75.0"
   dependencies:
