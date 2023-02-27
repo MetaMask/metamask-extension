@@ -33,7 +33,7 @@ export default class NotificationManager extends EventEmitter {
    * notification windows are given a 'popup' type.
    *
    */
-  async showPopup() {
+  async showPopup(setCurrentNotificationId, getCurrentNotificationId) {
     const popup = await this._getPopup();
 
     // Bring focus to chrome popup
@@ -66,12 +66,13 @@ export default class NotificationManager extends EventEmitter {
         left,
         top,
       });
-
+      popupWindow.testProperty = 'xyz';
       // Firefox currently ignores left/top for create, but it works for update
       if (popupWindow.left !== left && popupWindow.state !== 'fullscreen') {
         await this.platform.updateWindowPosition(popupWindow.id, left, top);
       }
-      this._popupId = popupWindow.id;
+      // this._popupId = popupWindow.id;
+      setCurrentNotificationId(popupWindow.id)
     }
   }
 
@@ -103,6 +104,8 @@ export default class NotificationManager extends EventEmitter {
    * @param {Array} windows - An array of objects containing data about the open MetaMask extension windows.
    */
   _getPopupIn(windows) {
+    console.log('windows', windows)
+    console.log('this._popupId', this._popupId)
     return windows
       ? windows.find((win) => {
           // Returns notification popup

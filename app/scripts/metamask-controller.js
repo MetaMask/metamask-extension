@@ -3455,9 +3455,16 @@ export default class MetamaskController extends EventEmitter {
       req,
       version,
     );
+    console.log('newUnsignedTypedMessage')
     this.sendUpdate();
     this.opts.showUserConfirmation();
     return promise;
+  }
+
+  showUserConfirmation() {
+    const appStateControllerState = this.appStateController.getState();
+    this.opts.showUserConfirmation(this.appStateController.setCurrentNotificationI,
+() => appStateControllerState.currentNotifcationId);
   }
 
   /**

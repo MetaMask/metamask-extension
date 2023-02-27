@@ -788,6 +788,7 @@ export default class TransactionController extends EventEmitter {
       let existingTxMeta =
         this.txStateManager.getTransactionWithActionId(actionId);
       if (existingTxMeta) {
+        console.log('existingTxMeta', existingTxMeta)
         this.emit('newUnapprovedTx', existingTxMeta);
         existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
         return existingTxMeta;

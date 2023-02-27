@@ -50,6 +50,7 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
+      currentNotificationId: null,
     });
     this.timer = null;
 

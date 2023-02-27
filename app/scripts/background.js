@@ -831,6 +831,7 @@ export function setupController(initState, initLangCode, overrides) {
  * Opens the browser popup for user confirmation
  */
 async function triggerUi() {
+  console.log('triggerUI start')
   const tabs = await platform.getActiveTabs();
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
@@ -848,9 +849,13 @@ async function triggerUi() {
   ) {
     uiIsTriggering = true;
     try {
+      console.log('triggerUI showPopup')
+
       await notificationManager.showPopup();
     } finally {
       uiIsTriggering = false;
+      console.log('triggerUI finish')
+
     }
   }
 }
