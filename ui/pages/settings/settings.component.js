@@ -29,11 +29,10 @@ import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
 import {
   Icon,
-  ButtonIcon,
   ICON_SIZES,
   ICON_NAMES,
 } from '../../components/component-library';
-import { Color } from '../../helpers/constants/design-system';
+import { IconColor } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -135,11 +134,11 @@ class SettingsPage extends PureComponent {
         <div className="settings-page__header">
           <div className="settings-page__header__title-container">
             {currentPath !== SETTINGS_ROUTE && (
-              <ButtonIcon
-                ariaLabel={t('back')}
+              <Icon
+                className="settings-page__back-button"
                 name={ICON_NAMES.ARROW_LEFT}
                 size={ICON_SIZES.XL}
-                color={Color.iconDefault}
+                color={IconColor.iconDefault}
                 onClick={() => history.push(backRoute)}
               />
             )}
