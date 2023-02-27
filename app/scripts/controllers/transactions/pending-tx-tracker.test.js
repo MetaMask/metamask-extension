@@ -576,6 +576,7 @@ describe('PendingTransactionTracker', function () {
         },
         history: [{}],
         rawTx: '0xf86c808504a817c80082471d',
+        custodyId: 'testid',
       };
       const nonceBN = new BN(2);
       const pendingTxTracker = new PendingTransactionTracker({
@@ -720,6 +721,7 @@ describe('PendingTransactionTracker', function () {
           id: '123',
           value: '0x02',
           hash: '0x2a919d2512ec963f524bfd9730fb66b6d5a2e399d1dd957abb5e2b544a12644b',
+          custodyId: 'testid',
         },
       ];
       const pendingTxTracker = new PendingTransactionTracker({
@@ -771,6 +773,7 @@ describe('PendingTransactionTracker', function () {
         },
         history: [{}],
         rawTx: '0xf86c808504a817c80082471d',
+        custodyId: 'testid',
       };
       const pendingTxTracker = new PendingTransactionTracker({
         query: {

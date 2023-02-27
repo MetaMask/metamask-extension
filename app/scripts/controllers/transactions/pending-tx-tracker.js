@@ -144,6 +144,13 @@ export default class PendingTransactionTracker extends EventEmitter {
       return undefined;
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    // Don't ever resubmit custodian transactions
+    if (txMeta.custodyId) {
+      return undefined;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) {
       return this.approveTransaction(txMeta.id);
@@ -180,7 +187,15 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     // extra check in case there was an uncaught error during the
     // signature and submission process
-    if (!txHash) {
+
+    let hasNoHash = !txHash;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    // Don't emit noTxHashErr for custodian transactions https://consensys.slack.com/archives/C02612BF2LW/p1664360358834839?thread_ts=1663693387.576109&cid=C02612BF2LW
+    hasNoHash ||= !txMeta.custodyId;
+    ///: END:ONLY_INCLUDE_IN
+
+    if (hasNoHash) {
       const noTxHashErr = new Error(
         'We had an error while submitting this transaction, please try again.',
       );
