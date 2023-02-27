@@ -39,6 +39,7 @@ import {
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { showModal } from '../../../store/actions';
 import {
   addHexes,
@@ -61,7 +62,7 @@ export default function GasDisplay({ gasError }) {
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
   const { provider, unapprovedTxs } = useSelector((state) => state.metamask);
-  const nativeCurrency = provider.ticker;
+  const nativeCurrency = useSelector(getNativeCurrency);
   const { chainId } = provider;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
@@ -359,12 +360,9 @@ export default function GasDisplay({ gasError }) {
                 ) : (
                   <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
-                      draftTransaction.asset.details?.symbol ?? nativeCurrency,
+                      nativeCurrency,
                       currentNetworkName,
-                      `${t('buyAsset', [
-                        draftTransaction.asset.details?.symbol ??
-                          nativeCurrency,
-                      ])}`,
+                      `${t('buyAsset', [nativeCurrency])}`,
                       <Button
                         type="inline"
                         className="gas-display__link"

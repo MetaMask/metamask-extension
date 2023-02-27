@@ -3,8 +3,8 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Collectibles', function () {
-  const smartContract = SMART_CONTRACTS.COLLECTIBLES;
+describe('NFTs', function () {
+  const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [
       {
@@ -131,7 +131,7 @@ describe('Collectibles', function () {
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve token spending cap');
+        assert.equal(completedTxText, 'Approve TDC spending cap');
       },
     );
   });
@@ -200,7 +200,7 @@ describe('Collectibles', function () {
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve Token with no spend limit');
+        assert.equal(completedTxText, 'Approve TDC with no spend limit');
       },
     );
   });
@@ -272,7 +272,7 @@ describe('Collectibles', function () {
         // Verify transaction
         const completedTx = await driver.findElement('.list-item__title');
         const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve Token with no spend limit');
+        assert.equal(completedTxText, 'Approve TDC with no spend limit');
       },
     );
   });

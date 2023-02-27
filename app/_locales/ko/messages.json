@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 나와 먼저 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "affirmAgree": {
-    "message": "동의함"
-  },
   "airgapVault": {
     "message": "에어갭 볼트"
   },
@@ -399,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "한 네트워크에서 다른 네트워크로 자산을 직접 전송하면 자산이 영구적으로 손실될 수 있습니다. 반드시 브릿지를 이용하세요."
   },
-  "attemptToCancel": {
-    "message": "취소할까요?"
-  },
-  "attemptToCancelDescription": {
-    "message": "이 시도를 제출한다고 해서 원래 거래가 반드시 취소되지는 않습니다. 취소 시도가 성공하면 위의 거래 수수료가 부과됩니다."
-  },
   "attemptingConnect": {
     "message": "블록체인에 연결 중입니다."
   },
@@ -478,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "MetaMask 베타 버전"
-  },
-  "betaPortfolioSite": {
-    "message": "베타 포트폴리오 사이트"
   },
   "betaTerms": {
     "message": "베타 이용약관"
@@ -599,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "무료로 스왑 취소"
-  },
-  "cancellationGasFee": {
-    "message": "가스 수수료 취소"
   },
   "cancelled": {
     "message": "취소됨"
@@ -1444,14 +1429,6 @@
   "gasUsed": {
     "message": "가스 사용됨"
   },
-  "gdprMessage": {
-    "message": "이 데이터는 집계 처리된 정보이며 일반 데이터 보호 규정 (EU) 2016/679의 목적에 따라 익명으로 관리됩니다. 당사의 개인정보보호 관행에 관한 자세한 내용은 $1을 참조하세요.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "개인정보처리방침",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "일반"
   },
@@ -1717,9 +1694,6 @@
     "message": "JSON 파일",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "계정 및 네트워크 전반의 토큰과 NFT를 관리할 수 있습니다."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -1908,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask 버전"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "절대로",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask에서는.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "전체 IP 주소를 절대 수집하지 않습니다.",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다.",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 수익을 위해 데이터를 판매하지 않습니다!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "익명화된 클릭 및 페이지뷰 이벤트 보내기"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "MetaMask 개선에 참여"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask는 사용자가 확장 프로그램과 상호작용하는 방식을 자세히 이해하기 위해 사용 데이터를 수집하고자 합니다. 수집한 데이터는 당사의 제품과 이더리움 에코시스템의 사용 편의성 및 사용자 경험을 지속적으로 개선하는 데 활용됩니다."
   },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
@@ -2178,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
-  },
-  "noThanks": {
-    "message": "괜찮습니다"
   },
   "noThanksVariant2": {
     "message": "아니요, 괜찮습니다."
@@ -2714,9 +2654,6 @@
   },
   "popularCustomNetworks": {
     "message": "인기 사용자 정의 네트워크"
-  },
-  "portfolioSite": {
-    "message": "포트폴리오 사이트"
   },
   "preferredLedgerConnectionType": {
     "message": "선호하는 Ledger 연결 유형",
@@ -4090,9 +4027,6 @@
   "tryAgain": {
     "message": "다시 시도"
   },
-  "tryOur": {
-    "message": "다음을 체험하기:"
-  },
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"
   },
@@ -4302,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 계약은 추가 통보나 동의 없이도 남은 토큰 전체를 사용할 수 있습니다. 보호를 위해 최소 지출 한도를 설정하세요.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "약함"
@@ -4357,9 +4291,6 @@
   },
   "yes": {
     "message": "예"
-  },
-  "yesLetsTry": {
-    "message": "예, 시도하겠습니다."
   },
   "youHaveAddedAll": {
     "message": "모든 인기 네트워크를 추가했습니다. $1에서 더 많은 네트워크를 확인하거나 $2을(를) 할 수 있습니다.",

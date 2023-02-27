@@ -60,6 +60,9 @@ export default class AdvancedTab extends PureComponent {
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    desktopEnabled: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -466,7 +469,16 @@ export default class AdvancedTab extends PureComponent {
       ledgerTransportType,
       setLedgerTransportPreference,
       userHasALedgerAccount,
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      desktopEnabled,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    if (desktopEnabled) {
+      return null;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     const LEDGER_TRANSPORT_NAMES = {
       LIVE: t('ledgerLive'),
@@ -497,7 +509,11 @@ export default class AdvancedTab extends PureComponent {
       : LEDGER_TRANSPORT_NAMES.U2F;
 
     return (
-      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+      <div
+        ref={this.settingsRefs[9]}
+        className="settings-page__content-row"
+        data-testId="ledger-live-control"
+      >
         <div className="settings-page__content-item">
           <span>{t('preferredLedgerConnectionType')}</span>
           <div className="settings-page__content-description">

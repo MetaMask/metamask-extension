@@ -15,6 +15,11 @@ const configurationPropertyNames = [
   'SEGMENT_WRITE_KEY',
   'SENTRY_DSN_DEV',
   'SWAPS_USE_DEV_APIS',
+  // Desktop
+  'COMPATIBILITY_VERSION_EXTENSION',
+  'DISABLE_WEB_SOCKET_ENCRYPTION',
+  'METAMASK_DEBUG',
+  'SKIP_OTP_PAIRING_FLOW',
 ];
 
 const productionConfigurationPropertyNames = [

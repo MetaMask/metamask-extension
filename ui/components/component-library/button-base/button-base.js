@@ -13,7 +13,6 @@ import {
   TextColor,
   TextVariant,
   Size,
-  FLEX_DIRECTION,
   BorderRadius,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
@@ -26,11 +25,12 @@ export const ButtonBase = ({
   className,
   href,
   size = BUTTON_BASE_SIZES.MD,
-  iconName,
-  iconPositionRight,
+  startIconName,
+  startIconProps,
+  endIconName,
+  endIconProps,
   loading,
   disabled,
-  iconProps,
   iconLoadingProps,
   textProps,
   ...props
@@ -67,16 +67,18 @@ export const ButtonBase = ({
         className="mm-button-base__content"
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        flexDirection={
-          iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
-        }
         gap={2}
         variant={TextVariant.bodyMd}
         color={TextColor.inherit}
         {...textProps}
       >
-        {iconName && <Icon name={iconName} size={Size.SM} {...iconProps} />}
+        {startIconName && (
+          <Icon name={startIconName} size={Size.SM} {...startIconProps} />
+        )}
         {children}
+        {endIconName && (
+          <Icon name={endIconName} size={Size.SM} {...endIconProps} />
+        )}
       </Text>
       {loading && (
         <Icon
@@ -120,19 +122,23 @@ ButtonBase.propTypes = {
    */
   href: PropTypes.string,
   /**
-   * Add icon to left side of button text passing icon name
+   * Add icon to start (left side) of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  iconName: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
-  /**
-   * Boolean that when true will position the icon on right of children
-   * Icon default position left
-   */
-  iconPositionRight: PropTypes.bool,
+  startIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps: PropTypes.shape(Icon.PropTypes),
+  startIconProps: PropTypes.shape(Icon.PropTypes),
+  /**
+   * Add icon to end (right side) of button text passing icon name
+   * The name of the icon to display. Should be one of ICON_NAMES
+   */
+  endIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  /**
+   * iconProps accepts all the props from Icon
+   */
+  endIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * iconLoadingProps accepts all the props from Icon
    */

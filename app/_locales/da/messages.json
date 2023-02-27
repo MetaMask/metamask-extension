@@ -75,12 +75,6 @@
   "asset": {
     "message": "Aktiv"
   },
-  "attemptToCancel": {
-    "message": "Forsøg på Annullering?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Indsendelse af dette forsøg garanterer ikke, at din originale transaktion annulleres. Hvis annulleringsforsøget lykkes, vil du blive opkrævet ovenstående transaktionsgebyr."
-  },
   "attemptingConnect": {
     "message": "Forsøger at oprette forbindelse til blokkæden."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Afbryd"
-  },
-  "cancellationGasFee": {
-    "message": "Gebyr for brændstofannullering"
   },
   "cancelled": {
     "message": "Annulleret"
@@ -891,9 +882,6 @@
   },
   "welcomeBack": {
     "message": "Velkommen tilbage!"
-  },
-  "yesLetsTry": {
-    "message": "Ja, lad os prøve"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
