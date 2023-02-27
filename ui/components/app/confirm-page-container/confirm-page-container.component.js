@@ -111,6 +111,10 @@ const ConfirmPageContainer = (props) => {
     getMetadataContractName(state, toAddress),
   );
 
+  // TODO: Move useRamps hook to the confirm-transaction-base parent component.
+  // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
+  // We try to keep this component for layout purpose only, we need to move this hook to the confirm-transaction-base parent
+  // component once it is converted to a functional component
   const { openBuyCryptoInPdapp } = useRamps();
 
   const isSetApproveForAll =
