@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component without error 1`] = `
+<div>
+  <div
+    class="settings-page__body"
+  >
+    <div
+      class="settings-page__content-row"
+      data-testid="advanced-setting-desktop-pairing"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Click to run all background processes in the desktop app.
+        </span>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="button btn--rounded btn-primary btn--large"
+            role="button"
+            tabindex="0"
+          >
+            Disable Desktop App
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

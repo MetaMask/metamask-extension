@@ -22,9 +22,6 @@ import SendIcon from './send-icon.component';
 import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
-import IconCheck from './icon-check';
-import IconCog from './icon-cog';
-import IconImport from './icon-import';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
@@ -117,9 +114,6 @@ export const DefaultStory = (args) => (
           gridTemplateColumns: 'repeat(auto-fill, 176px)',
         }}
       >
-        <IconItem Component={<IconCheck {...args} />} />
-        <IconItem Component={<IconImport {...args} />} />
-        <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
       </div>
