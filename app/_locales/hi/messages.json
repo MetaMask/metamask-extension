@@ -4236,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 अनुबंध आगे की सूचना या सहमति के बिना आपकी संपूर्ण टोकन शेष राशि खर्च कर सकता है। कम खर्च करने की सीमा को समायोजित करके अपनी सुरक्षा करें।",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "कमज़ोर"

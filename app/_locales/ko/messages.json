@@ -4236,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 계약은 추가 통보나 동의 없이도 남은 토큰 전체를 사용할 수 있습니다. 보호를 위해 최소 지출 한도를 설정하세요.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "약함"
