@@ -107,19 +107,50 @@ const rateLimitTimeouts = {};
  *  MetaMetricsController
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
+ * @param opts.securityProviderRequest
  * @returns {Function}
  */
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitSeconds = 60 * 5,
+  securityProviderRequest,
 }) {
-  return function rpcMethodTrackingMiddleware(
+  return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
     const { origin, method } = req;
+
+    let msgParams;
+
+    if (req.params) {
+      const data = req.params[0];
+      const from = req.params[1];
+      const paramsExamplePassword = req.params[2];
+
+      const { isSIWEMessage } = detectSIWE({ data });
+
+      msgParams = {
+        ...paramsExamplePassword,
+        from,
+        data,
+        origin,
+        siwe: isSIWEMessage,
+      };
+    }
+
+    const msgData = {
+      msgParams,
+      status: 'unapproved',
+      type: req.method,
+    };
+
+    const securityProviderResponse = await securityProviderRequest(
+      msgData,
+      req.method,
+    );
 
     // Determine what type of rate limit to apply based on method
     const rateLimitType =
@@ -168,13 +199,18 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
+      properties.ui_customizations =
+      securityProviderResponse?.flagAsDangerous === 1
+        ? ['flagged_as_malicious']
+        : [];
+
       if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const data = req?.params?.[0];
         const { isSIWEMessage } = detectSIWE({ data });
         if (isSIWEMessage) {
-          properties.ui_customizations = [
+          properties.ui_customizations.push(
             METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
-          ];
+          );
         }
       }
 
@@ -226,9 +262,9 @@ export default function createRPCMethodTrackingMiddleware({
         const data = req?.params?.[0];
         const { isSIWEMessage } = detectSIWE({ data });
         if (isSIWEMessage) {
-          properties.ui_customizations = [
+          properties.ui_customizations.push(
             METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
-          ];
+          );
         }
       }
 
