@@ -1,0 +1,9 @@
+.token-list{
+  &__container{
+    &--cell{
+      &--text-container{
+        width: 100%;
+      }
+    }
+  }
+}
