@@ -43,6 +43,10 @@ export default function DesktopEnableButton() {
     if (desktopEnabled) {
       await disableDesktop();
       setDesktopEnabled(false);
+      trackEvent({
+        category: EVENT.CATEGORIES.DESKTOP,
+        event: `Disable Desktop Button Clicked`,
+      });
       return;
     }
 
@@ -81,6 +85,10 @@ export default function DesktopEnableButton() {
       return;
     }
 
+    trackEvent({
+      category: EVENT.CATEGORIES.DESKTOP,
+      event: `Enable Desktop Button Clicked`,
+    });
     history.push(DESKTOP_PAIRING_ROUTE);
   };
 
@@ -92,10 +100,6 @@ export default function DesktopEnableButton() {
       type="primary"
       large
       onClick={(event) => {
-        trackEvent({
-          category: EVENT.CATEGORIES.DESKTOP,
-          event: `${getButtonText(desktopEnabled)} Button Clicked`,
-        });
         event.preventDefault();
         onClick();
       }}
