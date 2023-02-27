@@ -90,27 +90,26 @@ const TokenOverview = ({ className, token }) => {
       }
       buttons={
         <>
-          {isBuyableChain && (
-            <IconButton
-              className="token-overview__button"
-              Icon={
-                <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
-              }
-              label={t('buy')}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  properties: {
-                    location: 'Token Overview',
-                    text: 'Buy',
-                  },
-                });
-              }}
-              disabled={token.isERC721}
-            />
-          )}
+          <IconButton
+            className="token-overview__button"
+            Icon={
+              <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+            }
+            label={t('buy')}
+            data-testid="token-overview-buy"
+            onClick={() => {
+              openBuyCryptoInPdapp();
+              trackEvent({
+                event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
+                category: EVENT.CATEGORIES.NAVIGATION,
+                properties: {
+                  location: 'Token Overview',
+                  text: 'Buy',
+                },
+              });
+            }}
+            disabled={token.isERC721 || !isBuyableChain}
+          />
           <IconButton
             className="token-overview__button"
             onClick={async () => {
