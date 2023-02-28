@@ -3666,9 +3666,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/desktop@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/desktop@npm:0.2.0"
+"@metamask/desktop@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/desktop@npm:0.3.0"
   dependencies:
     "@metamask/obs-store": ^5.0.0
     eciesjs: ^0.3.15
@@ -3680,7 +3680,7 @@ __metadata:
     uuid: ^8.3.2
     webextension-polyfill: ^0.8.0
     ws: ^7.4.6
-  checksum: 052d5dd58951c77733b538d9c392a5aa5b7d87bb600cf04a97e3213048f84936a4446adbf901258417c8eed01dbc68eb2c7117a53b6af7a416ecea975460ffb7
+  checksum: fb0c0582feb326f01ffe98e26dec8e62861aea7fe6fb0ce44e78b81ca95ec37b6b2c12398e3b3d2b5ff6253ff227c17683a72cea3b1532c088c27c8ebaea2c4e
   languageName: node
   linkType: hard
 
@@ -3766,6 +3766,25 @@ __metadata:
     json-rpc-engine: ^6.1.0
     node-fetch: ^2.6.7
   checksum: 6230cb289b66db39d27f08ffc72cfb79274e632e4e14eb52ca72d19167d17bbf22c58718d80f801818058631dec0638bcc21ef4b229fa8d53e7f9328be870fc6
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-json-rpc-middleware@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:10.0.0"
+  dependencies:
+    "@metamask/eth-sig-util": ^5.0.0
+    "@metamask/safe-event-emitter": ^2.0.0
+    "@metamask/utils": ^3.0.3
+    btoa: ^1.2.1
+    clone: ^2.1.1
+    eth-block-tracker: ^5.0.1
+    eth-rpc-errors: ^4.0.3
+    json-rpc-engine: ^6.1.0
+    json-stable-stringify: ^1.0.1
+    node-fetch: ^2.6.7
+    pify: ^3.0.0
+  checksum: c754b3a39f175698070b4d07076e692d3080738bd25157c3b93114d286c975ee6895d5793b4188ca3d0abbcdef04bfde9e2d4835251a6b725b002d3750bf98de
   languageName: node
   linkType: hard
 
@@ -15448,25 +15467,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-middleware@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "eth-json-rpc-middleware@npm:9.0.1"
-  dependencies:
-    "@metamask/eth-sig-util": ^5.0.0
-    "@metamask/safe-event-emitter": ^2.0.0
-    "@metamask/utils": ^3.0.3
-    btoa: ^1.2.1
-    clone: ^2.1.1
-    eth-block-tracker: ^5.0.1
-    eth-rpc-errors: ^4.0.3
-    json-rpc-engine: ^6.1.0
-    json-stable-stringify: ^1.0.1
-    node-fetch: ^2.6.7
-    pify: ^3.0.0
-  checksum: 9512829a6958df6ef739b891a0c0804b51a140407fd2e3ddaaa6b18d975796646cfcf7f7305a18beb7903db09e0c7a91b06dc5434b6bd2d6cdb85d992d9fd3ab
-  languageName: node
-  linkType: hard
-
 "eth-lattice-keyring@npm:^0.12.3":
   version: 0.12.3
   resolution: "eth-lattice-keyring@npm:0.12.3"
@@ -24049,13 +24049,14 @@ __metadata:
     "@metamask/contract-metadata": ^2.2.0
     "@metamask/controller-utils": ^1.0.0
     "@metamask/design-tokens": ^1.9.0
-    "@metamask/desktop": ^0.2.0
+    "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
     "@metamask/eslint-config-jest": ^9.0.0
     "@metamask/eslint-config-mocha": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/eth-json-rpc-infura": ^7.0.0
+    "@metamask/eth-json-rpc-middleware": ^10.0.0
     "@metamask/eth-keyring-controller": ^10.0.0
     "@metamask/eth-ledger-bridge-keyring": ^0.13.0
     "@metamask/eth-token-tracker": ^4.0.0
@@ -24189,7 +24190,6 @@ __metadata:
     eth-block-tracker: ^6.0.0
     eth-ens-namehash: ^2.0.8
     eth-json-rpc-filters: ^6.0.0
-    eth-json-rpc-middleware: ^9.0.1
     eth-lattice-keyring: ^0.12.3
     eth-method-registry: ^2.0.0
     eth-query: ^2.1.2
