@@ -9,6 +9,8 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 const radius = 14;
 const strokeWidth = 2;
@@ -19,6 +21,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [hasTriggeredUnlock, setHasTriggeredUnlock] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
 
   /**
    * Prevent animation events from propogating up
@@ -34,6 +37,13 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const onMouseDown = () => {
     isLongPressing.current = true;
+    trackEvent({
+      category: EVENT.CATEGORIES.KEYS,
+      event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_CLICK_STARTED,
+      properties: {
+        key_type: EVENT.KEY_TYPES.SRP,
+      },
+    });
   };
 
   /**
@@ -57,6 +67,20 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const triggerOnLongPressed = useCallback(
     (e) => {
+      trackEvent({
+        category: EVENT.CATEGORIES.KEYS,
+        event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_COMPLETED,
+        properties: {
+          key_type: EVENT.KEY_TYPES.SRP,
+        },
+      });
+      trackEvent({
+        category: EVENT.CATEGORIES.KEYS,
+        event: EVENT_NAMES.SRP_VIEWS_SRP,
+        properties: {
+          key_type: EVENT.KEY_TYPES.SRP,
+        },
+      });
       onLongPressed();
       setHasTriggeredUnlock(true);
       preventPropogation(e);

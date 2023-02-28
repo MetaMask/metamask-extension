@@ -152,6 +152,15 @@ const RevealSeedPage = () => {
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
             tabKey="text-seed"
+            onClick={() => {
+              trackEvent({
+                category: EVENT.CATEGORIES.KEYS,
+                event: EVENT_NAMES,
+                properties: {
+                  key_type: EVENT.KEY_TYPES.SRP,
+                },
+              });
+            }}
           >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
             <ExportTextContainer
@@ -173,6 +182,13 @@ const RevealSeedPage = () => {
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
             tabKey="qr-seed"
+            onClick={trackEvent({
+              category: EVENT.CATEGORIES.KEYS,
+              event: EVENT_NAMES,
+              properties: {
+                key_type: EVENT.KEY_TYPES.SRP,
+              },
+            })}
           >
             <Box
               display={DISPLAY.FLEX}
@@ -240,7 +256,16 @@ const RevealSeedPage = () => {
           type={BUTTON_TYPES.SECONDARY}
           width={BLOCK_SIZES.FULL}
           size={Size.LG}
-          onClick={() => history.push(mostRecentOverviewPage)}
+          onClick={() => {
+            trackEvent({
+              category: EVENT.CATEGORIES.KEYS,
+              event: EVENT_NAMES,
+              properties: {
+                key_type: EVENT.KEY_TYPES.SRP,
+              },
+            });
+            history.push(mostRecentOverviewPage);
+          }}
         >
           {t('close')}
         </Button>
