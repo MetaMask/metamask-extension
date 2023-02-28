@@ -24,16 +24,18 @@ import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FONT_WEIGHT,
+  SEVERITIES,
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import Dialog from '../../ui/dialog';
 import {
   getPlatform,
   getEnvironmentType,
 } from '../../../../app/scripts/lib/util';
 import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
+
+import { BannerAlert } from '../../component-library';
 
 const renderInstructionStep = (
   text,
@@ -136,7 +138,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   return (
     <div>
       <div className="confirm-detail-row">
-        <Dialog type="message">
+        <BannerAlert severity={SEVERITIES.INFO}>
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(
@@ -207,12 +209,13 @@ export default function LedgerInstructionField({ showDataInstruction }) {
               TextColor.WARNING_DEFAULT,
             )}
           </div>
-        </Dialog>
+        </BannerAlert>
       </div>
     </div>
   );
 }
 
 LedgerInstructionField.propTypes = {
+  // whether or not to show the data instruction
   showDataInstruction: PropTypes.bool,
 };
