@@ -1368,7 +1368,7 @@
     "message": "View on Etherscan"
   },
   "expandExperience": {
-    "message": "Expand your web3 experience"
+    "message": "Expand your web3 experience with MetaMask Snaps"
   },
   "expandView": {
     "message": "Expand view"
@@ -1410,7 +1410,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "See details",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Added on",
@@ -2010,7 +2010,7 @@
     "message": "Malformed data"
   },
   "manageSnaps": {
-    "message": "Manage your installed Snaps"
+    "message": "Manage your installed snaps"
   },
   "max": {
     "message": "Max"
@@ -2771,15 +2771,15 @@
   },
   "permission_accessNamedSnap": {
     "message": "Connect to $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Access the internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
   "permission_accessSnap": {
-    "message": "Connect to the $1 Snap.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "message": "Connect to the $1 snap.",
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Schedule and execute periodic actions.",
@@ -3016,7 +3016,7 @@
     "message": "NFT was successfully removed!"
   },
   "removeSnap": {
-    "message": "Remove Snap"
+    "message": "Remove snap"
   },
   "removeSnapConfirmation": {
     "message": "Are you sure you want to remove $1?",
@@ -3425,7 +3425,7 @@
     "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
-    "message": "Install Snap"
+    "message": "Install snap"
   },
   "snapInstallWarningCheck": {
     "message": "To confirm that you understand, check the box."
@@ -3441,7 +3441,7 @@
     "message": "This snap is requesting the following permissions:"
   },
   "snapUpdate": {
-    "message": "Update Snap"
+    "message": "Update snap"
   },
   "snapUpdateExplanation": {
     "message": "$1 needs a newer version of your snap.",

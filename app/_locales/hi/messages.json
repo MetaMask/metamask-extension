@@ -1276,7 +1276,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "विवरण देखें",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "जोड़ा गया",
@@ -2573,7 +2573,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 स्नैप से कनेक्ट करें।",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",

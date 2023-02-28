@@ -1276,7 +1276,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Tingnan ang mga detalye",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Dinagdag sa",
@@ -2573,7 +2573,7 @@
   },
   "permission_accessSnap": {
     "message": "Kumonekta sa $1 Snap.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Mag-iskedyul at magsagawa ng mga pana-panahong mga aksyon.",
