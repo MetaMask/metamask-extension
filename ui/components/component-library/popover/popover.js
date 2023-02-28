@@ -1,3 +1,5 @@
+// add ESC button option to close popover (boolean)
+
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { PropTypes } from 'prop-types';
@@ -11,21 +13,21 @@ import { PopoverPosition } from '.';
 export const Popover = ({
   children,
   // content,
-  position = PopoverPosition.bottom,
+  position = PopoverPosition.bottomStart,
   hasArrow = true,
-  onClick = false,
-  onHover = true,
+  onClick = true,
+  onHover = false,
   onFocus = false,
   matchWidth = false,
   preventOverflow = false,
-  flip = false,
+  flip = true,
   className,
   ...props
 }) => {
   const [referenceElement, setReferenceElement] = useState(null);
   const [popperElement, setPopperElement] = useState(null);
   const [arrowElement, setArrowElement] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   // Define Popper options
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: position,
@@ -88,7 +90,7 @@ export const Popover = ({
 
   return (
     <>
-      <div
+      <Box
         className="popover-reference"
         ref={setReferenceElement}
         onClick={handleClick}
@@ -96,9 +98,11 @@ export const Popover = ({
         onMouseLeave={handleMouseLeave}
         onFocus={handleFocus}
         onBlur={handleClose}
+        backgroundColor={Color.primaryDefault}
+        padding={5}
       >
-        <Button>{children}</Button>
-      </div>
+        {children}
+      </Box>
       {isOpen &&
         createPortal(
           <Box
@@ -111,7 +115,8 @@ export const Popover = ({
             style={{ ...styles.popper, ...contentStyle }}
             {...attributes.popper}
           >
-            {children} - This is the popper content
+            {children} - This is the popper content{' '}
+            {console.log('children', children)}
             {hasArrow && (
               <Box
                 borderColor={Color.borderDefault}

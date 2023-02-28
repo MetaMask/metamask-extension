@@ -5,6 +5,7 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { Button } from '..';
 import README from './README.mdx';
 import { Popover } from '.';
 
@@ -75,26 +76,9 @@ export const DefaultStory = (args) => (
     justifyContent={JustifyContent.center}
     alignItems={AlignItems.center}
   >
-    <Popover placement="bottom" {...args}>
-      Example
+    <Popover placement="auto" {...args}>
+      TEST
     </Popover>
-
-    {/* <div>
-        <Popover
-          isOpen={isOpen}
-          position="top"
-          onClick
-          matchWidth
-          content={
-            <div>
-              <h2>Popover Content</h2>
-              <p>This is the content of the popover.</p>
-            </div>
-          }
-        >
-          <button>Open Popover</button>
-        </Popover>
-      </div> */}
   </Box>
 );
 
