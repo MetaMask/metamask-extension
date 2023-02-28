@@ -583,6 +583,7 @@ export default class ConfirmTransactionBase extends Component {
       <HardwareWalletState
         key="hw-locked-error"
         initialStatus="unlocked"
+        className="hardware-wallet-state__row"
         onUpdate={(status) =>
           this.setState({ hardwareLocked: status === 'locked' })
         }
@@ -591,6 +592,7 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
+        {isHardwareWallet && renderHardwareWalletState()}
         <TransactionAlerts
           setUserAcknowledgedGasMissing={() =>
             this.setUserAcknowledgedGasMissing()
@@ -610,7 +612,6 @@ export default class ConfirmTransactionBase extends Component {
               : () => this.handleEditGas()
           }
           rows={[
-            isHardwareWallet && renderHardwareWalletState(),
             renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning &&
               !isMultiLayerFeeNetwork &&

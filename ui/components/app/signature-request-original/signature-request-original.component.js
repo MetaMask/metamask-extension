@@ -149,6 +149,16 @@ export default class SignatureRequestOriginal extends Component {
             securityProviderResponse={txData.securityProviderResponse}
           />
         ) : null}
+        {isHardwareWallet ? (
+          <div className="signature-request__error-container">
+            <HardwareWalletState
+              initialStatus="unlocked"
+              onUpdate={(status) =>
+                this.setState({ hardwareLocked: status === 'locked' })
+              }
+            />
+          </div>
+        ) : null}
         <div className="request-signature__origin">
           <SiteOrigin
             siteOrigin={txData.msgParams.origin}
@@ -178,16 +188,6 @@ export default class SignatureRequestOriginal extends Component {
         >
           {this.context.t('signatureRequestGuidance')}
         </Typography>
-        {isHardwareWallet ? (
-          <div className="signature-request__error-container">
-            <HardwareWalletState
-              initialStatus="unlocked"
-              onUpdate={(status) =>
-                this.setState({ hardwareLocked: status === 'locked' })
-              }
-            />
-          </div>
-        ) : null}
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {

@@ -94,14 +94,6 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
-      {isHdWallet ? (
-        <div className="signature-request-siwe__actionable-message">
-          <HardwareWalletState
-            initialStatus="unlocked"
-            onUpdate={(status) => setHardwareLocked(status === 'locked')}
-          />
-        </div>
-      ) : null}
       {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
         txData?.securityProviderResponse?.flagAsDangerous !==
           SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
@@ -110,6 +102,14 @@ export default function SignatureRequestSIWE({
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />
+      ) : null}
+      {isHdWallet ? (
+        <div className="signature-request-siwe__actionable-message">
+          <HardwareWalletState
+            initialStatus="unlocked"
+            onUpdate={(status) => setHardwareLocked(status === 'locked')}
+          />
+        </div>
       ) : null}
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (

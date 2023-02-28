@@ -229,6 +229,16 @@ export default class SignatureRequest extends PureComponent {
             accountAddress={address}
           />
         </div>
+        {isHardwareWallet ? (
+          <div className="signature-request__error-container">
+            <HardwareWalletState
+              initialStatus="unlocked"
+              onUpdate={(status) =>
+                this.setState({ hardwareLocked: status === 'locked' })
+              }
+            />
+          </div>
+        ) : null}
         <div className="signature-request-content">
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
@@ -286,16 +296,6 @@ export default class SignatureRequest extends PureComponent {
             </div>
           ) : null}
         </div>
-        {isHardwareWallet ? (
-          <div className="signature-request__error-container">
-            <HardwareWalletState
-              initialStatus="unlocked"
-              onUpdate={(status) =>
-                this.setState({ hardwareLocked: status === 'locked' })
-              }
-            />
-          </div>
-        ) : null}
         {isLedgerWallet ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
             <LedgerInstructionField showDataInstruction />
