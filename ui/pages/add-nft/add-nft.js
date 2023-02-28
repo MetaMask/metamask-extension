@@ -33,6 +33,11 @@ import NftsDetectionNotice from '../../components/app/nfts-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  ButtonIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 
 export default function AddNft() {
   const t = useI18nContext();
@@ -149,13 +154,16 @@ export default function AddNft() {
                     <Typography
                       variant={TypographyVariant.H7}
                       fontWeight={FONT_WEIGHT.NORMAL}
-                      margin={0}
+                      marginTop={0}
                     >
                       {t('nftAddFailedMessage')}
                     </Typography>
-                    <button
-                      className="fas fa-times add-nft__close"
-                      title={t('close')}
+                    <ButtonIcon
+                      className="add-nft__close"
+                      iconName={ICON_NAMES.CLOSE}
+                      size={ICON_SIZES.SM}
+                      ariaLabel={t('close')}
+                      data-testid="add-nft-error-close"
                       onClick={() => setNftAddFailed(false)}
                     />
                   </Box>
