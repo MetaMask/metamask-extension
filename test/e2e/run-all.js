@@ -72,10 +72,7 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (nft) {
     const testDir = path.join(__dirname, 'nft');
-    testPaths = [
-      ...(await getTestPathsForTestDir(testDir)),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'erc1155'))),
-    ];
+    testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
