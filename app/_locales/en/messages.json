@@ -4223,6 +4223,13 @@
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"
   },
+  "swapTokenAddedManuallyDescription": {
+    "message": "Verify this token on $1 and make sure it is the token you want to trade.",
+    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "swapTokenAddedManuallyTitle": {
+    "message": "Token added manually"
+  },
   "swapTokenAvailable": {
     "message": "Your $1 has been added to your account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
@@ -4249,6 +4256,13 @@
     "message": "Verified on $1 sources.",
     "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
   },
+  "swapTokenVerifiedOn1SourceDescription": {
+    "message": "$1 is only verified on 1 source. Consider verifying it on $2 before proceeding.",
+    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "swapTokenVerifiedOn1SourceTitle": {
+    "message": "Potentially inauthentic token"
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -4261,13 +4275,6 @@
   },
   "swapUnknown": {
     "message": "Unknown"
-  },
-  "swapVerifiedOn1SourceDescription": {
-    "message": "$1 is only verified on 1 source. Consider verifying it on $2 before proceeding.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapVerifiedOn1SourceTitle": {
-    "message": "Potentially inauthentic token"
   },
   "swapVerifyTokenExplanation": {
     "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",

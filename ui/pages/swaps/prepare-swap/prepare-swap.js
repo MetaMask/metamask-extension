@@ -127,6 +127,7 @@ import {
   ICON_SIZES,
   TextField,
   ButtonLink,
+  Text,
 } from '../../../components/component-library';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
 import SwapsFooter from '../swaps-footer';
@@ -684,6 +685,8 @@ export default function PrepareSwap({
   const showReviewQuote =
     !isReviewSwapButtonDisabled && areQuotesPresent && !swapsErrorKey;
 
+  const tokenVerifiedOn1Source = occurrences === 1;
+
   return (
     <div className="prepare-swap">
       <div className="prepare-swap__content">
@@ -956,27 +959,31 @@ export default function PrepareSwap({
           <Box display={DISPLAY.FLEX} marginTop={2}>
             <BannerAlert
               severity={
-                occurrences === 1 ? SEVERITIES.WARNING : SEVERITIES.DANGER
+                tokenVerifiedOn1Source ? SEVERITIES.WARNING : SEVERITIES.DANGER
               }
               title={
-                occurrences === 1
-                  ? t('swapVerifiedOn1SourceTitle')
-                  : t('swapTokenVerificationAddedManually')
+                tokenVerifiedOn1Source
+                  ? t('swapTokenVerifiedOn1SourceTitle')
+                  : t('swapTokenAddedManuallyTitle')
               }
               width={BLOCK_SIZES.FULL}
             >
               <Box>
-                <Typography variant={TypographyVariant.H6}>
-                  {t('swapVerifiedOn1SourceDescription', [
-                    selectedToToken?.symbol,
-                    <BlockExplorerLink key="block-explorer-link" />,
-                  ])}
-                </Typography>
+                <Text variant={TextVariant.bodyMd} as="h6">
+                  {tokenVerifiedOn1Source
+                    ? t('swapTokenVerifiedOn1SourceDescription', [
+                        selectedToToken?.symbol,
+                        <BlockExplorerLink key="block-explorer-link" />,
+                      ])
+                    : t('swapTokenAddedManuallyDescription', [
+                        <BlockExplorerLink key="block-explorer-link" />,
+                      ])}
+                </Text>
                 {!verificationClicked && (
                   <ButtonLink
                     size={Size.INHERIT}
                     textProps={{
-                      variant: TextVariant.bodySm,
+                      variant: TextVariant.bodyMd,
                       alignItems: AlignItems.flexStart,
                     }}
                     onClick={(e) => {

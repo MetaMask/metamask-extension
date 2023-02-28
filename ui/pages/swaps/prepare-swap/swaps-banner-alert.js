@@ -5,21 +5,13 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
-import Button from '../../../components/ui/button';
 import {
-  TypographyVariant,
-  DISPLAY,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
-  TextColor,
-  JustifyContent,
   AlignItems,
   SEVERITIES,
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ButtonLink } from '../../../components/component-library';
+import { ButtonLink, Text } from '../../../components/component-library';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -45,13 +37,13 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
       title = t('swapSlippageOverLimitTitle');
       description = (
         <Box>
-          <Typography variant={TypographyVariant.H6}>
+          <Text variant={TextVariant.bodyMd} as="h6">
             {t('swapSlippageOverLimitDescription')}
-          </Typography>
+          </Text>
           <ButtonLink
-            size={Size.SM}
+            size={Size.INHERIT}
             textProps={{
-              variant: TextVariant.bodySm,
+              variant: TextVariant.bodyMd,
               alignItems: AlignItems.flexStart,
             }}
             onClick={(e) => {
@@ -68,31 +60,31 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
       severity = SEVERITIES.WARNING;
       title = t('swapSlippageVeryHighTitle');
       description = (
-        <Typography variant={TypographyVariant.H6}>
+        <Text variant={TextVariant.bodyMd} as="h6">
           {t('swapSlippageVeryHighDescription')}
-        </Typography>
+        </Text>
       );
       break;
     case SLIPPAGE_TOO_LOW_ERROR:
       severity = SEVERITIES.WARNING;
       title = t('swapSlippageTooLowTitle');
       description = (
-        <Typography variant={TypographyVariant.H6}>
+        <Text variant={TextVariant.bodyMd} as="h6">
           {t('swapSlippageTooLowDescription')}
-        </Typography>
+        </Text>
       );
       break;
     case SLIPPAGE_NEGATIVE_ERROR:
       title = t('swapSlippageNegativeTitle');
       description = (
         <Box>
-          <Typography variant={TypographyVariant.H6}>
+          <Text variant={TextVariant.bodyMd} as="h6">
             {t('swapSlippageNegativeDescription')}
-          </Typography>
+          </Text>
           <ButtonLink
-            size={Size.SM}
+            size={Size.INHERIT}
             textProps={{
-              variant: TextVariant.bodySm,
+              variant: TextVariant.bodyMd,
               alignItems: AlignItems.flexStart,
             }}
             onClick={(e) => {
@@ -109,13 +101,13 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
       title = t('swapQuotesNotAvailableErrorTitle');
       description = (
         <Box>
-          <Typography variant={TypographyVariant.H6}>
+          <Text variant={TextVariant.bodyMd} as="h6">
             {t('swapQuotesNotAvailableDescription')}
-          </Typography>
+          </Text>
           <ButtonLink
-            size={Size.SM}
+            size={Size.INHERIT}
             textProps={{
-              variant: TextVariant.bodySm,
+              variant: TextVariant.bodyMd,
               alignItems: AlignItems.flexStart,
             }}
             as="a"
@@ -131,34 +123,34 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
     case ERROR_FETCHING_QUOTES:
       title = t('swapFetchingQuotesErrorTitle');
       description = (
-        <Typography variant={TypographyVariant.H6}>
+        <Text variant={TextVariant.bodyMd} as="h6">
           {t('swapFetchingQuotesErrorDescription')}
-        </Typography>
+        </Text>
       );
       break;
     case CONTRACT_DATA_DISABLED_ERROR:
       title = t('swapContractDataDisabledErrorTitle');
       description = t('swapContractDataDisabledErrorDescription');
       description = (
-        <Typography variant={TypographyVariant.H6}>
+        <Text variant={TextVariant.bodyMd} as="h6">
           {t('swapSlippageNegativeDescription')}
-        </Typography>
+        </Text>
       );
       break;
     case QUOTES_EXPIRED_ERROR:
       title = t('swapQuotesExpiredErrorTitle');
       description = (
-        <Typography variant={TypographyVariant.H6}>
+        <Text variant={TextVariant.bodyMd} as="h6">
           {t('swapQuotesExpiredErrorDescription')}
-        </Typography>
+        </Text>
       );
       break;
     case OFFLINE_FOR_MAINTENANCE:
       title = t('offlineForMaintenance');
       description = (
-        <Typography variant={TypographyVariant.H6}>
+        <Text variant={TextVariant.bodyMd} as="h6">
           {t('metamaskSwapsOfflineDescription')}
-        </Typography>
+        </Text>
       );
       break;
     case SWAP_FAILED_ERROR:
