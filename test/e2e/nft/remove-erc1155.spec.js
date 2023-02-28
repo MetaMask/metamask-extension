@@ -3,7 +3,7 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Import NFT', function () {
+describe('Remove ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
   const ganacheOptions = {
     accounts: [
@@ -15,13 +15,11 @@ describe('Import NFT', function () {
     ],
   };
 
-  it('should be able to import an ERC1155 NFT that user owns', async function () {
+  it('user should be able to remove ERC1155 NFT on details page', async function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -33,31 +31,32 @@ describe('Import NFT', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // After login, go to NFTs tab, open the import NFT/ERC1155 form
+        // After login, go to NFTs tab and import an ERC1155 NFT
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
 
-        // Enter a valid NFT that belongs to user and check success message appears
         await driver.fill('[data-testid="address"]', contractAddress);
         await driver.fill('[data-testid="token-id"]', '1');
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
-        const newNftNotification = await driver.findElement({
-          text: 'NFT was successfully added!',
+        // Open the details and click remove nft button
+        await driver.clickElement('.nfts-items__item-image');
+        await driver.clickElement('[data-testid="nft-options__button"]');
+        await driver.clickElement('[data-testid="nft-item-remove"]');
+
+        // Check the remove NFT toaster is displayed
+        const removeNftNotification = await driver.findElement({
+          text: 'NFT was successfully removed!',
           tag: 'h6',
         });
-        assert.equal(await newNftNotification.isDisplayed(), true);
+        assert.equal(await removeNftNotification.isDisplayed(), true);
 
-        // Check the imported ERC1155 and its image are displayed in the ERC1155 tab
-        const importedERC1155 = await driver.waitForSelector({
-          css: 'h5',
-          text: 'Rocks',
+        // Check the imported ERC1155 NFT disappeared in the NFT tab
+        const noNftInfo = await driver.waitForSelector({
+          css: 'h4',
+          text: 'No NFTs yet',
         });
-        const importedERC1155Image = await driver.waitForSelector(
-          '[class="nfts-items__item-image"]',
-        );
-        assert.equal(await importedERC1155.isDisplayed(), true);
-        assert.equal(await importedERC1155Image.isDisplayed(), true);
+        assert.equal(await noNftInfo.isDisplayed(), true);
       },
     );
   });
