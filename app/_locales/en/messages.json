@@ -1515,13 +1515,6 @@
   "general": {
     "message": "General"
   },
-  "getEther": {
-    "message": "Get Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1 network.",
-    "description": "Displays network name for Ether faucet"
-  },
   "getWarningsFromOpenSea": {
     "message": "Get warnings from OpenSea whenever you receive a known malicious request."
   },
