@@ -77,9 +77,6 @@
   "advanced": {
     "message": "進階"
   },
-  "affirmAgree": {
-    "message": "我同意"
-  },
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
   },
@@ -144,12 +141,6 @@
   },
   "assets": {
     "message": "資產"
-  },
-  "attemptToCancel": {
-    "message": "嘗試取消？"
-  },
-  "attemptToCancelDescription": {
-    "message": "送出取消請求並不保證您原本的交易一定會被取消。若取消成功，將會收取上方顯示交易費用。"
   },
   "attemptingConnect": {
     "message": "正在嘗試連結區塊鏈。"
@@ -229,9 +220,6 @@
   },
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
-  },
-  "cancellationGasFee": {
-    "message": "需要的手續費"
   },
   "cancelled": {
     "message": "已取消"
@@ -678,10 +666,6 @@
   "gasUsed": {
     "message": "Gas 用量"
   },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Privacy Policy here",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "一般"
   },
@@ -994,9 +978,6 @@
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
-  },
-  "noThanks": {
-    "message": "不了"
   },
   "noTransactions": {
     "message": "尚未有交易"
@@ -1672,9 +1653,6 @@
   "xOfYPending": {
     "message": "$1 之 $2 等待中",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
-  },
-  "yesLetsTry": {
-    "message": "了解，試試看"
   },
   "youNeedToAllowCameraAccess": {
     "message": "需要准許存取攝影鏡頭才能啟用此功能"

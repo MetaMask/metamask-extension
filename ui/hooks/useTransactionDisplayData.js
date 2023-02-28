@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { getKnownMethodData } from '../selectors/selectors';
+import { useEffect, useState } from 'react';
+import {
+  getDetectedTokensInCurrentNetwork,
+  getKnownMethodData,
+  getTokenList,
+} from '../selectors/selectors';
 import {
   getStatusKey,
   getTransactionTypeTitle,
@@ -7,6 +12,7 @@ import {
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import {
+  getAssetDetails,
   getTokenAddressParam,
   getTokenIdParam,
 } from '../helpers/utils/token-util';
@@ -93,6 +99,8 @@ export function useTransactionDisplayData(transactionGroup) {
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
   const knownNfts = useSelector(getNfts);
+  const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
+  const tokenList = useSelector(getTokenList);
   const t = useI18nContext();
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
@@ -121,18 +129,53 @@ export function useTransactionDisplayData(transactionGroup) {
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
   const isTokenCategory = TOKEN_CATEGORY_HASH[type];
-
   // these values are always instantiated because they are either
   // used by or returned from hooks. Hooks must be called at the top level,
   // so as an additional safeguard against inappropriately associating token
   // transfers, we pass an additional argument to these hooks that will be
   // false for non-token transactions. This additional argument forces the
   // hook to return null
-  const token =
-    isTokenCategory &&
-    knownTokens.find(({ address }) =>
-      isEqualCaseInsensitive(address, recipientAddress),
-    );
+  let token = null;
+  const [currentAssetDetails, setCurrentAssetDetails] = useState(null);
+
+  if (isTokenCategory) {
+    token =
+      knownTokens.find(({ address }) =>
+        isEqualCaseInsensitive(address, recipientAddress),
+      ) ||
+      detectedTokens.find(({ address }) =>
+        isEqualCaseInsensitive(address, recipientAddress),
+      ) ||
+      tokenList[recipientAddress.toLowerCase()];
+  }
+  useEffect(() => {
+    async function getAndSetAssetDetails() {
+      if (isTokenCategory && !token) {
+        const assetDetails = await getAssetDetails(
+          recipientAddress,
+          senderAddress,
+          initialTransaction?.txParams?.data,
+          knownNfts,
+        );
+        setCurrentAssetDetails(assetDetails);
+      }
+    }
+    getAndSetAssetDetails();
+  }, [
+    isTokenCategory,
+    token,
+    recipientAddress,
+    senderAddress,
+    initialTransaction?.txParams?.data,
+    knownNfts,
+  ]);
+  if (currentAssetDetails) {
+    token = {
+      address: currentAssetDetails.toAddress,
+      symbol: currentAssetDetails.symbol,
+      decimals: currentAssetDetails.decimals,
+    };
+  }
 
   const tokenData = useTokenData(
     initialTransaction?.txParams?.data,

@@ -4488,10 +4488,6 @@ export function hideTestNetMessage() {
   return submitRequestToBackground('setShowTestnetMessageInDropdown', [false]);
 }
 
-export function hidePortfolioTooltip() {
-  return submitRequestToBackground('setShowPortfolioTooltip', [false]);
-}
-
 export function hideBetaHeader() {
   return submitRequestToBackground('setShowBetaHeader', [false]);
 }
@@ -4500,11 +4496,12 @@ export function hideBetaHeader() {
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
+  return async (dispatch) => {
     try {
       await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
         transactionSecurityCheckEnabled,
       ]);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4513,6 +4510,19 @@ export function setTransactionSecurityCheckEnabled(
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
+}
+
+export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    await submitRequestToBackground(
+      'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
+    );
+  };
 }
 
 // QR Hardware Wallets
@@ -4588,3 +4598,27 @@ export function requestAddNetworkApproval(
     }
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+export function setDesktopEnabled(desktopEnabled: boolean) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setDesktopEnabled', [desktopEnabled]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
+export async function generateOtp() {
+  return await submitRequestToBackground('generateOtp');
+}
+
+export async function testDesktopConnection() {
+  return await submitRequestToBackground('testDesktopConnection');
+}
+
+export async function disableDesktop() {
+  return await submitRequestToBackground('disableDesktop');
+}
+///: END:ONLY_INCLUDE_IN

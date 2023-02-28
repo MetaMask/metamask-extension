@@ -75,12 +75,6 @@
   "asset": {
     "message": "Sredstva"
   },
-  "attemptToCancel": {
-    "message": "Pokušavate da otkažete?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Slanje ovog pokušaja ne garantuje da će prvobitna transakcija biti otkazana. Ako je pokušaj otkazivanja uspešan, biće vam naplaćena provizija koja je navedena gore."
-  },
   "attemptingConnect": {
     "message": "Pokušava da se poveže na lanac blokova"
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Otkaži"
-  },
-  "cancellationGasFee": {
-    "message": "Otkazivanje gas naknade"
   },
   "cancelled": {
     "message": "Otkazano"
@@ -907,9 +898,6 @@
   },
   "welcomeBack": {
     "message": "Dobro došli nazad!"
-  },
-  "yesLetsTry": {
-    "message": "Da, pokušajmo."
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."

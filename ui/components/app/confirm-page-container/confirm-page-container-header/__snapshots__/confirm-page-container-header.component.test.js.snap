@@ -13,8 +13,8 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         class="confirm-page-container-header__back-button-container"
         style="visibility: hidden;"
       >
-        <div
-          class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-inherit"
+        <span
+          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
         <span

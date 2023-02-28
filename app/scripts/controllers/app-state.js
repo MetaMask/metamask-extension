@@ -40,7 +40,6 @@ export default class AppStateController extends EventEmitter {
       outdatedBrowserWarningLastShown: new Date().getTime(),
       nftsDetectionNoticeDismissed: false,
       showTestnetMessageInDropdown: true,
-      showPortfolioTooltip: true,
       showBetaHeader: isBeta(),
       trezorModel: null,
       ...initState,
@@ -300,15 +299,6 @@ export default class AppStateController extends EventEmitter {
    */
   setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
     this.store.updateState({ showTestnetMessageInDropdown });
-  }
-
-  /**
-   * Sets whether the portfolio site tooltip should be shown on the home page
-   *
-   * @param showPortfolioTooltip
-   */
-  setShowPortfolioTooltip(showPortfolioTooltip) {
-    this.store.updateState({ showPortfolioTooltip });
   }
 
   /**
