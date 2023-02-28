@@ -1,49 +1,39 @@
-import React, { Component, isValidElement } from 'react';
+import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../spinner';
 
-class LoadingScreen extends Component {
-  static defaultProps = {
-    loadingMessage: null,
-    showLoadingSpinner: true,
-  };
-
-  static propTypes = {
-    loadingMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-    showLoadingSpinner: PropTypes.bool,
-    header: PropTypes.element,
-  };
-
-  renderMessage() {
-    const { loadingMessage } = this.props;
-
-    if (!loadingMessage) {
-      return null;
-    }
-
-    return isValidElement(loadingMessage) ? (
-      loadingMessage
-    ) : (
-      <span>{loadingMessage}</span>
-    );
+const renderMessage = (message) => {
+  if (!message) {
+    return null;
   }
+  return isValidElement(message) ? message : <span>{message}</span>;
+};
 
-  render() {
-    return (
-      <div className="loading-overlay">
-        {this.props.header}
-        <div className="loading-overlay__container">
-          {this.props.showLoadingSpinner && (
-            <Spinner
-              color="var(--color-warning-default)"
-              className="loading-overlay__spinner"
-            />
-          )}
-          {this.renderMessage()}
-        </div>
+const LoadingScreen = ({
+  header,
+  loadingMessage,
+  showLoadingSpinner = true,
+}) => {
+  return (
+    <div className="loading-overlay">
+      {header}
+      <div className="loading-overlay__container">
+        {showLoadingSpinner && (
+          <Spinner
+            color="var(--color-warning-default)"
+            className="loading-overlay__spinner"
+          />
+        )}
+        {renderMessage(loadingMessage)}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default LoadingScreen;
+LoadingScreen.propTypes = {
+  header: PropTypes.element,
+  loadingMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  showLoadingSpinner: PropTypes.bool,
+};
+
+export default React.memo(LoadingScreen);
