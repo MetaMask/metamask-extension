@@ -1,4 +1,18 @@
-import { KeyringController } from '@metamask/eth-keyring-controller';
+/* eslint-disable import/newline-after-import */
+/* eslint-disable import/first */
+
+let KeyringController;
+
+///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+import { KeyringController as MetaMaskKeyringController } from '@metamask/eth-keyring-controller';
+KeyringController = MetaMaskKeyringController;
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import CodefiKeyringController from '@codefi/eth-keyring-controller';
+KeyringController = CodefiKeyringController;
+///: END:ONLY_INCLUDE_IN
+
 import log from 'loglevel';
 
 import { KeyringType } from '../../../shared/constants/keyring';

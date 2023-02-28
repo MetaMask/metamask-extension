@@ -113,9 +113,16 @@ const rateLimitTimeouts = {};
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
-  rateLimitSeconds = 60 * 5,
-  securityProviderRequest,
+  rateLimitSeconds,
 }) {
+  let finalRateLimitSeconds = rateLimitSeconds;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  finalRateLimitSeconds ||= 60 * 5;
+  ///: END:ONLY_INCLUDE_IN
+
+  finalRateLimitSeconds ||= 60;
+
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
     /** @type {any} */ res,
@@ -205,13 +212,13 @@ export default function createRPCMethodTrackingMiddleware({
             if (isSIWEMessage) {
               properties.ui_customizations === null
                 ? (properties.ui_customizations = [
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  ])
+                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                    .SIWE,
+                ])
                 : properties.ui_customizations.push(
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  );
+                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                    .SIWE,
+                );
             }
           }
         } catch (e) {
@@ -234,7 +241,7 @@ export default function createRPCMethodTrackingMiddleware({
 
       rateLimitTimeouts[method] = setTimeout(() => {
         delete rateLimitTimeouts[method];
-      }, SECOND * rateLimitSeconds);
+      }, SECOND * finalRateLimitSeconds);
     }
 
     next(async (callback) => {
@@ -302,13 +309,13 @@ export default function createRPCMethodTrackingMiddleware({
             if (isSIWEMessage) {
               properties.ui_customizations === null
                 ? (properties.ui_customizations = [
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  ])
+                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                    .SIWE,
+                ])
                 : properties.ui_customizations.push(
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  );
+                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                    .SIWE,
+                );
             }
           }
         } catch (e) {
