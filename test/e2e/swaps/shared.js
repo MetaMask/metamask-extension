@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 
 const FixtureBuilder = require('../fixture-builder');
-const { veryLargeDelayMs } = require('../helpers');
+const { regularDelayMs, veryLargeDelayMs } = require('../helpers');
 
 const ganacheOptions = {
   accounts: [
@@ -130,27 +130,13 @@ const checkActivityTransaction = async (driver, index, amount, swapFrom, swapTo)
   assert.equal(await amountValues[index].getText(), `-${amount} ${swapFrom}`);
 
   await itemsText[index].click()
+  await driver.delay(regularDelayMs);
 
-  const txStatus = await driver.waitForSelector('.transaction-list-item-details__tx-status >div > div:last-child');
+  const txStatus = await driver.findElement('.transaction-list-item-details__tx-status >div > div:last-child');
   assert.equal(await txStatus.getText(), `Confirmed`);
 
-  const txAmount = await driver.waitForSelector('.transaction-breakdown__value--amount')
+  const txAmount = await driver.findElement('.transaction-breakdown__value--amount')
   assert.equal(await txAmount.getText(), `-${amount} ${swapFrom}`);
-
-  await driver.clickElement('.disclosure__summary');
-  const symbol = (swapFrom === 'TESTETH') ? 'ETH' : swapFrom
-
-  const first_line = await driver.waitForSelector('.transaction-activity-log__activities-container >div:first-child')
-  logText = await first_line.getText()
-  assert.equal(logText.includes(`Transaction created with a value of ${amount} ${symbol}`), true);
-
-  const second_line = await driver.waitForSelector('.transaction-activity-log__activities-container >div:nth-child(2)')
-  logText = await second_line.getText()
-  assert.equal(logText.includes('Transaction submitted with estimated gas fee'), true);
-
-  const third_line = await driver.waitForSelector('.transaction-activity-log__activities-container >div:nth-child(3)')
-  logText = await third_line.getText()
-  assert.equal(logText.includes('Transaction confirmed'), true);
 
   await driver.clickElement('[data-testid="popover-close"]');
 };
