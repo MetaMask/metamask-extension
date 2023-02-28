@@ -117,8 +117,9 @@ import {
   FLEX_DIRECTION,
   FONT_STYLE,
   SEVERITIES,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { BannerAlert } from '../../../components/component-library/banner-alert';
+import { BannerAlert, Text } from '../../../components/component-library';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
@@ -1049,7 +1050,9 @@ export default function ViewQuote({ setReceiveToAmount }) {
                   severity={SEVERITIES.INFO}
                   title={t('notEnoughBalance')}
                 >
-                  {actionableBalanceErrorMessage}
+                  <Text variant={TextVariant.bodyMd} as="h6">
+                    {actionableBalanceErrorMessage}
+                  </Text>
                 </BannerAlert>
               </Box>
             )}
