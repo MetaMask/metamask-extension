@@ -3,7 +3,7 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Import NFT', function () {
+describe('Import ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
   const ganacheOptions = {
     accounts: [
@@ -58,6 +58,43 @@ describe('Import NFT', function () {
         );
         assert.equal(await importedERC1155.isDisplayed(), true);
         assert.equal(await importedERC1155Image.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should not be able to import an ERC1155 NFT that does not belong to user', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        smartContract,
+        title: this.test.title,
+      },
+      async ({ driver, _, contractRegistry }) => {
+        const contractAddress =
+          contractRegistry.getContractAddress(smartContract);
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // After login, go to NFTs tab, open the import NFT form
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
+
+        // Enter an NFT that not belongs to user with a valid address and an invalid token id
+        await driver.fill('[data-testid="address"]', contractAddress);
+        await driver.fill('[data-testid="token-id"]', '4');
+        await driver.clickElement({ text: 'Add', tag: 'button' });
+
+        // Check error message appears
+        const invalidNftNotification = await driver.findElement({
+          text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',
+          tag: 'h6',
+        });
+        assert.equal(await invalidNftNotification.isDisplayed(), true);
       },
     );
   });
