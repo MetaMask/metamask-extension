@@ -1,6 +1,9 @@
+const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const STALELIST_URL = 'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate';
+
+// const STALELIST_URL =
+//   'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate';
 
 /**
  * @param {import('mockttp').Mockttp} mockServer - The mock server.
@@ -8,49 +11,105 @@ const STALELIST_URL = 'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/me
  * configuration lookup performed by the warning page.
  */
 
-const setupSecurityProviderMocks = (mockServer) => {
-  mockServer.forPost(STALELIST_URL).thenCallback((req, res) => {
-    const requestBody = JSON.parse(req.body.toString());
-    let responseBody;
-    switch (requestBody.token_id) {
-      case 'not_malicious':
-        responseBody = {
+async function setupSecurityProviderMocks(mockServer) {
+  await mockServer
+    .forPost(
+      'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: {
           flagAsDangerous: 0,
-        };
+        },
+      };
+    });
+
+  await mockServer
+    .forPost(
+      'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: {
+          flagAsDangerous: 1,
+          reason: 'This site is known for phishing attempts.',
+          reason_header: 'This could be a scam',
+        },
+      };
+    });
+
+  await mockServer
+    .forPost(
+      'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: {
+          flagAsDangerous: 1,
+          reason: 'This site is not safe for browsing.',
+          reason_header: 'This site is not safe',
+        },
+      };
+    });
+  await mockServer
+    .forPost(
+      'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 401,
+        body: {
+          message: 'Unauthorized',
+        },
+      };
+    });
+}
+
+describe('Phishing Detection', function () {
+  function mockSecurityProviderDetection(mockServer, scenario) {
+    switch (scenario) {
+      case 'notMalicious':
+        setupSecurityProviderMocks(mockServer, {
+          statusCode: 200,
+          body: {
+            flagAsDangerous: 0,
+          },
+        });
         break;
       case 'malicious':
-        responseBody = {
-          flagAsDangerous: 1,
-          reason: 'This is a malicious website',
-          reason_header: 'Warning: Malicious Website',
-        };
+        setupSecurityProviderMocks(mockServer, {
+          statusCode: 200,
+          body: {
+            flagAsDangerous: 1,
+            reason: 'This site is known for phishing attempts.',
+            reason_header: 'This could be a scam',
+          },
+        });
         break;
-      case 'not_safe':
-        responseBody = {
-          flagAsDangerous: 1,
-          reason: 'This website is not safe',
-          reason_header: 'Warning: Not Safe',
-        };
+      case 'notSafe':
+        setupSecurityProviderMocks(mockServer, {
+          statusCode: 200,
+          body: {
+            flagAsDangerous: 1,
+            reason: 'This site is not safe for browsing.',
+            reason_header: 'This site is not safe',
+          },
+        });
         break;
-      case 'not_verified':
-        responseBody = {
-          flagAsDangerous: 1,
-          reason: 'Request not verified',
-          reason_header: 'Warning: Request Not Verified',
-        };
+      case 'requestNotVerified':
+        setupSecurityProviderMocks(mockServer, {
+          statusCode: 401,
+          body: {
+            message: 'Unauthorized',
+          },
+        });
         break;
       default:
-        throw new Error(`Unexpected token_id: ${requestBody.token_id}`);
+        throw new Error(`Unknown scenario: ${scenario}`);
     }
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(responseBody));
-  });
-};
-
-describe('Security Provider', function () {
-  function mockSecurityProviderDetection(mockServer) {
-    setupSecurityProviderMocks(mockServer);
   }
   const ganacheOptions = {
     accounts: [
@@ -62,13 +121,18 @@ describe('Security Provider', function () {
     ],
   };
 
-  it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
+  it('should return malicious response', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()({ openSeaEnabled: true }).build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            openSeaEnabled: true,
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
-        testSpecificMock: mockSecurityProviderDetection,
+        testSpecificMock: (mockServer) =>
+          mockSecurityProviderDetection(mockServer, 'malicious'),
         dapp: true,
         failOnConsoleError: false,
       },
@@ -80,7 +144,9 @@ describe('Security Provider', function () {
         await driver.clickElement({
           text: 'continue to the site.',
         });
-      }
+        const warningHeader = await driver.findElement('h2');
+        assert.equal(await warningHeader.getText(), 'This could be a scam');
+      },
     );
   });
 });
