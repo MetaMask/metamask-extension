@@ -12,9 +12,10 @@ const {
 
 
 describe('Swap Eth for another Token', function () {
-  withFixturesOptions.ganacheOptions.blockTime = 10
-
   it('Completes second Swaps while first swap is processing', async function () {
+
+    withFixturesOptions.ganacheOptions.blockTime = 10
+    
     await withFixtures(
       {
         ...withFixturesOptions,
