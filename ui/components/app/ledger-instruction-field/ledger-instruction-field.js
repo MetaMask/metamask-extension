@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -66,6 +66,9 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   const environmentType = getEnvironmentType();
   const environmentTypeIsFullScreen =
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
+
+  // make this instance dismissable
+  const [isShown, setShown] = useState(true);
 
   useEffect(() => {
     const initialConnectedDeviceCheck = async () => {
@@ -135,10 +138,10 @@ export default function LedgerInstructionField({ showDataInstruction }) {
 
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
-  return (
+  return isShown ? (
     <div>
       <div className="confirm-detail-row">
-        <BannerAlert severity={SEVERITIES.INFO}>
+        <BannerAlert severity={SEVERITIES.INFO} onClose={() => setShown(false)}>
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(
@@ -212,7 +215,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
         </BannerAlert>
       </div>
     </div>
-  );
+  ) : null;
 }
 
 LedgerInstructionField.propTypes = {
