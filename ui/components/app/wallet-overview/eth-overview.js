@@ -113,6 +113,7 @@ const EthOverview = ({ className }) => {
               <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
             }
             disabled={!isBuyableChain}
+            data-testid="eth-overview-buy"
             label={t('buy')}
             onClick={() => {
               openBuyCryptoInPdapp();
