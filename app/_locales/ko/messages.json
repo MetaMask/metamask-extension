@@ -1276,7 +1276,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "세부 정보 보기",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "추가하기",
@@ -2573,7 +2573,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 스냅에 연결합니다.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "정기적 활동 예약 및 실행",
