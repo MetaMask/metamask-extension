@@ -25,7 +25,6 @@ import ListWithSearch from '../list-with-search';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
-import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
@@ -36,6 +35,10 @@ import {
   TextColor,
   JustifyContent,
   AlignItems,
+  SEVERITIES,
+  Size,
+  TextVariant,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 
 import {
@@ -123,7 +126,9 @@ import {
   ICON_NAMES,
   ICON_SIZES,
   TextField,
+  ButtonLink,
 } from '../../../components/component-library';
+import { BannerAlert } from '../../../components/component-library/banner-alert';
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token';
 import SwapsBannerAlert from './swaps-banner-alert';
@@ -227,7 +232,7 @@ export default function PrepareSwap({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { loading, tokensWithBalances } = useTokenTracker(tokens);
+  const { tokensWithBalances } = useTokenTracker(tokens);
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
@@ -559,7 +564,7 @@ export default function PrepareSwap({
   const BlockExplorerLink = () => {
     return (
       <a
-        className="prepare-swap__token-etherscan-link prepare-swap__underline"
+        className="prepare-swap__token-etherscan-link"
         key="prepare-swap-etherscan-link"
         onClick={() => {
           /* istanbul ignore next */
@@ -583,19 +588,6 @@ export default function PrepareSwap({
       </a>
     );
   };
-
-  let tokenVerificationDescription = '';
-  if (blockExplorerTokenLink) {
-    if (occurrences === 1) {
-      tokenVerificationDescription = t('verifyThisTokenOn', [
-        <BlockExplorerLink key="block-explorer-link" />,
-      ]);
-    } else if (occurrences === 0) {
-      tokenVerificationDescription = t('verifyThisUnconfirmedTokenOn', [
-        <BlockExplorerLink key="block-explorer-link" />,
-      ]);
-    }
-  }
 
   const swapYourTokenBalance = `${t('balance')}: ${fromTokenString || '0'}`;
 
@@ -688,6 +680,9 @@ export default function PrepareSwap({
     (item) => isEqualCaseInsensitive(item.address, selectedToToken?.address),
     [selectedToToken?.address],
   );
+
+  const showReviewQuote =
+    !isReviewSwapButtonDisabled && areQuotesPresent && !swapsErrorKey;
 
   return (
     <div className="prepare-swap">
@@ -957,34 +952,49 @@ export default function PrepareSwap({
             </Box>
           </Box>
         </div>
-        {toTokenIsNotDefault && occurrences < 2 && (
-          <ActionableMessage
-            type={occurrences === 1 ? 'warning' : 'danger'}
-            message={
-              <div className="prepare-swap__token-verification-warning-message">
-                <div className="prepare-swap__bold">
-                  {occurrences === 1
-                    ? t('swapTokenVerificationOnlyOneSource')
-                    : t('swapTokenVerificationAddedManually')}
-                </div>
-                <div>{tokenVerificationDescription}</div>
-              </div>
-            }
-            primaryAction={
-              /* istanbul ignore next */
-              verificationClicked
-                ? null
-                : {
-                    label: t('continue'),
-                    onClick: () => setVerificationClicked(true),
-                  }
-            }
-            withRightButton
-            infoTooltipText={
-              blockExplorerTokenLink &&
-              t('swapVerifyTokenExplanation', [blockExplorerLabel])
-            }
-          />
+        {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
+          <Box display={DISPLAY.FLEX} marginTop={2}>
+            <BannerAlert
+              severity={
+                occurrences === 1 ? SEVERITIES.WARNING : SEVERITIES.DANGER
+              }
+              title={
+                occurrences === 1
+                  ? t('swapVerifiedOn1SourceTitle')
+                  : t('swapTokenVerificationAddedManually')
+              }
+              width={BLOCK_SIZES.FULL}
+            >
+              <Box>
+                <Typography variant={TypographyVariant.H6}>
+                  {t('swapVerifiedOn1SourceDescription', [
+                    selectedToToken?.symbol,
+                    <BlockExplorerLink key="block-explorer-link" />,
+                  ])}
+                </Typography>
+                {!verificationClicked && (
+                  <ButtonLink
+                    size={Size.INHERIT}
+                    textProps={{
+                      variant: TextVariant.bodySm,
+                      alignItems: AlignItems.flexStart,
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setVerificationClicked(true);
+                    }}
+                  >
+                    {t('swapContinueSwapping')}
+                  </ButtonLink>
+                )}
+              </Box>
+            </BannerAlert>
+          </Box>
+        )}
+        {swapsErrorKey && (
+          <Box display={DISPLAY.FLEX} marginTop={2}>
+            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
+          </Box>
         )}
         {transactionSettingsOpened &&
           (smartTransactionsEnabled ||
@@ -1005,11 +1015,6 @@ export default function PrepareSwap({
               }}
             />
           )}
-        {swapsErrorKey && (
-          <Box display={DISPLAY.FLEX} marginTop={2}>
-            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
-          </Box>
-        )}
         {!swapsErrorKey && !isReviewSwapButtonDisabled && !areQuotesPresent && (
           <Box
             marginTop={4}
@@ -1062,7 +1067,7 @@ export default function PrepareSwap({
             showTermsOfService
           />
         )}
-        {!isReviewSwapButtonDisabled && areQuotesPresent && !swapsErrorKey && (
+        {showReviewQuote && (
           <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
         )}
       </div>
