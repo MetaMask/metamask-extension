@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Плата за приоритет (также известная как «чаевые майнеру») направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
-  "affirmAgree": {
-    "message": "Я согласен(-на)"
-  },
   "airgapVault": {
     "message": "Хранилище AirGap"
   },
@@ -399,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост."
   },
-  "attemptToCancel": {
-    "message": "Пытаетесь отменить?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Эта попытка не гарантирует, что ваша первоначальная транзакция будет отменена. Если попытка отмены окажется успешной, с вас будет удержана вышеуказанная комиссия за транзакцию."
-  },
   "attemptingConnect": {
     "message": "Попытка подключения к блокчейну..."
   },
@@ -478,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Бета-версия MetaMask"
-  },
-  "betaPortfolioSite": {
-    "message": "бета-версия сайта портфолио"
   },
   "betaTerms": {
     "message": "Условия использования бета-версии"
@@ -599,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "Отменить обмен бесплатно"
-  },
-  "cancellationGasFee": {
-    "message": "Плата за газ при отмене"
   },
   "cancelled": {
     "message": "Отменено"
@@ -1444,14 +1429,6 @@
   "gasUsed": {
     "message": "Использовано газа"
   },
-  "gdprMessage": {
-    "message": "Эти данные агрегированы и поэтому анонимны для целей Общего регламента по защите данных (ЕС) 2016/679. Дополнительная информация о наших методах защиты конфиденциальности приводится в нашей $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Политикой конфиденциальности здесь",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Общее"
   },
@@ -1717,9 +1694,6 @@
     "message": "Файл JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "чтобы следить за вашими токенами и NFT на разных счетах и в разных сетях."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -1908,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "Версия MetaMask"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Всегда разрешать вам отказываться в Настройках"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Никогда",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask..."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 не сохраняет ваш полный IP-адрес",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 не хранит ключи, адреса, транзакции, балансы, хэши или любые личные данные",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 не продает данные для получения прибыли. Никогда!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Отправлять анонимизированные события кликов и просмотров страниц"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Помогите нам улучшить MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask хотел бы собрать основные данные об использовании, чтобы лучше понять, как наши пользователи взаимодействуют с расширением. Эти данные будут использоваться для постоянного повышения удобства и улучшения впечатлений от использования нашего продукта и экосистемы Ethereum."
   },
   "mismatchedChainLinkText": {
     "message": "проверить сведения о сети",
@@ -2178,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Снапы не установлены"
-  },
-  "noThanks": {
-    "message": "Нет, спасибо"
   },
   "noThanksVariant2": {
     "message": "Нет, спасибо."
@@ -2714,9 +2654,6 @@
   },
   "popularCustomNetworks": {
     "message": "Популярные пользовательские сети"
-  },
-  "portfolioSite": {
-    "message": "Сайт портфеля"
   },
   "preferredLedgerConnectionType": {
     "message": "Предпочтительный тип подключения к леджеру",
@@ -4090,9 +4027,6 @@
   "tryAgain": {
     "message": "Попробуйте еще раз"
   },
-  "tryOur": {
-    "message": "Попробуйте наше"
-  },
   "turnOnTokenDetection": {
     "message": "Включите расширенное обнаружение токенов"
   },
@@ -4302,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 Контракт может потратить весь ваш баланс токенов без дополнительного уведомления или согласия. Защитите себя, установив более низкий лимит расходов.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Слабый"
@@ -4357,9 +4291,6 @@
   },
   "yes": {
     "message": "Да"
-  },
-  "yesLetsTry": {
-    "message": "Да, давайте попробуем"
   },
   "youHaveAddedAll": {
     "message": "Вы добавили все популярные сети. Вы можете открыть для себя больше сетей $1 или можете $2",

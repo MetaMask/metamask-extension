@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
-  "affirmAgree": {
-    "message": "Συμφωνώ"
-  },
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
@@ -399,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "Εάν επιχειρήσετε να στείλετε περιουσιακά στοιχεία απευθείας από ένα δίκτυο σε ένα άλλο, αυτό ενδέχεται να οδηγήσει σε μόνιμη απώλεια περιουσιακών στοιχείων. Βεβαιωθείτε ότι χρησιμοποιείτε μια διασύνδεση."
   },
-  "attemptToCancel": {
-    "message": "Προσπάθεια Ακύρωσης;"
-  },
-  "attemptToCancelDescription": {
-    "message": "Η υποβολή αυτής της προσπάθειας δεν εγγυάται ότι η αρχική σας συναλλαγή θα ακυρωθεί. Αν η προσπάθεια ακύρωσης είναι επιτυχής, θα χρεωθείτε με το παραπάνω τέλος συναλλαγής."
-  },
   "attemptingConnect": {
     "message": "Προσπάθεια σύνδεσης στην αλυσίδα μπλοκ."
   },
@@ -478,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Δοκιμαστική έκδοση MetaMask"
-  },
-  "betaPortfolioSite": {
-    "message": "δοκιμαστική ιστοσελίδα χαρτοφυλακίου"
   },
   "betaTerms": {
     "message": "Όροι Χρήσης της Δοκιμαστικής Έκδοσης"
@@ -599,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "Ακυρώστε τη συναλλαγή δωρεάν"
-  },
-  "cancellationGasFee": {
-    "message": "Ακύρωση Χρέωσης Αερίου"
   },
   "cancelled": {
     "message": "Ακυρώθηκε"
@@ -1444,14 +1429,6 @@
   "gasUsed": {
     "message": "Τέλος συναλλαγής που Χρησιμοποιήθηκε"
   },
-  "gdprMessage": {
-    "message": "Τα δεδομένα αυτά συγκεντρωτικά και, ως εκ τούτου, είναι ανώνυμα για τους σκοπούς του Γενικού Κανονισμού για την Προστασία Δεδομένων GDPR (ΕΕ) 2016/679. Για περισσότερες πληροφορίες σχετικά με τις πρακτικές απορρήτου μας, ανατρέξτε στο $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Πολιτική Απορρήτου εδώ",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Γενικά"
   },
@@ -1717,9 +1694,6 @@
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "για να παρακολουθείτε τα token και τα NFT σε όλους τους λογαριασμούς και τα δίκτυα."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -1908,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "Έκδοση MetaMask"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Ποτέ δεν",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "Το MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 συλλέγει την πλήρη διεύθυνση IP σας",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$ συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 πουλά δεδομένα για το κέρδος. Ποτέ!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Στείλτε ανώνυμα γεγονότα κλικ και προβολής ιστοσελίδων"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "Το MetaMask θα ήθελε να συγκεντρώσει δεδομένα χρήσης για να κατανοήσει καλύτερα πώς οι χρήστες μας αλληλεπιδρούν με την επέκταση. Τα δεδομένα αυτά θα χρησιμοποιηθούν για τη συνεχή βελτίωση της χρηστικότητας και της εμπειρίας χρήσης του προϊόντος μας και του οικοσυστήματος Ethereum."
   },
   "mismatchedChainLinkText": {
     "message": "επαληθεύστε τα στοιχεία δικτύου",
@@ -2178,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Δεν εγκαταστάθηκαν Snaps"
-  },
-  "noThanks": {
-    "message": "Όχι Ευχαριστώ"
   },
   "noThanksVariant2": {
     "message": "Όχι, ευχαριστώ."
@@ -2714,9 +2654,6 @@
   },
   "popularCustomNetworks": {
     "message": "Δημοφιλή προσαρμοσμένα δίκτυα"
-  },
-  "portfolioSite": {
-    "message": "Ιστότοπος χαρτοφυλακίου"
   },
   "preferredLedgerConnectionType": {
     "message": "Προτιμώμενος Τύπος Σύνδεσης Ledger",
@@ -4090,9 +4027,6 @@
   "tryAgain": {
     "message": "Δοκιμάστε ξανά"
   },
-  "tryOur": {
-    "message": "Δοκιμάστε το"
-  },
   "turnOnTokenDetection": {
     "message": "Ενεργοποιήστε την ενισχυμένη ανίχνευση token"
   },
@@ -4302,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 Ο συμβαλλόμενος μπορεί να ξοδέψει ολόκληρο το υπόλοιπο των tokens σας χωρίς περαιτέρω ειδοποίηση ή συγκατάθεση. Προστατέψτε τον εαυτό σας προσαρμόζοντας ένα χαμηλότερο όριο δαπανών.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Αδύναμος"
@@ -4357,9 +4291,6 @@
   },
   "yes": {
     "message": "Ναι"
-  },
-  "yesLetsTry": {
-    "message": "Ναι, ας δοκιμάσουμε"
   },
   "youHaveAddedAll": {
     "message": "Προσθέσατε όλα τα δημοφιλή δίκτυα. Μπορείτε να ανακαλύψετε περισσότερα δίκτυα $1 Ή μπορείτε να \n $2",

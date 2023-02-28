@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import { cloneDeep } from 'lodash';
 
 import {
   goHome,
@@ -25,13 +26,12 @@ function mapStateToProps(state) {
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
-  const txData = unconfirmedTransactions[0];
+  const txData = cloneDeep(unconfirmedTransactions[0]);
 
-  const {
-    msgParams: { from },
-  } = txData;
-
-  const fromAccount = getTargetAccountWithSendEtherInfo(state, from);
+  const fromAccount = getTargetAccountWithSendEtherInfo(
+    state,
+    txData?.msgParams?.from,
+  );
 
   return {
     txData,

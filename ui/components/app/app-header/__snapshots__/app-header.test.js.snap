@@ -232,8 +232,8 @@ exports[`App Header should match snapshot 1`] = `
             <div
               class="chip__right-icon"
             >
-              <div
-                class="box mm-icon mm-icon--size-xs box--flex-direction-row box--color-inherit"
+              <span
+                class="box mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-inherit"
                 style="mask-image: url('./images/icons/arrow-down.svg');"
               />
             </div>

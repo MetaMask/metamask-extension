@@ -75,12 +75,6 @@
   "asset": {
     "message": "Sredstva"
   },
-  "attemptToCancel": {
-    "message": "Želite preklicati?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Če pošljete ta poskus, ne boste zagotovili, da bo vaša prvotna transakcija preklicana. Če bo poskus preklica uspešen, se bo zaračunala zgornja transakcija."
-  },
   "attemptingConnect": {
     "message": "Povezovanje z verigo blokov ..."
   },
@@ -141,9 +135,6 @@
   },
   "cancel": {
     "message": "Prekliči"
-  },
-  "cancellationGasFee": {
-    "message": "Preklicani znesek gas"
   },
   "cancelled": {
     "message": "Preklicano"
@@ -910,9 +901,6 @@
   },
   "welcomeBack": {
     "message": "Dobrodošli nazaj!"
-  },
-  "yesLetsTry": {
-    "message": "Pa poskusimo"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za uporabo te funkcije boste potrebovali dostop do kamere."

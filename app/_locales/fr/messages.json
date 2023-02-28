@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "affirmAgree": {
-    "message": "Je suis d’accord"
-  },
   "airgapVault": {
     "message": "Coffre-fort AirGap"
   },
@@ -399,12 +396,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancel": {
-    "message": "Tenter d’annuler ?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Faire une demande d’annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l’annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
@@ -478,9 +469,6 @@
   },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
-  },
-  "betaPortfolioSite": {
-    "message": "site de portefeuille bêta"
   },
   "betaTerms": {
     "message": "Conditions d’utilisation de la version bêta"
@@ -599,9 +587,6 @@
   },
   "cancelSwapForFree": {
     "message": "Annuler le swap gratuitement"
-  },
-  "cancellationGasFee": {
-    "message": "Frais d’annulation de la transaction"
   },
   "cancelled": {
     "message": "Annulé"
@@ -1444,14 +1429,6 @@
   "gasUsed": {
     "message": "Gaz utilisé"
   },
-  "gdprMessage": {
-    "message": "Ces données sont agrégées et sont donc anonymes aux fins du règlement général sur la protection des données (UE) 2016/679. Pour plus d’informations concernant nos pratiques en matière de confidentialité, veuillez consulter notre $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Politique de confidentialité ici",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Général"
   },
@@ -1717,9 +1694,6 @@
     "message": "Fichier JSON",
     "description": "format for importing an account"
   },
-  "keepTapsOnTokens": {
-    "message": "pour garder un œil sur vos jetons et vos NFT sur l’ensemble de vos comptes et réseaux."
-  },
   "keystone": {
     "message": "Keystone"
   },
@@ -1908,37 +1882,6 @@
   },
   "metamaskVersion": {
     "message": "Version de MetaMask"
-  },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Toujours pouvoir vous désinscrire via les Paramètres"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Jamais",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask :"
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "Ne collectera $1 votre adresse IP complète",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "Ne collectera $1 vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "Ne vendra $1 de données à des fins lucratives. Jamais !",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Enverra des événements de clics et de pages vues anonymisés"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Aidez-nous à améliorer MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Elles seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
   },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
@@ -2178,9 +2121,6 @@
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
-  },
-  "noThanks": {
-    "message": "Non merci"
   },
   "noThanksVariant2": {
     "message": "Non merci."
@@ -2714,9 +2654,6 @@
   },
   "popularCustomNetworks": {
     "message": "Réseaux personnalisés populaires"
-  },
-  "portfolioSite": {
-    "message": "Site du portefeuille"
   },
   "preferredLedgerConnectionType": {
     "message": "Type de connexion préférée au Ledger",
@@ -4090,9 +4027,6 @@
   "tryAgain": {
     "message": "Réessayez"
   },
-  "tryOur": {
-    "message": "Essayez notre"
-  },
   "turnOnTokenDetection": {
     "message": "Activer la détection améliorée des jetons"
   },
@@ -4302,7 +4236,7 @@
   },
   "warningTooltipText": {
     "message": "$1 L’autre partie au contrat peut dépenser la totalité de votre solde de jetons sans préavis et sans demander votre consentement. Protégez-vous en abaissant le plafond des dépenses.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Faible"
@@ -4357,9 +4291,6 @@
   },
   "yes": {
     "message": "Oui"
-  },
-  "yesLetsTry": {
-    "message": "Oui, essayons"
   },
   "youHaveAddedAll": {
     "message": "Vous avez ajouté tous les réseaux populaires. Vous pouvez découvrir d’autres réseaux $1 ou $2",

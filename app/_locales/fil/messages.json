@@ -66,12 +66,6 @@
   "approved": {
     "message": "Inaprubahan"
   },
-  "attemptToCancel": {
-    "message": "Subukang Kanselahin?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Ang pagsusumite sa pagtangkang ito ay hindi makakagarantiya na nakansela ang iyong orihinal na transaksyon. Kung matagumpay ang pagtangkang magkansela, sisingilin sa iyo ang bayarin sa transaksyon sa itaas."
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -123,9 +117,6 @@
   },
   "cancel": {
     "message": "Kanselahin"
-  },
-  "cancellationGasFee": {
-    "message": "Gas Fee sa Pagkansela"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -831,9 +822,6 @@
   },
   "welcomeBack": {
     "message": "Welcome Ulit!"
-  },
-  "yesLetsTry": {
-    "message": "Oo, subukan natin"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Kailangan mong payagan ang access sa camera para magamit ang feature na ito."
