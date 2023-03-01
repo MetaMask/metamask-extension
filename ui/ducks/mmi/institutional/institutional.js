@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import { getMMIActions } from '../../store/actions';
 
-// MMI
 // Actions
 const createComplianceActionType = (action) =>
   `metamask/institutional-features/compliance/${action}`;

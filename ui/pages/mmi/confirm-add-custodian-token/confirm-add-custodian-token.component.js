@@ -189,7 +189,6 @@ export default class ConfirmAddCustodianToken extends Component {
 
                     // @shane-t
                     // all custodian names are lower case, but Jupiter sends `Jupiter` as the service
-
                     let custodianName = connectRequest.service.toLowerCase();
 
                     if (connectRequest.service === 'JSONRPC') {

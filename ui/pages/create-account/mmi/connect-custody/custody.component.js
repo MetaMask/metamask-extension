@@ -375,7 +375,7 @@ class CustodySubview extends Component {
           }
         />
         <label htmlFor="selectAllAccounts">
-          {this.context.t('selectAllAccounts')}
+          {this.context.t('selectAll')}
         </label>
       </div>
     );

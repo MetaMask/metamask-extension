@@ -150,6 +150,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "activated": {
+    "message": "Activated"
+  },
   "active": {
     "message": "Active"
   },
@@ -311,6 +314,12 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allCustodianAccountsConnectedSubtitle": {
+    "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
+  },
+  "allCustodianAccountsConnectedTitle": {
+    "message": "No accounts available to connect"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -431,6 +440,9 @@
   },
   "average": {
     "message": "Average"
+  },
+  "awaitingApproval": {
+    "message": "Awaiting approval..."
   },
   "back": {
     "message": "Back"
@@ -618,8 +630,53 @@
   "close": {
     "message": "Close"
   },
+  "codefiCompliance": {
+    "message": "Codefi Compliance"
+  },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "compliance": {
+    "message": "Compliance"
+  },
+  "complianceActivatedDesc": {
+    "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
+  },
+  "complianceActivatedTitle": {
+    "message": "Your compliance feature is activated"
+  },
+  "complianceAnalysisNotRun": {
+    "message": "No report has been run on this address. Please click on the tile below to run a report."
+  },
+  "complianceAnalysisRun": {
+    "message": "A compliance analysis has $1 been run within the last 8 hours."
+  },
+  "complianceBlurb0": {
+    "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
+  },
+  "complianceBlurb1": {
+    "message": "Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting."
+  },
+  "complianceBlurpStep0": {
+    "message": "Steps to enable AML/CFT Compliance:"
+  },
+  "complianceBlurbStep1": {
+    "message": "Sign up to Codefi Compliance below"
+  },
+  "complianceBlurbStep2": {
+    "message": "Create an organisation"
+  },
+  "complianceBlurbStep3": {
+    "message": "Create a project"
+  },
+  "complianceBlurbStep4": {
+    "message": "Set your compliance settings"
+  },
+  "complianceBlurbStep5": {
+    "message": "Click the \"Enable Compliance in MMI\" button"
+  },
+  "complianceSettingsExplanation": {
+    "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
   },
   "confirm": {
     "message": "Confirm"
@@ -647,6 +704,15 @@
   },
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
+  },
+  "connectCustodialAccountMsg": {
+    "message": "Please choose the custodian you want to connect in order to add or refresh a token."
+  },
+  "connectCustodialAccountTitle": {
+    "message": "Custodial Accounts"
+  },
+  "connectCustodialSelect": {
+    "message": "Select"
   },
   "connectHardwareWallet": {
     "message": "Connect hardware wallet"
@@ -850,6 +916,54 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodianAccountAddedDesc": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianAccountAddedTitle": {
+    "message": "Selected custodian accounts have been added."
+  },
+  "custodianReplaceRefreshTokenTitle": {
+    "message": "Replace custodian token"
+  },
+  "custodianReplaceRefreshTokenSubtitle": {
+    "message": "This is will replace the custodian token for the following address:"
+  },
+  "custodianReplaceRefreshTokenChangedTitle": {
+    "message": "Your custodian token has been refreshed"
+  },
+  "custodianReplaceRefreshTokenChangedSubtitle": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianReplaceRefreshTokenChangedFailed": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodyApiUrl": {
+    "message": "$1 API URL"
+  },
+  "custodyDeeplinkDescription": {
+    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
+  },
+  "custodyRefreshTokenModalDescription": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodyRefreshTokenModalDescription1": {
+    "message": "Your custodian issues a token that authenticates the MetaMask Institutional extension, allowing you to connect your accounts."
+  },
+  "custodyRefreshTokenModalDescription2": {
+    "message": "This token expires after a certain period for security reasons. This requires you to reconnect to MMI."
+  },
+  "custodyRefreshTokenModalSubtitle": {
+    "message": "Why am I seeing this?"
+  },
+  "custodySessionExpired": {
+    "message": "Custodian session expired"
+  },
+  "custodyWrongChain": {
+    "message": "This account is not set up for use with $1"
   },
   "custom": {
     "message": "Advanced"
@@ -1264,6 +1378,9 @@
   "enterANumber": {
     "message": "Enter a number"
   },
+  "enterCustodianToken": {
+    "message": "Enter your $1 token or add a new token"
+  },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
   },
@@ -1594,6 +1711,9 @@
   },
   "highLowercase": {
     "message": "high"
+  },
+  "historicalReportsLongerThanUsual": {
+    "message": "Fetching compliance reports is taking longer than usual. Please make sure your connection is stable and contact us if problem continues."
   },
   "history": {
     "message": "History"
@@ -2029,6 +2149,12 @@
   },
   "missingToken": {
     "message": "Don't see your token?"
+  },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
+  },
+  "mmiAuthenticate": {
+    "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
@@ -2604,6 +2730,12 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openCodefiCompliance": {
+    "message": "Open Codefi Compliance"
+  },
+  "openCustodianApp": {
+    "message": "Open $1 app"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2622,6 +2754,9 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
+  },
+  "operationFailed": {
+    "message": "Operation Failed"
   },
   "optional": {
     "message": "Optional"
@@ -2681,6 +2816,9 @@
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
+  },
+  "pasteJWTToken": {
+    "message": "Paste or drop your token here:"
   },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
@@ -2855,6 +2993,9 @@
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
   },
+  "projectIdInvalid": {
+    "message": "Provided Project ID is invalid"
+  },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
@@ -2951,6 +3092,12 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeJWT": {
+    "message": "Remove custodian token"
+  },
+  "removeJWTDescription": {
+    "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
   "removeNFT": {
     "message": "Remove NFT"
   },
@@ -2969,6 +3116,15 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "report": {
+    "message": "Report"
+  },
+  "reportLastRun": {
+    "message": "Report last run"
+  },
+  "reportLastRunTooltip": {
+    "message": "The date and time of when the last AML/CFT report was run"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -3088,8 +3244,23 @@
   "revokeSpendingCapTooltipText": {
     "message": "This contract will be unable to spend any more of your current or future tokens."
   },
+  "risk": {
+    "message": "Risk"
+  },
+  "riskOfThisPoolFlaggedAs": {
+    "message": "The risk of this pool has been flagged as $1 according to your compliance settings."
+  },
+  "riskRating": {
+    "message": "Risk rating"
+  },
+  "riskRatingTooltip": {
+    "message": "The risk rating of the address you are interacting with based on your risk settings"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
+  },
+  "runReport": {
+    "message": "Run report"
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -3199,6 +3370,9 @@
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
+  "selectAnAccountHelp": {
+    "message": "Select the custodian accounts to use in MetaMask Institutional."
+  },
   "selectHdPath": {
     "message": "Select HD path"
   },
@@ -3213,6 +3387,9 @@
   },
   "selectType": {
     "message": "Select Type"
+  },
+  "selectJWT": {
+    "message": "Select token"
   },
   "selectingAllWillAllow": {
     "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
@@ -3307,6 +3484,9 @@
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
+  },
+  "showReport": {
+    "message": "Show report"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
@@ -4186,6 +4366,9 @@
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
+  },
+  "transactionFailed": {
+    "message": "Transaction Failed"
   },
   "transactionFee": {
     "message": "Transaction fee"
