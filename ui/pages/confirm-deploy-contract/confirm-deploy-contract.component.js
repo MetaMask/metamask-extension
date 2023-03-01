@@ -10,7 +10,6 @@ import {
   OVERFLOW_WRAP,
   TextVariant,
   TEXT_TRANSFORM,
-  TypographyVariant,
 } from '../../helpers/constants/design-system';
 
 export default class ConfirmDeployContract extends Component {
@@ -62,7 +61,7 @@ export default class ConfirmDeployContract extends Component {
           </Box>
         </Box>
         <Text
-          as={TypographyVariant.H3}
+          as="h3"
           paddingBottom={3}
           paddingTop={2}
           textTransform={TEXT_TRANSFORM.UPPERCASE}
