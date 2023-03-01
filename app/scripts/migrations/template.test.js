@@ -1,13 +1,13 @@
-import migrationTemplate from './template';
+import { migrate, version } from './template';
 
 const storage = {
-  meta: {},
+  meta: { version: -1 },
   data: {},
 };
 
 describe('storage is migrated successfully', () => {
   it('should work', async () => {
-    const migratedData = await migrationTemplate.migrate(storage);
-    expect(migratedData.meta.version).toStrictEqual(0);
+    const migratedData = await migrate(storage);
+    expect(migratedData.meta.version).toStrictEqual(version);
   });
 });

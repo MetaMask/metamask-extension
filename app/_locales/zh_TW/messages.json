@@ -200,12 +200,6 @@
   "buy": {
     "message": "買"
   },
-  "buyWithWyre": {
-    "message": "用 Wyre 購買 $1"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre 讓你使用信用卡在 MetaMask 帳戶中直接存入 $1 。"
-  },
   "bytes": {
     "message": "位元組"
   },
@@ -334,9 +328,6 @@
   "continue": {
     "message": "繼續"
   },
-  "continueToWyre": {
-    "message": "繼續前往 Wyre"
-  },
   "contractAddressError": {
     "message": "您正在將代幣傳送到代幣合約的位址。這可能會導致這些代幣遺失。"
   },
@@ -435,18 +426,8 @@
   "deleteNetworkDescription": {
     "message": "你確定要刪除網路嗎？"
   },
-  "depositCrypto": {
-    "message": "存入 $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "details": {
     "message": "詳情"
-  },
-  "directDepositCrypto": {
-    "message": "直接存入 $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "如果您已經擁有一些 $1，直接存入功能是讓新錢包最快取得的方式。"
   },
   "disconnect": {
     "message": "中斷連結"
@@ -668,13 +649,6 @@
   },
   "general": {
     "message": "一般"
-  },
-  "getEther": {
-    "message": "取得以太幣"
-  },
-  "getEtherFromFaucet": {
-    "message": "從水龍頭取得 $1 上的以太幣",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Go Back"
@@ -898,10 +872,6 @@
   },
   "name": {
     "message": "名稱"
-  },
-  "needCryptoInWallet": {
-    "message": "要使用 MetaMask 存取去中心化應用程式時，您的錢包中需要有 $1。",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "需要幫助？聯繫$1",
@@ -1444,9 +1414,6 @@
   "termsOfService": {
     "message": "服務條款"
   },
-  "testFaucet": {
-    "message": "測試水龍頭"
-  },
   "tips": {
     "message": "提示"
   },
@@ -1605,9 +1572,6 @@
   "verifyThisTokenOn": {
     "message": "在 $1 驗證這個代幣的資訊",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAccount": {
-    "message": "查看帳戶"
   },
   "viewAllDetails": {
     "message": "查看所有詳情"
