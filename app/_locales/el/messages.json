@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
-  "affirmAgree": {
-    "message": "Συμφωνώ"
-  },
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
@@ -526,37 +523,8 @@
     "message": "Αγορά $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Αγορά $1 με Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Μπορείτε να αγοράσετε ή να μεταφέρετε εύκολα κρυπτονομίσματα με τον λογαριασμό σας στο Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Αγορά $1 με MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 145+ countries. Tokens deposit into your MetaMask account."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Αγορά $1 με Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Η Transak υποστηρίζει πιστωτικές και χρεωστικές κάρτες, Apple Pay, MobiKwik και τραπεζικές μεταφορές (ανάλογα με την τοποθεσία) σε περισσότερες από 145 χώρες. Τα $1 κατατίθενται απευθείας στον λογαριασμό σας στο MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Αγοράστε Τώρα"
-  },
-  "buyWithWyre": {
-    "message": "Αγοράστε $1 με το Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Εύκολη ενσωμάτωση για αγορές μέχρι και $ 1000. Γρήγορη διαδραστική επαλήθευση αγοράς υψηλού ορίου. Υποστηρίζει χρεωστικές/πιστωτικές κάρτες, Apple Pay, Τραπεζικές Μεταφορές. Διαθέσιμο σε 100+ χώρες. Καταθέσεις token στον λογαριασμό σας MetaMask"
   },
   "bytes": {
     "message": "Bytes"
@@ -735,18 +703,6 @@
   },
   "continue": {
     "message": "Συνέχεια"
-  },
-  "continueToCoinbasePay": {
-    "message": "Συνέχεια στο Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Συνέχεια στη MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Συνεχίστε στο Transak"
-  },
-  "continueToWyre": {
-    "message": "Συνεχίστε στο Wyre"
   },
   "contract": {
     "message": "Συμβόλαιο"
@@ -960,10 +916,6 @@
   "deposit": {
     "message": "Κατάθεση"
   },
-  "depositCrypto": {
-    "message": "Κατάθεση $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Μάθετε περισσότερα"
   },
@@ -975,12 +927,6 @@
   },
   "details": {
     "message": "Λεπτομέρειες"
-  },
-  "directDepositCrypto": {
-    "message": "Απευθείας κατάθεση $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Εάν έχετε ήδη μερικά $1, ο γρηγορότερος τρόπος για να βάλετε $1 στο νέο σας πορτοφόλι είναι η απευθείας κατάθεση."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Το \"1$\" είναι απενεργοποιημένο επειδή δεν πληροί την ελάχιστη αύξηση 10% σε σχέση με τα αρχικά τέλη συναλλαγής.",
@@ -1279,7 +1225,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Προβολή λεπτομερειών",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Προστέθηκε στις",
@@ -1432,23 +1378,8 @@
   "gasUsed": {
     "message": "Τέλος συναλλαγής που Χρησιμοποιήθηκε"
   },
-  "gdprMessage": {
-    "message": "Τα δεδομένα αυτά συγκεντρωτικά και, ως εκ τούτου, είναι ανώνυμα για τους σκοπούς του Γενικού Κανονισμού για την Προστασία Δεδομένων GDPR (ΕΕ) 2016/679. Για περισσότερες πληροφορίες σχετικά με τις πρακτικές απορρήτου μας, ανατρέξτε στο $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Πολιτική Απορρήτου εδώ",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Γενικά"
-  },
-  "getEther": {
-    "message": "Λάβετε Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Πάρτε Ether από μια πηγή για το $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Μετάβαση Πίσω"
@@ -1894,37 +1825,6 @@
   "metamaskVersion": {
     "message": "Έκδοση MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Σας επιτρέπεται πάντα να εξαιρεθείτε μέσω των Ρυθμίσεων"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Ποτέ δεν",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "Το MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 συλλέγει την πλήρη διεύθυνση IP σας",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$ συλλέγει κλειδιά, διευθύνσεις, συναλλαγές, υπόλοιπα, συναρτήσεις κατατεμαχισμού ή οποιαδήποτε προσωπικά στοιχεία",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 πουλά δεδομένα για το κέρδος. Ποτέ!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Στείλτε ανώνυμα γεγονότα κλικ και προβολής ιστοσελίδων"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "Το MetaMask θα ήθελε να συγκεντρώσει δεδομένα χρήσης για να κατανοήσει καλύτερα πώς οι χρήστες μας αλληλεπιδρούν με την επέκταση. Τα δεδομένα αυτά θα χρησιμοποιηθούν για τη συνεχή βελτίωση της χρηστικότητας και της εμπειρίας χρήσης του προϊόντος μας και του οικοσυστήματος Ethereum."
-  },
   "mismatchedChainLinkText": {
     "message": "επαληθεύστε τα στοιχεία δικτύου",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1969,10 +1869,6 @@
   "nativeToken": {
     "message": "Το αρχικό token σε αυτό το δίκτυο είναι το $1. Είναι το token που χρησιμοποιείται για τα τέλη φυσικού αερίου.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Για να αλληλεπιδράσετε με αποκεντρωμένες εφαρμογές χρησιμοποιώντας το MetaMask, θα χρειαστείτε $1 στο πορτοφόλι σας.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Χρειάζεστε βοήθεια; Επικοινωνήστε με $1",
@@ -2163,9 +2059,6 @@
   },
   "noSnaps": {
     "message": "Δεν εγκαταστάθηκαν Snaps"
-  },
-  "noThanks": {
-    "message": "Όχι Ευχαριστώ"
   },
   "noThanksVariant2": {
     "message": "Όχι, ευχαριστώ."
@@ -2618,7 +2511,7 @@
   },
   "permission_accessSnap": {
     "message": "Συνδεθείτε στο Snap $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Προγραμματισμός και εκτέλεση περιοδικών ενεργειών.",
@@ -3854,9 +3747,6 @@
   "termsOfService": {
     "message": "Όροι παροχής υπηρεσιών"
   },
-  "testFaucet": {
-    "message": "Έλεγχος Βαλβίδας"
-  },
   "testNetworks": {
     "message": "Δοκιμαστικά δίκτυα"
   },
@@ -4211,9 +4101,6 @@
   "view": {
     "message": "Προβολή"
   },
-  "viewAccount": {
-    "message": "Προβολή λογαριασμού"
-  },
   "viewAllDetails": {
     "message": "Προβολή όλων των λεπτομερειών"
   },
@@ -4281,7 +4168,7 @@
   },
   "warningTooltipText": {
     "message": "$1 Ο συμβαλλόμενος μπορεί να ξοδέψει ολόκληρο το υπόλοιπο των tokens σας χωρίς περαιτέρω ειδοποίηση ή συγκατάθεση. Προστατέψτε τον εαυτό σας προσαρμόζοντας ένα χαμηλότερο όριο δαπανών.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Αδύναμος"

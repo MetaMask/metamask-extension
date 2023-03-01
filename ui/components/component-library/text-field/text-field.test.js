@@ -245,4 +245,14 @@ describe('TextField', () => {
     fireEvent.change(textField, { target: { value: '' } }); // reset value
     expect(textField.value).toBe(''); // value is empty string after reset
   });
+  it('should render the child Input with disableStateStyles to prevent multiple focus outlines', async () => {
+    const { getByTestId, user } = renderWithUserEvent(
+      <TextField inputProps={{ 'data-testid': 'input' }} />,
+    );
+    const InputComponent = getByTestId('input');
+
+    await user.click(InputComponent);
+    expect(getByTestId('input')).toHaveFocus();
+    expect(getByTestId('input')).toHaveClass('mm-input--disable-state-styles');
+  });
 });

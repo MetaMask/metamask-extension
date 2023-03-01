@@ -4,6 +4,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 describe('Navigate transactions', function () {
   const ganacheOptions = {
+    hardfork: 'london',
     accounts: [
       {
         secretKey:

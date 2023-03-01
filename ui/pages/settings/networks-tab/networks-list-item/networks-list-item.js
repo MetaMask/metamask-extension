@@ -7,7 +7,6 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
-import IconCheck from '../../../../components/ui/icon/icon-check';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -22,7 +21,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../../../components/component-library';
-import { Color } from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 const NetworksListItem = ({
   network,
@@ -77,17 +76,9 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="var(--color-success-default)"
-          aria-label={t('active')}
-        />
+        <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
       ) : (
-        <IconCheck
-          className="networks-tab__content__icon-check"
-          color="transparent"
-          aria-hidden="true"
-        />
+        <Icon name={ICON_NAMES.CHECK} color={IconColor.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -129,7 +120,7 @@ const NetworksListItem = ({
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
             name={ICON_NAMES.LOCK}
-            color={Color.iconMuted}
+            color={IconColor.iconMuted}
             size={ICON_SIZES.AUTO}
             marginInlineStart={2}
           />
