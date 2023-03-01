@@ -26,3 +26,9 @@
 @import 'onboarding-flow/index';
 @import 'notifications/index';
 @import 'desktop-pairing/index';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+@import 'mmi/interactive-replacement-token-page/index';
+@import 'mmi/institutional-features/index';
+@import 'mmi/confirm-add-institutional-feature/index';
+@import 'mmi/confirm-add-custodian-token/index';
+///: END:ONLY_INCLUDE_IN
