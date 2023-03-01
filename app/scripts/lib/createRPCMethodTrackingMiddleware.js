@@ -200,9 +200,9 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       properties.ui_customizations =
-      securityProviderResponse?.flagAsDangerous === 1
-        ? ['flagged_as_malicious']
-        : [];
+        securityProviderResponse?.flagAsDangerous === 1
+          ? ['flagged_as_malicious']
+          : [];
 
       if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const data = req?.params?.[0];
