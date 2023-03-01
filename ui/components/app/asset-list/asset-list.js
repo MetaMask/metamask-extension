@@ -27,6 +27,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
+import { NewTokenList } from '../../component-library';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
@@ -72,7 +73,20 @@ const AssetList = ({ onClickAsset }) => {
 
   return (
     <>
-      <AssetListItem
+      <div style={{ display: 'none' }}>
+        <AssetListItem
+          onClick={() => onClickAsset(nativeCurrency)}
+          data-testid="wallet-balance"
+          primary={
+            primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
+          }
+          tokenSymbol={primaryCurrencyProperties.suffix}
+          secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+          tokenImage={balanceIsLoading ? null : primaryTokenImage}
+          identiconBorder
+        />
+      </div>
+      <NewTokenList
         onClick={() => onClickAsset(nativeCurrency)}
         data-testid="wallet-balance"
         primary={
@@ -83,6 +97,7 @@ const AssetList = ({ onClickAsset }) => {
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         identiconBorder
       />
+
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);

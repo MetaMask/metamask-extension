@@ -6,6 +6,7 @@ import AssetListItem from '../asset-list-item';
 import { getSelectedAddress } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
+import { NewTokenList } from '../../component-library';
 
 export default function TokenCell({
   address,
@@ -37,21 +38,37 @@ export default function TokenCell({
   ) : null;
 
   return (
-    <AssetListItem
-      className={classnames('token-cell', {
-        'token-cell--outdated': Boolean(balanceError),
-      })}
-      iconClassName="token-cell__icon"
-      onClick={onClick.bind(null, address)}
-      tokenAddress={address}
-      tokenSymbol={symbol}
-      tokenDecimals={decimals}
-      tokenImage={image}
-      warning={warning}
-      primary={`${string || 0}`}
-      secondary={formattedFiat}
-      isERC721={isERC721}
-    />
+    <>
+      <div style={{ display: 'none' }}>
+        <AssetListItem
+          className={classnames('token-cell', {
+            'token-cell--outdated': Boolean(balanceError),
+          })}
+          iconClassName="token-cell__icon"
+          onClick={onClick.bind(null, address)}
+          tokenAddress={address}
+          tokenSymbol={symbol}
+          tokenDecimals={decimals}
+          tokenImage={image}
+          warning={warning}
+          primary={`${string || 0}`}
+          secondary={formattedFiat}
+          isERC721={isERC721}
+        />
+      </div>
+      <NewTokenList
+        iconClassName="token-cell__icon"
+        onClick={onClick.bind(null, address)}
+        tokenAddress={address}
+        tokenSymbol={symbol}
+        tokenDecimals={decimals}
+        tokenImage={image}
+        warning={warning}
+        primary={`${string || 0}`}
+        secondary={formattedFiat}
+        isERC721={isERC721}
+      />
+    </>
   );
 }
 
