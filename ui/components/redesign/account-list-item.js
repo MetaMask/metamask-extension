@@ -14,60 +14,46 @@ import {
   DISPLAY,
   TextVariant,
   FLEX_DIRECTION,
-  FRACTIONS,
-  BLOCK_SIZES,
   JustifyContent,
   Size,
+  BorderRadius,
 } from '../../helpers/constants/design-system';
 
-export const AccountListItem = ({ identity, selected = false }) => {
-  const selectedBlockBackground = selected
-    ? Color.primaryDefault
-    : Color.transparent;
-  const selectedBackground = selected
-    ? 'rgba(3, 118, 201, 0.1)'
-    : Color.transparent;
+import './account-list-item.scss';
 
+export const AccountListItem = ({ identity, selected = false }) => {
   return (
     <Box
+      className="account-list-item"
       display={DISPLAY.FLEX}
-      padding={1}
+      padding={4}
       gap={2}
-      backgroundColor={selectedBlockBackground}
+      backgroundColor={selected ? Color.primaryMuted : Color.backgroundDefault}
+      as="a"
+      href=""
     >
-      {/* "selected" blue box */}
+      {selected && (
+        <Box
+          className="account-list-item__selected-indicator"
+          borderRadius={BorderRadius.pill}
+          backgroundColor={Color.primaryDefault}
+        />
+      )}
+      <AvatarAccount size={Size.SM} address={identity.address} />
       <Box
-        width={1}
-        marginInlineEnd={2}
-        style={{
-          width: '4px',
-          borderRadius: '8px',
-          // border: '1px solid red',
-          overflow: 'hidden',
-          background: selectedBackground,
-        }}
-        // backgroundColor={selectedBackground}
+        className="account-list-item__body"
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        {' '}
-      </Box>
-      <AvatarAccount
-        size={Size.SM}
-        marginTop={3}
-        address={identity.address}
-      ></AvatarAccount>
-      <Box marginTop={3} marginBottom={4} width={BLOCK_SIZES.FULL}>
         <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
           {/* first row */}
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
+            gap={2}
           >
-            <Text width={FRACTIONS.HALF} ellipsis>
-              {identity.name}
-            </Text>
-            <Text width={FRACTIONS.HALF} textAlign={TEXT_ALIGN.END}>
-              $1,234.56
-            </Text>
+            <Text ellipsis>{identity.name}</Text>
+            <Text textAlign={TEXT_ALIGN.END}>$1,234.56</Text>
           </Box>
         </Box>
         <Box
@@ -88,15 +74,12 @@ export const AccountListItem = ({ identity, selected = false }) => {
         </Box>
       </Box>
       <ButtonIcon
-        marginTop={3}
-        marginInlineEnd={5}
-        ariaLabel=""
+        ariaLabel="More"
         iconName={ICON_NAMES.MORE_VERTICAL}
         size={ICON_SIZES.SM}
         onClick={() => {
           console.log('Open three-dot menu');
         }}
-        width={2}
       />
     </Box>
   );

@@ -1,0 +1,16 @@
+.account-list-item {
+  position: relative;
+
+  &__selected-indicator {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
+  &__body {
+    overflow: hidden;
+    flex: 1;
+  }
+}
