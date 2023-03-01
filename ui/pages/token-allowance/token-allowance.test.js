@@ -146,6 +146,12 @@ describe('TokenAllowancePage', () => {
     currentTokenBalance: '10',
     toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
     tokenSymbol: 'TST',
+    getNextNonce: jest.fn(),
+    showCustomizeGasModal: jest.fn(),
+    showCustomizeNonceModal: jest.fn(),
+    nextNonce: 1,
+    customNonceValue: '',
+    warning: '',
     txData: {
       id: 3049568294499567,
       time: 1664449552289,
@@ -210,6 +216,131 @@ describe('TokenAllowancePage', () => {
     );
     const onCloseBtn = getByTestId('page-container-footer-cancel');
     expect(onCloseBtn).toBeInTheDocument();
+  });
+
+  it('should not render customize nonce modal if useNonceField is set to false', () => {
+    const { queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    expect(queryByText('Nonce')).not.toBeInTheDocument();
+    expect(queryByText('1')).not.toBeInTheDocument();
+    expect(props.showCustomizeNonceModal).not.toHaveBeenCalledTimes(1);
+  });
+
+  it('should render customize nonce modal if useNonceField is set to true', () => {
+    props.useNonceField = true;
+    props.nextNonce = 1;
+    const { queryByText, getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('1')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render nextNonce value when custom nonce value is a empty string', () => {
+    props.useNonceField = true;
+    props.customNonceValue = '';
+    const { queryByText, getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('1')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(2);
+  });
+
+  it('should render edited custom nonce value', () => {
+    props.useNonceField = true;
+    props.customNonceValue = '3';
+    const { queryByText, getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('3')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(3);
+  });
+
+  it('should render customize nonce warning if custom nonce value is higher than nextNonce value', () => {
+    props.useNonceField = true;
+    props.nextNonce = 2;
+    props.customNonceValue = '3';
+    props.warning = 'Nonce is higher than suggested nonce of 2';
+    const { getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    expect(
+      getByText('Nonce is higher than suggested nonce of 2'),
+    ).toBeInTheDocument();
+  });
+
+  it('should not render customize nonce warning if custom nonce value is lower than nextNonce value', () => {
+    props.useNonceField = true;
+    props.nextNonce = 2;
+    props.customNonceValue = '1';
+    props.warning = '';
+    const { container } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    const customizeNonceWarning = container.querySelector(
+      '.token-allowance-container__custom-nonce-warning',
+    );
+    console.log(customizeNonceWarning);
+    expect(customizeNonceWarning).not.toBeInTheDocument();
+  });
+
+  it('should render customize nonce modal when next button is clicked and if useNonceField is set to true', () => {
+    props.useNonceField = true;
+    props.customNonceValue = '2';
+    const { getByText, getAllByText, queryByText, getByTestId } =
+      renderWithProvider(<TokenAllowance {...props} />, store);
+
+    const textField = getByTestId('custom-spending-cap-input');
+    fireEvent.change(textField, { target: { value: '1' } });
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
+
+    const editButton = getAllByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('2')).toBeInTheDocument();
+    fireEvent.click(editButton[1]);
+    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(4);
+  });
+
+  it('should render customize nonce modal when next button is clicked, than back button is clicked, than return to previous page and if useNonceField is set to true', () => {
+    props.useNonceField = true;
+    props.customNonceValue = '2';
+    const { getByText, getByTestId, queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+
+    const textField = getByTestId('custom-spending-cap-input');
+    fireEvent.change(textField, { target: { value: '1' } });
+
+    const nextButton = getByText('Next');
+    fireEvent.click(nextButton);
+
+    const backButton = getByText('< Back');
+    fireEvent.click(backButton);
+
+    const editButton = getByText('Edit');
+    expect(queryByText('Nonce')).toBeInTheDocument();
+    expect(queryByText('2')).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(5);
   });
 
   it('should click View details and show function type', () => {
