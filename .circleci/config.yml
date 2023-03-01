@@ -177,6 +177,8 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
+            - test-e2e-chrome-nft
+            - test-e2e-firefox-nft
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
             - test-storybook
@@ -817,7 +819,7 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e.xml
-          
+
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 2

@@ -167,13 +167,6 @@
   "gasPrice": {
     "message": "எரிவாயு விலை (GWEI)"
   },
-  "getEther": {
-    "message": "ஈத்தர் கிடைக்கும்"
-  },
-  "getEtherFromFaucet": {
-    "message": "$ 1 க்கு ஒரு குழாய் இருந்து ஈதர் கிடைக்கும்$1",
-    "description": "Displays network name for Ether faucet"
-  },
   "here": {
     "message": "இங்கே",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -426,9 +419,6 @@
   "terms": {
     "message": "பயன்பாட்டு விதிமுறைகளை"
   },
-  "testFaucet": {
-    "message": "சோதனை குழாய்"
-  },
   "to": {
     "message": "பெறுநர்"
   },
@@ -474,9 +464,6 @@
   },
   "userName": {
     "message": "பயனர்பெயர்"
-  },
-  "viewAccount": {
-    "message": "கணக்கைப் பார்"
   },
   "visitWebSite": {
     "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
