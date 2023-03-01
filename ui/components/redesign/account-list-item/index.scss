@@ -1,0 +1,11 @@
+.account-list-item {
+  &__active-indicator {
+    width: 4px;
+    border-radius: '8px';
+  }
+
+  &__content {
+    overflow: hidden;
+    flex: 1;
+  }
+}

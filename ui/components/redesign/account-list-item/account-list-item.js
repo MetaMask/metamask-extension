@@ -1,5 +1,18 @@
+/*
+  ToDo:
+    1.  Add CSS file
+    2.  Add hover state colors within CSS file
+    3.  Move inline styles to CSS file once
+    4.  Accessibility:  make each parent item an `a` link, or tabIndex=0?
+
+*/
+
+
+
 import React from 'react';
+
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Box from '../ui/box/box';
 import {
   AvatarAccount,
@@ -20,44 +33,39 @@ import {
   Size,
 } from '../../helpers/constants/design-system';
 
-export const AccountListItem = ({ identity, selected = false }) => {
-  const selectedBlockBackground = selected
-    ? Color.primaryDefault
-    : Color.transparent;
-  const selectedBackground = selected
-    ? 'rgba(3, 118, 201, 0.1)'
-    : Color.transparent;
-
+export const AccountListItem = ({ identity, selected = false, onClick }) => {
   return (
     <Box
       display={DISPLAY.FLEX}
       padding={1}
       gap={2}
-      backgroundColor={selectedBlockBackground}
+      backgroundColor={selected
+        ? Color.primaryMuted
+        : Color.transparent}
+      className={classnames('account-list-item', {
+        'account-list-item--selected': selected,
+      })}
+      as="a"
+      href="#"
+      onClick={(e) => {
+        e.preventDefault();
+        onClick?.();
+      }}
     >
-      {/* "selected" blue box */}
       <Box
-        width={1}
         marginInlineEnd={2}
-        style={{
-          width: '4px',
-          borderRadius: '8px',
-          // border: '1px solid red',
-          overflow: 'hidden',
-          background: selectedBackground,
-        }}
-        // backgroundColor={selectedBackground}
-      >
-        {' '}
-      </Box>
+        backgroundColor={selected
+          ? Color.primaryDefault
+          : Color.transparent}
+        className="account-list-item__active-indicator"
+      ></Box>
       <AvatarAccount
         size={Size.SM}
         marginTop={3}
         address={identity.address}
       ></AvatarAccount>
-      <Box marginTop={3} marginBottom={4} width={BLOCK_SIZES.FULL}>
+      <Box marginTop={3} marginBottom={4} width={BLOCK_SIZES.FULL} className="account-list-item__content">
         <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
-          {/* first row */}
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
@@ -66,7 +74,7 @@ export const AccountListItem = ({ identity, selected = false }) => {
               {identity.name}
             </Text>
             <Text width={FRACTIONS.HALF} textAlign={TEXT_ALIGN.END}>
-              $1,234.56
+              {identity.balance}
             </Text>
           </Box>
         </Box>
@@ -74,7 +82,6 @@ export const AccountListItem = ({ identity, selected = false }) => {
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.spaceBetween}
         >
-          {/* second row */}
           <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
             {identity.address}
           </Text>
@@ -83,7 +90,7 @@ export const AccountListItem = ({ identity, selected = false }) => {
             color={Color.textAlternative}
             textAlign={TEXT_ALIGN.END}
           >
-            {identity.balance}
+            {identity.tokenBalance}
           </Text>
         </Box>
       </Box>
@@ -105,6 +112,7 @@ export const AccountListItem = ({ identity, selected = false }) => {
 AccountListItem.propTypes = {
   identity: PropTypes.object.isRequired,
   selected: PropTypes.bool,
+  onClick: PropTypes.func.isRequired
 };
 
 AccountListItem.displayName = 'AccountListItem';
