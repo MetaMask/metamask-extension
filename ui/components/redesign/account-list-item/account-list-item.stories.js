@@ -5,14 +5,14 @@ const SampleIdentity = {
   address: '0x12C7...135f',
   name: 'Account 1',
   balance: '0x0000',
-  tokenBalance: '32.09 ETH'
+  tokenBalance: '32.09 ETH',
 };
 
 const ChaosIdentity = {
   address: '0x12C7...135f',
   name: 'pneumonoultramicroscopicsilicovolcanoconiosis',
   balance: '0x0000',
-  tokenBalance: '32.09 ETH'
+  tokenBalance: '32.09 ETH',
 };
 
 export default {

@@ -1,4 +1,11 @@
 .account-list-item {
+  &:not(.account-list-item--selected) {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default-hover);
+    }
+  }
+
   &__active-indicator {
     width: 4px;
     border-radius: '8px';

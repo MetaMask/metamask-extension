@@ -1,26 +1,14 @@
-/*
-  ToDo:
-    1.  Add CSS file
-    2.  Add hover state colors within CSS file
-    3.  Move inline styles to CSS file once
-    4.  Accessibility:  make each parent item an `a` link, or tabIndex=0?
-
-*/
-
-
-
 import React from 'react';
-
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../ui/box/box';
+import Box from '../../ui/box/box';
 import {
   AvatarAccount,
   ButtonIcon,
   Text,
   ICON_NAMES,
   ICON_SIZES,
-} from '../component-library';
+} from '../../component-library';
 import {
   Color,
   TEXT_ALIGN,
@@ -31,7 +19,7 @@ import {
   BLOCK_SIZES,
   JustifyContent,
   Size,
-} from '../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 
 export const AccountListItem = ({ identity, selected = false, onClick }) => {
   return (
@@ -39,9 +27,7 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
       display={DISPLAY.FLEX}
       padding={1}
       gap={2}
-      backgroundColor={selected
-        ? Color.primaryMuted
-        : Color.transparent}
+      backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('account-list-item', {
         'account-list-item--selected': selected,
       })}
@@ -54,9 +40,7 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
     >
       <Box
         marginInlineEnd={2}
-        backgroundColor={selected
-          ? Color.primaryDefault
-          : Color.transparent}
+        backgroundColor={selected ? Color.primaryDefault : Color.transparent}
         className="account-list-item__active-indicator"
       ></Box>
       <AvatarAccount
@@ -64,7 +48,12 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
         marginTop={3}
         address={identity.address}
       ></AvatarAccount>
-      <Box marginTop={3} marginBottom={4} width={BLOCK_SIZES.FULL} className="account-list-item__content">
+      <Box
+        marginTop={3}
+        marginBottom={4}
+        width={BLOCK_SIZES.FULL}
+        className="account-list-item__content"
+      >
         <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
           <Box
             display={DISPLAY.FLEX}
@@ -112,7 +101,7 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
 AccountListItem.propTypes = {
   identity: PropTypes.object.isRequired,
   selected: PropTypes.bool,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 };
 
 AccountListItem.displayName = 'AccountListItem';
