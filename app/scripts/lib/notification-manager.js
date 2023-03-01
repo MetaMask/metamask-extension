@@ -84,6 +84,7 @@ export default class NotificationManager extends EventEmitter {
   _onWindowClosed(windowId) {
     if (windowId === this._popupId) {
       this._setCurrentPopupId(undefined);
+      this._popupId = undefined;
       this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED, {
         automaticallyClosed: this._popupAutomaticallyClosed,
       });
