@@ -119,7 +119,7 @@ Description.args = {
 export const Children = (args) => {
   return (
     <BannerTip {...args}>
-      {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
+      Description shouldn&apos;t repeat title. 1-3 lines. Can contain a
       <ButtonLink size={Size.auto} href="https://metamask.io/" target="_blank">
         hyperlink.
       </ButtonLink>
