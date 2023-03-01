@@ -1,5 +1,3 @@
-const { strict: assert } = require('assert');
-
 const { withFixtures } = require('../helpers');
 const {
   withFixturesOptions,
@@ -7,15 +5,13 @@ const {
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,
-  checkActivityTransaction
+  checkActivityTransaction,
 } = require('./shared');
-
 
 describe('Swap Eth for another Token', function () {
   it('Completes second Swaps while first swap is processing', async function () {
+    withFixturesOptions.ganacheOptions.blockTime = 10;
 
-    withFixturesOptions.ganacheOptions.blockTime = 10
-    
     await withFixtures(
       {
         ...withFixturesOptions,
@@ -26,29 +22,29 @@ describe('Swap Eth for another Token', function () {
         await loadExtension(driver);
 
         await buildQuote(driver, {
-          amount: .001,
+          amount: 0.001,
           swapTo: 'USDC',
         });
 
-        await reviewQuote(driver, '0.001', 'TESTETH', 'USDC')
+        await reviewQuote(driver, '0.001', 'TESTETH', 'USDC');
 
         await driver.clickElement({ text: 'Swap', tag: 'button' });
         await driver.clickElement({ text: 'View in activity', tag: 'button' });
 
         await buildQuote(driver, {
-          amount: .003,
+          amount: 0.003,
           swapTo: 'DAI',
-        })
+        });
 
-        await reviewQuote(driver, '0.003', 'TESTETH', 'DAI')
+        await reviewQuote(driver, '0.003', 'TESTETH', 'DAI');
 
         await driver.clickElement({ text: 'Swap', tag: 'button' });
 
-        await waitForTransactionToComplete(driver, 'DAI')
+        await waitForTransactionToComplete(driver, 'DAI');
 
-        await checkActivityTransaction(driver, 0, '0.003', 'TESTETH', 'DAI')
-        await checkActivityTransaction(driver, 1, '0.001', 'TESTETH', 'USDC')
-      }
+        await checkActivityTransaction(driver, 0, '0.003', 'TESTETH', 'DAI');
+        await checkActivityTransaction(driver, 1, '0.001', 'TESTETH', 'USDC');
+      },
     );
   });
   it('Completes a Swap between Eth and Dai', async function () {
@@ -64,15 +60,14 @@ describe('Swap Eth for another Token', function () {
           swapTo: 'DAI',
         });
 
-        await reviewQuote(driver, '2', 'TESTETH', 'DAI')
+        await reviewQuote(driver, '2', 'TESTETH', 'DAI');
 
         await driver.clickElement({ text: 'Swap', tag: 'button' });
 
-        await waitForTransactionToComplete(driver, 'DAI')
+        await waitForTransactionToComplete(driver, 'DAI');
 
-        await checkActivityTransaction(driver, 0, '2', 'TESTETH', 'DAI')
+        await checkActivityTransaction(driver, 0, '2', 'TESTETH', 'DAI');
       },
     );
   });
-
 });

@@ -30,7 +30,9 @@ const buildQuote = async (driver, options) => {
   );
   await driver.fill('input[placeholder*="0"]', options.amount);
   await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
-  await driver.waitForSelector('[class="dropdown-input-pair dropdown-input-pair__to"]');
+  await driver.waitForSelector(
+    '[class="dropdown-input-pair dropdown-input-pair__to"]',
+  );
   await driver.clickElement('.dropdown-input-pair__to');
 
   await driver.fill(
@@ -69,19 +71,38 @@ const reviewQuote = async (driver, amount, swapFrom, swapTo) => {
     text: 'Estimated gas fee',
   });
 
-  const sourceValue = await driver.waitForSelector('.main-quote-summary__source-row-value')
-  assert.equal(await sourceValue.getText(), amount, 'Error: Quote has wrong amount')
+  const sourceValue = await driver.waitForSelector(
+    '.main-quote-summary__source-row-value',
+  );
+  assert.equal(
+    await sourceValue.getText(),
+    amount,
+    'Error: Quote has wrong amount',
+  );
 
-  const sourceSymbol = await driver.waitForSelector('.main-quote-summary__source-row-symbol')
-  assert.equal(await sourceSymbol.getText(), swapFrom, 'Error: Quote has wrong symbol')
+  const sourceSymbol = await driver.waitForSelector(
+    '.main-quote-summary__source-row-symbol',
+  );
+  assert.equal(
+    await sourceSymbol.getText(),
+    swapFrom,
+    'Error: SwapFrom has wrong symbol',
+  );
 
-  const quoteElement = await driver.waitForSelector(
-    '[class="exchange-rate-display main-quote-summary__exchange-rate-display"]',
-  )
+  const swapToSymbol = await driver.waitForSelector(
+    '.main-quote-summary__destination-row',
+  );
+  assert.equal(
+    await swapToSymbol.getText(),
+    swapTo,
+    'Error: SwapTo has wrong symbol',
+  );
 
   await driver.waitForSelector(
-    '[class="fee-card__info-tooltip-container"]',
+    '[class="exchange-rate-display main-quote-summary__exchange-rate-display"]',
   );
+
+  await driver.waitForSelector('[class="fee-card__info-tooltip-container"]');
 
   await driver.waitForSelector({
     css: '[class="countdown-timer__time"]',
@@ -90,45 +111,79 @@ const reviewQuote = async (driver, amount, swapFrom, swapTo) => {
 };
 
 const waitForTransactionToComplete = async (driver, tokenName) => {
-  const sucessfulTransactionMessage = await driver.waitForSelector({
-    css: '[class="awaiting-swap__header"]',
-    text: 'Transaction complete',
-  }, { timeout: 30000 });
+  const sucessfulTransactionMessage = await driver.waitForSelector(
+    {
+      css: '[class="awaiting-swap__header"]',
+      text: 'Transaction complete',
+    },
+    { timeout: 30000 },
+  );
 
   assert.equal(
     await sucessfulTransactionMessage.getText(),
     'Transaction complete',
-    'Incorrect transaction message'
+    'Incorrect transaction message',
   );
   const sucessfulTransactionToken = await driver.waitForSelector({
     css: '[class="awaiting-swap__amount-and-symbol"]',
     text: tokenName,
   });
-  assert.equal(await sucessfulTransactionToken.getText(), tokenName, 'Incorrect token name');
+  assert.equal(
+    await sucessfulTransactionToken.getText(),
+    tokenName,
+    'Incorrect token name',
+  );
 
   await driver.clickElement({ text: 'Close', tag: 'button' });
   await driver.waitForSelector('[data-testid="home__asset-tab"]');
-
 };
 
-const checkActivityTransaction = async (driver, index, amount, swapFrom, swapTo) => {
+const checkActivityTransaction = async (
+  driver,
+  index,
+  amount,
+  swapFrom,
+  swapTo,
+) => {
   await driver.clickElement('[data-testid="home__activity-tab"]');
 
-  const itemsText = await driver.findElements('.list-item__title',);
-  assert.equal(await itemsText[index].getText(), `Swap ${swapFrom} to ${swapTo}`, 'Title is incorrect');
+  const itemsText = await driver.findElements('.list-item__title');
+  assert.equal(
+    await itemsText[index].getText(),
+    `Swap ${swapFrom} to ${swapTo}`,
+    'Title is incorrect',
+  );
 
-  const amountValues = await driver.findElements('.transaction-list-item__primary-currency');
+  const amountValues = await driver.findElements(
+    '.transaction-list-item__primary-currency',
+  );
 
-  assert.equal(await amountValues[index].getText(), `-${amount} ${swapFrom}`, 'Transaction amount is incorrect');
+  assert.equal(
+    await amountValues[index].getText(),
+    `-${amount} ${swapFrom}`,
+    'Transaction amount is incorrect',
+  );
 
-  await itemsText[index].click()
+  await itemsText[index].click();
   await driver.delay(regularDelayMs);
 
-  const txStatus = await driver.findElement('.transaction-list-item-details__tx-status >div > div:last-child');
-  assert.equal(await txStatus.getText(), `Confirmed`, `Transaction status is not 'Confirmed'`);
+  const txStatus = await driver.findElement(
+    '.transaction-list-item-details__tx-status >div > div:last-child',
+  );
+  assert.equal(
+    await txStatus.getText(),
+    `Confirmed`,
+    `Transaction status is not 'Confirmed'`,
+  );
 
-  const txAmount = await driver.findElement('.transaction-breakdown__value--amount')
-  assert.equal(await txAmount.getText(), `-${amount} ${swapFrom}`, 'Transaction breakdown is incorrect');
+  const txAmount = await driver.findElement(
+    '.transaction-breakdown__value--amount',
+  );
+  assert.equal(
+    await txAmount.getText(),
+    `-${amount} ${swapFrom}`,
+    'Transaction breakdown is incorrect',
+  );
 
   await driver.clickElement('[data-testid="popover-close"]');
 };
