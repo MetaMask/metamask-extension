@@ -2,7 +2,7 @@ import React from 'react';
 import { NewTokenList } from './token-list';
 
 export default {
-  title: 'Components/Redesign/NewTokenList',
+  title: 'Components/Multichain/NewTokenList',
   component: NewTokenList,
   argTypes: {
     tokenSymbol: {
