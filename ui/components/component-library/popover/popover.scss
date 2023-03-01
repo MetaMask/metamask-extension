@@ -1,6 +1,28 @@
 
 .popover {
   // TODO
+
+  &__header {
+    background-color: red;
+
+    &-item-start,
+    &-item-end {
+      background: gold;
+      flex: 0 0 auto;
+      width: 24px;
+    }
+
+    &-item-middle {
+      flex: 1;
+      background: purple;
+    }
+
+    // &-item-end {
+    //   background: green;
+    //   flex: 0 0 auto;
+    //   width: 50px;
+    // }
+  }
 }
 
 .arrow,

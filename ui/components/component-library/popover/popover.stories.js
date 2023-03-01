@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '../../ui/box/box';
 import {
   AlignItems,
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Button } from '..';
 import README from './README.mdx';
 import { Popover } from '.';
 
@@ -69,17 +68,75 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <Box
-    style={{ height: '200vh', width: '200vw' }}
-    display={DISPLAY.FLEX}
-    justifyContent={JustifyContent.center}
-    alignItems={AlignItems.center}
-  >
-    <Popover placement="auto" {...args}>
-      TEST
-    </Popover>
-  </Box>
-);
+export const DefaultStory = (args) => {
+  const [referenceElement, setReferenceElement] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
+  const handleFocus = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isOpen]);
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <Box
+      style={{ height: '200vh', width: '200vw' }}
+      display={DISPLAY.FLEX}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+    >
+      <Box
+        ref={setButtonRef}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleClose}
+      >
+        Reference Item
+      </Box>
+      <Popover
+        placement="auto"
+        referenceElement={referenceElement}
+        isOpen={isOpen}
+        {...args}
+      >
+        TEST
+      </Popover>
+    </Box>
+  );
+};
 
 DefaultStory.storyName = 'Default';
