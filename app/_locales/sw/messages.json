@@ -121,12 +121,6 @@
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
   },
-  "buyWithWyre": {
-    "message": "Nunua $1 kwa kutumia Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre inakuwezesha kutumia kadi ya benki kuweka $1 moja kwa moja kwenye akaunti yako ya MetaMask."
-  },
   "cancel": {
     "message": "Ghairi"
   },
@@ -165,9 +159,6 @@
   },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Endelea kwenye Wyre"
   },
   "contractDeployment": {
     "message": "Kutoa Mkataba"
@@ -316,13 +307,6 @@
   },
   "general": {
     "message": "Jumla"
-  },
-  "getEther": {
-    "message": "Pata Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Pata Ether kutoka kwenye mfereji $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Mtandao wa Majaribio wa Goerli"
@@ -759,9 +743,6 @@
   "terms": {
     "message": "Masharti ya Matumizi"
   },
-  "testFaucet": {
-    "message": "Mfereji wa Jaribio"
-  },
   "tips": {
     "message": "Michango"
   },
@@ -879,9 +860,6 @@
   },
   "userName": {
     "message": "Jina la mtumiaji"
-  },
-  "viewAccount": {
-    "message": "Angalia Akaunti"
   },
   "viewContact": {
     "message": "Tazama Mawasiliano"

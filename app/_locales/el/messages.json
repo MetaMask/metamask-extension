@@ -523,37 +523,8 @@
     "message": "Αγορά $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Αγορά $1 με Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Μπορείτε να αγοράσετε ή να μεταφέρετε εύκολα κρυπτονομίσματα με τον λογαριασμό σας στο Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Αγορά $1 με MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 145+ countries. Tokens deposit into your MetaMask account."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Αγορά $1 με Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Η Transak υποστηρίζει πιστωτικές και χρεωστικές κάρτες, Apple Pay, MobiKwik και τραπεζικές μεταφορές (ανάλογα με την τοποθεσία) σε περισσότερες από 145 χώρες. Τα $1 κατατίθενται απευθείας στον λογαριασμό σας στο MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Αγοράστε Τώρα"
-  },
-  "buyWithWyre": {
-    "message": "Αγοράστε $1 με το Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Εύκολη ενσωμάτωση για αγορές μέχρι και $ 1000. Γρήγορη διαδραστική επαλήθευση αγοράς υψηλού ορίου. Υποστηρίζει χρεωστικές/πιστωτικές κάρτες, Apple Pay, Τραπεζικές Μεταφορές. Διαθέσιμο σε 100+ χώρες. Καταθέσεις token στον λογαριασμό σας MetaMask"
   },
   "bytes": {
     "message": "Bytes"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Συνέχεια"
-  },
-  "continueToCoinbasePay": {
-    "message": "Συνέχεια στο Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Συνέχεια στη MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Συνεχίστε στο Transak"
-  },
-  "continueToWyre": {
-    "message": "Συνεχίστε στο Wyre"
   },
   "contract": {
     "message": "Συμβόλαιο"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Κατάθεση"
   },
-  "depositCrypto": {
-    "message": "Κατάθεση $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Μάθετε περισσότερα"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Λεπτομέρειες"
-  },
-  "directDepositCrypto": {
-    "message": "Απευθείας κατάθεση $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Εάν έχετε ήδη μερικά $1, ο γρηγορότερος τρόπος για να βάλετε $1 στο νέο σας πορτοφόλι είναι η απευθείας κατάθεση."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Το \"1$\" είναι απενεργοποιημένο επειδή δεν πληροί την ελάχιστη αύξηση 10% σε σχέση με τα αρχικά τέλη συναλλαγής.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Γενικά"
-  },
-  "getEther": {
-    "message": "Λάβετε Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Πάρτε Ether από μια πηγή για το $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Μετάβαση Πίσω"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Το αρχικό token σε αυτό το δίκτυο είναι το $1. Είναι το token που χρησιμοποιείται για τα τέλη φυσικού αερίου.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Για να αλληλεπιδράσετε με αποκεντρωμένες εφαρμογές χρησιμοποιώντας το MetaMask, θα χρειαστείτε $1 στο πορτοφόλι σας.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Χρειάζεστε βοήθεια; Επικοινωνήστε με $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Όροι παροχής υπηρεσιών"
   },
-  "testFaucet": {
-    "message": "Έλεγχος Βαλβίδας"
-  },
   "testNetworks": {
     "message": "Δοκιμαστικά δίκτυα"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Προβολή"
-  },
-  "viewAccount": {
-    "message": "Προβολή λογαριασμού"
   },
   "viewAllDetails": {
     "message": "Προβολή όλων των λεπτομερειών"

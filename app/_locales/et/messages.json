@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Teie lehitsejat ei toetata..."
   },
-  "buyWithWyre": {
-    "message": "Ostke $1 -d Wyre'iga"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre võimaldab kasutada krediitkaarti, et teha $1 sissemakse otse MetaMaski kontole."
-  },
   "bytes": {
     "message": "Baidid"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
-  },
-  "continueToWyre": {
-    "message": "Ava Wyre"
   },
   "contractDeployment": {
     "message": "Lepingu juurutamine"
@@ -322,13 +313,6 @@
   },
   "general": {
     "message": "Üldine teave"
-  },
-  "getEther": {
-    "message": "Hankige eetrit"
-  },
-  "getEtherFromFaucet": {
-    "message": "Hankige kraanist eetrit $1eest",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli testvõrk"
@@ -771,9 +755,6 @@
   "terms": {
     "message": "Teenusetingimused"
   },
-  "testFaucet": {
-    "message": "Testkraan"
-  },
   "tips": {
     "message": "Preemiad"
   },
@@ -891,9 +872,6 @@
   },
   "userName": {
     "message": "Kasutajanimi"
-  },
-  "viewAccount": {
-    "message": "Kuva konto"
   },
   "viewContact": {
     "message": "Kuva kontakt"

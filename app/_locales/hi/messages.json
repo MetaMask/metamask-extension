@@ -523,37 +523,8 @@
     "message": "$1 खरीदें",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "कॉइनबेस पे से $1 खरीदें",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "अपने कॉइनबेस अकाउंट के साथ आप क्रिप्टो को आसानी से खरीद या ट्रांसफर कर सकते हैं।",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "MoonPay से $1 खरीदें",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay कई लोकप्रिय भुगतान विधियों को सपोर्ट करता है, जिसमें Visa, Mastercard, Apple / Google / Samsung Pay और 145+ देशों में बैंक हस्तांतरण शामिल हैं। टोकन आपके MetaMask के अकाउंट में जमा होते हैं।"
-  },
-  "buyCryptoWithTransak": {
-    "message": "Transak से $1 खरीदें",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak 100+ देशों में क्रेडिट और डेबिट कार्ड, Apple Pay, MobiKwik और बैंक ट्रांसफ़र (स्थान के आधार पर) को सपोर्ट करता है। $1 सीधे आपके MetaMask के अकाउंट में जमा होता है।",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "अभी खरीदें"
-  },
-  "buyWithWyre": {
-    "message": "Wyre के साथ $1 खरीदें"
-  },
-  "buyWithWyreDescription": {
-    "message": "$1000 तक की खरीदारी के लिए आसान ऑनबोर्डिंग। तेज़ इंटरैक्टिव उच्च सीमा खरीद सत्यापन। डेबिट / क्रेडिट कार्ड, ऐप्पल पे, बैंक ट्रांसफर का समर्थन करता है। 100+ देशों में उपलब्ध है। टोकन आपके मेटामास्क खाते में जमा होते हैं"
   },
   "bytes": {
     "message": "बाइट"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "जारी रखें"
-  },
-  "continueToCoinbasePay": {
-    "message": "कॉइनबेस-पे पर जारी रहें"
-  },
-  "continueToMoonPay": {
-    "message": "MoonPay के लिए जारी रखें"
-  },
-  "continueToTransak": {
-    "message": "Transak के लिए जारी रखें"
-  },
-  "continueToWyre": {
-    "message": "Wyre पर जारी रखें"
   },
   "contract": {
     "message": "अनुबंध"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "जमा करें"
   },
-  "depositCrypto": {
-    "message": "$1 जमा करें",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "अधिक जानें"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "विस्तृत जानकारी"
-  },
-  "directDepositCrypto": {
-    "message": "$1 सीधे जमा करें"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "यदि आपके पास कुछ $1 पहले से हैं, तो अपने नए वॉलेट में $1 प्राप्त करने का सबसे तेज़ तरीका है सीधे जमा करना है।"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "\"$1\" अक्षम किया गया है क्योंकि यह मूल गैस शुल्क से न्यूनतम 10% वृद्धि को पूरा नहीं करता है।",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "सामान्य"
-  },
-  "getEther": {
-    "message": "Ether प्राप्त करें"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 के लिए एक फॉसेट से Ether प्राप्त करें",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "वापस जाएं"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "इस नेटवर्क पर मूल टोकन $1 है। यह गैस शुल्क के लिए इस्तेमाल किया जाने वाला टोकन है।",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "MetaMask का इस्तेमाल करते हुए विकेंद्रीकृत एप्लिकेशन्स के साथ इंटरैक्ट करने के लिए आपके वॉलेट में $1 होना ज़रूरी है।",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "मदद चाहिए? $1 से संपर्क करें",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "सेवा की शर्तें"
   },
-  "testFaucet": {
-    "message": "फॉसेट का परीक्षण करें"
-  },
   "testNetworks": {
     "message": "टेस्ट नेटवर्क्स"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "देखें"
-  },
-  "viewAccount": {
-    "message": "अकाउंट देखें"
   },
   "viewAllDetails": {
     "message": "सभी विवरण देखें"

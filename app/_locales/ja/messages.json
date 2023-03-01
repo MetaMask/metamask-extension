@@ -523,37 +523,8 @@
     "message": "$1 を購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Coinbase Pay で $1 を購入",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Coinbase アカウントで簡単に仮想通貨を購入または送金できます。",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "MoonPay で $1 を購入",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay は 145 か国以上で、Visa、Mastercard、Apple / Google / Samsung Pay、銀行送金などの一般的な支払方法に対応しています。トークンは MetaMask アカウントに入金されます。"
-  },
-  "buyCryptoWithTransak": {
-    "message": "Transak で $1 を購入",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak は、100 か国以上でクレジット・デビットカード、Apple Pay、MobiKwik、銀行送金 (場所による) に対応しています。$1 は MetaMask アカウントに直接入金されます。",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "今すぐ購入"
-  },
-  "buyWithWyre": {
-    "message": "Wyreで$1を購入"
-  },
-  "buyWithWyreDescription": {
-    "message": "簡単なオンボーディングプロセスで最高 $ 1000 購入可能。迅速かつインタラクティブな高限度額の購入検証。デビット・クレジットカード、Apple Pay、銀行送金に対応。100か国以上で利用可能。トークンは MetaMask アカウントに入金されます。"
   },
   "bytes": {
     "message": "バイト"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "続行"
-  },
-  "continueToCoinbasePay": {
-    "message": "Coinbase Pay に進む"
-  },
-  "continueToMoonPay": {
-    "message": "MoonPay に進む"
-  },
-  "continueToTransak": {
-    "message": "Transakに進む"
-  },
-  "continueToWyre": {
-    "message": "Wyreに進む"
   },
   "contract": {
     "message": "コントラクト"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "入金"
   },
-  "depositCrypto": {
-    "message": "$1 を入金",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "詳細"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "詳細"
-  },
-  "directDepositCrypto": {
-    "message": "$1 を直接入金"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "すでに $1 をお持ちの場合、新しいウォレットに最も素早く $1 を入金する方法が、直接入金です。"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "元のガス代の 10% 以上という増額の条件を満たしていないため、「$1」は利用できません。",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "一般"
-  },
-  "getEther": {
-    "message": "Etherを取得"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 ネットワークのフォーセットから Ether を取得",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "戻る"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "このネットワークのネイティブトークンは $1 です。ガス代にもこのトークンが使用されます。",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "MetaMask で分散型アプリケーションとやり取りするには、ウォレットに $1 が必要です。",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "アシスタンスが必要な場合は、$1にお問い合わせください",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "サービス規約"
   },
-  "testFaucet": {
-    "message": "テストフォーセット"
-  },
   "testNetworks": {
     "message": "テストネットワーク"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "表示"
-  },
-  "viewAccount": {
-    "message": "アカウントを表示"
   },
   "viewAllDetails": {
     "message": "すべての詳細の表示"

@@ -523,37 +523,8 @@
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Coinbase Pay로 $1 구매",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Coinbase 계정으로 손쉽게 암호화폐를 구매하거나 전송할 수 있습니다.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "문페이(MoonPay)로 $1 구매",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "문페이는 비자, 마스터카드, 애플/구글/삼성 페이, 145개국 이상에서 이용 가능한 은행 송금을 비롯해 다양한 결제 방법을 지원합니다. 토큰은 MetaMask 계정에 입금됩니다."
-  },
-  "buyCryptoWithTransak": {
-    "message": "트랜삭(Transak)으로 $1 구매",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "트랜삭은 100개국 이상에서 신용카드, 직불카드, 애플 페이, 모비퀵, 은행 송금(지역에 따라 지원이 안 될 수 있음)을 지원합니다. $1 입금은 MetaMask 계정으로 직접 처리됩니다.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "지금 구매"
-  },
-  "buyWithWyre": {
-    "message": "Wyre로 $1 구매"
-  },
-  "buyWithWyreDescription": {
-    "message": "최대 $ 1000 구매까지 간편한 온보딩. 신속한 대화형 상한 구매 확인. 직불/신용 카드, Apple Pay, 은행 송금 지원. 100여국 이상에서 사용 가능. MetaMask 계정으로 토큰 입금"
   },
   "bytes": {
     "message": "바이트"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "계속"
-  },
-  "continueToCoinbasePay": {
-    "message": "Coinbase Pay로 계속하기"
-  },
-  "continueToMoonPay": {
-    "message": "문페이로 계속하기"
-  },
-  "continueToTransak": {
-    "message": "Transak으로 계속"
-  },
-  "continueToWyre": {
-    "message": "Wyre로 넘어가기"
   },
   "contract": {
     "message": "계약"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "예치"
   },
-  "depositCrypto": {
-    "message": "$1 입금",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "자세히 알아보기"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "세부 정보"
-  },
-  "directDepositCrypto": {
-    "message": "$1 직접 입금"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "이미 $1(이)가 있는 경우 직접 입금하는 것이 새 지갑에 $1(을)를 넣는 가장 빠른 방법입니다."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "일반"
-  },
-  "getEther": {
-    "message": "Ether 얻기"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 네크워크 포시트에서 Ether 얻기",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "뒤로 가기"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "이 네트워크의 네이티브 토큰은 $1입니다. 이는 가스비 지불에 사용하는 토큰입니다.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "MetaMask로 디앱을 이용하려면 지갑에 $1(이)가 있어야 합니다.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "도움이 필요하신가요? $1에 문의하세요.",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "서비스 약관"
   },
-  "testFaucet": {
-    "message": "수도꼭지(faucet) 테스트"
-  },
   "testNetworks": {
     "message": "테스트 네트워크"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "보기"
-  },
-  "viewAccount": {
-    "message": "계정 보기"
   },
   "viewAllDetails": {
     "message": "모든 세부 정보 보기"

@@ -523,37 +523,8 @@
     "message": "Купить $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Купите $1 с помощью Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Вы можете легко купить или перевести криптовалюту с помощью своего счета Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Купить $1 с помощью MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay поддерживает популярные способы оплаты, включая Visa, Mastercard, Apple/Google/Samsung Pay, а также банковские переводы в 145 странах. Токены зачисляются на ваш счет MetaMask."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Купить $1 с помощью Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak поддерживает кредитные и дебетовые карты, Apple Pay, MobiKwik и банковские переводы (в зависимости от местоположения) в более чем 100 странах. $1 вносится прямо на ваш счет MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Купить сейчас"
-  },
-  "buyWithWyre": {
-    "message": "Купить 1 $ с помощью Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Простая регистрация для покупок на сумму до 1000 $. Быстрая интерактивная проверка покупки с высоким лимитом. Поддерживает дебетовые/кредитные карты, Apple Pay, банковские переводы. Доступно в более чем 100 странах. Токены зачисляются на ваш счет MetaMask"
   },
   "bytes": {
     "message": "Байты"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Продолжить"
-  },
-  "continueToCoinbasePay": {
-    "message": "Перейти на Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Перейти в MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Перейти в Transak"
-  },
-  "continueToWyre": {
-    "message": "Перейти к Wyre"
   },
   "contract": {
     "message": "Контракт"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Внести деньги"
   },
-  "depositCrypto": {
-    "message": "Внесите $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Подробнее"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Подробности"
-  },
-  "directDepositCrypto": {
-    "message": "Внесите $1 напрямую"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Если у вас уже есть немного $1, самый быстрый способ получить $1 в новый кошелек — это прямой депозит."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "$1 отключена, поскольку не соответствует минимальному увеличению на 10% от первоначальной платы за газ.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Общее"
-  },
-  "getEther": {
-    "message": "Получить Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Получите из крана Ether для сети $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Назад"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Нативный токен этой сети — $1. Этот токен используется для оплаты газа.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask вам понадобится $1 в вашем кошельке.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Нужна помощь? Обратитесь в $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Условия обслуживания"
   },
-  "testFaucet": {
-    "message": "Тестовый кран"
-  },
   "testNetworks": {
     "message": "Протестировать сети"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Просмотр"
-  },
-  "viewAccount": {
-    "message": "Смотреть счет"
   },
   "viewAllDetails": {
     "message": "Смотреть все сведения"

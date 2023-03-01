@@ -523,37 +523,8 @@
     "message": "$1 kaufen",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "1 $ mit Coinbase Pay kaufen",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Sie können mit Ihrem Coinbase-Konto bequem Kryptowährungen kaufen oder überweisen.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "$1 mit MoonPay kaufen",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay unterstützt gängige Zahlungsmethoden, einschließlich Visa, Mastercard, Apple/Google/ Samsung Pay und Banküberweisungen in über 145 Ländern. Token werden auf Ihr MetaMask-Konto eingezahlt."
-  },
-  "buyCryptoWithTransak": {
-    "message": "$1 mit Transak kaufen",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak unterstützt Kredit- und Debitkarten, Apple Pay, MobiKwik und Banküberweisungen (je nach Standort) in über 100 Ländern. $1-Einzahlungen direkt auf Ihr MetaMask-Konto.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Jetzt kaufen"
-  },
-  "buyWithWyre": {
-    "message": "$1 mit Wyre kaufen"
-  },
-  "buyWithWyreDescription": {
-    "message": "Einfaches Onboarding für Käufe bis zu 1000 $. Schnelle interaktive Überprüfung von Käufen mit hohem Limit. Unterstützt Debit-/Kreditkarte, Apple Pay, Banküberweisungen. Verfügbar in über 100 Ländern. Einzahlung von Token auf Ihr MetaMask-Konto"
   },
   "bytes": {
     "message": "Bytes"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Weiter"
-  },
-  "continueToCoinbasePay": {
-    "message": "Weiter zu Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Weiter zu MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Weiter zur Transaktion"
-  },
-  "continueToWyre": {
-    "message": "Weiter zu Wyre"
   },
   "contract": {
     "message": "Vertrag"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Einzahlung"
   },
-  "depositCrypto": {
-    "message": "$1 einzahlen",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Mehr erfahren"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Details"
-  },
-  "directDepositCrypto": {
-    "message": "Direkt $1 einzahlen"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Wenn Sie bereits über $1 verfügen, ist eine direkte Einzahlung der schnellste Weg, um $1 auf Ihr Konto einzuzahlen."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” ist deaktiviert, weil es nicht das Minimum einer zehnprozentigen Erhöhung gegenüber der ursprünglichen Gasgebühr erfüllt.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Allgemein"
-  },
-  "getEther": {
-    "message": "Ether holen"
-  },
-  "getEtherFromFaucet": {
-    "message": "Ether für das $1-Netzwerk von einem Faucet holen.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Zurück"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Das native Token dieses Netzwerks ist $1. Dieses Token wird für die Gasgebühr verwendet.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Um mit dezentralen Anwendungen zu interagieren, die MetaMask verwenden, benötigen Sie $1 in Ihrer Wallet.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Brauchen Sie Hilfe? Kontaktieren Sie $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Nutzungsbedingungen"
   },
-  "testFaucet": {
-    "message": "Testfaucet"
-  },
   "testNetworks": {
     "message": "Test-Netzwerke"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Anzeigen"
-  },
-  "viewAccount": {
-    "message": " Konto einsehen"
   },
   "viewAllDetails": {
     "message": "Alle Details anzeigen"

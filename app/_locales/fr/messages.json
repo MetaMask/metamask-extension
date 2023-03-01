@@ -523,37 +523,8 @@
     "message": "Acheter $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Achetez des $1 avec Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Vous pouvez facilement acheter et transférer des cryptomonnaies en utilisant votre compte Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Acheter $1 avec MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay prend en charge les moyens de paiement populaires, incluant Visa, Mastercard, Apple / Google / Samsung Pay et les virements bancaires dans plus de 145 pays. Les tokens sont déposés sur votre compte MetaMask."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Acheter $1 avec Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak prend en charge les cartes de crédit et de débit, Apple Pay, MobiKwik et les virements bancaires (selon l’emplacement) dans plus de 100 pays. Les tokens $1 sont directement déposés sur votre compte MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Achetez maintenant"
-  },
-  "buyWithWyre": {
-    "message": "Acheter des $1 avec Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Intégration facile pour les achats à hauteur de 1000 $. Vérification interactive et rapide des achats pour les comptes qui bénéficient d’un plafond de paiement élevé. Prise en charge des cartes de débit/crédit, d’Apple Pay et des virements bancaires. Disponible dans plus de 100 pays. Dépôt de jetons sur votre compte MetaMask."
   },
   "bytes": {
     "message": "Octets"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Continuer"
-  },
-  "continueToCoinbasePay": {
-    "message": "Accéder à Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Continuer vers MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Continuer vers Transak"
-  },
-  "continueToWyre": {
-    "message": "Continuer vers Wyre"
   },
   "contract": {
     "message": "Contrat"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Effectuez un dépôt"
   },
-  "depositCrypto": {
-    "message": "Effectuer un dépôt de $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "En savoir plus"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Détails"
-  },
-  "directDepositCrypto": {
-    "message": "Déposer directement $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Si vous avez déjà un peu de $1, la façon la plus rapide d’obtenir $1 dans votre nouveau portefeuille est par dépôt direct."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "« $1 » est désactivé parce qu’il ne correspond pas au minimum d’augmentation de 10 % par rapport aux gas fees initiaux.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Général"
-  },
-  "getEther": {
-    "message": "Obtenir des Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obtenir de l’Ether d’un faucet pour le réseau $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Retour"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Le jeton natif de ce réseau est $1. C’est le jeton utilisé pour les frais de gaz.\n",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Pour interagir avec des applications décentralisées à l’aide de MetaMask, vous devrez avoir $1 dans votre portefeuille.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Vous avez besoin d’aide ? Contactez $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Conditions de service"
   },
-  "testFaucet": {
-    "message": "Faucet testnet"
-  },
   "testNetworks": {
     "message": "Réseaux de test"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Affichez"
-  },
-  "viewAccount": {
-    "message": "Voir le compte"
   },
   "viewAllDetails": {
     "message": "Afficher tous les détails"
