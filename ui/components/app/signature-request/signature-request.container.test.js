@@ -65,7 +65,6 @@ describe('Signature Request', () => {
       unapprovedEncryptionPublicKeyMsgs: {},
       uncofirmedTransactions: {},
       selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-      preferences: {},
     },
   };
   const store = configureMockStore()(mockStore);
