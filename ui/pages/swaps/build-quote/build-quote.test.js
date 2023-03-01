@@ -62,7 +62,21 @@ jest.mock('../swaps.util', () => {
 });
 
 describe('BuildQuote', () => {
+  beforeAll(() => {
+    jest.clearAllMocks();
+  });
+
   beforeEach(() => {
+    global.eth = {
+      contract: jest.fn(() => ({
+        at: jest.fn(() => ({
+          balanceOf: jest.fn(() => undefined),
+        })),
+      })),
+    };
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
