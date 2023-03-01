@@ -1111,6 +1111,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     ICON_NAMES: iconNames,
     MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
+    MULTICHAIN: config.MULTICHAIN === '1',
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
