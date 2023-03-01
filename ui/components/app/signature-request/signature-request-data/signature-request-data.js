@@ -26,7 +26,7 @@ function SignatureRequestData({ data }) {
 
   return (
     <Box className="signature-request-data__node">
-      {Object.entries(data).map(([label, value], i) => (
+      {Object.entries(data).map(([label, { value, type }], i) => (
         <Box
           className="signature-request-data__node"
           key={`${label}-${i}`}
@@ -54,7 +54,8 @@ function SignatureRequestData({ data }) {
               marginLeft={4}
               className="signature-request-data__node__value"
             >
-              {isValidHexAddress(value, {
+              {type === 'address' &&
+              isValidHexAddress(value, {
                 mixedCaseUseChecksum: true,
               }) ? (
                 <Typography

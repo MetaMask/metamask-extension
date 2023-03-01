@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
-  "buyWithWyre": {
-    "message": "רכישת את'ר עם Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre מאפשרת לך להשתמש בכרטיס אשראי כדי להפקיד $1 ישירות בחשבון ה-MetaMask שלך."
-  },
   "bytes": {
     "message": "בייטים"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "מתחבר לרשת אתריום הראשית"
-  },
-  "continueToWyre": {
-    "message": "המשך ל-Wyre"
   },
   "contractDeployment": {
     "message": "שליחת חוזה (Contract Deployment)"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "כללי"
-  },
-  "getEther": {
-    "message": "השג/י את'ר"
-  },
-  "getEtherFromFaucet": {
-    "message": "השג/י את'ר מברז (faucet) עבור ה-$1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "רשת בדיקה Goerli "
@@ -778,9 +762,6 @@
   "terms": {
     "message": "תנאי שימוש"
   },
-  "testFaucet": {
-    "message": "בדיקת ברז (Faucet)"
-  },
   "tips": {
     "message": "טיפים"
   },
@@ -898,9 +879,6 @@
   },
   "userName": {
     "message": "שם משתמש"
-  },
-  "viewAccount": {
-    "message": "הצג חשבון"
   },
   "viewContact": {
     "message": "הצג איש קשר"
