@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { Text } from '../../component-library';
@@ -19,15 +18,7 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderColor,
-  Color,
-  DISPLAY,
-  JustifyContent,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function getActionFunctionById(id, history) {
@@ -68,12 +59,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 14: true });
       history.push(`${ADVANCED_ROUTE}#backup-userdata`);
     },
+    16: () => {
+      updateViewedNotifications({ 16: true });
+      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+    },
     17: () => {
       updateViewedNotifications({ 17: true });
-      history.push(SECURITY_ROUTE);
-    },
-    18: () => {
-      updateViewedNotifications({ 18: true });
       history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
     },
   };
@@ -267,29 +258,16 @@ export default function WhatsNewPopup({ onClose }) {
         onClose();
       }}
       popoverRef={popoverRef}
+      showScrollDown={shouldShowScrollButton && notifications.length > 1}
+      onScrollDownButtonClick={handleScrollDownClick}
     >
-      {shouldShowScrollButton ? (
-        <Box
-          display={DISPLAY.FLEX}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          borderColor={BorderColor.borderDefault}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          color={Color.iconDefault}
-          onClick={handleScrollDownClick}
-          className="whats-new-popup__scroll-button"
-          data-testid="whats-new-popup-scroll-button"
-        >
-          <i className="fa fa-chevron-down" aria-label={t('scrollDown')} />
-        </Box>
-      ) : null}
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
           const notification = getTranslatedUINotifications(t, locale)[id];
           const isLast = index === notifications.length - 1;
           // Display the swaps notification with full image
-          // Displays the NFTs notification id: 18 with full image
-          return index === 0 || id === 1 || id === 18
+          // Displays the NFTs & OpenSea notifications 16,17 with full image
+          return index === 0 || id === 1 || id === 16 || id === 17
             ? renderFirstNotification(notification, idRefMap, history, isLast)
             : renderSubsequentNotification(
                 notification,
