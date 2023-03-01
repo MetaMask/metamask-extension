@@ -23,6 +23,7 @@ jest.mock('../../../../shared/constants/network', () => ({
     },
   },
 }));
+let openTabSpy;
 
 describe('EthOverview', () => {
   const mockStore = {
@@ -63,6 +64,7 @@ describe('EthOverview', () => {
 
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
+  const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
 
   afterEach(() => {
     store.clearActions();
@@ -76,6 +78,35 @@ describe('EthOverview', () => {
           openTab: jest.fn(),
         },
       });
+      openTabSpy = jest.spyOn(global.platform, 'openTab');
+    });
+
+    beforeEach(() => {
+      openTabSpy.mockClear();
+    });
+
+    it('should always show the Bridge button', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
+      expect(bridgeButton).toBeInTheDocument();
+    });
+
+    it('should open the Bridge URI when clicking on Bridge button', async () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
+
+      expect(bridgeButton).toBeInTheDocument();
+      expect(bridgeButton).not.toBeDisabled();
+
+      fireEvent.click(bridgeButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: expect.stringContaining(`/bridge?metamaskEntry=ext`),
+        }),
+      );
     });
 
     it('should always show the Buy button regardless of current chain Id', () => {
@@ -134,8 +165,6 @@ describe('EthOverview', () => {
       const mockedStore = configureMockStore([thunk])(
         mockedStoreWithBuyableChainId,
       );
-
-      const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
       const { queryByTestId } = renderWithProvider(
         <EthOverview />,

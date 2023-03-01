@@ -198,6 +198,29 @@ const EthOverview = ({ className }) => {
           />
           <IconButton
             className="eth-overview__button"
+            data-testid="eth-overview-bridge"
+            Icon={
+              <Icon name={ICON_NAMES.BRIDGE} color={IconColor.primaryInverse} />
+            }
+            label={t('bridge')}
+            onClick={() => {
+              const portfolioUrl = process.env.PORTFOLIO_URL;
+              const bridgeUrl = `${portfolioUrl}/bridge`;
+              global.platform.openTab({
+                url: `${bridgeUrl}?metamaskEntry=ext`,
+              });
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: EVENT_NAMES.BRIDGE_LINK_CLICKED,
+                properties: {
+                  location: 'Home',
+                  text: 'Bridge',
+                },
+              });
+            }}
+          />
+          <IconButton
+            className="eth-overview__button"
             data-testid="home__portfolio-site"
             Icon={
               <Icon
