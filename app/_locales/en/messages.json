@@ -3943,6 +3943,9 @@
   "swapAmountReceivedInfo": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
+  "swapAnyway": {
+    "message": "Swap anyway"
+  },
   "swapApproval": {
     "message": "Approve $1 for swaps",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."

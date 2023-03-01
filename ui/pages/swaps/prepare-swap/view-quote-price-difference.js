@@ -1,17 +1,22 @@
 import React, { useContext } from 'react';
-
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import { I18nContext } from '../../../contexts/i18n';
 
-import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import Tooltip from '../../../components/ui/tooltip';
+import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../../components/ui/box';
 import {
-  JustifyContent,
   DISPLAY,
+  AlignItems,
+  SEVERITIES,
+  Size,
+  TextVariant,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { GasRecommendations } from '../../../../shared/constants/gas';
+import {
+  BannerAlert,
+  Text,
+  ButtonLink,
+} from '../../../components/component-library';
 
 export default function ViewQuotePriceDifference(props) {
   const {
@@ -31,13 +36,11 @@ export default function ViewQuotePriceDifference(props) {
   let priceDifferenceTitle = '';
   let priceDifferenceMessage = '';
   let priceDifferenceClass = '';
-  let priceDifferenceAcknowledgementText = '';
   if (priceSlippageUnknownFiatValue) {
     // A calculation error signals we cannot determine dollar value
     priceDifferenceTitle = t('swapPriceUnavailableTitle');
     priceDifferenceMessage = t('swapPriceUnavailableDescription');
     priceDifferenceClass = GasRecommendations.high;
-    priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
@@ -51,49 +54,38 @@ export default function ViewQuotePriceDifference(props) {
       priceSlippageFromDestination, // Destination tokens total value
     ]);
     priceDifferenceClass = usedQuote.priceSlippage.bucket;
-    priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   }
+  const severity =
+    priceDifferenceClass === GasRecommendations.high
+      ? SEVERITIES.DANGER
+      : SEVERITIES.WARNING;
 
   return (
-    <div
-      className={classnames(
-        'view-quote__price-difference-warning-wrapper',
-        priceDifferenceClass,
-      )}
-    >
-      <ActionableMessage
-        message={
-          <div className="view-quote__price-difference-warning-contents">
-            <div className="view-quote__price-difference-warning-contents-text">
-              <Box
-                display={DISPLAY.FLEX}
-                justifyContent={JustifyContent.spaceBetween}
-                paddingBottom={2}
-              >
-                <div className="view-quote__price-difference-warning-contents-title">
-                  {priceDifferenceTitle}
-                </div>
-                <Tooltip position="bottom" title={t('swapPriceImpactTooltip')}>
-                  <i className="fa fa-info-circle" />
-                </Tooltip>
-              </Box>
-              {priceDifferenceMessage}
-              {!acknowledged && (
-                <div className="view-quote__price-difference-warning-contents-actions">
-                  <button
-                    onClick={() => {
-                      onAcknowledgementClick();
-                    }}
-                  >
-                    {priceDifferenceAcknowledgementText}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        }
-      />
-    </div>
+    <Box display={DISPLAY.FLEX} marginTop={2}>
+      <BannerAlert
+        title={priceDifferenceTitle}
+        severity={severity}
+        width={BLOCK_SIZES.FULL}
+      >
+        <Box>
+          <Text variant={TextVariant.bodyMd} as="h6">
+            {priceDifferenceMessage}
+          </Text>
+          {!acknowledged && (
+            <ButtonLink
+              size={Size.INHERIT}
+              textProps={{
+                variant: TextVariant.bodyMd,
+                alignItems: AlignItems.flexStart,
+              }}
+              onClick={onAcknowledgementClick}
+            >
+              {t('swapAnyway')}
+            </ButtonLink>
+          )}
+        </Box>
+      </BannerAlert>
+    </Box>
   );
 }
 

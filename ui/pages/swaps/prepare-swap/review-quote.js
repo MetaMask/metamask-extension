@@ -783,7 +783,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
     lastPriceDifferenceBucket,
   ]);
 
-  let viewQuotePriceDifferenceComponent = null;
+  let viewQuotePriceDifferenceWarning = null;
   const priceSlippageFromSource = useEthFiatAmount(
     usedQuote?.priceSlippage?.sourceAmountInETH || 0,
     { showFiat: true },
@@ -819,7 +819,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
       priceSlippageUnknownFiatValue);
 
   if (shouldShowPriceDifferenceWarning) {
-    viewQuotePriceDifferenceComponent = (
+    viewQuotePriceDifferenceWarning = (
       <ViewQuotePriceDifference
         usedQuote={usedQuote}
         sourceTokenValue={sourceTokenValue}
@@ -999,32 +999,9 @@ export default function ViewQuote({ setReceiveToAmount }) {
     setReceiveToAmount(ellipsedAmountToDisplay);
   }, [ellipsedAmountToDisplay, setReceiveToAmount]);
 
-  // const ExchangeRate = () => {
-  //   return (
-  //     <ExchangeRateDisplay
-  //       primaryTokenValue={calcTokenValue(
-  //         sourceTokenValue,
-  //         sourceTokenDecimals,
-  //       )}
-  //       primaryTokenDecimals={sourceTokenDecimals}
-  //       primaryTokenSymbol={sourceTokenSymbol}
-  //       secondaryTokenValue={destinationValue}
-  //       secondaryTokenDecimals={destinationTokenDecimals}
-  //       secondaryTokenSymbol={destinationTokenSymbol}
-  //       arrowColor="var(--color-primary-default)"
-  //       boldSymbols={false}
-  //       className="main-quote-summary__exchange-rate-display"
-  //     />
-  //   );
-  // };
-
   return (
     <div className="review-quote">
-      <div
-        className={classnames('review-quote__content', {
-          'review-quote__content_modal': disableSubmissionDueToPriceWarning,
-        })}
-      >
+      <div className="review-quote__content">
         {
           /* istanbul ignore next */
           selectQuotePopoverShown && (
@@ -1043,7 +1020,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
         }
         {isShowingWarning && (
           <>
-            {viewQuotePriceDifferenceComponent}
+            {viewQuotePriceDifferenceWarning}
             {(showInsufficientWarning || tokenBalanceUnavailable) && (
               <Box display={DISPLAY.FLEX} marginTop={2}>
                 <BannerAlert
