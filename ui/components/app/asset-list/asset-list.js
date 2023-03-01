@@ -73,7 +73,19 @@ const AssetList = ({ onClickAsset }) => {
 
   return (
     <>
-      <div style={{ display: 'none' }}>
+      {process.env.MULTICHAIN ? (
+        <NewTokenList
+          onClick={() => onClickAsset(nativeCurrency)}
+          data-testid="wallet-balance"
+          primary={
+            primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
+          }
+          tokenSymbol={primaryCurrencyProperties.suffix}
+          secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+          tokenImage={balanceIsLoading ? null : primaryTokenImage}
+          identiconBorder
+        />
+      ) : (
         <AssetListItem
           onClick={() => onClickAsset(nativeCurrency)}
           data-testid="wallet-balance"
@@ -85,18 +97,7 @@ const AssetList = ({ onClickAsset }) => {
           tokenImage={balanceIsLoading ? null : primaryTokenImage}
           identiconBorder
         />
-      </div>
-      <NewTokenList
-        onClick={() => onClickAsset(nativeCurrency)}
-        data-testid="wallet-balance"
-        primary={
-          primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
-        }
-        tokenSymbol={primaryCurrencyProperties.suffix}
-        secondary={showFiat ? secondaryCurrencyDisplay : undefined}
-        tokenImage={balanceIsLoading ? null : primaryTokenImage}
-        identiconBorder
-      />
+      )}
 
       <TokenList
         onTokenClick={(tokenAddress) => {

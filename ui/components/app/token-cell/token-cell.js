@@ -39,7 +39,20 @@ export default function TokenCell({
 
   return (
     <>
-      <div style={{ display: 'none' }}>
+      {process.env.MULTICHAIN ? (
+        <NewTokenList
+          iconClassName="token-cell__icon"
+          onClick={onClick.bind(null, address)}
+          tokenAddress={address}
+          tokenSymbol={symbol}
+          tokenDecimals={decimals}
+          tokenImage={image}
+          warning={warning}
+          primary={`${string || 0}`}
+          secondary={formattedFiat}
+          isERC721={isERC721}
+        />
+      ) : (
         <AssetListItem
           className={classnames('token-cell', {
             'token-cell--outdated': Boolean(balanceError),
@@ -55,19 +68,7 @@ export default function TokenCell({
           secondary={formattedFiat}
           isERC721={isERC721}
         />
-      </div>
-      <NewTokenList
-        iconClassName="token-cell__icon"
-        onClick={onClick.bind(null, address)}
-        tokenAddress={address}
-        tokenSymbol={symbol}
-        tokenDecimals={decimals}
-        tokenImage={image}
-        warning={warning}
-        primary={`${string || 0}`}
-        secondary={formattedFiat}
-        isERC721={isERC721}
-      />
+      )}
     </>
   );
 }
