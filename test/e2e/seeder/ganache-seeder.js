@@ -50,6 +50,16 @@ class GanacheSeeder {
       });
       await transaction.wait();
     }
+
+    if (contractName === SMART_CONTRACTS.ERC1155) {
+      const transaction = await contract.mintBatch(
+        fromAddress,
+        [1, 2, 3],
+        [1, 1, 100000000000000],
+        '0x',
+      );
+      await transaction.wait();
+    }
     this.storeSmartContractAddress(contractName, contract.address);
   }
 

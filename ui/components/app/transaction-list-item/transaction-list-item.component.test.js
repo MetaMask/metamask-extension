@@ -16,6 +16,7 @@ import {
 
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
+import { getTokens } from '../../../ducks/metamask/metamask';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -88,6 +89,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     );
   } else if (selector === getShouldShowFiat) {
     return opts.shouldShowFiat ?? false;
+  } else if (selector === getTokens) {
+    return opts.tokens ?? [];
   }
   return undefined;
 };

@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Vaš pregledač nije podržan..."
   },
-  "buyWithWyre": {
-    "message": "Kupite $1 preko servisa Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vam dozvoljava da koristite kreditnu karticu kako biste deponovali $1 pravo na vaš MetaMask nalog."
-  },
   "bytes": {
     "message": "Bajtovi"
   },
@@ -168,9 +162,6 @@
   },
   "connectingToMainnet": {
     "message": "Povezuje se na glavnu Ethereum mrežu"
-  },
-  "continueToWyre": {
-    "message": "Nastavite ka Wyre"
   },
   "contractDeployment": {
     "message": "Primena ugovora"
@@ -323,13 +314,6 @@
   },
   "general": {
     "message": "Opšte"
-  },
-  "getEther": {
-    "message": "Nabavite Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Preuzmite Ether sa slavine za $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Test mreža Goerli "
@@ -886,9 +870,6 @@
   },
   "userName": {
     "message": "Корисничко име"
-  },
-  "viewAccount": {
-    "message": "Прикажи налог"
   },
   "viewContact": {
     "message": "Pogledaj kontakt"

@@ -163,7 +163,7 @@ function wrapAgainstScuttling(content, bag = {}) {
     const proxy = new Proxy(bag, {
       set: function set(target, prop, value) {
         if (bag.hasOwnProperty(prop) || prop.startsWith('on')) {
-          return bag[prop] = global[prop] = value;
+          return (bag[prop] = global[prop] = value) || true;
         }
       },
     });
