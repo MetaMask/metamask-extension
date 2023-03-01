@@ -54,7 +54,7 @@ describe('Failing contract interaction ', function () {
         const warningText =
           'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.';
         const warning = await driver.findElement(
-          '.actionable-message__message',
+          '.mm-banner-alert .mm-text',
         );
         const confirmButton = await driver.findElement(
           '[data-testid="page-container-footer-next"]',
@@ -142,7 +142,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         const warningText =
           'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.';
         const warning = await driver.findElement(
-          '.actionable-message__message',
+          '.mm-banner-alert .mm-text',
         );
         const confirmButton = await driver.findElement(
           '[data-testid="page-container-footer-next"]',
