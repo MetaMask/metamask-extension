@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { Text } from '../../component-library';
@@ -18,7 +19,15 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  BackgroundColor,
+  BorderColor,
+  Color,
+  DISPLAY,
+  JustifyContent,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function getActionFunctionById(id, history) {
@@ -189,6 +198,7 @@ export default function WhatsNewPopup({ onClose }) {
   const locale = useSelector(getCurrentLocale);
 
   const [seenNotifications, setSeenNotifications] = useState({});
+  const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
 
   const popoverRef = useRef();
 
@@ -205,6 +215,15 @@ export default function WhatsNewPopup({ onClose }) {
     [memoizedNotifications],
   );
 
+  const handleScrollDownClick = (e) => {
+    e.stopPropagation();
+    idRefMap[notifications[notifications.length - 1].id].current.scrollIntoView(
+      {
+        behavior: 'smooth',
+      },
+    );
+    setShouldShowScrollButton(false);
+  };
   useEffect(() => {
     const observer = new window.IntersectionObserver(
       (entries, _observer) => {
@@ -249,6 +268,21 @@ export default function WhatsNewPopup({ onClose }) {
       }}
       popoverRef={popoverRef}
     >
+      {shouldShowScrollButton ? (
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          borderColor={BorderColor.borderDefault}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          color={Color.iconDefault}
+          onClick={handleScrollDownClick}
+          className="whats-new-popup__scroll-button"
+          data-testid="whats-new-popup-scroll-button"
+        >
+          <i className="fa fa-chevron-down" aria-label={t('scrollDown')} />
+        </Box>
+      ) : null}
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
           const notification = getTranslatedUINotifications(t, locale)[id];
