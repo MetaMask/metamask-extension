@@ -128,12 +128,6 @@
   "browserNotSupported": {
     "message": "متصفحك غير مدعوم..."
   },
-  "buyWithWyre": {
-    "message": "قم بشراء عملة إيثير بواسطة Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "يتيح لك Wyre استخدام بطاقة ائتمان لإيداع 1$ مباشرة في حساب MetaMask الخاص بك."
-  },
   "bytes": {
     "message": "بايتات"
   },
@@ -175,9 +169,6 @@
   },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
-  },
-  "continueToWyre": {
-    "message": "الاستمرار إلى Wyre"
   },
   "contractDeployment": {
     "message": "نشر العقد"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "عام"
-  },
-  "getEther": {
-    "message": "احصل على إيثر"
-  },
-  "getEtherFromFaucet": {
-    "message": "احصل على الأثير من صنبور مقابل $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "شبكة اختبار Goerli "
@@ -778,9 +762,6 @@
   "terms": {
     "message": "شروط الاستخدام"
   },
-  "testFaucet": {
-    "message": "اختبار Faucet"
-  },
   "tips": {
     "message": "المكافآت"
   },
@@ -898,9 +879,6 @@
   },
   "userName": {
     "message": "اسم المستخدم"
-  },
-  "viewAccount": {
-    "message": "عرض حساب"
   },
   "viewContact": {
     "message": "عرض جهة الاتصال"

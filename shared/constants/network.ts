@@ -20,46 +20,11 @@ export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
 export type CurrencySymbol =
   typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
 /**
- * A type that is a union type for the supported symbols on different onramp providers.
- */
-type SupportedCurrencySymbol =
-  typeof SUPPORTED_CURRENCY_SYMBOLS[keyof typeof SUPPORTED_CURRENCY_SYMBOLS];
-/**
  * Test networks have special symbols that combine the network name and 'ETH'
  * so that they are distinct from mainnet and other networks that use 'ETH'.
  */
 export type TestNetworkCurrencySymbol =
   typeof TEST_NETWORK_TICKER_MAP[keyof typeof TEST_NETWORK_TICKER_MAP];
-
-/**
- * MoonPay is a fiat onramp provider, and there are some special strings that
- * inform the MoonPay API which network the user is attempting to onramp into.
- * This type reflects those possible values.
- */
-type MoonPayNetworkAbbreviation = 'BSC' | 'CCHAIN' | 'POLYGON';
-
-/**
- * MoonPay requires some settings that are configured per network that it is
- * enabled on. This type describes those settings.
- */
-export type MoonPayChainSettings = {
-  /**
-   * What should the default onramp currency be, for example 'eth' on 'mainnet'
-   * This type matches a single SupportedCurrencySymbol or a
-   * SupportedCurrencySymbol and a MoonPayNetworkAbbreviation joined by a '_'.
-   */
-  defaultCurrencyCode:
-    | SupportedCurrencySymbol
-    | `${SupportedCurrencySymbol}_${MoonPayNetworkAbbreviation}`;
-  /**
-   * We must also configure all possible onramp currencies we wish to support.
-   * This type matches either an array of SupportedCurrencySymbol or
-   * an array of SupportedCurrencySymbol and a MoonPayNetworkAbbreviation joined by a '_'.
-   */
-  showOnlyCurrencies:
-    | SupportedCurrencySymbol[]
-    | `${SupportedCurrencySymbol}_${MoonPayNetworkAbbreviation}`[];
-};
 
 /**
  * An object containing preferences for an RPC definition
@@ -102,25 +67,6 @@ export type RPCDefinition = {
 };
 
 /**
- * Wyre is a fiat onramp provider. We must provide some settings for networks
- * that support Wyre.
- */
-export type WyreChainSettings = {
-  /**
-   * The network name
-   */
-  srn: string;
-  /**
-   * The native currency for the network
-   */
-  currencyCode: CurrencySymbol;
-  /**
-   * The list of supported currencies for the Wyre onramp provider
-   */
-  currencies: SupportedCurrencySymbol[];
-};
-
-/**
  * For each chain that we support fiat onramps for, we provide a set of
  * configuration options that help for initializing the connectiong to the
  * onramp providers.
@@ -134,22 +80,6 @@ type BuyableChainSettings = {
    * The network name or identifier
    */
   network: string;
-  /**
-   * The list of supported currencies for the Transak onramp provider
-   */
-  transakCurrencies?: SupportedCurrencySymbol[];
-  /**
-   * A configuration object for the MoonPay onramp provider
-   */
-  moonPay?: MoonPayChainSettings;
-  /**
-   * A configuration object for the Wyre onramp provider
-   */
-  wyre?: WyreChainSettings;
-  /**
-   * The list of supported currencies for the CoinbasePay onramp provider
-   */
-  coinbasePayCurrencies?: SupportedCurrencySymbol[];
 };
 
 /**
@@ -284,133 +214,6 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
-} as const;
-
-/**
- * An object containing the token symbols for various tokens that are supported
- * on different on ramp providers. This object is meant for internal consumption,
- * hence why it is not exported.
- */
-const SUPPORTED_CURRENCY_SYMBOLS = {
-  ...CURRENCY_SYMBOLS,
-  '1INCH': '1INCH',
-  AAVE: 'AAVE',
-  ABT: 'ABT',
-  ACH: 'ACH',
-  AGEUR: 'AGEUR',
-  AGLD: 'AGLD',
-  AMP: 'AMP',
-  ANKR: 'ANKR',
-  APE: 'APE',
-  ARPA: 'ARPA',
-  ASM: 'ASM',
-  AUCTION: 'AUCTION',
-  AXS: 'AXS',
-  AVAX: 'AVAX',
-  AVAXC: 'AVAXC',
-  AVAXCUSDC: 'AVAXCUSDC',
-  BADGER: 'BADGER',
-  BAL: 'BAL',
-  BAND: 'BAND',
-  BAT: 'BAT',
-  BNT: 'BNT',
-  BOBA: 'BOBA',
-  BOND: 'BOND',
-  BTRST: 'BTRST',
-  CHAIN: 'CHAIN',
-  CHZ: 'CHZ',
-  CLV: 'CLV',
-  COMP: 'COMP',
-  COTI: 'COTI',
-  CRO: 'CRO',
-  CRV: 'CRV',
-  CTSI: 'CTSI',
-  CVC: 'CVC',
-  DAO: 'DAO',
-  DDX: 'DDX',
-  DNT: 'DNT',
-  ENJ: 'ENJ',
-  ENS: 'ENS',
-  EURT: 'EURT',
-  FARM: 'FARM',
-  FET: 'FET',
-  FORTH: 'FORTH',
-  FX: 'FX',
-  GNO: 'GNO',
-  GRT: 'GRT',
-  GTC: 'GTC',
-  GTH: 'GTH',
-  GUSD: 'GUSD',
-  GYEN: 'GYEN',
-  HEX: 'HEX',
-  IOTX: 'IOTX',
-  IMX: 'IMX',
-  JASMY: 'JASMY',
-  KEEP: 'KEEP',
-  KNC: 'KNC',
-  KRL: 'KRL',
-  LCX: 'LCX',
-  LINK: 'LINK',
-  LPT: 'LPT',
-  LRC: 'LRC',
-  MANA: 'MANA',
-  MASK: 'MASK',
-  MINDS: 'MINDS',
-  MIR: 'MIR',
-  MKR: 'MKR',
-  MLN: 'MLN',
-  MTL: 'MTL',
-  MUSDC: 'mUSDC',
-  NKN: 'NKN',
-  NMR: 'NMR',
-  NU: 'NU',
-  OGN: 'OGN',
-  OMG: 'OMG',
-  ORN: 'ORN',
-  OXT: 'OXT',
-  PAX: 'PAX',
-  PERP: 'PERP',
-  PLA: 'PLA',
-  POLS: 'POLS',
-  POLY: 'POLY',
-  QNT: 'QNT',
-  QUICK: 'QUICK',
-  RAD: 'RAD',
-  RAI: 'RAI',
-  RARI: 'RARI',
-  REN: 'REN',
-  REP: 'REP',
-  REQ: 'REQ',
-  RLC: 'RLC',
-  RLY: 'RLY',
-  SAND: 'SAND',
-  SHIB: 'SHIB',
-  SKL: 'SKL',
-  SNX: 'SNX',
-  SPA: 'SPA',
-  STETH: 'STETH',
-  STORJ: 'STORJ',
-  SUKU: 'SUKU',
-  SUSHI: 'SUSHI',
-  SWAP: 'SWAP',
-  SWFTC: 'SWFTC',
-  TRAC: 'TRAC',
-  TRB: 'TRB',
-  TRIBE: 'TRIBE',
-  TRU: 'TRU',
-  TXL: 'TXL',
-  UMA: 'UMA',
-  UNI: 'UNI',
-  USDS: 'USDS',
-  VRA: 'VRA',
-  WBTC: 'WBTC',
-  WCFG: 'WCFG',
-  XYO: 'XYO',
-  YFII: 'YFII',
-  YFI: 'YFI',
-  YLD: 'YLD',
-  ZRX: 'ZRX',
-  ZUSD: 'ZUSD',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
@@ -697,188 +500,12 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.MOONBEAM
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
     | typeof CHAIN_IDS.MOONRIVER
+    | typeof CHAIN_IDS.AURORA
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-    transakCurrencies: [
-      SUPPORTED_CURRENCY_SYMBOLS.ETH,
-      SUPPORTED_CURRENCY_SYMBOLS['1INCH'],
-      SUPPORTED_CURRENCY_SYMBOLS.AAVE,
-      SUPPORTED_CURRENCY_SYMBOLS.AGEUR,
-      SUPPORTED_CURRENCY_SYMBOLS.BUSD,
-      SUPPORTED_CURRENCY_SYMBOLS.CHAIN,
-      SUPPORTED_CURRENCY_SYMBOLS.CLV,
-      SUPPORTED_CURRENCY_SYMBOLS.COMP,
-      SUPPORTED_CURRENCY_SYMBOLS.CTSI,
-      SUPPORTED_CURRENCY_SYMBOLS.DAI,
-      SUPPORTED_CURRENCY_SYMBOLS.DAO,
-      SUPPORTED_CURRENCY_SYMBOLS.ENJ,
-      SUPPORTED_CURRENCY_SYMBOLS.EURT,
-      SUPPORTED_CURRENCY_SYMBOLS.GTH,
-      SUPPORTED_CURRENCY_SYMBOLS.HEX,
-      SUPPORTED_CURRENCY_SYMBOLS.LINK,
-      SUPPORTED_CURRENCY_SYMBOLS.MANA,
-      SUPPORTED_CURRENCY_SYMBOLS.MASK,
-      SUPPORTED_CURRENCY_SYMBOLS.MINDS,
-      SUPPORTED_CURRENCY_SYMBOLS.MKR,
-      SUPPORTED_CURRENCY_SYMBOLS.PLA,
-      SUPPORTED_CURRENCY_SYMBOLS.POLS,
-      SUPPORTED_CURRENCY_SYMBOLS.SAND,
-      SUPPORTED_CURRENCY_SYMBOLS.STETH,
-      SUPPORTED_CURRENCY_SYMBOLS.SUSHI,
-      SUPPORTED_CURRENCY_SYMBOLS.SWAP,
-      SUPPORTED_CURRENCY_SYMBOLS.TXL,
-      SUPPORTED_CURRENCY_SYMBOLS.UNI,
-      SUPPORTED_CURRENCY_SYMBOLS.USDC,
-      SUPPORTED_CURRENCY_SYMBOLS.USDT,
-      SUPPORTED_CURRENCY_SYMBOLS.VRA,
-      SUPPORTED_CURRENCY_SYMBOLS.WBTC,
-      SUPPORTED_CURRENCY_SYMBOLS.YLD,
-    ],
-    moonPay: {
-      defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.ETH,
-      showOnlyCurrencies: [
-        SUPPORTED_CURRENCY_SYMBOLS.ETH,
-        SUPPORTED_CURRENCY_SYMBOLS.USDT,
-        SUPPORTED_CURRENCY_SYMBOLS.USDC,
-        SUPPORTED_CURRENCY_SYMBOLS.DAI,
-        SUPPORTED_CURRENCY_SYMBOLS.MATIC,
-        SUPPORTED_CURRENCY_SYMBOLS.ORN,
-        SUPPORTED_CURRENCY_SYMBOLS.WETH,
-        SUPPORTED_CURRENCY_SYMBOLS.IMX,
-      ],
-    },
-    wyre: {
-      srn: 'ethereum',
-      currencyCode: CURRENCY_SYMBOLS.ETH,
-      currencies: [
-        SUPPORTED_CURRENCY_SYMBOLS.ETH,
-        SUPPORTED_CURRENCY_SYMBOLS.AAVE,
-        SUPPORTED_CURRENCY_SYMBOLS.BAT,
-        SUPPORTED_CURRENCY_SYMBOLS.BUSD,
-        SUPPORTED_CURRENCY_SYMBOLS.COMP,
-        SUPPORTED_CURRENCY_SYMBOLS.CRV,
-        SUPPORTED_CURRENCY_SYMBOLS.DAI,
-        SUPPORTED_CURRENCY_SYMBOLS.GUSD,
-        SUPPORTED_CURRENCY_SYMBOLS.GYEN,
-        SUPPORTED_CURRENCY_SYMBOLS.LINK,
-        SUPPORTED_CURRENCY_SYMBOLS.MKR,
-        SUPPORTED_CURRENCY_SYMBOLS.PAX,
-        SUPPORTED_CURRENCY_SYMBOLS.RAI,
-        SUPPORTED_CURRENCY_SYMBOLS.SNX,
-        SUPPORTED_CURRENCY_SYMBOLS.UMA,
-        SUPPORTED_CURRENCY_SYMBOLS.UNI,
-        SUPPORTED_CURRENCY_SYMBOLS.USDC,
-        SUPPORTED_CURRENCY_SYMBOLS.USDS,
-        SUPPORTED_CURRENCY_SYMBOLS.USDT,
-        SUPPORTED_CURRENCY_SYMBOLS.WBTC,
-        SUPPORTED_CURRENCY_SYMBOLS.WETH,
-        SUPPORTED_CURRENCY_SYMBOLS.YFI,
-        SUPPORTED_CURRENCY_SYMBOLS.ZUSD,
-      ],
-    },
-    coinbasePayCurrencies: [
-      SUPPORTED_CURRENCY_SYMBOLS.ETH,
-      SUPPORTED_CURRENCY_SYMBOLS['1INCH'],
-      SUPPORTED_CURRENCY_SYMBOLS.AAVE,
-      SUPPORTED_CURRENCY_SYMBOLS.ABT,
-      SUPPORTED_CURRENCY_SYMBOLS.ACH,
-      SUPPORTED_CURRENCY_SYMBOLS.AGLD,
-      SUPPORTED_CURRENCY_SYMBOLS.AMP,
-      SUPPORTED_CURRENCY_SYMBOLS.ANKR,
-      SUPPORTED_CURRENCY_SYMBOLS.APE,
-      SUPPORTED_CURRENCY_SYMBOLS.ARPA,
-      SUPPORTED_CURRENCY_SYMBOLS.ASM,
-      SUPPORTED_CURRENCY_SYMBOLS.AUCTION,
-      SUPPORTED_CURRENCY_SYMBOLS.AXS,
-      SUPPORTED_CURRENCY_SYMBOLS.BADGER,
-      SUPPORTED_CURRENCY_SYMBOLS.BAL,
-      SUPPORTED_CURRENCY_SYMBOLS.BAND,
-      SUPPORTED_CURRENCY_SYMBOLS.BAT,
-      SUPPORTED_CURRENCY_SYMBOLS.BNT,
-      SUPPORTED_CURRENCY_SYMBOLS.BOBA,
-      SUPPORTED_CURRENCY_SYMBOLS.BOND,
-      SUPPORTED_CURRENCY_SYMBOLS.BTRST,
-      SUPPORTED_CURRENCY_SYMBOLS.CHZ,
-      SUPPORTED_CURRENCY_SYMBOLS.CLV,
-      SUPPORTED_CURRENCY_SYMBOLS.COMP,
-      SUPPORTED_CURRENCY_SYMBOLS.COTI,
-      SUPPORTED_CURRENCY_SYMBOLS.CRO,
-      SUPPORTED_CURRENCY_SYMBOLS.CRV,
-      SUPPORTED_CURRENCY_SYMBOLS.CTSI,
-      SUPPORTED_CURRENCY_SYMBOLS.CVC,
-      SUPPORTED_CURRENCY_SYMBOLS.DAI,
-      SUPPORTED_CURRENCY_SYMBOLS.DDX,
-      SUPPORTED_CURRENCY_SYMBOLS.DNT,
-      SUPPORTED_CURRENCY_SYMBOLS.ENJ,
-      SUPPORTED_CURRENCY_SYMBOLS.ENS,
-      SUPPORTED_CURRENCY_SYMBOLS.FARM,
-      SUPPORTED_CURRENCY_SYMBOLS.FET,
-      SUPPORTED_CURRENCY_SYMBOLS.FORTH,
-      SUPPORTED_CURRENCY_SYMBOLS.FX,
-      SUPPORTED_CURRENCY_SYMBOLS.GNO,
-      SUPPORTED_CURRENCY_SYMBOLS.GRT,
-      SUPPORTED_CURRENCY_SYMBOLS.GTC,
-      SUPPORTED_CURRENCY_SYMBOLS.IOTX,
-      SUPPORTED_CURRENCY_SYMBOLS.JASMY,
-      SUPPORTED_CURRENCY_SYMBOLS.KEEP,
-      SUPPORTED_CURRENCY_SYMBOLS.KNC,
-      SUPPORTED_CURRENCY_SYMBOLS.KRL,
-      SUPPORTED_CURRENCY_SYMBOLS.LCX,
-      SUPPORTED_CURRENCY_SYMBOLS.LINK,
-      SUPPORTED_CURRENCY_SYMBOLS.LPT,
-      SUPPORTED_CURRENCY_SYMBOLS.LRC,
-      SUPPORTED_CURRENCY_SYMBOLS.MANA,
-      SUPPORTED_CURRENCY_SYMBOLS.MASK,
-      SUPPORTED_CURRENCY_SYMBOLS.MATIC,
-      SUPPORTED_CURRENCY_SYMBOLS.MIR,
-      SUPPORTED_CURRENCY_SYMBOLS.MKR,
-      SUPPORTED_CURRENCY_SYMBOLS.MLN,
-      SUPPORTED_CURRENCY_SYMBOLS.MTL,
-      SUPPORTED_CURRENCY_SYMBOLS.NKN,
-      SUPPORTED_CURRENCY_SYMBOLS.NMR,
-      SUPPORTED_CURRENCY_SYMBOLS.NU,
-      SUPPORTED_CURRENCY_SYMBOLS.OGN,
-      SUPPORTED_CURRENCY_SYMBOLS.OMG,
-      SUPPORTED_CURRENCY_SYMBOLS.OXT,
-      SUPPORTED_CURRENCY_SYMBOLS.PAX,
-      SUPPORTED_CURRENCY_SYMBOLS.PERP,
-      SUPPORTED_CURRENCY_SYMBOLS.PLA,
-      SUPPORTED_CURRENCY_SYMBOLS.POLY,
-      SUPPORTED_CURRENCY_SYMBOLS.QNT,
-      SUPPORTED_CURRENCY_SYMBOLS.QUICK,
-      SUPPORTED_CURRENCY_SYMBOLS.RAD,
-      SUPPORTED_CURRENCY_SYMBOLS.RAI,
-      SUPPORTED_CURRENCY_SYMBOLS.RARI,
-      SUPPORTED_CURRENCY_SYMBOLS.REN,
-      SUPPORTED_CURRENCY_SYMBOLS.REP,
-      SUPPORTED_CURRENCY_SYMBOLS.REQ,
-      SUPPORTED_CURRENCY_SYMBOLS.RLC,
-      SUPPORTED_CURRENCY_SYMBOLS.RLY,
-      SUPPORTED_CURRENCY_SYMBOLS.SAND,
-      SUPPORTED_CURRENCY_SYMBOLS.SHIB,
-      SUPPORTED_CURRENCY_SYMBOLS.SKL,
-      SUPPORTED_CURRENCY_SYMBOLS.SNX,
-      SUPPORTED_CURRENCY_SYMBOLS.STORJ,
-      SUPPORTED_CURRENCY_SYMBOLS.SUKU,
-      SUPPORTED_CURRENCY_SYMBOLS.SUSHI,
-      SUPPORTED_CURRENCY_SYMBOLS.SWFTC,
-      SUPPORTED_CURRENCY_SYMBOLS.TRAC,
-      SUPPORTED_CURRENCY_SYMBOLS.TRB,
-      SUPPORTED_CURRENCY_SYMBOLS.TRIBE,
-      SUPPORTED_CURRENCY_SYMBOLS.TRU,
-      SUPPORTED_CURRENCY_SYMBOLS.UMA,
-      SUPPORTED_CURRENCY_SYMBOLS.UNI,
-      SUPPORTED_CURRENCY_SYMBOLS.USDC,
-      SUPPORTED_CURRENCY_SYMBOLS.USDT,
-      SUPPORTED_CURRENCY_SYMBOLS.WBTC,
-      SUPPORTED_CURRENCY_SYMBOLS.WCFG,
-      SUPPORTED_CURRENCY_SYMBOLS.XYO,
-      SUPPORTED_CURRENCY_SYMBOLS.YFII,
-      SUPPORTED_CURRENCY_SYMBOLS.ZRX,
-    ],
   },
   [CHAIN_IDS.GOERLI]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
@@ -891,98 +518,30 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.BSC]: {
     nativeCurrency: CURRENCY_SYMBOLS.BNB,
     network: 'bsc',
-    transakCurrencies: [
-      SUPPORTED_CURRENCY_SYMBOLS.BNB,
-      SUPPORTED_CURRENCY_SYMBOLS.BUSD,
-    ],
-    moonPay: {
-      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_BSC`,
-      showOnlyCurrencies: [
-        `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_BSC`,
-        `${SUPPORTED_CURRENCY_SYMBOLS.BUSD}_BSC`,
-      ],
-    },
   },
   [CHAIN_IDS.POLYGON]: {
     nativeCurrency: CURRENCY_SYMBOLS.MATIC,
     network: 'polygon',
-    transakCurrencies: [
-      SUPPORTED_CURRENCY_SYMBOLS.MATIC,
-      SUPPORTED_CURRENCY_SYMBOLS.USDT,
-      SUPPORTED_CURRENCY_SYMBOLS.USDC,
-      SUPPORTED_CURRENCY_SYMBOLS.DAI,
-    ],
-    moonPay: {
-      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.BNB}_POLYGON`,
-      showOnlyCurrencies: [
-        `${SUPPORTED_CURRENCY_SYMBOLS.MATIC}_POLYGON`,
-        `${SUPPORTED_CURRENCY_SYMBOLS.USDC}_POLYGON`,
-      ],
-    },
-    wyre: {
-      srn: 'matic',
-      currencyCode: CURRENCY_SYMBOLS.MATIC,
-      currencies: [
-        SUPPORTED_CURRENCY_SYMBOLS.MATIC,
-        SUPPORTED_CURRENCY_SYMBOLS.MUSDC,
-      ],
-    },
   },
   [CHAIN_IDS.AVALANCHE]: {
     nativeCurrency: CURRENCY_SYMBOLS.AVALANCHE,
     network: 'avaxcchain',
-    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
-    moonPay: {
-      defaultCurrencyCode: `${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`,
-      showOnlyCurrencies: [`${SUPPORTED_CURRENCY_SYMBOLS.AVAX}_CCHAIN`],
-    },
-    wyre: {
-      srn: 'avalanche',
-      currencyCode: CURRENCY_SYMBOLS.AVALANCHE,
-      currencies: [
-        SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE,
-        SUPPORTED_CURRENCY_SYMBOLS.AVAXC,
-        SUPPORTED_CURRENCY_SYMBOLS.AVAXCUSDC,
-      ],
-    },
-    coinbasePayCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AVALANCHE],
   },
   [CHAIN_IDS.FANTOM]: {
     nativeCurrency: CURRENCY_SYMBOLS.FANTOM,
     network: 'fantom',
-    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.FANTOM],
   },
   [CHAIN_IDS.CELO]: {
     nativeCurrency: CURRENCY_SYMBOLS.CELO,
     network: 'celo',
-    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
-    moonPay: {
-      defaultCurrencyCode: SUPPORTED_CURRENCY_SYMBOLS.CELO,
-      showOnlyCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.CELO],
-    },
   },
   [CHAIN_IDS.OPTIMISM]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'optimism',
-    transakCurrencies: [
-      SUPPORTED_CURRENCY_SYMBOLS.ETH,
-      SUPPORTED_CURRENCY_SYMBOLS.USDC,
-    ],
   },
   [CHAIN_IDS.ARBITRUM]: {
     nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
     network: 'arbitrum',
-    transakCurrencies: [
-      SUPPORTED_CURRENCY_SYMBOLS.ARBITRUM,
-      SUPPORTED_CURRENCY_SYMBOLS.SPA,
-      SUPPORTED_CURRENCY_SYMBOLS.USDC,
-      SUPPORTED_CURRENCY_SYMBOLS.USDS,
-    ],
-  },
-  [CHAIN_IDS.AURORA]: {
-    nativeCurrency: CURRENCY_SYMBOLS.AURORA,
-    network: 'aurora',
-    transakCurrencies: [SUPPORTED_CURRENCY_SYMBOLS.AURORA],
   },
 };
 

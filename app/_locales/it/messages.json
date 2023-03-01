@@ -228,9 +228,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "La commissione di priorità avanzata (nota anche come \"suggerimento del minatore\") va direttamente ai minatori e li incentiva a dare la priorità alla tua commissione di transazione."
   },
-  "affirmAgree": {
-    "message": "Acconsento"
-  },
   "alertDisableTooltip": {
     "message": "Può essere cambiato in \"Impostazioni > Avvisi\""
   },
@@ -411,35 +408,6 @@
     "message": "Compra $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Compra $1 con Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Puoi facilmente acquistare o trasferire criptovalute con il tuo account Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Compra $1 con MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay supporta metodi di pagamento popolari, incluso Visa, Mastercard, Apple / Google / Samsung Pay e bonifici bancari in 145+ paesi. I Token vengono depositati nel tuo account MetaMask."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Compra $1 con Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak supporta carte di credito e debito, Apple Pay, MobiKwik e bonifici bancari (in base alla località) in 100+ paesi. Deposita $1 direttamente nel tuo account MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyWithWyre": {
-    "message": "Compra $1 con Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre ti consente di usare la carta di credito per depositare $1 direttamente nel tuo account MetaMask."
-  },
   "canToggleInSettings": {
     "message": "Puoi riabilitare questa notifica in Impostazioni -> Avvisi."
   },
@@ -597,18 +565,6 @@
   },
   "continue": {
     "message": "Continua"
-  },
-  "continueToCoinbasePay": {
-    "message": "Continua su Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Continua su MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Continua su Transak"
-  },
-  "continueToWyre": {
-    "message": "Continua su Wyre"
   },
   "contract": {
     "message": "Contratto"
@@ -795,10 +751,6 @@
   "deleteNetworkDescription": {
     "message": "Sei sicuro di voler eliminare questa rete?"
   },
-  "depositCrypto": {
-    "message": "Deposita $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Scopri di più"
   },
@@ -810,12 +762,6 @@
   },
   "details": {
     "message": "Dettagli"
-  },
-  "directDepositCrypto": {
-    "message": "Deposito diretto $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Se hai già $1, il modo più rapido per ottenere $1 nel tuo nuovo portafoglio tramite deposito diretto."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” è disabilitato perché non soddisfa la maggiorazione minima del 10% rispetto al canone gas originario.",
@@ -1040,23 +986,8 @@
   "gasUsed": {
     "message": "Gas Utilizzato"
   },
-  "gdprMessage": {
-    "message": "Questi dati sono aggregati e sono quindi anonimi per le finalità del Regolamento generale sulla protezione dei dati (UE) 2016/679. Per maggiori informazioni sulla nostra politica sulla privacy, vedi $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Politica Privacy qua",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Generale"
-  },
-  "getEther": {
-    "message": "Ottieni Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Ottieni Get Ether da un faucet per $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Rete di test Goerli"
@@ -1239,37 +1170,6 @@
   "metamaskVersion": {
     "message": "versione di MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Ti consentirà sempre di rimuovere il consenso tramite Impostazioni"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Non",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 raccoglierà il tuo indirizzo IP completo",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 raccoglierà chiavi, indirizzi, transazioni, bilanci, hash, o qualsiasi altra informazione personale",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 venderà i tuoi dati per profitto. Mai!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Invierà click e visualizzazioni di pagina in modo anonimo"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Aiutaci a Migliorare MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask vorrebbe raccogliere dati di utilizzo per capire meglio come gli utenti interagiscono con l'estensione. Questi dati verranno usati continuamente per migliorare l'usabilità e l'esperienza utente dei nostri prodotti e dell'ecosistema Ethereum."
-  },
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
   },
@@ -1329,9 +1229,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Tasso di conversione non disponibile"
-  },
-  "noThanks": {
-    "message": "No Grazie"
   },
   "noTransactions": {
     "message": "Nessuna Transazione"
@@ -1900,9 +1797,6 @@
   "termsOfService": {
     "message": "Termini di Servizio"
   },
-  "testFaucet": {
-    "message": "Prova Faucet"
-  },
   "tips": {
     "message": "Suggerimenti"
   },
@@ -2041,9 +1935,6 @@
   "verifyThisTokenOn": {
     "message": "Verifica questo token su $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAccount": {
-    "message": "Vedi Account"
   },
   "viewAllDetails": {
     "message": "Vedi tutti i dettagli"

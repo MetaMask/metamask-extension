@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Twoja przeglądarka nie jest obsługiwana..."
   },
-  "buyWithWyre": {
-    "message": "Kup $1 poprzez Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Dzięki Wyre możesz użyć karty kredytowej, aby wpłacić $1 bezpośrednio na swoje konto MetaMask."
-  },
   "bytes": {
     "message": "Bajty"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Łączenie z główną siecią Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Przejdź do Wyre"
   },
   "contractDeployment": {
     "message": "Uruchomienie kontraktu"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "Ogólne"
-  },
-  "getEther": {
-    "message": "Zdobądź Eter"
-  },
-  "getEtherFromFaucet": {
-    "message": "Zdobądź Eter ze źródła za $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Sieć testowa Goerli"
@@ -772,9 +756,6 @@
   "terms": {
     "message": "Regulamin"
   },
-  "testFaucet": {
-    "message": "Źródło testowego ETH"
-  },
   "tips": {
     "message": "Napiwki"
   },
@@ -889,9 +870,6 @@
   },
   "userName": {
     "message": "Nazwa użytkownika"
-  },
-  "viewAccount": {
-    "message": "Zobacz konto"
   },
   "viewContact": {
     "message": "Wyświetl kontakt"
