@@ -2,7 +2,7 @@ import React from 'react';
 import { NewTokenList } from './token-list';
 
 export default {
-  title: 'Components/ComponentLibrary/NewTokenList',
+  title: 'Components/Redesign/NewTokenList',
   component: NewTokenList,
   argTypes: {
     tokenSymbol: {
@@ -26,6 +26,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <NewTokenList {...args} />
+export const DefaultStory = (args) => <NewTokenList {...args} />;
 
 DefaultStory.storyName = 'Default';
