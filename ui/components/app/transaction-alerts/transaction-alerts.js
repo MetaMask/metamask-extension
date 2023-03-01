@@ -6,10 +6,13 @@ import { PriorityLevels } from '../../../../shared/constants/gas';
 import { submittedPendingTransactionsSelector } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import { BannerAlert } from '../../component-library';
 import SimulationErrorMessage from '../../ui/simulation-error-message';
 import Typography from '../../ui/typography';
-import { TypographyVariant } from '../../../helpers/constants/design-system';
+import {
+  TypographyVariant,
+  SEVERITIES,
+} from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const TransactionAlerts = ({
@@ -18,6 +21,7 @@ const TransactionAlerts = ({
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
+
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
 
@@ -30,74 +34,61 @@ const TransactionAlerts = ({
         />
       )}
       {supportsEIP1559 && pendingTransactions?.length > 0 && (
-        <ActionableMessage
-          message={
-            <Typography
-              align="left"
-              className="transaction-alerts__pending-transactions"
-              margin={0}
-              tag={TypographyVariant.paragraph}
-              variant={TypographyVariant.H7}
-            >
-              <strong>
-                {pendingTransactions?.length === 1
-                  ? t('pendingTransactionSingle', [pendingTransactions?.length])
-                  : t('pendingTransactionMultiple', [
-                      pendingTransactions?.length,
-                    ])}
-              </strong>{' '}
-              {t('pendingTransactionInfo')}
-              {t('learnCancelSpeeedup', [
-                <a
-                  key="cancelSpeedUpInfo"
-                  href={ZENDESK_URLS.SPEEDUP_CANCEL}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {t('cancelSpeedUp')}
-                </a>,
-              ])}
-            </Typography>
-          }
-          useIcon
-          iconFillColor="var(--color-warning-default)"
-          type="warning"
-        />
+        <BannerAlert severity={SEVERITIES.WARNING}>
+          <Typography
+            align="left"
+            className="transaction-alerts__pending-transactions"
+            margin={0}
+            tag={TypographyVariant.paragraph}
+            variant={TypographyVariant.H7}
+          >
+            <strong>
+              {pendingTransactions?.length === 1
+                ? t('pendingTransactionSingle', [pendingTransactions?.length])
+                : t('pendingTransactionMultiple', [
+                    pendingTransactions?.length,
+                  ])}
+            </strong>{' '}
+            {t('pendingTransactionInfo')}
+            {t('learnCancelSpeeedup', [
+              <a
+                key="cancelSpeedUpInfo"
+                href={ZENDESK_URLS.SPEEDUP_CANCEL}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {t('cancelSpeedUp')}
+              </a>,
+            ])}
+          </Typography>
+        </BannerAlert>
       )}
       {estimateUsed === PriorityLevels.low && (
-        <ActionableMessage
-          dataTestId="low-gas-fee-alert"
-          message={
-            <Typography
-              align="left"
-              margin={0}
-              tag={TypographyVariant.paragraph}
-              variant={TypographyVariant.H7}
-            >
-              {t('lowPriorityMessage')}
-            </Typography>
-          }
-          useIcon
-          iconFillColor="var(--color-warning-default)"
-          type="warning"
-        />
+        <BannerAlert
+          data-testid="low-gas-fee-alert"
+          severity={SEVERITIES.WARNING}
+        >
+          <Typography
+            align="left"
+            margin={0}
+            tag={TypographyVariant.paragraph}
+            variant={TypographyVariant.H7}
+          >
+            {t('lowPriorityMessage')}
+          </Typography>
+        </BannerAlert>
       )}
       {supportsEIP1559 && isNetworkBusy ? (
-        <ActionableMessage
-          message={
-            <Typography
-              align="left"
-              margin={0}
-              tag={TypographyVariant.paragraph}
-              variant={TypographyVariant.H7}
-            >
-              {t('networkIsBusy')}
-            </Typography>
-          }
-          iconFillColor="var(--color-warning-default)"
-          type="warning"
-          useIcon
-        />
+        <BannerAlert severity={SEVERITIES.WARNING}>
+          <Typography
+            align="left"
+            margin={0}
+            tag={TypographyVariant.paragraph}
+            variant={TypographyVariant.H7}
+          >
+            {t('networkIsBusy')}
+          </Typography>
+        </BannerAlert>
       ) : null}
     </div>
   );
