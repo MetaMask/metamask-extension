@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
-  "buyWithWyre": {
-    "message": "Cumpărați $1 cu Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre vă permite să folosiți un card de credit pentru a depune $1 direct în contul dvs. MetaMask."
-  },
   "bytes": {
     "message": "Octeți"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
-  },
-  "continueToWyre": {
-    "message": "Continuați la Wyre"
   },
   "contractDeployment": {
     "message": "Implementarea contractului"
@@ -319,13 +310,6 @@
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
-  },
-  "getEther": {
-    "message": "Obțineți Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obțineți Ether de la un robinet pentru $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Rețea de test Goerli"
@@ -768,9 +752,6 @@
   "terms": {
     "message": "Termeni și condiții"
   },
-  "testFaucet": {
-    "message": "Robinet de testare"
-  },
   "tips": {
     "message": "Cadouri bănești"
   },
@@ -882,9 +863,6 @@
   },
   "userName": {
     "message": "Nume utilizator"
-  },
-  "viewAccount": {
-    "message": "Afișați contul"
   },
   "viewContact": {
     "message": "Vizualizare contact"

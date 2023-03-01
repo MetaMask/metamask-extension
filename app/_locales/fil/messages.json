@@ -109,12 +109,6 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
-  "buyWithWyre": {
-    "message": "Bumili ng $1 gamit ang Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Binibigyang-daan ka ng Wyre na gumamit ng credit card para magdeposito ng $1 nang direkta sa iyong MetaMask account."
-  },
   "cancel": {
     "message": "Kanselahin"
   },
@@ -150,9 +144,6 @@
   },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
-  },
-  "continueToWyre": {
-    "message": "Magpatuloy sa Wyre"
   },
   "contractDeployment": {
     "message": "Deployment ng Contract"
@@ -295,13 +286,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getEther": {
-    "message": "Kumuha ng Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Kumuha ng Ether mula sa isang faucet para sa $1",
-    "description": "Displays network name for Ether faucet"
   },
   "hardwareWalletConnected": {
     "message": "Nakakonekta ang hardware wallet"
@@ -810,9 +794,6 @@
   },
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang client"
-  },
-  "viewAccount": {
-    "message": "Tingnan ang Account"
   },
   "viewContact": {
     "message": "Tingnan ang Contact"

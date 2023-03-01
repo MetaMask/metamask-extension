@@ -7,11 +7,6 @@ import Card from '../card';
 import Box from '../box';
 import Typography from '../typography';
 
-import LogoCoinbasePay from './logo-coinbasepay';
-import LogoMoonPay from './logo-moonpay';
-import LogoWyre from './logo-wyre';
-import LogoTransak from './logo-transak';
-import LogoDepositEth from './logo-deposit-eth';
 import LogoLedger from './logo-ledger';
 import LogoQRBased from './logo-qr-based';
 import LogoTrezor from './logo-trezor';
@@ -69,11 +64,6 @@ export const DefaultStory = (args) => (
       gridTemplateColumns: 'repeat(auto-fill, 176px)',
     }}
   >
-    <LogoItem Component={<LogoCoinbasePay {...args} />} />
-    <LogoItem Component={<LogoWyre {...args} />} />
-    <LogoItem Component={<LogoTransak {...args} />} />
-    <LogoItem Component={<LogoDepositEth {...args} />} />
-    <LogoItem Component={<LogoMoonPay {...args} />} />
     <LogoItem Component={<LogoLedger {...args} />} />
     <LogoItem Component={<LogoQRBased {...args} />} />
     <LogoItem Component={<LogoTrezor {...args} />} />
