@@ -204,12 +204,6 @@
   "buy": {
     "message": "Bumili"
   },
-  "buyWithWyre": {
-    "message": "Bumili ng $1 gamit ang Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Binibigyang-daan ka ng Wyre na gumamit ng debit card para mag-deposit ng $1 sa mismong MetaMask account mo."
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -331,9 +325,6 @@
   },
   "continue": {
     "message": "Magpatuloy"
-  },
-  "continueToWyre": {
-    "message": "Magpatuloy sa Wyre"
   },
   "contract": {
     "message": "Kontrata"
@@ -650,13 +641,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getEther": {
-    "message": "Kunin ang Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Kunin ang Ether mula sa isang faucet sa halagang $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli Test Network"
@@ -1754,9 +1738,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "testFaucet": {
-    "message": "Test Faucet"
-  },
   "tips": {
     "message": "Mga Tip"
   },
@@ -1916,9 +1897,6 @@
   "verifyThisUnconfirmedTokenOn": {
     "message": "I-verify ang token na ito sa $1 at tiyaking ito ang token na gusto mong i-trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAccount": {
-    "message": "Tingnan ang Account"
   },
   "viewAllDetails": {
     "message": "Tingnan ang lahat ng detalye"

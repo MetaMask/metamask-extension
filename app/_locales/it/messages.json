@@ -408,35 +408,6 @@
     "message": "Compra $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Compra $1 con Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Puoi facilmente acquistare o trasferire criptovalute con il tuo account Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Compra $1 con MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay supporta metodi di pagamento popolari, incluso Visa, Mastercard, Apple / Google / Samsung Pay e bonifici bancari in 145+ paesi. I Token vengono depositati nel tuo account MetaMask."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Compra $1 con Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak supporta carte di credito e debito, Apple Pay, MobiKwik e bonifici bancari (in base alla località) in 100+ paesi. Deposita $1 direttamente nel tuo account MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyWithWyre": {
-    "message": "Compra $1 con Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre ti consente di usare la carta di credito per depositare $1 direttamente nel tuo account MetaMask."
-  },
   "canToggleInSettings": {
     "message": "Puoi riabilitare questa notifica in Impostazioni -> Avvisi."
   },
@@ -594,18 +565,6 @@
   },
   "continue": {
     "message": "Continua"
-  },
-  "continueToCoinbasePay": {
-    "message": "Continua su Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Continua su MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Continua su Transak"
-  },
-  "continueToWyre": {
-    "message": "Continua su Wyre"
   },
   "contract": {
     "message": "Contratto"
@@ -792,10 +751,6 @@
   "deleteNetworkDescription": {
     "message": "Sei sicuro di voler eliminare questa rete?"
   },
-  "depositCrypto": {
-    "message": "Deposita $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Scopri di più"
   },
@@ -807,12 +762,6 @@
   },
   "details": {
     "message": "Dettagli"
-  },
-  "directDepositCrypto": {
-    "message": "Deposito diretto $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Se hai già $1, il modo più rapido per ottenere $1 nel tuo nuovo portafoglio tramite deposito diretto."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” è disabilitato perché non soddisfa la maggiorazione minima del 10% rispetto al canone gas originario.",
@@ -1039,13 +988,6 @@
   },
   "general": {
     "message": "Generale"
-  },
-  "getEther": {
-    "message": "Ottieni Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Ottieni Get Ether da un faucet per $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Rete di test Goerli"
@@ -1855,9 +1797,6 @@
   "termsOfService": {
     "message": "Termini di Servizio"
   },
-  "testFaucet": {
-    "message": "Prova Faucet"
-  },
   "tips": {
     "message": "Suggerimenti"
   },
@@ -1996,9 +1935,6 @@
   "verifyThisTokenOn": {
     "message": "Verifica questo token su $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAccount": {
-    "message": "Vedi Account"
   },
   "viewAllDetails": {
     "message": "Vedi tutti i dettagli"
