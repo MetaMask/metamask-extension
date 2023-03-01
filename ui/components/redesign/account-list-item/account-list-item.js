@@ -15,8 +15,7 @@ import {
   DISPLAY,
   TextVariant,
   FLEX_DIRECTION,
-  FRACTIONS,
-  BLOCK_SIZES,
+  BorderRadius,
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
@@ -25,7 +24,7 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
   return (
     <Box
       display={DISPLAY.FLEX}
-      padding={1}
+      padding={4}
       gap={2}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('account-list-item', {
@@ -38,33 +37,27 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
         onClick?.();
       }}
     >
+      {selected && (
+        <Box
+          className="account-list-item__selected-indicator"
+          borderRadius={BorderRadius.pill}
+          backgroundColor={Color.primaryDefault}
+        />
+      )}
+      <AvatarAccount size={Size.SM} address={identity.address}></AvatarAccount>
       <Box
-        marginInlineEnd={2}
-        backgroundColor={selected ? Color.primaryDefault : Color.transparent}
-        className="account-list-item__active-indicator"
-      ></Box>
-      <AvatarAccount
-        size={Size.SM}
-        marginTop={3}
-        address={identity.address}
-      ></AvatarAccount>
-      <Box
-        marginTop={3}
-        marginBottom={4}
-        width={BLOCK_SIZES.FULL}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
         className="account-list-item__content"
       >
         <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
+            gap={2}
           >
-            <Text width={FRACTIONS.HALF} ellipsis>
-              {identity.name}
-            </Text>
-            <Text width={FRACTIONS.HALF} textAlign={TEXT_ALIGN.END}>
-              {identity.balance}
-            </Text>
+            <Text ellipsis>{identity.name}</Text>
+            <Text textAlign={TEXT_ALIGN.END}>{identity.balance}</Text>
           </Box>
         </Box>
         <Box
@@ -84,15 +77,12 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
         </Box>
       </Box>
       <ButtonIcon
-        marginTop={3}
-        marginInlineEnd={5}
         ariaLabel=""
         iconName={ICON_NAMES.MORE_VERTICAL}
         size={ICON_SIZES.SM}
         onClick={() => {
           console.log('Open three-dot menu');
         }}
-        width={2}
       />
     </Box>
   );
