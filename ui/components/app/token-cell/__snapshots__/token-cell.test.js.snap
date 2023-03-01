@@ -83,8 +83,8 @@ exports[`Token Cell should match snapshot 1`] = `
       <div
         class="box box--flex-direction-row"
       >
-        <div
-          class="box mm-icon mm-icon--size-sm box--flex-direction-row box--color-icon-default"
+        <span
+          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
           style="mask-image: url('./images/icons/arrow-right.svg'); vertical-align: middle;"
         />
         <a

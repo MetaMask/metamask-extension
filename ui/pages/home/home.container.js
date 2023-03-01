@@ -177,9 +177,11 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setNewNetworkAdded(newNetwork));
   },
   setNewNftAddedMessage: (message) => {
+    dispatch(setRemoveNftMessage(''));
     dispatch(setNewNftAddedMessage(message));
   },
   setRemoveNftMessage: (message) => {
+    dispatch(setNewNftAddedMessage(''));
     dispatch(setRemoveNftMessage(message));
   },
   setNewTokensImported: (newTokens) => {

@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
   },
-  "buyWithWyre": {
-    "message": "$1 را توسط Wyre خریداری نمایید"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت 1$ مستقیمًا به حساب MetaMask تان استفاده نمایید."
-  },
   "bytes": {
     "message": "بایت ها"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
-  },
-  "continueToWyre": {
-    "message": "ادامه به Wyre"
   },
   "contractDeployment": {
     "message": "تطبیق قرارداد"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "عمومی"
-  },
-  "getEther": {
-    "message": "اتر را بگیرید"
-  },
-  "getEtherFromFaucet": {
-    "message": "اخذ ایتر از یک فاست برای 1$1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "شبکه آزمایشی Goerli"
@@ -781,9 +765,6 @@
   "terms": {
     "message": "شرایط استفاده"
   },
-  "testFaucet": {
-    "message": "  آزمایش فاسیت یا Test Faucet "
-  },
   "tips": {
     "message": "انعام"
   },
@@ -901,9 +882,6 @@
   },
   "userName": {
     "message": "نام کاربری"
-  },
-  "viewAccount": {
-    "message": "مشاهده حساب"
   },
   "viewContact": {
     "message": "مشاهده تماس"

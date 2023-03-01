@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
-  "affirmAgree": {
-    "message": "Kabul Ediyorum"
-  },
   "airgapVault": {
     "message": "AirGap Kasası"
   },
@@ -526,37 +523,8 @@
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Coinbase Pay ile 1 USD al",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Coinbase hesabınla kolayca kripto para satın alabilir veya transfer edebilirsin.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "MoonPay ile $1 satın al",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay, Visa, Mastercard, Apple / Google / Samsung Pay dahil olmak üzere popüler ödeme yöntemlerini ve 145'ten fazla ülkede banka havalelerini destekler. Token'lar MetaMask hesabına yatırılır."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Transak ile $1 satın al",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak, 100'den fazla ülkede kredi ve banka kartlarını, Apple Pay, MobiKwik ve banka transferlerini (konuma bağlı olarak) destekler. $1 doğrudan MetaMask hesabına yatırılır.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Şimdi Satın Al"
-  },
-  "buyWithWyre": {
-    "message": "Wyre ile $1 satın al"
-  },
-  "buyWithWyreDescription": {
-    "message": "1000$'a kadar satın alma işlemlerinde kolay oryantasyon. Banka Kartı/Kredi Kartı, Apple Pay, Banka Transferlerini destekler. +100 ülkede kullanılabilir. Token'lar MetaMask Hesabına yatırılır"
   },
   "bytes": {
     "message": "Bayt"
@@ -735,18 +703,6 @@
   },
   "continue": {
     "message": "Devam et"
-  },
-  "continueToCoinbasePay": {
-    "message": "Coinbase Pay'e devam et"
-  },
-  "continueToMoonPay": {
-    "message": "MoonPay'e devam et"
-  },
-  "continueToTransak": {
-    "message": "Transak'a Devam Et"
-  },
-  "continueToWyre": {
-    "message": "Wyre'a Devam Et"
   },
   "contract": {
     "message": "Sözleşme"
@@ -960,10 +916,6 @@
   "deposit": {
     "message": "Para Yatır"
   },
-  "depositCrypto": {
-    "message": "$1 yatır",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Daha fazla bilgi edinin"
   },
@@ -975,12 +927,6 @@
   },
   "details": {
     "message": "Ayrıntılar"
-  },
-  "directDepositCrypto": {
-    "message": "Doğrudan $1 Yatır"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Halihazırda $1 sahibiysen yeni cüzdanına doğrudan para yatırma yoluyla $1 almanın en hızlı yolu."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Orijinal gas ücretinden minimum %10'luk bir artışı karşılamadığı için \"$1\" devre dışı bırakıldı.",
@@ -1279,7 +1225,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Ayrıntıları gör",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Şu tarihte eklendi:",
@@ -1432,23 +1378,8 @@
   "gasUsed": {
     "message": "Kullanılan gaz"
   },
-  "gdprMessage": {
-    "message": "Bu veri toplanmıştır ve bu nedenle 2016/679 sayılı Genel Veri Koruma Düzenlemesi (AB) maksadıyla isimsizdir. Gizlilik uygulamalarımız hakkında daha fazla bilgi edinmek için lütfen $1 bölümümüze bakın.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "buradan Gizlilik politikası",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Genel"
-  },
-  "getEther": {
-    "message": "Ether Al"
-  },
-  "getEtherFromFaucet": {
-    "message": "Musluktan $1 karşılığı Ether al",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Geri git"
@@ -1894,37 +1825,6 @@
   "metamaskVersion": {
     "message": "MetaMask Sürümü"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Dilediğiniz zaman Ayarlar kısmında vazgeçebilmenize olanak tanır"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Hiçbir zaman",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 IP adresinizin tamamını almaz",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 anahtarları, adresleri, işlemleri, bakiyeleri, doğrulama değerlerini veya kişisel bilgileri toplamaz",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 kâr elde etmek için verilerinizi satmaz. Asla!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "İsimsizleştirilmiş tıklama ve sayfa görüntüleme olaylarını gönder"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "MetaMask'i geliştirmemize yardımcı olun"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask, kullanıcılarımızın uzantıyı nasıl kullandıklarını daha iyi anlamak amacıyla kullanım verilerini toplamak istiyor. Bu veriler ürünümüzün ve Ethereum eko-sisteminin kullanılabilirliği ve kullanıcı deneyimini geliştirmek için sürekli olarak kullanılacaktır."
-  },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1969,10 +1869,6 @@
   "nativeToken": {
     "message": "Bu ağdaki yerli token $1. Bu gaz ücretleri için kullanılan tokendir.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "MetaMask kullanarak merkezi olmayan uygulamalarla etkileşim kurmak için cüzdanında $1 bulunmasına ihtiyacın olacak.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Yardıma mı ihtiyacınız var? $1 bölümüne ulaşın",
@@ -2163,9 +2059,6 @@
   },
   "noSnaps": {
     "message": "Hiç Snap yüklü değil"
-  },
-  "noThanks": {
-    "message": "Hayır, teşekkürler"
   },
   "noThanksVariant2": {
     "message": "Hayır, teşekkürler."
@@ -2618,7 +2511,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 Snap'e bağlan.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Periyodik eylemleri planla ve gerçekleştir.",
@@ -3854,9 +3747,6 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "testFaucet": {
-    "message": "Test musluğu"
-  },
   "testNetworks": {
     "message": "Test ağları"
   },
@@ -4211,9 +4101,6 @@
   "view": {
     "message": "Görüntüle"
   },
-  "viewAccount": {
-    "message": "Hesabı görüntüle"
-  },
   "viewAllDetails": {
     "message": "Tüm bilgileri görüntüle"
   },
@@ -4281,7 +4168,7 @@
   },
   "warningTooltipText": {
     "message": "$1 Sözleşme, başkaca bildiri ya da rıza olmaksızın tüm token bakiyenizi harcayabilir. Düşük bir harcama limitini özelleştirerek kendinizi koruyun.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Zayıf"

@@ -128,15 +128,56 @@ import { ButtonBase } from '../../component-library';
 
 ### Icon Name
 
-Use the `iconName` prop and the `ICON_NAMES` object from `./ui/components/component-library` to select icon.
+Use the `startIconName` and/or `endIconName` prop with the `ICON_NAMES` object from `./ui/components/component-library` to select icon.
 
 <Canvas>
-  <Story id="components-componentlibrary-buttonbase--icon" />
+  <Story id="components-componentlibrary-buttonbase--start-icon-name" />
 </Canvas>
 
 ```jsx
 import { ButtonBase } from '../../component-library';
 import { ICON_NAMES } from '../icon';
 
-<ButtonBase icon={ICON_NAMES.ADD_SQUARE}>Button</ButtonBase>;
+<ButtonBase startIconName={ICON_NAMES.ADD_SQUARE}>Button</ButtonBase>;
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--end-icon-name" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+import { ICON_NAMES } from '../icon';
+
+<ButtonBase endIconName={ICON_NAMES.ARROW_2_RIGHT}>Button</ButtonBase>;
+```
+
+### RTL
+
+For RTL language support use the `textProps` prop to pass a `textDirection` prop.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--rtl" />
+</Canvas>
+
+```jsx
+import { ButtonBase, ICON_NAMES } from '../../component-library';
+
+<>
+  <ButtonBase
+    startIconName={ICON_NAMES.ADD_SQUARE}
+    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+  >
+    Button Demo
+  </ButtonBase>
+  <ButtonBase
+    startIconName={ICON_NAMES.ADD_SQUARE}
+    endIconName={ICON_NAMES.ARROW_2_RIGHT}
+    textProps={{
+      textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
+    }}
+  >
+    Button Demo
+  </ButtonBase>
+</>;
 ```

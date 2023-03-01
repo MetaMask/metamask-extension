@@ -62,19 +62,25 @@ describe('MetaMaskController', function () {
   beforeEach(function () {
     nock('https://static.metafi.codefi.network')
       .persist()
-      .get('/api/v1/lists/eth_phishing_detect_config.json')
+      .get('/api/v1/lists/stalelist.json')
       .reply(
         200,
         JSON.stringify({
           version: 2,
           tolerance: 2,
           fuzzylist: [],
-          whitelist: [],
-          blacklist: ['127.0.0.1'],
+          allowlist: [],
+          blocklist: ['127.0.0.1'],
+          lastUpdated: 0,
         }),
       )
-      .get('/api/v1/lists/phishfort_hotlist.json')
-      .reply(200, JSON.stringify(['127.0.0.1']));
+      .get('/api/v1/lists/hotlist.json')
+      .reply(
+        200,
+        JSON.stringify([
+          { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
+        ]),
+      );
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: {
