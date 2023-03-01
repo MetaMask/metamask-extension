@@ -110,14 +110,14 @@ function defaultFixture() {
             id: 15,
             isShown: false,
           },
+          16: {
+            date: null,
+            id: 16,
+            isShown: true,
+          },
           17: {
             date: null,
             id: 17,
-            isShown: true,
-          },
-          18: {
-            date: null,
-            id: 18,
             isShown: true,
           },
         },
