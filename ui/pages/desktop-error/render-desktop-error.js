@@ -32,16 +32,16 @@ export function renderDesktopError({
 }) {
   let content;
 
-  const DESKTOP_ERROR_BUTTON_DOWNLOAD_ID = 'desktop-error-button-download-mmd';
-  const DESKTOP_ERROR_BUTTON_OPEN_OR_DOWNLOAD_ID =
-    'desktop-error-button-open-or-download-mmd';
-  const DESKTOP_ERROR_BUTTON_DISABLE_ID = 'desktop-error-button-disable-mmd';
-  const DESKTOP_ERROR_BUTTON_UPDATE_ID = 'desktop-error-button-update-mmd';
-  const DESKTOP_ERROR_BUTTON_NAVIGATE_SETTINGS_ID =
-    'desktop-error-button-navigate-settings';
-  const DESKTOP_ERROR_BUTTON_UPDATE_EXTENSION_ID =
-    'desktop-error-button-update-extension';
-  const DESKTOP_ERROR_BUTTON_RESTART_ID = 'desktop-error-button-restart-mm';
+  const DESKTOP_BUTTON_ACTIONS = {
+    DOWNLOAD_METAMASK_DESKTOP: 'Download MetaMask Desktop',
+    OPEN_METAMASK_DESKTOP: 'Open MetaMask Desktop',
+    DISABLE_METAMASK_DESKTOP: 'Disable MetaMask Desktop',
+    UPDATE_METAMASK_DESKTOP: 'Update MetaMask Desktop',
+    RETURN_SETTINGS_PAGE: 'Return to Settings Page',
+    UPDATE_METAMASK_EXTENSION: 'Update MetaMask Extension',
+    RESTART_METAMASK: 'Restart MetaMask',
+    RETURN_METAMASK_HOME: 'Return MetaMask Home',
+  };
 
   const noop = () => {
     // do nothing
@@ -74,38 +74,7 @@ export function renderDesktopError({
     );
   };
 
-  const getEventNameById = (id) => {
-    let eventName;
-    switch (id) {
-      case DESKTOP_ERROR_BUTTON_DOWNLOAD_ID:
-        eventName = 'Download MetaMask Desktop';
-        break;
-      case DESKTOP_ERROR_BUTTON_OPEN_OR_DOWNLOAD_ID:
-        eventName = 'Open MetaMask Desktop';
-        break;
-      case DESKTOP_ERROR_BUTTON_DISABLE_ID:
-        eventName = 'Disable MetaMask Desktop';
-        break;
-      case DESKTOP_ERROR_BUTTON_UPDATE_ID:
-        eventName = 'Update MetaMask Desktop';
-        break;
-      case DESKTOP_ERROR_BUTTON_NAVIGATE_SETTINGS_ID:
-        eventName = 'Return to Settings Page';
-        break;
-      case DESKTOP_ERROR_BUTTON_UPDATE_EXTENSION_ID:
-        eventName = 'Update MetaMask Extension';
-        break;
-      case DESKTOP_ERROR_BUTTON_RESTART_ID:
-        eventName = 'Restart MetaMask';
-        break;
-      default:
-        eventName = 'Return MetaMask Home';
-        break;
-    }
-    return eventName;
-  };
-
-  const renderCTA = (id, text, onClick) => {
+  const renderCTA = (id, text, onClick, action) => {
     return (
       <Box marginTop={6}>
         <Button
@@ -116,7 +85,10 @@ export function renderDesktopError({
               if (typeof trackEvent === 'function') {
                 trackEvent({
                   category: EVENT.CATEGORIES.DESKTOP,
-                  event: `${getEventNameById(id)} Button Clicked`,
+                  event: 'Desktop Button Clicked',
+                  properties: {
+                    button_action: action,
+                  },
                 });
               }
             } else {
@@ -145,9 +117,10 @@ export function renderDesktopError({
           {renderDescription(t('desktopNotFoundErrorDescription1'))}
           {renderDescription(t('desktopNotFoundErrorDescription2'))}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_DOWNLOAD_ID,
+            'desktop-error-button-download-mmd',
             t('desktopNotFoundErrorCTA'),
             downloadDesktopApp,
+            DESKTOP_BUTTON_ACTIONS.DOWNLOAD_METAMASK_DESKTOP,
           )}
         </>
       );
@@ -159,14 +132,15 @@ export function renderDesktopError({
           {renderHeader(t('desktopConnectionLostErrorTitle'))}
           {renderDescription(t('desktopConnectionLostErrorDescription'))}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_OPEN_OR_DOWNLOAD_ID,
+            'desktop-error-button-open-or-download-mmd',
             t('desktopOpenOrDownloadCTA'),
             openOrDownloadDesktopApp,
           )}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_DISABLE_ID,
+            'desktop-error-button-disable-mmd',
             t('desktopDisableErrorCTA'),
             disableDesktop,
+            DESKTOP_BUTTON_ACTIONS.DISABLE_METAMASK_DESKTOP,
           )}
         </>
       );
@@ -178,9 +152,10 @@ export function renderDesktopError({
           {renderHeader(t('desktopOutdatedErrorTitle'))}
           {renderDescription(t('desktopOutdatedErrorDescription'))}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_UPDATE_ID,
+            'desktop-error-button-update-mmd',
             t('desktopOutdatedErrorCTA'),
             downloadDesktopApp,
+            DESKTOP_BUTTON_ACTIONS.UPDATE_METAMASK_DESKTOP,
           )}
         </>
       );
@@ -192,9 +167,10 @@ export function renderDesktopError({
           {renderHeader(t('desktopOutdatedExtensionErrorTitle'))}
           {renderDescription(t('desktopOutdatedExtensionErrorDescription'))}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_UPDATE_EXTENSION_ID,
+            'desktop-error-button-update-extension',
             t('desktopOutdatedExtensionErrorCTA'),
             downloadExtension,
+            DESKTOP_BUTTON_ACTIONS.UPDATE_METAMASK_EXTENSION,
           )}
         </>
       );
@@ -206,14 +182,16 @@ export function renderDesktopError({
           {renderHeader(t('desktopConnectionCriticalErrorTitle'))}
           {renderDescription(t('desktopConnectionCriticalErrorDescription'))}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_RESTART_ID,
+            'desktop-error-button-restart-mm',
             t('desktopErrorRestartMMCTA'),
             restartExtension,
+            DESKTOP_BUTTON_ACTIONS.RESTART_METAMASK,
           )}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_DISABLE_ID,
+            'desktop-error-button-disable-mmd',
             t('desktopDisableErrorCTA'),
             disableDesktop,
+            DESKTOP_BUTTON_ACTIONS.DISABLE_METAMASK_DESKTOP,
           )}
         </>
       );
@@ -227,9 +205,10 @@ export function renderDesktopError({
           {renderHeader(t('desktopRouteNotFoundErrorTitle'))}
           {renderDescription(t('desktopRouteNotFoundErrorDescription'))}
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_NAVIGATE_SETTINGS_ID,
+            'desktop-error-button-navigate-settings',
             t('desktopErrorNavigateSettingsCTA'),
             navigateSettings,
+            DESKTOP_BUTTON_ACTIONS.RETURN_SETTINGS_PAGE,
           )}
         </>
       );
@@ -251,9 +230,10 @@ export function renderDesktopError({
             {t('desktopPairedWarningDeepLink')}
           </Button>
           {renderCTA(
-            DESKTOP_ERROR_BUTTON_NAVIGATE_SETTINGS_ID,
+            'desktop-error-button-navigate-settings',
             t('desktopErrorNavigateSettingsCTA'),
             navigateSettings,
+            DESKTOP_BUTTON_ACTIONS.RETURN_SETTINGS_PAGE,
           )}
         </>
       );
@@ -268,6 +248,7 @@ export function renderDesktopError({
             'desktop-error-button-return-mm-home',
             t('desktopUnexpectedErrorCTA'),
             returnExtensionHome,
+            DESKTOP_BUTTON_ACTIONS.RETURN_METAMASK_HOME,
           )}
         </>
       );

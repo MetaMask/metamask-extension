@@ -27,6 +27,7 @@ const DESKTOP_ERROR_EXTENSION_OUTDATED_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSI
 const DESKTOP_ERROR_NOT_FOUND_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.NOT_FOUND}`;
 const DESKTOP_ERROR_PAIRING_KEY_NOT_MATCH_ROUTE = `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.PAIRING_KEY_NOT_MATCH}`;
 const SKIP_PAIRING_RESTART_DELAY = 2 * SECOND;
+const DESKTOP_UPDATE_SETTINGS_EVENT = 'Settings Updated';
 
 export default function DesktopEnableButton() {
   const t = useContext(I18nContext);
@@ -45,7 +46,10 @@ export default function DesktopEnableButton() {
       setDesktopEnabled(false);
       trackEvent({
         category: EVENT.CATEGORIES.DESKTOP,
-        event: `Disable Desktop Button Clicked`,
+        event: DESKTOP_UPDATE_SETTINGS_EVENT,
+        properties: {
+          desktop_enabled: false,
+        },
       });
       return;
     }
@@ -87,7 +91,10 @@ export default function DesktopEnableButton() {
 
     trackEvent({
       category: EVENT.CATEGORIES.DESKTOP,
-      event: `Enable Desktop Button Clicked`,
+      event: 'Desktop Button Clicked',
+      properties: {
+        button_action: 'Enable MetaMask Desktop',
+      },
     });
     history.push(DESKTOP_PAIRING_ROUTE);
   };
