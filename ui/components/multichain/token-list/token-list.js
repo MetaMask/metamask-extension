@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
-import classnames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import {
   DISPLAY,
   FLEX_DIRECTION,
@@ -10,16 +10,16 @@ import {
   Size,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system'
+} from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   AvatarToken,
   AvatarWithBadge,
   AVATAR_WITH_BADGE_POSTIONS,
   Text,
-} from '..'
-import Box from '../../ui/box/box'
-import { getNativeCurrencyImage } from '../../../selectors'
+} from '../../component-library';
+import Box from '../../ui/box/box';
+import { getNativeCurrencyImage } from '../../../selectors';
 
 export const NewTokenList = ({
   className,
@@ -29,7 +29,7 @@ export const NewTokenList = ({
   primary,
   secondary,
 }) => {
-  const primaryTokenImage = useSelector(getNativeCurrencyImage)
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   return (
     <Box
       className={classnames('token-list', className)}
@@ -39,7 +39,7 @@ export const NewTokenList = ({
       margin={4}
     >
       <Box
-        className='token-list__container--cell'
+        className="token-list__container--cell"
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
         onClick={onClick}
@@ -49,7 +49,7 @@ export const NewTokenList = ({
           badge={
             <AvatarNetwork
               size={Size.XS}
-              name='Ethereum'
+              name="Ethereum"
               src={primaryTokenImage}
             />
           }
@@ -58,7 +58,7 @@ export const NewTokenList = ({
           <AvatarToken src={tokenImage} showHalo />
         </AvatarWithBadge>
         <Box
-          className='token-list__container--cell--text-container'
+          className="token-list__container--cell--text-container"
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
@@ -79,8 +79,8 @@ export const NewTokenList = ({
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 NewTokenList.propTypes = {
   /**
@@ -112,9 +112,4 @@ NewTokenList.propTypes = {
    * NewTokenList also accepts all props from Box
    */
   ...Box.propTypes,
-}
-
-NewTokenList.defaultProps = {
-  className: undefined,
-  tokenImage: undefined,
-}
+};
