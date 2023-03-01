@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
   },
-  "buyWithWyre": {
-    "message": "Купити $1 через Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre дає змогу використовувати кредитну картку для внесення валюти $1 безпосередньо у свій гаманець MetaMask."
-  },
   "bytes": {
     "message": "Байти"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "З'єднуємось з Головною мережею Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Продовжити у Wyre"
   },
   "contractDeployment": {
     "message": "Розгортання контракту"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "Загальні"
-  },
-  "getEther": {
-    "message": "Отримати Ефір"
-  },
-  "getEtherFromFaucet": {
-    "message": "Отримайте Ether з крану за $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Тестова мережа Goerli "
@@ -781,9 +765,6 @@
   "terms": {
     "message": "Умови використання"
   },
-  "testFaucet": {
-    "message": "Тестовий кран"
-  },
   "tips": {
     "message": "Чайові"
   },
@@ -901,9 +882,6 @@
   },
   "userName": {
     "message": "Ім’я користувача"
-  },
-  "viewAccount": {
-    "message": "Переглянути обліковий запис"
   },
   "viewContact": {
     "message": "Переглянути контакт"

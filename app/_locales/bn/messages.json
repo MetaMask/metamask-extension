@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
-  "buyWithWyre": {
-    "message": "Wyre দিয়ে $1 ক্রয় করুন"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre আপনার MetaMask অ্যাকাউন্টে সরাসরি $1 জমা করতে আপনাকে একটি ক্রেডিট কার্ড ব্যবহার করতে দেয়।"
-  },
   "bytes": {
     "message": "বাইটস"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "continueToWyre": {
-    "message": "Wyre এ অবিরত রাখুন"
   },
   "contractDeployment": {
     "message": "কন্ট্র্যাক্ট নিয়োজন"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "সাধারণ"
-  },
-  "getEther": {
-    "message": "ইথার পান"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 এর জন্য একটি ফসেট থেকে ইথার পান",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "গোয়েরলি টেস্ট নেটওয়ার্ক"
@@ -781,9 +765,6 @@
   "terms": {
     "message": "ব্যবহারের শর্তাবলী"
   },
-  "testFaucet": {
-    "message": "টেস্ট ফসেট"
-  },
   "tips": {
     "message": "অর্থসাহায্য এবং পরামর্শ"
   },
@@ -901,9 +882,6 @@
   },
   "userName": {
     "message": "ইউজারনেম"
-  },
-  "viewAccount": {
-    "message": "আ্যাকাউন্ট দেখুন"
   },
   "viewContact": {
     "message": "পরিচিতি দেখুন"
