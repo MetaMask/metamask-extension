@@ -27,7 +27,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
-import { DetectedTokensBanner, NewImportTokenLink, NewTokenList } from '../../multichain';
+import {
+  DetectedTokensBanner,
+  NewImportTokenLink,
+  NewTokenList,
+} from '../../multichain';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
