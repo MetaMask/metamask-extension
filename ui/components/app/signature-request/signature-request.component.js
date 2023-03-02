@@ -64,6 +64,8 @@ export default class SignatureRequest extends PureComponent {
     rpcPrefs: PropTypes.object,
     conversionRate: PropTypes.number,
     nativeCurrency: PropTypes.string,
+    currentCurrency: PropTypes.string.isRequired,
+    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool.isRequired,
     provider: PropTypes.object,
     subjectMetadata: PropTypes.object,
     unapprovedMessagesCount: PropTypes.number,
@@ -157,6 +159,8 @@ export default class SignatureRequest extends PureComponent {
       subjectMetadata,
       conversionRate,
       nativeCurrency,
+      currentCurrency,
+      useNativeCurrencyAsPrimaryCurrency,
       unapprovedMessagesCount,
     } = this.props;
     const { t, trackEvent } = this.context;
@@ -167,6 +171,9 @@ export default class SignatureRequest extends PureComponent {
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
     const currentNetwork = this.getNetworkName();
+    const tokenName = useNativeCurrencyAsPrimaryCurrency
+      ? nativeCurrency
+      : currentCurrency?.toUpperCase();
 
     const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
       .toDenomination(EtherDenomination.ETH)
@@ -217,7 +224,7 @@ export default class SignatureRequest extends PureComponent {
             networkName={currentNetwork}
             accountName={name}
             accountBalance={balanceInBaseAsset}
-            tokenName={nativeCurrency}
+            tokenName={tokenName}
             accountAddress={address}
           />
         </div>
