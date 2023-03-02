@@ -24,6 +24,10 @@
     margin-bottom: 5px;
   }
 
+  &__no_background {
+    background: var(--color-background-default);
+  }
+
   &--disabled {
     opacity: 0.3;
     cursor: auto;

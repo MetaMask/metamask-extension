@@ -88,6 +88,37 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
+              <IconButton
+                className="eth-overview__portfolio"
+                data-testid="home__portfolio-site"
+                renderBackgroundColor={false}
+                Icon={
+                  <Icon
+                    name={ICON_NAMES.DIAGRAM}
+                    color={IconColor.primaryDefault}
+                  />
+                }
+                onClick={() => {
+                  const portfolioUrl = process.env.PORTFOLIO_URL;
+                  global.platform.openTab({
+                    url: `${portfolioUrl}?metamaskEntry=ext`,
+                  });
+                  trackEvent(
+                    {
+                      category: EVENT.CATEGORIES.HOME,
+                      event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                      properties: {
+                        url: portfolioUrl,
+                      },
+                    },
+                    {
+                      contextPropsIntoEventProperties: [
+                        CONTEXT_PROPS.PAGE_TITLE,
+                      ],
+                    },
+                  );
+                }}
+              />
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -217,35 +248,6 @@ const EthOverview = ({ className }) => {
                   text: 'Bridge',
                 },
               });
-            }}
-          />
-          <IconButton
-            className="eth-overview__button"
-            data-testid="home__portfolio-site"
-            Icon={
-              <Icon
-                name={ICON_NAMES.DIAGRAM}
-                color={IconColor.primaryInverse}
-              />
-            }
-            label={t('portfolio')}
-            onClick={() => {
-              const portfolioUrl = process.env.PORTFOLIO_URL;
-              global.platform.openTab({
-                url: `${portfolioUrl}?metamaskEntry=ext`,
-              });
-              trackEvent(
-                {
-                  category: EVENT.CATEGORIES.HOME,
-                  event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
-                  properties: {
-                    url: portfolioUrl,
-                  },
-                },
-                {
-                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
-                },
-              );
             }}
           />
         </>

@@ -11,21 +11,34 @@ export default function IconButton({
   label,
   tooltipRender,
   className,
+  renderBackgroundColor = true,
   ...props
 }) {
   const renderWrapper = tooltipRender ?? defaultRender;
   return (
     <button
-      className={classNames('icon-button', className, {
-        'icon-button--disabled': disabled,
-      })}
+      className={classNames(
+        renderBackgroundColor ? 'icon-button' : undefined,
+        className,
+        {
+          'icon-button--disabled': disabled,
+        },
+      )}
       data-testid={props['data-testid'] ?? undefined}
       onClick={onClick}
       disabled={disabled}
     >
       {renderWrapper(
         <>
-          <div className="icon-button__circle">{Icon}</div>
+          <div
+            className={
+              renderBackgroundColor
+                ? 'icon-button__circle'
+                : 'icon-button__no_background'
+            }
+          >
+            {Icon}
+          </div>
           <span>{label}</span>
         </>,
       )}
@@ -40,5 +53,6 @@ IconButton.propTypes = {
   label: PropTypes.string.isRequired,
   tooltipRender: PropTypes.func,
   className: PropTypes.string,
+  renderBackgroundColor: PropTypes.bool,
   'data-testid': PropTypes.string,
 };

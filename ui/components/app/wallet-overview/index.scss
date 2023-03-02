@@ -51,6 +51,7 @@
 
   &__primary-container {
     display: flex;
+    position: relative;
   }
 
   &__primary-balance {
@@ -68,6 +69,13 @@
   &__cached-balance,
   &__cached-star {
     color: var(--color-warning-default);
+  }
+
+  &__portfolio {
+    position: absolute;
+    padding: 0;
+    right: -32px;
+    top: 15px;
   }
 
   &__cached-secondary-balance {
