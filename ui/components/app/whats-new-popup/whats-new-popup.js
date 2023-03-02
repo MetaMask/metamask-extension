@@ -125,7 +125,8 @@ const renderFirstNotification = (
     title,
     description,
     image,
-    actionText, ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    actionText,
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
     hideDate,
     customButton,
     descriptionInBullets,
