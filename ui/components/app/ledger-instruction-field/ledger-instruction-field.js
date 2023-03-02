@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -19,6 +19,7 @@ import {
   getLedgerTransportStatus,
 } from '../../../ducks/app/app';
 
+import { BannerAlert } from '../../component-library';
 import Typography from '../../ui/typography/typography';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -34,8 +35,6 @@ import {
 } from '../../../../app/scripts/lib/util';
 import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
-
-import { BannerAlert } from '../../component-library';
 
 const renderInstructionStep = (
   text,
@@ -66,9 +65,6 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   const environmentType = getEnvironmentType();
   const environmentTypeIsFullScreen =
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
-
-  // make this instance dismissable
-  const [isShown, setShown] = useState(true);
 
   useEffect(() => {
     const initialConnectedDeviceCheck = async () => {
@@ -138,10 +134,10 @@ export default function LedgerInstructionField({ showDataInstruction }) {
 
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
-  return isShown ? (
+  return (
     <div>
       <div className="confirm-detail-row">
-        <BannerAlert severity={SEVERITIES.INFO} onClose={() => setShown(false)}>
+        <BannerAlert severity={SEVERITIES.INFO}>
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(
@@ -215,7 +211,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
         </BannerAlert>
       </div>
     </div>
-  ) : null;
+  );
 }
 
 LedgerInstructionField.propTypes = {
