@@ -2,18 +2,23 @@ import React, { isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../spinner';
 
-const renderMessage = (message) => {
-  if (!message) {
-    return null;
-  }
-  return isValidElement(message) ? message : <span>{message}</span>;
-};
-
 const LoadingScreen = ({
   header,
   loadingMessage,
   showLoadingSpinner = true,
 }) => {
+  const renderMessage = () => {
+    if (!loadingMessage) {
+      return null;
+    }
+
+    return isValidElement(loadingMessage) ? (
+      loadingMessage
+    ) : (
+      <span>{loadingMessage}</span>
+    );
+  };
+
   return (
     <div className="loading-overlay">
       {header}
@@ -24,7 +29,7 @@ const LoadingScreen = ({
             className="loading-overlay__spinner"
           />
         )}
-        {renderMessage(loadingMessage)}
+        {renderMessage()}
       </div>
     </div>
   );
