@@ -657,9 +657,6 @@
   "complianceBlurb1": {
     "message": "Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting."
   },
-  "complianceBlurpStep0": {
-    "message": "Steps to enable AML/CFT Compliance:"
-  },
   "complianceBlurbStep1": {
     "message": "Sign up to Codefi Compliance below"
   },
@@ -674,6 +671,9 @@
   },
   "complianceBlurbStep5": {
     "message": "Click the \"Enable Compliance in MMI\" button"
+  },
+  "complianceBlurpStep0": {
+    "message": "Steps to enable AML/CFT Compliance:"
   },
   "complianceSettingsExplanation": {
     "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
@@ -923,29 +923,26 @@
   "custodianAccountAddedTitle": {
     "message": "Selected custodian accounts have been added."
   },
-  "custodianReplaceRefreshTokenTitle": {
-    "message": "Replace custodian token"
-  },
-  "custodianReplaceRefreshTokenSubtitle": {
-    "message": "This is will replace the custodian token for the following address:"
-  },
-  "custodianReplaceRefreshTokenChangedTitle": {
-    "message": "Your custodian token has been refreshed"
+  "custodianReplaceRefreshTokenChangedFailed": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
   "custodianReplaceRefreshTokenChangedSubtitle": {
     "message": "You can now use your custodian accounts in MetaMask Institutional."
   },
-  "custodianReplaceRefreshTokenChangedFailed": {
-    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  "custodianReplaceRefreshTokenChangedTitle": {
+    "message": "Your custodian token has been refreshed"
+  },
+  "custodianReplaceRefreshTokenSubtitle": {
+    "message": "This is will replace the custodian token for the following address:"
+  },
+  "custodianReplaceRefreshTokenTitle": {
+    "message": "Replace custodian token"
   },
   "custodyApiUrl": {
     "message": "$1 API URL"
   },
   "custodyDeeplinkDescription": {
     "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
-  },
-  "custodyRefreshTokenModalTitle": {
-    "message": "Your custodian session has expired"
   },
   "custodyRefreshTokenModalDescription": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
@@ -958,6 +955,9 @@
   },
   "custodyRefreshTokenModalSubtitle": {
     "message": "Why am I seeing this?"
+  },
+  "custodyRefreshTokenModalTitle": {
+    "message": "Your custodian session has expired"
   },
   "custodySessionExpired": {
     "message": "Custodian session expired"
@@ -3376,6 +3376,9 @@
   "selectHdPath": {
     "message": "Select HD path"
   },
+  "selectJWT": {
+    "message": "Select token"
+  },
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
   },
@@ -3387,9 +3390,6 @@
   },
   "selectType": {
     "message": "Select Type"
-  },
-  "selectJWT": {
-    "message": "Select token"
   },
   "selectingAllWillAllow": {
     "message": "Selecting all will allow this site to view all of your current accounts. Make sure you trust this site."
