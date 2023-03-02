@@ -94,7 +94,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       metricsState.participateInMetaMetrics = true;
     });
 
-    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event`, () => {
+    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event`, async () => {
       const req = {
         method: MESSAGE_TYPE.ETH_SIGN,
         origin: 'some.dapp',
@@ -104,7 +104,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next } = getNext();
-      handler(req, res, next);
+      await handler(req, res, next);
       expect(trackEvent).toHaveBeenCalledTimes(1);
       expect(trackEvent.mock.calls[0][0]).toMatchObject({
         category: 'inpage_provider',
@@ -124,7 +124,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
-      handler(req, res, next);
+      await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
@@ -145,7 +145,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: { code: 4001 },
       };
       const { next, executeMiddlewareStack } = getNext();
-      handler(req, res, next);
+      await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
@@ -164,7 +164,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       const res = {};
       const { next, executeMiddlewareStack } = getNext();
-      handler(req, res, next);
+      await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
