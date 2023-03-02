@@ -35,16 +35,12 @@ export const NewImportTokenLink = ({ className = '' }) => {
     isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
   return (
-    <Box
-      className={classnames('import-token-link', className)}
-      marginRight={4}
-      marginLeft={4}
-    >
+    <Box className={classnames('import-token-link', className)} margin={4}>
       <Box
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
-        marginBottom={4}
-        marginTop={4}
+        paddingBottom={4}
+        paddingTop={4}
       >
         <Icon
           name={ICON_NAMES.IMPORT}
@@ -72,8 +68,8 @@ export const NewImportTokenLink = ({ className = '' }) => {
       <Box
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
-        marginBottom={4}
-        marginTop={4}
+        paddingBottom={4}
+        paddingTop={4}
       >
         <Icon
           name={ICON_NAMES.REFRESH}
