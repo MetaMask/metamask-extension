@@ -637,11 +637,23 @@ export default class ConfirmTransactionBase extends Component {
 
   renderData() {
     const { txData, dataComponent } = this.props;
+    const {
+      txParams: { data },
+    } = txData;
+    if (!data) {
+      return null;
+    }
     return <ConfirmData txData={txData} dataComponent={dataComponent} />;
   }
 
   renderDataHex() {
     const { txData, dataHexComponent } = this.props;
+    const {
+      txParams: { data, to },
+    } = txData;
+    if (!data || !to) {
+      return null;
+    }
     return (
       <ConfirmHexData txData={txData} dataHexComponent={dataHexComponent} />
     );
