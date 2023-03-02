@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
-  "buyWithWyre": {
-    "message": "Beli $1 dengan Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre membolehkan anda menggunakan kad kredit untuk mendeposit $1 secara terus ke dalam akaun MetaMask anda."
-  },
   "bytes": {
     "message": "Bait"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
-  },
-  "continueToWyre": {
-    "message": "Teruskan ke Wyre"
   },
   "contractDeployment": {
     "message": "Penyusunan Kontrak"
@@ -319,13 +310,6 @@
   },
   "general": {
     "message": "Am"
-  },
-  "getEther": {
-    "message": "Dapatkan Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Dapatkan Ether daripada pili untuk $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Rangkaian Ujian Goerli"
@@ -761,9 +745,6 @@
   "terms": {
     "message": "Syarat-syarat Penggunaan"
   },
-  "testFaucet": {
-    "message": "Uji Pili"
-  },
   "tips": {
     "message": "Tip"
   },
@@ -878,9 +859,6 @@
   },
   "userName": {
     "message": "Nama pengguna"
-  },
-  "viewAccount": {
-    "message": "Paparkan Akaun"
   },
   "viewContact": {
     "message": "Lihat Kenalan"
