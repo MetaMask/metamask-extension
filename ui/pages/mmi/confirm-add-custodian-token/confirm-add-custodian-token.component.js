@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../components/ui/button';
-import PulseLoader from '../../components/ui/pulse-loader';
-import { CUSTODY_ACCOUNT_ROUTE } from '../../helpers/constants/routes';
-import { BUILT_IN_NETWORKS } from '../../../shared/constants/network';
+import Button from '../../../components/ui/button';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
+import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 
 export default class ConfirmAddCustodianToken extends Component {
   state = {

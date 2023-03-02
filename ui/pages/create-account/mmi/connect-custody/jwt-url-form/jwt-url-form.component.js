@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import JwtDropdown from '../jwt-dropdown/jwt-dropdown';
-import DragAndDrop from '../../../../components/ui/drag-and-drop';
-import Button from '../../../../components/ui/button';
+import DragAndDrop from '../../../../../components/ui/mmi/drag-and-drop';
+import Button from '../../../../../components/ui/button';
 
 // As a JWT is included in a HTTP header, we've an upper limit (SO: Maximum on http header values) of
 // 8K on the majority of current servers, with 7kb giving a reasonable amount of room for other headers

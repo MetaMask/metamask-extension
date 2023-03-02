@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { hideModal, hideWarning } from '../../../../store/actions';
+import { hideModal, hideWarning } from '../../../../../store/actions';
 import ComplinaceModal from './compliance-modal.component';
 
 function mapStateToProps() {

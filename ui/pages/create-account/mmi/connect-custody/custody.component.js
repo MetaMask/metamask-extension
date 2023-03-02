@@ -4,12 +4,12 @@ import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { getMMIActions } from '../../../store/actions';
-import Button from '../../../components/ui/button';
+import { getMMIActions } from '../../../../store/actions';
+import Button from '../../../../components/ui/button';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+} from '../../../../helpers/constants/routes';
 import CustodyAccountList from './account-list';
 import JwtUrlForm from './jwt-url-form/jwt-url-form.component';
 

@@ -28,6 +28,9 @@ export const DISPLAY_WARNING = 'DISPLAY_WARNING';
 export const HIDE_WARNING = 'HIDE_WARNING';
 export const CAPTURE_SINGLE_EXCEPTION = 'CAPTURE_SINGLE_EXCEPTION';
 // accounts screen
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+export const SHOW_ACCOUNT_DETAIL = 'SHOW_ACCOUNT_DETAIL';
+///: END:ONLY_INCLUDE_IN
 export const SHOW_ACCOUNTS_PAGE = 'SHOW_ACCOUNTS_PAGE';
 export const SHOW_CONF_TX_PAGE = 'SHOW_CONF_TX_PAGE';
 // account detail screen

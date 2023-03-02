@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { complianceActivated } from '../../ducks/institutional/institutional';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { complianceActivated } from '../../../ducks/mmi/institutional/institutional';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ComplianceSettings from './compliance-settings.component';
 
 class ComplianceFeaturePage extends Component {

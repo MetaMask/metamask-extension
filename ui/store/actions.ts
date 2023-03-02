@@ -14,6 +14,9 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { mmiActionsFactory } from '@codefi/mmi-sdk';
+///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -1893,6 +1896,72 @@ export function setSelectedAddress(
     }
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+export function showAccountDetail(
+  address: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, getState) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setSelectedAddress`);
+
+    const state = getState();
+    const unconnectedAccountAccountAlertIsEnabled =
+      getUnconnectedAccountAlertEnabledness(state);
+    const activeTabOrigin = state.activeTab.origin;
+    const selectedAddress = getSelectedAddress(state);
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(state);
+    const currentTabIsConnectedToPreviousAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(selectedAddress);
+    const currentTabIsConnectedToNextAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(address);
+    const switchingToUnconnectedAddress =
+      currentTabIsConnectedToPreviousAddress &&
+      !currentTabIsConnectedToNextAddress;
+
+    try {
+      await _setSelectedAddress(address);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    dispatch({
+      type: actionConstants.SHOW_ACCOUNT_DETAIL,
+      value: address,
+    });
+    if (
+      unconnectedAccountAccountAlertIsEnabled &&
+      switchingToUnconnectedAddress
+    ) {
+      dispatch(switchedToUnconnectedAccount());
+      await setUnconnectedAccountAlertShown(activeTabOrigin);
+    }
+  };
+}
+
+export function showInteractiveReplacementTokenBanner({
+  url,
+  oldRefreshToken,
+}: {
+  url: string,
+  oldRefreshToken: string,
+}) {
+  return async () => {
+    try {
+      await submitRequestToBackground('showInteractiveReplacementTokenBanner', [url, oldRefreshToken]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+///: END:ONLY_INCLUDE_IN
 
 export function setSelectedAccount(
   address: string,
@@ -4598,4 +4667,18 @@ export async function testDesktopConnection() {
 export async function disableDesktop() {
   return await submitRequestToBackground('disableDesktop');
 }
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+export const getMMIActions = () =>
+  mmiActionsFactory({
+    log,
+    showLoadingIndication,
+    submitRequestToBackground,
+    displayWarning,
+    hideLoadingIndication,
+    forceUpdateMetamaskState,
+    showModal,
+    callBackgroundMethod,
+  });
 ///: END:ONLY_INCLUDE_IN

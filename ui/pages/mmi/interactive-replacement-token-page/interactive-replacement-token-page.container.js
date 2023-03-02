@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { getInstitutionalConnectRequests } from '../../../ducks/mmi/institutional/institutional';
 import {
   getMMIActions,
   showInteractiveReplacementTokenBanner,
-} from '../../store/actions';
-import { getMetaMaskAccounts } from '../../selectors';
+} from '../../../store/actions';
+import { getMetaMaskAccounts } from '../../../selectors';
 import InteractiveReplacementTokenPage from './interactive-replacement-token-page.component';
 
 const mapStateToProps = (state) => {

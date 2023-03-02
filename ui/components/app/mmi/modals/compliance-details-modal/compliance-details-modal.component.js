@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Modal from '../../modal';
+import Modal from '../../../modal';
 import ComplianceDetails from '../../compliance-details';
 
 export default class ComplianceDetailsModal extends Component {

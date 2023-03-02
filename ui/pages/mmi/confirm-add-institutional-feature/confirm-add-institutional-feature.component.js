@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../components/ui/button';
-import PulseLoader from '../../components/ui/pulse-loader';
-import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../helpers/constants/routes';
+import Button from '../../../components/ui/button';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
 
 export default class ConfirmAddInstitutionalFeature extends Component {
   state = {

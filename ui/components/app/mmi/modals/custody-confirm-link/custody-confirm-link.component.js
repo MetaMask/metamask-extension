@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../../ui/button';
+import Button from '../../../../ui/button';
 
 export default class CustodyConfirmLink extends Component {
   static propTypes = {

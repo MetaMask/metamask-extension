@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
-import { getMMIActions, setProviderType } from '../../store/actions';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import { getInstitutionalConnectRequests } from '../../../ducks/mmi/institutional/institutional';
+import { getMMIActions, setProviderType } from '../../../store/actions';
 import ConfirmAddCustodianToken from './confirm-add-custodian-token.component';
 
 const mapStateToProps = (state) => {

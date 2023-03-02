@@ -5,7 +5,7 @@ import {
   getProvider,
   getIsCustodianSupportedChain,
   getSelectedAccountCachedBalance,
-} from '../../../selectors';
+} from '../../../../selectors';
 import WrongNetworkNotification from './wrong-network-notification.component';
 
 const mapStateToProps = (state) => {

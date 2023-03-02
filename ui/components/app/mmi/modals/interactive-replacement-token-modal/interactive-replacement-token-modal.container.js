@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
-import { hideModal } from '../../../../store/actions';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { hideModal } from '../../../../../store/actions';
 import InteractiveReplacementTokenModal from './interactive-replacement-token-modal.component';
 
 function mapDispatchToProps(dispatch) {

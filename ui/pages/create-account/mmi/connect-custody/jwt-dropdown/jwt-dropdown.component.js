@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Dropdown from '../../../../components/ui/dropdown';
+import Dropdown from '../../../../../components/ui/dropdown';
 
 export default class JwtDropdown extends Component {
   static contextTypes = {

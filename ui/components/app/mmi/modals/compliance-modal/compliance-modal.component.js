@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Modal from '../../modal';
+import Modal from '../../../modal';
 
 export default class ComplianceModal extends Component {
   static contextTypes = {

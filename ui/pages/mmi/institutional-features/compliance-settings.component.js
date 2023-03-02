@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { complianceActivated } from '../../ducks/institutional/institutional';
-import { getMMIActions } from '../../store/actions';
-import Button from '../../components/ui/button';
+import { complianceActivated } from '../../../ducks/mmi/institutional/institutional';
+import { getMMIActions } from '../../../store/actions';
+import Button from '../../../components/ui/button';
 
 class ComplianceSettings extends Component {
   static contextTypes = {

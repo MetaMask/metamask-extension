@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { getMMIActions } from '../../store/actions';
+import { getMMIActions } from '../../../store/actions';
 
 // Actions
 const createComplianceActionType = (action) =>

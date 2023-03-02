@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { getMMIActions } from '../../../store/actions';
-import { getCurrentKeyring } from '../../../selectors';
+import { getMMIActions } from '../../../../store/actions';
+import { getCurrentKeyring } from '../../../../selectors';
 import InteractiveReplacementTokenNotification from './interactive-replacement-token-notification.component';
 
 const mapStateToProps = (state) => {

@@ -51,6 +51,18 @@ const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 const ADD_NFT_ROUTE = '/add-nft';
 
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
+const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+const COMPLIANCE_FEATURE_ROUTE = '/compliance-feature';
+const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
+const CONFIRM_INSTITUTIONAL_FEATURE_CONNECT =
+  '/confirm-institutional-feature-connect';
+const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
+const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
+  '/interactive-replacement-token-page';
+///: END:ONLY_INCLUDE_IN
+
 const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
@@ -70,7 +82,7 @@ const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
-///: END:ONLY_INCLUDE_IN
+
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
@@ -249,5 +261,15 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_ERROR_ROUTE,
   DESKTOP_PAIRING_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  CUSTODY_ACCOUNT_ROUTE,
+  CUSTODY_ACCOUNT_DONE_ROUTE,
+  COMPLIANCE_FEATURE_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
 };

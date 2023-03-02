@@ -2,15 +2,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { I18nContext } from '../../../contexts/i18n';
-import InfoTooltip from '../../ui/info-tooltip';
-import SwapsFooter from '../../../pages/swaps/swaps-footer';
+import { I18nContext } from '../../../../../ui/contexts/i18n';
+import InfoTooltip from '../../../../components/ui/info-tooltip';
+import SwapsFooter from '../../../../pages/swaps/swaps-footer';
 import {
   fetchHistoricalReports,
   getComplianceHistoricalReportsByAddress,
   getComplianceTenantSubdomain,
-} from '../../../ducks/institutional/institutional';
-import { formatDate } from '../../../helpers/utils/util';
+} from '../../../../ducks/mmi/institutional/institutional';
+import { formatDate } from '../../../../../ui/helpers/utils/util';
 
 const ComplianceDetails = ({ address, onClose, onGenerate }) => {
   const t = useContext(I18nContext);

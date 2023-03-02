@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import {
   getMMIActions,
   showAccountDetail,
   hideModal,
-} from '../../../../store/actions';
-import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
+} from '../../../../../store/actions';
+import withModalProps from '../../../../../helpers/higher-order-components/with-modal-props';
 import CustodyConfirmLink from './custody-confirm-link.component';
 
 function mapDispatchToProps(dispatch) {

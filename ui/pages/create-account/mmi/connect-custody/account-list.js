@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import copy from 'copy-to-clipboard';
-import Button from '../../../components/ui/button';
-import CustodyLabels from '../../../components/ui/custody-labels';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { SECOND } from '../../../../shared/constants/time';
-import { shortenAddress } from '../../../helpers/utils/util';
-import Tooltip from '../../../components/ui/tooltip';
-import CopyIcon from '../../../components/ui/icon/copy-icon.component';
-import OpenInNewTab from '../../../components/ui/icon/open-in-new-tab.component';
+import Button from '../../../../components/ui/button';
+import CustodyLabels from '../../../../components/ui/mmi/custody-labels';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { SECOND } from '../../../../../shared/constants/time';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import Tooltip from '../../../../components/ui/tooltip';
+import CopyIcon from '../../../../components/ui/mmi/icon/copy-icon.component';
+import OpenInNewTab from '../../../../components/ui/mmi/icon/open-in-new-tab.component';
 
 class CustodyAccountList extends Component {
   state = {

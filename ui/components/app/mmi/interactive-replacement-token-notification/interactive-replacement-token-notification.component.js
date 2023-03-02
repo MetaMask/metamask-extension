@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { sha256 } from '../../../../shared/modules/hash.utils';
+import { sha256 } from '../../../../../shared/modules/hash.utils';
 
 export default class InteractiveReplacementTokenNotification extends PureComponent {
   state = {

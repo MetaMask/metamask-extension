@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
-import { I18nContext } from '../../../contexts/i18n';
-import InfoTooltip from '../../../components/ui/info-tooltip';
+import { I18nContext } from '../../../../contexts/i18n';
+import InfoTooltip from '../../../../components/ui/info-tooltip';
 import {
   fetchHistoricalReports,
   getComplianceHistoricalReportsByAddress,
   getComplianceReportsInProgressByAddress,
-} from '../../../ducks/institutional/institutional';
+} from '../../../../ducks/mmi/institutional/institutional';
 
 export default function ComplianceRow({ address, rowClick, inProgress }) {
   const dispatch = useDispatch();

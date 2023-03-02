@@ -284,6 +284,7 @@
     "debounce-stream": "^2.0.0",
     "deep-freeze-strict": "1.1.1",
     "end-of-stream": "^1.4.4",
+    "enzyme": "^3.11.0",
     "eth-block-tracker": "^6.0.0",
     "eth-ens-namehash": "^2.0.8",
     "eth-json-rpc-filters": "^6.0.0",

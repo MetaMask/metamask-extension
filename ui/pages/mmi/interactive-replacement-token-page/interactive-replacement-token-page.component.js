@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import copy from 'copy-to-clipboard';
-import Button from '../../components/ui/button';
-import CustodyLabels from '../../components/ui/custody-labels';
-import PulseLoader from '../../components/ui/pulse-loader';
-import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../helpers/constants/routes';
-import { MAINNET_DEFAULT_BLOCK_EXPLORER_URL } from '../../../shared/constants/swaps';
-import { SECOND } from '../../../shared/constants/time';
-import { shortenAddress } from '../../helpers/utils/util';
-import Tooltip from '../../components/ui/tooltip';
-import CopyIcon from '../../components/ui/icon/copy-icon.component';
-import OpenInNewTab from '../../components/ui/icon/open-in-new-tab.component';
+import Button from '../../../components/ui/button';
+import CustodyLabels from '../../../components/ui/mmi/custody-labels';
+import PulseLoader from '../../../components/ui/pulse-loader';
+import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { SECOND } from '../../../../shared/constants/time';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { shortenAddress } from '../../../helpers/utils/util';
+import Tooltip from '../../../components/ui/tooltip';
+import CopyIcon from '../../../components/ui/mmi/icon/copy-icon.component';
+import OpenInNewTab from '../../../components/ui/mmi/icon/open-in-new-tab.component';
 
 export default class InteractiveReplacementTokenPage extends Component {
   _isMounted = false;
@@ -198,7 +199,7 @@ export default class InteractiveReplacementTokenPage extends Component {
                   <span className="interactive-replacement-token-page__accounts__item__address">
                     <a
                       className="interactive-replacement-token-page__accounts__item__address-link"
-                      href={`${MAINNET_DEFAULT_BLOCK_EXPLORER_URL}address/${account.address}`}
+                      href={`${SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET]}address/${account.address}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
