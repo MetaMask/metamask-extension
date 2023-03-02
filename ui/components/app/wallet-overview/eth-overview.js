@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -35,9 +35,9 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import DepositPopover from '../deposit-popover';
 import { Icon, ICON_NAMES } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -45,7 +45,6 @@ const EthOverview = ({ className }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const [showDepositPopover, setShowDepositPopover] = useState(false);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const balanceIsCached = useSelector(isBalanceCached);
@@ -56,183 +55,181 @@ const EthOverview = ({ className }) => {
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
+  const { openBuyCryptoInPdapp } = useRamps();
+
   return (
-    <>
-      {showDepositPopover && (
-        <DepositPopover onClose={() => setShowDepositPopover(false)} />
-      )}
-      <WalletOverview
-        loading={!balance}
-        balance={
-          <Tooltip
-            position="top"
-            title={t('balanceOutdated')}
-            disabled={!balanceIsCached}
-          >
-            <div className="eth-overview__balance">
-              <div className="eth-overview__primary-container">
-                {balance ? (
-                  <UserPreferencedCurrencyDisplay
-                    className={classnames('eth-overview__primary-balance', {
-                      'eth-overview__cached-balance': balanceIsCached,
-                    })}
-                    data-testid="eth-overview__primary-currency"
-                    value={balance}
-                    type={PRIMARY}
-                    ethNumberOfDecimals={4}
-                    hideTitle
-                  />
-                ) : (
-                  <Spinner
-                    color="var(--color-secondary-default)"
-                    className="loading-overlay__spinner"
-                  />
-                )}
-                {balanceIsCached ? (
-                  <span className="eth-overview__cached-star">*</span>
-                ) : null}
-              </div>
-              {showFiat && balance && (
+    <WalletOverview
+      loading={!balance}
+      balance={
+        <Tooltip
+          position="top"
+          title={t('balanceOutdated')}
+          disabled={!balanceIsCached}
+        >
+          <div className="eth-overview__balance">
+            <div className="eth-overview__primary-container">
+              {balance ? (
                 <UserPreferencedCurrencyDisplay
-                  className={classnames({
-                    'eth-overview__cached-secondary-balance': balanceIsCached,
-                    'eth-overview__secondary-balance': !balanceIsCached,
+                  className={classnames('eth-overview__primary-balance', {
+                    'eth-overview__cached-balance': balanceIsCached,
                   })}
-                  data-testid="eth-overview__secondary-currency"
+                  data-testid="eth-overview__primary-currency"
                   value={balance}
-                  type={SECONDARY}
+                  type={PRIMARY}
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
-              )}
-            </div>
-          </Tooltip>
-        }
-        buttons={
-          <>
-            <IconButton
-              className="eth-overview__button"
-              Icon={
-                <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
-              }
-              disabled={!isBuyableChain}
-              label={t('buy')}
-              onClick={() => {
-                trackEvent({
-                  event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                  },
-                });
-                setShowDepositPopover(true);
-              }}
-            />
-            <IconButton
-              className="eth-overview__button"
-              data-testid="eth-overview-send"
-              Icon={
-                <Icon
-                  name={ICON_NAMES.ARROW_2_RIGHT}
-                  color={IconColor.primaryInverse}
+              ) : (
+                <Spinner
+                  color="var(--color-secondary-default)"
+                  className="loading-overlay__spinner"
                 />
-              }
-              label={t('send')}
-              onClick={() => {
+              )}
+              {balanceIsCached ? (
+                <span className="eth-overview__cached-star">*</span>
+              ) : null}
+            </div>
+            {showFiat && balance && (
+              <UserPreferencedCurrencyDisplay
+                className={classnames({
+                  'eth-overview__cached-secondary-balance': balanceIsCached,
+                  'eth-overview__secondary-balance': !balanceIsCached,
+                })}
+                data-testid="eth-overview__secondary-currency"
+                value={balance}
+                type={SECONDARY}
+                ethNumberOfDecimals={4}
+                hideTitle
+              />
+            )}
+          </div>
+        </Tooltip>
+      }
+      buttons={
+        <>
+          <IconButton
+            className="eth-overview__button"
+            Icon={
+              <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+            }
+            disabled={!isBuyableChain}
+            data-testid="eth-overview-buy"
+            label={t('buy')}
+            onClick={() => {
+              openBuyCryptoInPdapp();
+              trackEvent({
+                event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
+                category: EVENT.CATEGORIES.NAVIGATION,
+                properties: {
+                  location: 'Home',
+                  text: 'Buy',
+                },
+              });
+            }}
+          />
+          <IconButton
+            className="eth-overview__button"
+            data-testid="eth-overview-send"
+            Icon={
+              <Icon
+                name={ICON_NAMES.ARROW_2_RIGHT}
+                color={IconColor.primaryInverse}
+              />
+            }
+            label={t('send')}
+            onClick={() => {
+              trackEvent({
+                event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
+                category: EVENT.CATEGORIES.NAVIGATION,
+                properties: {
+                  token_symbol: 'ETH',
+                  location: 'Home',
+                  text: 'Send',
+                },
+              });
+              dispatch(
+                startNewDraftTransaction({ type: AssetType.native }),
+              ).then(() => {
+                history.push(SEND_ROUTE);
+              });
+            }}
+          />
+          <IconButton
+            className="eth-overview__button"
+            disabled={!isSwapsChain}
+            Icon={
+              <Icon
+                name={ICON_NAMES.SWAP_HORIZONTAL}
+                color={IconColor.primaryInverse}
+              />
+            }
+            onClick={() => {
+              if (isSwapsChain) {
                 trackEvent({
-                  event: EVENT_NAMES.NAV_SEND_BUTTON_CLICKED,
-                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
+                  category: EVENT.CATEGORIES.SWAPS,
                   properties: {
                     token_symbol: 'ETH',
-                    location: 'Home',
-                    text: 'Send',
+                    location: EVENT.SOURCE.SWAPS.MAIN_VIEW,
+                    text: 'Swap',
                   },
                 });
-                dispatch(
-                  startNewDraftTransaction({ type: AssetType.native }),
-                ).then(() => {
-                  history.push(SEND_ROUTE);
-                });
-              }}
-            />
-            <IconButton
-              className="eth-overview__button"
-              disabled={!isSwapsChain}
-              Icon={
-                <Icon
-                  name={ICON_NAMES.SWAP_HORIZONTAL}
-                  color={IconColor.primaryInverse}
-                />
-              }
-              onClick={() => {
-                if (isSwapsChain) {
-                  trackEvent({
-                    event: EVENT_NAMES.NAV_SWAP_BUTTON_CLICKED,
-                    category: EVENT.CATEGORIES.SWAPS,
-                    properties: {
-                      token_symbol: 'ETH',
-                      location: EVENT.SOURCE.SWAPS.MAIN_VIEW,
-                      text: 'Swap',
-                    },
-                  });
-                  dispatch(setSwapsFromToken(defaultSwapsToken));
-                  if (usingHardwareWallet) {
-                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
-                  } else {
-                    history.push(BUILD_QUOTE_ROUTE);
-                  }
+                dispatch(setSwapsFromToken(defaultSwapsToken));
+                if (usingHardwareWallet) {
+                  global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+                } else {
+                  history.push(BUILD_QUOTE_ROUTE);
                 }
-              }}
-              label={t('swap')}
-              tooltipRender={
-                isSwapsChain
-                  ? null
-                  : (contents) => (
-                      <Tooltip
-                        title={t('currentlyUnavailable')}
-                        position="bottom"
-                      >
-                        {contents}
-                      </Tooltip>
-                    )
               }
-            />
-            <IconButton
-              className="eth-overview__button"
-              data-testid="home__portfolio-site"
-              Icon={
-                <Icon
-                  name={ICON_NAMES.DIAGRAM}
-                  color={IconColor.primaryInverse}
-                />
-              }
-              label={t('portfolio')}
-              onClick={() => {
-                const portfolioUrl = process.env.PORTFOLIO_URL;
-                global.platform.openTab({
-                  url: `${portfolioUrl}?metamaskEntry=ext`,
-                });
-                trackEvent(
-                  {
-                    category: EVENT.CATEGORIES.HOME,
-                    event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
-                    properties: {
-                      url: portfolioUrl,
-                    },
+            }}
+            label={t('swap')}
+            tooltipRender={
+              isSwapsChain
+                ? null
+                : (contents) => (
+                    <Tooltip
+                      title={t('currentlyUnavailable')}
+                      position="bottom"
+                    >
+                      {contents}
+                    </Tooltip>
+                  )
+            }
+          />
+          <IconButton
+            className="eth-overview__button"
+            data-testid="home__portfolio-site"
+            Icon={
+              <Icon
+                name={ICON_NAMES.DIAGRAM}
+                color={IconColor.primaryInverse}
+              />
+            }
+            label={t('portfolio')}
+            onClick={() => {
+              const portfolioUrl = process.env.PORTFOLIO_URL;
+              global.platform.openTab({
+                url: `${portfolioUrl}?metamaskEntry=ext`,
+              });
+              trackEvent(
+                {
+                  category: EVENT.CATEGORIES.HOME,
+                  event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                  properties: {
+                    url: portfolioUrl,
                   },
-                  {
-                    contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
-                  },
-                );
-              }}
-            />
-          </>
-        }
-        className={className}
-        icon={<Identicon diameter={32} image={primaryTokenImage} imageBorder />}
-      />
-    </>
+                },
+                {
+                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+                },
+              );
+            }}
+          />
+        </>
+      }
+      className={className}
+      icon={<Identicon diameter={32} image={primaryTokenImage} imageBorder />}
+    />
   );
 };
 

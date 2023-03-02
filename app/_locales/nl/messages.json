@@ -119,13 +119,6 @@
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
   },
-  "getEther": {
-    "message": "Krijg Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Haal Ether uit een kraan voor de $1",
-    "description": "Displays network name for Ether faucet"
-  },
   "here": {
     "message": "hier",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -311,9 +304,6 @@
   "terms": {
     "message": "Gebruiksvoorwaarden"
   },
-  "testFaucet": {
-    "message": "Test de kraan"
-  },
   "to": {
     "message": "Naar"
   },
@@ -344,9 +334,6 @@
   },
   "usedByClients": {
     "message": "Gebruikt door verschillende klanten"
-  },
-  "viewAccount": {
-    "message": "Bekijk account"
   },
   "visitWebSite": {
     "message": "Bezoek onze website"

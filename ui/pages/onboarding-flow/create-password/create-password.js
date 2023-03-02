@@ -32,6 +32,7 @@ import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 
 export default function CreatePassword({
   createNewAccount,
@@ -220,7 +221,7 @@ export default function CreatePassword({
             titleDetail={
               isValid && (
                 <div className="create-password__form--checkmark">
-                  <i className="fas fa-check" />
+                  <Icon name={ICON_NAMES.CHECK} />
                 </div>
               )
             }

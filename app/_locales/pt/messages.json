@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "affirmAgree": {
-    "message": "Concordo"
-  },
   "airgapVault": {
     "message": "AirGap Vault"
   },
@@ -526,37 +523,8 @@
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Comprar $1 com o Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Você pode comprar ou transferir criptomoedas facilmente com sua conta na Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Compre $1 com o MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "O MoonPay aceita formas de pagamento populares, incluindo Visa, Mastercard, Apple Pay, Google Pay, Samsung Pay e transferências bancárias em mais de 145 países. Os tokens são depositados na sua conta da MetaMask."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Comprar $1 com Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "O Transak aceita cartões de crédito, cartões de débito, Apple Pay, MobiKwik e transferências bancárias (dependendo da localização) em mais de 100 países. $1 deposita diretamente na sua conta da MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Comprar agora"
-  },
-  "buyWithWyre": {
-    "message": "Comprar $1 com o Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Integração fácil para compras de até US$ 1.000. Verificação de compra de alto limite rápida e interativa. Aceita cartão de crédito/débito, Apple Pay, transferências bancárias. Disponível em mais de 100 países. Depósito de tokens em sua conta na MetaMask"
   },
   "bytes": {
     "message": "Bytes"
@@ -735,18 +703,6 @@
   },
   "continue": {
     "message": "Continuar"
-  },
-  "continueToCoinbasePay": {
-    "message": "Prosseguir para o Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Continuar para o MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Continuar para Transak"
-  },
-  "continueToWyre": {
-    "message": "Continuar para o Wyre"
   },
   "contract": {
     "message": "Contrato"
@@ -960,10 +916,6 @@
   "deposit": {
     "message": "Depositar"
   },
-  "depositCrypto": {
-    "message": "Depositar $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Saiba mais"
   },
@@ -975,12 +927,6 @@
   },
   "details": {
     "message": "Detalhes"
-  },
-  "directDepositCrypto": {
-    "message": "Depositar $1 diretamente"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Se já tiver alguns $1, a forma mais rápida de colocar $1 em sua nova carteira é por depósito direto."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” está desativado porque não satisfaz o aumento mínimo de 10% em relação à taxa de gás original.",
@@ -1279,7 +1225,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Ver detalhes",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Adicionado em",
@@ -1432,23 +1378,8 @@
   "gasUsed": {
     "message": "Gás usado"
   },
-  "gdprMessage": {
-    "message": "Conforme determinação da Lei Geral de Proteção de Dados (União Europeia) 2016/679, esses dados são agregados e, portanto, anônimos. Para obter mais informações relacionadas às nossas práticas de privacidade, confira nossa $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Política de Privacidade aqui",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Geral"
-  },
-  "getEther": {
-    "message": "Obter Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Receba Ether de um faucet para a rede $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Voltar"
@@ -1894,37 +1825,6 @@
   "metamaskVersion": {
     "message": "Versão da MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Sempre permitirá que você revogue a permissão nas configurações"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Nunca",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "A MetaMask.."
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1 coletarão seu endereço IP completo",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1 coletarão chaves, endereços, transações, saldos, hashes ou qualquer outra informação pessoal",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1 venderão dados em troca de lucro. Jamais!",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Enviará eventos anonimizados de cliques e visualizações de páginas"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Ajude a melhorar a MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "A MetaMask gostaria de reunir dados de uso para entender melhor como nossos usuários interagem com a extensão. Esses dados serão usados para melhorar continuamente a usabilidade e a experiência do usuário com o nosso produto e o ecossistema do Ethereum."
-  },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1969,10 +1869,6 @@
   "nativeToken": {
     "message": "O token nativo dessa rede é $1. Esse é o token usado para taxas de gás.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Para interagir com aplicativos descentralizados usando a MetaMask, você precisará de $1 em sua carteira.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Precisa de ajuda? Contate $1",
@@ -2163,9 +2059,6 @@
   },
   "noSnaps": {
     "message": "Nenhum snap instalado"
-  },
-  "noThanks": {
-    "message": "Não, obrigado"
   },
   "noThanksVariant2": {
     "message": "Não, obrigado."
@@ -2618,7 +2511,7 @@
   },
   "permission_accessSnap": {
     "message": "Conecte-se ao snap $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Agende e execute ações periódicas.",
@@ -3854,9 +3747,6 @@
   "termsOfService": {
     "message": "Termos de Serviço"
   },
-  "testFaucet": {
-    "message": "Faucet de teste"
-  },
   "testNetworks": {
     "message": "Redes de teste"
   },
@@ -4211,9 +4101,6 @@
   "view": {
     "message": "Ver"
   },
-  "viewAccount": {
-    "message": "Ver conta"
-  },
   "viewAllDetails": {
     "message": "Ver todos os detalhes"
   },
@@ -4281,7 +4168,7 @@
   },
   "warningTooltipText": {
     "message": "$1 O contrato pode gastar todo o seu saldo de tokens sem aviso ou consentimento. Proteja-se personalizando um limite de gastos menor.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Fraca"

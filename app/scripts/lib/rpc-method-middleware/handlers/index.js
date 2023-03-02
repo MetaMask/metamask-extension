@@ -7,10 +7,6 @@ import sendMetadata from './send-metadata';
 import switchEthereumChain from './switch-ethereum-chain';
 import watchAsset from './watch-asset';
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import enableDesktop from './desktop/enable-desktop';
-///: END:ONLY_INCLUDE_IN
-
 const handlers = [
   addEthereumChain,
   ethAccounts,
@@ -20,8 +16,5 @@ const handlers = [
   sendMetadata,
   switchEthereumChain,
   watchAsset,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  enableDesktop,
-  ///: END:ONLY_INCLUDE_IN
 ];
 export default handlers;
