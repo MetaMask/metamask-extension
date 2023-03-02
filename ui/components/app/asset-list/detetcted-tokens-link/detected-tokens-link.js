@@ -12,6 +12,7 @@ import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
+import { BannerAlert } from '../../../component-library';
 
 const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
   const t = useI18nContext();
@@ -34,20 +35,34 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
     });
   };
   return (
-    <Box
-      className={classNames('detected-tokens-link', className)}
-      marginTop={1}
-    >
-      <Button
-        type="link"
-        className="detected-tokens-link__link"
-        onClick={onClick}
-      >
-        {detectedTokens.length === 1
-          ? t('numberOfNewTokensDetectedSingular')
-          : t('numberOfNewTokensDetectedPlural', [detectedTokens.length])}
-      </Button>
-    </Box>
+    <>
+      {process.env.MULTICHAIN ? (
+        <BannerAlert
+          actionButtonLabel={t('importTokensCamelCase')}
+          actionButtonOnClick={onClick}
+          margin={4}
+        >
+          {detectedTokens.length === 1
+            ? t('numberOfNewTokensDetectedSingular')
+            : t('numberOfNewTokensDetectedPlural', [detectedTokens.length])}
+        </BannerAlert>
+      ) : (
+        <Box
+          className={classNames('detected-tokens-link', className)}
+          marginTop={1}
+        >
+          <Button
+            type="link"
+            className="detected-tokens-link__link"
+            onClick={onClick}
+          >
+            {detectedTokens.length === 1
+              ? t('numberOfNewTokensDetectedSingular')
+              : t('numberOfNewTokensDetectedPlural', [detectedTokens.length])}
+          </Button>
+        </Box>
+      )}
+    </>
   );
 };
 
