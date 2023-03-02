@@ -173,14 +173,11 @@ export default function createRPCMethodTrackingMiddleware({
         const from = req?.params?.[1];
         const paramsExamplePassword = req?.params?.[2];
 
-        const { isSIWEMessage } = detectSIWE({ data });
-
         msgParams = {
           ...paramsExamplePassword,
           from,
           data,
           origin,
-          siwe: isSIWEMessage,
         };
 
         const msgData = {
