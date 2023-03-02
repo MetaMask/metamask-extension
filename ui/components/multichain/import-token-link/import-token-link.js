@@ -40,7 +40,12 @@ export const NewImportTokenLink = ({ className = '' }) => {
       marginRight={4}
       marginLeft={4}
     >
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        marginBottom={4}
+        marginTop={4}
+      >
         <Icon
           name={ICON_NAMES.IMPORT}
           color={IconColor.infoDefault}
@@ -64,7 +69,12 @@ export const NewImportTokenLink = ({ className = '' }) => {
               t('importTokens').slice(1)}
         </ButtonLink>
       </Box>
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Box
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        marginBottom={4}
+        marginTop={4}
+      >
         <Icon
           name={ICON_NAMES.REFRESH}
           color={IconColor.infoDefault}
