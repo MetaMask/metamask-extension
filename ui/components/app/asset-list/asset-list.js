@@ -27,11 +27,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
-import {
-  DetectedTokensBanner,
-  NewImportTokenLink,
-  NewTokenList,
-} from '../../multichain';
+import { DetectedTokensBanner, NewImportTokenLink, NewTokenList } from '../../multichain';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
@@ -131,16 +127,23 @@ const AssetList = ({ onClickAsset }) => {
           </>
         )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <Box justifyContent={JustifyContent.center}>
-          <Typography
-            color={Color.textAlternative}
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.NORMAL}
-          >
-            {t('missingToken')}
-          </Typography>
-        </Box>
-        {process.env.MULTICHAIN ? <NewImportTokenLink /> : <ImportTokenLink />}
+        {process.env.MULTICHAIN ? (
+          <NewImportTokenLink />
+        ) : (
+          <>
+            <Box justifyContent={JustifyContent.center}>
+              <Typography
+                color={Color.textAlternative}
+                variant={TypographyVariant.H6}
+                fontWeight={FONT_WEIGHT.NORMAL}
+              >
+                {t('missingToken')}
+              </Typography>
+            </Box>
+
+            <ImportTokenLink />
+          </>
+        )}
       </Box>
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
