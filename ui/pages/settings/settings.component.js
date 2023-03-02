@@ -79,7 +79,7 @@ class SettingsPage extends PureComponent {
   };
 
   shouldRenderExperimentalTab() {
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const desktopAvailable = true;
     if (desktopAvailable) {
       return true;
