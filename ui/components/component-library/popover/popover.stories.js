@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Box from '../../ui/box/box';
 import {
+  Color,
   AlignItems,
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
-import { Popover } from '.';
+import { Popover, PopoverPosition } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -120,20 +121,25 @@ export const DefaultStory = (args) => {
       <Box
         ref={setButtonRef}
         onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onFocus={handleFocus}
-        onBlur={handleClose}
+        // onMouseEnter={handleMouseEnter}
+        // onMouseLeave={handleMouseLeave}
+        // onFocus={handleFocus}
+        // onBlur={handleClose}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
       >
         Reference Item
       </Box>
       <Popover
-        placement="auto"
+        position={PopoverPosition.auto}
         referenceElement={referenceElement}
         isOpen={isOpen}
+        hasArrow
+        onClose={handleClose}
+        onBack={() => console.log('back')}
         {...args}
       >
-        TEST
+        write a description here about a popover
       </Popover>
     </Box>
   );

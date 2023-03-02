@@ -3,25 +3,19 @@
   // TODO
 
   &__header {
-    background-color: red;
+    position: relative;
 
-    &-item-start,
-    &-item-end {
-      background: gold;
-      flex: 0 0 auto;
-      width: 24px;
+    &-button-back {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
-    &-item-middle {
-      flex: 1;
-      background: purple;
+    &-button-close {
+      position: absolute;
+      top: 0;
+      right: 0;
     }
-
-    // &-item-end {
-    //   background: green;
-    //   flex: 0 0 auto;
-    //   width: 50px;
-    // }
   }
 }
 
@@ -34,6 +28,11 @@
 }
 
 .arrow {
+  width: 40px;
+  height: 40px;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
   visibility: hidden;
 }
 
@@ -48,22 +47,23 @@
   visibility: visible;
   content: '';
   transform: rotate(45deg);
+  border-radius: 2px  0 0 0;
 }
 
 .popover[data-popper-placement^='top'] > .arrow {
-  bottom: -6px;
+  bottom: -20px;
 
   &::before {
-    transform: rotate(180deg);
+    transform: rotate(-135deg);
   }
 }
 
 .popover[data-popper-placement^='bottom'] > .arrow {
-  top: -6px;
+  top: -20px;
 }
 
 .popover[data-popper-placement^='left'] > .arrow {
-  right: -2px;
+  right: -20px;
 
   &::before {
     transform: rotate(135deg);
@@ -71,10 +71,10 @@
 }
 
 .popover[data-popper-placement^='right'] > .arrow {
-  left: -6px;
+  left: -20px;
 
   &::before {
-    transform: rotate(-90deg);
+    transform: rotate(-45deg);
   }
 }
 
