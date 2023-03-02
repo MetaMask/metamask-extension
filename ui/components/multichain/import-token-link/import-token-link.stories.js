@@ -6,6 +6,6 @@ export default {
   component: NewImportTokenLink,
 };
 
-export const DefaultStory = () => <NewImportTokenLink />
+export const DefaultStory = () => <NewImportTokenLink />;
 
 DefaultStory.storyName = 'Default';

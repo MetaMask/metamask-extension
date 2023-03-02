@@ -38,6 +38,7 @@ const DetectedTokensLink = ({ className = '', setShowDetectedTokens }) => {
     <>
       {process.env.MULTICHAIN ? (
         <BannerAlert
+          className="banner-alert-token-detect"
           actionButtonLabel={t('importTokensCamelCase')}
           actionButtonOnClick={onClick}
           margin={4}
