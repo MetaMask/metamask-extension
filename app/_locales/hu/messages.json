@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
-  "buyWithWyre": {
-    "message": "Vásároljon $1 -t a Wyre-rel"
-  },
-  "buyWithWyreDescription": {
-    "message": "A Wyre segítségével egyensen a MetaMaks fiókjában tehet letétbe ETH-t."
-  },
   "bytes": {
     "message": "Bájtok"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
-  },
-  "continueToWyre": {
-    "message": "Tovább a Wyre-re"
   },
   "contractDeployment": {
     "message": "Szerződés alkalmazása"
@@ -322,13 +313,6 @@
   },
   "general": {
     "message": "Általános"
-  },
-  "getEther": {
-    "message": "Ether beszerzése"
-  },
-  "getEtherFromFaucet": {
-    "message": "Szerezzen Ethert pénzcsapból a(z) $1-ért",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli teszthálózat"
@@ -774,9 +758,6 @@
   "terms": {
     "message": "Használati feltételek"
   },
-  "testFaucet": {
-    "message": "Teszt csap"
-  },
   "tips": {
     "message": "Adományok"
   },
@@ -891,9 +872,6 @@
   },
   "userName": {
     "message": "Felhasználónév"
-  },
-  "viewAccount": {
-    "message": "Fiók megtekintése"
   },
   "viewContact": {
     "message": "Névjegy megtekintése"

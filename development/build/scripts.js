@@ -109,6 +109,8 @@ function getInfuraProjectId({ buildType, config, environment, testing }) {
     return config.INFURA_BETA_PROJECT_ID;
   } else if (buildType === BuildType.flask) {
     return config.INFURA_FLASK_PROJECT_ID;
+  } else if (buildType === BuildType.mmi) {
+    return config.INFURA_MMI_PROJECT_ID;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -132,6 +134,8 @@ function getSegmentWriteKey({ buildType, config, environment }) {
     return config.SEGMENT_BETA_WRITE_KEY;
   } else if (buildType === BuildType.flask) {
     return config.SEGMENT_FLASK_WRITE_KEY;
+  } else if (buildType === BuildType.mmi) {
+    return config.SEGMENT_MMI_WRITE_KEY;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -685,6 +689,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              isMMI: buildType === 'mmi',
             });
             break;
           }
@@ -1139,6 +1144,7 @@ function renderHtmlFile({
   commonSet,
   browserPlatforms,
   applyLavaMoat,
+  isMMI,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1150,7 +1156,11 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, {
+    jsBundles,
+    applyLavaMoat,
+    isMMI,
+  });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

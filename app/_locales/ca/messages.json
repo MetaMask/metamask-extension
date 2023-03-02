@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "El teu navegador no és suportat..."
   },
-  "buyWithWyre": {
-    "message": "Compra $1 amb Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre et permet utilitzar una targeta de crèdit per dipositar $1 directe al teu compte MetaMask."
-  },
   "cancel": {
     "message": "Cancel·la"
   },
@@ -168,9 +162,6 @@
   },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Continua a Wyre"
   },
   "contractDeployment": {
     "message": "Desplegament de Contracte"
@@ -316,13 +307,6 @@
   },
   "gasUsed": {
     "message": "Gas utilitzat"
-  },
-  "getEther": {
-    "message": "Aconsegueix Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Aconsegueix Ether d'una aixeta per $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Xarxa de test Goerli"
@@ -870,9 +854,6 @@
   },
   "userName": {
     "message": "Nom d'usuari"
-  },
-  "viewAccount": {
-    "message": "Mostra el compte"
   },
   "viewContact": {
     "message": "Veure Contacte"
