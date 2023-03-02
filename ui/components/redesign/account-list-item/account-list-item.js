@@ -1,6 +1,22 @@
+/*
+  TODO:
+
+    1.  Add third content row for "Hardware" pill / label
+
+  NEXT COMPONENTS:
+
+    1.  AccountListItemOptions
+    2.  AccountList
+    3.  AccountListPopover
+
+*/
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+
+import { useI18nContext } from '../../../hooks/useI18nContext';
+
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,
@@ -8,6 +24,7 @@ import {
   Text,
   ICON_NAMES,
   ICON_SIZES,
+  AvatarFavicon,
 } from '../../component-library';
 import {
   Color,
@@ -20,7 +37,15 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 
-export const AccountListItem = ({ identity, selected = false, onClick }) => {
+export const AccountListItem = ({
+  identity,
+  selected = false,
+  onClick,
+  isHardware = false,
+  connectedAvatar,
+}) => {
+  const t = useI18nContext();
+
   return (
     <Box
       display={DISPLAY.FLEX}
@@ -57,7 +82,16 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
             gap={2}
           >
             <Text ellipsis>{identity.name}</Text>
-            <Text textAlign={TEXT_ALIGN.END}>{identity.balance}</Text>
+            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+              {connectedAvatar ? (
+                <AvatarFavicon
+                  size={Size.SM}
+                  src={connectedAvatar}
+                  marginInlineEnd={2}
+                />
+              ) : null}
+              <Text textAlign={TEXT_ALIGN.END}>{identity.balance}</Text>
+            </Box>
           </Box>
         </Box>
         <Box
@@ -75,9 +109,10 @@ export const AccountListItem = ({ identity, selected = false, onClick }) => {
             {identity.tokenBalance}
           </Text>
         </Box>
+        {isHardware ? <Box></Box> : null}
       </Box>
       <ButtonIcon
-        ariaLabel=""
+        ariaLabel={t('options')}
         iconName={ICON_NAMES.MORE_VERTICAL}
         size={ICON_SIZES.SM}
         onClick={() => {
@@ -92,6 +127,8 @@ AccountListItem.propTypes = {
   identity: PropTypes.object.isRequired,
   selected: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
+  isHardware: PropTypes.bool,
+  connectedAvatar: PropTypes.string,
 };
 
 AccountListItem.displayName = 'AccountListItem';
