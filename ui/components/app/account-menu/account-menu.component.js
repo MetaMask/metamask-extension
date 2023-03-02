@@ -13,6 +13,10 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import ComplianceFeatureIcon from '../../ui/mmi/icon/compliance-feature-icon.component';
+import PortfolioDashboardIcon from '../../ui/mmi/icon/portfolio-dashboard-icon.component';
+///: END:ONLY_INCLUDE_IN
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import {
   PRIMARY,
@@ -29,6 +33,10 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  CUSTODY_ACCOUNT_ROUTE,
+  COMPLIANCE_FEATURE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import TextField from '../../ui/text-field';
 
@@ -37,6 +45,12 @@ import SearchIcon from '../../ui/icon/search-icon';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { shortenAddress } from '../../../helpers/utils/util';
+import CustodyLabels from '../../ui/mmi/custody-labels';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import CustodyIcon from '../../ui/mmi/icon/custody-icon.component';
+///: END:ONLY_INCLUDE_IN
 import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
@@ -89,6 +103,11 @@ export default class AccountMenu extends Component {
     originOfCurrentTab: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount: PropTypes.number,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    custodyAccountDetails: PropTypes.object,
+    mmiPortfolioEnabled: PropTypes.bool,
+    mmiPortfolioUrl: PropTypes.string,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -159,6 +178,9 @@ export default class AccountMenu extends Component {
         startAdornment={inputAdornment}
         fullWidth
         theme="material-white-padded"
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        className="mmiTextStyle"
+        ///: END:ONLY_INCLUDE_IN
       />,
       <div className="account-menu__divider" key="search-divider" />,
     ];
@@ -172,6 +194,9 @@ export default class AccountMenu extends Component {
       setSelectedAccount,
       addressConnectedSubjectMap,
       originOfCurrentTab,
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      custodyAccountDetails,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const { searchQuery } = this.state;
 
@@ -204,6 +229,41 @@ export default class AccountMenu extends Component {
         addressConnectedSubjectMap[identity.address] || {};
       const iconAndNameForOpenSubject = addressSubjects[originOfCurrentTab];
 
+      let iconAndNameForOpenSubjectUrl = iconAndNameForOpenSubject?.icon;
+
+      let renderUserPreferencedCurrencyDisplay = () => (
+        <UserPreferencedCurrencyDisplay
+          className="account-menu__balance"
+          data-testid="account-menu__balance"
+          value={identity.balance}
+          type={PRIMARY}
+        />
+      );
+
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      const labels = custodyAccountDetails
+        ? custodyAccountDetails[toChecksumHexAddress(identity.address)]
+            ?.labels || []
+        : [];
+
+      iconAndNameForOpenSubjectUrl = iconAndNameForOpenSubject?.iconUrl;
+
+      renderUserPreferencedCurrencyDisplay = () => (
+        <div className="account-menu__balance-container">
+          <UserPreferencedCurrencyDisplay
+            className="account-menu__balance"
+            data-testid="account-menu__balance"
+            value={identity.balance}
+            type={PRIMARY}
+          />{' '}
+          <span className="account-menu__address">
+            {' '}
+            · {shortenAddress(identity.address)}
+          </span>
+        </div>
+      );
+      ///: END:ONLY_INCLUDE_IN
+
       return (
         <button
           className="account-menu__account account-menu__item--clickable"
@@ -232,18 +292,24 @@ export default class AccountMenu extends Component {
           <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
             <div className="account-menu__name">{identity.name || ''}</div>
-            <UserPreferencedCurrencyDisplay
-              className="account-menu__balance"
-              data-testid="account-menu__balance"
-              value={identity.balance}
-              type={PRIMARY}
-            />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+              labels && (
+                <CustodyLabels
+                  labels={labels}
+                  background="transparent"
+                  hideNetwork
+                />
+              )
+              ///: END:ONLY_INCLUDE_IN
+            }
+            {renderUserPreferencedCurrencyDisplay()}
           </div>
           <KeyRingLabel keyring={keyring} />
           {iconAndNameForOpenSubject ? (
             <div className="account-menu__icon-list">
               <SiteIcon
-                icon={iconAndNameForOpenSubject.icon}
+                icon={iconAndNameForOpenSubjectUrl}
                 name={iconAndNameForOpenSubject.name}
                 size={32}
               />
@@ -311,6 +377,10 @@ export default class AccountMenu extends Component {
       history,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       unreadNotificationsCount,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      mmiPortfolioEnabled,
+      mmiPortfolioUrl,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
@@ -417,6 +487,60 @@ export default class AccountMenu extends Component {
           }
           text={t('connectHardwareWallet')}
         />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          <>
+            <AccountMenuItem
+              onClick={() => {
+                toggleAccountMenu();
+                trackEvent({
+                  category: 'Main Menu',
+                  event: 'Clicked Connect custodial account',
+                });
+                if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                  global.platform.openExtensionInBrowser(CUSTODY_ACCOUNT_ROUTE);
+                } else {
+                  history.push(CUSTODY_ACCOUNT_ROUTE);
+                }
+              }}
+              icon={<CustodyIcon width={24} height={16} color="white" />}
+              text={t('connectCustodialAccountMenu')}
+            />
+            {mmiPortfolioEnabled && (
+              <AccountMenuItem
+                onClick={() => {
+                  toggleAccountMenu();
+                  trackEvent({
+                    category: 'Navigation',
+                    event: 'Clicked Portfolio Button',
+                  });
+                  window.open(mmiPortfolioUrl, '_blank');
+                }}
+                icon={<PortfolioDashboardIcon />}
+                text={t('portfolioDashboard')}
+              />
+            )}
+            <AccountMenuItem
+              onClick={() => {
+                toggleAccountMenu();
+                trackEvent({
+                  category: 'Navigation',
+                  event: 'Clicked Compliance',
+                });
+                if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                  global.platform.openExtensionInBrowser(
+                    COMPLIANCE_FEATURE_ROUTE,
+                  );
+                } else {
+                  history.push(COMPLIANCE_FEATURE_ROUTE);
+                }
+              }}
+              icon={<ComplianceFeatureIcon />}
+              text={t('compliance')}
+            />
+          </>
+          ///: END:ONLY_INCLUDE_IN
+        }
         <div className="account-menu__divider" />
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)

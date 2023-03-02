@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { getMmiPortfolioEnabled, getMmiPortfolioUrl } from '@codefi/mmi-sdk';
+///: END:ONLY_INCLUDE_IN
 import {
   toggleAccountMenu,
   setSelectedAccount,
@@ -15,6 +18,10 @@ import {
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getUnreadNotificationsCount,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  getAccountType,
+  getCustodyAccountDetails,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import AccountMenu from './account-menu.component';
@@ -44,6 +51,12 @@ function mapStateToProps(state) {
     shouldShowAccountsSearch: accounts.length >= SHOW_SEARCH_ACCOUNTS_MIN_COUNT,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    mmiPortfolioUrl: getMmiPortfolioUrl(state),
+    mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
+    accountType: getAccountType(state),
+    custodyAccountDetails: getCustodyAccountDetails(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
