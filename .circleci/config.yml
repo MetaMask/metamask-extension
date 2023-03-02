@@ -177,6 +177,8 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
+            - test-e2e-chrome-nft
+            - test-e2e-firefox-nft
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
             - test-storybook
@@ -709,6 +711,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -773,6 +776,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -809,12 +813,13 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e.xml
-          
+
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 2
@@ -845,6 +850,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -881,6 +887,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -917,6 +924,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

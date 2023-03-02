@@ -518,8 +518,6 @@ export default function TokenAllowance({
           toAddress={toAddress}
           chainId={fullTxData.chainId}
           rpcPrefs={rpcPrefs}
-          origin={origin}
-          siteImage={siteImage}
         />
       )}
     </Box>
