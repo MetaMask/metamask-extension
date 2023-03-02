@@ -5,7 +5,7 @@
 Current confirmation implementation in the background consists of following pieces:
 
 1. TransactionController and utility, helper classes used by it:
-   TransactionController is very important piece in transaction processing. It is described [here](https://github.com/MetaMask/metamask-extension/tree/develop/app/scripts/controllers/transactions). It consists of 4 important parts:
+   TransactionController is very important piece in transaction processing. It is described [here](https://github.com/MetaMask/metamask-extension/tree/develop/app/scripts/controllers/transactions#transaction-controller). It consists of 4 important parts:
    - txStateManager: responsible for the state of a transaction and storing the transaction
    - pendingTxTracker: watching blocks for transactions to be include and emitting confirmed events
    - txGasUtil: gas calculations and safety buffering
