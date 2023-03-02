@@ -172,6 +172,7 @@ workflows:
             - test-unit-mocha
             - upload-and-validate-coverage
             - validate-source-maps
+            - validate-source-maps-beta
             - validate-source-maps-desktop
             - validate-source-maps-flask
             - test-mozilla-lint
@@ -198,6 +199,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - trigger-beta-build
             - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
@@ -1269,8 +1271,14 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Move beta build to dist
+          command: mv ./dist-beta ./dist
+      - run:
           name: Move beta zips to builds
           command: mv ./builds-beta ./builds
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
 
   test-mozilla-lint-desktop:
     executor: node-browsers
