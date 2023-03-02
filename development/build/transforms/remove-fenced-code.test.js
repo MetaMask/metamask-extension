@@ -647,151 +647,133 @@ function getTestData() {
 ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
-  Always_Included
 Always_Included
-   Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
-  Conditionally_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+Conditionally_Included
 
-  Conditionally_Included
-  Conditionally_Included
-  ///: END:ONLY_INCLUDE_IN
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
 Always_Included
-
 Always_Included
-   Always_Included
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-
-  Conditionally_Included
-    Conditionally_Included
-       ///: END:ONLY_INCLUDE_IN
 Always_Included
-   Always_Included
-Always_Included
-
-Always_Included
-   Always_Included
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-
-  Conditionally_Included
-    Conditionally_Included
-       ///: END:ONLY_INCLUDE_IN
-Always_Included
-   Always_Included
-Always_Included
-
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  Conditionally_Included
+
 Conditionally_Included
-
-       ///: END:ONLY_INCLUDE_IN
-
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  Conditionally_Included
+
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+Conditionally_Included
 Conditionally_Included
 
-       ///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
 `,
 
       extraContentWithFences: `
 ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
-  Always_Included
 Always_Included
-   Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
-  Conditionally_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+Conditionally_Included
 
-  Conditionally_Included
-  Conditionally_Included
-  ///: END:ONLY_INCLUDE_IN
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
 Always_Included
-
 Always_Included
-   Always_Included
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-
-  Conditionally_Included
-    Conditionally_Included
-       ///: END:ONLY_INCLUDE_IN
 Always_Included
-   Always_Included
-Always_Included
-
-Always_Included
-   Always_Included
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-
-  Conditionally_Included
-    Conditionally_Included
-       ///: END:ONLY_INCLUDE_IN
-Always_Included
-   Always_Included
-Always_Included
-
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  Conditionally_Included
+
 Conditionally_Included
-
-       ///: END:ONLY_INCLUDE_IN
-
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  Conditionally_Included
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+Conditionally_Included
 Conditionally_Included
 
-       ///: END:ONLY_INCLUDE_IN
-    Always_Included
-      Always_Included
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+Conditionally_Included
+Conditionally_Included
+
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
 Always_Included
 `,
 
       withoutFences: `
-  Always_Included
-Always_Included
-   Always_Included
 Always_Included
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
-
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 `,
 
       extraContentWithoutFences: `
-  Always_Included
-Always_Included
-   Always_Included
 Always_Included
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
-
-    Always_Included
-      Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 Always_Included
 `,
     },
@@ -802,31 +784,27 @@ Always_Included
 ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
-  Always_Included
 Always_Included
-   Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
-  Conditionally_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+Conditionally_Included
 
-  Conditionally_Included
-  Conditionally_Included
-  ///: END:ONLY_INCLUDE_IN
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
-
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 `,
         true,
       ],
@@ -835,41 +813,57 @@ Always_Included
 ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
-  Always_Included
 Always_Included
-   Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
-  Conditionally_Included
-
-  Conditionally_Included
-  Conditionally_Included
-  ///: END:ONLY_INCLUDE_IN
 Always_Included
-
 Always_Included
-   Always_Included
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-
-  Conditionally_Included
-    Conditionally_Included
-       ///: END:ONLY_INCLUDE_IN
-Always_Included
-   Always_Included
-Always_Included
-
-Always_Included
-   Always_Included
-Always_Included
-   Always_Included
-Always_Included
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-  Conditionally_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 
-       ///: END:ONLY_INCLUDE_IN
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+Conditionally_Included
+Conditionally_Included
+
+///: END:ONLY_INCLUDE_IN
+`,
+        true,
+      ],
+      mmi: [
+        `
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 `,
         true,
       ],
@@ -881,33 +875,29 @@ Conditionally_Included
 ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
-  Always_Included
 Always_Included
-   Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
-  Conditionally_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
+Conditionally_Included
 
-  Conditionally_Included
-  Conditionally_Included
-  ///: END:ONLY_INCLUDE_IN
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
 Always_Included
-   Always_Included
 Always_Included
-   Always_Included
 Always_Included
-
-
-    Always_Included
-      Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 Always_Included
 `,
         true,
@@ -917,43 +907,62 @@ Always_Included
 ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 ///: END:ONLY_INCLUDE_IN
-  Always_Included
 Always_Included
-   Always_Included
 Always_Included
-  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
-  Conditionally_Included
-
-  Conditionally_Included
-  Conditionally_Included
-  ///: END:ONLY_INCLUDE_IN
 Always_Included
-
 Always_Included
-   Always_Included
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-
-  Conditionally_Included
-    Conditionally_Included
-       ///: END:ONLY_INCLUDE_IN
-Always_Included
-   Always_Included
-Always_Included
-
-Always_Included
-   Always_Included
-Always_Included
-   Always_Included
-Always_Included
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-  Conditionally_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta,desktop)
 Conditionally_Included
 
-       ///: END:ONLY_INCLUDE_IN
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 
-    Always_Included
-      Always_Included
+Conditionally_Included
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+Conditionally_Included
+Conditionally_Included
+
+///: END:ONLY_INCLUDE_IN
+Always_Included
+Always_Included
+Always_Included
+`,
+        true,
+      ],
+      mmi: [
+        `
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
+Always_Included
 Always_Included
 `,
         true,

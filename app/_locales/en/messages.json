@@ -351,6 +351,10 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
+  "appNameMmi": {
+    "message": "MetaMask Institutional",
+    "description": "The name of the application (MMI)"
+  },
   "approve": {
     "message": "Approve spend limit"
   },
@@ -530,37 +534,8 @@
     "message": "Buy $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Buy $1 with Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "You can easily buy or transfer crypto with your Coinbase account.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Buy $1 with MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay supports popular payment methods, including Visa, Mastercard, Apple / Google / Samsung Pay, and bank transfers in 145+ countries. Tokens deposit into your MetaMask account."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Buy $1 with Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak supports credit & debit cards, Apple Pay, MobiKwik, and bank transfers (depending on location) in 100+ countries. $1 deposits directly into your MetaMask account.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Buy Now"
-  },
-  "buyWithWyre": {
-    "message": "Buy $1 with Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Easy onboarding for purchases up to $ 1000. Fast interactive high limit purchase verification. Supports Debit/Credit Card, Apple Pay, Bank Transfers. Available in 100+ countries. Tokens deposit into your MetaMask Account"
   },
   "bytes": {
     "message": "Bytes"
@@ -754,18 +729,6 @@
   },
   "continue": {
     "message": "Continue"
-  },
-  "continueToCoinbasePay": {
-    "message": "Continue to Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Continue to MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Continue to Transak"
-  },
-  "continueToWyre": {
-    "message": "Continue to Wyre"
   },
   "contract": {
     "message": "Contract"
@@ -989,10 +952,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "depositCrypto": {
-    "message": "Deposit $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Learn more"
   },
@@ -1103,12 +1062,6 @@
   },
   "details": {
     "message": "Details"
-  },
-  "directDepositCrypto": {
-    "message": "Directly deposit $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "If you already have some $1, the quickest way to get $1 in your new wallet by direct deposit."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -1565,13 +1518,6 @@
   },
   "general": {
     "message": "General"
-  },
-  "getEther": {
-    "message": "Get Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Get Ether from a faucet for the $1 network.",
-    "description": "Displays network name for Ether faucet"
   },
   "getWarningsFromOpenSea": {
     "message": "Get warnings from OpenSea whenever you receive a known malicious request."
@@ -2102,10 +2048,6 @@
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Need help? Contact $1",
@@ -4083,9 +4025,6 @@
   "termsOfService": {
     "message": "Terms of service"
   },
-  "testFaucet": {
-    "message": "Test faucet"
-  },
   "testNetworks": {
     "message": "Test networks"
   },
@@ -4457,9 +4396,6 @@
   },
   "view": {
     "message": "View"
-  },
-  "viewAccount": {
-    "message": "View account"
   },
   "viewAllDetails": {
     "message": "View all details"

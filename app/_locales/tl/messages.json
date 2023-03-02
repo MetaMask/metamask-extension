@@ -523,37 +523,8 @@
     "message": "Bumili ng $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Bumili ng $1 gamit ang Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Madali kang makakabili o makakapagtransfer ng crypto gamit ang iyong Coinbase account.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Bumili ng $1 gamit ang MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "Suportado ng MoonPay ang mga kilalang paraan ng pagbabayad, kabilang ang Visa, Mastercard, Apple / Google / Samsung Pay, at mga bank transfer sa higit 145 na bansa. Ang mga token ay madedeposito sa iyong MetaMask account."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Bumili ng $1 gamit ang Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Suportado ng Transak ang mga credit at debit card, Apple Pay, MobiKwik, at mga bank transfer (depende sa lokasyon) sa higit 100 bansa. Ang $1 ay direktang madedeposito sa iyong MetaMask account.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Bilhin Ngayon"
-  },
-  "buyWithWyre": {
-    "message": "Bumili ng $1 gamit ang Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Madaling onboarding para sa mga pagbili hanggang $ 1000. Mabilis na interactive na high limit na pag-verify ng pagbili. Sinusuportahan ang Debit/Credit Card, Apple Pay, Bank Transfers. Available sa 100+ na mga bansa. Deposito ng mga token sa iyong MetaMask Account"
   },
   "bytes": {
     "message": "Bytes"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Magpatuloy"
-  },
-  "continueToCoinbasePay": {
-    "message": "Magpatuloy sa Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Magpatuloy sa MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Magpatuloy sa Transak"
-  },
-  "continueToWyre": {
-    "message": "Magpatuloy sa Wyre"
   },
   "contract": {
     "message": "Kontrata"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Deposito"
   },
-  "depositCrypto": {
-    "message": "Magdeposito ng $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Matuto pa"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Mga Detalye"
-  },
-  "directDepositCrypto": {
-    "message": "Direktang Magdeposito ng $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Kung mayroon ka ng $1, ang pinakamabilis na paraan upang mailagay ang $1 sa iyong bagong wallet ay sa direktang pag-deposit."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Ang “$1” ay naka-disable dahil hindi nito naabot ang minimum na 10% na dagdag mula sa orihinal na singil sa gas.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getEther": {
-    "message": "Kunin ang Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Kunin ang Ether mula sa isang faucet para sa network na $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Bumalik"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Ang native token sa network na ito ay $1. Ito ang token na ginagamit para sa mga gas fee.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Para makipag-ugnayan sa mga desentralisadong applicaiton gamit ang MetaMask, kakailanganin mo ng $1 sa iyong wallet.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Kailangan ng tulong? Makipag-ugnayan sa $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "testFaucet": {
-    "message": "Test Faucet"
-  },
   "testNetworks": {
     "message": "Suriin ang mga network"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Tingnan"
-  },
-  "viewAccount": {
-    "message": "Tingnan ang Account"
   },
   "viewAllDetails": {
     "message": "Tingnan ang lahat ng detalye"

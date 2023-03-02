@@ -64,7 +64,6 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
@@ -759,57 +758,6 @@ export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
-
-export function getIsBuyableTransakChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
-}
-
-export function getIsBuyableTransakToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies?.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonpayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  const _symbol = formatMoonpaySymbol(symbol, chainId);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay?.showOnlyCurrencies?.includes(
-      _symbol,
-    ),
-  );
-}
-
-export function getIsBuyableWyreToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.wyre?.currencies.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonPayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
-}
-
-export function getIsBuyableWyreChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
-}
-export function getIsBuyableCoinbasePayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
-}
-
-export function getIsBuyableCoinbasePayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies?.includes(symbol),
-  );
-}
-
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];

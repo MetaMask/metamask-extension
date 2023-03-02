@@ -122,13 +122,6 @@
   "gasPrice": {
     "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
   },
-  "getEther": {
-    "message": "ईथर प्राप्त करें"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 के लिए एक नल से ईथर प्राप्त करें",
-    "description": "Displays network name for Ether faucet"
-  },
   "here": {
     "message": "यहां",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -318,9 +311,6 @@
   "terms": {
     "message": "उपयोग की शर्तें"
   },
-  "testFaucet": {
-    "message": "टेस्ट नलि"
-  },
   "to": {
     "message": "के लिए"
   },
@@ -354,9 +344,6 @@
   },
   "usedByClients": {
     "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
-  },
-  "viewAccount": {
-    "message": "खाता देखें"
   },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"

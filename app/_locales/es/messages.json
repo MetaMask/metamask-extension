@@ -523,37 +523,8 @@
     "message": "Comprar $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Comprar $1 con Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Puede comprar o transferir criptomonedas fácilmente por medio de su cuenta de Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Comprar $1 con MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay admite métodos de pago populares, incluidos Visa, Mastercard, Apple/Google/Samsung Pay y transferencias bancarias en más de 145 países. Depósito de tokens en su cuenta MetaMask."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Comprar $1 con Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak admite tarjetas de crédito y débito, Apple Pay, MobiKwik y transferencias bancarias (según la ubicación) en más de 100 países. Depósitos de $1 directamente en su cuenta MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Comprar ahora"
-  },
-  "buyWithWyre": {
-    "message": "Comprar $1 con Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Acceso fácil a compras de hasta $1,000. Verificación interactiva rápida de compra de límite alto. Acepta tarjeta de débito/crédito, Apple Pay y transferencias bancarias. Disponible para más de 100 países. Los tokens se depositarán en su cuenta MetaMask"
   },
   "bytes": {
     "message": "Bytes"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Continuar"
-  },
-  "continueToCoinbasePay": {
-    "message": "Continuar a Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Continuar a MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Continuar a Transak"
-  },
-  "continueToWyre": {
-    "message": "Continuar a Wyre"
   },
   "contract": {
     "message": "Contrato"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Depositar"
   },
-  "depositCrypto": {
-    "message": "Deposite $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Más información"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Detalles"
-  },
-  "directDepositCrypto": {
-    "message": "Deposite directamente $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Si ya tiene algo de $1, la forma más rápida de obtener $1 en su nueva billetera mediante depósito directo."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "\"1$\" está desactivado porque no cumple el mínimo de un aumento del 10% respecto a la tarifa de gas original.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "General"
-  },
-  "getEther": {
-    "message": "Obtener ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obtenga Ether de un faucet para la red de $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Volver"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "El token nativo en esta red es de $1. Es el token utilizado para las tarifas de gas.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Para interactuar con aplicaciones descentralizadas usando MetaMask, necesitará $1 en su billetera.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "¿Necesita ayuda? Comuníquese con $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Términos de servicio"
   },
-  "testFaucet": {
-    "message": "Faucet de prueba"
-  },
   "testNetworks": {
     "message": "Redes de prueba"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Ver"
-  },
-  "viewAccount": {
-    "message": "Ver cuenta"
   },
   "viewAllDetails": {
     "message": "Ver todos los detalles"
