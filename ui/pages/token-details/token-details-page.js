@@ -73,7 +73,8 @@ export default function TokenDetailsPage() {
           fontWeight={FONT_WEIGHT.BOLD}
           margin={0}
           marginTop={4}
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodySm} 
+          as="h6"
           color={TextColor.textDefault}
           className="token-details__title"
         >
@@ -91,6 +92,7 @@ export default function TokenDetailsPage() {
             margin={0}
             marginRight={5}
             variant={TextVariant.headingSm}
+            as="h4"
             color={TextColor.textDefault}
             className="token-details__token-value"
           >
@@ -108,6 +110,7 @@ export default function TokenDetailsPage() {
           margin={0}
           marginTop={4}
           variant={TextVariant.bodySm}
+          as="h7"
           color={TextColor.textAlternative}
         >
           {tokenCurrencyBalance || ''}
@@ -116,6 +119,7 @@ export default function TokenDetailsPage() {
           margin={0}
           marginTop={6}
           variant={TextVariant.bodyXs}
+          as="h9"
           color={TextColor.textAlternative}
           fontWeight={FONT_WEIGHT.BOLD}
         >
@@ -124,6 +128,7 @@ export default function TokenDetailsPage() {
         <Box display={DISPLAY.FLEX}>
           <Text
             variant={TextVariant.bodySm}
+            as="h7"
             margin={0}
             marginTop={2}
             color={TextColor.textDefault}
@@ -149,6 +154,7 @@ export default function TokenDetailsPage() {
         </Box>
         <Text
           variant={TextVariant.bodyXs}
+          as="h9"
           margin={0}
           marginTop={4}
           color={TextColor.textAlternative}
@@ -158,6 +164,7 @@ export default function TokenDetailsPage() {
         </Text>
         <Text
           variant={TextVariant.bodySm}
+          as="h7"
           margin={0}
           marginTop={1}
           color={TextColor.textDefault}
@@ -166,6 +173,7 @@ export default function TokenDetailsPage() {
         </Text>
         <Text
           variant={TextVariant.bodyXs}
+          as="h9"
           margin={0}
           marginTop={4}
           color={TextColor.textAlternative}
@@ -175,6 +183,7 @@ export default function TokenDetailsPage() {
         </Text>
         <Text
           variant={TextVariant.bodySm}
+          as="h7"
           margin={1}
           marginTop={0}
           color={TextColor.textDefault}
@@ -187,6 +196,7 @@ export default function TokenDetailsPage() {
           <>
             <Text
               variant={TextVariant.bodyXs}
+              as="h9"
               margin={0}
               marginTop={4}
               color={TextColor.textAlternative}
@@ -196,6 +206,7 @@ export default function TokenDetailsPage() {
             </Text>
             <Text
               variant={TextVariant.bodySm}
+              as="h7"
               margin={0}
               marginTop={1}
               color={TextColor.textDefault}
@@ -215,6 +226,7 @@ export default function TokenDetailsPage() {
         >
           <Text
             variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.primaryDefault}
           >
             {t('hideToken')}
