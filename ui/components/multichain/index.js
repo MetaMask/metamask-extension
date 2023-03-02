@@ -2,3 +2,4 @@ export { AccountListItem } from './account-list-item';
 export { AccountListItemMenu } from './account-list-item-menu';
 export { AccountListMenu } from './account-list-menu';
 export { NewTokenList } from './token-list';
+export { NewImportTokenLink } from './import-token-link';
