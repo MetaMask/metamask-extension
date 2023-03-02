@@ -26,6 +26,8 @@
 
   &__no_background {
     background: var(--color-background-default);
+    width: 20px;
+    height: 20px;
   }
 
   &--disabled {

@@ -73,9 +73,10 @@
 
   &__portfolio {
     position: absolute;
-    padding: 0;
     right: -32px;
-    top: 15px;
+    height: 44.8px;
+    padding: auto 0 auto 0;
+    background: inherit;
   }
 
   &__cached-secondary-balance {
