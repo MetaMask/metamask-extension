@@ -108,8 +108,4 @@ NewTokenList.propTypes = {
    * secondary represents the balance in dollars
    */
   secondary: PropTypes.string,
-  /**
-   * NewTokenList also accepts all props from Box
-   */
-  ...Box.propTypes,
 };

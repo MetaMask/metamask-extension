@@ -27,7 +27,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
-import { NewImportTokenLink, NewTokenList } from '../../multichain';
+import {
+  DetectedTokensBanner,
+  NewImportTokenLink,
+  NewTokenList,
+} from '../../multichain';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
@@ -114,7 +118,17 @@ const AssetList = ({ onClickAsset }) => {
       />
       {detectedTokens.length > 0 &&
         !istokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
+          <>
+            {process.env.MULTICHAIN ? (
+              <DetectedTokensBanner
+                setShowDetectedTokens={setShowDetectedTokens}
+              />
+            ) : (
+              <DetectedTokensLink
+                setShowDetectedTokens={setShowDetectedTokens}
+              />
+            )}
+          </>
         )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <Box justifyContent={JustifyContent.center}>

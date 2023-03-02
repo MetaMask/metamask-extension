@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
 import {
@@ -18,7 +20,7 @@ import {
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
 
-export const NewImportTokenLink = () => {
+export const NewImportTokenLink = ({ className = '' }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const history = useHistory();
@@ -33,7 +35,11 @@ export const NewImportTokenLink = () => {
     isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
   return (
-    <Box className="token-list__buttons" marginRight={4} marginLeft={4}>
+    <Box
+      className={classnames('import-token-link', className)}
+      marginRight={4}
+      marginLeft={4}
+    >
       <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
         <Icon
           name={ICON_NAMES.IMPORT}
@@ -74,7 +80,8 @@ export const NewImportTokenLink = () => {
 
 NewImportTokenLink.propTypes = {
   /**
-   * NewTokenList also accepts all props from Box
+   * An additional className to apply to the TokenList.
    */
-  ...Box.propTypes,
+
+  className: PropTypes.string,
 };
