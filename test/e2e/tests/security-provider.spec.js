@@ -48,7 +48,7 @@ async function setupSecurityProviderMocks(mockServer) {
       return {
         statusCode: 200,
         body: {
-          flagAsDangerous: 1,
+          flagAsDangerous: 2,
           reason: 'This site is not safe for browsing.',
           reason_header: 'This site is not safe',
         },
@@ -62,13 +62,14 @@ async function setupSecurityProviderMocks(mockServer) {
       return {
         statusCode: 401,
         body: {
+          lagAsDangerous: 3,
           message: 'Unauthorized',
         },
       };
     });
 }
 
-describe('Phishing Detection', function () {
+describe('Transaction security provider', function () {
   function mockSecurityProviderDetection(mockServer, scenario) {
     switch (scenario) {
       case 'notMalicious':
@@ -111,6 +112,10 @@ describe('Phishing Detection', function () {
         throw new Error(`Unknown scenario: ${scenario}`);
     }
   }
+  let windowHandles;
+  let extension;
+  let popup;
+  let testApp;
   const ganacheOptions = {
     accounts: [
       {
@@ -140,11 +145,39 @@ describe('Phishing Detection', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.openNewPage('http://127.0.0.1:8080');
-        await driver.clickElement({
-          text: 'continue to the site.',
-        });
-        const warningHeader = await driver.findElement('h2');
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        windowHandles = await driver.getAllWindowHandles();
+        extension = windowHandles[0];
+
+        // Lock Account
+        await driver.switchToWindow(extension);
+        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement({ text: 'Lock', tag: 'button' });
+
+        testApp = windowHandles[1];
+        await driver.switchToWindow(testApp);
+        // Connect to Dapp1
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        windowHandles = await driver.getAllWindowHandles();
+
+        popup = await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        await driver.switchToWindow(popup);
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Connect', tag: 'button' });
+
+        await driver.switchToWindow(testApp);
+        await driver.clickElement('#personalSign');
+
+        await driver.switchToWindow(popup);
+
+        const warningHeader = await driver.findElement('h5');
         assert.equal(await warningHeader.getText(), 'This could be a scam');
       },
     );
