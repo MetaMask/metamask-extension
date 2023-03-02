@@ -237,17 +237,28 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run:
-          name: Build beta prod
-          command: |
-            .circleci/scripts/trigger-beta-build.sh
-      - run:
-          name: Move beta zips to 'builds-beta' to avoid conflict with production build
-          command: mv ./builds ./builds-beta
-      - persist_to_workspace:
-          root: .
-          paths:
-            - builds-beta
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: Build beta prod
+                command: |
+                  .circleci/scripts/trigger-beta-build.sh
+            - run:
+                name: Move beta build to 'dist-beta' to avoid conflict with production build
+                command: mv ./dist ./dist-beta
+            - run:
+                name: Move beta zips to 'builds-beta' to avoid conflict with production build
+                command: mv ./builds ./builds-beta
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - dist-beta
+                  - builds-beta
 
   create_release_pull_request:
     executor: node-browsers
