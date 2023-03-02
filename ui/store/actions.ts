@@ -1950,12 +1950,15 @@ export function showInteractiveReplacementTokenBanner({
   url,
   oldRefreshToken,
 }: {
-  url: string,
-  oldRefreshToken: string,
+  url: string;
+  oldRefreshToken: string;
 }) {
   return async () => {
     try {
-      await submitRequestToBackground('showInteractiveReplacementTokenBanner', [url, oldRefreshToken]);
+      await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
+        url,
+        oldRefreshToken,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4679,6 +4682,7 @@ export const getMMIActions = () =>
     hideLoadingIndication,
     forceUpdateMetamaskState,
     showModal,
+
     callBackgroundMethod,
   });
 ///: END:ONLY_INCLUDE_IN

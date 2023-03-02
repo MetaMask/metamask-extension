@@ -277,6 +277,17 @@ module.exports = {
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
         'shared/lib/error-utils.test.js',
+
+        'ui/components/app/mmi/**/*.js',
+        'ui/components/app/mmi/modals/**/**/*.js',
+        'ui/components/ui/mmi/**/**/*.js',
+        'ui/components/ui/mmi/icon/*.js',
+        'ui/components/ui/mmi/icon/**/*.js',
+        'ui/ducks/mmi/institutional/*.js',
+        'ui/pages/mmi/**/*.component.js',
+        'ui/pages/create-account/mmi/connect-custody/**/*.js',
+        'ui/pages/mmi/**/*.js',
+        'ui/pages/swaps/mmi/**/*.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       parserOptions: {

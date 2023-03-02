@@ -12,6 +12,11 @@ import {
   ///: END:ONLY_INCLUDE_IN
   isEqual,
 } from 'lodash';
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { getCustodyAccountSupportedChains } from '@codefi/mmi-sdk';
+///: END:ONLY_INCLUDE_IN
+
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -622,6 +627,25 @@ export function getCustomNonceValue(state) {
 export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+export function getIsCustodianSupportedChain(state) {
+  const selectedIdentity = getSelectedIdentity(state);
+  const accountType = getAccountType(state);
+  const provider = getProvider(state);
+
+  const supportedChains =
+    accountType === 'custody'
+      ? getCustodyAccountSupportedChains(state, selectedIdentity.address)
+      : null;
+
+  return supportedChains?.supportedChains
+    ? supportedChains.supportedChains.includes(
+        Number(provider.chainId).toString(),
+      )
+    : true;
+}
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 /**

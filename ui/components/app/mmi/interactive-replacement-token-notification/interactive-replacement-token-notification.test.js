@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
-import { shallowWithContext } from '../../../../test/lib/render-helpers';
+import { shallowWithContext } from '../../../../../test/lib/render-helpers';
 import InteractiveReplacementTokenNotification from './interactive-replacement-token-notification.component';
 
 jest.mock('../../../../shared/modules/hash.utils', () => ({

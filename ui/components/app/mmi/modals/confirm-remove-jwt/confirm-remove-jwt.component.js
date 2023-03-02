@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../../modal';
-import CustodyAccountList from '../../../../../pages/create-account/connect-custody/account-list';
+import CustodyAccountList from '../../../../../pages/create-account/mmi/connect-custody/account-list';
 
 export default class ConfirmRemoveJWT extends Component {
   static propTypes = {

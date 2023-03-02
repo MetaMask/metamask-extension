@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 export async function sha256(str) {
   const buf = await crypto.subtle.digest(
     'SHA-256',

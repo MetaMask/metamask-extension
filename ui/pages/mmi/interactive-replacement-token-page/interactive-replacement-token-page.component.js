@@ -199,7 +199,11 @@ export default class InteractiveReplacementTokenPage extends Component {
                   <span className="interactive-replacement-token-page__accounts__item__address">
                     <a
                       className="interactive-replacement-token-page__accounts__item__address-link"
-                      href={`${SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET]}address/${account.address}`}
+                      href={`${
+                        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[
+                          CHAIN_IDS.MAINNET
+                        ]
+                      }address/${account.address}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

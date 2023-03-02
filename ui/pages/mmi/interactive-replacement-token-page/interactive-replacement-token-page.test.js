@@ -1,8 +1,8 @@
 import React from 'react';
 import sinon from 'sinon';
 import { mount } from 'enzyme';
-import { MAINNET_DEFAULT_BLOCK_EXPLORER_URL } from '../../../shared/constants/swaps';
-import { shortenAddress } from '../../helpers/utils/util';
+import { MAINNET_DEFAULT_BLOCK_EXPLORER_URL } from '../../../../shared/constants/swaps';
+import { shortenAddress } from '../../../helpers/utils/util';
 import InteractiveReplacementTokenPage from './interactive-replacement-token-page.component';
 
 describe('Interactive Replacement Token Page', function () {

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import { mount } from 'enzyme';
-import Modal from '../../modal';
+import Modal from '../../../modal';
 import InteractiveReplacementTokenModal from './interactive-replacement-token-modal.container';
 
 describe('Interactive Replacement Token Modal', function () {

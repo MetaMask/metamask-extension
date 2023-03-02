@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { shallowWithContext } from '../../../../test/lib/render-helpers';
+import { shallowWithContext } from '../../../../../test/lib/render-helpers';
 import WrongNetworkNotification from './wrong-network-notification.component';
 
 jest.mock('../../../../shared/modules/hash.utils', () => ({

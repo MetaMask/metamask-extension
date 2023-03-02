@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import {
   renderWithProvider,
   setBackgroundConnection,
-} from '../../../../test/jest';
+} from '../../../../../test/jest';
 import ComplianceRow from '.';
 
 const middleware = [thunk];

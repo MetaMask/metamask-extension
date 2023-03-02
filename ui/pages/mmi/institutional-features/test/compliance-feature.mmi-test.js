@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
-import { mountWithRouter } from '../../../../test/lib/render-helpers';
+import { mountWithRouter } from '../../../../../test/lib/render-helpers';
 import ComplianceFeaturePage from '../compliance-feature-page.component';
 
 const mockedDeleteComplianceAuthData = jest
