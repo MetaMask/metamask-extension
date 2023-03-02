@@ -64,6 +64,7 @@ import {
   DEFAULT_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
+  SWAPS_NOTIFICATION_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   ERROR_FETCHING_QUOTES,
@@ -93,7 +94,11 @@ import {
   ICON_SIZES,
 } from '../../components/component-library';
 import Box from '../../components/ui/box';
-import { DISPLAY, JustifyContent } from '../../helpers/constants/design-system';
+import {
+  DISPLAY,
+  JustifyContent,
+  IconColor,
+} from '../../helpers/constants/design-system';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -104,7 +109,8 @@ import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import BuildQuote from './build-quote';
-import PrepareSwap from './prepare-swap';
+import PrepareSwapPage from './prepare-swap-page';
+import NotificationPage from './notification-page';
 import ViewQuote from './view-quote';
 
 export default function Swap() {
@@ -121,6 +127,7 @@ export default function Swap() {
   const isSmartTransactionStatusRoute =
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
+  const isPrepareSwapRoute = pathname === PREPARE_SWAP_ROUTE;
 
   const [currentStxErrorTracked, setCurrentStxErrorTracked] = useState(false);
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -401,6 +408,7 @@ export default function Swap() {
                 <Icon
                   name={ICON_NAMES.ARROW_2_LEFT}
                   size={ICON_SIZES.LG}
+                  color={IconColor.iconAlternative}
                   onClick={async () => {
                     clearTemporaryTokenRef.current();
                     dispatch(clearSwapsState());
@@ -429,7 +437,7 @@ export default function Swap() {
                 t('cancel')}
             </div>
           )}
-          {swapsRedesignEnabled && (
+          {swapsRedesignEnabled && isPrepareSwapRoute && (
             <Box
               display={DISPLAY.FLEX}
               justifyContent={JustifyContent.center}
@@ -438,6 +446,7 @@ export default function Swap() {
               <Icon
                 name={ICON_NAMES.SETTING}
                 size={ICON_SIZES.LG}
+                color={IconColor.iconAlternative}
                 onClick={() => {
                   dispatch(setTransactionSettingsOpened(true));
                 }}
@@ -495,7 +504,7 @@ export default function Swap() {
                 }
 
                 return (
-                  <PrepareSwap
+                  <PrepareSwapPage
                     ethBalance={ethBalance}
                     selectedAccountAddress={selectedAccountAddress}
                     shuffledTokensList={shuffledTokensList}
@@ -545,6 +554,13 @@ export default function Swap() {
                   );
                 }
                 return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
+              }}
+            />
+            <Route
+              path={SWAPS_NOTIFICATION_ROUTE}
+              exact
+              render={() => {
+                return <NotificationPage notificationKey={swapsErrorKey} />;
               }}
             />
             <FeatureToggledRoute

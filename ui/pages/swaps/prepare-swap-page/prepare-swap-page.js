@@ -101,6 +101,7 @@ import {
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
+  QUOTES_EXPIRED_ERROR,
 } from '../../../../shared/constants/swaps';
 
 import {
@@ -132,6 +133,7 @@ import {
 import { BannerAlert } from '../../../components/component-library/banner-alert';
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token';
+import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import SwapsBannerAlert from './swaps-banner-alert';
 import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
@@ -565,8 +567,8 @@ export default function PrepareSwap({
   const BlockExplorerLink = () => {
     return (
       <a
-        className="prepare-swap__token-etherscan-link"
-        key="prepare-swap-etherscan-link"
+        className="prepare-swap-page__token-etherscan-link"
+        key="prepare-swap-page-etherscan-link"
         onClick={() => {
           /* istanbul ignore next */
           trackEvent({
@@ -687,9 +689,15 @@ export default function PrepareSwap({
 
   const tokenVerifiedOn1Source = occurrences === 1;
 
+  useEffect(() => {
+    if (swapsErrorKey === QUOTES_EXPIRED_ERROR) {
+      history.push(SWAPS_NOTIFICATION_ROUTE);
+    }
+  }, [swapsErrorKey, history]);
+
   return (
-    <div className="prepare-swap">
-      <div className="prepare-swap__content">
+    <div className="prepare-swap-page">
+      <div className="prepare-swap-page__content">
         {isSwapToOpen && (
           <Popover
             title={t('swapSwapTo')}
@@ -832,7 +840,7 @@ export default function PrepareSwap({
             </Box>
           </Popover>
         )}
-        <div className="prepare-swap__swap-from-content">
+        <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
@@ -844,7 +852,7 @@ export default function PrepareSwap({
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <TextField
-                className="prepare-swap__from-token-amount"
+                className="prepare-swap-page__from-token-amount"
                 placeholder="0"
                 onChange={onTextFieldChange}
                 value={fromTokenInputValue}
@@ -857,12 +865,12 @@ export default function PrepareSwap({
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.stretch}
           >
-            <div className="prepare-swap__balance-message">
+            <div className="prepare-swap-page__balance-message">
               {fromTokenSymbol && swapYourTokenBalance}
               {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
                 <div
-                  className="prepare-swap__max-button"
-                  data-testid="prepare-swap__max-button"
+                  className="prepare-swap-page__max-button"
+                  data-testid="prepare-swap-page__max-button"
                   onClick={() =>
                     onInputChange(fromTokenBalance || '0', fromTokenBalance)
                   }
@@ -924,7 +932,7 @@ export default function PrepareSwap({
             justifyContent={JustifyContent.center}
             height={0}
           >
-            <div className="prepare-swap__switch-tokens">
+            <div className="prepare-swap-page__switch-tokens">
               <Icon
                 name={ICON_NAMES.ARROW_2_DOWN}
                 size={ICON_SIZES.LG}
@@ -938,7 +946,7 @@ export default function PrepareSwap({
             </div>
           </Box>
         </div>
-        <div className="prepare-swap__swap-to-content">
+        <div className="prepare-swap-page__swap-to-content">
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}

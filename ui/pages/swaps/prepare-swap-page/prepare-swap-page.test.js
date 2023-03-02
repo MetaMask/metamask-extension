@@ -103,7 +103,7 @@ describe.skip('PrepareSwap', () => {
       store,
     );
     expect(getByText('Swap from')).toBeInTheDocument();
-    fireEvent.click(getByTestId('prepare-swap__swap-arrows'));
+    fireEvent.click(getByTestId('prepare-swap-page__swap-arrows'));
     expect(setSwapsFromToken).toHaveBeenCalledWith(mockStore.swaps.toToken);
     expect(setSwapToToken).toHaveBeenCalled();
   });

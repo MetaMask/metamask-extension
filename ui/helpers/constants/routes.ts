@@ -48,7 +48,8 @@ const NOTIFICATIONS_ROUTE = '/notifications';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 const SWAPS_ROUTE = '/swaps';
-const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap';
+const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
+const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
 const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
 const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
 const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
@@ -166,6 +167,7 @@ const PATH_NAME_MAP = {
     'Encryption Public Key Request Page',
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [PREPARE_SWAP_ROUTE]: 'Prepare Swap Page',
+  [SWAPS_NOTIFICATION_ROUTE]: 'Swaps Notification Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
   [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
@@ -237,6 +239,7 @@ export {
   PATH_NAME_MAP,
   SWAPS_ROUTE,
   PREPARE_SWAP_ROUTE,
+  SWAPS_NOTIFICATION_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,

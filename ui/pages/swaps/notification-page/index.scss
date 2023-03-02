@@ -1,0 +1,8 @@
+.notification-page {
+  display: flex;
+  flex-flow: column;
+
+  &__warning-icon {
+    font-size: 54px;
+  }
+}

@@ -79,8 +79,8 @@ import {
   ASSET_ROUTE,
   BUILD_QUOTE_ROUTE,
   DEFAULT_ROUTE,
-  SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
+  SWAPS_NOTIFICATION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
@@ -92,7 +92,6 @@ import {
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
-import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
@@ -544,7 +543,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
       dispatch(safeRefetchQuotes());
     } else if (timeSinceLastFetched > swapsQuoteRefreshTime) {
       dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
+      history.push(SWAPS_NOTIFICATION_ROUTE);
     }
   }, [
     quotesLastFetched,

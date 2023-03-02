@@ -1,12 +1,12 @@
 import React from 'react';
 import { shuffle } from 'lodash';
 import testData from '../../../../.storybook/test-data';
-import BuildQuote from './prepare-swap';
+import PrepareSwapPage from './prepare-swap-page';
 
 const tokenValuesArr = shuffle(testData.metamask.tokenList);
 
 export default {
-  title: 'Pages/Swaps/BuildQuote',
+  title: 'Pages/Swaps/PrepareSwapPage',
   id: __filename,
   argTypes: {
     ethBalance: {
@@ -27,7 +27,7 @@ export default {
 export const DefaultStory = (args) => {
   return (
     <>
-      <BuildQuote {...args} />
+      <PrepareSwapPage {...args} />
     </>
   );
 };

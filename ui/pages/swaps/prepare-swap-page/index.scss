@@ -183,7 +183,7 @@
   }
 }
 
-.prepare-swap {
+.prepare-swap-page {
   display: flex;
   flex-flow: column;
   // align-items: center;
@@ -288,7 +288,7 @@
         color: var(--color-text-default);
       }
 
-      .prepare-swap__form-error:first-of-type {
+      .prepare-swap-page__form-error:first-of-type {
         font-weight: bold;
         color: var(--color-error-default);
       }
