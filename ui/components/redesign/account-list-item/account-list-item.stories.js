@@ -15,6 +15,8 @@ const ChaosIdentity = {
   tokenBalance: '3,299.09 ETH',
 };
 
+const noop = () => {};
+
 export default {
   title: 'Components/Redesign/AccountListItem',
   component: AccountListItem,
@@ -22,37 +24,38 @@ export default {
 
 export const DefaultStory = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} />
+    <AccountListItem identity={SampleIdentity} onClick={noop} />
   </div>
 );
 
 export const SelectedItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} selected />
+    <AccountListItem identity={SampleIdentity} onClick={noop} selected />
   </div>
 );
 
 export const HardwareItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} isHardware />
+    <AccountListItem identity={SampleIdentity} onClick={noop} isHardware />
   </div>
 );
 
 export const SelectedHardwareItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} isHardware selected />
+    <AccountListItem identity={SampleIdentity} onClick={noop} isHardware selected />
   </div>
 );
 
 export const ChaosDataItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={ChaosIdentity} selected />
+    <AccountListItem identity={ChaosIdentity} onClick={noop} selected />
   </div>
 );
 
 export const ConnectedSiteItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
     <AccountListItem
+     onClick={noop}
       identity={SampleIdentity}
       connectedAvatar="https://uniswap.org/favicon.ico"
     />
@@ -62,6 +65,7 @@ export const ConnectedSiteItem = () => (
 export const ConnectedSiteChaosItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
     <AccountListItem
+     onClick={noop}
       identity={ChaosIdentity}
       connectedAvatar="https://uniswap.org/favicon.ico"
     />

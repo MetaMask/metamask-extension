@@ -1,21 +1,18 @@
 /*
-  TODO:
-
-    1.  Add third content row for "Hardware" pill / label
-
   NEXT COMPONENTS:
 
     1.  AccountListItemOptions
     2.  AccountList
     3.  AccountListPopover
-
 */
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import { AccountListItemMenu } from '../account-list-item-menu/account-list-item-menu';
 
 import Box from '../../ui/box/box';
 import {
@@ -46,6 +43,8 @@ export const AccountListItem = ({
   connectedAvatar,
 }) => {
   const t = useI18nContext();
+  const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const ref = useRef(false);
 
   return (
     <Box
@@ -120,12 +119,18 @@ export const AccountListItem = ({
       </Box>
       <ButtonIcon
         ariaLabel={t('options')}
+        ref={ref}
         iconName={ICON_NAMES.MORE_VERTICAL}
         size={ICON_SIZES.SM}
-        onClick={() => {
-          console.log('Open three-dot menu');
-        }}
+        onClick={() => setAccountOptionsMenuOpen(true)}
       />
+      {accountOptionsMenuOpen ? (
+        <AccountListItemMenu
+          anchorElement={ref.current}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+        />
+      ) : null}
     </Box>
   );
 };
