@@ -20,9 +20,10 @@ import { PopoverPosition } from '.';
 export const Popover = forwardRef(
   (
     {
+      title,
       children,
       position = PopoverPosition.auto,
-      hasArrow,
+      hasArrow = false,
       matchWidth,
       preventOverflow = false,
       flip = false,
@@ -120,7 +121,7 @@ export const Popover = forwardRef(
                   className="popover__header-title"
                   textAlign={TEXT_ALIGN.CENTER}
                 >
-                  Title goes here right here
+                  {title}
                 </Text>
 
                 {onClose && (

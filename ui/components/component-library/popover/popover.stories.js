@@ -6,6 +6,7 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { TextField } from '..';
 import README from './README.mdx';
 import { Popover, PopoverPosition } from '.';
 
@@ -70,8 +71,8 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [referenceElement, setReferenceElement] = useState(null);
-  const [isOpen, setIsOpen] = useState(true);
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -120,21 +121,23 @@ export const DefaultStory = (args) => {
     >
       <Box
         ref={setButtonRef}
-        onClick={handleClick}
+        // onClick={handleClick}
         // onMouseEnter={handleMouseEnter}
         // onMouseLeave={handleMouseLeave}
-        // onFocus={handleFocus}
-        // onBlur={handleClose}
-        backgroundColor={Color.primaryDefault}
-        style={{ width: 200, height: 200 }}
-      >
-        Reference Item
-      </Box>
+        onFocus={handleFocus}
+        onBlur={handleClose}
+        // backgroundColor={Color.primaryDefault}
+        // style={{ width: 200, height: 200 }}
+        as="input"
+        type="text"
+        placeholder="write a description here about a popover"
+      ></Box>
       <Popover
-        position={PopoverPosition.auto}
+        position={PopoverPosition.bottomStart}
         referenceElement={referenceElement}
         isOpen={isOpen}
-        hasArrow
+        // hasArrow
+        matchWidth
         onClose={handleClose}
         onBack={() => console.log('back')}
         {...args}
