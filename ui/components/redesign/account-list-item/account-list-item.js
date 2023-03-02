@@ -25,6 +25,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
   AvatarFavicon,
+  Tag,
 } from '../../component-library';
 import {
   Color,
@@ -109,7 +110,13 @@ export const AccountListItem = ({
             {identity.tokenBalance}
           </Text>
         </Box>
-        {isHardware ? <Box></Box> : null}
+        {isHardware ? (
+          <Tag
+            label={t('hardware')}
+            labelProps={{ color: Color.textAlternative }}
+            variant={TextVariant.bodyXs}
+          />
+        ) : null}
       </Box>
       <ButtonIcon
         ariaLabel={t('options')}

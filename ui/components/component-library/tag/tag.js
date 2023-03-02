@@ -13,7 +13,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-export const Tag = ({ label, className, labelProps, ...props }) => {
+export const Tag = ({
+  label,
+  className,
+  labelProps,
+  variant = TextVariant.bodySm,
+  ...props
+}) => {
   return (
     <Box
       className={classnames('mm-tag', className)}
@@ -28,7 +34,7 @@ export const Tag = ({ label, className, labelProps, ...props }) => {
       display={DISPLAY.INLINE_BLOCK}
       {...props}
     >
-      <Text variant={TextVariant.bodySm} {...labelProps}>
+      <Text variant={variant} {...labelProps}>
         {label}
       </Text>
     </Box>
@@ -48,6 +54,10 @@ Tag.propTypes = {
    * Additional classNames to be added to the Tag component
    */
   className: PropTypes.string,
+  /**
+   * The size of the text in the Text component
+   */
+  variant: PropTypes.string,
   /**
    * Tag also accepts all props from Box
    */

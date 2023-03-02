@@ -32,6 +32,12 @@ export const SelectedItem = () => (
   </div>
 );
 
+export const HardwareItem = () => (
+  <div style={{ width: '328px', border: '1px solid #eee' }}>
+    <AccountListItem identity={SampleIdentity} isHardware />
+  </div>
+);
+
 export const ChaosDataItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
     <AccountListItem identity={ChaosIdentity} selected />
