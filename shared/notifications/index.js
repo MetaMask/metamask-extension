@@ -46,6 +46,18 @@ export const UI_NOTIFICATIONS = {
       width: '80%',
     },
   },
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  11: {
+    id: 11,
+    date: '2022-08-28',
+    image: {
+      src: 'images/portfolio.svg',
+    },
+    hideDate: true,
+    descriptionInBullets: true,
+  },
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
   10: {
     id: 10,
     date: '2022-09-15',
@@ -54,6 +66,7 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
+  // eslint-disable-next-line no-dupe-keys
   11: {
     id: 11,
     date: '2022-09-15',
@@ -82,6 +95,7 @@ export const UI_NOTIFICATIONS = {
     id: 17,
     date: null,
   },
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -168,6 +182,27 @@ export const getTranslatedUINotifications = (t, locale) => {
         new Date(UI_NOTIFICATIONS[9].date),
       ),
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    11: {
+      ...UI_NOTIFICATIONS[11],
+      title: 'Portfolio dashboard',
+      description: [
+        'Portfolio snapshots',
+        'Filtering by account and network',
+        'Sector and protocol allocation',
+        'Improved navigation',
+      ],
+      date: new Intl.DateTimeFormat(formattedLocale).format(
+        new Date(UI_NOTIFICATIONS[11].date),
+      ),
+      customButton: {
+        name: 'mmi-portfolio',
+        text: t('viewPortfolioDashboard'),
+        logo: true,
+      },
+    },
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
     10: {
       ...UI_NOTIFICATIONS[10],
       title: t('notifications10Title'),
@@ -181,6 +216,7 @@ export const getTranslatedUINotifications = (t, locale) => {
         new Date(UI_NOTIFICATIONS[10].date),
       ),
     },
+    // eslint-disable-next-line no-dupe-keys
     11: {
       ...UI_NOTIFICATIONS[11],
       title: t('notifications11Title'),
@@ -239,5 +275,6 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
+    ///: END:ONLY_INCLUDE_IN
   };
 };
