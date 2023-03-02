@@ -208,17 +208,6 @@ export default class PersonalMessageManager extends EventEmitter {
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
    */
   approveMessage(msgParams) {
-    const msg = this.getMsg(msgParams.metamaskId);
-
-    this.metricsEvent({
-      event: 'Sign Request',
-      category: EVENT.CATEGORIES.TRANSACTIONS,
-      properties: {
-        action: 'Sign Request Approve',
-        type: msg.type,
-      },
-    });
-
     this.setMsgStatusApproved(msgParams.metamaskId);
     return this.prepMsgForSigning(msgParams);
   }

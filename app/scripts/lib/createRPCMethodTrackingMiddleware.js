@@ -123,35 +123,6 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method } = req;
 
-    let msgParams;
-
-    if (req.params) {
-      const data = req.params[0];
-      const from = req.params[1];
-      const paramsExamplePassword = req.params[2];
-
-      const { isSIWEMessage } = detectSIWE({ data });
-
-      msgParams = {
-        ...paramsExamplePassword,
-        from,
-        data,
-        origin,
-        siwe: isSIWEMessage,
-      };
-    }
-
-    const msgData = {
-      msgParams,
-      status: 'unapproved',
-      type: req.method,
-    };
-
-    const securityProviderResponse = await securityProviderRequest(
-      msgData,
-      req.method,
-    );
-
     // Determine what type of rate limit to apply based on method
     const rateLimitType =
       RATE_LIMIT_MAP[method] ?? RATE_LIMIT_TYPES.RATE_LIMITED;
@@ -193,16 +164,43 @@ export default function createRPCMethodTrackingMiddleware({
 
       const properties = {};
 
+      let msgParams;
+
       if (event === EVENT_NAMES.SIGNATURE_REQUESTED) {
         properties.signature_type = method;
+
+        const data = req?.params?.[0];
+        const from = req?.params?.[1];
+        const paramsExamplePassword = req?.params?.[2];
+
+        const { isSIWEMessage } = detectSIWE({ data });
+
+        msgParams = {
+          ...paramsExamplePassword,
+          from,
+          data,
+          origin,
+          siwe: isSIWEMessage,
+        };
+
+        const msgData = {
+          msgParams,
+          status: 'unapproved',
+          type: req.method,
+        };
+
+        const securityProviderResponse = await securityProviderRequest(
+          msgData,
+          req.method,
+        );
+
+        properties.ui_customizations =
+          securityProviderResponse?.flagAsDangerous === 1
+            ? ['flagged_as_malicious']
+            : [];
       } else {
         properties.method = method;
       }
-
-      properties.ui_customizations =
-        securityProviderResponse?.flagAsDangerous === 1
-          ? ['flagged_as_malicious']
-          : [];
 
       if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const data = req?.params?.[0];
