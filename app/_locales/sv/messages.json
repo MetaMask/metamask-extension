@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Din webbläsare stöds inte..."
   },
-  "buyWithWyre": {
-    "message": "Köp $1 med Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre låter dig använda ett kreditkort för att sätta in $1 direkt på ditt MetaMask-konto."
-  },
   "cancel": {
     "message": "Avbryt"
   },
@@ -165,9 +159,6 @@
   },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
-  },
-  "continueToWyre": {
-    "message": "Fortsätt till Wyre"
   },
   "contractDeployment": {
     "message": "Kontraktplacering"
@@ -316,13 +307,6 @@
   },
   "general": {
     "message": "Allmänt"
-  },
-  "getEther": {
-    "message": "Skaffa Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Få Ether från en kran för $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli testnätverk"
@@ -762,9 +746,6 @@
   "terms": {
     "message": "Användarvillkor"
   },
-  "testFaucet": {
-    "message": "Test-faucet"
-  },
   "tips": {
     "message": "Donationer"
   },
@@ -876,9 +857,6 @@
   },
   "userName": {
     "message": "Användarnamn"
-  },
-  "viewAccount": {
-    "message": "Visa konto"
   },
   "viewContact": {
     "message": "Visa kontakt"

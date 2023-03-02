@@ -14,7 +14,6 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import getBuyUrl from '../../app/scripts/lib/buy-url';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -76,12 +75,7 @@ import {
   TransactionMetaMetricsEvent,
   TransactionType,
 } from '../../shared/constants/transaction';
-import {
-  BUYABLE_CHAINS_MAP,
-  CurrencySymbol,
-  NetworkType,
-  RPCDefinition,
-} from '../../shared/constants/network';
+import { NetworkType, RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
@@ -2898,23 +2892,6 @@ export function showSendTokenPage(): Action {
   };
 }
 
-export function buy(opts: {
-  chainId: keyof typeof BUYABLE_CHAINS_MAP;
-  address?: string;
-  symbol?: CurrencySymbol;
-  service?: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
-    const url = await getBuyUrl(opts);
-    if (url) {
-      global.platform.openTab({ url });
-      dispatch({
-        type: actionConstants.BUY,
-      });
-    }
-  };
-}
-
 // TODO: Lift to shared folder when it makes sense
 interface TemporaryFeatureFlagDef {
   [feature: string]: boolean;
@@ -4496,11 +4473,12 @@ export function hideBetaHeader() {
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
+  return async (dispatch) => {
     try {
       await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
         transactionSecurityCheckEnabled,
       ]);
+      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4509,6 +4487,19 @@ export function setTransactionSecurityCheckEnabled(
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
+}
+
+export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    await submitRequestToBackground(
+      'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
+    );
+  };
 }
 
 // QR Hardware Wallets

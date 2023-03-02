@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Selaintasi ei tueta..."
   },
-  "buyWithWyre": {
-    "message": "Osta $1 :ta Wyrella"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre antaa sinun käyttää luottokorttia, jotta voit tallettaa $1 :ta suoraan MetaMask-tilillesi."
-  },
   "bytes": {
     "message": "Tavua"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
-  },
-  "continueToWyre": {
-    "message": "Jatka Wyreen"
   },
   "contractDeployment": {
     "message": "Sopimuksen käyttö"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "Yleistä"
-  },
-  "getEther": {
-    "message": "Hanki Etheriä"
-  },
-  "getEtherFromFaucet": {
-    "message": "Hanki etheriä faucetista kohteelle $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli-testiverkko"
@@ -778,9 +762,6 @@
   "terms": {
     "message": "Käyttöehdot"
   },
-  "testFaucet": {
-    "message": "Koe-faucet"
-  },
   "tips": {
     "message": "Tipit"
   },
@@ -898,9 +879,6 @@
   },
   "userName": {
     "message": "Käyttäjätunnus"
-  },
-  "viewAccount": {
-    "message": "Näytä tili"
   },
   "viewContact": {
     "message": "Näytä yhteyshenkilö"
