@@ -41,7 +41,7 @@ function transformState(state: Record<string, unknown>) {
   ) {
     return state;
   }
-  const PermissionController = state?.PermissionController || {};
+  const { PermissionController } = state;
 
   const { subjects } = PermissionController;
 
@@ -73,7 +73,7 @@ function transformState(state: Record<string, unknown>) {
 
       // check if the permission is namespaced
       if (permissionName.startsWith(snapPrefix)) {
-        // If we haven't already created a `wallet_snap` key
+        // We create a wallet_snap key if we already don't have one
         if (!hasProperty(updatedPermissions, WALLET_SNAP_PERMISSION_KEY)) {
           updatedPermissions[WALLET_SNAP_PERMISSION_KEY] = {
             caveats: [{ type: SnapCaveatType.SnapIds, value: {} }],
@@ -93,7 +93,7 @@ function transformState(state: Record<string, unknown>) {
         // Adding the snap name to the wallet_snap permission's caveat value
         const snapId = permissionName.slice(snapPrefix.length);
         const caveat =
-          updatedPermissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0];
+          updatedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0];
         caveat.value[snapId] = {};
 
         if (
