@@ -4632,7 +4632,8 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
-      this.permissionController.updateCaveat(
+      this.controllerMessenger.call(
+        'PermissionController:updateCaveat',
         origin,
         target,
         caveatType,

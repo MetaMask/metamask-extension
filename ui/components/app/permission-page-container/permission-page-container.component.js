@@ -94,22 +94,18 @@ export default class PermissionPageContainer extends Component {
       return permission;
     }
 
-    function reconstructCaveats() {
-      const requestedSnapKeys = requestedSnaps
-        ? Object.keys(requestedSnaps)
-        : [];
-      const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
-      return requestedSnapKeys.reduce((acc, snapId) => {
-        if (!currentSnapKeys.includes(snapId)) {
-          acc[snapId] = {};
-        }
-        return acc;
-      }, {});
-    }
+    const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
+    const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
+    const dedupedCaveats = requestedSnapKeys.reduce((acc, snapId) => {
+      if (!currentSnapKeys.includes(snapId)) {
+        acc[snapId] = {};
+      }
+      return acc;
+    }, {});
 
     return {
       ...permission,
-      caveats: [{ type: SnapCaveatType.SnapIds, value: reconstructCaveats() }],
+      caveats: [{ type: SnapCaveatType.SnapIds, value: dedupedCaveats }],
     };
   }
   ///: END:ONLY_INCLUDE_IN
