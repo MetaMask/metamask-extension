@@ -653,6 +653,8 @@ export default function PrepareSwap({
     mainButtonText = t('swapFetchingQuotes');
   } else if (!selectedToToken?.address || !fromTokenAddress) {
     mainButtonText = t('swapSelectToken');
+  } else if (swapsErrorKey && swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR) {
+    mainButtonText = t('swap');
   } else {
     mainButtonText = t('swapEnterAmount');
   }

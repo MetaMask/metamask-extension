@@ -111,7 +111,7 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
               alignItems: AlignItems.flexStart,
             }}
             as="a"
-            href="https://metamask.io/swaps/"
+            href="https://support.metamask.io/hc/en-us/articles/4405093054363-User-Guide-Swaps"
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -21,8 +21,6 @@ import { getTranslatedStxErrorMessage } from '../swaps.util';
 import {
   Slippage,
   SLIPPAGE_OVER_LIMIT_ERROR,
-  SLIPPAGE_VERY_HIGH_ERROR,
-  SLIPPAGE_TOO_LOW_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
