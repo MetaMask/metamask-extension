@@ -63,6 +63,7 @@ export const ConnectedSiteItem = () => (
       onClick={noop}
       identity={SampleIdentity}
       connectedAvatar="https://uniswap.org/favicon.ico"
+      connectedAvatarName="Uniswap"
     />
   </div>
 );
@@ -73,6 +74,7 @@ export const ConnectedSiteChaosItem = () => (
       onClick={noop}
       identity={ChaosIdentity}
       connectedAvatar="https://uniswap.org/favicon.ico"
+      connectedAvatarName="Uniswap"
     />
   </div>
 );

@@ -121,7 +121,7 @@ export const AccountListItem = ({
       </Box>
       <div ref={ref}>
         <ButtonIcon
-          ariaLabel={t('options')}
+          ariaLabel={`${identity.name} ${t('options')}`}
           iconName={ICON_NAMES.MORE_VERTICAL}
           size={ICON_SIZES.SM}
           onClick={() => setAccountOptionsMenuOpen(true)}
