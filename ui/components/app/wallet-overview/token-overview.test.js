@@ -86,7 +86,7 @@ describe('TokenOverview', () => {
 
     it('should show ConvertTokenToNFT modal when token passed in props is an ERC721', () => {
       const nftToken = {
-        name: 'test',
+        ...token,
         isERC721: true,
       };
       renderWithProvider(<TokenOverview token={nftToken} />, store);
