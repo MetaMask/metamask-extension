@@ -41,6 +41,7 @@ export const AccountListItem = ({
   onClick,
   isHardware = false,
   connectedAvatar,
+  connectedAvatarName,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -87,6 +88,7 @@ export const AccountListItem = ({
                 <AvatarFavicon
                   size={Size.SM}
                   src={connectedAvatar}
+                  name={connectedAvatarName}
                   marginInlineEnd={2}
                 />
               ) : null}
@@ -142,6 +144,7 @@ AccountListItem.propTypes = {
   onClick: PropTypes.func.isRequired,
   isHardware: PropTypes.bool,
   connectedAvatar: PropTypes.string,
+  connectedAvatarName: PropTypes.string,
 };
 
 AccountListItem.displayName = 'AccountListItem';
