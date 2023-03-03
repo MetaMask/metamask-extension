@@ -28,18 +28,9 @@ import {
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
-import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
-import GasDetailsItem from '../../components/app/gas-details-item';
-import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
-import Typography from '../../components/ui/typography/typography';
-import {
-  TextColor,
-  FONT_STYLE,
-  TypographyVariant,
-} from '../../helpers/constants/design-system';
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
@@ -53,16 +44,13 @@ import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   addHexes,
   hexToDecimal,
-  hexWEIToDecGWEI,
 } from '../../../shared/modules/conversion.utils';
 import TransactionAlerts from '../../components/app/transaction-alerts';
 import { ConfirmHexData } from '../../components/app/confirm-hexdata';
 import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
-
-const renderHeartBeatIfNotInTest = () =>
-  process.env.IN_TEST ? null : <LoadingHeartBeat />;
+import ConfirmGasDisplay from '../../components/app/confirm-gas-display';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -136,7 +124,6 @@ export default class ConfirmTransactionBase extends Component {
     maxFeePerGas: PropTypes.string,
     maxPriorityFeePerGas: PropTypes.string,
     baseFeePerGas: PropTypes.string,
-    isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
     showLedgerSteps: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
@@ -319,11 +306,7 @@ export default class ConfirmTransactionBase extends Component {
       txData,
       useNativeCurrencyAsPrimaryCurrency,
       primaryTotalTextOverrideMaxAmount,
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      isMainnet,
       showLedgerSteps,
-      supportsEIP1559,
       isMultiLayerFeeNetwork,
       nativeCurrency,
       isBuyableChain,
@@ -439,7 +422,8 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
-    const renderGasDetailsItem = () => {
+    /* const renderGasDetailsItem = () => {
+      console.log('inside renderGasDetailsItem');
       return this.supportsEIP1559 ? (
         <GasDetailsItem
           key="gas_details"
@@ -559,7 +543,7 @@ export default class ConfirmTransactionBase extends Component {
           }
         />
       );
-    };
+    };*/
 
     const simulationFailureWarning = () => (
       <div className="confirm-page-container-content__error-container">
@@ -594,9 +578,11 @@ export default class ConfirmTransactionBase extends Component {
           }
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
-            !renderSimulationFailureWarning &&
-              !isMultiLayerFeeNetwork &&
-              renderGasDetailsItem(),
+            !renderSimulationFailureWarning && !isMultiLayerFeeNetwork && (
+              <ConfirmGasDisplay
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              />
+            ),
             !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
               <MultiLayerFeeMessage
                 transaction={txData}

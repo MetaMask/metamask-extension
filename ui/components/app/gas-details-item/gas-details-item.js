@@ -5,7 +5,12 @@ import { useSelector } from 'react-redux';
 
 import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { getPreferences, getUseCurrencyRateCheck } from '../../../selectors';
+import {
+  getPreferences,
+  getUnapprovedTransactions,
+  getUseCurrencyRateCheck,
+  transactionFeeSelector,
+} from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -16,8 +21,39 @@ import TransactionDetailItem from '../transaction-detail-item/transaction-detail
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import GasDetailsItemTitle from './gas-details-item-title';
 
-const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
+const GasDetailsItem = ({
+  userAcknowledgedGasMissing = false,
+  draftTransaction = {},
+}) => {
   const t = useI18nContext();
+  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+  let transactionData = {};
+  console.log(draftTransaction);
+  if (Object.keys(draftTransaction).length !== 0) {
+    const editingTransaction = unapprovedTxs[draftTransaction.id];
+    transactionData = {
+      txParams: {
+        gasPrice: draftTransaction.gas?.gasPrice,
+        gas: editingTransaction?.userEditedGasLimit
+          ? editingTransaction?.txParams?.gas
+          : draftTransaction.gas?.gasLimit,
+        maxFeePerGas: editingTransaction?.txParams?.maxFeePerGas
+          ? editingTransaction?.txParams?.maxFeePerGas
+          : draftTransaction.gas?.maxFeePerGas,
+        maxPriorityFeePerGas: editingTransaction?.txParams?.maxPriorityFeePerGas
+          ? editingTransaction?.txParams?.maxPriorityFeePerGas
+          : draftTransaction.gas?.maxPriorityFeePerGas,
+        value: draftTransaction.amount?.value,
+        type: draftTransaction.transactionType,
+      },
+      userFeeLevel: editingTransaction?.userFeeLevel,
+    };
+  }
+  const {
+    hexMinimumTransactionFee: draftHexMinimumTransactionFee,
+    hexMaximumTransactionFee: draftHexMaximumTransactionFee,
+  } = useSelector((state) => transactionFeeSelector(state, transactionData));
+
   const {
     estimateUsed,
     hasSimulationError,
@@ -41,7 +77,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       detailTitle={<GasDetailsItemTitle />}
       detailTitleColor={TextColor.textDefault}
       detailText={
-        useCurrencyRateCheck && (
+        useCurrencyRateCheck &&
+        Object.keys(draftTransaction).length === 0 && (
           <div className="gas-details-item__currency-container">
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <UserPreferencedCurrencyDisplay
@@ -57,7 +94,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
           <LoadingHeartBeat estimateUsed={estimateUsed} />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
-            value={hexMinimumTransactionFee}
+            value={hexMinimumTransactionFee || draftHexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         </div>
@@ -86,7 +123,9 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
-                value={hexMaximumTransactionFee}
+                value={
+                  hexMaximumTransactionFee || draftHexMaximumTransactionFee
+                }
                 hideLabel={!useNativeCurrencyAsPrimaryCurrency}
               />
             </div>
@@ -95,8 +134,13 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       }
       subTitle={
         <GasTiming
-          maxPriorityFeePerGas={maxPriorityFeePerGas.toString()}
-          maxFeePerGas={maxFeePerGas.toString()}
+          maxPriorityFeePerGas={(
+            maxPriorityFeePerGas ||
+            transactionData.txParams.maxPriorityFeePerGas
+          ).toString()}
+          maxFeePerGas={(
+            maxFeePerGas || transactionData.txParams.maxFeePerGas
+          ).toString()}
         />
       }
     />
@@ -105,6 +149,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
 
 GasDetailsItem.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
+  draftTransaction: PropTypes.object,
 };
 
 export default GasDetailsItem;
