@@ -1,20 +1,34 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getAccountLink } from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getBlockExplorerLinkText } from '../../../selectors';
+import {
+  getRpcPrefsForCurrentProvider,
+  getBlockExplorerLinkText,
+  getCurrentChainId,
+} from '../../../selectors';
 import { Menu, MenuItem } from '../../ui/menu';
 import { ICON_NAMES } from '../../component-library';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
 
-export const AccountListItemMenu = ({ anchorElement, blockExplorerUrlSubTitle, onClose, isRemovable, identity }) => {
+export const AccountListItemMenu = ({
+  anchorElement,
+  blockExplorerUrlSubTitle,
+  onClose,
+  isRemovable,
+  identity,
+}) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
 
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const addressLink = getAccountLink(identity.address, chainId, rpcPrefs);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
     trackEvent({
@@ -41,12 +55,10 @@ export const AccountListItemMenu = ({ anchorElement, blockExplorerUrlSubTitle, o
       <MenuItem
         onClick={
           blockExplorerLinkText.firstPart === 'addBlockExplorer'
-          ? routeToAddBlockExplorerUrl
-          : openBlockExplorer
+            ? routeToAddBlockExplorerUrl
+            : openBlockExplorer
         }
-        subtitle={
-          blockExplorerUrlSubTitle ? (blockExplorerUrlSubTitle) : null
-        }
+        subtitle={blockExplorerUrlSubTitle || null}
         iconName={ICON_NAMES.EXPORT}
       >
         {t(
@@ -95,4 +107,4 @@ export const AccountListItemMenu = ({ anchorElement, blockExplorerUrlSubTitle, o
 AccountListItemMenu.propTypes = {
   anchorElement: PropTypes.instanceOf(window.Element),
   onClose: PropTypes.func.required,
-}
+};
