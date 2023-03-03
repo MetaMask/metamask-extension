@@ -125,21 +125,21 @@ export function getSubjectsWithPermission(state, permissionName) {
 export function getSubjectsWithSnapPermission(state, snapId) {
   const subjects = getPermissionSubjects(state);
 
-  const connectedSubjects = [];
-  Object.entries(subjects).forEach(([origin, { permissions }]) => {
-    if (permissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value[snapId]) {
+  return Object.entries(subjects)
+    .filter(
+      ([_origin, { permissions }]) =>
+        permissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value[snapId],
+    )
+    .map(([origin, _subject]) => {
       const { extensionId, name, iconUrl } =
         getTargetSubjectMetadata(state, origin) || {};
-
-      connectedSubjects.push({
+      return {
         extensionId,
         origin,
         name,
         iconUrl,
-      });
-    }
-  });
-  return connectedSubjects;
+      };
+    });
 }
 ///: END:ONLY_INCLUDE_IN
 
