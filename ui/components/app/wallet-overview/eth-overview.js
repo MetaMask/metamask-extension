@@ -94,18 +94,12 @@ const EthOverview = ({ className }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
               <ButtonIcon
+                className="eth-overview__portfolio-button"
                 data-testid="home__portfolio-site"
                 color={IconColor.primaryDefault}
                 iconName={ICON_NAMES.DIAGRAM}
                 ariaLabel={t('portfolio')}
-                size={BUTTON_ICON_SIZES.MD}
-                style={{
-                  position: 'absolute',
-                  right: '-33px',
-                  height: '44.8px',
-                  padding: 'auto 0 auto 0',
-                  background: 'inherit',
-                }}
+                size={BUTTON_ICON_SIZES.LG}
                 onClick={() => {
                   const portfolioUrl = process.env.PORTFOLIO_URL;
                   global.platform.openTab({

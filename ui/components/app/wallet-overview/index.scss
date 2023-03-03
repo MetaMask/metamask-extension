@@ -66,6 +66,13 @@
     margin-left: 4px;
   }
 
+  &__portfolio-button {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    left: calc(100% + 2px);
+  }
+
   &__cached-balance,
   &__cached-star {
     color: var(--color-warning-default);
