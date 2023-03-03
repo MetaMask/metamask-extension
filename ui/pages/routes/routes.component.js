@@ -6,7 +6,7 @@ import IdleTimer from 'react-idle-timer';
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import browserAPI from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IN(flask)
+///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -41,7 +41,7 @@ import Notifications from '../notifications';
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
-///: END:ONLY_INCLUDE_IN(flask)
+///: END:ONLY_INCLUDE_IN
 
 import {
   IMPORT_TOKEN_ROUTE,
