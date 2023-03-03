@@ -18,7 +18,7 @@ export const DefaultStory = () => (
     anchorElement={null}
     identity={SampleIdentity}
     isRemovable
-    blockExplorerUrlSubTitle=""
+    blockExplorerUrlSubTitle="etherscan.io"
     onClose={() => {}}
   />
 );

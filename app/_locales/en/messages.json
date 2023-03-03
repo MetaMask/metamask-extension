@@ -4508,6 +4508,9 @@
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
+  "viewOnExplorer": {
+    "message": "View on explorer"
+  },
   "viewOnOpensea": {
     "message": "View on Opensea"
   },

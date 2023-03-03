@@ -61,12 +61,7 @@ export const AccountListItemMenu = ({
         subtitle={blockExplorerUrlSubTitle || null}
         iconName={ICON_NAMES.EXPORT}
       >
-        {t(
-          blockExplorerLinkText.firstPart,
-          blockExplorerLinkText.secondPart === ''
-            ? null
-            : [t(blockExplorerLinkText.secondPart)],
-        )}
+        {t('viewOnExplorer')}
       </MenuItem>
       <MenuItem
         onClick={() => {
