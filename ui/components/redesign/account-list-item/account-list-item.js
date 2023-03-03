@@ -117,20 +117,21 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      <ButtonIcon
-        ariaLabel={t('options')}
-        ref={ref}
-        iconName={ICON_NAMES.MORE_VERTICAL}
-        size={ICON_SIZES.SM}
-        onClick={() => setAccountOptionsMenuOpen(true)}
-      />
-      {accountOptionsMenuOpen ? (
-        <AccountListItemMenu
-          anchorElement={ref.current}
-          identity={identity}
-          onClose={() => setAccountOptionsMenuOpen(false)}
+      <div ref={ref}>
+        <ButtonIcon
+          ariaLabel={t('options')}
+          iconName={ICON_NAMES.MORE_VERTICAL}
+          size={ICON_SIZES.SM}
+          onClick={() => setAccountOptionsMenuOpen(true)}
         />
-      ) : null}
+        {accountOptionsMenuOpen ? (
+          <AccountListItemMenu
+            anchorElement={ref.current}
+            identity={identity}
+            onClose={() => setAccountOptionsMenuOpen(false)}
+          />
+        ) : null}
+      </div>
     </Box>
   );
 };
