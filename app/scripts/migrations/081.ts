@@ -83,10 +83,11 @@ function transformState(state: Record<string, unknown>) {
         }
 
         // Check if the existing permission is valid
-        if (
-          !isObject(updatedPermissions[WALLET_SNAP_PERMISSION_KEY]) ||
-          !isArray(updatedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats)
-        ) {
+        if (!isObject(updatedPermissions[WALLET_SNAP_PERMISSION_KEY])) {
+          return state;
+        }
+
+        if (!isArray(updatedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats)) {
           return state;
         }
 
