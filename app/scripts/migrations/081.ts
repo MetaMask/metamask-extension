@@ -4,7 +4,6 @@ import {
   SnapCaveatType,
 } from '@metamask/rpc-methods';
 import { hasProperty, isObject } from '@metamask/utils';
-import { isFlask } from '../../../shared/constants/environment';
 
 export const version = 81;
 
@@ -25,11 +24,9 @@ export async function migrate(originalVersionedData: {
 }) {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  if (isFlask) {
-    const state = versionedData.data;
-    const newState = transformState(state);
-    versionedData.data = newState;
-  }
+  const state = versionedData.data;
+  const newState = transformState(state);
+  versionedData.data = newState;
   return versionedData;
 }
 
@@ -63,16 +60,15 @@ function transformState(state: Record<string, unknown>) {
     // New permissions object that we use to tack on the `wallet_snap` permission
     const updatedPermissions = { ...permissions };
     for (const [permissionName, permission] of Object.entries(permissions)) {
-      if (
-        !isObject(permission) ||
-        !hasProperty(permission, 'id') ||
-        !hasProperty(permission, 'date')
-      ) {
-        return state;
-      }
-
       // check if the permission is namespaced
       if (permissionName.startsWith(snapPrefix)) {
+        if (
+          !isObject(permission) ||
+          !hasProperty(permission, 'id') ||
+          !hasProperty(permission, 'date')
+        ) {
+          return state;
+        }
         // We create a wallet_snap key if we already don't have one
         if (!hasProperty(updatedPermissions, WALLET_SNAP_PERMISSION_KEY)) {
           updatedPermissions[WALLET_SNAP_PERMISSION_KEY] = {
@@ -103,8 +99,26 @@ function transformState(state: Record<string, unknown>) {
         // Adding the snap name to the wallet_snap permission's caveat value
         const snapId = permissionName.slice(snapPrefix.length);
         const caveat = (
-          updatedPermissions[WALLET_SNAP_PERMISSION_KEY] as Record<string, any>
-        ).caveats[0];
+          (
+            updatedPermissions[WALLET_SNAP_PERMISSION_KEY] as Record<
+              string,
+              any
+            >
+          ).caveats as unknown[]
+        )[0];
+
+        if (!isObject(caveat)) {
+          return state;
+        }
+
+        if (
+          !hasProperty(caveat, 'type') ||
+          caveat.type !== SnapCaveatType.SnapIds ||
+          !hasProperty(caveat, 'value') ||
+          !isObject(caveat.value)
+        ) {
+          return state;
+        }
         caveat.value[snapId] = {};
 
         if (
