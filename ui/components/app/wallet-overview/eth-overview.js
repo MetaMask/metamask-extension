@@ -35,7 +35,12 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { Icon, ICON_NAMES } from '../../component-library';
+import {
+  ButtonIcon,
+  BUTTON_ICON_SIZES,
+  Icon,
+  ICON_NAMES,
+} from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
@@ -88,16 +93,19 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              <IconButton
-                className="eth-overview__portfolio"
+              <ButtonIcon
                 data-testid="home__portfolio-site"
-                renderBackgroundColor={false}
-                Icon={
-                  <Icon
-                    name={ICON_NAMES.DIAGRAM}
-                    color={IconColor.primaryDefault}
-                  />
-                }
+                color={IconColor.primaryDefault}
+                iconName={ICON_NAMES.DIAGRAM}
+                ariaLabel={t('portfolio')}
+                size={BUTTON_ICON_SIZES.MD}
+                style={{
+                  position: 'absolute',
+                  right: '-33px',
+                  height: '44.8px',
+                  padding: 'auto 0 auto 0',
+                  background: 'inherit',
+                }}
                 onClick={() => {
                   const portfolioUrl = process.env.PORTFOLIO_URL;
                   global.platform.openTab({

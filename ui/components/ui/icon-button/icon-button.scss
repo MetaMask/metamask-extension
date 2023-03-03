@@ -24,12 +24,6 @@
     margin-bottom: 5px;
   }
 
-  &__no_background {
-    background: var(--color-background-default);
-    width: 20px;
-    height: 20px;
-  }
-
   &--disabled {
     opacity: 0.3;
     cursor: auto;

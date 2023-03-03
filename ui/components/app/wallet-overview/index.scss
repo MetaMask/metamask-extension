@@ -71,14 +71,6 @@
     color: var(--color-warning-default);
   }
 
-  &__portfolio {
-    position: absolute;
-    right: -32px;
-    height: 44.8px;
-    padding: auto 0 auto 0;
-    background: inherit;
-  }
-
   &__cached-secondary-balance {
     @include Paragraph;
 
