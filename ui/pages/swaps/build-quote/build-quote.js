@@ -313,7 +313,7 @@ export default function BuildQuote({
       fetchTokenBalance(
         token.address,
         selectedAccountAddress,
-        global.eth.contract,
+        global.ethereumProvider,
       ).then((fetchedBalance) => {
         if (fetchedBalance?.balance) {
           const balanceAsDecString = fetchedBalance.balance.toString(10);

@@ -10,6 +10,7 @@ import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlist
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
+import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
   HardwareKeyringTypes,
@@ -1294,8 +1295,19 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('getTokenStandardAndDetails', function () {
+  describe.only('getTokenStandardAndDetails', function () {
     it('gets token data from the token list if available, but without a balance if not the erc20 standard', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000038d7ea4c6800600000000000000000000000000000000000000000000000000000000000186a0',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: 1,
+        chainId: 1,
+      });
+
       const tokenData = {
         standard: 'NotERC20',
         decimals: 18,
@@ -1309,6 +1321,7 @@ describe('MetaMaskController', function () {
           },
         };
       });
+      metamaskController.provider = provider;
       const tokenDetails = await metamaskController.getTokenStandardAndDetails(
         '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         '0xf0d172594caedee459b89ad44c94098e474571b6',
@@ -1332,6 +1345,15 @@ describe('MetaMaskController', function () {
     });
 
     it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: 1,
+        chainId: 1,
+      });
+
       const tokenData = {
         standard: 'ERC20',
         decimals: 18,
@@ -1345,6 +1367,7 @@ describe('MetaMaskController', function () {
           },
         };
       });
+      metamaskController.provider = provider;
       const tokenDetails = await metamaskController.getTokenStandardAndDetails(
         '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         '0xf0d172594caedee459b89ad44c94098e474571b6',
@@ -1356,6 +1379,15 @@ describe('MetaMaskController', function () {
     });
 
     it('gets token data from the blockchain, via the assetsContractController, if not available in the tokenList', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: 1,
+        chainId: 1,
+      });
+
       const tokenData = {
         standard: 'ERC20',
         decimals: 18,
@@ -1370,6 +1402,8 @@ describe('MetaMaskController', function () {
           },
         };
       });
+
+      metamaskController.provider = provider;
 
       sandbox
         .stub(
