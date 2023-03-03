@@ -218,9 +218,7 @@ export default class Home extends PureComponent {
   }
 
   async componentDidMount() {
-    const {
-      shouldShowSeedPhraseReminder,
-    } = this.props;
+    const { shouldShowSeedPhraseReminder } = this.props;
 
     this.checkStatusAndNavigate();
 
@@ -252,11 +250,7 @@ export default class Home extends PureComponent {
 
     const showSRP = await shouldShowSeedPhraseReminder;
 
-    if (
-      _prevProps.shouldShowSeedPhraseReminder !== shouldShowSeedPhraseReminder
-    ) {
-      this.setState({ showSeedPhraseReminder: showSRP });
-    }
+    this.setState({ showSeedPhraseReminder: showSRP });
   }
 
   onRecoveryPhraseReminderClose = () => {
