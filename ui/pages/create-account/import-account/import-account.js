@@ -119,7 +119,7 @@ export default function NewAccountImportForm() {
     <>
       <Box
         padding={4}
-        style={{ borderWidth: '0px 0px 1px 0px' }} // There is no way to do just a bottom border in the Design System
+        className="bottom-border-1px" // There is no way to do just a bottom border in the Design System
         borderColor={BorderColor.borderDefault}
       >
         <Text variant={TextVariant.headingLg}>{t('importAccount')}</Text>

@@ -24,7 +24,7 @@ export default function BottomButtons({
   const dispatch = useDispatch();
 
   return (
-    <Box display={DISPLAY.FLEX}>
+    <Box display={DISPLAY.FLEX} gap={4}>
       <ButtonSecondary
         onClick={() => {
           dispatch(actions.hideWarning());

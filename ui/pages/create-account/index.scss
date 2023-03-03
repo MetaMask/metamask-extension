@@ -16,6 +16,10 @@
   @include screen-sm-min {
     position: absolute;
   }
+
+  .bottom-border-1px {
+    border-width: 0 0 1px 0;
+  }
 }
 
 

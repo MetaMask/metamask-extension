@@ -8,4 +8,4 @@ export const TEXT_DIRECTIONS = {
  * The INVISIBLE_CHARACTER is a very useful tool if you want to make sure a line of text
  * takes up vertical space even if it's empty.
  */
-export const INVISIBLE_CHARACTER = '\u200d';
+export const INVISIBLE_CHARACTER = '\u200B';
