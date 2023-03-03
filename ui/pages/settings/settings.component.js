@@ -30,10 +30,9 @@ import AddNetwork from '../../components/app/add-network/add-network';
 import {
   Icon,
   ButtonIcon,
-  ICON_SIZES,
   ICON_NAMES,
 } from '../../components/component-library';
-import { Color } from '../../helpers/constants/design-system';
+import { Color, DISPLAY } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -129,10 +128,11 @@ class SettingsPage extends PureComponent {
             {currentPath !== SETTINGS_ROUTE && (
               <ButtonIcon
                 ariaLabel={t('back')}
-                name={ICON_NAMES.ARROW_LEFT}
-                size={ICON_SIZES.XL}
+                iconName={ICON_NAMES.ARROW_LEFT}
+                className="settings-page__back-button"
                 color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
+                display={[DISPLAY.FLEX, DISPLAY.NONE]}
               />
             )}
 
