@@ -2,7 +2,7 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } from '@metamask/rpc-methods';
-import migration81 from './081';
+import { migrate, version as newVersion } from './081';
 
 describe('migration #81', () => {
   it('should consolidate snap permissions as caveats under the wallet_snap permission', async () => {
@@ -54,10 +54,10 @@ describe('migration #81', () => {
       },
     };
 
-    const newStorage = await migration81.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage).toStrictEqual({
-      meta: { version: 81 },
+      meta: { version: newVersion },
       data: {
         PermissionController: {
           subjects: {
@@ -128,7 +128,7 @@ describe('migration #81', () => {
       },
     };
 
-    const newStorage = await migration81.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
