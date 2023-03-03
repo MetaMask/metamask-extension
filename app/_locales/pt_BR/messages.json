@@ -317,12 +317,6 @@
   "buy": {
     "message": "Comprar"
   },
-  "buyWithWyre": {
-    "message": "Comprar $1 com Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Com o Wyre, você pode usar um cartão de débito para depositar $1 diretamente na sua conta da MetaMask."
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -468,12 +462,6 @@
   },
   "continue": {
     "message": "Continuar"
-  },
-  "continueToTransak": {
-    "message": "Continuar para Transak"
-  },
-  "continueToWyre": {
-    "message": "Continuar para o Wyre"
   },
   "contract": {
     "message": "Contrato"
@@ -1029,13 +1017,6 @@
   },
   "general": {
     "message": "Geral"
-  },
-  "getEther": {
-    "message": "Obter Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obtenha Ether de um faucet para $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Voltar"
@@ -2604,9 +2585,6 @@
   "termsOfService": {
     "message": "Termos de Serviço"
   },
-  "testFaucet": {
-    "message": "Testar faucet"
-  },
   "time": {
     "message": "Hora"
   },
@@ -2865,9 +2843,6 @@
   "verifyThisUnconfirmedTokenOn": {
     "message": "Verifique esse token no $1 e confirme que é o token que você deseja negociar.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "viewAccount": {
-    "message": "Ver conta"
   },
   "viewAllDetails": {
     "message": "Ver todos os detalhes"

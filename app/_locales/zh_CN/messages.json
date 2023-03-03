@@ -523,37 +523,8 @@
     "message": "购买$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "用Coinbase Pay购买$1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "您可以使用Coinbase账户轻松购买或转移加密货币。",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "用MoonPay购买$1",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay支持热门的支付方式，包括Visa、万事达卡、Apple / Google / Samsung Pay，以及超过145个国家/地区的银行转账。代币会被存入您的MetaMask账户。"
-  },
-  "buyCryptoWithTransak": {
-    "message": "用Transak购买$1",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak在超过100个国家/地区支持信用卡和借记卡、Apple Pay、MobiKwik和银行转账（取决于地点）。$1会被直接存入您的MetaMask账户。",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "立即购买"
-  },
-  "buyWithWyre": {
-    "message": "使用Wyre购买$1"
-  },
-  "buyWithWyreDescription": {
-    "message": "购买不超过$1000可以轻松开通。快速交互式上限购买验证。支持借记卡/信用卡、Apple Pay、银行转账。适用于100多个国家。代币存入您的MetaMask账户"
   },
   "bytes": {
     "message": "字节"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "继续"
-  },
-  "continueToCoinbasePay": {
-    "message": "继续使用Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "继续使用MoonPay"
-  },
-  "continueToTransak": {
-    "message": "继续前往 Transak"
-  },
-  "continueToWyre": {
-    "message": "继续前往 Wyre"
   },
   "contract": {
     "message": "合约"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "存入"
   },
-  "depositCrypto": {
-    "message": "存入$1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "了解详情"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "详细信息"
-  },
-  "directDepositCrypto": {
-    "message": "直接存入$1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "如果您已经有了一些$1，那么在您的新钱包里获得$1的最快方式是直接存入。"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1”已被禁用，因为它不满足在原来的燃料费用基础上至少增加10%的要求。",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "常规"
-  },
-  "getEther": {
-    "message": "获取以太币"
-  },
-  "getEtherFromFaucet": {
-    "message": "从 $1 网络的水龙头获取以太币",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "返回"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "此网络上的原生代币为$1。它是用于燃料费的代币。",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "要使用MetaMask与去中心化应用程序互动，您的钱包中需要有$1。",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "需要帮助？请联系 $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "服务条款"
   },
-  "testFaucet": {
-    "message": "测试水龙头"
-  },
   "testNetworks": {
     "message": "测试网络"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "查看"
-  },
-  "viewAccount": {
-    "message": "查看账户"
   },
   "viewAllDetails": {
     "message": "查看所有详情"

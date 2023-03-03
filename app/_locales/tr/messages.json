@@ -523,37 +523,8 @@
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Coinbase Pay ile 1 USD al",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Coinbase hesabınla kolayca kripto para satın alabilir veya transfer edebilirsin.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "MoonPay ile $1 satın al",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay, Visa, Mastercard, Apple / Google / Samsung Pay dahil olmak üzere popüler ödeme yöntemlerini ve 145'ten fazla ülkede banka havalelerini destekler. Token'lar MetaMask hesabına yatırılır."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Transak ile $1 satın al",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak, 100'den fazla ülkede kredi ve banka kartlarını, Apple Pay, MobiKwik ve banka transferlerini (konuma bağlı olarak) destekler. $1 doğrudan MetaMask hesabına yatırılır.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Şimdi Satın Al"
-  },
-  "buyWithWyre": {
-    "message": "Wyre ile $1 satın al"
-  },
-  "buyWithWyreDescription": {
-    "message": "1000$'a kadar satın alma işlemlerinde kolay oryantasyon. Banka Kartı/Kredi Kartı, Apple Pay, Banka Transferlerini destekler. +100 ülkede kullanılabilir. Token'lar MetaMask Hesabına yatırılır"
   },
   "bytes": {
     "message": "Bayt"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Devam et"
-  },
-  "continueToCoinbasePay": {
-    "message": "Coinbase Pay'e devam et"
-  },
-  "continueToMoonPay": {
-    "message": "MoonPay'e devam et"
-  },
-  "continueToTransak": {
-    "message": "Transak'a Devam Et"
-  },
-  "continueToWyre": {
-    "message": "Wyre'a Devam Et"
   },
   "contract": {
     "message": "Sözleşme"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Para Yatır"
   },
-  "depositCrypto": {
-    "message": "$1 yatır",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Daha fazla bilgi edinin"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Ayrıntılar"
-  },
-  "directDepositCrypto": {
-    "message": "Doğrudan $1 Yatır"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Halihazırda $1 sahibiysen yeni cüzdanına doğrudan para yatırma yoluyla $1 almanın en hızlı yolu."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "Orijinal gas ücretinden minimum %10'luk bir artışı karşılamadığı için \"$1\" devre dışı bırakıldı.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Genel"
-  },
-  "getEther": {
-    "message": "Ether Al"
-  },
-  "getEtherFromFaucet": {
-    "message": "Musluktan $1 karşılığı Ether al",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Geri git"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Bu ağdaki yerli token $1. Bu gaz ücretleri için kullanılan tokendir.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "MetaMask kullanarak merkezi olmayan uygulamalarla etkileşim kurmak için cüzdanında $1 bulunmasına ihtiyacın olacak.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Yardıma mı ihtiyacınız var? $1 bölümüne ulaşın",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "testFaucet": {
-    "message": "Test musluğu"
-  },
   "testNetworks": {
     "message": "Test ağları"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Görüntüle"
-  },
-  "viewAccount": {
-    "message": "Hesabı görüntüle"
   },
   "viewAllDetails": {
     "message": "Tüm bilgileri görüntüle"

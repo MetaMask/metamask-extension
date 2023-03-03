@@ -523,37 +523,8 @@
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Beli $1 melalui Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Anda dapat dengan mudah membeli atau mentransfer kripto dengan akun Coinbase Anda.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Beli $1 melalui MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay mendukung metode pembayaran populer, termasuk Visa, Mastercard, Apple/Google/Samsung Pay, dan transfer bank di 145+ negara. Token akan didepositokan ke akun MetaMask Anda."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Beli $1 melalui Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak mendukung kartu kredit & debit, Apple Pay, MobiKwik, dan transfer bank (tergantung lokasi) di 100+ negara. $1 akan langsung didepositokan ke akun MetaMask Anda.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Beli Sekarang"
-  },
-  "buyWithWyre": {
-    "message": "Beli $1 dengan Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Orientasi mudah untuk pembelian hingga $ 1000. Verifikasi pembelian limit tinggi interaktif yang cepat. Mendukung Kartu Debit/Kredit, Apple Pay, Transfer Bank. Tersedia di 100+ negara. Token disetor ke Akun MetaMask Anda"
   },
   "bytes": {
     "message": "Byte"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Lanjutkan"
-  },
-  "continueToCoinbasePay": {
-    "message": "Lanjutkan ke Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Lanjutkan ke MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Lanjutkan ke Transak"
-  },
-  "continueToWyre": {
-    "message": "Lanjutkan ke Wyre"
   },
   "contract": {
     "message": "Kontrak"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "depositCrypto": {
-    "message": "Deposit $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Pelajari selengkapnya"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Detail"
-  },
-  "directDepositCrypto": {
-    "message": "Deposit langsung $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Jika sudah memiliki $1, cara tercepat mendapatkan $1 di dompet baru Anda adalah dengan deposit langsung."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” dinonaktifkan karena tidak memenuhi kenaikan minimum 10% dari biaya gas asli.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Umum"
-  },
-  "getEther": {
-    "message": "Dapatkan Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Dapatkan Ether dari keran untuk jaringan $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Kembali"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Token asli di jaringan ini adalah $1. Ini merupakan token yang digunakan untuk biaya gas.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi terdesentralisasi menggunakan MetaMask, Anda memerlukan $1 di dompet.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Butuh bantuan? Hubungi $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Ketentuan layanan"
   },
-  "testFaucet": {
-    "message": "Uji fungsi"
-  },
   "testNetworks": {
     "message": "Jaringan pengujian"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Lihat"
-  },
-  "viewAccount": {
-    "message": "Lihat akun"
   },
   "viewAllDetails": {
     "message": "Lihat semua detail"

@@ -523,37 +523,8 @@
     "message": "Mua $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Mua $1 bằng Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Bạn có thể dễ dàng mua hoặc chuyển khoản tiền điện tử bằng tài khoản Coinbase của mình.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Mua $1 bằng MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay hỗ trợ các phương thức thanh toán phổ biến, bao gồm Visa, Mastercard, Apple / Google / Samsung Pay và chuyển khoản ngân hàng tại hơn 145 quốc gia. Nạp token vào tài khoản MetaMask của bạn."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Mua $1 bằng Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak hỗ trợ thẻ tín dụng và ghi nợ, Apple Pay, MobiKwik và chuyển khoản ngân hàng (tùy thuộc vào vị trí) tại hơn 100 quốc gia. Nạp trực tiếp $1 vào tài khoản MetaMask của bạn.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Mua ngay"
-  },
-  "buyWithWyre": {
-    "message": "Mua $1 qua Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Dễ dàng tham gia đối với các giao dịch mua lên đến $1.000. Xác minh mua hàng giới hạn cao và tương tác nhanh. Hỗ trợ Thẻ Tín dụng/Ghi nợ, Apple Pay, Chuyển khoản Ngân hàng. Hiện có tại hơn 100 quốc gia. Nạp token vào Tài khoản MetaMask của bạn"
   },
   "bytes": {
     "message": "Byte"
@@ -732,18 +703,6 @@
   },
   "continue": {
     "message": "Tiếp tục"
-  },
-  "continueToCoinbasePay": {
-    "message": "Tiếp tục đến Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Tiếp tục đến MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Tiếp tục đến Transak"
-  },
-  "continueToWyre": {
-    "message": "Tiếp tục chuyển đến Wyre"
   },
   "contract": {
     "message": "Hợp đồng"
@@ -957,10 +916,6 @@
   "deposit": {
     "message": "Nạp"
   },
-  "depositCrypto": {
-    "message": "Nạp $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Tìm hiểu thêm"
   },
@@ -972,12 +927,6 @@
   },
   "details": {
     "message": "Chi tiết"
-  },
-  "directDepositCrypto": {
-    "message": "Nạp trực tiếp $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Nếu bạn đã có một ít $1, nạp trực tiếp là cách nhanh nhất để nhận $1 trong ví mới."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” bị vô hiệu hóa vì không đạt mức tăng tối thiểu 10% so với phí gas ban đầu.",
@@ -1431,13 +1380,6 @@
   },
   "general": {
     "message": "Chung"
-  },
-  "getEther": {
-    "message": "Nhận Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Nhận Ether từ một vòi dành cho mạng $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Quay Lại"
@@ -1927,10 +1869,6 @@
   "nativeToken": {
     "message": "Token gốc của mạng này là $1. Token này được dùng làm phí gas.",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Để tương tác với các ứng dụng phi tập trung bằng MetaMask, bạn sẽ cần $1 trong ví.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Bạn cần trợ giúp? Liên hệ $1",
@@ -3809,9 +3747,6 @@
   "termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
-  "testFaucet": {
-    "message": "Vòi thử nghiệm"
-  },
   "testNetworks": {
     "message": "Mạng thử nghiệm"
   },
@@ -4165,9 +4100,6 @@
   },
   "view": {
     "message": "Xem"
-  },
-  "viewAccount": {
-    "message": "Xem tài khoản"
   },
   "viewAllDetails": {
     "message": "Xem toàn bộ chi tiết"

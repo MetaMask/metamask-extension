@@ -4302,10 +4302,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^5.5.0":
-  version: 5.5.0
-  resolution: "@metamask/test-dapp@npm:5.5.0"
-  checksum: 578e18f2099ac0fe4aea55023cd35d2579fc98000e157b6374b470390f2c9fe4f70198fcb1e571bd5f748be74ec04a3c132165e0e6f2299bee2049e1e375a70e
+"@metamask/test-dapp@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "@metamask/test-dapp@npm:5.6.0"
+  checksum: 352399ee03a9bee7a2a1045a102d4993a3b4b17a4c2c87b77265924dc6b04659b743f79a08f91bfbeeea3b7cbb9d1a88dc251ec32366877312e9eaa01ce0c82f
   languageName: node
   linkType: hard
 
@@ -7197,6 +7197,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/hoist-non-react-statics@npm:^3.3.0":
+  version: 3.3.1
+  resolution: "@types/hoist-non-react-statics@npm:3.3.1"
+  dependencies:
+    "@types/react": "*"
+    hoist-non-react-statics: ^3.3.0
+  checksum: 2c0778570d9a01d05afabc781b32163f28409bb98f7245c38d5eaf082416fdb73034003f5825eb5e21313044e8d2d9e1f3fe2831e345d3d1b1d20bcd12270719
+  languageName: node
+  linkType: hard
+
 "@types/html-minifier-terser@npm:^5.0.0":
   version: 5.1.1
   resolution: "@types/html-minifier-terser@npm:5.1.1"
@@ -7516,6 +7526,18 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 4d5730dffbef86c887cecad7e3cecda424ce6a64d0b5441c63b5b015d48219868660a2bb1aa15e897e565ad8867fa6b885d4358b04e1c4e589ba4c07c3fda55c
+  languageName: node
+  linkType: hard
+
+"@types/react-redux@npm:^7.1.25":
+  version: 7.1.25
+  resolution: "@types/react-redux@npm:7.1.25"
+  dependencies:
+    "@types/hoist-non-react-statics": ^3.3.0
+    "@types/react": "*"
+    hoist-non-react-statics: ^3.3.0
+    redux: ^4.0.0
+  checksum: a61ec25cbf8bb3720850402d3c49493fcff4afb73ad447d161460b5d4c600c984ad48708e8564d2fd32052eaa3c3b3f655c5b300ce813429637cce9e5958329f
   languageName: node
   linkType: hard
 
@@ -24061,7 +24083,7 @@ __metadata:
     "@metamask/snaps-ui": ^0.28.0
     "@metamask/snaps-utils": ^0.28.0
     "@metamask/subject-metadata-controller": ^1.0.0
-    "@metamask/test-dapp": ^5.5.0
+    "@metamask/test-dapp": ^5.6.0
     "@metamask/utils": ^3.6.0
     "@ngraveio/bc-ur": ^1.1.6
     "@popperjs/core": ^2.4.0
@@ -24112,6 +24134,7 @@ __metadata:
     "@types/pump": ^1.1.1
     "@types/react": ^16.9.53
     "@types/react-dom": ^17.0.11
+    "@types/react-redux": ^7.1.25
     "@types/remote-redux-devtools": ^0.5.5
     "@types/w3c-web-hid": ^1.0.3
     "@types/watchify": ^3.11.1
