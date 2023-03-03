@@ -19,15 +19,11 @@ import {
   getLedgerTransportStatus,
 } from '../../../ducks/app/app';
 
-import { BannerAlert } from '../../component-library';
-import Typography from '../../ui/typography/typography';
-import Button from '../../ui/button';
+import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  FONT_WEIGHT,
   SEVERITIES,
   TextColor,
-  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import {
   getPlatform,
@@ -43,14 +39,9 @@ const renderInstructionStep = (
 ) => {
   return (
     show && (
-      <Typography
-        boxProps={{ margin: 0 }}
-        color={color}
-        fontWeight={FONT_WEIGHT.BOLD}
-        variant={TypographyVariant.H7}
-      >
+      <Text color={color} as="h6">
         {text}
-      </Typography>
+      </Text>
     )
   );
 };
@@ -141,24 +132,23 @@ export default function LedgerInstructionField({ showDataInstruction }) {
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepOne')}`,
+              `• ${t('ledgerConnectionInstructionStepOne')}`,
               !isFirefox && usingLedgerLive,
             )}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepTwo')}`,
+              `• ${t('ledgerConnectionInstructionStepTwo')}`,
               !isFirefox && usingLedgerLive,
             )}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepThree')}`,
+              `• ${t('ledgerConnectionInstructionStepThree')}`,
             )}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionStepFour')}`,
+              `• ${t('ledgerConnectionInstructionStepFour')}`,
               showDataInstruction,
             )}
             {renderInstructionStep(
               <span>
-                <Button
-                  type="link"
+                <ButtonLink
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
                       window.location.reload();
@@ -168,14 +158,13 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   }}
                 >
                   {t('ledgerConnectionInstructionCloseOtherApps')}
-                </Button>
+                </ButtonLink>
               </span>,
               transportStatus === HardwareTransportStates.deviceOpenFailure,
             )}
             {renderInstructionStep(
               <span>
-                <Button
-                  type="link"
+                <ButtonLink
                   onClick={async () => {
                     if (environmentTypeIsFullScreen) {
                       const connectedDevices =
@@ -201,7 +190,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
                   {environmentTypeIsFullScreen
                     ? t('clickToConnectLedgerViaWebHID')
                     : t('openFullScreenForLedgerWebHid')}
-                </Button>
+                </ButtonLink>
               </span>,
               usingWebHID &&
                 webHidConnectedStatus === WebHIDConnectedStatuses.notConnected,
