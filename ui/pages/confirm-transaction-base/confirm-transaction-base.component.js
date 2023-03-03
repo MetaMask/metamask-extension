@@ -583,7 +583,7 @@ export default class ConfirmTransactionBase extends Component {
       <HardwareWalletState
         key="hw-locked-error"
         initialStatus="unlocked"
-        className="hardware-wallet-state__row"
+        marginTop={5}
         onUpdate={(status) =>
           this.setState({ hardwareLocked: status === 'locked' })
         }

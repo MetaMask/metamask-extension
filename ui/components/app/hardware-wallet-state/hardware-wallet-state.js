@@ -22,13 +22,12 @@ const noOp = () => {
  * @param options0.pollingRateMs
  * @param options0.initialStatus
  * @param options0.onUpdate
- * @param options0.className
  */
 export default function HardwareWalletState({
   pollingRateMs = HARDWARE_CHECK_RATE,
   initialStatus = 'locked',
   onUpdate = noOp,
-  className,
+  ...props
 }) {
   const t = useContext(I18nContext);
   const [status, setStatus] = useState(initialStatus);
@@ -50,7 +49,7 @@ export default function HardwareWalletState({
 
   return (
     status === 'locked' && (
-      <BannerAlert severity={SEVERITIES.DANGER} className={className}>
+      <BannerAlert severity={SEVERITIES.DANGER} {...props}>
         {t('ledgerLocked')}
       </BannerAlert>
     )
@@ -64,6 +63,4 @@ HardwareWalletState.propTypes = {
   initialStatus: PropTypes.string,
   // invoked with each updated status (locked/unlocked)
   onUpdate: PropTypes.func,
-  // additional className to apply to the Banner
-  className: PropTypes.string,
 };

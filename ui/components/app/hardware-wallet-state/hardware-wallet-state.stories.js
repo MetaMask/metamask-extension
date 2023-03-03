@@ -14,9 +14,6 @@ export default {
     onUpdate: {
       action: 'onUpdate',
     },
-    className: {
-      control: 'text',
-    },
   },
   args: {
     pollingRateMs: 2000,
