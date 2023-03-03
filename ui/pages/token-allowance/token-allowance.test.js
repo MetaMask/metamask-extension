@@ -263,6 +263,8 @@ describe('TokenAllowancePage', () => {
     const textField = getByTestId('custom-spending-cap-input');
     fireEvent.change(textField, { target: { value: '1' } });
 
+    expect(queryByText('Prior to clicking confirm:')).toBeNull();
+
     const nextButton = getByText('Next');
     fireEvent.click(nextButton);
 
