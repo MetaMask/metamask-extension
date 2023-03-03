@@ -8,6 +8,8 @@ import {
   getSubjectMetadata,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  getCurrentCurrency,
+  getPreferences,
 } from '../../../selectors';
 import {
   isAddressLedger,
@@ -34,6 +36,7 @@ function mapStateToProps(state, ownProps) {
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
     provider,
@@ -46,6 +49,8 @@ function mapStateToProps(state, ownProps) {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
+    useNativeCurrencyAsPrimaryCurrency,
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
@@ -82,6 +87,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     rpcPrefs,
     conversionRate,
     nativeCurrency,
+    currentCurrency,
+    useNativeCurrencyAsPrimaryCurrency,
     provider,
     subjectMetadata,
     unconfirmedMessagesList,
@@ -134,6 +141,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     rpcPrefs,
     conversionRate,
     nativeCurrency,
+    currentCurrency,
+    useNativeCurrencyAsPrimaryCurrency,
     provider,
     subjectMetadata,
     unapprovedMessagesCount,
