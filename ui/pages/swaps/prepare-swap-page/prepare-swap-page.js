@@ -775,7 +775,7 @@ export default function PrepareSwap({
                   {t('enableSmartTransactions')}
                 </Button>
                 <Box marginTop={1}>
-                  <Typography variant={TypographyVariant.H6}>
+                  <Text variant={TextVariant.bodyMd} as="h6">
                     <Button
                       type="link"
                       onClick={onCloseSmartTransactionsOptInPopover}
@@ -783,7 +783,7 @@ export default function PrepareSwap({
                     >
                       {t('noThanksVariant2')}
                     </Button>
-                  </Typography>
+                  </Text>
                 </Box>
               </>
             }
@@ -863,6 +863,7 @@ export default function PrepareSwap({
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <TextField
                 className="prepare-swap-page__from-token-amount"
+                size={Size.SM}
                 placeholder="0"
                 onChange={onTextFieldChange}
                 value={fromTokenInputValue}
@@ -895,12 +896,13 @@ export default function PrepareSwap({
                 justifyContent={JustifyContent.flexEnd}
                 alignItems={AlignItems.flexEnd}
               >
-                <Typography
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h7"
                   color={TextColor.textAlternative}
-                  variant={TypographyVariant.H7}
                 >
                   {swapFromFiatValue}
-                </Typography>
+                </Text>
               </Box>
             )}
           </Box>
@@ -909,14 +911,14 @@ export default function PrepareSwap({
               display={DISPLAY.FLEX}
               justifyContent={JustifyContent.flexStart}
             >
-              <Typography
+              <Text
+                variant={TextVariant.bodySmBold}
+                as="h7"
                 color={TextColor.textAlternative}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TypographyVariant.H7}
                 marginTop={0}
               >
                 {t('swapsNotEnoughToken', [fromTokenSymbol])}
-              </Typography>
+              </Text>
             </Box>
           )}
           {fromTokenError && (
@@ -924,17 +926,17 @@ export default function PrepareSwap({
               display={DISPLAY.FLEX}
               justifyContent={JustifyContent.flexStart}
             >
-              <Typography
+              <Text
+                variant={TextVariant.bodySmBold}
+                as="h7"
                 color={TextColor.textAlternative}
-                fontWeight={FONT_WEIGHT.BOLD}
-                variant={TypographyVariant.H7}
                 marginTop={0}
               >
                 {t('swapTooManyDecimalsError', [
                   fromTokenSymbol,
                   fromTokenDecimals,
                 ])}
-              </Typography>
+              </Text>
             </Box>
           )}
           <Box
@@ -967,9 +969,9 @@ export default function PrepareSwap({
               selectedToken={selectedToToken}
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-              <Typography variant={TypographyVariant.H4}>
+              <Text variant={TextVariant.headingSm} as="h4">
                 {receiveToAmount}
-              </Typography>
+              </Text>
             </Box>
           </Box>
         </div>
@@ -1053,23 +1055,25 @@ export default function PrepareSwap({
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
             >
-              <Typography
+              <Text
+                variant={TextVariant.bodyMd}
+                as="h6"
                 color={TextColor.textAlternative}
-                variant={TypographyVariant.H6}
-                boxProps={{ marginLeft: 1, marginRight: 1 }}
+                marginLeft={1}
+                marginRight={1}
               >
                 {t('swapFetchingQuote')}
-              </Typography>
-              <Typography
-                fontWeight={FONT_WEIGHT.BOLD}
+              </Text>
+              <Text
+                variant={TextVariant.bodyMdBold}
+                as="h6"
                 color={TextColor.textAlternative}
-                variant={TypographyVariant.H6}
               >
                 {t('swapQuoteNofM', [
                   Math.min(quoteCount + 1, numberOfAggregators),
                   numberOfAggregators,
                 ])}
-              </Typography>
+              </Text>
             </Box>
             <div className="mascot-background-animation__animation">
               <MascotBackgroundAnimation />

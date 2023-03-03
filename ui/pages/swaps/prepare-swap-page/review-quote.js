@@ -103,15 +103,12 @@ import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
-import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
+import PulseLoader from '../../../components/ui/pulse-loader';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
 import {
   TextColor,
-  TypographyVariant,
   JustifyContent,
   DISPLAY,
-  FONT_WEIGHT,
   AlignItems,
   FLEX_DIRECTION,
   FONT_STYLE,
@@ -383,11 +380,9 @@ export default function ViewQuote({ setReceiveToAmount }) {
     destinationTokenDecimals,
     destinationTokenSymbol,
     destinationTokenValue,
-    destinationIconUrl,
     sourceTokenDecimals,
     sourceTokenSymbol,
     sourceTokenValue,
-    sourceTokenIconUrl,
   } = renderableDataForUsedQuote;
 
   let { feeInFiat, feeInEth, rawEthFee, feeInUsd } =
@@ -1048,20 +1043,21 @@ export default function ViewQuote({ setReceiveToAmount }) {
           marginBottom={0}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
-          className="rereview-quote__overview"
+          className="review-quote__overview"
         >
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
           >
-            <Typography
-              color={TextColor.textAlternative}
-              variant={TypographyVariant.H6}
+            <Text
+              variant={TextVariant.bodyMd}
+              as="h6"
               marginRight={1}
+              color={TextColor.textAlternative}
             >
               {t('quoteRate')}
-            </Typography>
+            </Text>
             <ExchangeRateDisplay
               primaryTokenValue={calcTokenValue(
                 sourceTokenValue,
@@ -1094,13 +1090,14 @@ export default function ViewQuote({ setReceiveToAmount }) {
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
             >
-              <Typography
+              <Text
+                variant={TextVariant.bodyMd}
+                as="h6"
                 color={TextColor.textAlternative}
-                variant={TypographyVariant.H6}
                 marginRight={1}
               >
                 {t('transactionDetailGasHeading')}
-              </Typography>
+              </Text>
               <InfoTooltip
                 position="top"
                 contentText={
@@ -1139,32 +1136,34 @@ export default function ViewQuote({ setReceiveToAmount }) {
               justifyContent={JustifyContent.flexEnd}
               alignItems={AlignItems.flexEnd}
             >
-              <Typography
+              <Text
+                variant={TextVariant.bodyMd}
+                as="h6"
                 color={TextColor.textAlternative}
-                variant={TypographyVariant.H6}
               >
                 {feeInEth}
-              </Typography>
-              <Typography
+              </Text>
+              <Text
+                variant={TextVariant.bodyMdBold}
+                as="h6"
                 color={TextColor.textAlternative}
-                variant={TypographyVariant.H6}
-                fontWeight={FONT_WEIGHT.BOLD}
                 marginLeft={1}
               >
                 {` ${feeInFiat}`}
-              </Typography>
+              </Text>
             </Box>
           </Box>
           {(maxFeeInFiat || maxFeeInEth) && (
             <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.flexEnd}>
-              <Typography
+              <Text
+                variant={TextVariant.bodySm}
+                as="h7"
                 fontStyle={FONT_STYLE.ITALIC}
                 color={TextColor.textAlternative}
-                variant={TypographyVariant.H7}
               >
                 {t('maxFee')}
                 {`: ${maxFeeInFiat || maxFeeInEth}`}
-              </Typography>
+              </Text>
             </Box>
           )}
           <Box
@@ -1172,18 +1171,20 @@ export default function ViewQuote({ setReceiveToAmount }) {
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.stretch}
           >
-            <Typography
+            <Text
+              variant={TextVariant.bodyMd}
+              as="h6"
               color={TextColor.textAlternative}
-              variant={TypographyVariant.H6}
             >
               {t('swapMetaMaskFee')}
-            </Typography>
-            <Typography
+            </Text>
+            <Text
+              variant={TextVariant.bodyMd}
+              as="h6"
               color={TextColor.textAlternative}
-              variant={TypographyVariant.H6}
             >
               {t('percentage', [metaMaskFee])}
-            </Typography>
+            </Text>
           </Box>
         </Box>
 
