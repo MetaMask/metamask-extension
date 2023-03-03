@@ -17,6 +17,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 - Install [Node.js](https://nodejs.org) version 16
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Install [Yarn v3](https://yarnpkg.com/getting-started/install)
+    - Note: follow the steps for installing and updating the `yarn` version, but NOT the step for "Initializing your project". You should not run `yarn init -2`, because that wipe the metamask repo.  
 - Install dependencies: `yarn`
 - Copy the `.metamaskrc.dist` file to `.metamaskrc`
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura Project ID](https://infura.io/docs).
