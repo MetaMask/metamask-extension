@@ -687,7 +687,9 @@ export default function PrepareSwap({
   );
 
   const showReviewQuote =
-    !isReviewSwapButtonDisabled && areQuotesPresent && !swapsErrorKey;
+    !swapsErrorKey && !isReviewSwapButtonDisabled && areQuotesPresent;
+  const showQuotesLoadingAnimation =
+    !swapsErrorKey && !isReviewSwapButtonDisabled && !areQuotesPresent;
 
   const tokenVerifiedOn1Source = occurrences === 1;
 
@@ -696,6 +698,12 @@ export default function PrepareSwap({
       history.push(SWAPS_NOTIFICATION_ROUTE);
     }
   }, [swapsErrorKey, history]);
+
+  useEffect(() => {
+    if (showQuotesLoadingAnimation) {
+      setReceiveToAmount('');
+    }
+  }, [showQuotesLoadingAnimation]);
 
   return (
     <div className="prepare-swap-page">
@@ -1032,7 +1040,7 @@ export default function PrepareSwap({
               }}
             />
           )}
-        {!swapsErrorKey && !isReviewSwapButtonDisabled && !areQuotesPresent && (
+        {showQuotesLoadingAnimation && (
           <Box
             marginTop={4}
             display={DISPLAY.FLEX}
