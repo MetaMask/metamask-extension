@@ -51,6 +51,9 @@ describe('Signature Request', () => {
       provider: {
         type: 'rpc',
       },
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
       accounts: {
         '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
           address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',

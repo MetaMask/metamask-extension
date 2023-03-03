@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
   },
-  "buyWithWyre": {
-    "message": "Pirkti $1 su „Wyre“"
-  },
-  "buyWithWyreDescription": {
-    "message": "„Wyre“ leidžia naudotis kreditine kortele norint įnešti $1 tiesiai į jūsų „MetaMask“ paskyrą."
-  },
   "bytes": {
     "message": "Baitai"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
-  },
-  "continueToWyre": {
-    "message": "Tęsti su „Wyre“"
   },
   "contractDeployment": {
     "message": "Sutarties išdėstymas"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "Bendra"
-  },
-  "getEther": {
-    "message": "Gauti eterių"
-  },
-  "getEtherFromFaucet": {
-    "message": "Gaukite eterių iš čiaupo $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "„Goerli“ bandomasis tinklas"
@@ -781,9 +765,6 @@
   "terms": {
     "message": "Naudojimo sąlygos"
   },
-  "testFaucet": {
-    "message": "Testuoti čiaupą"
-  },
   "tips": {
     "message": "Arbatpinigiai"
   },
@@ -901,9 +882,6 @@
   },
   "userName": {
     "message": "Vartotojo vardas"
-  },
-  "viewAccount": {
-    "message": "Žiūrėti paskyrą"
   },
   "viewContact": {
     "message": "Peržiūrėti kontaktą"

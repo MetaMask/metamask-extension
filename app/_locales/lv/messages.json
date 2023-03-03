@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
   },
-  "buyWithWyre": {
-    "message": "Pirkt $1 ar Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre ļauj noguldīt $1 tieši jūsu MetaMask kontā, izmantojot kredītkarti."
-  },
   "bytes": {
     "message": "Baiti"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
-  },
-  "continueToWyre": {
-    "message": "Pāriet uz Wyre"
   },
   "contractDeployment": {
     "message": "Līgumu pielietošana"
@@ -322,13 +313,6 @@
   },
   "general": {
     "message": "Vispārīgi"
-  },
-  "getEther": {
-    "message": "Saņemt Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Vai vēlaties $1 iegūt Ether no krāna?",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli testa tīkls"
@@ -777,9 +761,6 @@
   "terms": {
     "message": "Lietošanas noteikumi"
   },
-  "testFaucet": {
-    "message": "Testa krāns"
-  },
   "tips": {
     "message": "Dzeramnauda"
   },
@@ -897,9 +878,6 @@
   },
   "userName": {
     "message": "Lietotājvārds"
-  },
-  "viewAccount": {
-    "message": "Skatīt kontu"
   },
   "viewContact": {
     "message": "Skatīt līgumu"
