@@ -3273,7 +3273,9 @@ export function detectNfts(): ThunkAction<
 export function setAdvancedGasFee(
   val: { maxBaseFee?: Hex; priorityFee?: Hex } | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return (dispatch: MetaMaskReduxDispatch, getState) => {
+    const { chainId } = getState().metamask.provider;
+
     dispatch(showLoadingIndication());
     log.debug(`background.setAdvancedGasFee`);
     callBackgroundMethod('setAdvancedGasFee', [val, chainId], (err) => {
