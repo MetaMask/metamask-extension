@@ -10,6 +10,8 @@ import { PageContainerFooter } from '../../ui/page-container';
 import {
   accountsWithSendEtherInfoSelector,
   getSubjectMetadata,
+  getCurrentChainId,
+  getProvider,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
@@ -20,8 +22,13 @@ import {
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
-import Header from './signature-request-siwe-header';
+import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../../shared/constants/common';
 import Message from './signature-request-siwe-message';
+import Header from './signature-request-siwe-header';
 
 export default function SignatureRequestSIWE({
   txData,
@@ -30,6 +37,9 @@ export default function SignatureRequestSIWE({
 }) {
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
+  const nativeCurrency = useSelector(getNativeCurrency);
+  const currentChainId = useSelector(getCurrentChainId);
+  const provider = useSelector(getProvider);
 
   const {
     msgParams: {
@@ -84,8 +94,45 @@ export default function SignatureRequestSIWE({
     [cancelPersonalMessage],
   );
 
+  const balanceInBaseAsset = new Numeric(
+    fromAccount.balance,
+    16,
+    EtherDenomination.WEI,
+  )
+    .toDenomination(EtherDenomination.ETH)
+    .toBase(10)
+    .round(6)
+    .toString();
+
+  const getNetworkName = () => {
+    const providerName = provider.type;
+
+    switch (providerName) {
+      case NETWORK_TYPES.MAINNET:
+        return t('mainnet');
+      case NETWORK_TYPES.GOERLI:
+        return t('goerli');
+      case NETWORK_TYPES.SEPOLIA:
+        return t('sepolia');
+      case NETWORK_TYPES.LOCALHOST:
+        return t('localhost');
+      default:
+        return provider.nickname || t('unknownNetwork');
+    }
+  };
+
+  const currentNetwork = getNetworkName();
+
   return (
     <div className="signature-request-siwe">
+      <NetworkAccountBalanceHeader
+        networkName={currentNetwork}
+        accountName={fromAccount.name}
+        accountBalance={balanceInBaseAsset}
+        tokenName={nativeCurrency}
+        accountAddress={fromAccount.address}
+        chainId={currentChainId}
+      />
       <Header
         fromAccount={fromAccount}
         domain={origin}
