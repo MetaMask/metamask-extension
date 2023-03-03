@@ -1,1 +1,1 @@
-export { default } from './confirm-send-ether.component';
+export { default } from './confirm-send-ether.container';
