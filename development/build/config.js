@@ -1,6 +1,8 @@
 const path = require('path');
 const { readFile } = require('fs/promises');
+const fs = require('fs');
 const ini = require('ini');
+const yaml = require('js-yaml');
 const { BuildType } = require('../lib/build-type');
 
 const commonConfigurationPropertyNames = ['PUBNUB_PUB_KEY', 'PUBNUB_SUB_KEY'];
@@ -32,6 +34,20 @@ const productionConfigurationPropertyNames = [
   'SEGMENT_PROD_WRITE_KEY',
   'SENTRY_DSN',
 ];
+
+function getFeatureConfig(buildType) {
+  const featuresEnabled = {};
+  const featuresJson = yaml.load(fs.readFileSync('./features.yml', 'utf8'), {
+    json: true,
+  });
+  const buildTypeFeatures = featuresJson.builds[buildType];
+
+  buildTypeFeatures.features.forEach((feature) => {
+    featuresEnabled[feature] = true;
+  });
+
+  return featuresEnabled;
+}
 
 /**
  * Get configuration for non-production builds.
@@ -125,4 +141,4 @@ async function getProductionConfig(buildType) {
   return prodConfig;
 }
 
-module.exports = { getConfig, getProductionConfig };
+module.exports = { getConfig, getProductionConfig, getFeatureConfig };

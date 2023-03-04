@@ -1,0 +1,22 @@
+builds:
+  main:
+    features:
+      - MANIFEST_V3
+  beta:
+    features:
+      - SNAPS
+      - WEBWORKERS
+  flask:
+    features:
+      - SNAPS
+      - MANIFEST_V3
+  desktop:
+    features:
+      - DESKTOP
+
+# Reference for existing features
+features:
+  - SNAPS
+  - DESKTOP
+  - WEBWORKERS
+  - MANIFEST_V3
