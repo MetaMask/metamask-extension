@@ -63,7 +63,7 @@ describe('Selectors', () => {
 
   it('returns selected account', () => {
     const account = selectors.getSelectedAccount(mockState);
-    expect(account.balance).toStrictEqual('0x0');
+    expect(account.balance).toStrictEqual('0x346ba7725f412cbfdb');
     expect(account.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
@@ -138,7 +138,9 @@ describe('Selectors', () => {
     const accountsWithSendEther =
       selectors.accountsWithSendEtherInfoSelector(mockState);
     expect(accountsWithSendEther).toHaveLength(4);
-    expect(accountsWithSendEther[0].balance).toStrictEqual('0x0');
+    expect(accountsWithSendEther[0].balance).toStrictEqual(
+      '0x346ba7725f412cbfdb',
+    );
     expect(accountsWithSendEther[0].address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
@@ -148,7 +150,9 @@ describe('Selectors', () => {
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
     const currentAccountwithSendEther =
       selectors.getCurrentAccountWithSendEtherInfo(mockState);
-    expect(currentAccountwithSendEther.balance).toStrictEqual('0x0');
+    expect(currentAccountwithSendEther.balance).toStrictEqual(
+      '0x346ba7725f412cbfdb',
+    );
     expect(currentAccountwithSendEther.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
