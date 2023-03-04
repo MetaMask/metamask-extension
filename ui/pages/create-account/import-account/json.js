@@ -5,7 +5,6 @@ import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
   FormTextField,
-  INVISIBLE_CHARACTER,
   Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
@@ -78,7 +77,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
         size={TEXT_FIELD_SIZES.LARGE}
         autoFocus
         type={TEXT_FIELD_TYPES.PASSWORD}
-        helpText={warning || INVISIBLE_CHARACTER} // The INVISIBLE_CHARACTER ensures that the error message takes up vertical space even if there's no error message
+        helpText={warning}
         error
         placeholder={t('enterPassword')}
         value={password}
@@ -86,7 +85,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
-        marginBottom={2}
+        marginBottom={4}
       />
 
       <BottomButtons

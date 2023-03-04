@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   FormTextField,
-  INVISIBLE_CHARACTER,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
 } from '../../../components/component-library';
@@ -38,7 +37,7 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
         size={TEXT_FIELD_SIZES.LARGE}
         autoFocus
         type={TEXT_FIELD_TYPES.PASSWORD}
-        helpText={warning || INVISIBLE_CHARACTER} // The INVISIBLE_CHARACTER ensures that the error message takes up vertical space even if there's no error message
+        helpText={warning}
         error
         label={t('pastePrivateKey')}
         value={privateKey}
@@ -46,7 +45,7 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
-        marginBottom={2}
+        marginBottom={4}
       />
 
       <BottomButtons
