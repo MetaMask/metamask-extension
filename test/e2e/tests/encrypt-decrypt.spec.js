@@ -30,7 +30,7 @@ describe('Encrypt Decrypt', function () {
         await driver.press('#password', driver.Key.ENTER);
         await driver.openNewPage('http://127.0.0.1:8080');
 
-        // Get Encryption key
+        // ------ Get Encryption key ------
         await driver.clickElement('#getEncryptionKeyButton');
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
@@ -42,6 +42,11 @@ describe('Encrypt Decrypt', function () {
           css: '.request-encryption-public-key__header__text',
           text: 'Request encryption public key',
         });
+        // Account balance is converted properly
+        const accountBalanceLabel = await driver.findElement(
+          '.request-encryption-public-key__balance-value',
+        );
+        assert.equal(await accountBalanceLabel.getText(), '25 ETH');
         await driver.clickElement({ text: 'Provide', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
@@ -51,7 +56,7 @@ describe('Encrypt Decrypt', function () {
         );
         assert.equal(await encryptionKeyLabel.getText(), encryptionKey);
 
-        // Encrypt
+        // ------ Encrypt ------
         await driver.fill('#encryptMessageInput', message);
         await driver.clickElement('#encryptButton');
         await driver.waitForSelector({
@@ -59,7 +64,7 @@ describe('Encrypt Decrypt', function () {
           text: '0x',
         });
 
-        // Decrypt
+        // ------ Decrypt ------
         await driver.clickElement('#decryptButton');
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -71,7 +76,11 @@ describe('Encrypt Decrypt', function () {
           css: '.request-decrypt-message__header__text',
           text: 'Decrypt request',
         });
-
+        // Account balance is converted properly
+        const decryptAccountBalanceLabel = await driver.findElement(
+          '.request-decrypt-message__balance-value',
+        );
+        assert.equal(await decryptAccountBalanceLabel.getText(), '25 ETH');
         // Verify message in MetaMask Notification
         await driver.clickElement({ text: 'Decrypt message', tag: 'div' });
         const notificationMessage = await driver.isElementPresent({

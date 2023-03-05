@@ -32,7 +32,6 @@ export default class ConfirmDecryptMessage extends Component {
     cancelDecryptMessage: PropTypes.func.isRequired,
     decryptMessage: PropTypes.func.isRequired,
     decryptMessageInline: PropTypes.func.isRequired,
-    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     requesterAddress: PropTypes.string,
@@ -95,7 +94,7 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate, nativeCurrency } = this.props;
+    const { nativeCurrency } = this.props;
     const {
       fromAccount: { balance },
     } = this.state;
@@ -106,7 +105,7 @@ export default class ConfirmDecryptMessage extends Component {
       16,
       EtherDenomination.WEI,
     )
-      .applyConversionRate(conversionRate)
+      .toDenomination(EtherDenomination.ETH)
       .round(6)
       .toBase(10);
 
