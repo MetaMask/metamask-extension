@@ -129,11 +129,7 @@ describe('Custom network', function () {
             params
           })
         `);
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -198,11 +194,7 @@ describe('Custom network', function () {
             params
           })
         `);
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
