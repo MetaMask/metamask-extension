@@ -12,6 +12,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import classnames from 'classnames';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -166,6 +167,7 @@ export default function PrepareSwap({
   const [swapToSearchQuery, setSwapToSearchQuery] = useState('');
   const [quoteCount, updateQuoteCount] = useState(0);
   const [prefetchingQuotes, setPrefetchingQuotes] = useState(false);
+  const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
 
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
   const balanceError = useSelector(getBalanceError);
@@ -607,6 +609,7 @@ export default function PrepareSwap({
     !fromTokenAddress ||
     Number(maxSlippage) < 0 ||
     Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
+    transactionSettingsOpened ||
     (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
 
   // It's triggered every time there is a change in form values (token from, token to, amount and slippage).
@@ -944,17 +947,19 @@ export default function PrepareSwap({
             justifyContent={JustifyContent.center}
             height={0}
           >
-            <div className="prepare-swap-page__switch-tokens">
-              <Icon
-                name={ICON_NAMES.ARROW_2_DOWN}
-                size={ICON_SIZES.LG}
-                onClick={() => {
-                  onToSelect(selectedFromToken);
-                  onFromSelect(selectedToToken);
-                }}
-                style={{ cursor: 'pointer' }}
-                title={t('swapSwapSwitch')}
-              />
+            <div
+              className={classnames('prepare-swap-page__switch-tokens', {
+                'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
+              })}
+              onClick={() => {
+                onToSelect(selectedFromToken);
+                onFromSelect(selectedToToken);
+                setRotateSwitchTokens(!rotateSwitchTokens);
+              }}
+              style={{ cursor: 'pointer' }}
+              title={t('swapSwapSwitch')}
+            >
+              <Icon name={ICON_NAMES.ARROW_2_DOWN} size={ICON_SIZES.LG} />
             </div>
           </Box>
         </div>

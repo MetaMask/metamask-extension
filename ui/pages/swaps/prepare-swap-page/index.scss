@@ -262,6 +262,11 @@
     padding: 8px;
     background: var(--color-background-default-hover);
     border: 1px solid var(--color-border-default);
+    transition: all 0.3s linear;
+
+    &--rotate {
+      transform: rotate(360deg);
+    }
   }
 
   &__max-button {
