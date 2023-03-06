@@ -65,6 +65,7 @@ describe('EthOverview', () => {
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
+  const ETH_OVERVIEW_PORTFOLIO = 'home__portfolio-site';
 
   afterEach(() => {
     store.clearActions();
@@ -105,6 +106,30 @@ describe('EthOverview', () => {
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(`/bridge?metamaskEntry=ext`),
+        }),
+      );
+    });
+
+    it('should always show the Portfolio button', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const portfolioButton = queryByTestId(ETH_OVERVIEW_PORTFOLIO);
+      expect(portfolioButton).toBeInTheDocument();
+    });
+
+    it('should open the Portfolio URI when clicking on Portfolio button', async () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      const portfolioButton = queryByTestId(ETH_OVERVIEW_PORTFOLIO);
+
+      expect(portfolioButton).toBeInTheDocument();
+      expect(portfolioButton).not.toBeDisabled();
+
+      fireEvent.click(portfolioButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: expect.stringContaining(`?metamaskEntry=ext`),
         }),
       );
     });
