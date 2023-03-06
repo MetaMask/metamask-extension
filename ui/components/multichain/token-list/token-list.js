@@ -38,7 +38,7 @@ export const NewTokenList = ({
       gap={4}
     >
       <Box
-        className="token-list__container--cell"
+        className="token-list__container-cell"
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
         padding={4}
@@ -65,7 +65,7 @@ export const NewTokenList = ({
           <AvatarToken src={tokenImage} showHalo />
         </AvatarWithBadge>
         <Box
-          className="token-list__container--cell--text-container"
+          className="token-list__container-cell--text-container"
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
         >

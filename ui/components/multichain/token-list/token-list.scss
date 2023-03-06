@@ -1,11 +1,15 @@
 .token-list {
-  &__container {
+  &__container-cell {
     cursor: pointer;
 
-    &--cell {
-      &--text-container {
-        width: 100%;
-      }
+    &:hover,
+    &:focus-within {
+      background-color: var(--color-background-default-hover);
+    }
+
+    &--text-container {
+      width: 100%;
+      cursor: pointer;
     }
   }
 }
