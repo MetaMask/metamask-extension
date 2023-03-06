@@ -26,7 +26,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancelEncryptionPublicKey: PropTypes.func.isRequired,
     encryptionPublicKey: PropTypes.func.isRequired,
-    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
@@ -70,7 +69,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
   renderBalance = () => {
     const {
-      conversionRate,
       nativeCurrency,
       fromAccount: { balance },
     } = this.props;
@@ -81,7 +79,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
       16,
       EtherDenomination.WEI,
     )
-      .applyConversionRate(conversionRate)
+      .toDenomination(EtherDenomination.ETH)
       .round(6)
       .toBase(10);
 

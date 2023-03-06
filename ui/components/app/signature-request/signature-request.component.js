@@ -62,7 +62,6 @@ export default class SignatureRequest extends PureComponent {
      * RPC prefs of the current network
      */
     rpcPrefs: PropTypes.object,
-    conversionRate: PropTypes.number,
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool.isRequired,
@@ -157,7 +156,6 @@ export default class SignatureRequest extends PureComponent {
       rpcPrefs,
       txData,
       subjectMetadata,
-      conversionRate,
       nativeCurrency,
       currentCurrency,
       useNativeCurrencyAsPrimaryCurrency,
@@ -177,7 +175,6 @@ export default class SignatureRequest extends PureComponent {
 
     const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
       .toDenomination(EtherDenomination.ETH)
-      .applyConversionRate(conversionRate)
       .round(6)
       .toBase(10)
       .toString();
