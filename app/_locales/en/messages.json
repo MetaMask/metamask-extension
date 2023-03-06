@@ -171,6 +171,9 @@
   "addANickname": {
     "message": "Add a nickname"
   },
+  "addAccount": {
+    "message": "Add account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -1548,6 +1551,9 @@
   },
   "hardware": {
     "message": "Hardware"
+  },
+  "hardwareWallet": {
+    "message": "Hardware wallet"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"

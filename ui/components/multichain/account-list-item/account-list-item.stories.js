@@ -15,7 +15,7 @@ const ChaosIdentity = {
   tokenBalance: '3,299.09 ETH',
 };
 
-const noop = () => {};
+const noop = () => console.log('Clicked account!');
 
 export default {
   title: 'Components/Multichain/AccountListItem',

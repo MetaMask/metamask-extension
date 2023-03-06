@@ -19,6 +19,6 @@ export const DefaultStory = () => (
     identity={SampleIdentity}
     isRemovable
     blockExplorerUrlSubTitle="etherscan.io"
-    onClose={() => {}}
+    onClose={() => console.log(`Closed menu for ${SampleIdentity.address}`)}
   />
 );

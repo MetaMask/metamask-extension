@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -9,6 +10,7 @@ import {
   getBlockExplorerLinkText,
   getCurrentChainId,
 } from '../../../selectors';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
 import { ICON_NAMES } from '../../component-library';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
@@ -25,6 +27,7 @@ export const AccountListItemMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
@@ -44,6 +47,10 @@ export const AccountListItemMenu = ({
       url: addressLink,
     });
     onClose();
+  };
+
+  const routeToAddBlockExplorerUrl = () => {
+    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
   return (
@@ -85,7 +92,7 @@ export const AccountListItemMenu = ({
             dispatch(
               showModal({
                 name: 'CONFIRM_REMOVE_ACCOUNT',
-                identity: selectedIdentity,
+                identity,
               }),
             );
             onClose();
@@ -102,4 +109,7 @@ export const AccountListItemMenu = ({
 AccountListItemMenu.propTypes = {
   anchorElement: PropTypes.instanceOf(window.Element),
   onClose: PropTypes.func.required,
+  blockExplorerUrlSubTitle: PropTypes.string,
+  isRemovable: PropTypes.bool.isRequired,
+  identity: PropTypes.object.isRequired,
 };

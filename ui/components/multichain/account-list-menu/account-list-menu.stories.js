@@ -21,16 +21,14 @@ export default {
 };
 
 export const DefaultStory = () => (
-  <div style={{ maxWidth: '328px', border: '1px solid #eee' }}>
-    <AccountListMenu
-      identities={[
-        SampleIdentity,
-        ChaosIdentity,
-        SampleIdentity,
-        ChaosIdentity,
-        SampleIdentity,
-        ChaosIdentity,
-      ]}
-    />
-  </div>
+  <AccountListMenu
+    identities={[
+      SampleIdentity,
+      ChaosIdentity,
+      SampleIdentity,
+      ChaosIdentity,
+      SampleIdentity,
+      ChaosIdentity,
+    ]}
+  />
 );
