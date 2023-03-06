@@ -21,7 +21,6 @@ const TransactionAlerts = ({
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
-
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
 
@@ -68,26 +67,12 @@ const TransactionAlerts = ({
           data-testid="low-gas-fee-alert"
           severity={SEVERITIES.WARNING}
         >
-          <Typography
-            align="left"
-            margin={0}
-            tag={TypographyVariant.paragraph}
-            variant={TypographyVariant.H7}
-          >
-            {t('lowPriorityMessage')}
-          </Typography>
+          {t('lowPriorityMessage')}
         </BannerAlert>
       )}
       {supportsEIP1559 && isNetworkBusy ? (
         <BannerAlert severity={SEVERITIES.WARNING}>
-          <Typography
-            align="left"
-            margin={0}
-            tag={TypographyVariant.paragraph}
-            variant={TypographyVariant.H7}
-          >
-            {t('networkIsBusy')}
-          </Typography>
+          {t('networkIsBusy')}
         </BannerAlert>
       ) : null}
     </div>
