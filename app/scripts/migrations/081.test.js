@@ -11,6 +11,7 @@ describe('migration #81', () => {
         version: 80,
       },
       data: {
+        SnapController: {},
         PermissionController: {
           subjects: {
             'example.com': {
@@ -59,6 +60,7 @@ describe('migration #81', () => {
     expect(newStorage).toStrictEqual({
       meta: { version: newVersion },
       data: {
+        SnapController: {},
         PermissionController: {
           subjects: {
             'example.com': {
