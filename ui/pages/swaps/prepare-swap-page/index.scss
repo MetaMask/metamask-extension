@@ -316,7 +316,7 @@
   }
 
   .dropdown-search-list {
-    background-color: #F2F4F6;
+    background-color: var(--color-background-alternative);
     border-radius: 100px;
 
     &__select-default {
@@ -356,8 +356,6 @@
     &__input {
       div {
         border: 0;
-        // border: 1px solid var(--color-border-default);
-        // border-left: 0;
       }
     }
 
