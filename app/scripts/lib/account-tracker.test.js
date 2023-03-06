@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 
 import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
@@ -94,7 +93,7 @@ describe('Account Tracker', () => {
         currentBlockGasLimit: '',
       };
 
-      assert.deepEqual(newAccounts, expectedAccounts);
+      expect(newAccounts).toStrictEqual(expectedAccounts);
     });
 
     it('should not change accounts if the passed address is not in accounts', async () => {
@@ -118,7 +117,7 @@ describe('Account Tracker', () => {
         currentBlockGasLimit: '',
       };
 
-      assert.deepEqual(newAccounts, expectedAccounts);
+      expect(newAccounts).toStrictEqual(expectedAccounts);
     });
 
     it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
@@ -137,7 +136,7 @@ describe('Account Tracker', () => {
         currentBlockGasLimit: '',
       };
 
-      assert.deepEqual(newAccounts, expectedAccounts);
+      expect(newAccounts).toStrictEqual(expectedAccounts);
     });
   });
 
@@ -164,7 +163,7 @@ describe('Account Tracker', () => {
         currentBlockGasLimit: '',
       };
 
-      assert.deepEqual(newAccounts, expectedAccounts);
+      expect(newAccounts).toStrictEqual(expectedAccounts);
     });
 
     it('should update all balances if useMultiAccountBalanceChecker is true', async () => {
@@ -192,7 +191,7 @@ describe('Account Tracker', () => {
         currentBlockGasLimit: '',
       };
 
-      assert.deepEqual(newAccounts, expectedAccounts);
+      expect(newAccounts).toStrictEqual(expectedAccounts);
     });
   });
 });
