@@ -340,6 +340,7 @@ export const EVENT_NAMES = {
   PORTFOLIO_LINK_CLICKED: 'Portfolio Link Clicked',
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
+  REQUEST_DISABLED: 'Request Disabled',
   SIGNATURE_APPROVED: 'Signature Approved',
   SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',

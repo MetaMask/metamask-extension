@@ -1,3 +1,4 @@
+import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import { SECOND } from '../../../shared/constants/time';
 import { detectSIWE } from '../../../shared/modules/siwe';
@@ -48,6 +49,7 @@ const EVENT_NAME_MAP = {
     APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
     REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
     REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
+    DISABLED: EVENT_NAMES.REQUEST_DISABLED,
   },
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: {
     APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
@@ -195,10 +197,18 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      // An error code of 4001 means the user rejected the request, which we
-      // can use here to determine which event to track.
-      const event =
-        res.error?.code === 4001 ? eventType.REJECTED : eventType.APPROVED;
+      const isDisabledEthSignByAdvancedSetting =
+        method === MESSAGE_TYPE.ETH_SIGN &&
+        res.error?.code === errorCodes.rpc.methodNotFound;
+
+      let event;
+      if (isDisabledEthSignByAdvancedSetting) {
+        event = eventType.DISABLED;
+      } else if (res.error?.code === 4001) {
+        event = eventType.REJECTED;
+      } else {
+        event = eventType.APPROVED;
+      }
 
       const properties = {};
 
