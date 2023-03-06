@@ -1,4 +1,4 @@
 export enum BannerTipLogoType {
-  greeting = 'greeting',
-  chat = 'chat',
+  Greeting = 'greeting',
+  Chat = 'chat',
 }

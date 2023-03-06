@@ -22,12 +22,12 @@ The `BannerTip` accepts all `BannerBase` component props below
 
 ### Logo Type
 
-Use the `logoType` prop with the `BannerTipLogoType` object from `../../component-library` to change the context of `BannerTip`.
+Use the `logoType` prop with the `BannerTipLogoType` enum from `../../component-library` to change the context of `BannerTip`.
 
 Possible options:
 
-- `BannerTipLogoType.greeting` Default
-- `BannerTipLogoType.chat`
+- `BannerTipLogoType.Greeting` Default
+- `BannerTipLogoType.Chat`
 
 <Canvas>
   <Story id="components-componentlibrary-bannertip--logo-type" />
@@ -36,11 +36,11 @@ Possible options:
 ```jsx
 import { BannerTip } from '../../component-library';
 
-<BannerTip logoType={BannerTipLogoType.greeting}>
-  This is a demo of chat.
+<BannerTip logoType={BannerTipLogoType.Greeting}>
+  This is a demo of Chat.
 </BannerTip>
-<BannerTip logoType={BannerTipLogoType.chat}>
-  This is a demo of chat.
+<BannerTip logoType={BannerTipLogoType.Chat}>
+  This is a demo of Chat.
 </BannerTip>
 ```
 
@@ -142,5 +142,24 @@ import { BannerTip } from '../../component-library';
   onClose={() => console.log('close button clicked')}
 >
   Click the close button icon to hide this notifcation
+</BannerTip>;
+```
+
+### Start Accessory
+
+Use the `startAccessory` prop to pass a ReactNode to the start of the `BannerTip`. This is useful for overriding the defaults defined by `BannerTip`.
+
+<Canvas>
+  <Story id="components-componentlibrary-bannertip--start-accessory" />
+</Canvas>
+
+```jsx
+import { BannerTip } from '../../component-library';
+
+<BannerTip
+  startAccessory={<Icon name={ICON_NAMES.MESSAGES} />}
+  title="StartAccessory"
+>
+  This is a demo of startAccessory override.
 </BannerTip>;
 ```

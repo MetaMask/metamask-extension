@@ -5,7 +5,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ButtonLink, ButtonPrimary, ICON_NAMES } from '..';
+import { ButtonLink, ButtonPrimary, Icon, ICON_NAMES } from '..';
 import README from './README.mdx';
 import { BannerTip, BannerTipLogoType } from '.';
 
@@ -85,13 +85,13 @@ export const LogoType = (args) => {
     <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={3}>
       <BannerTip
         {...args}
-        logoType={BannerTipLogoType.greeting}
+        logoType={BannerTipLogoType.Greeting}
         title="Greeting"
       >
-        This is a demo of greeting.
+        This is a demo of Greeting.
       </BannerTip>
-      <BannerTip {...args} logoType={BannerTipLogoType.chat} title="Chat">
-        This is a demo of chat.
+      <BannerTip {...args} logoType={BannerTipLogoType.Chat} title="Chat">
+        This is a demo of Chat.
       </BannerTip>
     </Box>
   );
@@ -119,8 +119,12 @@ Description.args = {
 export const Children = (args) => {
   return (
     <BannerTip {...args}>
-      Description shouldn&apos;t repeat title. 1-3 lines. Can contain a
-      <ButtonLink size={Size.auto} href="https://metamask.io/" target="_blank">
+      Description shouldn&apos;t repeat title. 1-3 lines. Can contain a{' '}
+      <ButtonLink
+        size={Size.inherit}
+        href="https://metamask.io/"
+        target="_blank"
+      >
         hyperlink.
       </ButtonLink>
     </BannerTip>
@@ -165,4 +169,17 @@ export const OnClose = (args) => {
 OnClose.args = {
   title: 'onClose demo',
   children: 'Click the close button icon to hide this notifcation',
+};
+
+export const StartAccessory = (args) => {
+  return (
+    <BannerTip
+      {...args}
+      startAccessory={<Icon name={ICON_NAMES.MESSAGES} />}
+      title="StartAccessory"
+      onClose={() => console.log('close button clicked')}
+    >
+      This is a demo of startAccessory override.
+    </BannerTip>
+  );
 };

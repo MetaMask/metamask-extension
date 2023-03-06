@@ -21,13 +21,13 @@ describe('BannerTip', () => {
     const { getByTestId } = render(
       <>
         <BannerTip
-          logoType={BannerTipLogoType.greeting}
+          logoType={BannerTipLogoType.Greeting}
           logoProps={{ 'data-testid': 'banner-tip-greeting' }}
         >
           should render BannerTip element correctly
         </BannerTip>
         <BannerTip
-          logoType={BannerTipLogoType.chat}
+          logoType={BannerTipLogoType.Chat}
           logoProps={{ 'data-testid': 'banner-tip-chat' }}
         >
           should render BannerTip element correctly

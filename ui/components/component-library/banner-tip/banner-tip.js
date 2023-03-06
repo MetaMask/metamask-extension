@@ -13,27 +13,30 @@ import { BannerTipLogoType } from './banner-tip.constants';
 export const BannerTip = ({
   children,
   className,
-  logoType = BannerTipLogoType.greeting,
+  logoType = BannerTipLogoType.Greeting,
   logoWrapperProps,
   logoProps,
+  startAccessory,
   ...props
 }) => {
   return (
     <BannerBase
       startAccessory={
-        <Box
-          display={DISPLAY.FLEX}
-          alignItems={AlignItems.center}
-          {...logoWrapperProps}
-        >
+        startAccessory || (
           <Box
-            as="img"
-            className="mm-banner-tip--logo"
-            src={`images/fox-${logoType}.png`}
-            alt={logoType}
-            {...logoProps}
-          />
-        </Box>
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            {...logoWrapperProps}
+          >
+            <Box
+              as="img"
+              className="mm-banner-tip--logo"
+              src={`images/fox-${logoType}.png`}
+              alt={logoType}
+              {...logoProps}
+            />
+          </Box>
+        )
       }
       borderColor={BorderColor.borderDefault}
       className={classnames('mm-banner-tip', className)}
@@ -51,7 +54,7 @@ BannerTip.propTypes = {
   className: PropTypes.string,
   /**
    * Use the `logoType` prop with the `BannerTipLogoType` enum from `../../component-library` to change the logo image of `BannerTip`.
-   * Possible options: `BannerTipLogoType.greeting`(Default), `BannerTipLogoType.chat`,
+   * Possible options: `BannerTipLogoType.Greeting`(Default), `BannerTipLogoType.Chat`,
    */
   logoType: PropTypes.oneOf(Object.values(BannerTipLogoType)),
   /**
@@ -62,6 +65,10 @@ BannerTip.propTypes = {
    * logoWrapperProps accepts all the props from Box
    */
   logoWrapperProps: PropTypes.shape(Box.propTypes),
+  /**
+   * The start(defualt left) content area of BannerBase
+   */
+  startAccessory: PropTypes.node,
   /**
    * BannerTip accepts all the props from BannerBase
    */
