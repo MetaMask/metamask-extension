@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import { Text } from '../../component-library'
+import { Text } from '../../../component-library';
 import {
   AlignItems,
   FLEX_DIRECTION,

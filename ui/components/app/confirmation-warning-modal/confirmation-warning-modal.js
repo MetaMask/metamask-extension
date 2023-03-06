@@ -5,7 +5,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../../ui/popover';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
-import { Text } from '../../component-library';
 import {
   DISPLAY,
   FLEX_DIRECTION,
@@ -15,7 +14,7 @@ import {
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { Text, Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();
