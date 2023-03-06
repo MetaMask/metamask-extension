@@ -18,7 +18,7 @@ describe('Custom network', function () {
     ],
   };
 
-  it('should show warning when adding chainId 0x1', async function () {
+  it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
     await withFixtures(
       {
         dapp: true,
