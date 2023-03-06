@@ -1362,8 +1362,8 @@ export function setDesktopEnabled(desktopEnabled: boolean) {
   };
 }
 
-export async function generateOtp() {
-  return await submitRequestToBackground('generateOtp');
+export async function generateDesktopOtp() {
+  return await submitRequestToBackground('generateDesktopOtp');
 }
 
 export async function testDesktopConnection() {

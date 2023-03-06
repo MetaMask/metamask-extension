@@ -2031,7 +2031,7 @@ export default class MetamaskController extends EventEmitter {
       setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
         this.desktopController,
       ),
-      generateOtp: this.desktopController.generateOtp.bind(
+      generateDesktopOtp: this.desktopController.generateOtp.bind(
         this.desktopController,
       ),
       testDesktopConnection: this.desktopController.testDesktopConnection.bind(
