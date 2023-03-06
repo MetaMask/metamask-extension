@@ -2212,9 +2212,11 @@ export default class MetamaskController extends EventEmitter {
       isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
       tokenDetails.erc20 === true;
     const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
       !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
       !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
-      !tokenDetails.erc721;
+      !tokenDetails.erc721
+      
     const otherThanStandardDetailsAreERC20Like =
       tokenDetails.decimals !== undefined && tokenDetails.symbol;
 
