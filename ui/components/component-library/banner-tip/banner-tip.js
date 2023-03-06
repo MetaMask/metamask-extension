@@ -50,7 +50,7 @@ BannerTip.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Use the `logoType` prop with the `BannerTipLogoType` object from `../../component-library` to change the logo image of `BannerTip`.
+   * Use the `logoType` prop with the `BannerTipLogoType` enum from `../../component-library` to change the logo image of `BannerTip`.
    * Possible options: `BannerTipLogoType.greeting`(Default), `BannerTipLogoType.chat`,
    */
   logoType: PropTypes.oneOf(Object.values(BannerTipLogoType)),
