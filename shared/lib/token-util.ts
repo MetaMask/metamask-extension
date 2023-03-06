@@ -1,4 +1,6 @@
 import abi from 'human-standard-token-abi';
+import { Contract } from '@ethersproject/contracts';
+import { Web3Provider } from '@ethersproject/providers';
 
 /**
  * Gets the '_value' parameter of the given token transaction data
@@ -24,9 +26,10 @@ export function getTokenIdParam(tokenData: any = {}): string | undefined {
 export async function fetchTokenBalance(
   address: string,
   userAddress: string,
-  contract: (abi: string) => any,
+  provider,
 ): Promise<any> {
-  const tokenContract = contract(abi).at(address);
+  const ethersProvider = new Web3Provider(provider);
+  const tokenContract = new Contract(address, abi, ethersProvider);
   const tokenBalancePromise = tokenContract
     ? tokenContract.balanceOf(userAddress)
     : Promise.resolve();

@@ -64,7 +64,6 @@ import {
 ///: END:ONLY_INCLUDE_IN
 
 import browser from 'webextension-polyfill';
-import EthContract from 'ethjs-contract';
 import {
   AssetType,
   TransactionStatus,
@@ -2192,7 +2191,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const contract = new EthContract(this.ethQuery);
     const { tokenList } = this.tokenListController.state;
     const tokenListEntry = tokenList[address.toLowerCase()];
     let details;
@@ -2200,7 +2198,7 @@ export default class MetamaskController extends EventEmitter {
       const standard = tokenListEntry.standard?.toUpperCase() ?? 'NONE';
       let balance;
       if (standard === 'ERC20') {
-        balance = await fetchTokenBalance(address, userAddress, contract);
+        balance = await fetchTokenBalance(address, userAddress, this.provider);
       }
 
       details = {

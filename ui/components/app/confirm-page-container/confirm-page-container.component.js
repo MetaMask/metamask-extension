@@ -135,7 +135,7 @@ const ConfirmPageContainer = (props) => {
     const tokenBalance = await fetchTokenBalance(
       tokenAddress,
       fromAddress,
-      global.eth.contract,
+      global.ethereumProvider,
     );
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
