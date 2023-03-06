@@ -146,11 +146,10 @@ describe('Custom network', function () {
 
         const errMsg =
           'Chain ID returned by the custom network does not match the submitted chain ID.';
-        const error = await driver.findElement({
+        await driver.findElement({
           tag: 'span',
           text: errMsg,
         });
-        assert.equal(await error.getText(), errMsg);
 
         const approveBtn = await driver.findElement({
           tag: 'button',
@@ -214,14 +213,11 @@ describe('Custom network', function () {
           text: 'Approve',
         });
 
-        const error = await driver.findElement({
+        await driver.findElement({
           tag: 'span',
           text: 'Error while connecting to the custom network.',
         });
-        assert.equal(
-          await error.getText(),
-          'Error while connecting to the custom network.',
-        );
+
         const approveBtn = await driver.findElement({
           tag: 'button',
           text: 'Approve',
