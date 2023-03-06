@@ -4,15 +4,9 @@
 
   &__summary {
     position: relative;
-    padding-left: 24px;
     padding-bottom: 10px;
     font-weight: bold;
     display: flex;
-
-    &--icon {
-      margin-inline-start: -20px;
-      margin-inline-end: 10px;
-    }
 
     &::-webkit-details-marker,
     &::marker {

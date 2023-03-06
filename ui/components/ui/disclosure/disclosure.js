@@ -29,6 +29,7 @@ const Disclosure = ({ children, title, size }) => {
               className="disclosure__summary--icon"
               name={ICON_NAMES.ADD}
               size={Size.SM}
+              marginInlineEnd={3}
             />
             {title}
           </summary>
