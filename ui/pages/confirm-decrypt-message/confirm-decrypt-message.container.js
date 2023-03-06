@@ -12,7 +12,6 @@ import {
 import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
-  conversionRateSelector,
 } from '../../selectors';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -39,7 +38,6 @@ function mapStateToProps(state) {
     fromAccount,
     requester: null,
     requesterAddress: null,
-    conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
   };
