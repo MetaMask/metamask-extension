@@ -131,4 +131,32 @@ describe('migration #81', () => {
 
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
+
+  it('should leave state unchanged if there is no SnapController installed (i.e. not a flask build)', async () => {
+    const oldStorage = {
+      meta: {
+        version: 80,
+      },
+      data: {
+        PermissionController: {
+          subjects: {
+            'example.com': {
+              permissions: {
+                eth_accounts: {
+                  date: 2,
+                  id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
+                  invoker: 'example.com',
+                  parentCapability: 'eth_accounts',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
 });
