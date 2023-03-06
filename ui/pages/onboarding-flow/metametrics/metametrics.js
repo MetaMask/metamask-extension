@@ -7,6 +7,7 @@ import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,6 +20,13 @@ import {
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../components/component-library';
+
+import Box from '../../../components/ui/box/box';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -86,48 +94,78 @@ export default function OnboardingMetametrics() {
       </Typography>
       <ul>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={IconColor.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={IconColor.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
-          <i className="fa fa-times" />
-          {t('onboardingMetametricsNeverCollect', [
-            <Typography
-              variant={TypographyVariant.Span}
-              key="never"
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('onboardingMetametricsNeverEmphasis')}
-            </Typography>,
-          ])}
+          <Box>
+            <Icon
+              marginInlineEnd={2}
+              name={ICON_NAMES.CLOSE}
+              size={ICON_SIZES.SM}
+              color={IconColor.errorDefault}
+            />
+            {t('onboardingMetametricsNeverCollect', [
+              <Typography
+                variant={TypographyVariant.span}
+                key="never"
+                fontWeight={FONT_WEIGHT.BOLD}
+                marginTop={0}
+              >
+                {t('onboardingMetametricsNeverEmphasis')}
+              </Typography>,
+            ])}
+          </Box>
         </li>
         <li>
-          <i className="fa fa-times" />
-          {t('onboardingMetametricsNeverCollectIP', [
-            <Typography
-              variant={TypographyVariant.Span}
-              key="never-collect"
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('onboardingMetametricsNeverEmphasis')}
-            </Typography>,
-          ])}
+          <Box>
+            <Icon
+              marginInlineEnd={2}
+              name={ICON_NAMES.CLOSE}
+              size={ICON_SIZES.SM}
+              color={IconColor.errorDefault}
+            />
+            {t('onboardingMetametricsNeverCollectIP', [
+              <Typography
+                variant={TypographyVariant.span}
+                key="never-collect"
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('onboardingMetametricsNeverEmphasis')}
+              </Typography>,
+            ])}
+          </Box>
         </li>
         <li>
-          <i className="fa fa-times" />
-          {t('onboardingMetametricsNeverSellData', [
-            <Typography
-              variant={TypographyVariant.Span}
-              key="never-sell"
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('onboardingMetametricsNeverEmphasis')}
-            </Typography>,
-          ])}
+          <Box>
+            <Icon
+              marginInlineEnd={2}
+              name={ICON_NAMES.CLOSE}
+              size={ICON_SIZES.SM}
+              color={IconColor.errorDefault}
+            />
+            {t('onboardingMetametricsNeverSellData', [
+              <Typography
+                variant={TypographyVariant.span}
+                key="never-sell"
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('onboardingMetametricsNeverEmphasis')}
+              </Typography>,
+            ])}
+          </Box>{' '}
         </li>
       </ul>
       <Typography

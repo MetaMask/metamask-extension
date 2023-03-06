@@ -18,16 +18,22 @@ orbs:
   gh: circleci/github-cli@2.0
   codecov: codecov/codecov@3.2.2
 
+rc_branch_only: &rc_branch_only
+  filters:
+    branches:
+      only:
+        - /^Version-v(\d+)[.](\d+)[.](\d+)/
+
 workflows:
   test_and_release:
     jobs:
       - create_release_pull_request:
+          <<: *rc_branch_only
           requires:
             - prep-deps
-          filters:
-            branches:
-              only:
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+      - trigger-beta-build:
+          requires:
+            - prep-deps
       - prep-deps
       - test-deps-audit:
           requires:
@@ -46,9 +52,6 @@ workflows:
           requires:
             - prep-deps
       - prep-build:
-          requires:
-            - prep-deps
-      - prep-build-beta:
           requires:
             - prep-deps
       - prep-build-desktop:
@@ -132,7 +135,7 @@ workflows:
             - prep-build
       - validate-source-maps-beta:
           requires:
-            - prep-build-beta
+            - trigger-beta-build
       - validate-source-maps-desktop:
           requires:
             - prep-build-desktop
@@ -144,9 +147,10 @@ workflows:
             - prep-deps
             - prep-build
       - test-mozilla-lint-beta:
+          <<: *rc_branch_only
           requires:
             - prep-deps
-            - prep-build-beta
+            - trigger-beta-build
       - test-mozilla-lint-desktop:
           requires:
             - prep-deps
@@ -177,6 +181,8 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
+            - test-e2e-chrome-nft
+            - test-e2e-firefox-nft
             - test-e2e-chrome-snaps
             - test-e2e-firefox-snaps
             - test-storybook
@@ -193,7 +199,7 @@ workflows:
           requires:
             - prep-deps
             - prep-build
-            - prep-build-beta
+            - trigger-beta-build
             - prep-build-desktop
             - prep-build-flask
             - prep-build-storybook
@@ -228,6 +234,35 @@ workflows:
             - prep-build-ts-migration-dashboard
 
 jobs:
+  trigger-beta-build:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: Build beta prod
+                command: |
+                  .circleci/scripts/trigger-beta-build.sh
+            - run:
+                name: Move beta build to 'dist-beta' to avoid conflict with production build
+                command: mv ./dist ./dist-beta
+            - run:
+                name: Move beta zips to 'builds-beta' to avoid conflict with production build
+                command: mv ./builds ./builds-beta
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - dist-beta
+                  - builds-beta
+
   create_release_pull_request:
     executor: node-browsers
     steps:
@@ -345,46 +380,6 @@ jobs:
           paths:
             - dist
             - builds
-
-  prep-build-beta:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:dist
-                command: yarn build --build-type beta dist
-      - when:
-          condition:
-            matches:
-              pattern: /^master$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:prod
-                command: yarn build --build-type beta prod
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
-      - run:
-          name: Move beta build to 'dist-beta' to avoid conflict with production build
-          command: mv ./dist ./dist-beta
-      - run:
-          name: Move beta zips to 'builds-beta' to avoid conflict with production build
-          command: mv ./builds ./builds-beta
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-beta
-            - builds-beta
 
   prep-build-desktop:
     executor: node-browsers-medium-plus
@@ -657,7 +652,7 @@ jobs:
           steps:
             - run:
                 name: Validate release candidate changelog
-                command: yarn lint:changelog:rc
+                command: .circleci/scripts/validate-changelog-in-rc.sh
 
   test-deps-audit:
     executor: node-browsers
@@ -709,6 +704,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -773,6 +769,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -809,12 +806,13 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e.xml
-          
+
   test-e2e-firefox-snaps:
     executor: node-browsers
     parallelism: 2
@@ -845,6 +843,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -881,6 +880,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -917,6 +917,7 @@ jobs:
             if [ "$(ls -A test/test-results/e2e)" ]; then
               yarn test:e2e:report
             fi
+          when: always
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1218,7 +1219,8 @@ jobs:
           command: mv ./builds-beta ./builds
       - run:
           name: Validate source maps
-          command: yarn validate-source-maps
+          command: |
+            .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-desktop:
     executor: node-browsers

@@ -58,14 +58,7 @@ describe('MetaMask', function () {
 
   afterEach(async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      const errors = await driver.checkBrowserForConsoleErrors(driver);
-      if (errors.length) {
-        const errorReports = errors.map((err) => err.message);
-        const errorMessage = `Errors found in browser console:\n${errorReports.join(
-          '\n',
-        )}`;
-        console.error(new Error(errorMessage));
-      }
+      await driver.checkBrowserForConsoleErrors(false);
     }
     if (this.currentTest.state === 'failed') {
       failed = true;

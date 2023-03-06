@@ -30,10 +30,9 @@ import AddNetwork from '../../components/app/add-network/add-network';
 import {
   Icon,
   ButtonIcon,
-  ICON_SIZES,
   ICON_NAMES,
 } from '../../components/component-library';
-import { Color } from '../../helpers/constants/design-system';
+import { Color, DISPLAY } from '../../helpers/constants/design-system';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -78,8 +77,16 @@ class SettingsPage extends PureComponent {
     searchText: '',
   };
 
-  shouldRenderExperimentalTab =
-    process.env.TRANSACTION_SECURITY_PROVIDER || process.env.NFTS_V1;
+  shouldRenderExperimentalTab() {
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    const desktopAvailable = true;
+    if (desktopAvailable) {
+      return true;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return process.env.TRANSACTION_SECURITY_PROVIDER || process.env.NFTS_V1;
+  }
 
   componentDidMount() {
     this.handleConversionDate();
@@ -129,10 +136,11 @@ class SettingsPage extends PureComponent {
             {currentPath !== SETTINGS_ROUTE && (
               <ButtonIcon
                 ariaLabel={t('back')}
-                name={ICON_NAMES.ARROW_LEFT}
-                size={ICON_SIZES.XL}
+                iconName={ICON_NAMES.ARROW_LEFT}
+                className="settings-page__back-button"
                 color={Color.iconDefault}
                 onClick={() => history.push(backRoute)}
+                display={[DISPLAY.FLEX, DISPLAY.NONE]}
               />
             )}
 
@@ -266,7 +274,7 @@ class SettingsPage extends PureComponent {
     const tabs = [
       {
         content: t('general'),
-        icon: <i className="fa fa-cog" />,
+        icon: <Icon name={ICON_NAMES.SETTING} />,
         key: GENERAL_ROUTE,
       },
       {
@@ -305,7 +313,7 @@ class SettingsPage extends PureComponent {
       },
     ];
 
-    if (this.shouldRenderExperimentalTab) {
+    if (this.shouldRenderExperimentalTab()) {
       tabs.push({
         content: t('experimental'),
         icon: <i className="fa fa-flask" />,
@@ -365,7 +373,7 @@ class SettingsPage extends PureComponent {
           render={() => <AddNetwork />}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
-        {this.shouldRenderExperimentalTab ? (
+        {this.shouldRenderExperimentalTab() ? (
           <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         ) : null}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />

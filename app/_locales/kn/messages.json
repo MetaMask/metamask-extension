@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
   },
-  "buyWithWyre": {
-    "message": "Wyre ನೊಂದಿಗೆ $1 ಖರೀದಿಸಿ"
-  },
-  "buyWithWyreDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ಖಾತೆಗೆ $1 ಅನ್ನು ಜಮಾ ಮಾಡಲು ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಬಳಸಲು Wyre ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ."
-  },
   "bytes": {
     "message": "ಬೈಟ್‌ಗಳು"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "ಮುಖ್ಯ ಎಥೆರಿಯಮ್ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "continueToWyre": {
-    "message": "Wyre ಗೆ ಮುಂದುವರಿಸಿ"
   },
   "contractDeployment": {
     "message": "ಒಪ್ಪಂದದ ನಿಯೋಜನೆ"
@@ -326,13 +317,6 @@
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
-  },
-  "getEther": {
-    "message": "ಎಥರ್ ಪಡೆಯಿರಿ"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 ಗಾಗಿ ಫಾಸೆಟ್‌ನಿಂದ ಎಥರ್ ಅನ್ನು ಪಡೆಯಿರಿ",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
@@ -781,9 +765,6 @@
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"
   },
-  "testFaucet": {
-    "message": "ಫಾಸೆಟ್ ಪರೀಕ್ಷಿಸಿ"
-  },
   "tips": {
     "message": "ಸಲಹೆಗಳು"
   },
@@ -901,9 +882,6 @@
   },
   "userName": {
     "message": "ಬಳಕೆದಾರಹೆಸರು"
-  },
-  "viewAccount": {
-    "message": "ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"
   },
   "viewContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"

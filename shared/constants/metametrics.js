@@ -186,6 +186,7 @@
  * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
  * @property {'install_date_ext'} INSTALL_DATE_EXT - when the user installed the extension
+ * @property {'desktop_enabled'} [DESKTOP_ENABLED] - optional / does the user have desktop enabled?
  */
 
 /**
@@ -208,6 +209,7 @@ export const TRAITS = {
   THEME: 'theme',
   THREE_BOX_ENABLED: 'three_box_enabled',
   TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
+  DESKTOP_ENABLED: 'desktop_enabled',
 };
 
 /**
@@ -237,6 +239,7 @@ export const TRAITS = {
  *  enabled? (deprecated)
  * @property {string} [theme] - which theme the user has selected
  * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
+ * @property {boolean} [desktop_enabled] - optional / does the user have desktop enabled?
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
@@ -399,6 +402,7 @@ export const EVENT = {
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+    DESKTOP: 'Desktop',
   },
   EXTERNAL_LINK_TYPES: {
     TRANSACTION_BLOCK_EXPLORER: 'Transaction Block Explorer',

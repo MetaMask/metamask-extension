@@ -135,6 +135,7 @@ export const TextField = ({
         required={required}
         value={value}
         type={type}
+        disableStateStyles
         {...inputProps} // before className so input className isn't overridden
         className={classnames('mm-text-field__input', inputProps?.className)}
       />

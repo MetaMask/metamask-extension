@@ -64,23 +64,24 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
-function getMockNetworkController(
-  chainId = FAKE_CHAIN_ID,
-  provider = { type: NETWORK_TYPES.MAINNET },
-) {
-  let networkStore = { chainId, provider };
+function getMockNetworkController() {
+  let state = {
+    provider: {
+      type: NETWORK_TYPES.GOERLI,
+      chainId: FAKE_CHAIN_ID,
+    },
+    network: 'loading',
+  };
   const on = sinon.stub().withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE);
   const updateState = (newState) => {
-    networkStore = { ...networkStore, ...newState };
+    state = { ...state, ...newState };
     on.getCall(0).args[1]();
   };
   return {
     store: {
-      getState: () => networkStore,
+      getState: () => state,
       updateState,
     },
-    getCurrentChainId: () => networkStore.chainId,
-    getNetworkIdentifier: () => networkStore.provider.type,
     on,
   };
 }
@@ -132,8 +133,8 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getCurrentChainId:
-      networkController.getCurrentChainId.bind(networkController),
+    getCurrentChainId: () =>
+      networkController.store.getState().provider.chainId,
     onNetworkDidChange: networkController.on.bind(
       networkController,
       NETWORK_EVENTS.NETWORK_DID_CHANGE,
@@ -206,8 +207,8 @@ describe('MetaMetricsController', function () {
       networkController.store.updateState({
         provider: {
           type: 'NEW_NETWORK',
+          chainId: '0xaab',
         },
-        chainId: '0xaab',
       });
       assert.strictEqual(metaMetricsController.chainId, '0xaab');
     });
@@ -943,6 +944,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.deepEqual(traits, {
@@ -960,6 +962,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
+        [TRAITS.DESKTOP_ENABLED]: false,
       });
     });
 
@@ -981,6 +984,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1001,6 +1005,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.deepEqual(updatedTraits, {
@@ -1029,6 +1034,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -1047,6 +1053,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.equal(updatedTraits, null);

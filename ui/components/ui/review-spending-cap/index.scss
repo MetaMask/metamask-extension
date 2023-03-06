@@ -7,10 +7,6 @@
     &__tooltip {
       width: 180px;
 
-      &__warning-icon {
-        color: var(--color-error-default);
-      }
-
       &__question-icon {
         color: var(--color-icon-muted);
       }
@@ -20,10 +16,6 @@
   &__heading-detail {
     flex-grow: 1;
     align-self: center;
-  }
-
-  i {
-    font-size: $font-size-h7;
   }
 
   &__value {

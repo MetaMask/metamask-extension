@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import { cloneDeep } from 'lodash';
 
 import {
   goHome,
@@ -11,7 +12,6 @@ import {
 import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
-  conversionRateSelector,
 } from '../../selectors';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -25,13 +25,12 @@ function mapStateToProps(state) {
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
-  const txData = unconfirmedTransactions[0];
+  const txData = cloneDeep(unconfirmedTransactions[0]);
 
-  const {
-    msgParams: { from },
-  } = txData;
-
-  const fromAccount = getTargetAccountWithSendEtherInfo(state, from);
+  const fromAccount = getTargetAccountWithSendEtherInfo(
+    state,
+    txData?.msgParams?.from,
+  );
 
   return {
     txData,
@@ -39,7 +38,6 @@ function mapStateToProps(state) {
     fromAccount,
     requester: null,
     requesterAddress: null,
-    conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
   };

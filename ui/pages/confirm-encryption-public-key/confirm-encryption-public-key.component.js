@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import log from 'loglevel';
 
 import AccountListItem from '../../components/app/account-list-item';
 import Identicon from '../../components/ui/identicon';
@@ -25,7 +26,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancelEncryptionPublicKey: PropTypes.func.isRequired,
     encryptionPublicKey: PropTypes.func.isRequired,
-    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
@@ -69,7 +69,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
   renderBalance = () => {
     const {
-      conversionRate,
       nativeCurrency,
       fromAccount: { balance },
     } = this.props;
@@ -80,7 +79,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
       16,
       EtherDenomination.WEI,
     )
-      .applyConversionRate(conversionRate)
+      .toDenomination(EtherDenomination.ETH)
       .round(6)
       .toBase(10);
 
@@ -197,6 +196,11 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   render = () => {
+    if (!this.props.txData) {
+      log.warn('ConfirmEncryptionPublicKey Page: Missing txData prop.');
+      return null;
+    }
+
     return (
       <div className="request-encryption-public-key__container">
         {this.renderHeader()}
