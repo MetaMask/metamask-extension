@@ -1179,7 +1179,7 @@ jobs:
       - codecov/upload
       - run:
           name: test:coverage:validate
-          command: yarn test:coverage:validate
+          command: yarn test:coverage:validate --html
       - persist_to_workspace:
           root: .
           paths:
