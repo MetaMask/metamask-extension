@@ -66,12 +66,11 @@ describe('Custom network', function () {
         const warningTxt =
           'You are adding a new RPC provider for Ethereum Mainnet';
 
-        const warning = await driver.findElement({
+        await driver.findElement({
           tag: 'h4',
           text: warningTxt,
         });
 
-        assert.equal(await warning.getText(), warningTxt);
         await driver.clickElement({
           tag: 'button',
           text: 'Approve',
@@ -79,11 +78,10 @@ describe('Custom network', function () {
 
         const errMsg =
           'Chain ID returned by the custom network does not match the submitted chain ID.';
-        const error = await driver.findElement({
+        await driver.findElement({
           tag: 'span',
           text: errMsg,
         });
-        assert.equal(await error.getText(), errMsg);
 
         const approveBtn = await driver.findElement({
           tag: 'button',
