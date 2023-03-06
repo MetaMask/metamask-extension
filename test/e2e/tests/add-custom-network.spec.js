@@ -67,7 +67,6 @@ describe('Custom network', function () {
           text: 'Approve',
         });
 
-        await driver.delay(1000);
         const warningTxt =
           'You are adding a new RPC provider for Ethereum Mainnet';
 
