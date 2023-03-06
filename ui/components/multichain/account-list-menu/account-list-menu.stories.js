@@ -16,7 +16,7 @@ const ChaosIdentity = {
 };
 
 export default {
-  title: 'Components/Redesign/AccountListMenu',
+  title: 'Components/Multichain/AccountListMenu',
   component: AccountListMenu,
 };
 

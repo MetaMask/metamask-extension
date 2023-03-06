@@ -18,7 +18,7 @@ const ChaosIdentity = {
 const noop = () => {};
 
 export default {
-  title: 'Components/Redesign/AccountListItem',
+  title: 'Components/Multichain/AccountListItem',
   component: AccountListItem,
 };
 

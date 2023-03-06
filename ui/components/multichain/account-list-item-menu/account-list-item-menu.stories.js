@@ -9,7 +9,7 @@ const SampleIdentity = {
 };
 
 export default {
-  title: 'Components/Redesign/AccountListItemMenu',
+  title: 'Components/Multichain/AccountListItemMenu',
   component: AccountListItemMenu,
 };
 
