@@ -1357,7 +1357,7 @@ export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 /**
  * To get the `desktopEnabled` value which determines whether we use the desktop app
  *
