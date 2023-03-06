@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Fuse from 'fuse.js';
 import Box from '../../ui/box/box';
 import {
   ButtonLink,
@@ -17,6 +18,18 @@ export const AccountListMenu = ({
   onClose = () => console.log('Account list closed'),
 }) => {
   const t = useI18nContext();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const searchResults = searchQuery
+    ? new Fuse(identities, {
+        threshold: 0.2,
+        location: 0,
+        distance: 100,
+        maxPatternLength: 32,
+        minMatchCharLength: 1,
+        keys: ['name', 'address'],
+      }).search(searchQuery)
+    : identities;
 
   return (
     <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
@@ -27,11 +40,13 @@ export const AccountListMenu = ({
             size={Size.SM}
             width={BLOCK_SIZES.FULL}
             placeholder={t('searchAccounts')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </Box>
         {/* Account list block */}
-        <Box style={{ maxHeight: '200px', overflow: 'auto' }}>
-          {identities.map((identity) => (
+        <Box style={{ height: '200px', overflow: 'auto' }}>
+          {searchResults.map((identity) => (
             <AccountListItem identity={identity} key={identity.address} />
           ))}
         </Box>
