@@ -376,7 +376,7 @@ export default class ConfirmApproveContent extends Component {
       if (assetName || tokenSymbol) {
         titleTokenDescription = `${assetName ?? tokenSymbol}`;
       } else {
-        titleTokenDescription = t('nft');
+        titleTokenDescription = t('thisCollection');
       }
     }
 
@@ -451,9 +451,20 @@ export default class ConfirmApproveContent extends Component {
     let title;
 
     if (isSetApproveForAll) {
-      title = t('approveAllTokensTitle', [titleTokenDescription]);
-      if (isApprovalOrRejection === false) {
-        title = t('revokeAllTokensTitle', [titleTokenDescription]);
+      if (tokenSymbol) {
+        title = t('approveAllTokensTitle', [titleTokenDescription]);
+        if (isApprovalOrRejection === false) {
+          title = t('revokeAllTokensTitle', [titleTokenDescription]);
+        }
+      } else {
+        title = t('approveAllTokensTitleWithoutSymbol', [
+          titleTokenDescription,
+        ]);
+        if (isApprovalOrRejection === false) {
+          title = t('revokeAllTokensTitleWithoutSymbol', [
+            titleTokenDescription,
+          ]);
+        }
       }
     } else if (
       assetStandard === TokenStandard.ERC721 ||
@@ -485,9 +496,15 @@ export default class ConfirmApproveContent extends Component {
     let description = t('trustSiteApprovePermission', [grantee]);
 
     if (isSetApproveForAll && isApprovalOrRejection === false) {
-      description = t('revokeApproveForAllDescription', [
-        this.getTitleTokenDescription(),
-      ]);
+      if (tokenSymbol) {
+        description = t('revokeApproveForAllDescription', [
+          this.getTitleTokenDescription(),
+        ]);
+      } else {
+        description = t('revokeApproveForAllDescriptionWithoutSymbol', [
+          this.getTitleTokenDescription(),
+        ]);
+      }
     } else if (
       isSetApproveForAll ||
       assetStandard === TokenStandard.ERC721 ||
@@ -563,7 +580,10 @@ export default class ConfirmApproveContent extends Component {
         >
           {this.renderTitle()}
         </div>
-        <div className="confirm-approve-content__description">
+        <div
+          className="confirm-approve-content__description"
+          data-testid="confirm-approve-description"
+        >
           {this.renderDescription()}
         </div>
         <Box marginBottom={4} marginTop={2}>

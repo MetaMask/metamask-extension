@@ -365,6 +365,10 @@
     "message": "Allow access to and transfer of all your $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
+  "approveAllTokensTitleWithoutSymbol": {
+    "message": "Allow access to and transfer of all your NFTs of $1?",
+    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "approveAndInstall": {
     "message": "Approve & install"
   },
@@ -3138,9 +3142,17 @@
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
+  "revokeAllTokensTitleWithoutSymbol": {
+    "message": "Revoke permission to access and transfer all of your NFTs of $1?",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "revokeApproveForAllDescription": {
     "message": "This revokes the permission for a third party to access and transfer all of your $1 without further notice.",
     "description": "$1 is either a string or link of a given token symbol or name"
+  },
+  "revokeApproveForAllDescriptionWithoutSymbol": {
+    "message": "This revokes the permission for a third party to access and transfer all of your NFTs of $1 without further notice.",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -4118,6 +4130,9 @@
   },
   "thingsToKeep": {
     "message": "Things to keep in mind:"
+  },
+  "thisCollection": {
+    "message": "this collection"
   },
   "thisIsBasedOn": {
     "message": "This is based on information from "
