@@ -3,8 +3,7 @@ import { cloneDeep } from 'lodash';
 const version = 79;
 
 /**
- * The portfolio tooltip has been moved to a button on the home screen so
- * this property is no longer needed in state
+ * Remove collectiblesDropdownState and collectiblesDetectionNoticeDismissed:.
  */
 export default {
   version,
@@ -19,9 +18,14 @@ export default {
 };
 
 function transformState(state) {
-  if (state?.metamask?.showPortfolioTooltip !== undefined) {
-    delete state.metamask.showPortfolioTooltip;
+  if (
+    state?.AppStateController?.collectiblesDetectionNoticeDismissed !==
+    undefined
+  ) {
+    delete state.AppStateController.collectiblesDetectionNoticeDismissed;
   }
-
+  if (state?.metamask?.collectiblesDropdownState !== undefined) {
+    delete state.metamask.collectiblesDropdownState;
+  }
   return state;
 }
