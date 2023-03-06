@@ -64,6 +64,17 @@ export const MESSAGE_TYPE = {
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   ENABLE_DESKTOP: `metamask_enableDesktop`,
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
+  MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
+  MMI_REFRESH_TOKEN: 'metamaskinstitutional_refresh_token',
+  MMI_SUPPORTED: 'metamaskinstitutional_supported',
+  MMI_PORTFOLIO: 'metamaskinstitutional_portfolio',
+  MMI_OPEN_SWAPS: 'metamaskinstitutional_open_swaps',
+  MMI_CHECK_IF_TOKEN_IS_PRESENT: 'metamaskinstitutional_checkIfTokenIsPresent',
+  MMI_SET_ACCOUNT_AND_NETWORK: 'metamaskinstitutional_setAccountAndNetwork',
+  MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
+  ///: END:ONLY_INCLUDE_IN
 } as const;
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -95,10 +106,15 @@ export const METAMASK_BETA_CHROME_ID = 'pbbkamfgmaedccnfkmjcofcecjhfgldn';
 export const METAMASK_PROD_CHROME_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
 export const METAMASK_FLASK_CHROME_ID = 'ljfoeinjpaedjfecbmggjgodbgkmjkjk';
 
+export const METAMASK_MMI_BETA_CHROME_ID = 'kmbhbcbadohhhgdgihejcicbgcehoaeg';
+export const METAMASK_MMI_PROD_CHROME_ID = 'ikkihjamdhfiojpdbnfllpjigpneipbc';
+
 export const CHROME_BUILD_IDS = [
   METAMASK_BETA_CHROME_ID,
   METAMASK_PROD_CHROME_ID,
   METAMASK_FLASK_CHROME_ID,
+  METAMASK_MMI_BETA_CHROME_ID,
+  METAMASK_MMI_PROD_CHROME_ID,
 ] as const;
 
 const METAMASK_BETA_FIREFOX_ID = 'webextension-beta@metamask.io';
