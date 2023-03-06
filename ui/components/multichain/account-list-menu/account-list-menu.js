@@ -12,11 +12,14 @@ import { BLOCK_SIZES, Size } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../../ui/popover';
 
-export const AccountListMenu = ({ identities = [] }) => {
+export const AccountListMenu = ({
+  identities = [],
+  onClose = () => console.log('Account list closed'),
+}) => {
   const t = useI18nContext();
 
   return (
-    <Popover>
+    <Popover title={t('selectAnAccount')} onClose={onClose}>
       <Box>
         {/* Search box */}
         <Box padding={4}>
@@ -60,4 +63,5 @@ export const AccountListMenu = ({ identities = [] }) => {
 
 AccountListMenu.propTypes = {
   identities: PropTypes.array,
+  onClose: PropTypes.func,
 };
