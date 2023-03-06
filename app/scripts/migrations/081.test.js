@@ -113,6 +113,7 @@ describe('migration #81', () => {
         version: 80,
       },
       data: {
+        SnapController: {},
         PermissionController: {
           subjects: {
             'example.com': {
