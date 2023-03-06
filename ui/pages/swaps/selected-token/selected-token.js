@@ -22,7 +22,7 @@ export default function SelectedToken({ onClick, selectedToken }) {
       onClick={onClick}
     >
       <div className="dropdown-search-list__selector-closed">
-        {selectedToken?.iconUrl && (
+        {selectedToken?.iconUrl && selectedToken?.symbol && (
           <UrlIcon
             url={selectedToken.iconUrl}
             className="dropdown-search-list__selector-closed-icon"
