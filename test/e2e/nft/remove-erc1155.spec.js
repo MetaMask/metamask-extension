@@ -39,8 +39,11 @@ describe('Remove ERC1155 NFT', function () {
         await driver.fill('[data-testid="token-id"]', '1');
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
-        // Open the details and click remove nft button
-        await driver.clickElement('.nfts-items__item-image');
+        // Open the details page and click remove nft button
+        const importedNftImage = await driver.findVisibleElement(
+          '.nfts-items__item img',
+        );
+        await importedNftImage.click();
         await driver.clickElement('[data-testid="nft-options__button"]');
         await driver.clickElement('[data-testid="nft-item-remove"]');
 
