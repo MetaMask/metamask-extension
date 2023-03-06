@@ -292,6 +292,7 @@ export const EVENT_NAMES = {
   APP_UNLOCKED: 'App Unlocked',
   APP_UNLOCKED_FAILED: 'App Unlocked Failed',
   APP_WINDOW_EXPANDED: 'App Window Expanded',
+  BRIDGE_LINK_CLICKED: 'Bridge Link Clicked',
   DECRYPTION_APPROVED: 'Decryption Approved',
   DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',

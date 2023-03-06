@@ -197,7 +197,7 @@ export function renderDesktopError({
       );
       break;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     // This route only exists on the Desktop App
     case EXTENSION_ERROR_PAGE_TYPES.ROUTE_NOT_FOUND:
       content = (

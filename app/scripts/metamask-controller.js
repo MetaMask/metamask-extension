@@ -113,6 +113,8 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { isMain, isFlask } from '../../shared/constants/environment';
+// eslint-disable-next-line import/order
+import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
@@ -174,16 +176,6 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
-
-/* eslint-disable import/first */
-/* eslint-disable import/order */
-
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-///: END:ONLY_INCLUDE_IN
-
-/* eslint-enable import/first */
-/* eslint-enable import/order */
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -868,6 +860,10 @@ export default class MetamaskController extends EventEmitter {
       state: initState.CronjobController,
       messenger: cronjobControllerMessenger,
     });
+
+    this.desktopController = new DesktopController({
+      initState: initState.DesktopController,
+    });
     ///: END:ONLY_INCLUDE_IN
 
     this.detectTokensController = new DetectTokensController({
@@ -1121,12 +1117,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    this.desktopController = new DesktopController({
-      initState: initState.DesktopController,
-    });
-    ///: END:ONLY_INCLUDE_IN
-
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.accountTracker._updateAccounts();
@@ -1233,8 +1223,6 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
@@ -1268,8 +1256,6 @@ export default class MetamaskController extends EventEmitter {
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
-        ///: END:ONLY_INCLUDE_IN
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
@@ -2038,6 +2024,22 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      // Desktop
+      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      generateDesktopOtp: this.desktopController.generateOtp.bind(
+        this.desktopController,
+      ),
+      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
+        this.desktopController,
+      ),
+      disableDesktop: this.desktopController.disableDesktop.bind(
+        this.desktopController,
+      ),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -2178,24 +2180,6 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
-
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      generateOtp: this.desktopController.generateOtp.bind(
-        this.desktopController,
-      ),
-      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
-        this.desktopController,
-      ),
-      disableDesktop: this.desktopController.disableDesktop.bind(
-        this.desktopController,
-      ),
-      ///: END:ONLY_INCLUDE_IN
     };
   }
 
@@ -4035,11 +4019,6 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
-
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-        testDesktopConnection: this.desktopController.testDesktopConnection,
-        generateOtp: this.desktopController.generateOtp,
-        ///: END:ONLY_INCLUDE_IN
       }),
     );
 
