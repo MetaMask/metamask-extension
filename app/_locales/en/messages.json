@@ -1640,8 +1640,23 @@
   "importAccountError": {
     "message": "Error importing account."
   },
+  "importAccountErrorIsSRP": {
+    "message": "You have entered a Secret Recovery Phrase (or mnemonic). To import an account here, you have to enter a private key, which is a hexadecimal string of length 64."
+  },
+  "importAccountErrorNotAValidPrivateKey": {
+    "message": "This is not a valid private key. You have entered a hexadecimal string, but it must be 64 characters long."
+  },
+  "importAccountErrorNotHexadecimal": {
+    "message": "This is not a valid private key. You must enter a hexadecimal string of length 64."
+  },
+  "importAccountJsonLoading1": {
+    "message": "Expect this JSON import to take a few minutes and freeze MetaMask."
+  },
+  "importAccountJsonLoading2": {
+    "message": "We apologize, and we will make it faster in the future."
+  },
   "importAccountMsg": {
-    "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
+    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importMyWallet": {
     "message": "Import my wallet"

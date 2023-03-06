@@ -252,8 +252,7 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
-        {process.env.TRANSACTION_SECURITY_PROVIDER &&
-          this.renderTransactionSecurityCheckToggle()}
+        {this.renderTransactionSecurityCheckToggle()}
         {process.env.NFTS_V1 && this.renderOpenSeaEnabledToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(desktop)

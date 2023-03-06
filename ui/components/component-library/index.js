@@ -26,7 +26,7 @@ export { Label } from './label';
 export { PickerNetwork } from './picker-network';
 export { Tag } from './tag';
 export { TagUrl } from './tag-url';
-export { Text, TEXT_DIRECTIONS } from './text';
+export { Text, TEXT_DIRECTIONS, INVISIBLE_CHARACTER } from './text';
 export { Input, INPUT_TYPES } from './input';
 export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
 export { TextFieldSearch } from './text-field-search';
