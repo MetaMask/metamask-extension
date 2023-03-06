@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import browser from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IN
 import { memoize } from 'lodash';
@@ -7,7 +7,7 @@ import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../../ui/helpers/utils/i18n-helper';
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { renderDesktopError } from '../../ui/pages/desktop-error/render-desktop-error';
 import { EXTENSION_ERROR_PAGE_TYPES } from '../constants/desktop';
 import { openCustomProtocol } from './deep-linking';
@@ -44,7 +44,7 @@ export async function getErrorHtml(
   errorKey,
   supportLink,
   metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   err,
   ///: END:ONLY_INCLUDE_IN
 ) {
@@ -65,7 +65,7 @@ export async function getErrorHtml(
   const { currentLocaleMessages, enLocaleMessages } = response;
   const t = getLocaleContext(currentLocaleMessages, enLocaleMessages);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const isDesktopEnabled = metamaskState?.desktopEnabled === true;
 
   if (isDesktopEnabled) {
@@ -120,7 +120,7 @@ export async function getErrorHtml(
     `;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 function disableDesktop(backgroundConnection) {
   backgroundConnection.disableDesktopError();
 }

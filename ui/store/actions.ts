@@ -1350,6 +1350,28 @@ export function markNotificationsAsRead(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+export function setDesktopEnabled(desktopEnabled: boolean) {
+  return async () => {
+    try {
+      await submitRequestToBackground('setDesktopEnabled', [desktopEnabled]);
+    } catch (error) {
+      log.error(error);
+    }
+  };
+}
+
+export async function generateDesktopOtp() {
+  return await submitRequestToBackground('generateDesktopOtp');
+}
+
+export async function testDesktopConnection() {
+  return await submitRequestToBackground('testDesktopConnection');
+}
+
+export async function disableDesktop() {
+  return await submitRequestToBackground('disableDesktop');
+}
 ///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(
@@ -4574,27 +4596,3 @@ export function requestAddNetworkApproval(
     }
   };
 }
-
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-export function setDesktopEnabled(desktopEnabled: boolean) {
-  return async () => {
-    try {
-      await submitRequestToBackground('setDesktopEnabled', [desktopEnabled]);
-    } catch (error) {
-      log.error(error);
-    }
-  };
-}
-
-export async function generateOtp() {
-  return await submitRequestToBackground('generateOtp');
-}
-
-export async function testDesktopConnection() {
-  return await submitRequestToBackground('testDesktopConnection');
-}
-
-export async function disableDesktop() {
-  return await submitRequestToBackground('disableDesktop');
-}
-///: END:ONLY_INCLUDE_IN
