@@ -68,6 +68,7 @@ import {
   AssetType,
   TransactionStatus,
   TransactionType,
+  TokenStandard,
 } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -2192,29 +2193,64 @@ export default class MetamaskController extends EventEmitter {
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
     const { tokenList } = this.tokenListController.state;
-    const tokenListEntry = tokenList[address.toLowerCase()];
-    let details;
-    if (tokenListEntry) {
-      const standard = tokenListEntry.standard?.toUpperCase() ?? 'NONE';
-      let balance;
-      if (standard === 'ERC20') {
-        balance = await fetchTokenBalance(address, userAddress, this.provider);
-      }
+    const { tokens } = this.tokensController.state;
 
-      details = {
-        address,
-        balance,
-        standard,
-        decimals: tokenListEntry.decimals,
-        symbol: tokenListEntry.symbol,
-      };
-    } else {
+    const staticTokenListDetails =
+      STATIC_MAINNET_TOKEN_LIST[address.toLowerCase()] || {};
+    const tokenListDetails = tokenList[address.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    };
+    const tokenDetailsStandardIsisERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      tokenDetails.erc20 === true;
+    const noEvidenceThatTokenIsAnNFT =
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !tokenDetails.erc721;
+    const otherThanStandardDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsisERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherThanStandardDetailsAreERC20Like);
+
+    let details;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        const balance = await fetchTokenBalance(
+          address,
+          userAddress,
+          this.provider,
+        );
+
+        details = {
+          address,
+          balance,
+          standard: TokenStandard.ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        log.warning('Failed to get token balance');
+      }
+    }
+
+    if (details === undefined) {
       details = await this.assetsContractController.getTokenStandardAndDetails(
         address,
         userAddress,
         tokenId,
       );
     }
+
     return {
       ...details,
       decimals: details?.decimals?.toString(10),
