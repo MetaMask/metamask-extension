@@ -42,7 +42,10 @@ describe('View ERC1155 NFT details', function () {
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
         // Click to open the NFT details page and check displayed account
-        await driver.clickElement('.nfts-items__item-image');
+        const importedNftImage = await driver.findVisibleElement(
+          '.nfts-items__item img',
+        );
+        await importedNftImage.click();
         const detailsPageAccount = await driver.findElement(
           '.asset-breadcrumb span:nth-of-type(2)',
         );
