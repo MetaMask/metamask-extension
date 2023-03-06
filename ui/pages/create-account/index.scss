@@ -1,5 +1,4 @@
 @import 'connect-hardware/index';
-@import 'import-account/index';
 
 .new-account {
   width: 375px;
@@ -18,47 +17,8 @@
     position: absolute;
   }
 
-  &__header {
-    display: flex;
-    flex-flow: column;
-    border-bottom: 1px solid var(--color-border-muted);
-  }
-
-  &__title {
-    @include H2;
-
-    color: var(--color-text-alternative);
-    font-weight: 500;
-    margin-top: 22px;
-    margin-left: 29px;
-  }
-
-  &__tabs {
-    margin-left: 22px;
-    display: flex;
-    margin-top: 10px;
-
-    &__tab {
-      @include H4;
-
-      height: 54px;
-      padding: 15px 10px;
-      color: var(--color-text-muted);
-      text-align: center;
-      cursor: pointer;
-    }
-
-    &__tab:hover {
-      color: var(--color-text-default);
-      border-bottom: none;
-    }
-
-    &__selected {
-      color: var(--color-primary-default);
-      border-bottom: 3px solid var(--color-primary-default);
-      cursor: initial;
-      pointer-events: none;
-    }
+  .bottom-border-1px {
+    border-width: 0 0 1px 0;
   }
 }
 
