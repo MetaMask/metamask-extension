@@ -38,6 +38,17 @@ export default function KeyRingLabel({ keyring }) {
       return null;
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  if (type.startsWith('Custody') && /JSONRPC/u.test(type)) {
+    label = type.split(' - ')[1];
+    return null;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  if (label === null) {
+    return label;
+  }
+
   return (
     <>{label ? <div className="keyring-label allcaps">{label}</div> : null}</>
   );
