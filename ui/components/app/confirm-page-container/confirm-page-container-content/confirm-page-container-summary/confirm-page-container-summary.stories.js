@@ -2,7 +2,8 @@ import React from 'react';
 import ConfirmPageContainerSummary from '.';
 
 export default {
-  title: 'Components/UI/ConfirmPageContainerSummary', // title should follow the folder structure location of the component. Don't use spaces.
+  title:
+    'Components/App/ConfirmPageContainer/ConfirmPageContainerContent/ConfirmPageContainerSummary',
   argTypes: {
     action: {
       control: 'text',
