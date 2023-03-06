@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Браузърът ви не се поддържа ..."
   },
-  "buyWithWyre": {
-    "message": "Купете $1 с Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre ви позволява да използвате кредитна карта, за да депозирате $1 право във вашата MetaMask сметка."
-  },
   "bytes": {
     "message": "Байта"
   },
@@ -171,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
-  },
-  "continueToWyre": {
-    "message": "Продължете към Wyre"
   },
   "contractDeployment": {
     "message": "Разгръщане на договор"
@@ -322,13 +313,6 @@
   },
   "general": {
     "message": "Общ"
-  },
-  "getEther": {
-    "message": "Вземете етер"
-  },
-  "getEtherFromFaucet": {
-    "message": "Вземете Ether от фосет за $1",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "Тестова мрежа на Goerli"
@@ -777,9 +761,6 @@
   "terms": {
     "message": "Условия за ползване"
   },
-  "testFaucet": {
-    "message": "Тест Faucet"
-  },
   "tips": {
     "message": "Дарения"
   },
@@ -897,9 +878,6 @@
   },
   "userName": {
     "message": "Потребителско име"
-  },
-  "viewAccount": {
-    "message": "Преглед на профила"
   },
   "viewContact": {
     "message": "Преглед на контакта"

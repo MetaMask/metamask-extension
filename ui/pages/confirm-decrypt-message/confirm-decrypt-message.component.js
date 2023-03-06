@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
+import log from 'loglevel';
 
 import AccountListItem from '../../components/app/account-list-item';
 import Identicon from '../../components/ui/identicon';
@@ -31,7 +32,6 @@ export default class ConfirmDecryptMessage extends Component {
     cancelDecryptMessage: PropTypes.func.isRequired,
     decryptMessage: PropTypes.func.isRequired,
     decryptMessageInline: PropTypes.func.isRequired,
-    conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     requesterAddress: PropTypes.string,
@@ -94,7 +94,7 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate, nativeCurrency } = this.props;
+    const { nativeCurrency } = this.props;
     const {
       fromAccount: { balance },
     } = this.state;
@@ -105,7 +105,7 @@ export default class ConfirmDecryptMessage extends Component {
       16,
       EtherDenomination.WEI,
     )
-      .applyConversionRate(conversionRate)
+      .toDenomination(EtherDenomination.ETH)
       .round(6)
       .toBase(10);
 
@@ -298,6 +298,11 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   render = () => {
+    if (!this.props.txData) {
+      log.warn('ConfirmDecryptMessage Page: Missing txData prop.');
+      return null;
+    }
+
     return (
       <div className="request-decrypt-message__container">
         {this.renderHeader()}

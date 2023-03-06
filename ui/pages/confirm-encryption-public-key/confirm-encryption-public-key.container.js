@@ -9,7 +9,6 @@ import {
 } from '../../store/actions';
 
 import {
-  conversionRateSelector,
   unconfirmedTransactionsListSelector,
   getTargetAccountWithSendEtherInfo,
 } from '../../selectors';
@@ -28,9 +27,10 @@ function mapStateToProps(state) {
 
   const txData = unconfirmedTransactions[0];
 
-  const { msgParams: from } = txData;
-
-  const fromAccount = getTargetAccountWithSendEtherInfo(state, from);
+  const fromAccount = getTargetAccountWithSendEtherInfo(
+    state,
+    txData?.msgParams,
+  );
 
   return {
     txData,
@@ -38,7 +38,6 @@ function mapStateToProps(state) {
     fromAccount,
     requester: null,
     requesterAddress: null,
-    conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
   };

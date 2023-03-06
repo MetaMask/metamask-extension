@@ -4,10 +4,11 @@ import {
   doesAddressRequireLedgerHidConnection,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  conversionRateSelector,
   getSubjectMetadata,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  getCurrentCurrency,
+  getPreferences,
 } from '../../../selectors';
 import {
   isAddressLedger,
@@ -32,12 +33,9 @@ function mapStateToProps(state, ownProps) {
   const isLedgerWallet = isAddressLedger(state, from);
   const chainId = getCurrentChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
-  const subjectMetadata = getSubjectMetadata(state);
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
-
-  const { iconUrl: siteImage = '' } =
-    subjectMetadata[txData.msgParams.origin] || {};
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   return {
     provider,
@@ -45,12 +43,12 @@ function mapStateToProps(state, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-    conversionRate: conversionRateSelector(state),
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
+    useNativeCurrencyAsPrimaryCurrency,
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
@@ -85,9 +83,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
-    conversionRate,
     nativeCurrency,
+    currentCurrency,
+    useNativeCurrencyAsPrimaryCurrency,
     provider,
     subjectMetadata,
     unconfirmedMessagesList,
@@ -138,9 +136,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     hardwareWalletRequiresConnection,
     chainId,
     rpcPrefs,
-    siteImage,
-    conversionRate,
     nativeCurrency,
+    currentCurrency,
+    useNativeCurrencyAsPrimaryCurrency,
     provider,
     subjectMetadata,
     unapprovedMessagesCount,

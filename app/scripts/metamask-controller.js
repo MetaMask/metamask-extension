@@ -5,7 +5,7 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { debounce } from 'lodash';
 import { createEngineStream } from 'json-rpc-middleware-stream';
-import { providerAsMiddleware } from 'eth-json-rpc-middleware';
+import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
   KeyringController,
   keyringBuilderFactory,
@@ -69,7 +69,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '../../shared/constants/transaction';
-import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -527,10 +526,11 @@ export default class MetamaskController extends EventEmitter {
       initState.PhishingController,
     );
 
-    this.phishingController.maybeUpdatePhishingLists();
+    this.phishingController.maybeUpdateState();
 
     if (process.env.IN_TEST) {
-      this.phishingController.setRefreshInterval(5 * SECOND);
+      this.phishingController.setHotlistRefreshInterval(5 * SECOND);
+      this.phishingController.setStalelistRefreshInterval(30 * SECOND);
     }
 
     this.announcementController = new AnnouncementController(
@@ -1865,6 +1865,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
+      setOpenSeaTransactionSecurityProviderPopoverHasBeenShown:
+        preferencesController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown.bind(
+          preferencesController,
+        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -1925,6 +1929,7 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
         appStateController.setFirstTimeUsedNetwork.bind(appStateController),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -2594,7 +2599,9 @@ export default class MetamaskController extends EventEmitter {
       if (loginToken && loginSalt) {
         const { vault } = this.keyringController.store.getState();
 
-        if (vault.salt !== loginSalt) {
+        const jsonVault = JSON.parse(vault);
+
+        if (jsonVault.salt !== loginSalt) {
           console.warn(
             'submitEncryptionKey: Stored salt and vault salt do not match',
           );
@@ -3449,7 +3456,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    * @param version
    */
-  newUnsignedTypedMessage(msgParams, req, version) {
+  async newUnsignedTypedMessage(msgParams, req, version) {
     const promise = this.typedMessageManager.addUnapprovedMessageAsync(
       msgParams,
       req,
@@ -3642,15 +3649,11 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
-      this.phishingController.maybeUpdatePhishingLists();
+      this.phishingController.maybeUpdateState();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
-        this.sendPhishingWarning(
-          connectionStream,
-          hostname,
-          phishingTestResponse,
-        );
+        this.sendPhishingWarning(connectionStream, hostname);
         this.metaMetricsController.trackEvent({
           event: EVENT_NAMES.PHISHING_PAGE_DISPLAYED,
           category: EVENT.CATEGORIES.PHISHING,
@@ -3735,15 +3738,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
    * @param {string} hostname - The hostname that triggered the suspicion.
-   * @param {object} phishingTestResponse - Result of calling `phishingController.test`,
-   * which is the result of calling eth-phishing-detects detector.check method https://github.com/MetaMask/eth-phishing-detect/blob/master/src/detector.js#L55-L112
    */
-  sendPhishingWarning(connectionStream, hostname, phishingTestResponse) {
-    const newIssueUrl = PHISHING_NEW_ISSUE_URLS[phishingTestResponse?.name];
-
+  sendPhishingWarning(connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream);
     const phishingStream = mux.createStream('phishing');
-    phishingStream.write({ hostname, newIssueUrl });
+    phishingStream.write({ hostname });
   }
 
   /**

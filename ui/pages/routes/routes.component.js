@@ -4,6 +4,9 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+import browserAPI from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IN(desktop)
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -36,6 +39,11 @@ import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
+import DesktopErrorPage from '../desktop-error';
+import DesktopPairingPage from '../desktop-pairing';
+///: END:ONLY_INCLUDE_IN(desktop)
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -63,7 +71,15 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  DESKTOP_PAIRING_ROUTE,
+  DESKTOP_ERROR_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
+///: END:ONLY_INCLUDE_IN
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -128,6 +144,22 @@ export default class Routes extends Component {
     document.documentElement.setAttribute('data-theme', osTheme);
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  componentDidMount() {
+    const { history } = this.props;
+    browserAPI.runtime.onMessage.addListener(
+      registerOnDesktopDisconnect(history),
+    );
+  }
+
+  componentWillUnmount() {
+    const { history } = this.props;
+    browserAPI.runtime.onMessage.removeListener(
+      registerOnDesktopDisconnect(history),
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   componentDidUpdate(prevProps) {
     const { theme } = this.props;
 
@@ -173,6 +205,15 @@ export default class Routes extends Component {
       <Switch>
         <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          <Route
+            path={`${DESKTOP_ERROR_ROUTE}/:errorType`}
+            component={DesktopErrorPage}
+            exact
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
         <RestoreVaultComponent
           path={RESTORE_VAULT_ROUTE}
@@ -239,6 +280,15 @@ export default class Routes extends Component {
         />
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          <Authenticated
+            path={DESKTOP_PAIRING_ROUTE}
+            component={DesktopPairingPage}
+            exact
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
@@ -294,6 +344,19 @@ export default class Routes extends Component {
 
   hideAppHeader() {
     const { location } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    const isDesktopConnectionLostScreen = Boolean(
+      matchPath(location.pathname, {
+        path: `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST}`,
+        exact: true,
+      }),
+    );
+
+    if (isDesktopConnectionLostScreen) {
+      return true;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {

@@ -290,9 +290,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "affirmAgree": {
-    "message": "Je suis d’accord"
-  },
   "airgapVault": {
     "message": "Coffre-fort AirGap"
   },
@@ -526,37 +523,8 @@
     "message": "Acheter $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyCryptoWithCoinbasePay": {
-    "message": "Achetez des $1 avec Coinbase Pay",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithCoinbasePayDescription": {
-    "message": "Vous pouvez facilement acheter et transférer des cryptomonnaies en utilisant votre compte Coinbase.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPay": {
-    "message": "Acheter $1 avec MoonPay",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithMoonPayDescription": {
-    "message": "MoonPay prend en charge les moyens de paiement populaires, incluant Visa, Mastercard, Apple / Google / Samsung Pay et les virements bancaires dans plus de 145 pays. Les tokens sont déposés sur votre compte MetaMask."
-  },
-  "buyCryptoWithTransak": {
-    "message": "Acheter $1 avec Transak",
-    "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "buyCryptoWithTransakDescription": {
-    "message": "Transak prend en charge les cartes de crédit et de débit, Apple Pay, MobiKwik et les virements bancaires (selon l’emplacement) dans plus de 100 pays. Les tokens $1 sont directement déposés sur votre compte MetaMask.",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "buyNow": {
     "message": "Achetez maintenant"
-  },
-  "buyWithWyre": {
-    "message": "Acheter des $1 avec Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Intégration facile pour les achats à hauteur de 1000 $. Vérification interactive et rapide des achats pour les comptes qui bénéficient d’un plafond de paiement élevé. Prise en charge des cartes de débit/crédit, d’Apple Pay et des virements bancaires. Disponible dans plus de 100 pays. Dépôt de jetons sur votre compte MetaMask."
   },
   "bytes": {
     "message": "Octets"
@@ -735,18 +703,6 @@
   },
   "continue": {
     "message": "Continuer"
-  },
-  "continueToCoinbasePay": {
-    "message": "Accéder à Coinbase Pay"
-  },
-  "continueToMoonPay": {
-    "message": "Continuer vers MoonPay"
-  },
-  "continueToTransak": {
-    "message": "Continuer vers Transak"
-  },
-  "continueToWyre": {
-    "message": "Continuer vers Wyre"
   },
   "contract": {
     "message": "Contrat"
@@ -960,10 +916,6 @@
   "deposit": {
     "message": "Effectuez un dépôt"
   },
-  "depositCrypto": {
-    "message": "Effectuer un dépôt de $1",
-    "description": "$1 represents the crypto symbol to be purchased"
-  },
   "deprecatedTestNetworksLink": {
     "message": "En savoir plus"
   },
@@ -975,12 +927,6 @@
   },
   "details": {
     "message": "Détails"
-  },
-  "directDepositCrypto": {
-    "message": "Déposer directement $1"
-  },
-  "directDepositCryptoExplainer": {
-    "message": "Si vous avez déjà un peu de $1, la façon la plus rapide d’obtenir $1 dans votre nouveau portefeuille est par dépôt direct."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "« $1 » est désactivé parce qu’il ne correspond pas au minimum d’augmentation de 10 % par rapport aux gas fees initiaux.",
@@ -1279,7 +1225,7 @@
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Voir les détails",
-    "description": "Call to action a user can take to see more information about the Snap that is installed"
+    "description": "Call to action a user can take to see more information about the snap that is installed"
   },
   "flaskSnapSettingsCardDateAddedOn": {
     "message": "Ajouté le",
@@ -1432,23 +1378,8 @@
   "gasUsed": {
     "message": "Gaz utilisé"
   },
-  "gdprMessage": {
-    "message": "Ces données sont agrégées et sont donc anonymes aux fins du règlement général sur la protection des données (UE) 2016/679. Pour plus d’informations concernant nos pratiques en matière de confidentialité, veuillez consulter notre $1.",
-    "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
-  },
-  "gdprMessagePrivacyPolicy": {
-    "message": "Politique de confidentialité ici",
-    "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
-  },
   "general": {
     "message": "Général"
-  },
-  "getEther": {
-    "message": "Obtenir des Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Obtenir de l’Ether d’un faucet pour le réseau $1.",
-    "description": "Displays network name for Ether faucet"
   },
   "goBack": {
     "message": "Retour"
@@ -1894,37 +1825,6 @@
   "metamaskVersion": {
     "message": "Version de MetaMask"
   },
-  "metametricsCommitmentsAllowOptOut": {
-    "message": "Toujours pouvoir vous désinscrire via les Paramètres"
-  },
-  "metametricsCommitmentsBoldNever": {
-    "message": "Jamais",
-    "description": "This string is localized separately from some of the commitments so that we can bold it"
-  },
-  "metametricsCommitmentsIntro": {
-    "message": "MetaMask :"
-  },
-  "metametricsCommitmentsNeverCollectIP": {
-    "message": "Ne collectera $1 votre adresse IP complète",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "Ne collectera $1 vos clés, adresses, transactions, soldes, hachages ou toute autre information personnelle",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "Ne vendra $1 de données à des fins lucratives. Jamais !",
-    "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
-  },
-  "metametricsCommitmentsSendAnonymizedEvents": {
-    "message": "Enverra des événements de clics et de pages vues anonymisés"
-  },
-  "metametricsHelpImproveMetaMask": {
-    "message": "Aidez-nous à améliorer MetaMask"
-  },
-  "metametricsOptInDescription": {
-    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Elles seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
-  },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -1969,10 +1869,6 @@
   "nativeToken": {
     "message": "Le jeton natif de ce réseau est $1. C’est le jeton utilisé pour les frais de gaz.\n",
     "description": "$1 represents the name of the native token on the current network"
-  },
-  "needCryptoInWallet": {
-    "message": "Pour interagir avec des applications décentralisées à l’aide de MetaMask, vous devrez avoir $1 dans votre portefeuille.",
-    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Vous avez besoin d’aide ? Contactez $1",
@@ -2163,9 +2059,6 @@
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
-  },
-  "noThanks": {
-    "message": "Non merci"
   },
   "noThanksVariant2": {
     "message": "Non merci."
@@ -2618,7 +2511,7 @@
   },
   "permission_accessSnap": {
     "message": "Connexion au Snap $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Planifiez et exécutez des actions périodiques.",
@@ -3854,9 +3747,6 @@
   "termsOfService": {
     "message": "Conditions de service"
   },
-  "testFaucet": {
-    "message": "Faucet testnet"
-  },
   "testNetworks": {
     "message": "Réseaux de test"
   },
@@ -4211,9 +4101,6 @@
   "view": {
     "message": "Affichez"
   },
-  "viewAccount": {
-    "message": "Voir le compte"
-  },
   "viewAllDetails": {
     "message": "Afficher tous les détails"
   },
@@ -4281,7 +4168,7 @@
   },
   "warningTooltipText": {
     "message": "$1 L’autre partie au contrat peut dépenser la totalité de votre solde de jetons sans préavis et sans demander votre consentement. Protégez-vous en abaissant le plafond des dépenses.",
-    "description": "$1 is a fa-exclamation-circle icon with text 'Be careful' in 'warning' colour"
+    "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
     "message": "Faible"
