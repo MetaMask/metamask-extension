@@ -814,6 +814,60 @@
         "fetch": true
       }
     },
+    "@metamask/desktop": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "WebSocket": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.digest": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.generateKey": true,
+        "crypto.subtle.importKey": true,
+        "isDesktopApp": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/desktop>eciesjs": true,
+        "@metamask/desktop>otpauth": true,
+        "@metamask/obs-store": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>process": true,
+        "browserify>stream-browserify": true,
+        "end-of-stream": true,
+        "extension-port-stream": true,
+        "loglevel": true,
+        "obj-multiplex": true,
+        "uuid": true,
+        "webextension-polyfill": true
+      }
+    },
+    "@metamask/desktop>eciesjs": {
+      "packages": {
+        "@metamask/desktop>eciesjs>futoin-hkdf": true,
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true,
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+      }
+    },
+    "@metamask/desktop>eciesjs>futoin-hkdf": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>crypto-browserify": true
+      }
+    },
+    "@metamask/desktop>otpauth": {
+      "globals": {
+        "__GLOBALTHIS__": true,
+        "define": true
+      }
+    },
     "@metamask/eth-json-rpc-infura": {
       "globals": {
         "setTimeout": true
