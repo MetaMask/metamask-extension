@@ -1,3 +1,4 @@
+import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
@@ -168,6 +169,28 @@ describe('createRPCMethodTrackingMiddleware', () => {
         category: 'inpage_provider',
         event: EVENT_NAMES.PERMISSIONS_APPROVED,
         properties: { method: MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${EVENT_NAMES.REQUEST_DISABLED} for 'eth_sign' event if 'eth_sign' is disabled in advanced settings`, async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN,
+        origin: 'some.dapp',
+      };
+      const res = {
+        error: { code: errorCodes.rpc.methodNotFound },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+
+      handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: 'inpage_provider',
+        event: EVENT_NAMES.REQUEST_DISABLED,
+        properties: { signature_type: MESSAGE_TYPE.ETH_SIGN },
         referrer: { url: 'some.dapp' },
       });
     });
