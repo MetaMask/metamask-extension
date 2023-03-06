@@ -19,7 +19,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
 
   return (
-    <Popover title={t('selectAnAccount')} onClose={onClose}>
+    <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
       <Box>
         {/* Search box */}
         <Box padding={4}>
