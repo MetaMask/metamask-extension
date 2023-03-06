@@ -1,8 +1,4 @@
 import { cloneDeep, isArray } from 'lodash';
-import {
-  WALLET_SNAP_PERMISSION_KEY,
-  SnapCaveatType,
-} from '@metamask/rpc-methods';
 import { hasProperty, isObject } from '@metamask/utils';
 
 export const version = 81;
@@ -71,27 +67,22 @@ function transformState(state: Record<string, unknown>) {
           return state;
         }
         // We create a wallet_snap key if we already don't have one
-        if (!hasProperty(updatedPermissions, WALLET_SNAP_PERMISSION_KEY)) {
-          updatedPermissions[WALLET_SNAP_PERMISSION_KEY] = {
-            caveats: [{ type: SnapCaveatType.SnapIds, value: {} }],
+        if (!hasProperty(updatedPermissions, 'wallet_snap')) {
+          updatedPermissions.wallet_snap = {
+            caveats: [{ type: 'snapIds', value: {} }],
             invoker: subjectName,
-            parentCapability: WALLET_SNAP_PERMISSION_KEY,
+            parentCapability: 'wallet_snap',
           };
         }
 
         // Check if the existing permission is valid
-        if (!isObject(updatedPermissions[WALLET_SNAP_PERMISSION_KEY])) {
+        if (!isObject(updatedPermissions.wallet_snap)) {
           return state;
         }
 
         if (
           !isArray(
-            (
-              updatedPermissions[WALLET_SNAP_PERMISSION_KEY] as Record<
-                string,
-                unknown
-              >
-            ).caveats,
+            (updatedPermissions.wallet_snap as Record<string, unknown>).caveats,
           )
         ) {
           return state;
@@ -100,12 +91,8 @@ function transformState(state: Record<string, unknown>) {
         // Adding the snap name to the wallet_snap permission's caveat value
         const snapId = permissionName.slice(snapPrefix.length);
         const caveat = (
-          (
-            updatedPermissions[WALLET_SNAP_PERMISSION_KEY] as Record<
-              string,
-              any
-            >
-          ).caveats as unknown[]
+          (updatedPermissions.wallet_snap as Record<string, any>)
+            .caveats as unknown[]
         )[0];
 
         if (!isObject(caveat)) {
@@ -114,7 +101,7 @@ function transformState(state: Record<string, unknown>) {
 
         if (
           !hasProperty(caveat, 'type') ||
-          caveat.type !== SnapCaveatType.SnapIds ||
+          caveat.type !== 'snapIds' ||
           !hasProperty(caveat, 'value') ||
           !isObject(caveat.value)
         ) {
@@ -142,19 +129,9 @@ function transformState(state: Record<string, unknown>) {
 
     // we reassign the date and id here after iterating through all permissions
     // and update the subject with the updated permissions
-    if (updatedPermissions[WALLET_SNAP_PERMISSION_KEY]) {
-      (
-        updatedPermissions[WALLET_SNAP_PERMISSION_KEY] as Record<
-          string,
-          unknown
-        >
-      ).date = date;
-      (
-        updatedPermissions[WALLET_SNAP_PERMISSION_KEY] as Record<
-          string,
-          unknown
-        >
-      ).id = id;
+    if (updatedPermissions.wallet_snap) {
+      (updatedPermissions.wallet_snap as Record<string, unknown>).date = date;
+      (updatedPermissions.wallet_snap as Record<string, unknown>).id = id;
       subject.permissions = updatedPermissions;
     }
   }

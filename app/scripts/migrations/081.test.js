@@ -1,7 +1,3 @@
-import {
-  WALLET_SNAP_PERMISSION_KEY,
-  SnapCaveatType,
-} from '@metamask/rpc-methods';
 import { migrate, version as newVersion } from './081';
 
 describe('migration #81', () => {
@@ -65,10 +61,10 @@ describe('migration #81', () => {
           subjects: {
             'example.com': {
               permissions: {
-                [WALLET_SNAP_PERMISSION_KEY]: {
+                wallet_snap: {
                   caveats: [
                     {
-                      type: SnapCaveatType.SnapIds,
+                      type: 'snapIds',
                       value: {
                         'npm:foobar': {},
                         'npm:baz': {},
@@ -78,16 +74,16 @@ describe('migration #81', () => {
                   date: 3,
                   id: 'x342A44-beae-4525-a36c-c0635fd03359',
                   invoker: 'example.com',
-                  parentCapability: WALLET_SNAP_PERMISSION_KEY,
+                  parentCapability: 'wallet_snap',
                 },
               },
             },
             'aave.com': {
               permissions: {
-                [WALLET_SNAP_PERMISSION_KEY]: {
+                wallet_snap: {
                   caveats: [
                     {
-                      type: SnapCaveatType.SnapIds,
+                      type: 'snapIds',
                       value: {
                         'npm:btcsnap': {},
                         'npm:filsnap': {},
@@ -97,7 +93,7 @@ describe('migration #81', () => {
                   date: 10,
                   id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
                   invoker: 'aave.com',
-                  parentCapability: WALLET_SNAP_PERMISSION_KEY,
+                  parentCapability: 'wallet_snap',
                 },
               },
             },
