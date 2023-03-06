@@ -2208,7 +2208,7 @@ export default class MetamaskController extends EventEmitter {
       ...tokenListDetails,
       ...userDefinedTokenDetails,
     };
-    const tokenDetailsStandardIsisERC20 =
+    const tokenDetailsStandardIsERC20 =
       isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
       tokenDetails.erc20 === true;
     const noEvidenceThatTokenIsAnNFT =
