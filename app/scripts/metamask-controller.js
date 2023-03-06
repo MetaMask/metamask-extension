@@ -69,7 +69,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '../../shared/constants/transaction';
-import { PHISHING_NEW_ISSUE_URLS } from '../../shared/constants/phishing';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -509,10 +508,11 @@ export default class MetamaskController extends EventEmitter {
       initState.PhishingController,
     );
 
-    this.phishingController.maybeUpdatePhishingLists();
+    this.phishingController.maybeUpdateState();
 
     if (process.env.IN_TEST) {
-      this.phishingController.setRefreshInterval(5 * SECOND);
+      this.phishingController.setHotlistRefreshInterval(5 * SECOND);
+      this.phishingController.setStalelistRefreshInterval(30 * SECOND);
     }
 
     this.announcementController = new AnnouncementController(
@@ -3601,15 +3601,11 @@ export default class MetamaskController extends EventEmitter {
 
     if (sender.url) {
       const { hostname } = new URL(sender.url);
-      this.phishingController.maybeUpdatePhishingLists();
+      this.phishingController.maybeUpdateState();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
       if (usePhishDetect && phishingTestResponse?.result) {
-        this.sendPhishingWarning(
-          connectionStream,
-          hostname,
-          phishingTestResponse,
-        );
+        this.sendPhishingWarning(connectionStream, hostname);
         this.metaMetricsController.trackEvent({
           event: EVENT_NAMES.PHISHING_PAGE_DISPLAYED,
           category: EVENT.CATEGORIES.PHISHING,
@@ -3694,15 +3690,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} connectionStream - The duplex stream to the per-page script,
    * for sending the reload attempt to.
    * @param {string} hostname - The hostname that triggered the suspicion.
-   * @param {object} phishingTestResponse - Result of calling `phishingController.test`,
-   * which is the result of calling eth-phishing-detects detector.check method https://github.com/MetaMask/eth-phishing-detect/blob/master/src/detector.js#L55-L112
    */
-  sendPhishingWarning(connectionStream, hostname, phishingTestResponse) {
-    const newIssueUrl = PHISHING_NEW_ISSUE_URLS[phishingTestResponse?.name];
-
+  sendPhishingWarning(connectionStream, hostname) {
     const mux = setupMultiplex(connectionStream);
     const phishingStream = mux.createStream('phishing');
-    phishingStream.write({ hostname, newIssueUrl });
+    phishingStream.write({ hostname });
   }
 
   /**
