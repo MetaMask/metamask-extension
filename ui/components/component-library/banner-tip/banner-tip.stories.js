@@ -88,10 +88,10 @@ export const LogoType = (args) => {
         logoType={BannerTipLogoType.Greeting}
         title="Greeting"
       >
-        This is a demo of Greeting.
+        This is a demo of greeting.
       </BannerTip>
       <BannerTip {...args} logoType={BannerTipLogoType.Chat} title="Chat">
-        This is a demo of Chat.
+        This is a demo of chat.
       </BannerTip>
     </Box>
   );
