@@ -472,6 +472,32 @@ describe('Actions', () => {
     });
   });
 
+  describe('#isDeviceAccessible', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls isDeviceAccessible in background', async () => {
+      const store = mockStore();
+
+      const isDeviceAccessible = background.isDeviceAccessible.callsFake(
+        (_, __, cb) => {
+          cb();
+        },
+      );
+
+      _setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.isDeviceAccessible(
+          HardwareDeviceNames.ledger,
+          `m/44'/60'/0'/0`,
+        ),
+      );
+      expect(isDeviceAccessible.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#forgetDevice', () => {
     afterEach(() => {
       sinon.restore();
