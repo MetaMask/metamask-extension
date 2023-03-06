@@ -1365,7 +1365,6 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/permission-controller>@metamask/controller-utils": true,
-        "@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
@@ -1496,9 +1495,6 @@
       }
     },
     "@metamask/rpc-methods": {
-      "globals": {
-        "console.warn": true
-      },
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
@@ -1608,10 +1604,6 @@
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
         "clearTimeout": true,
-        "console.error": true,
-        "console.info": true,
-        "console.log": true,
-        "console.warn": true,
         "document.getElementById": true,
         "fetch.bind": true,
         "setTimeout": true
@@ -1623,8 +1615,6 @@
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@metamask/subject-metadata-controller": true,
-        "@metamask/base-controller": true,
-        "@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>gunzip-maybe": true,
@@ -1632,7 +1622,6 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-utils": true,
-        "@metamask/subject-metadata-controller": true,
         "@metamask/utils": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
