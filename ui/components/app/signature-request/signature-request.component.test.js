@@ -63,7 +63,7 @@ describe('Signature Request Component', () => {
       };
     });
 
-    it('should match snapshot', () => {
+    it('should match snapshot when useNativeCurrencyAsPrimaryCurrency is false', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
         version: 'V4',
@@ -84,6 +84,40 @@ describe('Signature Request Component', () => {
           }}
           fromAccount={{ address: fromAddress }}
           provider={{ type: 'rpc' }}
+          useNativeCurrencyAsPrimaryCurrency={false}
+          nativeCurrency="ABC"
+          currentCurrency="DEF"
+        />,
+        store,
+      );
+
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should match snapshot when useNativeCurrencyAsPrimaryCurrency is true', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          hardwareWalletRequiresConnection={false}
+          clearConfirmTransaction={() => undefined}
+          cancel={() => undefined}
+          cancelAll={() => undefined}
+          mostRecentOverviewPage="/"
+          showRejectTransactionsConfirmationModal={() => undefined}
+          history={{ push: '/' }}
+          sign={() => undefined}
+          txData={{
+            msgParams,
+          }}
+          fromAccount={{ address: fromAddress }}
+          provider={{ type: 'rpc' }}
+          useNativeCurrencyAsPrimaryCurrency
+          nativeCurrency="ABC"
+          currentCurrency="DEF"
         />,
         store,
       );

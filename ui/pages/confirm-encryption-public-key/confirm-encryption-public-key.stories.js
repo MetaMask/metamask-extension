@@ -28,11 +28,6 @@ export default {
     encryptionPublicKey: {
       action: 'encryptionPublicKey',
     },
-    conversionRate: {
-      control: {
-        type: 'number',
-      },
-    },
     history: {
       control: {
         type: 'object',
@@ -66,7 +61,6 @@ export default {
   },
   args: {
     fromAccount: metamask.accountArray[0],
-    conversionRate: metamask.conversionRate,
     history: {
       push: action('history.push()'),
     },
