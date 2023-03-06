@@ -11,10 +11,6 @@ import { HARDWARE_CHECK_RATE } from '../../../../shared/constants/hardware-walle
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import { BannerAlert } from '../../component-library';
 
-const noOp = () => {
-  // do nothing
-};
-
 /**
  * Component that monitors hardware wallet state and displays a warning if locked
  *
@@ -26,7 +22,7 @@ const noOp = () => {
 export default function HardwareWalletState({
   pollingRateMs = HARDWARE_CHECK_RATE,
   initialStatus = 'locked',
-  onUpdate = noOp,
+  onUpdate,
   ...props
 }) {
   const t = useContext(I18nContext);
@@ -38,7 +34,7 @@ export default function HardwareWalletState({
     const unlocked = await isDeviceAccessible(device, path);
     const state = unlocked ? 'unlocked' : 'locked';
     setStatus(state);
-    onUpdate(state);
+    onUpdate?.(state);
   }, [device, path, onUpdate]);
 
   useEffect(() => {
