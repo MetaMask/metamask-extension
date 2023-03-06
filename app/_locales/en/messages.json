@@ -515,6 +515,9 @@
   "blockies": {
     "message": "Blockies"
   },
+  "bridge": {
+    "message": "Bridge"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },

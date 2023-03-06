@@ -53,7 +53,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   let desktopEnabled = false;
 
   backgroundConnection.getDesktopEnabled(function (err, result) {
@@ -72,7 +72,7 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           desktopEnabled,
           ///: END:ONLY_INCLUDE_IN
         },
@@ -85,7 +85,7 @@ export default function launchMetamaskUi(opts, cb) {
       cb(
         null,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
         backgroundConnection,
         ///: END:ONLY_INCLUDE_IN
       );

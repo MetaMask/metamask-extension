@@ -716,7 +716,7 @@ export default class MetaMetricsController {
       [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
       [TRAITS.THEME]: metamaskState.theme || 'default',
       [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       [TRAITS.DESKTOP_ENABLED]: metamaskState.desktopEnabled || false,
       ///: END:ONLY_INCLUDE_IN
     };
