@@ -29,7 +29,6 @@ export async function migrate(originalVersionedData: {
 // We return state AS IS if there is any corruption
 function transformState(state: Record<string, unknown>) {
   if (
-    !hasProperty(state, 'SnapController') ||
     !hasProperty(state, 'PermissionController') ||
     !isObject(state.PermissionController)
   ) {
