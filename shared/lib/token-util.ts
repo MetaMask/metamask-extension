@@ -26,7 +26,7 @@ export function getTokenIdParam(tokenData: any = {}): string | undefined {
 export async function fetchTokenBalance(
   address: string,
   userAddress: string,
-  provider,
+  provider: any,
 ): Promise<any> {
   const ethersProvider = new Web3Provider(provider);
   const tokenContract = new Contract(address, abiERC20, ethersProvider);

@@ -2215,15 +2215,15 @@ export default class MetamaskController extends EventEmitter {
       !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
       !tokenDetails.erc721;
 
-    const otherThanStandardDetailsAreERC20Like =
+    const otherDetailsAreERC20Like =
       tokenDetails.decimals !== undefined && tokenDetails.symbol;
 
-    const weCanAttemptToFetchERC20TokenBalance =
+    const tokenCanBeTreatedAsAnERC20 =
       tokenDetailsStandardIsERC20 ||
-      (noEvidenceThatTokenIsAnNFT && otherThanStandardDetailsAreERC20Like);
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
 
     let details;
-    if (weCanAttemptToFetchERC20TokenBalance) {
+    if (tokenCanBeTreatedAsAnERC20) {
       try {
         const balance = await fetchTokenBalance(
           address,
