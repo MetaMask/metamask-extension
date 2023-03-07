@@ -29,7 +29,6 @@ export default class ConfirmPageContainerContent extends Component {
     ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
@@ -137,7 +136,6 @@ export default class ConfirmPageContainerContent extends Component {
       image,
       titleComponent,
       subtitleComponent,
-      hideSubtitle,
       tokenAddress,
       nonce,
       detailsComponent,
@@ -198,7 +196,6 @@ export default class ConfirmPageContainerContent extends Component {
           image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
-          hideSubtitle={hideSubtitle}
           tokenAddress={tokenAddress}
           nonce={nonce}
           origin={origin}

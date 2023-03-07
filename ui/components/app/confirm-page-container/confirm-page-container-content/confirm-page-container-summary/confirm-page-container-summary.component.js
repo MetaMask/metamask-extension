@@ -23,7 +23,6 @@ const ConfirmPageContainerSummary = (props) => {
     action,
     titleComponent,
     subtitleComponent,
-    hideSubtitle,
     className,
     tokenAddress,
     toAddress,
@@ -128,11 +127,7 @@ const ConfirmPageContainerSummary = (props) => {
           {renderImage()}
           {titleComponent}
         </div>
-        {hideSubtitle ? null : (
-          <div className="confirm-page-container-summary__subtitle">
-            {subtitleComponent}
-          </div>
-        )}
+        {subtitleComponent}
       </>
       {showNicknamePopovers && (
         <NicknamePopovers
@@ -149,7 +144,6 @@ ConfirmPageContainerSummary.propTypes = {
   image: PropTypes.string,
   titleComponent: PropTypes.node,
   subtitleComponent: PropTypes.node,
-  hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
   tokenAddress: PropTypes.string,
   toAddress: PropTypes.string,

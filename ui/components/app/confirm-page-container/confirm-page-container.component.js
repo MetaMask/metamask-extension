@@ -66,7 +66,6 @@ const ConfirmPageContainer = (props) => {
     image,
     titleComponent,
     subtitleComponent,
-    hideSubtitle,
     detailsComponent,
     dataComponent,
     dataHexComponent,
@@ -198,7 +197,6 @@ const ConfirmPageContainer = (props) => {
             image={image}
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
-            hideSubtitle={hideSubtitle}
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
@@ -335,7 +333,6 @@ const ConfirmPageContainer = (props) => {
 ConfirmPageContainer.propTypes = {
   // Header
   action: PropTypes.string,
-  hideSubtitle: PropTypes.bool,
   onEdit: PropTypes.func,
   showEdit: PropTypes.bool,
   subtitleComponent: PropTypes.node,
