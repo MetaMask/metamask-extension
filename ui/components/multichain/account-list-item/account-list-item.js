@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { AccountListItemMenu } from '../account-list-item-menu/account-list-item-menu';
-
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,
@@ -26,6 +25,11 @@ import {
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
+
+import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
+import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
+
+import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AccountListItem = ({
   identity,
@@ -84,7 +88,12 @@ export const AccountListItem = ({
                   marginInlineEnd={2}
                 />
               ) : null}
-              <Text textAlign={TEXT_ALIGN.END}>{identity.balance}</Text>
+              <Text textAlign={TEXT_ALIGN.END}>
+                <UserPreferencedCurrencyDisplay
+                  value={identity.balance}
+                  type={SECONDARY}
+                />
+              </Text>
             </Box>
           </Box>
         </Box>
@@ -93,14 +102,17 @@ export const AccountListItem = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-            {identity.address}
+            {shortenAddress(identity.address)}
           </Text>
           <Text
             variant={TextVariant.bodySm}
             color={Color.textAlternative}
             textAlign={TEXT_ALIGN.END}
           >
-            {identity.tokenBalance}
+            <UserPreferencedCurrencyDisplay
+              value={identity.balance}
+              type={PRIMARY}
+            />
           </Text>
         </Box>
         {isHardware ? (

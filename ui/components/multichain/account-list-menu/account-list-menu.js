@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
+import { useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
 import {
   ButtonLink,
@@ -11,16 +13,28 @@ import {
 import { AccountListItem } from '../account-list-item/account-list-item';
 import { BLOCK_SIZES, Size } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Popover from '../../ui/popover';
-import { useSelector } from 'react-redux';
 import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import { toggleAccountMenu } from '../../../store/actions';
+import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  IMPORT_ACCOUNT_ROUTE,
+  NEW_ACCOUNT_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
+} from '../../../helpers/constants/routes';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 export const AccountListMenu = ({
   onClose = () => console.log('Account list closed'),
 }) => {
   const t = useI18nContext();
-  const [searchQuery, setSearchQuery] = useState('');
+  const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const history = useHistory();
+
+  const [searchQuery, setSearchQuery] = useState('');
 
   const searchResults = searchQuery
     ? new Fuse(accounts, {
@@ -32,8 +46,6 @@ export const AccountListMenu = ({
         keys: ['name', 'address'],
       }).search(searchQuery)
     : accounts;
-
-    console.log("accounts are: ", accounts)
 
   return (
     <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
@@ -57,19 +69,67 @@ export const AccountListMenu = ({
         {/* Add / Import / Hardware */}
         <Box padding={4}>
           <Box marginBottom={4}>
-            <ButtonLink size={Size.SM}>
+            <ButtonLink
+              size={Size.SM}
+              onClick={() => {
+                toggleAccountMenu();
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+                  properties: {
+                    account_type: EVENT.ACCOUNT_TYPES.DEFAULT,
+                    location: 'Main Menu',
+                  },
+                });
+                history.push(NEW_ACCOUNT_ROUTE);
+              }}
+            >
               <AvatarIcon iconName={ICON_NAMES.ADD} size={Size.SM} />{' '}
               {t('addAccount')}
             </ButtonLink>
           </Box>
           <Box marginBottom={4}>
-            <ButtonLink size={Size.SM}>
+            <ButtonLink
+              size={Size.SM}
+              onClick={() => {
+                toggleAccountMenu();
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+                  properties: {
+                    account_type: EVENT.ACCOUNT_TYPES.IMPORTED,
+                    location: 'Main Menu',
+                  },
+                });
+                history.push(IMPORT_ACCOUNT_ROUTE);
+              }}
+            >
               <AvatarIcon iconName={ICON_NAMES.IMPORT} size={Size.SM} />{' '}
               {t('importAccount')}
             </ButtonLink>
           </Box>
           <Box>
-            <ButtonLink size={Size.SM}>
+            <ButtonLink
+              size={Size.SM}
+              onClick={() => {
+                toggleAccountMenu();
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
+                  properties: {
+                    account_type: EVENT.ACCOUNT_TYPES.HARDWARE,
+                    location: 'Main Menu',
+                  },
+                });
+                if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                  global.platform.openExtensionInBrowser(
+                    CONNECT_HARDWARE_ROUTE,
+                  );
+                } else {
+                  history.push(CONNECT_HARDWARE_ROUTE);
+                }
+              }}
+            >
               <AvatarIcon iconName={ICON_NAMES.HARDWARE} size={Size.SM} />{' '}
               {t('hardwareWallet')}
             </ButtonLink>

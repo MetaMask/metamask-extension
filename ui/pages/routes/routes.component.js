@@ -453,8 +453,6 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
 
-      console.log("process.env.MULTICHAIN is: ", process.env.MULTICHAIN)
-
     return (
       <div
         className={classnames('app', {
@@ -489,8 +487,10 @@ export default class Routes extends Component {
         )}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
-        {true ? null : <AccountMenu />}
-        {true && isAccountMenuOpen ? <AccountListMenu onClose={() => {console.log("closing!"); toggleAccountMenu();} } /> : null}
+        {process.env.MULTICHAIN ? null : <AccountMenu />}
+        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+          <AccountListMenu onClose={() => toggleAccountMenu()} />
+        ) : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}

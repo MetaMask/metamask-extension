@@ -4,15 +4,13 @@ import { AccountListItem } from './account-list-item';
 const SampleIdentity = {
   address: '0x12C7...135f',
   name: 'Account 1',
-  balance: '$1,234',
-  tokenBalance: '32.09 ETH',
+  balance: '0x152387ad22c3f0',
 };
 
 const ChaosIdentity = {
   address: '0x12C7...135f',
   name: 'pneumonoultramicroscopicsilicovolcanoconiosis',
-  balance: '$1,234,567',
-  tokenBalance: '3,299.09 ETH',
+  balance: '0x152387ad22c3f0',
 };
 
 const noop = () => console.log('Clicked account!');
