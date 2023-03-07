@@ -26,7 +26,6 @@ import {
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { _setBackgroundConnection } from './store/action-queue';
-import './css/index.scss';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
 
