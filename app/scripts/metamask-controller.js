@@ -2245,7 +2245,7 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    // `details`` will be undefined if `weCanAttemptToFetchERC20TokenBalance`` is false,
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
     // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
     // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
     if (details === undefined) {
