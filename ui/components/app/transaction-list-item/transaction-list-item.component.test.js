@@ -107,7 +107,7 @@ describe('TransactionListItem', () => {
       useGasFeeEstimates.mockRestore();
     });
 
-    it(`should indicate account has insufficient funds to cover gas price for cancellation of pending transaction`, () => {
+    it(`should not show insufficient funds error because amount is 0`, () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           balance: '0x3',
@@ -116,7 +116,7 @@ describe('TransactionListItem', () => {
       const { queryByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={transactionGroup} />,
       );
-      expect(queryByTestId('not-enough-gas__tooltip')).toBeInTheDocument();
+      expect(queryByTestId('not-enough-gas__tooltip')).toBeNull();
     });
 
     it('should not disable "cancel" button when user has sufficient funds', () => {

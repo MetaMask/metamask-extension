@@ -156,6 +156,10 @@ export default function GasDisplay({ gasError }) {
     maxAmount = primaryTotalTextOverrideMaxAmount;
   }
 
+  const assetBalanceIsZero =
+    draftTransaction.asset.balance === '0x0' ||
+    draftTransaction.asset.balance === '0x00';
+
   return (
     <>
       <Box className="gas-display">
@@ -268,7 +272,7 @@ export default function GasDisplay({ gasError }) {
                 />
               }
             />,
-            (gasError || isInsufficientTokenError) && (
+            (gasError || isInsufficientTokenError || assetBalanceIsZero) && (
               <TransactionDetailItem
                 key="total-item"
                 detailTitle={t('total')}
@@ -317,82 +321,83 @@ export default function GasDisplay({ gasError }) {
           ]}
         />
       </Box>
-      {(gasError || isInsufficientTokenError) && currentNetworkName && (
-        <Box
-          className="gas-display__warning-message"
-          data-testid="gas-warning-message"
-        >
+      {(gasError || isInsufficientTokenError || assetBalanceIsZero) &&
+        currentNetworkName && (
           <Box
-            paddingTop={0}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingLeft={4}
-            className="gas-display__confirm-approve-content__warning"
+            className="gas-display__warning-message"
+            data-testid="gas-warning-message"
           >
-            <ActionableMessage
-              message={
-                isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
-                  <Typography variant={TypographyVariant.H7} align="left">
-                    {t('insufficientCurrencyBuyOrReceive', [
-                      nativeCurrency,
-                      currentNetworkName,
-                      <Button
-                        type="inline"
-                        className="confirm-page-container-content__link"
-                        onClick={() => {
-                          openBuyCryptoInPdapp();
-                          trackEvent({
-                            event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
-                            category: EVENT.CATEGORIES.NAVIGATION,
-                            properties: {
-                              location: 'Gas Warning Insufficient Funds',
-                              text: 'Buy',
-                            },
-                          });
-                        }}
-                        key={`${nativeCurrency}-buy-button`}
-                      >
-                        {t('buyAsset', [nativeCurrency])}
-                      </Button>,
-                      <Button
-                        type="inline"
-                        className="gas-display__link"
-                        onClick={() =>
-                          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
-                        }
-                        key="receive-button"
-                      >
-                        {t('deposit')}
-                      </Button>,
-                    ])}
-                  </Typography>
-                ) : (
-                  <Typography variant={TypographyVariant.H7} align="left">
-                    {t('insufficientCurrencyBuyOrReceive', [
-                      nativeCurrency,
-                      currentNetworkName,
-                      `${t('buyAsset', [nativeCurrency])}`,
-                      <Button
-                        type="inline"
-                        className="gas-display__link"
-                        onClick={() =>
-                          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
-                        }
-                        key="receive-button"
-                      >
-                        {t('deposit')}
-                      </Button>,
-                    ])}
-                  </Typography>
-                )
-              }
-              useIcon
-              iconFillColor="var(--color-error-default)"
-              type="danger"
-            />
+            <Box
+              paddingTop={0}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingLeft={4}
+              className="gas-display__confirm-approve-content__warning"
+            >
+              <ActionableMessage
+                message={
+                  isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
+                    <Typography variant={TypographyVariant.H7} align="left">
+                      {t('insufficientCurrencyBuyOrReceive', [
+                        nativeCurrency,
+                        currentNetworkName,
+                        <Button
+                          type="inline"
+                          className="confirm-page-container-content__link"
+                          onClick={() => {
+                            openBuyCryptoInPdapp();
+                            trackEvent({
+                              event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
+                              category: EVENT.CATEGORIES.NAVIGATION,
+                              properties: {
+                                location: 'Gas Warning Insufficient Funds',
+                                text: 'Buy',
+                              },
+                            });
+                          }}
+                          key={`${nativeCurrency}-buy-button`}
+                        >
+                          {t('buyAsset', [nativeCurrency])}
+                        </Button>,
+                        <Button
+                          type="inline"
+                          className="gas-display__link"
+                          onClick={() =>
+                            dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
+                          }
+                          key="receive-button"
+                        >
+                          {t('deposit')}
+                        </Button>,
+                      ])}
+                    </Typography>
+                  ) : (
+                    <Typography variant={TypographyVariant.H7} align="left">
+                      {t('insufficientCurrencyBuyOrReceive', [
+                        nativeCurrency,
+                        currentNetworkName,
+                        `${t('buyAsset', [nativeCurrency])}`,
+                        <Button
+                          type="inline"
+                          className="gas-display__link"
+                          onClick={() =>
+                            dispatch(showModal({ name: 'ACCOUNT_DETAILS' }))
+                          }
+                          key="receive-button"
+                        >
+                          {t('deposit')}
+                        </Button>,
+                      ])}
+                    </Typography>
+                  )
+                }
+                useIcon
+                iconFillColor="var(--color-error-default)"
+                type="danger"
+              />
+            </Box>
           </Box>
-        </Box>
-      )}
+        )}
     </>
   );
 }

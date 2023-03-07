@@ -25,7 +25,12 @@ function isBalanceSufficient({
   gasTotal = '0x0',
   primaryCurrency,
 }) {
-  let totalAmount = new Numeric(amount, 16).add(new Numeric(gasTotal, 16));
+  let totalAmount;
+  if (amount === '0x0') {
+    totalAmount = new Numeric(amount, 16);
+  } else {
+    totalAmount = new Numeric(amount, 16).add(new Numeric(gasTotal, 16));
+  }
   let balanceNumeric = new Numeric(balance, 16);
 
   if (typeof primaryCurrency !== 'undefined' && primaryCurrency !== null) {

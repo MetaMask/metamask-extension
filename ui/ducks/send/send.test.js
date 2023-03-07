@@ -6,6 +6,8 @@ import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
+  GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+  GAS_PRICE_EXCESSIVE_ERROR_KEY,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -221,17 +223,23 @@ describe('Send Slice', () => {
         const result = sendReducer(
           {
             ...getInitialSendStateWithExistingTxState({
-              asset: { balance: '0xffff' },
+              asset: { balance: '0x013b1cf612bb054c' },
+              amount: {
+                value: '0x00',
+              },
               gas: {
-                gasPrice: '0x1',
+                gasPrice: '0x0',
                 gasLimit: GAS_LIMITS.SIMPLE,
+                gasTotal: '0x013b1cf612bb054c',
+                maxFeePerGas: '0x40768408a6',
+                maxPriorityFeePerGas: '0x59682f00',
               },
               recipient: {
                 address: '0x00',
               },
             }),
             selectedAccount: {
-              balance: '0xffff',
+              balance: '0x013b1cf612bb054c',
               address: '0x00',
             },
             gasEstimateIsLoading: false,
@@ -242,7 +250,7 @@ describe('Send Slice', () => {
         );
         expect(result.currentTransactionUUID).toStrictEqual('test-uuid');
         const draft = getTestUUIDTx(result);
-        expect(draft.amount.value).toStrictEqual('0xadf7');
+        expect(draft.amount.value).toStrictEqual('0x13b1cf612bb054c');
         expect(draft.status).toStrictEqual(SEND_STATUSES.VALID);
       });
     });
@@ -834,6 +842,73 @@ describe('Send Slice', () => {
     });
 
     describe('validateAmountField', () => {
+      it('should error with gas price excessive when custom gas is 1.5 times greater than the fastest estimate', () => {
+        const nativeAssetState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '0x0',
+          },
+          asset: {
+            type: AssetType.native,
+            balance: '0x77359400',
+          },
+          gas: {
+            gasPrice: '0x30e4f9b400',
+            gasTotal: '0x8f0d180',
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+          payload: {
+            gasEstimateType: GasEstimateTypes.legacy,
+            gasFeeEstimates: {
+              high: '139',
+            },
+          },
+        };
+
+        const result = sendReducer(nativeAssetState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.amount.error).toStrictEqual(
+          GAS_PRICE_EXCESSIVE_ERROR_KEY,
+        );
+      });
+
+      it('should error with gas price fetch failed when gas fee estimate is loading', () => {
+        const nativeAssetState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '0x0', // 1875000000
+          },
+          asset: {
+            type: AssetType.native,
+            balance: '0x77359400', // 2000000000
+          },
+          gas: {
+            gasTotal: '0x8f0d180', // 150000000
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+          payload: {
+            gasEstimateType: GasEstimateTypes.none,
+            gasFeeEstimates: {
+              high: '1',
+            },
+          },
+        };
+
+        const result = sendReducer(nativeAssetState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.amount.error).toStrictEqual(
+          GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+        );
+      });
+
       it('should error with insufficient funds when amount asset value plust gas is higher than asset balance', () => {
         const nativeAssetState = getInitialSendStateWithExistingTxState({
           amount: {
@@ -930,10 +1005,36 @@ describe('Send Slice', () => {
     });
 
     describe('validateGasField', () => {
+      it('should not error when amount is equal to 0x0', () => {
+        const gasFieldState = getInitialSendStateWithExistingTxState({
+          asset: {
+            balance: '0x0',
+          },
+          amount: {
+            value: '0x0',
+          },
+          gas: {
+            gasTotal: '0x1319718a5000', // 21000000000000
+          },
+        });
+
+        const action = {
+          type: 'send/validateGasField',
+        };
+
+        const result = sendReducer(gasFieldState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.gas.error).toStrictEqual(null);
+      });
       it('should error when total amount of gas is higher than account balance', () => {
         const gasFieldState = getInitialSendStateWithExistingTxState({
-          account: {
+          asset: {
             balance: '0x0',
+          },
+          amount: {
+            value: '0x1234565',
           },
           gas: {
             gasTotal: '0x1319718a5000', // 21000000000000
@@ -1039,6 +1140,9 @@ describe('Send Slice', () => {
             },
             gas: {
               gasLimit: GAS_LIMITS.SIMPLE,
+            },
+            amount: {
+              value: '0x1',
             },
           }),
           stage: SEND_STAGES.DRAFT,

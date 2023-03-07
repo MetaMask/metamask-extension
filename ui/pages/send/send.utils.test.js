@@ -1,5 +1,4 @@
 import { rawEncode } from 'ethereumjs-abi';
-
 import {
   generateERC20TransferData,
   isBalanceSufficient,
