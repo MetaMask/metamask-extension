@@ -335,7 +335,7 @@ export const EVENT_NAMES = {
   SRP_REVEAL_CANCELLED: 'Reveal SRP Cancelled',
   SRP_REVEAL_CANCEL_BUTTON_CLICKED:
     'Clicks Cancel on Reveal Secret Recovery Phrase Page',
-  SRP_REVEAL_DONE_CLICKED: 'Clicks Done with SRP',
+  SRP_REVEAL_CLOSE_CLICKED: 'Clicks CLOSE with SRP',
   SRP_REVEAL_NEXT_CLICKED: 'Clicks Next on Reveal Secret Recovery Phrase',
   SRP_HOLD_TO_REVEAL_CLICK_STARTED: 'Reveal SRP Click Started',
   SRP_HOLD_TO_REVEAL_CLOSE_CLICKED: 'Closes Hold To Reveal SRP',
