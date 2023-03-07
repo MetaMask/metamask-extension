@@ -1,4 +1,4 @@
-import abi from 'human-standard-token-abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis'
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 
@@ -29,7 +29,7 @@ export async function fetchTokenBalance(
   provider,
 ): Promise<any> {
   const ethersProvider = new Web3Provider(provider);
-  const tokenContract = new Contract(address, abi, ethersProvider);
+  const tokenContract = new Contract(address, abiERC20, ethersProvider);
   const tokenBalancePromise = tokenContract
     ? tokenContract.balanceOf(userAddress)
     : Promise.resolve();
