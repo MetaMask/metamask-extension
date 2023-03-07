@@ -63,10 +63,6 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 16: true });
       history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
     },
-    17: () => {
-      updateViewedNotifications({ 17: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
-    },
   };
 
   return actionFunctions[id];
@@ -266,8 +262,8 @@ export default function WhatsNewPopup({ onClose }) {
           const notification = getTranslatedUINotifications(t, locale)[id];
           const isLast = index === notifications.length - 1;
           // Display the swaps notification with full image
-          // Displays the NFTs & OpenSea notifications 16,17 with full image
-          return index === 0 || id === 1 || id === 16 || id === 17
+          // Displays the OpenSea notification 16 with full image
+          return index === 0 || id === 1 || id === 16
             ? renderFirstNotification(notification, idRefMap, history, isLast)
             : renderSubsequentNotification(
                 notification,

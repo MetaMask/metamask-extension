@@ -86,14 +86,6 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
-  17: {
-    id: 17,
-    date: null,
-    image: {
-      src: 'images/nfts.svg',
-      width: '100%',
-    },
-  },
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -252,22 +244,6 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[16].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[16].date),
-          )
-        : '',
-    },
-
-    17: {
-      ...UI_NOTIFICATIONS[17],
-      title: t('notifications17Title'),
-      description: [
-        t('notifications17DescriptionOne'),
-        t('notifications17DescriptionTwo'),
-        t('notifications17DescriptionThree'),
-      ],
-      actionText: t('notifications17ActionText'),
-      date: UI_NOTIFICATIONS[17].date
-        ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[17].date),
           )
         : '',
     },
