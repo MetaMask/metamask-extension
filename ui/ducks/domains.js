@@ -3,13 +3,13 @@ import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
-import { Web3Provider } from '@ethersproject/providers';
-
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { utils, BigNumber } from 'ethers'
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   NETWORK_IDS,
-  NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
+  infuraProjectId,
 } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
@@ -31,6 +31,15 @@ import {
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
 const ENS = 'ENS';
+const mainnetProviderUrl = `https://mainnet.infura.io/v3/${infuraProjectId}`;
+
+export const SLIP44_MSB = 0x80000000
+export const convertEVMChainIdToCoinType = (chainId) =>{
+  if( chainId >= SLIP44_MSB ){
+    throw Error(`chainId ${chainId} must be less than ${SLIP44_MSB}`)
+  }
+  return  (SLIP44_MSB | chainId) >>> 0
+}
 
 const initialState = {
   stage: 'UNINITIALIZED',
@@ -53,6 +62,7 @@ const slice = createSlice({
   initialState,
   reducers: {
     domainLookup: (state, action) => {
+      console.log('***domainLookup1', {state, action})
       // first clear out the previous state
       state.resolution = null;
       state.error = null;
@@ -144,20 +154,8 @@ export function initializeDomainSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
-    const ensAddress = networkMap[network];
-    const networkIsSupported = Boolean(ensAddress);
-    if (networkIsSupported) {
-      web3Provider = new Web3Provider(global.ethereumProvider, {
-        chainId: parseInt(network, 10),
-        name: networkName,
-        ensAddress,
-      });
-      dispatch(enableDomainLookup(network));
-    } else {
-      web3Provider = null;
-      dispatch(disableDomainLookup());
-    }
+    web3Provider = new JsonRpcProvider(mainnetProviderUrl)
+    dispatch(enableDomainLookup(network));
   };
 }
 
@@ -179,15 +177,25 @@ export function lookupEnsName(domainName) {
     ) {
       await dispatch(ensNotSupported());
     } else {
-      log.info(`ENS attempting to resolve name: ${trimmedDomainName}`);
+      const chainId = getCurrentChainId(state);
+      log.info(`ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`);
       let address;
       let error;
-      try {
-        address = await web3Provider.resolveName(trimmedDomainName);
-      } catch (err) {
-        error = err;
+      const emptyAddress = '0x0000000000000000000000000000000000000000'
+      const resolver = await web3Provider.getResolver(trimmedDomainName)
+      if(resolver){
+        const coinType = convertEVMChainIdToCoinType(parseInt(chainId))
+        const encodedCoinType = utils.hexZeroPad(BigNumber.from(coinType).toHexString(), 32)
+        // 0xf1cb7e06 is address interface id
+        // https://docs.ens.domains/contract-api-reference/publicresolver#get-blockchain-address
+        const data = await resolver._fetchBytes('0xf1cb7e06', encodedCoinType)
+        if([emptyAddress, '0x', null].includes(data) ){
+          address = emptyAddress
+        }
+        address = utils.getAddress(data)
+      }else{
+        address = emptyAddress
       }
-      const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
 
       await dispatch(
