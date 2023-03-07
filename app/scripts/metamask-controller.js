@@ -2218,12 +2218,12 @@ export default class MetamaskController extends EventEmitter {
     const otherThanStandardDetailsAreERC20Like =
       tokenDetails.decimals !== undefined && tokenDetails.symbol;
 
-    const tokenCanBeTreatedAsAnERC20 =
+    const weCanAttemptToFetchERC20TokenBalance =
       tokenDetailsStandardIsisERC20 ||
       (noEvidenceThatTokenIsAnNFT && otherThanStandardDetailsAreERC20Like);
 
     let details;
-    if (tokenCanBeTreatedAsAnERC20) {
+    if (weCanAttemptToFetchERC20TokenBalance) {
       try {
         const balance = await fetchTokenBalance(
           address,
@@ -2239,10 +2239,15 @@ export default class MetamaskController extends EventEmitter {
           symbol: tokenDetails.symbol,
         };
       } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
         log.warning('Failed to get token balance');
       }
     }
 
+    // `details`` will be undefined if `weCanAttemptToFetchERC20TokenBalance`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails` 
     if (details === undefined) {
       details = await this.assetsContractController.getTokenStandardAndDetails(
         address,
