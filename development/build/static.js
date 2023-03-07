@@ -92,7 +92,7 @@ module.exports = function createStaticAssetTasks({
   const prod = createTask(TASKS.STATIC_PROD, composeSeries(...prodTasks));
   const dev = createTask(TASKS.STATIC_DEV, composeSeries(...devTasks));
 
-  return { dev, prod };
+  return { dev, prod, copyTargetsProds, copyTargetsDevs };
 
 
   async function performCopy(target, browser) {
