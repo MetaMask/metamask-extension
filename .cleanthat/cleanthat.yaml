@@ -1,0 +1,21 @@
+syntax_version: "2023-01-09"
+meta:
+  labels:
+  - "cleanthat"
+  refs:
+    protected_patterns:
+    - "refs/heads/develop"
+    - "refs/heads/main"
+    - "refs/heads/master"
+source_code:
+  encoding: "UTF-8"
+  line_ending: "GIT"
+engines:
+- engine: "spotless"
+  skip: false
+  source_code: {}
+  steps:
+  - id: "spotless"
+    skip: false
+    parameters:
+      configuration: "repository:/.cleanthat/spotless.yaml"
