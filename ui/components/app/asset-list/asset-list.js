@@ -29,6 +29,7 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
 import {
   DetectedTokensBanner,
+  MultichainTokenList,
   NewImportTokenLink,
   NewTokenList,
 } from '../../multichain';
@@ -78,7 +79,7 @@ const AssetList = ({ onClickAsset }) => {
   return (
     <>
       {process.env.MULTICHAIN ? (
-        <NewTokenList
+        <MultichainTokenList
           onClick={() => onClickAsset(nativeCurrency)}
           data-testid="wallet-balance"
           primary={

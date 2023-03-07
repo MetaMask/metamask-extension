@@ -20,8 +20,9 @@ import {
 } from '../../component-library';
 import Box from '../../ui/box/box';
 import { getNativeCurrencyImage } from '../../../selectors';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export const NewTokenList = ({
+export const MultichainTokenList = ({
   className,
   onClick,
   tokenSymbol,
@@ -30,15 +31,16 @@ export const NewTokenList = ({
   secondary,
 }) => {
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const t = useI18nContext();
   return (
     <Box
-      className={classnames('token-list', className)}
+      className={classnames('multichain-token-list', className)}
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
       gap={4}
     >
       <Box
-        className="token-list__container-cell"
+        className="multichain-token-list__container-cell"
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
         padding={4}
@@ -56,7 +58,7 @@ export const NewTokenList = ({
           badge={
             <AvatarNetwork
               size={Size.XS}
-              name="Ethereum"
+              name={t('networkNameEthereum')}
               src={primaryTokenImage}
             />
           }
@@ -65,7 +67,7 @@ export const NewTokenList = ({
           <AvatarToken src={tokenImage} showHalo />
         </AvatarWithBadge>
         <Box
-          className="token-list__container-cell--text-container"
+          className="multichain-token-list__container-cell--text-container"
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
@@ -89,14 +91,14 @@ export const NewTokenList = ({
   );
 };
 
-NewTokenList.propTypes = {
+MultichainTokenList.propTypes = {
   /**
    * An additional className to apply to the TokenList.
    */
 
   className: PropTypes.string,
   /**
-   * The onClick handler to be passed to the NewTokenList component
+   * The onClick handler to be passed to the MultichainTokenList component
    */
   onClick: PropTypes.func,
   /**

@@ -9,6 +9,7 @@ import {
   AlignItems,
   DISPLAY,
   IconColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
@@ -35,19 +36,18 @@ export const NewImportTokenLink = ({ className = '' }) => {
     isTokenDetectionInactiveOnMainnet ||
     Boolean(process.env.IN_TEST);
   return (
-    <Box className={classnames('import-token-link', className)} margin={4}>
-      <Box
-        display={DISPLAY.FLEX}
-        alignItems={AlignItems.center}
-        paddingBottom={4}
-        paddingTop={4}
-      >
+    <Box
+      className={classnames('multichain-import-token-link', className)}
+      margin={4}
+    >
+      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
         <Icon
           name={ICON_NAMES.IMPORT}
           color={IconColor.infoDefault}
           marginRight={2}
         />
         <ButtonLink
+          size={Size.MD}
           onClick={() => {
             history.push(IMPORT_TOKEN_ROUTE);
             trackEvent({

@@ -6,7 +6,7 @@ import AssetListItem from '../asset-list-item';
 import { getSelectedAddress } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { NewTokenList } from '../../multichain';
+import { MultichainTokenList, NewTokenList } from '../../multichain';
 
 export default function TokenCell({
   address,
@@ -40,7 +40,7 @@ export default function TokenCell({
   return (
     <>
       {process.env.MULTICHAIN ? (
-        <NewTokenList
+        <MultichainTokenList
           iconClassName="token-cell__icon"
           onClick={onClick.bind(null, address)}
           tokenAddress={address}

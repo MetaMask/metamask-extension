@@ -34,7 +34,7 @@ export const DetectedTokensBanner = ({
   };
   return (
     <BannerAlert
-      className={classNames('detected-token-banner', className)}
+      className={classNames('multichain-detected-token-banner', className)}
       actionButtonLabel={t('importTokensCamelCase')}
       actionButtonOnClick={onClick}
       margin={4}
