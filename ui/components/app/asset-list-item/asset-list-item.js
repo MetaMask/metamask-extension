@@ -144,7 +144,7 @@ const AssetListItem = ({
               name={ICON_NAMES.ARROW_RIGHT}
               color={Color.iconDefault}
               size={ICON_SIZES.SM}
-              style={{ 'vertical-align': 'middle' }}
+              style={{ verticalAlign: 'middle' }}
             />
             {sendTokenButton}
           </Box>
