@@ -24,7 +24,7 @@ jest.mock('../../../store/actions.ts', () => ({
 
 describe('NFTs Item Component', () => {
   const nfts =
-    mockState.metamask.allNftContracts[mockState.metamask.selectedAddress][5];
+    mockState.metamask.allNfts[mockState.metamask.selectedAddress][5];
   const props = {
     collections: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
