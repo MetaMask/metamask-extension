@@ -1,6 +1,6 @@
 import { getRandomFileName } from './util';
 
-export async function exportAsFile(filename, data, type = 'text/csv') {
+export function exportAsFile(filename, data, type = 'text/csv') {
   const b64 = Buffer.from(data, 'utf8').toString('base64');
   // eslint-disable-next-line no-param-reassign
   filename = filename || getRandomFileName();
