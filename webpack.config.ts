@@ -229,6 +229,12 @@ module.exports = async () => ({
       cache: false,
     }),
     new HtmlWebpackPlugin({
+      templateContent: renderHtmlTemplate('home.html'),
+      filename: 'home.html',
+      chunks: ['ui'],
+      cache: false,
+    }),
+    new HtmlWebpackPlugin({
       templateContent: renderHtmlTemplate('popup.html'),
       filename: 'popup.html',
       chunks: ['ui'],
