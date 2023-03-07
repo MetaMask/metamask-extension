@@ -30,7 +30,7 @@ import DetectedToken from '../detected-token/detected-token';
 import {
   DetectedTokensBanner,
   MultichainTokenList,
-  NewImportTokenLink,
+  MultichainImportTokenLink,
 } from '../../multichain';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
@@ -132,7 +132,7 @@ const AssetList = ({ onClickAsset }) => {
         )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         {process.env.MULTICHAIN ? (
-          <NewImportTokenLink />
+          <MultichainImportTokenLink />
         ) : (
           <>
             <Box justifyContent={JustifyContent.center}>

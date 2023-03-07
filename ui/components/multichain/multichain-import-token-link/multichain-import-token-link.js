@@ -21,7 +21,7 @@ import {
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
 
-export const NewImportTokenLink = ({ className = '' }) => {
+export const MultichainImportTokenLink = ({ className = '' }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const history = useHistory();
@@ -84,7 +84,7 @@ export const NewImportTokenLink = ({ className = '' }) => {
   );
 };
 
-NewImportTokenLink.propTypes = {
+MultichainImportTokenLink.propTypes = {
   /**
    * An additional className to apply to the TokenList.
    */
