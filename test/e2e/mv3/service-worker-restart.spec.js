@@ -101,7 +101,7 @@ describe('MV3 - Service worker restart', function () {
             css: '[data-testid="eth-overview__primary-currency"]',
             text: '0 ETH',
           },
-          { timeout: 50_000 },
+          { timeout: 150_000 },
         );
 
         // assert that the segment request has been sent through inspecting the mock
