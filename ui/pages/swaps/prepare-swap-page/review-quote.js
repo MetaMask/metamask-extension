@@ -665,7 +665,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
   }, [trackEvent, eventObjectBase, feeInFiat]);
   const trackViewQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
-      event: 'View Quote Page Loaded',
+      event: 'Review Quote Component Loaded',
       category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         ...eventObjectBase,

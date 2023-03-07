@@ -116,7 +116,7 @@ export default function TransactionSettings({
       // If it's not a custom slippage, remove an error key.
       dispatch(setSwapsErrorKey(''));
     }
-  }, [activeButtonIndex]);
+  }, [dispatch, activeButtonIndex]);
 
   return (
     <div className="transaction-settings">

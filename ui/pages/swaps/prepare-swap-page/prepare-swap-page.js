@@ -541,7 +541,7 @@ export default function PrepareSwap({
 
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
-      event: 'Build Quote Page Loaded',
+      event: 'Prepare Swap Page Loaded',
       category: EVENT.CATEGORIES.SWAPS,
       sensitiveProperties: {
         is_hardware_wallet: hardwareWalletUsed,
