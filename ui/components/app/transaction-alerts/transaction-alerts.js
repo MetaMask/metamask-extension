@@ -6,13 +6,9 @@ import { PriorityLevels } from '../../../../shared/constants/gas';
 import { submittedPendingTransactionsSelector } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BannerAlert } from '../../component-library';
+import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import SimulationErrorMessage from '../../ui/simulation-error-message';
-import Typography from '../../ui/typography';
-import {
-  TypographyVariant,
-  SEVERITIES,
-} from '../../../helpers/constants/design-system';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const TransactionAlerts = ({
@@ -34,13 +30,7 @@ const TransactionAlerts = ({
       )}
       {supportsEIP1559 && pendingTransactions?.length > 0 && (
         <BannerAlert severity={SEVERITIES.WARNING}>
-          <Typography
-            align="left"
-            className="transaction-alerts__pending-transactions"
-            margin={0}
-            tag={TypographyVariant.paragraph}
-            variant={TypographyVariant.H7}
-          >
+          <Text as="p">
             <strong>
               {pendingTransactions?.length === 1
                 ? t('pendingTransactionSingle', [pendingTransactions?.length])
@@ -50,16 +40,16 @@ const TransactionAlerts = ({
             </strong>{' '}
             {t('pendingTransactionInfo')}
             {t('learnCancelSpeeedup', [
-              <a
+              <ButtonLink
                 key="cancelSpeedUpInfo"
                 href={ZENDESK_URLS.SPEEDUP_CANCEL}
                 rel="noopener noreferrer"
                 target="_blank"
               >
                 {t('cancelSpeedUp')}
-              </a>,
+              </ButtonLink>,
             ])}
-          </Typography>
+          </Text>
         </BannerAlert>
       )}
       {estimateUsed === PriorityLevels.low && (
