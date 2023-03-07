@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "显示安全和隐私设置"
   },
-  "notifications17Description": {
-    "message": "本次更新提供更多选项，让您可以更好地管理自己的隐私。我们增加了数据收集方式的透明度，以及更清晰的分享选项。您可以通过安全和隐私设置更改您的首选项，或删除扩展使用数据。"
-  },
   "notifications17Title": {
     "message": "安全和隐私设置"
   },

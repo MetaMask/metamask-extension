@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Afficher les paramètres de sécurité et de confidentialité"
   },
-  "notifications17Description": {
-    "message": "Nous vous proposons dans cette mise à jour davantage d’options pour protéger votre vie privée. Nous avons clarifié notre politique de collecte des données et les options de partage de ces données. Modifiez vos préférences ou supprimez les données d’utilisation des extensions depuis les paramètres de sécurité et de confidentialité."
-  },
   "notifications17Title": {
     "message": "Paramètres de sécurité et de confidentialité"
   },
