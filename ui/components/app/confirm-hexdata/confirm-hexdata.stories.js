@@ -2,15 +2,6 @@ import React from 'react';
 import README from './README.mdx';
 import ConfirmHexData from './confirm-hexdata';
 
-const txData = {
-  txParams: {
-    data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-    to: '0x0',
-  },
-  origin: 'https://metamask.github.io',
-  type: 'transfer',
-};
-
 export default {
   title: 'Components/App/ConfirmHexData',
 
@@ -29,7 +20,14 @@ export default {
     },
   },
   args: {
-    txData,
+    txData: {
+      txParams: {
+        data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+        to: '0x0',
+      },
+      origin: 'https://metamask.github.io',
+      type: 'transfer',
+    },
   },
 };
 
@@ -45,6 +43,5 @@ export const DataHexComponentStory = (args) => {
 
 DataHexComponentStory.storyName = 'DataHexComponent';
 DataHexComponentStory.args = {
-  txData,
   dataHexComponent: <div>Any custom component passed in props</div>,
 };
