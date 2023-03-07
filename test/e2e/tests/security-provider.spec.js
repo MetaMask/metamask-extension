@@ -10,10 +10,6 @@ const OPENSEA_URL =
 
 describe('Transaction security provider', function () {
   let windowHandles;
-  // eslint-disable-next-line no-unused-vars
-  let extension;
-  // eslint-disable-next-line no-unused-vars
-  let testApp;
 
   async function mockSecurityProviderDetection(mockServer, scenario) {
     switch (scenario) {
@@ -56,13 +52,8 @@ describe('Transaction security provider', function () {
       case 'requestNotVerified':
         await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
           return {
-            statusCode: 401,
-            json: {
-              flagAsDangerous: 3,
-              reason:
-                'Because of an error, this request was not verified by the security. Proceed with caution.',
-              reason_header: 'Request not verified',
-            },
+            statusCode: 500,
+            json: {},
           };
         });
         break;
@@ -104,9 +95,6 @@ describe('Transaction security provider', function () {
 
         await driver.openNewPage('http://127.0.0.1:8080/');
         windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-
-        testApp = windowHandles[1];
 
         await driver.clickElement('#personalSign');
 
@@ -147,9 +135,6 @@ describe('Transaction security provider', function () {
 
         await driver.openNewPage('http://127.0.0.1:8080/');
         windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-
-        testApp = windowHandles[1];
 
         await driver.clickElement('#signTypedData');
 
@@ -190,9 +175,6 @@ describe('Transaction security provider', function () {
 
         await driver.openNewPage('http://127.0.0.1:8080/');
         windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-
-        testApp = windowHandles[1];
 
         await driver.clickElement('#siwe');
 
@@ -233,9 +215,6 @@ describe('Transaction security provider', function () {
 
         await driver.openNewPage('http://127.0.0.1:8080/');
         windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-
-        testApp = windowHandles[1];
 
         await driver.clickElement('#signTypedDataV4');
 
