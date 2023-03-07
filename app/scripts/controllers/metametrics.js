@@ -356,7 +356,14 @@ export default class MetaMetricsController {
       currency: fragment.currency,
       environmentType: fragment.environmentType,
       actionId: fragment.actionId,
-      uniqueIdentifier: fragment.uniqueIdentifier,
+      // We append success or failure to the unique-identifier so that the
+      // messageId can still be idempotent, but so that it differs from the
+      // initial event fired. The initial event was preventing new events from
+      // making it to mixpanel because they were using the same unique ID as
+      // the events processed in other parts of the fragment lifecycle.
+      uniqueIdentifier: fragment.uniqueIdentifier
+        ? `${fragment.uniqueIdentifier}-${abandoned ? 'failure' : 'success'}`
+        : undefined,
     });
     const { fragments } = this.store.getState();
     delete fragments[id];
