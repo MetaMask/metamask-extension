@@ -2720,7 +2720,7 @@
     "description": "The description of the `endowment:network-access` permission."
   },
   "permission_accessSnap": {
-    "message": "$1 Snap'e bağlan.",
+    "message": "$1 snap'e bağlan.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
