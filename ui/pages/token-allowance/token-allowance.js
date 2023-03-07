@@ -54,16 +54,13 @@ import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
 import { valuesFor } from '../../helpers/utils/util';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import {
-  MAX_TOKEN_ALLOWANCE_AMOUNT,
-  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
-} from '../../../shared/constants/tokens';
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { MAX_TOKEN_ALLOWANCE_AMOUNT } from '../../../shared/constants/tokens';
 
 export default function TokenAllowance({
   origin,
@@ -115,15 +112,7 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const isHardwareWalletConnected = useSelector(isHardwareWallet);
 
-  const replaceCommaToDot = (inputValue) => {
-    return inputValue.replace(/,/gu, '.');
-  };
-
-  let customPermissionAmount = NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(
-    customTokenAmount,
-  )
-    ? replaceCommaToDot(customTokenAmount).toString()
-    : '0';
+  let customPermissionAmount = parseFloat(customTokenAmount);
 
   const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
   if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
@@ -395,7 +384,7 @@ export default function TokenAllowance({
             tokenValue={
               isNaN(parseFloat(customTokenAmount))
                 ? dappProposedTokenAmount
-                : replaceCommaToDot(customTokenAmount)
+                : customTokenAmount
             }
             onEdit={() => handleBackClick()}
           />

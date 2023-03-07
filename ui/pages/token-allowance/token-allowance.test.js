@@ -207,7 +207,7 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should click Use default and set input value to default', () => {
-    const { getByText, getByTestId } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
@@ -215,17 +215,17 @@ describe('TokenAllowancePage', () => {
     const useDefault = getByText('Use default');
     fireEvent.click(useDefault);
 
-    const input = getByTestId('custom-spending-cap-input');
+    const input = document.getElementsByTagName('input')[0];
     expect(input.value).toBe('1');
   });
 
   it('should call back button when button is clicked and return to previous page', () => {
-    const { getByText, getByTestId } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
-    const textField = getByTestId('custom-spending-cap-input');
+    const textField = document.getElementsByTagName('input')[0];
     fireEvent.change(textField, { target: { value: '1' } });
 
     const nextButton = getByText('Next');
@@ -254,12 +254,12 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should show hardware wallet info text', () => {
-    const { queryByText, getByText, getByTestId } = renderWithProvider(
+    const { queryByText, getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
-    const textField = getByTestId('custom-spending-cap-input');
+    const textField = document.getElementsByTagName('input')[0];
     fireEvent.change(textField, { target: { value: '1' } });
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();

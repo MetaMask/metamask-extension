@@ -34,10 +34,11 @@ export const CustomSpendingCapTooltip = ({
           name={ICON_NAMES.DANGER}
           className="form-field__heading-title__tooltip__warning-icon"
           size={ICON_SIZES.AUTO}
-          style={{ 'vertical-align': 'bottom' }}
         />
       ) : (
-        tooltipIcon !== '' && <Icon name={ICON_NAMES.QUESTION} />
+        tooltipIcon !== '' && (
+          <Icon name={ICON_NAMES.QUESTION} size={ICON_SIZES.AUTO} />
+        )
       )}
     </Tooltip>
   </Box>

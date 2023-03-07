@@ -246,9 +246,7 @@ describe('Create token, approve token and approve token without gas', function (
         );
 
         // set custom spending cap
-        let setSpendingCap = await driver.findElement(
-          '[data-testid="custom-spending-cap-input"]',
-        );
+        let setSpendingCap = await driver.findElement('#custom-spending-cap');
         await setSpendingCap.fill('5');
 
         await driver.clickElement({
@@ -303,9 +301,7 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'Edit',
         });
 
-        setSpendingCap = await driver.findElement(
-          '[data-testid="custom-spending-cap-input"]',
-        );
+        setSpendingCap = await driver.findElement('#custom-spending-cap');
         await setSpendingCap.fill('9');
 
         await driver.clickElement({
@@ -391,7 +387,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         // set max spending cap
         await driver.clickElement({
-          css: '.custom-spending-cap__max',
+          tag: 'span',
           text: 'Max',
         });
 

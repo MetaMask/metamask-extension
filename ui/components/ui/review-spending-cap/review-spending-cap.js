@@ -22,7 +22,6 @@ import {
   TextColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Numeric } from '../../../../shared/modules/Numeric';
 
 export default function ReviewSpendingCap({
   tokenName,
@@ -31,10 +30,6 @@ export default function ReviewSpendingCap({
   onEdit,
 }) {
   const t = useContext(I18nContext);
-  const valueIsGreaterThanBalance = new Numeric(
-    Number(tokenValue),
-    10,
-  ).greaterThan(Number(currentTokenBalance), 10);
 
   return (
     <Box
@@ -77,7 +72,7 @@ export default function ReviewSpendingCap({
                   color={TextColor.textAlternative}
                   className="review-spending-cap__heading-title__tooltip"
                 >
-                  {valueIsGreaterThanBalance &&
+                  {parseFloat(tokenValue) > currentTokenBalance &&
                     t('warningTooltipText', [
                       <Typography
                         key="tooltip-text"
@@ -92,12 +87,12 @@ export default function ReviewSpendingCap({
                         {t('beCareful')}
                       </Typography>,
                     ])}
-                  {Number(tokenValue) === 0 &&
+                  {parseFloat(tokenValue) === 0 &&
                     t('revokeSpendingCapTooltipText')}
                 </Typography>
               }
             >
-              {valueIsGreaterThanBalance && (
+              {parseFloat(tokenValue) > currentTokenBalance && (
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__warning-icon"
                   name={ICON_NAMES.DANGER}
@@ -106,7 +101,7 @@ export default function ReviewSpendingCap({
                   style={{ 'vertical-align': 'middle' }}
                 />
               )}
-              {Number(tokenValue) === 0 && (
+              {parseFloat(tokenValue) === 0 && (
                 <Icon
                   className="review-spending-cap__heading-title__tooltip__question-icon"
                   name={ICON_NAMES.QUESTION}
@@ -135,7 +130,7 @@ export default function ReviewSpendingCap({
         <Typography
           as={TypographyVariant.H6}
           color={
-            valueIsGreaterThanBalance
+            parseFloat(tokenValue) > currentTokenBalance
               ? TextColor.errorDefault
               : TextColor.textDefault
           }

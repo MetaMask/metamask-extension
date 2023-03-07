@@ -12,7 +12,7 @@ export default {
       control: { type: 'number' },
     },
     tokenValue: {
-      control: { type: 'text' },
+      control: { type: 'number' },
     },
     onEdit: {
       action: 'onEdit',
@@ -21,7 +21,7 @@ export default {
   args: {
     tokenName: 'DAI',
     currentTokenBalance: 200.12,
-    tokenValue: '7',
+    tokenValue: 7,
   },
 };
 
