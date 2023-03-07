@@ -80,7 +80,14 @@ let controller;
 
 // state persistence
 const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+const beforeServiceWorkerRestart =
+  globalThis.isFirstTimeProfileLoaded === true ||
+  globalThis.isFirstTimeProfileLoaded === undefined;
+
+const localStore =
+  inTest && beforeServiceWorkerRestart
+    ? new ReadOnlyNetworkStore()
+    : new LocalStore();
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {

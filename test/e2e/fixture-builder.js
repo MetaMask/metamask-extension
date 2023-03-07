@@ -1,5 +1,8 @@
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  ACTION_QUEUE_METRICS_E2E_TEST,
+} = require('../../shared/constants/test-flags');
 
 function defaultFixture() {
   return {
@@ -301,6 +304,7 @@ function onboardingFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
       NetworkController: {
         network: '1337',
