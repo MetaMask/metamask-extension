@@ -881,17 +881,18 @@ export default function PrepareSwap({
           >
             <div className="prepare-swap-page__balance-message">
               {fromTokenSymbol && swapYourTokenBalance}
-              {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
-                <div
-                  className="prepare-swap-page__max-button"
-                  data-testid="prepare-swap-page__max-button"
-                  onClick={() =>
-                    onInputChange(fromTokenBalance || '0', fromTokenBalance)
-                  }
-                >
-                  {t('max')}
-                </div>
-              )}
+              {fromTokenSymbol &&
+                !isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
+                  <div
+                    className="prepare-swap-page__max-button"
+                    data-testid="prepare-swap-page__max-button"
+                    onClick={() =>
+                      onInputChange(fromTokenBalance || '0', fromTokenBalance)
+                    }
+                  >
+                    {t('max')}
+                  </div>
+                )}
             </div>
             {fromTokenInputValue && swapFromFiatValue && (
               <Box
