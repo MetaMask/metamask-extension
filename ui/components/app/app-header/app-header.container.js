@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { getCustodianIconForAddress } from '@codefi/mmi-sdk';
+///: END:ONLY_INCLUDE_IN
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getUnreadNotificationsCount,
@@ -25,6 +28,12 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IN
   } = metamask;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  const custodianIcon = selectedAddress
+    ? getCustodianIconForAddress(state, selectedAddress)
+    : null;
+  ///: END:ONLY_INCLUDE_IN
+
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   const unreadNotificationsCount = getUnreadNotificationsCount(state);
   ///: END:ONLY_INCLUDE_IN
@@ -44,6 +53,9 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(beta)
     showBetaHeader,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    custodianIcon,
     ///: END:ONLY_INCLUDE_IN
   };
 };
