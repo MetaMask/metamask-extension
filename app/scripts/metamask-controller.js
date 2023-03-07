@@ -110,6 +110,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -663,6 +664,7 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
     );
+
     this.keyringController.on('unlock', () => this._onUnlock());
     this.keyringController.on('lock', () => this._onLock());
 
@@ -2521,7 +2523,8 @@ export default class MetamaskController extends EventEmitter {
       if (loginToken && loginSalt) {
         const { vault } = this.keyringController.store.getState();
 
-        if (vault.salt !== loginSalt) {
+        const jsonVault = JSON.parse(vault);
+        if (jsonVault.salt !== loginSalt) {
           console.warn(
             'submitEncryptionKey: Stored salt and vault salt do not match',
           );
@@ -2808,6 +2811,13 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount(accountCount) {
+    const isActionMetricsQueueE2ETest =
+      this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
+
+    if (process.env.IN_TEST && isActionMetricsQueueE2ETest) {
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+    }
+
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
       HardwareKeyringTypes.hdKeyTree,
     );
