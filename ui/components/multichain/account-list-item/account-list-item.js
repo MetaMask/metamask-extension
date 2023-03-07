@@ -1,11 +1,3 @@
-/*
-  NEXT COMPONENTS:
-
-    1.  AccountListItemOptions
-    2.  AccountList
-    3.  AccountListPopover
-*/
-
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';

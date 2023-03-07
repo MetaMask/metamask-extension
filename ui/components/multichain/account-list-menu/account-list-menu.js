@@ -12,16 +12,18 @@ import { AccountListItem } from '../account-list-item/account-list-item';
 import { BLOCK_SIZES, Size } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../../ui/popover';
+import { useSelector } from 'react-redux';
+import { getMetaMaskAccountsOrdered } from '../../../selectors';
 
 export const AccountListMenu = ({
-  identities = [],
   onClose = () => console.log('Account list closed'),
 }) => {
   const t = useI18nContext();
   const [searchQuery, setSearchQuery] = useState('');
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
 
   const searchResults = searchQuery
-    ? new Fuse(identities, {
+    ? new Fuse(accounts, {
         threshold: 0.2,
         location: 0,
         distance: 100,
@@ -29,7 +31,9 @@ export const AccountListMenu = ({
         minMatchCharLength: 1,
         keys: ['name', 'address'],
       }).search(searchQuery)
-    : identities;
+    : accounts;
+
+    console.log("accounts are: ", accounts)
 
   return (
     <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
@@ -46,8 +50,8 @@ export const AccountListMenu = ({
         </Box>
         {/* Account list block */}
         <Box style={{ height: '200px', overflow: 'auto' }}>
-          {searchResults.map((identity) => (
-            <AccountListItem identity={identity} key={identity.address} />
+          {searchResults.map((account) => (
+            <AccountListItem identity={account} key={account.address} />
           ))}
         </Box>
         {/* Add / Import / Hardware */}
@@ -77,6 +81,5 @@ export const AccountListMenu = ({
 };
 
 AccountListMenu.propTypes = {
-  identities: PropTypes.array,
   onClose: PropTypes.func,
 };

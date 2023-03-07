@@ -90,6 +90,8 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { AccountListMenu } from '../../components/multichain/account-list-menu/account-list-menu';
+import { toggleAccountMenu } from '../../store/actions';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -125,6 +127,7 @@ export default class Routes extends Component {
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
+    isAccountMenuOpen: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -427,6 +430,7 @@ export default class Routes extends Component {
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
       completedOnboarding,
+      isAccountMenuOpen,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -448,6 +452,8 @@ export default class Routes extends Component {
       windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
+
+      console.log("process.env.MULTICHAIN is: ", process.env.MULTICHAIN)
 
     return (
       <div
@@ -483,7 +489,8 @@ export default class Routes extends Component {
         )}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {completedOnboarding ? <NetworkDropdown /> : null}
-        <AccountMenu />
+        {true ? null : <AccountMenu />}
+        {true && isAccountMenuOpen ? <AccountListMenu onClose={() => {console.log("closing!"); toggleAccountMenu();} } /> : null}
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}

@@ -55,6 +55,7 @@ function mapStateToProps(state) {
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,
+    isAccountMenuOpen: state.metamask.isAccountMenuOpen,
   };
 }
 
