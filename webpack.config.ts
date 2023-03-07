@@ -11,6 +11,7 @@ import { getEnvironmentVariables } from './development/webpack/utils/environment
 import { BuildTarget } from './development/webpack/utils/constants';
 import { BuildType } from './shared/constants/app';
 import { createRemoveFencedCodeTransform } from './development/build/transforms/remove-fenced-code.js';
+import createStaticAssetTasks from './development/build/static.js';
 
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
 
@@ -18,6 +19,14 @@ const fontExtensions = ['ttf', 'woff', 'woff2', 'eot', 'otf'];
 
 const buildType = BuildType.main;
 
+const staticAssetTasks = createStaticAssetTasks({
+  buildType,
+  browserPlatforms: ['firefox','chrome'],
+  livereload: false,
+  shouldIncludeLockdown: false,
+  shouldIncludeSnow: false,
+});
+console.log('STATIC', staticAssetTasks.copyTargetsProds);
 const renderHtmlTemplate = (fileName: string) => {
   const htmlTemplate = readFileSync(path.join(__dirname, 'app', fileName), { encoding: 'utf-8' });
   // TODO: inject applyLavaMoat
