@@ -8,6 +8,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { getEnvironmentVariables } from './development/webpack/utils/environment-variables';
 import { BuildTarget } from './development/webpack/utils/constants';
 import { BuildType } from './shared/constants/app';
+import { createRemoveFencedCodeTransform } from './development/build/transforms/remove-fenced-code.js';
 
 const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
 
@@ -26,30 +27,41 @@ module.exports = async () => ({
   module: {
     rules: [
       {
-        test: /\.(js|tsx|ts)$/,
+        test: /\.(jsx|js)$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader',
-          },
-          {
-            loader: 'webpack-remove-code-blocks',
+            loader: 'esbuild-loader',
             options: {
-              blocks: [
-                ...removeBuildTypes.map((buildType) => ({
-                  start: `BEGIN:ONLY_INCLUDE_IN\\(${buildType}\\)`,
-                  end: 'END:ONLY_INCLUDE_IN',
-                  prefix: '///:',
-                })),
-                ...removeBuildTypes.flatMap((buildType, i) =>
-                  removeBuildTypes.slice(i + 1).map((buildTypeTwo) => ({
-                    start: `BEGIN:ONLY_INCLUDE_IN\\(${buildType},${buildTypeTwo}\\)`,
-                    end: 'END:ONLY_INCLUDE_IN',
-                    prefix: '///:',
-                  })),
-                ),
-              ],
-            },
+              target: 'es2015',
+              loader: 'jsx',
+            }
+          },
+        ],
+      },
+      {
+        test: /\.(ts)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'esbuild-loader',
+            options: {
+              target: 'es2015',
+              loader: 'ts',
+            }
+          },
+        ],
+      },
+      {
+        test: /\.(tsx)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'esbuild-loader',
+            options: {
+              target: 'es2015',
+              loader: 'tsx',
+            }
           },
         ],
       },
@@ -95,6 +107,20 @@ module.exports = async () => ({
         // options: {
         //   name: '[name].[ext]',
         // },
+      },
+      {
+        test: /\.(jsx|js|tsx|ts)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: '@mfers/transform-loader',
+            options: {
+              transform:
+                // TODO: inject buildType, shouldLintFenceFiles
+                createRemoveFencedCodeTransform('main', true)
+            },
+          },
+        ],
       },
     ],
   },

@@ -56,7 +56,7 @@
       },
       "packages": {
         "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
     "@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
@@ -64,8 +64,8 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -1483,7 +1483,7 @@
         "brfs>static-module>scope-analyzer>es6-set": true,
         "brfs>static-module>scope-analyzer>estree-is-function": true,
         "brfs>static-module>scope-analyzer>get-assigned-identifiers": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
+        "gulp>undertaker>es6-weak-map>es6-symbol": true
       }
     },
     "brfs>static-module>scope-analyzer>dash-ast": {
@@ -1494,19 +1494,19 @@
     "brfs>static-module>scope-analyzer>es6-map": {
       "packages": {
         "gulp-sourcemaps>debug-fabulous>memoizee>event-emitter": true,
-        "resolve-url-loader>es6-iterator": true,
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
+        "gulp>undertaker>es6-weak-map>d": true,
+        "gulp>undertaker>es6-weak-map>es5-ext": true,
+        "gulp>undertaker>es6-weak-map>es6-iterator": true,
+        "gulp>undertaker>es6-weak-map>es6-symbol": true
       }
     },
     "brfs>static-module>scope-analyzer>es6-set": {
       "packages": {
         "gulp-sourcemaps>debug-fabulous>memoizee>event-emitter": true,
-        "resolve-url-loader>es6-iterator": true,
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
+        "gulp>undertaker>es6-weak-map>d": true,
+        "gulp>undertaker>es6-weak-map>es5-ext": true,
+        "gulp>undertaker>es6-weak-map>es6-iterator": true,
+        "gulp>undertaker>es6-weak-map>es6-symbol": true
       }
     },
     "brfs>static-module>scope-analyzer>get-assigned-identifiers": {
@@ -1885,12 +1885,7 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true
-      }
-    },
-    "chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "chokidar": {
@@ -3094,11 +3089,11 @@
         "process.cwd": true
       },
       "packages": {
-        "chokidar>glob-parent": true,
         "fast-glob>@nodelib/fs.stat": true,
         "fast-glob>@nodelib/fs.walk": true,
+        "fast-glob>glob-parent": true,
         "globby>merge2": true,
-        "stylelint>micromatch": true
+        "ts-loader>micromatch": true
       }
     },
     "fast-glob>@nodelib/fs.stat": {
@@ -3149,6 +3144,15 @@
     "fast-glob>@nodelib/fs.walk>fastq": {
       "packages": {
         "fast-glob>@nodelib/fs.walk>fastq>reusify": true
+      }
+    },
+    "fast-glob>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "fs-extra": {
@@ -3391,7 +3395,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-dart-sass>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-dart-sass>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-dart-sass>strip-ansi": {
@@ -3452,7 +3461,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-livereload>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-livereload>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-livereload>debug": {
@@ -3721,7 +3735,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-rtlcss>rtlcss>postcss": {
@@ -3962,19 +3981,19 @@
         "gulp-sourcemaps>debug-fabulous>memoizee>lru-queue": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>next-tick": true,
         "gulp-sourcemaps>debug-fabulous>memoizee>timers-ext": true,
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true
+        "gulp>undertaker>es6-weak-map>d": true,
+        "gulp>undertaker>es6-weak-map>es5-ext": true
       }
     },
     "gulp-sourcemaps>debug-fabulous>memoizee>event-emitter": {
       "packages": {
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true
+        "gulp>undertaker>es6-weak-map>d": true,
+        "gulp>undertaker>es6-weak-map>es5-ext": true
       }
     },
     "gulp-sourcemaps>debug-fabulous>memoizee>lru-queue": {
       "packages": {
-        "resolve-url-loader>es6-iterator>es5-ext": true
+        "gulp>undertaker>es6-weak-map>es5-ext": true
       }
     },
     "gulp-sourcemaps>debug-fabulous>memoizee>next-tick": {
@@ -3989,7 +4008,7 @@
     },
     "gulp-sourcemaps>debug-fabulous>memoizee>timers-ext": {
       "packages": {
-        "resolve-url-loader>es6-iterator>es5-ext": true
+        "gulp>undertaker>es6-weak-map>es5-ext": true
       }
     },
     "gulp-sourcemaps>through2": {
@@ -4372,8 +4391,8 @@
         "gulp-watch>chokidar>braces>snapdragon>define-property": true,
         "gulp-watch>chokidar>braces>snapdragon>map-cache": true,
         "gulp-watch>chokidar>braces>snapdragon>source-map": true,
-        "gulp-watch>chokidar>braces>snapdragon>use": true,
-        "resolve-url-loader>rework>css>source-map-resolve": true
+        "gulp-watch>chokidar>braces>snapdragon>source-map-resolve": true,
+        "gulp-watch>chokidar>braces>snapdragon>use": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon-node": {
@@ -4609,6 +4628,30 @@
     "gulp-watch>chokidar>braces>snapdragon>define-property>is-descriptor>is-data-descriptor>kind-of": {
       "packages": {
         "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "gulp-watch>chokidar>braces>snapdragon>source-map-resolve": {
+      "builtin": {
+        "url.resolve": true
+      },
+      "globals": {
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-sourcemaps>css>source-map-resolve>atob": true,
+        "gulp-sourcemaps>css>source-map-resolve>decode-uri-component": true,
+        "gulp-watch>chokidar>braces>snapdragon>source-map-resolve>source-map-url": true,
+        "gulp-watch>chokidar>braces>snapdragon>source-map-resolve>urix": true
+      }
+    },
+    "gulp-watch>chokidar>braces>snapdragon>source-map-resolve>source-map-url": {
+      "globals": {
+        "define": true
+      }
+    },
+    "gulp-watch>chokidar>braces>snapdragon>source-map-resolve>urix": {
+      "builtin": {
+        "path.sep": true
       }
     },
     "gulp-watch>chokidar>braces>snapdragon>use": {
@@ -5204,11 +5247,11 @@
         "chokidar>normalize-path": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
+        "gulp-watch>glob-parent": true,
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>chokidar>braces": true,
         "gulp>glob-watcher>chokidar>fsevents": true,
-        "gulp>glob-watcher>chokidar>glob-parent": true,
         "gulp>glob-watcher>chokidar>is-binary-path": true,
         "gulp>glob-watcher>chokidar>readdirp": true,
         "gulp>glob-watcher>chokidar>upath": true,
@@ -5272,21 +5315,6 @@
       },
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>path-dirname": true,
-        "gulp>glob-watcher>chokidar>glob-parent>is-glob": true
-      }
-    },
-    "gulp>glob-watcher>chokidar>glob-parent>is-glob": {
-      "packages": {
-        "gulp>glob-watcher>chokidar>glob-parent>is-glob>is-extglob": true
       }
     },
     "gulp>glob-watcher>chokidar>is-binary-path": {
@@ -5556,10 +5584,32 @@
     },
     "gulp>undertaker>es6-weak-map": {
       "packages": {
-        "resolve-url-loader>es6-iterator": true,
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
+        "gulp>undertaker>es6-weak-map>d": true,
+        "gulp>undertaker>es6-weak-map>es5-ext": true,
+        "gulp>undertaker>es6-weak-map>es6-iterator": true,
+        "gulp>undertaker>es6-weak-map>es6-symbol": true
+      }
+    },
+    "gulp>undertaker>es6-weak-map>d": {
+      "packages": {
+        "gulp>undertaker>es6-weak-map>es5-ext": true
+      }
+    },
+    "gulp>undertaker>es6-weak-map>es5-ext": {
+      "packages": {
+        "gulp>undertaker>es6-weak-map>es6-symbol": true
+      }
+    },
+    "gulp>undertaker>es6-weak-map>es6-iterator": {
+      "packages": {
+        "gulp>undertaker>es6-weak-map>d": true,
+        "gulp>undertaker>es6-weak-map>es5-ext": true,
+        "gulp>undertaker>es6-weak-map>es6-symbol": true
+      }
+    },
+    "gulp>undertaker>es6-weak-map>es6-symbol": {
+      "packages": {
+        "gulp>undertaker>es6-weak-map>d": true
       }
     },
     "gulp>undertaker>last-run": {
@@ -5663,8 +5713,8 @@
         "process.nextTick": true
       },
       "packages": {
+        "gulp-watch>glob-parent": true,
         "gulp>glob-watcher>is-negated-glob": true,
-        "gulp>vinyl-fs>glob-stream>glob-parent": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams": true,
         "gulp>vinyl-fs>glob-stream>pumpify": true,
         "gulp>vinyl-fs>glob-stream>to-absolute-glob": true,
@@ -5673,21 +5723,6 @@
         "nyc>glob": true,
         "readable-stream": true,
         "vinyl>remove-trailing-separator": true
-      }
-    },
-    "gulp>vinyl-fs>glob-stream>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path": true
-      },
-      "packages": {
-        "gulp-watch>glob-parent>path-dirname": true,
-        "gulp>vinyl-fs>glob-stream>glob-parent>is-glob": true
-      }
-    },
-    "gulp>vinyl-fs>glob-stream>glob-parent>is-glob": {
-      "packages": {
-        "gulp>vinyl-fs>glob-stream>glob-parent>is-glob>is-extglob": true
       }
     },
     "gulp>vinyl-fs>glob-stream>ordered-read-streams": {
@@ -6114,7 +6149,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "lavamoat>@lavamoat/aa": {
@@ -6170,19 +6210,14 @@
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
+        "lavamoat>lavamoat-core>merge-deep>kind-of": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
       "packages": {
         "gulp>undertaker>object.reduce>for-own>for-in": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -6664,52 +6699,6 @@
         "readable-stream>safe-buffer": true
       }
     },
-    "resolve-url-loader>es6-iterator": {
-      "packages": {
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
-      }
-    },
-    "resolve-url-loader>es6-iterator>d": {
-      "packages": {
-        "resolve-url-loader>es6-iterator>es5-ext": true
-      }
-    },
-    "resolve-url-loader>es6-iterator>es5-ext": {
-      "packages": {
-        "resolve-url-loader>es6-iterator>es6-symbol": true
-      }
-    },
-    "resolve-url-loader>es6-iterator>es6-symbol": {
-      "packages": {
-        "resolve-url-loader>es6-iterator>d": true
-      }
-    },
-    "resolve-url-loader>rework>css>source-map-resolve": {
-      "builtin": {
-        "url.resolve": true
-      },
-      "globals": {
-        "setImmediate": true
-      },
-      "packages": {
-        "gulp-sourcemaps>css>source-map-resolve>atob": true,
-        "gulp-sourcemaps>css>source-map-resolve>decode-uri-component": true,
-        "resolve-url-loader>rework>css>source-map-resolve>source-map-url": true,
-        "resolve-url-loader>rework>css>urix": true
-      }
-    },
-    "resolve-url-loader>rework>css>source-map-resolve>source-map-url": {
-      "globals": {
-        "define": true
-      }
-    },
-    "resolve-url-loader>rework>css>urix": {
-      "builtin": {
-        "path.sep": true
-      }
-    },
     "sass": {
       "builtin": {
         "fs": true,
@@ -6765,6 +6754,11 @@
       },
       "globals": {
         "process.platform": true
+      }
+    },
+    "sinon>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "source-map": {
@@ -6914,7 +6908,6 @@
         "stylelint>leven": true,
         "stylelint>log-symbols": true,
         "stylelint>mathml-tag-names": true,
-        "stylelint>micromatch": true,
         "stylelint>normalize-selector": true,
         "stylelint>postcss": true,
         "stylelint>postcss-html": true,
@@ -6934,6 +6927,7 @@
         "stylelint>svg-tags": true,
         "stylelint>table": true,
         "stylelint>write-file-atomic": true,
+        "ts-loader>micromatch": true,
         "yargs>string-width": true
       }
     },
@@ -7094,12 +7088,7 @@
         "process.platform": true
       },
       "packages": {
-        "stylelint>chalk>supports-color>has-flag": true
-      }
-    },
-    "stylelint>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "stylelint>cosmiconfig": {
@@ -7248,21 +7237,7 @@
         "process.platform": true
       },
       "packages": {
-        "stylelint>log-symbols>chalk>supports-color>has-flag": true
-      }
-    },
-    "stylelint>log-symbols>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "stylelint>micromatch": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "chokidar>braces": true,
-        "depcheck>readdirp>picomatch": true
+        "sinon>supports-color>has-flag": true
       }
     },
     "stylelint>normalize-selector": {
@@ -7641,6 +7616,27 @@
         "terser>acorn": true
       }
     },
+    "terser-webpack-plugin>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
     "terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
@@ -7653,33 +7649,12 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
         "define": true
       }
@@ -7733,6 +7708,15 @@
         "@storybook/api>util-deprecate": true,
         "browserify>string_decoder": true,
         "pumpify>inherits": true
+      }
+    },
+    "ts-loader>micromatch": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "chokidar>braces": true,
+        "depcheck>readdirp>picomatch": true
       }
     },
     "tsutils": {
