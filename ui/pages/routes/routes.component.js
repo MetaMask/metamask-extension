@@ -91,7 +91,6 @@ import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { AccountListMenu } from '../../components/multichain/account-list-menu/account-list-menu';
-import { toggleAccountMenu } from '../../store/actions';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -128,6 +127,7 @@ export default class Routes extends Component {
     isCurrentProviderCustom: PropTypes.bool,
     completedOnboarding: PropTypes.bool,
     isAccountMenuOpen: PropTypes.bool,
+    toggleAccountMenu: PropTypes.func,
   };
 
   static contextTypes = {
@@ -431,6 +431,7 @@ export default class Routes extends Component {
       isCurrentProviderCustom,
       completedOnboarding,
       isAccountMenuOpen,
+      toggleAccountMenu,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading

@@ -18,6 +18,7 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
+  toggleAccountMenu,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -68,6 +69,7 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
+    toggleAccountMenu: () => dispatch(toggleAccountMenu()),
   };
 }
 

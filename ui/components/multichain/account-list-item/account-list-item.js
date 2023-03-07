@@ -56,7 +56,7 @@ export const AccountListItem = ({
       href="#"
       onClick={(e) => {
         e.preventDefault();
-        onClick?.();
+        onClick();
       }}
     >
       {selected && (
@@ -128,7 +128,10 @@ export const AccountListItem = ({
           ariaLabel={`${identity.name} ${t('options')}`}
           iconName={ICON_NAMES.MORE_VERTICAL}
           size={ICON_SIZES.SM}
-          onClick={() => setAccountOptionsMenuOpen(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setAccountOptionsMenuOpen(true);
+          }}
         />
         {accountOptionsMenuOpen ? (
           <AccountListItemMenu

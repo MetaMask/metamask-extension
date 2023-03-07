@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
 import {
   ButtonLink,
@@ -15,8 +15,11 @@ import { BLOCK_SIZES, Size } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Popover from '../../ui/popover';
-import { getMetaMaskAccountsOrdered } from '../../../selectors';
-import { toggleAccountMenu } from '../../../store/actions';
+import {
+  getSelectedAccount,
+  getMetaMaskAccountsOrdered,
+} from '../../../selectors';
+import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import {
   IMPORT_ACCOUNT_ROUTE,
@@ -32,7 +35,9 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const selectedAccount = useSelector(getSelectedAccount);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -63,7 +68,22 @@ export const AccountListMenu = ({
         {/* Account list block */}
         <Box style={{ height: '200px', overflow: 'auto' }}>
           {searchResults.map((account) => (
-            <AccountListItem identity={account} key={account.address} />
+            <AccountListItem
+              onClick={() => {
+                dispatch(toggleAccountMenu());
+                trackEvent({
+                  category: EVENT.CATEGORIES.NAVIGATION,
+                  event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
+                  properties: {
+                    location: 'Main Menu',
+                  },
+                });
+                dispatch(setSelectedAccount(account.address));
+              }}
+              identity={account}
+              key={account.address}
+              selected={selectedAccount.address === account.address}
+            />
           ))}
         </Box>
         {/* Add / Import / Hardware */}
@@ -72,7 +92,7 @@ export const AccountListMenu = ({
             <ButtonLink
               size={Size.SM}
               onClick={() => {
-                toggleAccountMenu();
+                dispatch(toggleAccountMenu());
                 trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
@@ -92,7 +112,7 @@ export const AccountListMenu = ({
             <ButtonLink
               size={Size.SM}
               onClick={() => {
-                toggleAccountMenu();
+                dispatch(toggleAccountMenu());
                 trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
@@ -112,7 +132,7 @@ export const AccountListMenu = ({
             <ButtonLink
               size={Size.SM}
               onClick={() => {
-                toggleAccountMenu();
+                dispatch(toggleAccountMenu());
                 trackEvent({
                   category: EVENT.CATEGORIES.NAVIGATION,
                   event: EVENT_NAMES.ACCOUNT_ADD_SELECTED,
