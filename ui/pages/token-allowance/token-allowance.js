@@ -192,7 +192,7 @@ export default function TokenAllowance({
       : transactionData;
 
   const handleReject = () => {
-    updateCustomNonce('');
+    dispatch(updateCustomNonce(''));
     dispatch(setCustomTokenAmount(''));
 
     dispatch(cancelTx(fullTxData)).then(() => {
@@ -228,7 +228,7 @@ export default function TokenAllowance({
       fullTxData.currentTokenBalance = currentTokenBalance;
     }
 
-    updateCustomNonce('');
+    dispatch(updateCustomNonce(''));
 
     dispatch(updateAndApproveTx(customNonceMerge(fullTxData))).then(() => {
       dispatch(clearConfirmTransaction());
