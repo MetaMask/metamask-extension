@@ -1,0 +1,16 @@
+diff --git a/src/runtime.js b/src/runtime.js
+index aeb826b69aef5999589e36a0ae114f4527a547e0..c66af787df999bcd70c9538365a23a86f32f1c10 100644
+--- a/src/runtime.js
++++ b/src/runtime.js
+@@ -11206,9 +11206,9 @@ module.exports = {
+           continue
+         }
+         let desc = Object.getOwnPropertyDescriptor(globalRef, prop)
+-        if (desc?.configurable === true) {
++        if (desc && desc.configurable === true) {
+           desc = { configurable: false, set, get }
+-        } else if (desc?.writable === true) {
++        } else if (desc && desc.writable === true) {
+           const p = new Proxy(obj, { getPrototypeOf: get, get, set } )
+           desc = { configurable: false, writable: false, value: p }
+         } else {
