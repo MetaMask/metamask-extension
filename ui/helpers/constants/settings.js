@@ -362,6 +362,5 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('transactionSecurityCheckDescription'),
     route: `${EXPERIMENTAL_ROUTE}#transaction-security-check`,
     icon: 'fa fa-flask',
-    featureFlag: process.env.TRANSACTION_SECURITY_PROVIDER,
   },
 ];
