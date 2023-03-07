@@ -961,7 +961,6 @@ function getAllowedAnnouncementIds(state) {
     14: false,
     15: false,
     16: true,
-    17: true,
   };
 }
 
