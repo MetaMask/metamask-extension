@@ -61,6 +61,7 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
+import SnapKeyring from 'snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -770,6 +771,10 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: END:ONLY_INCLUDE_IN
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    additionalKeyrings.push(SnapKeyring);
+    ///: END:ONLY_INCLUDE_IN
 
     this.keyringController = new KeyringController({
       keyringBuilders: additionalKeyrings,
@@ -1668,6 +1673,19 @@ export default class MetamaskController extends EventEmitter {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
+  /**
+   * Initialize the snap keyring if it is not present.
+   */
+  async getSnapKeyring() {
+    if (!this.snapKeyring) {
+      this.snapKeyring = await this.keyringController.addNewKeyring(
+        'Snap Keyring',
+      );
+    }
+    return this.snapKeyring;
+  }
+
   /**
    * Constructor helper for getting Snap permission specifications.
    */
@@ -1723,6 +1741,16 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
+        getSnapKeyring: this.getSnapKeyring.bind(this),
+        saveSnapKeyring: async (removedAddress) => {
+          if (removedAddress) {
+            this.keyringController.emit('removedAccount', removedAddress);
+          }
+          // TODO[muji]: add a save() method to KeyringController
+          await this.keyringController.persistAllKeyrings();
+          await this.keyringController._updateMemStoreKeyrings();
+          await this.keyringController.fullUpdate();
+        },
       }),
     };
   }

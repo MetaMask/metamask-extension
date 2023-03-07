@@ -255,6 +255,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.SecurityKey,
     weight: 3,
   }),
+  [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
+    label: t('permission_manageAccounts'),
+    leftIcon: 'fas fa-door-open',
+    rightIcon: null,
+    weight: 3,
+  }),
   [RestrictedMethods.snap_manageState]: ({ t }) => ({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
