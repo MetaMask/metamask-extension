@@ -1,7 +1,9 @@
+import { readFileSync } from 'fs';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import Sqrl = require('squirrelly');
 import { EnvironmentPlugin, ProgressPlugin } from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -14,7 +16,11 @@ const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
 
 const fontExtensions = ['ttf', 'woff', 'woff2', 'eot', 'otf'];
 
-const removeBuildTypes = ['flask', 'beta', 'desktop'];
+const renderHtmlTemplate = (fileName: string) => {
+  const htmlTemplate = readFileSync(path.join(__dirname, 'app', fileName), { encoding: 'utf-8' });
+  // TODO: inject applyLavaMoat
+  return Sqrl.render(htmlTemplate, { jsBundles: [], applyLavaMoat: false });
+};
 
 module.exports = async () => ({
   entry: {
@@ -215,19 +221,19 @@ module.exports = async () => ({
       ],
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'app', 'background.html'),
+      templateContent: renderHtmlTemplate('background.html'),
       filename: 'background.html',
       chunks: ['background'],
       cache: false,
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'app', 'popup.html'),
+      templateContent: renderHtmlTemplate('popup.html'),
       filename: 'popup.html',
       chunks: ['ui'],
       cache: false,
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'app', 'notification.html'),
+      templateContent: renderHtmlTemplate('notification.html'),
       filename: 'notification.html',
       chunks: ['ui'],
       cache: false,
