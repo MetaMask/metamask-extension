@@ -7,6 +7,9 @@ import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/permissions';
+import {
+  snapKeyringPermissionBuilders,
+} from './snap-keyring-permissions';
 
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
@@ -28,7 +31,10 @@ export const buildSnapEndowmentSpecifications = () =>
  * restricted method implementations.
  */
 export const buildSnapRestrictedMethodSpecifications = (hooks) =>
-  Object.values(restrictedMethodPermissionBuilders).reduce(
+  [
+    ...Object.values(restrictedMethodPermissionBuilders),
+    ...Object.values(snapKeyringPermissionBuilders),
+  ].reduce(
     (specifications, { targetKey, specificationBuilder, methodHooks }) => {
       if (!Object.keys(ExcludedSnapPermissions).includes(targetKey)) {
         specifications[targetKey] = specificationBuilder({
