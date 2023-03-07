@@ -242,7 +242,7 @@ describe('Add account', function () {
 
         // enter private key',
         await driver.fill('#private-key-box', testPrivateKey);
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement({ text: 'Import', tag: 'span' });
 
         // should show the correct account name
         const importedAccountName = await driver.findElement(

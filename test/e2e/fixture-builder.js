@@ -235,6 +235,7 @@ function defaultFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         transactionSecurityCheckEnabled: true,
+        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -348,6 +349,7 @@ function onboardingFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         transactionSecurityCheckEnabled: true,
+        openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
       },
       SmartTransactionsController: {
         smartTransactionsState: {

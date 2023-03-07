@@ -22,8 +22,12 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-
-import { Icon, ICON_NAMES } from '../../component-library';
+import {
+  Icon,
+  ButtonIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -195,9 +199,12 @@ class NetworkDropdown extends Component {
           >
             {nickname || rpcUrl}
           </span>
-          {isCurrentRpcTarget ? null : (
-            <i
-              className="fa fa-times delete"
+          {isCurrentRpcTarget && (
+            <ButtonIcon
+              className="delete"
+              iconName={ICON_NAMES.CLOSE}
+              size={ICON_SIZES.SM}
+              ariaLabel={this.context.t('delete')}
               onClick={(e) => {
                 e.stopPropagation();
                 this.props.showConfirmDeleteNetworkModal({
