@@ -31,7 +31,6 @@ import {
   DetectedTokensBanner,
   MultichainTokenList,
   NewImportTokenLink,
-  NewTokenList,
 } from '../../multichain';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 

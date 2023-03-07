@@ -6,7 +6,7 @@ import AssetListItem from '../asset-list-item';
 import { getSelectedAddress } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { MultichainTokenList, NewTokenList } from '../../multichain';
+import { MultichainTokenList } from '../../multichain';
 
 export default function TokenCell({
   address,
