@@ -6,88 +6,64 @@ const OPENSEA_URL =
   'https://eos9d7dmfj.execute-api.us-east-1.amazonaws.com/metamask/validate';
 /**
  * @param {import('mockttp').Mockttp} mockServer - The mock server.
- * @param {object} metamaskSecurityProviderConfigResponse - The response for the dynamic phishing
- * configuration lookup performed by the warning page.
  */
 
-async function setupSecurityProviderMocks(mockServer) {
-  await mockServer.forGet(OPENSEA_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      body: {
-        flagAsDangerous: 0,
-      },
-    };
-  });
-
-  await mockServer.forGet(OPENSEA_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      body: {
-        flagAsDangerous: 1,
-        reason: 'This site is known for phishing attempts.',
-        reason_header: 'This could be a scam',
-      },
-    };
-  });
-
-  await mockServer.forGet(OPENSEA_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      body: {
-        flagAsDangerous: 2,
-        reason: 'This site is not safe for browsing.',
-        reason_header: 'Request may not be safe',
-      },
-    };
-  });
-  await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
-    return {
-      statusCode: 401,
-      body: {
-        message: 'Unauthorized',
-      },
-    };
-  });
-}
-
 describe('Transaction security provider', function () {
+  let windowHandles;
+  // eslint-disable-next-line no-unused-vars
+  let extension;
+  // eslint-disable-next-line no-unused-vars
+  let testApp;
+
   async function mockSecurityProviderDetection(mockServer, scenario) {
     switch (scenario) {
       case 'notMalicious':
-        await setupSecurityProviderMocks(mockServer, {
-          statusCode: 200,
-          body: {
-            flagAsDangerous: 0,
-          },
+        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {
+              flagAsDangerous: 0,
+            },
+          };
         });
         break;
       case 'malicious':
-        await setupSecurityProviderMocks(mockServer, {
-          statusCode: 200,
-          body: {
-            flagAsDangerous: 1,
-            reason: 'This site is known for phishing attempts.',
-            reason_header: 'This could be a scam',
-          },
+        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {
+              flagAsDangerous: 1,
+              reason:
+                'If you sign this request, you may lose all of your assets for good',
+              reason_header: 'This could be a scam',
+            },
+          };
         });
         break;
       case 'notSafe':
-        await setupSecurityProviderMocks(mockServer, {
-          statusCode: 200,
-          body: {
-            flagAsDangerous: 2,
-            reason: 'This site is not safe for browsing.',
-            reason_header: 'Request may not be safe',
-          },
+        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {
+              flagAsDangerous: 2,
+              reason:
+                'The security provider didn’t detect any known malicious activity, but it still may not be safe to continue.',
+              reason_header: 'Request may not be safe',
+            },
+          };
         });
         break;
       case 'requestNotVerified':
-        await setupSecurityProviderMocks(mockServer, {
-          statusCode: 401,
-          body: {
-            message: 'Unauthorized',
-          },
+        await mockServer.forPost(OPENSEA_URL).thenCallback(() => {
+          return {
+            statusCode: 401,
+            json: {
+              flagAsDangerous: 3,
+              reason:
+                'Because of an error, this request was not verified by the security. Proceed with caution.',
+              reason_header: 'Request not verified',
+            },
+          };
         });
         break;
       default:
@@ -95,10 +71,6 @@ describe('Transaction security provider', function () {
     }
   }
 
-  let windowHandles;
-  let extension;
-  let popup;
-  let testApp;
   const ganacheOptions = {
     accounts: [
       {
@@ -109,13 +81,14 @@ describe('Transaction security provider', function () {
     ],
   };
 
-  it('should return malicious response', async function () {
+  it('Should return malicious response', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesController({
             transactionSecurityCheckEnabled: true,
           })
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -133,37 +106,149 @@ describe('Transaction security provider', function () {
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
-        // Lock Account
-        await driver.switchToWindow(extension);
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Lock', tag: 'button' });
-
         testApp = windowHandles[1];
-        await driver.switchToWindow(testApp);
-        // Connect to Dapp1
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        windowHandles = await driver.getAllWindowHandles();
-
-        popup = await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-
-        await driver.switchToWindow(popup);
-
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-        await driver.switchToWindow(testApp);
 
         await driver.clickElement('#personalSign');
 
-        await driver.switchToWindow(popup);
-        await driver.delay(1000);
-        const warningHeader = await driver.findElement('h5');
-        assert.equal(await warningHeader.getText(), '');
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        const warningHeader = await driver.isElementPresent({
+          text: 'This could be a scam',
+          tag: 'h5',
+        });
+        assert.equal(warningHeader, true);
+      },
+    );
+  });
+
+  it('Should return not safe response', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            transactionSecurityCheckEnabled: true,
+          })
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: async (mockServer) =>
+          await mockSecurityProviderDetection(mockServer, 'notSafe'),
+        dapp: true,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        windowHandles = await driver.getAllWindowHandles();
+        extension = windowHandles[0];
+
+        testApp = windowHandles[1];
+
+        await driver.clickElement('#signTypedData');
+
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        const warningHeader = await driver.isElementPresent({
+          text: 'Request may not be safe',
+          tag: 'h5',
+        });
+        assert.equal(warningHeader, true);
+      },
+    );
+  });
+
+  it('Should return not malicious response', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            transactionSecurityCheckEnabled: true,
+          })
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: async (mockServer) =>
+          await mockSecurityProviderDetection(mockServer, 'notMalicious'),
+        dapp: true,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        windowHandles = await driver.getAllWindowHandles();
+        extension = windowHandles[0];
+
+        testApp = windowHandles[1];
+
+        await driver.clickElement('#siwe');
+
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        const warningHeader = await driver.isElementPresent({
+          text: 'Request may not be safe',
+          tag: 'h5',
+        });
+        assert.equal(warningHeader, false);
+      },
+    );
+  });
+
+  it('Should return request not verified response', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            transactionSecurityCheckEnabled: true,
+          })
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: async (mockServer) =>
+          await mockSecurityProviderDetection(mockServer, 'requestNotVerified'),
+        dapp: true,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        windowHandles = await driver.getAllWindowHandles();
+        extension = windowHandles[0];
+
+        testApp = windowHandles[1];
+
+        await driver.clickElement('#signTypedDataV4');
+
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        const warningHeader = await driver.isElementPresent({
+          text: 'Request not verified',
+          tag: 'h5',
+        });
+        assert.equal(warningHeader, true);
       },
     );
   });
