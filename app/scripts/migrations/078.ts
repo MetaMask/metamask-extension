@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
 
-export const version = 80;
+export const version = 78;
 
 /**
  * The`@metamask/phishing-controller` state was updated in v2.0.0.
