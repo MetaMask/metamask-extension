@@ -1774,6 +1774,11 @@ export function updateMetamaskState(
       getMetaMaskAccounts({ metamask: currentState });
     const newSelectedAccount = newAccounts[newSelectedAddress];
     const oldSelectedAccount = newAccounts[selectedAddress];
+    const oldSelectedAccountBalance =
+      currentState.accounts[selectedAddress]?.balance;
+    const newSelectedAccountBalance =
+      newState.accounts[newSelectedAddress]?.balance;
+
     // dispatch an ACCOUNT_CHANGED for any account whose balance or other
     // properties changed in this update
     Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
@@ -1816,6 +1821,9 @@ export function updateMetamaskState(
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
     });
+    if (!isEqual(oldSelectedAccountBalance, newSelectedAccountBalance)) {
+      dispatch(initializeSendState({ chainHasChanged: true }));
+    }
     if (provider.chainId !== newProvider.chainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,

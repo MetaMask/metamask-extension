@@ -43,6 +43,12 @@ interface TemporaryBackgroundState {
       name: string;
     }[];
   };
+  accounts: {
+    [address: string]: {
+      address: string;
+      balance: string;
+    };
+  };
   provider: {
     chainId: string;
   };
