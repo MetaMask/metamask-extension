@@ -3,7 +3,7 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('Remove ERC1155 NFT', function () {
+describe('View ERC1155 NFT details', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
   const ganacheOptions = {
     accounts: [
@@ -15,7 +15,9 @@ describe('Remove ERC1155 NFT', function () {
     ],
   };
 
-  it('user should be able to remove ERC1155 NFT on details page', async function () {
+  it('user should be able to view ERC1155 NFT details', async function () {
+    const expectedImageSource =
+      'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link';
     await withFixtures(
       {
         dapp: true,
@@ -39,27 +41,40 @@ describe('Remove ERC1155 NFT', function () {
         await driver.fill('[data-testid="token-id"]', '1');
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
-        // Open the details page and click remove nft button
+        // Click to open the NFT details page and check displayed account
         const importedNftImage = await driver.findVisibleElement(
           '.nfts-items__item img',
         );
         await importedNftImage.click();
-        await driver.clickElement('[data-testid="nft-options__button"]');
-        await driver.clickElement('[data-testid="nft-item-remove"]');
+        const detailsPageAccount = await driver.findElement(
+          '.asset-breadcrumb span:nth-of-type(2)',
+        );
+        assert.equal(await detailsPageAccount.getText(), 'Account 1');
 
-        // Check the remove NFT toaster is displayed
-        const removeNftNotification = await driver.findElement({
-          text: 'NFT was successfully removed!',
-          tag: 'h6',
-        });
-        assert.equal(await removeNftNotification.isDisplayed(), true);
+        // Check the displayed ERC1155 NFT details
+        const nftName = await driver.findElement('.nft-details__info h4');
+        assert.equal(await nftName.getText(), 'Rocks');
 
-        // Check the imported ERC1155 NFT disappeared in the NFT tab
-        const noNftInfo = await driver.waitForSelector({
-          css: 'h4',
-          text: 'No NFTs yet',
-        });
-        assert.equal(await noNftInfo.isDisplayed(), true);
+        const nftDescription = await driver.findElement(
+          '.nft-details__info h6:nth-of-type(2)',
+        );
+        assert.equal(
+          await nftDescription.getText(),
+          'This is a collection of Rock NFTs.',
+        );
+
+        const nftImage = await driver.findElement('.nft-details__image');
+        assert.equal(await nftImage.isDisplayed(), true);
+
+        const nftImageSource = await driver.findElement(
+          '.nft-details__image-source',
+        );
+        assert.equal(await nftImageSource.getText(), expectedImageSource);
+
+        const nftContract = await driver.findElement(
+          '.nft-details__contract-wrapper',
+        );
+        assert.equal(await nftContract.getText(), '0x581...5947');
       },
     );
   });
