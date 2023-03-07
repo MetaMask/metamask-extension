@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-
 const FixtureBuilder = require('../fixture-builder');
 const { regularDelayMs, veryLargeDelayMs } = require('../helpers');
 
@@ -34,13 +33,11 @@ const buildQuote = async (driver, options) => {
     '[class="dropdown-input-pair dropdown-input-pair__to"]',
   );
   await driver.clickElement('.dropdown-input-pair__to');
-
   await driver.fill(
     'input[data-testid="search-list-items"]',
     options.swapTo || options.swapToContractAddress,
   );
   await driver.delay(veryLargeDelayMs); // Need an extra delay after typing an amount.
-
   if (options.swapTo) {
     await driver.wait(async () => {
       const tokenNames = await driver.findElements(
