@@ -1,5 +1,15 @@
 {
   "resources": {
+    "eslint>debug": {
+      "globals": {
+        "localStorage": false
+      }
+    },
+    "browserify>readable-stream>util-deprecate": {
+      "globals": {
+        "localStorage": false
+      }
+    },
     "browserify>browser-resolve": {
       "packages": {
         "ethjs-query>babel-runtime>core-js": true
