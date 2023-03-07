@@ -1441,8 +1441,9 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case draftTransaction.amount.value === '0x0' ||
-            draftTransaction.amount.value === '0x00':
+          case (draftTransaction.amount.value === '0x0' ||
+            draftTransaction.amount.value === '0x00') &&
+            draftTransaction.asset.type !== AssetType.NFT:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Asset is in error amount is 0`,
             });
