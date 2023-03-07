@@ -265,8 +265,6 @@ export default class MetamaskController extends EventEmitter {
     this.blockTracker =
       this.networkController.getProviderAndBlockTracker().blockTracker;
 
-    this.ethQuery = new EthQuery(this.provider);
-
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
     });
@@ -2394,10 +2392,11 @@ export default class MetamaskController extends EventEmitter {
         seedPhraseAsBuffer,
       );
 
+      const ethQuery = new EthQuery(this.provider);
       accounts = await keyringController.getAccounts();
       lastBalance = await this.getBalance(
         accounts[accounts.length - 1],
-        this.ethQuery,
+        ethQuery,
       );
 
       const [primaryKeyring] = keyringController.getKeyringsByType(
@@ -2413,7 +2412,7 @@ export default class MetamaskController extends EventEmitter {
         accounts = await keyringController.getAccounts();
         lastBalance = await this.getBalance(
           accounts[accounts.length - 1],
-          this.ethQuery,
+          ethQuery,
         );
       }
 
