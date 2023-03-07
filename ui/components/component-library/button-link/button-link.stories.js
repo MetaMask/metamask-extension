@@ -68,6 +68,9 @@ export default {
     href: {
       control: 'text',
     },
+    externalLink: {
+      control: 'boolean',
+    },
     startIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
