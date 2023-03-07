@@ -144,23 +144,44 @@ const RevealSeedPage = () => {
   };
 
   const renderRevealSeedContent = () => {
+    // default fir SRP_VIEW_SRP_TEXT event because this is the first thing showed after rendering
+    trackEvent({
+      category: EVENT.CATEGORIES.KEYS,
+      event: EVENT_NAMES.SRP_VIEWS_SRP_TEXT,
+      properties: {
+        key_type: EVENT.KEY_TYPES.SRP,
+      },
+    });
+
     return (
       <div>
-        <Tabs defaultActiveTabName={t('revealSeedWordsText')}>
+        <Tabs
+          defaultActiveTabName={t('revealSeedWordsText')}
+          onTabClick={(tabName) => {
+            if (tabName === 'text-seed') {
+              trackEvent({
+                category: EVENT.CATEGORIES.KEYS,
+                event: EVENT_NAMES.SRP_VIEWS_SRP_TEXT,
+                properties: {
+                  key_type: EVENT.KEY_TYPES.SRP,
+                },
+              });
+            } else if (tabName === 'qr-seed') {
+              trackEvent({
+                category: EVENT.CATEGORIES.KEYS,
+                event: EVENT_NAMES.SRP_VIEWS_SRP_QR,
+                properties: {
+                  key_type: EVENT.KEY_TYPES.SRP,
+                },
+              });
+            }
+          }}
+        >
           <Tab
             name={t('revealSeedWordsText')}
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
             tabKey="text-seed"
-            onClick={() => {
-              trackEvent({
-                category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES,
-                properties: {
-                  key_type: EVENT.KEY_TYPES.SRP,
-                },
-              });
-            }}
           >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
             <ExportTextContainer
@@ -174,6 +195,14 @@ const RevealSeedPage = () => {
                     copy_method: 'clipboard',
                   },
                 });
+                trackEvent({
+                  category: EVENT.CATEGORIES.KEYS,
+                  event: EVENT_NAMES.SRP_COPIED_TO_CLIPBOARD,
+                  properties: {
+                    key_type: EVENT.KEY_TYPES.SRP,
+                    copy_method: 'clipboard',
+                  },
+                });
               }}
             />
           </Tab>
@@ -182,13 +211,6 @@ const RevealSeedPage = () => {
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
             tabKey="qr-seed"
-            onClick={trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES,
-              properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
-              },
-            })}
           >
             <Box
               display={DISPLAY.FLEX}
@@ -223,6 +245,13 @@ const RevealSeedPage = () => {
                 key_type: EVENT.KEY_TYPES.SRP,
               },
             });
+            trackEvent({
+              category: EVENT.CATEGORIES.KEYS,
+              event: EVENT_NAMES.SRP_REVEAL_CANCELLED,
+              properties: {
+                key_type: EVENT.KEY_TYPES.SRP,
+              },
+            });
             history.push(mostRecentOverviewPage);
           }}
         >
@@ -235,6 +264,13 @@ const RevealSeedPage = () => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
               event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
+              properties: {
+                key_type: EVENT.KEY_TYPES.SRP,
+              },
+            });
+            trackEvent({
+              category: EVENT.CATEGORIES.KEYS,
+              event: EVENT_NAMES.SRP_REVEAL_NEXT_CLICKED,
               properties: {
                 key_type: EVENT.KEY_TYPES.SRP,
               },
@@ -259,7 +295,7 @@ const RevealSeedPage = () => {
           onClick={() => {
             trackEvent({
               category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES,
+              event: EVENT_NAMES.SRP_REVEAL_DONE_CLICKED,
               properties: {
                 key_type: EVENT.KEY_TYPES.SRP,
               },

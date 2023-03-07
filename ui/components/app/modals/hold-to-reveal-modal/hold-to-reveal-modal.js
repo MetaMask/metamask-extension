@@ -20,8 +20,11 @@ import {
 import HoldToRevealButton from '../../hold-to-reveal-button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
 
 const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
   const t = useI18nContext();

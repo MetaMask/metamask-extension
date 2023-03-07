@@ -117,6 +117,14 @@ export default class SecurityTab extends PureComponent {
                     location: 'Settings',
                   },
                 });
+                this.context.trackEvent({
+                  category: EVENT.CATEGORIES.SETTINGS,
+                  event: EVENT_NAMES.SRP_REVEAL_CLICKED,
+                  properties: {
+                    key_type: EVENT.KEY_TYPES.SRP,
+                    location: 'Settings',
+                  },
+                });
                 history.push(REVEAL_SEED_ROUTE);
               }}
             >

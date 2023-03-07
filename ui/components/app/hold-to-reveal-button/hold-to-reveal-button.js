@@ -9,7 +9,7 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 const radius = 14;
