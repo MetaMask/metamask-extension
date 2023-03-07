@@ -30,7 +30,6 @@ export default class ConfirmDeployContract extends Component {
         <Box
           backgroundColor={Color.backgroundAlternative}
           padding={4}
-          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
           variant={TextVariant.bodySm}
         >
           <Box display={DISPLAY.FLEX}>

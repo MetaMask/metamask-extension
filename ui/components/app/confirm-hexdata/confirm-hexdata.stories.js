@@ -1,19 +1,20 @@
 import React from 'react';
 import README from './README.mdx';
-import ConfirmData from './confirm-data';
+import ConfirmHexData from './confirm-hexdata';
 
 const txData = {
   txParams: {
     data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+    to: '0x0',
   },
   origin: 'https://metamask.github.io',
   type: 'transfer',
 };
 
 export default {
-  title: 'Components/App/ConfirmData',
+  title: 'Components/App/ConfirmHexData',
 
-  component: ConfirmData,
+  component: ConfirmHexData,
   parameters: {
     docs: {
       page: README,
@@ -33,17 +34,17 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <ConfirmData {...args} />;
+  return <ConfirmHexData {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
 
-export const DataComponentStory = (args) => {
-  return <ConfirmData {...args} />;
+export const DataHexComponentStory = (args) => {
+  return <ConfirmHexData {...args} />;
 };
 
-DataComponentStory.storyName = 'DataComponent';
-DataComponentStory.args = {
+DataHexComponentStory.storyName = 'DataHexComponent';
+DataHexComponentStory.args = {
   txData,
-  dataComponent: <div>Any custom component passed in props</div>,
+  dataHexComponent: <div>Any custom component passed in props</div>,
 };
