@@ -71,27 +71,29 @@ module.exports = function createStaticAssetTasks({
   });
 
   const devTasks = [];
-  Object.entries(copyTargetsDevs).forEach(([browser, copyTargetsDev]) => {
-    copyTargetsDev.forEach((target) => {
-      devTasks.push(async function copyStaticAssets() {
-        await setupLiveCopy(target, browser);
+  if (livereload) {
+    async function setupLiveCopy(target, browser) {
+      const pattern = target.pattern === undefined ? '/**/*' : target.pattern;
+      watch(target.src + pattern, (event) => {
+        livereload.changed(event.path);
+        performCopy(target, browser);
+      });
+      await performCopy(target, browser);
+    }
+    Object.entries(copyTargetsDevs).forEach(([browser, copyTargetsDev]) => {
+      copyTargetsDev.forEach((target) => {
+        devTasks.push(async function copyStaticAssets() {
+          await setupLiveCopy(target, browser);
+        });
       });
     });
-  });
+  }
 
   const prod = createTask(TASKS.STATIC_PROD, composeSeries(...prodTasks));
   const dev = createTask(TASKS.STATIC_DEV, composeSeries(...devTasks));
 
   return { dev, prod };
 
-  async function setupLiveCopy(target, browser) {
-    const pattern = target.pattern === undefined ? '/**/*' : target.pattern;
-    watch(target.src + pattern, (event) => {
-      livereload.changed(event.path);
-      performCopy(target, browser);
-    });
-    await performCopy(target, browser);
-  }
 
   async function performCopy(target, browser) {
     if (target.pattern === undefined) {
