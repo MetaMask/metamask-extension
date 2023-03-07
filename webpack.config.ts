@@ -16,6 +16,8 @@ const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
 
 const fontExtensions = ['ttf', 'woff', 'woff2', 'eot', 'otf'];
 
+const buildType = BuildType.main;
+
 const renderHtmlTemplate = (fileName: string) => {
   const htmlTemplate = readFileSync(path.join(__dirname, 'app', fileName), { encoding: 'utf-8' });
   // TODO: inject applyLavaMoat
@@ -123,7 +125,7 @@ module.exports = async () => ({
             options: {
               transform:
                 // TODO: inject buildType, shouldLintFenceFiles
-                createRemoveFencedCodeTransform('main', true)
+                createRemoveFencedCodeTransform(buildType, true)
             },
           },
         ],
@@ -184,7 +186,7 @@ module.exports = async () => ({
     new EnvironmentPlugin(
       await getEnvironmentVariables({
         buildTarget: BuildTarget.test,
-        buildType: BuildType.main,
+        buildType,
         version: '0.0.x',
       }),
     ),
