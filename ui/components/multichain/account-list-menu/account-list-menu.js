@@ -56,7 +56,7 @@ export const AccountListMenu = ({
     <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
       <Box>
         {/* Search box */}
-        <Box padding={4}>
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
           <TextFieldSearch
             size={Size.SM}
             width={BLOCK_SIZES.FULL}
