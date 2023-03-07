@@ -1,5 +1,6 @@
-///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { DialogType } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { RestrictedMethods } from './permissions';
 
 /**
