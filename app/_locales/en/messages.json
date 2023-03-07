@@ -2731,7 +2731,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Connect to $1.",
-    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the Snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Access the internet.",
@@ -2739,7 +2739,7 @@
   },
   "permission_accessSnap": {
     "message": "Connect to the $1 Snap.",
-    "description": "The description for the `wallet_snap` permission. $1 is the name of the Snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Schedule and execute periodic actions.",
