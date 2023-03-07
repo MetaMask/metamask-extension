@@ -140,6 +140,12 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[method];
 
+    const isDisabledEthSignAdvancedSetting =
+      method === MESSAGE_TYPE.ETH_SIGN &&
+      res.error?.code === errorCodes.rpc.methodNotFound;
+
+    const isDisabledRequest = isDisabledEthSignAdvancedSetting;
+
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
@@ -151,7 +157,9 @@ export default function createRPCMethodTrackingMiddleware({
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
 
-    if (shouldTrackEvent) {
+    // If shouldTrackEvent is true and isDisabledRequest is true, we will skip tracking the event
+    // here and track the event in the 'next' callback
+    if (shouldTrackEvent && !isDisabledRequest) {
       // We track an initial "requested" event as soon as the dapp calls the
       // provider method. For the events not special cased this is the only
       // event that will be fired and the event name will be
@@ -197,12 +205,8 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      const isDisabledEthSignByAdvancedSetting =
-        method === MESSAGE_TYPE.ETH_SIGN &&
-        res.error?.code === errorCodes.rpc.methodNotFound;
-
       let event;
-      if (isDisabledEthSignByAdvancedSetting) {
+      if (isDisabledRequest) {
         event = eventType.DISABLED;
       } else if (res.error?.code === 4001) {
         event = eventType.REJECTED;
