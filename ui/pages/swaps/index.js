@@ -464,16 +464,15 @@ export default function Swap() {
               path={BUILD_QUOTE_ROUTE}
               exact
               render={() => {
+                if (swapsRedesignEnabled) {
+                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
+                }
                 if (tradeTxData && !conversionError) {
                   return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />;
                 } else if (tradeTxData && routeState) {
                   return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
                 } else if (routeState === 'loading' && aggregatorMetadata) {
                   return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
-                }
-
-                if (swapsRedesignEnabled) {
-                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
                 }
 
                 return (
@@ -491,14 +490,6 @@ export default function Swap() {
               path={PREPARE_SWAP_ROUTE}
               exact
               render={() => {
-                if (tradeTxData && !conversionError) {
-                  return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />;
-                } else if (tradeTxData && routeState) {
-                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
-                } else if (routeState === 'loading' && aggregatorMetadata) {
-                  return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
-                }
-
                 if (!swapsRedesignEnabled) {
                   return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
                 }
@@ -527,6 +518,9 @@ export default function Swap() {
                       to={{ pathname: SMART_TRANSACTION_STATUS_ROUTE }}
                     />
                   );
+                }
+                if (swapsRedesignEnabled) {
+                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
                 }
                 if (Object.values(quotes).length) {
                   return (

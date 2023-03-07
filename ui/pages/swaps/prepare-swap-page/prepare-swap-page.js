@@ -70,6 +70,8 @@ import {
   getAggregatorMetadata,
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
+  getSelectedQuote,
+  getTopQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -218,6 +220,9 @@ export default function PrepareSwap({
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
   const animationEventEmitter = useRef(new EventEmitter());
+  const selectedQuote = useSelector(getSelectedQuote, isEqual);
+  const topQuote = useSelector(getTopQuote, isEqual);
+  const usedQuote = selectedQuote || topQuote;
 
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
@@ -538,6 +543,17 @@ export default function PrepareSwap({
     fromTokenInputValue,
     fromTokenBalance,
   ]);
+
+  useEffect(() => {
+    // This can happen when a user reopens the extension after filling the Swaps form.
+    if (!fromTokenInputValue && usedQuote?.sourceAmount) {
+      const usedQuoteSourceAmount = calcTokenAmount(
+        usedQuote?.sourceAmount,
+        selectedFromToken?.decimals,
+      ).toString(10);
+      onInputChange(usedQuoteSourceAmount, fromTokenBalance);
+    }
+  }, [fromTokenInputValue, usedQuote?.sourceAmount]);
 
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
