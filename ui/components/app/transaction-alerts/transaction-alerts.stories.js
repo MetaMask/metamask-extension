@@ -1,21 +1,59 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { keccak } from 'ethereumjs-util';
 import { cloneDeep } from 'lodash';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import TransactionAlerts from '.';
 
+const customTransaction = ({
+  estimateUsed,
+  hasSimulationError,
+  i = 0,
+  ...props
+}) => {
+  const tx = {
+    simulationFails: Boolean(hasSimulationError),
+    userFeeLevel: estimateUsed ? 'low' : 'medium',
+    blockNumber: `${10902987 + i}`,
+    id: 4678200543090545 + i,
+    metamaskNetworkId: testData?.metamask?.network,
+    chainId: testData?.metamask?.provider?.chainId,
+    status: 'confirmed',
+    time: 1600654021000,
+    txParams: {
+      from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+      gas: '0x5208',
+      gasPrice: '0x147d357000',
+      nonce: '0xf',
+      to: testData?.metamask?.selectedAddress,
+      value: '0x63eb89da4ed00000',
+      ...props?.txParams,
+    },
+    // '0x50be62ab1cabd03ff104c602c11fdef7a50f3d73c55006d5583ba97950ab1144',
+    transactionCategory: 'incoming',
+    ...props,
+  };
+  // just simulate hash if not provided
+  if (!props?.hash) {
+    tx.hash = `0x${keccak(Buffer.from(JSON.stringify(tx))).toString('hex')}`;
+  }
+  return tx;
+};
+
 // simulate gas fee state
-const customStore = ({ supportsEIP1559, isNetworkBusy }) => {
+const customStore = ({ supportsEIP1559, isNetworkBusy, pendingCount = 0 }) => {
   const data = cloneDeep({
     ...testData,
     metamask: {
       ...testData?.metamask,
+      // isNetworkBusy
       gasFeeEstimates: {
-        ...testData.metamask?.gasFeeEstimates,
+        ...testData?.metamask?.gasFeeEstimates,
         networkCongestion: isNetworkBusy ? 1 : 0.1,
       },
+      // supportsEIP1559
       networkDetails: {
         ...testData?.metamask?.networkDetails,
         EIPS: {
@@ -23,15 +61,24 @@ const customStore = ({ supportsEIP1559, isNetworkBusy }) => {
           1159: Boolean(supportsEIP1559),
         },
       },
+      // pendingTransactions
+      featureFlags: {
+        ...testData?.metamask?.featureFlags,
+        showIncomingTransactions: pendingCount > 0,
+      },
+      incomingTransactions: {
+        ...testData?.metamask?.incomingTransactions,
+        ...Object.fromEntries(
+          Array.from({ length: pendingCount }).map((_, i) => {
+            const transaction = customTransaction({ i, status: 'submitted' });
+            return [transaction?.hash, transaction];
+          }),
+        ),
+      },
     },
   });
   return configureStore(data);
 };
-
-const customTransaction = ({ estimateUsed, hasSimulationError }) => ({
-  simulationFails: Boolean(hasSimulationError),
-  userFeeLevel: estimateUsed ? 'low' : 'medium',
-});
 
 export default {
   title: 'Components/App/TransactionAlerts',
@@ -46,7 +93,13 @@ export default {
 };
 
 export const DefaultStory = (args) => (
-  <Provider store={customStore({ isNetworkBusy: true, supportsEIP1559: true })}>
+  <Provider
+    store={customStore({
+      isNetworkBusy: true,
+      supportsEIP1559: true,
+      pendingCount: 1,
+    })}
+  >
     <GasFeeContextProvider
       transaction={customTransaction({
         hasSimulationError: true,
