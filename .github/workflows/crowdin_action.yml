@@ -16,9 +16,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
 
     - name: crowdin action
       uses: crowdin/github-action@a3160b9e5a9e00739392c23da5e580c6cabe526d
