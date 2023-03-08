@@ -24,13 +24,13 @@ import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-import Typography from '../../components/ui/typography/typography';
 import {
-  TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
   TextColor,
+  TextVariant,
 } from '../../helpers/constants/design-system';
+import { Text } from '../../components/component-library';
 import { SECOND } from '../../../shared/constants/time';
 
 import {
@@ -294,20 +294,22 @@ export default class Home extends PureComponent {
                     infoText={error.data.snapId}
                     descriptionText={
                       <>
-                        <Typography
+                        <Text
+                          variant={TextVariant.bodyMd}
+                          as="h5"
                           color={TextColor.textAlternative}
-                          variant={TypographyVariant.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
-                        </Typography>
-                        <Typography
+                        </Text>
+                        <Text
                           color={TextColor.textAlternative}
-                          variant={TypographyVariant.H7}
+                          variant={TextVariant.bodySm}
+                          as="h7"
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('snapError', [error.message, error.code])}
-                        </Typography>
+                        </Text>
                       </>
                     }
                     onIgnore={async () => {
@@ -330,12 +332,13 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h7"
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newNftAddedMessage')}
-                </Typography>
+                </Text>
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
@@ -355,12 +358,13 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h7"
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('removeNftMessage')}
-                </Typography>
+                </Text>
                 <button
                   className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
@@ -377,12 +381,13 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h7"
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newNetworkAdded', [newNetworkAdded])}
-                </Typography>
+                </Text>
                 <button
                   className="fas fa-times home__new-network-notification-close"
                   title={t('close')}
@@ -400,20 +405,21 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
                 <Box>
-                  <Typography
+                  <Text
                     className="home__new-tokens-imported-notification-title"
-                    variant={TypographyVariant.H6}
-                    fontWeight={FONT_WEIGHT.BOLD}
+                    variant={TextVariant.bodySmBold}
+                    as="h6"
                   >
                     {t('newTokensImportedTitle')}
-                  </Typography>
-                  <Typography
+                  </Text>
+                  <Text
                     className="home__new-tokens-imported-notification-message"
-                    variant={TypographyVariant.H7}
+                    variant={TextVariant.bodySm}
+                    as="h7"
                     fontWeight={FONT_WEIGHT.NORMAL}
                   >
                     {t('newTokensImportedMessage', [newTokensImported])}
-                  </Typography>
+                  </Text>
                 </Box>
                 <button
                   className="fas fa-times home__new-tokens-imported-notification-close"
@@ -498,8 +504,9 @@ export default class Home extends PureComponent {
         {Object.keys(newCustomNetworkAdded).length !== 0 && (
           <Popover className="home__new-network-added">
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
-            <Typography
-              variant={TypographyVariant.H4}
+            <Text
+              variant={TextVariant.headingSm}
+              as="h4"
               marginTop={5}
               marginRight={9}
               marginLeft={9}
@@ -507,7 +514,7 @@ export default class Home extends PureComponent {
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('networkAddedSuccessfully')}
-            </Typography>
+            </Text>
             <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
               <Button
                 type="primary"
@@ -522,25 +529,27 @@ export default class Home extends PureComponent {
                   clearNewCustomNetworkAdded();
                 }}
               >
-                <Typography
-                  variant={TypographyVariant.H6}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   fontWeight={FONT_WEIGHT.NORMAL}
                   color={TextColor.primaryInverse}
                 >
                   {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
-                </Typography>
+                </Text>
               </Button>
               <Button
                 type="secondary"
                 onClick={() => clearNewCustomNetworkAdded()}
               >
-                <Typography
-                  variant={TypographyVariant.H6}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   fontWeight={FONT_WEIGHT.NORMAL}
                   color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
-                </Typography>
+                </Text>
               </Button>
             </Box>
           </Popover>
