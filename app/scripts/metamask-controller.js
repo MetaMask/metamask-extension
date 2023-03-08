@@ -68,6 +68,7 @@ import {
   AssetType,
   TransactionStatus,
   TransactionType,
+  TokenStandard,
 } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -102,7 +103,10 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { getTokenIdParam } from '../../shared/lib/token-util';
+import {
+  getTokenIdParam,
+  fetchTokenBalance,
+} from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -927,10 +931,7 @@ export default class MetamaskController extends EventEmitter {
         this.getExternalPendingTransactions.bind(this),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
-      getTokenStandardAndDetails:
-        this.assetsContractController.getTokenStandardAndDetails.bind(
-          this.assetsContractController,
-        ),
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
@@ -2161,12 +2162,72 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const details =
-      await this.assetsContractController.getTokenStandardAndDetails(
+    const { tokenList } = this.tokenListController.state;
+    const { tokens } = this.tokensController.state;
+
+    const staticTokenListDetails =
+      STATIC_MAINNET_TOKEN_LIST[address.toLowerCase()] || {};
+    const tokenListDetails = tokenList[address.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    };
+    const tokenDetailsStandardIsERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      tokenDetails.erc20 === true;
+    const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !tokenDetails.erc721;
+
+    const otherDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
+
+    let details;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        const balance = await fetchTokenBalance(
+          address,
+          userAddress,
+          this.provider,
+        );
+
+        details = {
+          address,
+          balance,
+          standard: TokenStandard.ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
+        log.warning(`Failed to get token balance. Error: ${e}`);
+      }
+    }
+
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
+    if (details === undefined) {
+      details = await this.assetsContractController.getTokenStandardAndDetails(
         address,
         userAddress,
         tokenId,
       );
+    }
+
     return {
       ...details,
       decimals: details?.decimals?.toString(10),
