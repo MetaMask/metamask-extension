@@ -44,6 +44,7 @@ export default function NotificationPage({ notificationKey }) {
         marginLeft={4}
         marginRight={4}
         textAlign={TEXT_ALIGN.CENTER}
+        className="notification-page__content"
       >
         <Box marginTop={8} marginBottom={4}>
           <Icon

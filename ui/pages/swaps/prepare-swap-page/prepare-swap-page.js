@@ -1164,18 +1164,18 @@ export default function PrepareSwap({
             </div>
           </Box>
         )}
-        {!areQuotesPresent && (
-          <SwapsFooter
-            submitText={mainButtonText}
-            disabled
-            hideCancel
-            showTermsOfService
-          />
-        )}
         {showReviewQuote && (
           <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
         )}
       </div>
+      {!areQuotesPresent && (
+        <SwapsFooter
+          submitText={mainButtonText}
+          disabled
+          hideCancel
+          showTermsOfService
+        />
+      )}
     </div>
   );
 }
