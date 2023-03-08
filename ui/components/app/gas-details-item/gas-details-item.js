@@ -19,6 +19,7 @@ import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({
@@ -135,10 +136,11 @@ const GasDetailsItem = ({
         <GasTiming
           maxPriorityFeePerGas={(
             maxPriorityFeePerGas ||
-            transactionData.txParams.maxPriorityFeePerGas
+            hexWEIToDecGWEI(transactionData.txParams.maxPriorityFeePerGas)
           ).toString()}
           maxFeePerGas={(
-            maxFeePerGas || transactionData.txParams.maxFeePerGas
+            maxFeePerGas ||
+            hexWEIToDecGWEI(transactionData.txParams.maxFeePerGas)
           ).toString()}
         />
       }
