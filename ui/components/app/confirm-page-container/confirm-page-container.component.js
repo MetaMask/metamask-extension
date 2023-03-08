@@ -24,7 +24,7 @@ import Typography from '../../ui/typography';
 import { TypographyVariant } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import { fetchTokenBalance } from '../../../pages/swaps/swaps.util';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -132,7 +132,11 @@ const ConfirmPageContainer = (props) => {
     NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
   const fetchCollectionBalance = useCallback(async () => {
-    const tokenBalance = await fetchTokenBalance(tokenAddress, fromAddress);
+    const tokenBalance = await fetchTokenBalance(
+      tokenAddress,
+      fromAddress,
+      global.ethereumProvider,
+    );
     setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
   }, [fromAddress, tokenAddress]);
 
