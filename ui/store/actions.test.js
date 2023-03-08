@@ -1247,7 +1247,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls editAndSetNetworkConfiguration', async () => {
+    it('removes then re-adds the given network configuration', async () => {
       const store = mockStore();
 
       const removeNetworkConfigurationStub = sinon

@@ -117,7 +117,7 @@ const DEFAULT_INFURA_PROJECT_ID = 'fake-infura-project-id';
  */
 const DEFAULT_CONTROLLER_OPTIONS = {
   infuraProjectId: DEFAULT_INFURA_PROJECT_ID,
-  trackEvent: jest.fn(),
+  trackMetaMetricsEvent: jest.fn(),
 };
 
 /**
@@ -5901,7 +5901,7 @@ describe('NetworkController', () => {
               },
             },
           },
-          trackEvent: trackEventSpy,
+          trackMetaMetricsEvent: trackEventSpy,
         },
         async ({ controller }) => {
           const newNetworkConfiguration = {

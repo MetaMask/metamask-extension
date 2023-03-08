@@ -29,7 +29,6 @@ import {
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
 
@@ -95,9 +94,9 @@ export default class NetworkController extends EventEmitter {
    * @param {object} [options] - NetworkController options.
    * @param {object} [options.state] - Initial controller state.
    * @param {string} [options.infuraProjectId] - The Infura project ID.
-   * @param {string} [options.trackEvent] - The Infura project ID.
+   * @param {string} [options.trackMetaMetricsEvent] - A method to forward events to the MetaMetricsController
    */
-  constructor({ state = {}, infuraProjectId, trackEvent } = {}) {
+  constructor({ state = {}, infuraProjectId, trackMetaMetricsEvent } = {}) {
     super();
 
     // create stores
@@ -143,7 +142,7 @@ export default class NetworkController extends EventEmitter {
       throw new Error('Invalid Infura project ID');
     }
     this._infuraProjectId = infuraProjectId;
-    this._trackEvent = trackEvent;
+    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.lookupNetwork();
@@ -575,7 +574,7 @@ export default class NetworkController extends EventEmitter {
     });
 
     if (!oldNetworkConfigurationId) {
-      this._trackEvent({
+      this._trackMetaMetricsEvent({
         event: 'Custom Network Added',
         category: EVENT.CATEGORIES.NETWORK,
         referrer: {
