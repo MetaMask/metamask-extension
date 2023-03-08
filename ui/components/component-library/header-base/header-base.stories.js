@@ -1,6 +1,17 @@
 import React from 'react';
-import { Size } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES, Button } from '..';
+import Box from '../../ui/box';
+import {
+  ICON_NAMES,
+  Button,
+  ButtonIcon,
+  BUTTON_ICON_SIZES,
+  BUTTON_SIZES,
+} from '..';
+import {
+  Color,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
 import { HeaderBase } from './header-base';
 import README from './README.mdx';
 
@@ -67,8 +78,92 @@ export const DefaultStory = (args) => {
 
 DefaultStory.args = {
   children: 'Title is sentence case no period',
-  startAccessory: <Button>Click Me</Button>,
-  endAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
+  startAccessory: (
+    <ButtonIcon
+      size={BUTTON_ICON_SIZES.SM}
+      iconName={ICON_NAMES.ARROW_LEFT}
+      ariaLabel="back"
+    />
+  ),
+  endAccessory: (
+    <ButtonIcon
+      size={BUTTON_ICON_SIZES.SM}
+      iconName={ICON_NAMES.CLOSE}
+      ariaLabel="close"
+    />
+  ),
 };
 
 DefaultStory.storyName = 'Default';
+
+export const Demo = (args) => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
+    <Box backgroundColor={Color.backgroundDefault}>
+      <HeaderBase {...args}>Title is sentence case no period</HeaderBase>
+    </Box>
+    <Box backgroundColor={Color.backgroundDefault}>
+      <HeaderBase
+        startAccessory={
+          <ButtonIcon
+            size={BUTTON_ICON_SIZES.SM}
+            iconName={ICON_NAMES.ARROW_LEFT}
+            ariaLabel="back"
+          />
+        }
+        {...args}
+      >
+        Title is sentence case no period
+      </HeaderBase>
+    </Box>
+    <Box backgroundColor={Color.backgroundDefault}>
+      <HeaderBase
+        endAccessory={
+          <ButtonIcon
+            size={BUTTON_ICON_SIZES.SM}
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel="close"
+          />
+        }
+        {...args}
+      >
+        Title is sentence case no period
+      </HeaderBase>
+    </Box>
+    <Box backgroundColor={Color.backgroundDefault}>
+      <HeaderBase
+        startAccessory={
+          <ButtonIcon
+            size={BUTTON_ICON_SIZES.SM}
+            iconName={ICON_NAMES.ARROW_LEFT}
+            ariaLabel="back"
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            size={BUTTON_ICON_SIZES.SM}
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel="close"
+          />
+        }
+        {...args}
+      >
+        Title is sentence case no period
+      </HeaderBase>
+    </Box>
+    <Box backgroundColor={Color.backgroundDefault}>
+      <HeaderBase
+        startAccessory={<Button size={BUTTON_SIZES.SM}>Unlock</Button>}
+        endAccessory={
+          <ButtonIcon
+            size={BUTTON_ICON_SIZES.SM}
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel="close"
+          />
+        }
+        {...args}
+      >
+        Title is sentence case no period
+      </HeaderBase>
+    </Box>
+  </Box>
+);

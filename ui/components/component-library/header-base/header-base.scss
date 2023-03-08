@@ -1,12 +1,13 @@
 .mm-header-base__start-accessory {
   grid-column: 1;
+  width: max-content;
 }
 
 .mm-header-base__title {
   grid-column: 2;
-  background-color: yellowgreen;
 }
 
 .mm-header-base__end-accessory {
   grid-column: 3;
+  width: max-content;
 }

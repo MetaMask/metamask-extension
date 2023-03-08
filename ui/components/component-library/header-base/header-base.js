@@ -69,7 +69,6 @@ export const HeaderBase = ({
       alignItems={AlignItems.flexStart}
       style={{
         gridTemplateColumns: `${accessoryMinWidth}px 1fr ${accessoryMinWidth}px`,
-        background: 'blue',
       }}
       {...props}
     >
@@ -79,10 +78,6 @@ export const HeaderBase = ({
           alignItems={AlignItems.center}
           className="mm-header-base__start-accessory"
           ref={startAccessoryRef}
-          style={{
-            background: 'red',
-            width: 'max-content',
-          }}
         >
           {startAccessory}
         </Box>
@@ -104,10 +99,6 @@ export const HeaderBase = ({
           marginLeft="auto"
           className="mm-header-base__end-accessory"
           ref={endAccessoryRef}
-          style={{
-            background: 'red',
-            width: 'max-content',
-          }}
         >
           {endAccessory}
         </Box>
