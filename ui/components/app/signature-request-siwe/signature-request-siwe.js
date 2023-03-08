@@ -13,7 +13,10 @@ import {
   getCurrentChainId,
   getProvider,
 } from '../../../selectors';
-import { getAccountByAddress } from '../../../helpers/utils/util';
+import {
+  getAccountByAddress,
+  getNetworkName,
+} from '../../../helpers/utils/util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import {
   SEVERITIES,
@@ -24,7 +27,6 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import Message from './signature-request-siwe-message';
@@ -104,24 +106,7 @@ export default function SignatureRequestSIWE({
     .round(6)
     .toString();
 
-  const getNetworkName = () => {
-    const providerName = provider.type;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return provider.nickname || t('unknownNetwork');
-    }
-  };
-
-  const currentNetwork = getNetworkName();
+  const currentNetwork = getNetworkName(provider, t);
 
   return (
     <div className="signature-request-siwe">

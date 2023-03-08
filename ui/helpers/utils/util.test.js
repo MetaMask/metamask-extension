@@ -918,4 +918,53 @@ describe('util', () => {
       expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
     });
   });
+
+  describe('getNetworkName()', () => {
+    const t = (key) => {
+      switch (key) {
+        case 'goerli':
+          return 'Goerli test network';
+        case 'mainnet':
+          return 'Ethereum Mainnet';
+        default:
+          return 'Unknown private network';
+      }
+    };
+
+    const provider = {
+      chainId: '0x5',
+      nickname: '',
+      rpcUrl: '',
+      ticker: 'GoerliETH',
+      type: 'goerli',
+    };
+
+    it('should return Goerli test network', () => {
+      expect(util.getNetworkName(provider, t)).toStrictEqual(
+        'Goerli test network',
+      );
+    });
+
+    it('should return Ethereum Mainnet', () => {
+      provider.type = 'mainnet';
+
+      expect(util.getNetworkName(provider, t)).toStrictEqual(
+        'Ethereum Mainnet',
+      );
+    });
+
+    it('should return Unknown private network', () => {
+      provider.type = 'unknown';
+
+      expect(util.getNetworkName(provider, t)).toStrictEqual(
+        'Unknown private network',
+      );
+    });
+
+    it('should return provider nickname', () => {
+      provider.nickname = 'nickname';
+
+      expect(util.getNetworkName(provider, t)).toStrictEqual('nickname');
+    });
+  });
 });

@@ -2,7 +2,11 @@ import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
+import {
+  sanitizeMessage,
+  getURLHostName,
+  getNetworkName,
+} from '../../../helpers/utils/util';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
@@ -15,7 +19,6 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -98,27 +101,6 @@ export default class SignatureRequest extends PureComponent {
     )}`;
   }
 
-  getNetworkName() {
-    const { provider } = this.props;
-    const providerName = provider.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return provider.nickname || t('unknownNetwork');
-    }
-  }
-
   memoizedParseMessage = memoize((data) => {
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
@@ -164,6 +146,7 @@ export default class SignatureRequest extends PureComponent {
       currentCurrency,
       conversionRate,
       unapprovedMessagesCount,
+      provider,
     } = this.props;
 
     const { t, trackEvent } = this.context;
@@ -173,7 +156,10 @@ export default class SignatureRequest extends PureComponent {
       primaryType,
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
-    const currentNetwork = this.getNetworkName();
+    const currentNetwork = getNetworkName(provider, t);
+    const tokenName = useNativeCurrencyAsPrimaryCurrency
+      ? nativeCurrency
+      : currentCurrency?.toUpperCase();
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(

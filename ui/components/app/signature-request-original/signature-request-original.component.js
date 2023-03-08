@@ -5,7 +5,11 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
+import {
+  getNetworkName,
+  getURLHostName,
+  sanitizeString,
+} from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
@@ -18,7 +22,6 @@ import {
   TEXT_ALIGN,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -60,27 +63,6 @@ export default class SignatureRequestOriginal extends Component {
   state = {
     showSignatureRequestWarning: false,
   };
-
-  getNetworkName() {
-    const { provider } = this.props;
-    const providerName = provider.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return provider.nickname || t('unknownNetwork');
-    }
-  }
 
   msgHexToText = (hex) => {
     try {
@@ -289,12 +271,13 @@ export default class SignatureRequestOriginal extends Component {
       currentCurrency,
       fromAccount: { address, balance, name },
       conversionRate,
+      provider,
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
-    const currentNetwork = this.getNetworkName();
+    const currentNetwork = getNetworkName(provider, t);
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(

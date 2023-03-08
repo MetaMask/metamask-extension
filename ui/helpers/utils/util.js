@@ -10,7 +10,7 @@ import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getSnapPrefix } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -577,4 +577,29 @@ export const sanitizeString = (value) => {
   }
   const regex = /\u202E/giu;
   return value.replace(regex, '\\u202E');
+};
+
+/**
+ * This method checks current provider and returns its string representation
+ *
+ * @param {*} provider
+ * @param {*} t
+ * @returns
+ */
+
+export const getNetworkName = (provider, t) => {
+  const providerName = provider.type;
+
+  switch (providerName) {
+    case NETWORK_TYPES.MAINNET:
+      return t('mainnet');
+    case NETWORK_TYPES.GOERLI:
+      return t('goerli');
+    case NETWORK_TYPES.SEPOLIA:
+      return t('sepolia');
+    case NETWORK_TYPES.LOCALHOST:
+      return t('localhost');
+    default:
+      return provider.nickname || t('unknownNetwork');
+  }
 };
