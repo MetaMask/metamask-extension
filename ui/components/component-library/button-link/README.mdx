@@ -103,7 +103,9 @@ import { ButtonLink } from '../../component-library';
 
 ### ExternalLink
 
-When an `externalLink` prop is passed it will change the element to an anchor(`a`) tag and add the `target="_blank"` and `rel="noopener noreferrer"` attributes.
+When an `externalLink` prop is passed it adds the `target="_blank"` and `rel="noopener noreferrer"` attributes. 
+
+`rel="noreferrer noopener"` is used in links to prevent security vulnerabilities that can be exploited by malicious websites. It disables the window.opener property and prevents the new page from sending the referrer information, providing an additional layer of security.
 
 <Canvas>
   <Story id="components-componentlibrary-buttonlink--href" />
