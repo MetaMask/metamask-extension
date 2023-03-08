@@ -3692,6 +3692,35 @@ export function removePermissionsFor(
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * Updates the caveat value for the specified origin, permission and caveat type.
+ *
+ * @param origin
+ * @param target
+ * @param caveatType
+ * @param caveatValue
+ */
+export function updateCaveat(
+  origin: string,
+  target: string,
+  caveatType: string,
+  caveatValue: Record<string, Json>,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch) => {
+    callBackgroundMethod(
+      'updateCaveat',
+      [origin, target, caveatType, caveatValue],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+  };
+}
+///: END:ONLY_INCLUDE_IN
+
 // Pending Approvals
 
 /**

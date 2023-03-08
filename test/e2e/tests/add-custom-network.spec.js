@@ -17,6 +17,213 @@ describe('Custom network', function () {
       },
     ],
   };
+
+  it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        await driver.executeScript(`
+          var params = [{
+            chainId: "0x1",
+            chainName: "Fake Ethereum Network",
+            nativeCurrency: {
+              name: "",
+              symbol: "ETH",
+              decimals: 18
+            },
+            rpcUrls: ["https://customnetwork.com/api/customRPC"],
+            blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
+          }]
+          window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params
+          })
+        `);
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        const warningTxt =
+          'You are adding a new RPC provider for Ethereum Mainnet';
+
+        await driver.findElement({
+          tag: 'h4',
+          text: warningTxt,
+        });
+
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        const errMsg =
+          'Chain ID returned by the custom network does not match the submitted chain ID.';
+        await driver.findElement({
+          tag: 'span',
+          text: errMsg,
+        });
+
+        const approveBtn = await driver.findElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        assert.equal(await approveBtn.isEnabled(), false);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
+      },
+    );
+  });
+  it("don't add bad rpc custom network", async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        await driver.executeScript(`
+          var params = [{
+            chainId: "0x123",
+            chainName: "Antani",
+            nativeCurrency: {
+              name: "",
+              symbol: "ANTANI",
+              decimals: 18
+            },
+            rpcUrls: ["https://customnetwork.com/api/customRPC"],
+            blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
+          }]
+          window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params
+          })
+        `);
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        const errMsg =
+          'Chain ID returned by the custom network does not match the submitted chain ID.';
+        await driver.findElement({
+          tag: 'span',
+          text: errMsg,
+        });
+
+        const approveBtn = await driver.findElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        assert.equal(await approveBtn.isEnabled(), false);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
+      },
+    );
+  });
+
+  it("don't add unreachable custom network", async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+        await driver.executeScript(`
+          var params = [{
+            chainId: "0x123",
+            chainName: "Antani",
+            nativeCurrency: {
+              name: "",
+              symbol: "ANTANI",
+              decimals: 18
+            },
+            rpcUrls: ["https://doesntexist.abc/customRPC"],
+            blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
+          }]
+          window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params
+          })
+        `);
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        await driver.findElement({
+          tag: 'span',
+          text: 'Error while connecting to the custom network.',
+        });
+
+        const approveBtn = await driver.findElement({
+          tag: 'button',
+          text: 'Approve',
+        });
+
+        assert.equal(await approveBtn.isEnabled(), false);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
+      },
+    );
+  });
+
   it('add custom network and switch the network', async function () {
     await withFixtures(
       {
@@ -85,7 +292,6 @@ describe('Custom network', function () {
 
         await driver.clickElement({ tag: 'button', text: 'Close' });
         await driver.clickElement({ tag: 'button', text: 'Approve' });
-
         await driver.clickElement({
           tag: 'h6',
           text: 'Switch to Arbitrum One',

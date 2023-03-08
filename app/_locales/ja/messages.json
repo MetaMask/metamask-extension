@@ -2713,7 +2713,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "$1 に接続。",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "インターネットにアクセスします。",
@@ -2721,7 +2721,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 スナップに接続します。",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "定期的なアクションのスケジュール設定と実行。",
