@@ -513,12 +513,13 @@ export default class NetworkController extends EventEmitter {
    * @param {NetworkConfiguration} networkConfiguration - The network configuration to add or, if rpcUrl matches an existing entry, to modify.
    * @param {object} options
    * @param {boolean} options.setActive - An option to set the newly added networkConfiguration as the active provider.
-   * @param {string} options.source - Where the upsertNetwork event originated - used for event metrics.
+   * @param {string} options.referrer - The site from which the call originated, or 'metamask' for internal calls - used for event metrics.
+   * @param {string} options.source - Where the upsertNetwork event originated (i.e. from a dapp or from the network form)- used for event metrics.
    * @returns {string} id for the added or updated network configuration
    */
   upsertNetworkConfiguration(
     { rpcUrl, chainId, ticker, nickname, rpcPrefs },
-    { setActive = false, source } = {},
+    { setActive = false, referrer, source } = {},
   ) {
     assert.ok(
       isPrefixedFormattedHexString(chainId),
@@ -578,7 +579,7 @@ export default class NetworkController extends EventEmitter {
         event: 'Custom Network Added',
         category: EVENT.CATEGORIES.NETWORK,
         referrer: {
-          url: source,
+          url: referrer,
         },
         properties: {
           chain_id: chainId,

@@ -412,11 +412,6 @@ export default function reduceApp(
         ...appState,
         sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
       };
-    case actionConstants.SET_ADDED_NETWORK_CONFIGURATION_ID:
-      return {
-        ...appState,
-        newNetworkAddedConfigurationId: action.value,
-      };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {
         ...appState,

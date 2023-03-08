@@ -6,6 +6,7 @@ import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
+import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import * as actions from './actions';
 import { _setBackgroundConnection } from './action-queue';
 
@@ -1214,8 +1215,10 @@ describe('Actions', () => {
       });
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setActiveNetwork('http://localhost:8545'));
-      expect(setCurrentNetworkStub.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setActiveNetwork('networkConfigurationId'));
+      expect(
+        setCurrentNetworkStub.calledOnceWith('networkConfigurationId'),
+      ).toBe(true);
     });
 
     it('displays warning when setActiveNetwork throws', async () => {
@@ -1264,18 +1267,29 @@ describe('Actions', () => {
       });
       _setBackgroundConnection(background.getApi());
 
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
       await store.dispatch(
         actions.editAndSetNetworkConfiguration({
+          ...networkConfiguration,
           networkConfigurationId: 'networkConfigurationId',
-          rpcUrl: 'newRpc',
-          chainId: '0x',
-          ticker: 'ETH',
-          nickname: 'nickname',
-          rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
         }),
       );
-      expect(removeNetworkConfigurationStub.callCount).toStrictEqual(1);
-      expect(upsertNetworkConfigurationStub.callCount).toStrictEqual(1);
+      expect(
+        removeNetworkConfigurationStub.calledOnceWith('networkConfigurationId'),
+      ).toBe(true);
+      expect(
+        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
+          setActive: true,
+          source: ORIGIN_METAMASK,
+        }),
+      ).toBe(true);
     });
 
     it('displays warning when removeNetworkConfiguration throws', async () => {

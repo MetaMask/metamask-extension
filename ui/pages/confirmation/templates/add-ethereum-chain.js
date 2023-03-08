@@ -385,15 +385,21 @@ function getValues(pendingApproval, t, actions, history) {
         pendingApproval.requestData,
       );
       if (originIsMetaMask) {
-        actions.upsertNetworkConfiguration(
+        const networkConfigurationId = await actions.upsertNetworkConfiguration(
           {
             ...pendingApproval.requestData,
             nickname: pendingApproval.requestData.chainName,
           },
           {
             source: pendingApproval.requestData.source,
+            referrer: pendingApproval.requestData.referrer,
           },
         );
+        await actions.setNewNetworkAdded({
+          networkConfigurationId,
+          nickname: pendingApproval.requestData.chainName,
+        });
+
         history.push(DEFAULT_ROUTE);
       }
       return [];

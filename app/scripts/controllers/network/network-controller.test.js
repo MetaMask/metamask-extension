@@ -5,6 +5,7 @@ import nock from 'nock';
 import sinon from 'sinon';
 import * as ethJsonRpcMiddlewareModule from '@metamask/eth-json-rpc-middleware';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
+import { EVENT } from '../../../../shared/constants/metametrics';
 import NetworkController from './network-controller';
 
 jest.mock('@metamask/eth-json-rpc-middleware', () => {
@@ -5913,7 +5914,8 @@ describe('NetworkController', () => {
           };
 
           controller.upsertNetworkConfiguration(newNetworkConfiguration, {
-            source: 'https://test-dapp.com',
+            source: EVENT.SOURCE.NETWORK.DAPP,
+            referrer: 'https://test-dapp.com',
           });
 
           expect(

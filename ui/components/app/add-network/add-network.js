@@ -263,6 +263,7 @@ const AddNetwork = () => {
                             rpcPrefs: item.rpcPrefs,
                             imageUrl: item.rpcPrefs.imageUrl,
                             chainName: item.nickname,
+                            referrer: ORIGIN_METAMASK,
                             source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
                           },
                         }),

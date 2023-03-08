@@ -2478,24 +2478,24 @@ export function upsertNetworkConfiguration(
     source?: string;
   },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     log.debug(
       `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
     );
-
+    let networkConfigurationId;
     try {
-      const networkConfigurationId: string = await submitRequestToBackground(
+      networkConfigurationId = await submitRequestToBackground(
         'upsertNetworkConfiguration',
         [
           { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
-          { setActive, source },
+          { setActive, source, referrer: ORIGIN_METAMASK },
         ],
       );
-      dispatch(setNewNetworkAdded({ networkConfigurationId, nickname }));
     } catch (error) {
       log.error(error);
       dispatch(displayWarning('Had a problem adding network!'));
     }
+    return networkConfigurationId;
   };
 }
 
