@@ -263,6 +263,9 @@
   "addToken": {
     "message": "Add token"
   },
+  "addingCustomNetwork": {
+    "message": "Adding Network"
+  },
   "address": {
     "message": "Address"
   },
@@ -1308,6 +1311,9 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
+  "errorWhileConnectingToRPC": {
+    "message": "Error while connecting to the custom network."
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -2032,6 +2038,9 @@
   },
   "mismatchedNetworkSymbol": {
     "message": "The submitted currency symbol does not match what we expect for this chain ID."
+  },
+  "mismatchedRpcChainId": {
+    "message": "Chain ID returned by the custom network does not match the submitted chain ID."
   },
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
