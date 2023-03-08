@@ -11,7 +11,7 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from '../action-queue';
-import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
+import { MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from 'shared/modules/error';
 
 export function showInteractiveReplacementTokenBanner(
