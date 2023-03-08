@@ -36,7 +36,7 @@ import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 
 import { shortenAddress } from '../../../helpers/utils/util';
 
-function getLabel(keyring, t) {
+function getLabel(keyring = {}, t) {
   const { type } = keyring;
   switch (type) {
     case HardwareKeyringTypes.qr:
