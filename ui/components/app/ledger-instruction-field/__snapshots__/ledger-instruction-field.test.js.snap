@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LedgerInstructionField Component rendering should render properly with data instruction 1`] = `
+<div>
+  <div>
+    <div
+      class="confirm-detail-row"
+    >
+      <div
+        class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-info box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
+      >
+        <span
+          class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-primary-default"
+          style="mask-image: url('./images/icons/info.svg');"
+        />
+        <div>
+          <div
+            class="ledger-live-dialog"
+          >
+            <h6
+              class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+            >
+              Prior to clicking confirm:
+            </h6>
+            <h6
+              class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+            >
+              • Plug in your Ledger device and select the Ethereum app
+            </h6>
+            <h6
+              class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+            >
+              • Enable "smart contract data" or "blind signing" on your Ledger device
+            </h6>
+            <h6
+              class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+            >
+              <span>
+                <button
+                  class="box mm-button-base mm-button-link mm-button-link--size-auto box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                >
+                  <span
+                    class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
+                  >
+                    Open MetaMask in full screen to connect your ledger via WebHID.
+                  </span>
+                </button>
+              </span>
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
