@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
-import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { utils, BigNumber } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber';
+import { getAddress } from '@ethersproject/address';
+import { hexZeroPad } from '@ethersproject/bytes';
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
@@ -33,13 +34,14 @@ const ZERO_X_ERROR_ADDRESS = '0x';
 const ENS = 'ENS';
 const mainnetProviderUrl = `https://mainnet.infura.io/v3/${infuraProjectId}`;
 
-export const SLIP44_MSB = 0x80000000
-export const convertEVMChainIdToCoinType = (chainId) =>{
-  if( chainId >= SLIP44_MSB ){
-    throw Error(`chainId ${chainId} must be less than ${SLIP44_MSB}`)
+export const SLIP44_MSB = 0x80000000;
+export const convertEVMChainIdToCoinType = (chainId) => {
+  if (chainId >= SLIP44_MSB) {
+    throw Error(`chainId ${chainId} must be less than ${SLIP44_MSB}`);
   }
-  return  (SLIP44_MSB | chainId) >>> 0
-}
+  // eslint-disable-next-line no-bitwise
+  return (SLIP44_MSB | chainId) >>> 0;
+};
 
 const initialState = {
   stage: 'UNINITIALIZED',
@@ -62,7 +64,6 @@ const slice = createSlice({
   initialState,
   reducers: {
     domainLookup: (state, action) => {
-      console.log('***domainLookup1', {state, action})
       // first clear out the previous state
       state.resolution = null;
       state.error = null;
@@ -109,13 +110,6 @@ const slice = createSlice({
       state.warning = null;
       state.network = action.payload;
     },
-    disableDomainLookup: (state) => {
-      state.stage = 'NO_NETWORK_SUPPORT';
-      state.error = null;
-      state.warning = null;
-      state.resolution = null;
-      state.network = null;
-    },
     ensNotSupported: (state) => {
       state.resolution = null;
       state.warning = null;
@@ -141,7 +135,6 @@ const { reducer, actions } = slice;
 export default reducer;
 
 const {
-  disableDomainLookup,
   domainLookup,
   enableDomainLookup,
   ensNotSupported,
@@ -154,7 +147,7 @@ export function initializeDomainSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    web3Provider = new JsonRpcProvider(mainnetProviderUrl)
+    web3Provider = new JsonRpcProvider(mainnetProviderUrl);
     dispatch(enableDomainLookup(network));
   };
 }
@@ -178,23 +171,25 @@ export function lookupEnsName(domainName) {
       await dispatch(ensNotSupported());
     } else {
       const chainId = getCurrentChainId(state);
-      log.info(`ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`);
+      const logMessage = `ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`;
+      log.info(logMessage);
       let address;
       let error;
-      const emptyAddress = '0x0000000000000000000000000000000000000000'
-      const resolver = await web3Provider.getResolver(trimmedDomainName)
-      if(resolver){
-        const coinType = convertEVMChainIdToCoinType(parseInt(chainId))
-        const encodedCoinType = utils.hexZeroPad(BigNumber.from(coinType).toHexString(), 32)
+      const emptyAddress = '0x0000000000000000000000000000000000000000';
+      const resolver = await web3Provider.getResolver(trimmedDomainName);
+      if (resolver) {
+        const coinType = convertEVMChainIdToCoinType(parseInt(chainId, 10));
+        const hexCoinType = BigNumber.from(coinType).toHexString();
+        const encodedCoinType = hexZeroPad(hexCoinType, 32);
         // 0xf1cb7e06 is address interface id
         // https://docs.ens.domains/contract-api-reference/publicresolver#get-blockchain-address
-        const data = await resolver._fetchBytes('0xf1cb7e06', encodedCoinType)
-        if([emptyAddress, '0x', null].includes(data) ){
-          address = emptyAddress
+        const data = await resolver._fetchBytes('0xf1cb7e06', encodedCoinType);
+        if ([emptyAddress, '0x', null].includes(data)) {
+          address = emptyAddress;
         }
-        address = utils.getAddress(data)
-      }else{
-        address = emptyAddress
+        address = getAddress(data);
+      } else {
+        address = emptyAddress;
       }
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
 
