@@ -2713,7 +2713,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "$1 से कनेक्ट करें।",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "इंटरनेट एक्सेस करें।",
@@ -2721,7 +2721,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 स्नैप से कनेक्ट करें।",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",

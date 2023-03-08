@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Signature Request Component render should match snapshot when useNativeCurrencyAsPrimaryCurrency is false 1`] = `
+exports[`Signature Request Component render should match snapshot when we are using eth 1`] = `
 <div>
   <div
     class="signature-request"
@@ -73,6 +73,7 @@ exports[`Signature Request Component render should match snapshot when useNative
     </div>
     <div
       class="request-signature__account"
+      data-testid="request-signature-account"
     >
       <div
         class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
@@ -147,7 +148,9 @@ exports[`Signature Request Component render should match snapshot when useNative
             </h6>
             <h6
               class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
-            />
+            >
+              Antonio
+            </h6>
           </div>
         </div>
         <div
@@ -161,9 +164,9 @@ exports[`Signature Request Component render should match snapshot when useNative
           <h6
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
-            0
+            966.987986
              
-            DEF
+            ABC
           </h6>
         </div>
       </div>
@@ -772,7 +775,7 @@ exports[`Signature Request Component render should match snapshot when useNative
 </div>
 `;
 
-exports[`Signature Request Component render should match snapshot when useNativeCurrencyAsPrimaryCurrency is true 1`] = `
+exports[`Signature Request Component render should match snapshot when we want to switch to fiat 1`] = `
 <div>
   <div
     class="signature-request"
@@ -845,6 +848,7 @@ exports[`Signature Request Component render should match snapshot when useNative
     </div>
     <div
       class="request-signature__account"
+      data-testid="request-signature-account"
     >
       <div
         class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
@@ -919,7 +923,9 @@ exports[`Signature Request Component render should match snapshot when useNative
             </h6>
             <h6
               class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
-            />
+            >
+              Antonio
+            </h6>
           </div>
         </div>
         <div
@@ -933,9 +939,9 @@ exports[`Signature Request Component render should match snapshot when useNative
           <h6
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
-            0
+            1515270.174798
              
-            ABC
+            DEF
           </h6>
         </div>
       </div>

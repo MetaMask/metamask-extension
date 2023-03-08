@@ -10,7 +10,6 @@ import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
-  PermissionNamespaces,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -142,30 +141,29 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 3,
   }),
-  [RestrictedMethods['wallet_snap_*']]: (t, permissionName) => {
+  [RestrictedMethods.wallet_snap]: (t, _, permissionValue) => {
+    const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
       leftIcon: 'fas fa-bolt',
       rightIcon: null,
     };
-
-    const snapId = permissionName.split('_').slice(-1);
-    const friendlyName = SNAPS_METADATA[snapId]?.name;
-
-    if (friendlyName) {
+    return Object.keys(snaps).map((snapId) => {
+      const friendlyName = SNAPS_METADATA[snapId]?.name;
+      if (friendlyName) {
+        return {
+          ...baseDescription,
+          label: t('permission_accessNamedSnap', [
+            <span className="permission-label-item" key={snapId}>
+              {friendlyName}
+            </span>,
+          ]),
+        };
+      }
       return {
         ...baseDescription,
-        label: t('permission_accessNamedSnap', [
-          <span className="permission-label-item" key={snapId}>
-            {friendlyName}
-          </span>,
-        ]),
+        label: t('permission_accessSnap', [snapId]),
       };
-    }
-
-    return {
-      ...baseDescription,
-      label: t('permission_accessSnap', [snapId]),
-    };
+    });
   },
   [EndowmentPermissions['endowment:network-access']]: (t) => ({
     label: t('permission_accessNetwork'),
@@ -276,13 +274,6 @@ export const getPermissionDescription = (
   if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
     value = PERMISSION_DESCRIPTIONS[permissionName];
   }
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  for (const namespace of Object.keys(PermissionNamespaces)) {
-    if (permissionName.startsWith(namespace)) {
-      value = PERMISSION_DESCRIPTIONS[PermissionNamespaces[namespace]];
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   const result = value(t, permissionName, permissionValue);
   if (!Array.isArray(result)) {
