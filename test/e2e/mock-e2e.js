@@ -332,10 +332,10 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
-  // It disables loading of token icons, e.g. this URL: https://static.metaswap.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
+  // It disables loading of token icons, e.g. this URL: https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
   await server
     .forGet(
-      /^https:\/\/static\.metaswap\.codefi\.network\/api\/v1\/tokenIcons\/1337\/.*\.png/u,
+      /^https:\/\/static\.metafi\.codefi\.network\/api\/v1\/tokenIcons\/1337\/.*\.png/u,
     )
     .thenCallback(() => {
       return {
