@@ -208,7 +208,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Verify transaction
         const completedTx = await driver.waitForSelector({
           css: '.list-item__title',
-          text: 'Approve TDC spending cap',
+          text: 'Approve TDC with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);
       },
@@ -283,7 +283,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Verify transaction
         const completedTx = await driver.waitForSelector({
           css: '.list-item__title',
-          text: 'Approve TDC spending cap',
+          text: 'Approve TDC with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);
       },
