@@ -1,6 +1,6 @@
 export { AvatarAccount } from './avatar-account';
 export {
-  AVATAR_ACCOUNT_SIZES,
-  AVATAR_ACCOUNT_TYPES,
-  AVATAR_ACCOUNT_DIAMETERS,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  AvatarAccountDiameter,
 } from './avatar-account.constants';
