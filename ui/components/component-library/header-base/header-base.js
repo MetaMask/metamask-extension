@@ -5,6 +5,7 @@ import {
   AlignItems,
   DISPLAY,
   TextVariant,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 import { Text } from '../text';
@@ -90,6 +91,7 @@ export const HeaderBase = ({
         <Text
           variant={TextVariant.headingSm}
           className="mm-header-base__title"
+          textAlign={TEXT_ALIGN.CENTER}
           {...titleProps}
         >
           {children}
