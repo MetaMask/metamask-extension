@@ -109,7 +109,7 @@ export const AccountListItemMenu = ({
 
 AccountListItemMenu.propTypes = {
   anchorElement: PropTypes.instanceOf(window.Element),
-  onClose: PropTypes.func.required,
+  onClose: PropTypes.func.isRequired,
   blockExplorerUrlSubTitle: PropTypes.string,
   isRemovable: PropTypes.bool.isRequired,
   identity: PropTypes.object.isRequired,
