@@ -62,8 +62,8 @@ describe('ENS', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
+        await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('.network-display');
-
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
