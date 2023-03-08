@@ -73,7 +73,7 @@ interface TemporaryBackgroundState {
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
   ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  custodyAccountDetails?: { [key: string]: any }
+  custodyAccountDetails?: { [key: string]: any };
   ///: END:ONLY_INCLUDE_IN
 }
 

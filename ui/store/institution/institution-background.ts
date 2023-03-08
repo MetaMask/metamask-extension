@@ -1,4 +1,6 @@
 import log from 'loglevel';
+import { ThunkAction } from 'redux-thunk';
+import { AnyAction } from 'redux';
 import {
   forceUpdateMetamaskState,
   displayWarning,
@@ -9,9 +11,7 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from '../action-queue';
-import { ThunkAction } from 'redux-thunk';
 import { MetaMaskReduxState } from '../store';
-import { AnyAction } from 'redux';
 import { isErrorWithMessage } from 'shared/modules/error';
 
 export function showInteractiveReplacementTokenBanner(
@@ -41,7 +41,7 @@ export function mmiActionsFactory() {
   function createAsyncAction(
     name: string,
     params: any,
-    forceUpdateMetamaskState?: any,
+    useForceUpdateMetamaskState?: any,
     loadingText?: string,
   ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
     log.debug(`background.${name}`);
@@ -64,7 +64,7 @@ export function mmiActionsFactory() {
       if (loadingText) {
         dispatch(hideLoadingIndication());
       }
-      if (forceUpdateMetamaskState) {
+      if (useForceUpdateMetamaskState) {
         await forceUpdateMetamaskState(dispatch);
       }
       return result;
