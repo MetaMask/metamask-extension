@@ -9,6 +9,9 @@ import {
   decryptMsgInline,
 } from '../../store/actions';
 import {
+  conversionRateSelector,
+  getCurrentCurrency,
+  getPreferences,
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
 } from '../../selectors';
@@ -21,6 +24,8 @@ function mapStateToProps(state) {
   const {
     metamask: { subjectMetadata = {} },
   } = state;
+
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
@@ -37,8 +42,12 @@ function mapStateToProps(state) {
     fromAccount,
     requester: null,
     requesterAddress: null,
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
   };
 }
 

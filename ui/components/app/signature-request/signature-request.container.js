@@ -9,6 +9,7 @@ import {
   getTotalUnapprovedMessagesCount,
   getCurrentCurrency,
   getPreferences,
+  conversionRateSelector,
 } from '../../../selectors';
 import {
   isAddressLedger,
@@ -53,7 +54,9 @@ function mapStateToProps(state, ownProps) {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
     currentCurrency: getCurrentCurrency(state),
-    useNativeCurrencyAsPrimaryCurrency,
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     subjectMetadata: getSubjectMetadata(state),
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
@@ -91,7 +94,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     siteImage,
     nativeCurrency,
     currentCurrency,
-    useNativeCurrencyAsPrimaryCurrency,
+    conversionRate,
     provider,
     subjectMetadata,
     unconfirmedMessagesList,
@@ -145,7 +148,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     siteImage,
     nativeCurrency,
     currentCurrency,
-    useNativeCurrencyAsPrimaryCurrency,
+    conversionRate,
     provider,
     subjectMetadata,
     unapprovedMessagesCount,
