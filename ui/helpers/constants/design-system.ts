@@ -294,6 +294,7 @@ export const TEXT_ALIGN = {
   RIGHT: 'right',
   JUSTIFY: 'justify',
   END: 'end',
+  START: 'start',
 };
 
 export const TEXT_TRANSFORM = {
