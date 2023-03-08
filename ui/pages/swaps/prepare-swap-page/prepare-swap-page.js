@@ -137,6 +137,7 @@ import { BannerAlert } from '../../../components/component-library/banner-alert'
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
+import ImportToken from '../import-token';
 import SwapsBannerAlert from './swaps-banner-alert';
 import MascotBackgroundAnimation from './mascot-background-animation';
 import ReviewQuote from './review-quote';
@@ -165,6 +166,8 @@ export default function PrepareSwap({
   const [isSwapFromOpen, setIsSwapFromOpen] = useState(false);
   const onSwapFromOpen = () => setIsSwapFromOpen(true);
   const onSwapFromClose = () => setIsSwapFromOpen(false);
+  const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
+  const [tokenForImport, setTokenForImport] = useState(null);
   const [swapFromSearchQuery, setSwapFromSearchQuery] = useState('');
   const [swapToSearchQuery, setSwapToSearchQuery] = useState('');
   const [quoteCount, updateQuoteCount] = useState(0);
@@ -553,7 +556,13 @@ export default function PrepareSwap({
       ).toString(10);
       onInputChange(usedQuoteSourceAmount, fromTokenBalance);
     }
-  }, [fromTokenInputValue, usedQuote?.sourceAmount]);
+  }, [
+    fromTokenInputValue,
+    fromTokenBalance,
+    usedQuote?.sourceAmount,
+    selectedFromToken?.decimals,
+    onInputChange,
+  ]);
 
   const trackBuildQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
@@ -724,9 +733,52 @@ export default function PrepareSwap({
     }
   }, [showQuotesLoadingAnimation]);
 
+  const onOpenImportTokenModalClick = (item) => {
+    setTokenForImport(item);
+    setIsImportTokenModalOpen(true);
+  };
+
+  /* istanbul ignore next */
+  const onImportTokenClick = () => {
+    trackEvent({
+      event: 'Token Imported',
+      category: EVENT.CATEGORIES.SWAPS,
+      sensitiveProperties: {
+        symbol: tokenForImport?.symbol,
+        address: tokenForImport?.address,
+        chain_id: chainId,
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+    });
+    // Only when a user confirms import of a token, we add it and show it in a dropdown.
+    onToSelect?.(tokenForImport);
+    // setSelectedItem(tokenForImport);
+    setTokenForImport(null);
+    onSwapToClose();
+  };
+
+  const onImportTokenCloseClick = () => {
+    setIsImportTokenModalOpen(false);
+    onSwapToClose();
+  };
+
+  const importTokenProps = {
+    onImportTokenCloseClick,
+    onImportTokenClick,
+    setIsImportTokenModalOpen,
+    tokenForImport,
+  };
+
   return (
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
+        {tokenForImport && isImportTokenModalOpen && (
+          <ImportToken {...importTokenProps} />
+        )}
         {isSwapToOpen && (
           <Popover
             title={t('swapSwapTo')}
@@ -752,6 +804,8 @@ export default function PrepareSwap({
                 searchQuery={swapToSearchQuery}
                 setSearchQuery={setSwapToSearchQuery}
                 hideItemIf={hideSwapToTokenIf}
+                shouldSearchForImports
+                onOpenImportTokenModalClick={onOpenImportTokenModalClick}
               />
             </Box>
           </Popover>

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash';
+import log from 'loglevel';
+
 import Box from '../../../components/ui/box';
 import {
   DISPLAY,
@@ -13,6 +16,8 @@ import { TextFieldSearch, Text } from '../../../components/component-library';
 import ItemList from '../searchable-item-list/item-list';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { I18nContext } from '../../../contexts/i18n';
+import { fetchToken } from '../swaps.util';
+import { getCurrentChainId } from '../../../selectors/selectors';
 
 let timeoutIdForSearch;
 
@@ -23,6 +28,7 @@ export default function ListWithSearch({
   maxListItems,
   onClickItem,
   onOpenImportTokenModalClick,
+  shouldSearchForImports,
   Placeholder,
   hideRightLabels,
   hideItemIf,
@@ -34,6 +40,28 @@ export default function ListWithSearch({
   const t = useContext(I18nContext);
 
   const [items, setItems] = useState(itemsToSearch);
+  const chainId = useSelector(getCurrentChainId);
+
+  /**
+   * Search a custom token for import based on a contract address.
+   *
+   * @param {string} contractAddress
+   */
+  const handleSearchTokenForImport = async (contractAddress) => {
+    try {
+      const token = await fetchToken(contractAddress, chainId);
+      if (token) {
+        token.primaryLabel = token.symbol;
+        token.secondaryLabel = token.name;
+        token.notImported = true;
+        setItems([token]);
+        return;
+      }
+    } catch (e) {
+      log.error('Token not found, show 0 results.', e);
+    }
+    setItems([]); // No token for import found.
+  };
 
   const handleSearch = async (newSearchQuery) => {
     setSearchQuery(newSearchQuery);
@@ -66,6 +94,10 @@ export default function ListWithSearch({
         });
       }
       const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
+      if (shouldSearchForImports && results.length === 0 && validHexAddress) {
+        await handleSearchTokenForImport(trimmedNewSearchQuery);
+        return;
+      }
       setItems(results);
     }, 350);
   };
@@ -73,7 +105,7 @@ export default function ListWithSearch({
   useEffect(() => {
     handleSearch(searchQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleSearch]);
+  }, [searchQuery]);
 
   const handleOnClear = () => {
     setSearchQuery('');
@@ -135,6 +167,7 @@ ListWithSearch.propTypes = {
   listTitle: PropTypes.string,
   maxListItems: PropTypes.number,
   hideRightLabels: PropTypes.bool,
+  shouldSearchForImports: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
   selectedItem: PropTypes.object,
