@@ -2713,7 +2713,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "$1 연결",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "인터넷에 액세스합니다.",
@@ -2721,7 +2721,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 스냅에 연결하세요.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "정기적 활동 예약 및 실행",
