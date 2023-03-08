@@ -9,9 +9,10 @@ export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
 export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
 export { AvatarToken } from './avatar-token';
 export {
-  AvatarWithBadge,
-  AVATAR_WITH_BADGE_POSTIONS,
-} from './avatar-with-badge';
+  BadgeWrapper,
+  BadgeWrapperPosition,
+  BadgeWrapperAnchorElementShape,
+} from './badge-wrapper';
 export { AvatarBase } from './avatar-base';
 export { Button, BUTTON_TYPES, BUTTON_SIZES } from './button';
 export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
