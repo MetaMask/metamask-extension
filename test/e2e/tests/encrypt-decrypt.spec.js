@@ -138,6 +138,11 @@ describe('Encrypt Decrypt', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            preferences: {
+              useNativeCurrencyAsPrimaryCurrency: false,
+            },
+          })
           .build(),
         ganacheOptions,
         title: this.test.title,
@@ -148,16 +153,6 @@ describe('Encrypt Decrypt', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement('.account-menu__icon');
-        // change the settings now
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        // goes to general page
-        await driver.clickElement({ text: 'General', tag: 'div' });
-        // Switch to fiat currency
-        await driver.clickElement('#fiat-primary-currency');
-        // Close the settings window
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
         await driver.openNewPage('http://127.0.0.1:8080');
 
         // ------ Get Encryption key and display ETH ------
