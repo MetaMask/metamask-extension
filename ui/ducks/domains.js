@@ -5,7 +5,6 @@ import { isHexString } from 'ethereumjs-util';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress } from '@ethersproject/address';
-import { hexZeroPad } from '@ethersproject/bytes';
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
@@ -33,6 +32,14 @@ import {
 const ZERO_X_ERROR_ADDRESS = '0x';
 const ENS = 'ENS';
 const mainnetProviderUrl = `https://mainnet.infura.io/v3/${infuraProjectId}`;
+
+// Ported from https://github.com/ethers-io/ethers.io/blob/e2592917a1fd84df3b82bd16c1f5d1b4ad082a2d/dist/scripts/ethers-app-v0.5.js#L11272
+function hexZeroPad(value, length) {
+  while (value.length < 2 * length + 2) {
+      value = '0x0' + value.substring(2);
+  }
+  return value;
+}
 
 export const SLIP44_MSB = 0x80000000;
 export const convertEVMChainIdToCoinType = (chainId) => {
