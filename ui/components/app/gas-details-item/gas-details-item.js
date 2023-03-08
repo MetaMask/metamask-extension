@@ -28,7 +28,6 @@ const GasDetailsItem = ({
   const t = useI18nContext();
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   let transactionData = {};
-  console.log(draftTransaction);
   if (Object.keys(draftTransaction).length !== 0) {
     const editingTransaction = unapprovedTxs[draftTransaction.id];
     transactionData = {

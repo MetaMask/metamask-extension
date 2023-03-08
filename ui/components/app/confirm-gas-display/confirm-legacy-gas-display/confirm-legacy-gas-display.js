@@ -40,10 +40,8 @@ const ConfirmLegacyGasDisplay = ({ draftTransaction = {} }) => {
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   let transactionData = {};
-  // console.log(draftTransaction)
   if (Object.keys(draftTransaction).length !== 0) {
     const editingTransaction = unapprovedTxs[draftTransaction.id];
-    // console.log(editingTransaction)
     transactionData = {
       txParams: {
         gasPrice: draftTransaction.gas?.gasPrice,
@@ -66,7 +64,7 @@ const ConfirmLegacyGasDisplay = ({ draftTransaction = {} }) => {
   const { id: transactionId, dappSuggestedGasFees, txParams } = txData;
   const transaction = Object.keys(draftTransaction).length
     ? transactionData
-    : unapprovedTxs[transactionId];
+    : unapprovedTxs[transactionId] || {};
   const {
     hexMinimumTransactionFee,
     hexMaximumTransactionFee,
@@ -126,7 +124,7 @@ const ConfirmLegacyGasDisplay = ({ draftTransaction = {} }) => {
       }
       detailText={
         useCurrencyRateCheck && (
-          <div className="confirm-page-container-content__currency-container test">
+          <div>
             {renderHeartBeatIfNotInTest()}
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
@@ -137,7 +135,7 @@ const ConfirmLegacyGasDisplay = ({ draftTransaction = {} }) => {
         )
       }
       detailTotal={
-        <div className="confirm-page-container-content__currency-container">
+        <div>
           {renderHeartBeatIfNotInTest()}
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
@@ -152,10 +150,7 @@ const ConfirmLegacyGasDisplay = ({ draftTransaction = {} }) => {
           <strong key="editGasSubTextFeeLabel">
             {t('editGasSubTextFeeLabel')}
           </strong>
-          <div
-            key="editGasSubTextFeeValue"
-            className="confirm-page-container-content__currency-container"
-          >
+          <div key="editGasSubTextFeeValue">
             {renderHeartBeatIfNotInTest()}
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
