@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import { captureException } from '@sentry/browser';
+import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
@@ -137,7 +138,7 @@ let intervalId;
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
-export default function ViewQuote({ setReceiveToAmount }) {
+export default function ReviewQuote({ setReceiveToAmount }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -146,7 +147,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
-  const [warningHidden, setWarningHidden] = useState(false);
+  const [warningHidden] = useState(false); // TODO: Check when to use setWarningHidden
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
   const [multiLayerL1FeeTotal, setMultiLayerL1FeeTotal] = useState(null);
   const [multiLayerL1ApprovalFeeTotal, setMultiLayerL1ApprovalFeeTotal] =
@@ -1187,26 +1188,6 @@ export default function ViewQuote({ setReceiveToAmount }) {
             </Text>
           </Box>
         </Box>
-
-        {/* <div
-          className="main-quote-summary__exchange-rate-container"
-          data-testid="main-quote-summary__exchange-rate-container"
-        >
-          <ExchangeRateDisplay
-            primaryTokenValue={calcTokenValue(
-              sourceTokenValue,
-              sourceTokenDecimals,
-            )}
-            primaryTokenDecimals={sourceTokenDecimals}
-            primaryTokenSymbol={sourceTokenSymbol}
-            secondaryTokenValue={destinationValue}
-            secondaryTokenDecimals={destinationTokenDecimals}
-            secondaryTokenSymbol={destinationTokenSymbol}
-            arrowColor="var(--color-primary-default)"
-            boldSymbols={false}
-            className="main-quote-summary__exchange-rate-display"
-          />
-        </div> */}
         {false &&
           currentSmartTransactionsEnabled &&
           smartTransactionsOptInStatus &&
@@ -1309,3 +1290,7 @@ export default function ViewQuote({ setReceiveToAmount }) {
     </div>
   );
 }
+
+ReviewQuote.propTypes = {
+  setReceiveToAmount: PropTypes.func.isRequired,
+};

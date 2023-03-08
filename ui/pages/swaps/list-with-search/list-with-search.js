@@ -22,7 +22,6 @@ import { getCurrentChainId } from '../../../selectors/selectors';
 let timeoutIdForSearch;
 
 export default function ListWithSearch({
-  selectedItem,
   itemsToSearch = [],
   listTitle,
   maxListItems,
@@ -76,7 +75,8 @@ export default function ListWithSearch({
       const trimmedNewSearchQueryLowerCase =
         trimmedNewSearchQuery.toLowerCase();
       if (!trimmedNewSearchQuery) {
-        return setItems(itemsToSearch);
+        setItems(itemsToSearch);
+        return;
       }
       const validHexAddress = isValidHexAddress(trimmedNewSearchQuery);
       let filteredItems = [];
@@ -96,7 +96,6 @@ export default function ListWithSearch({
       const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
       if (shouldSearchForImports && results.length === 0 && validHexAddress) {
         await handleSearchTokenForImport(trimmedNewSearchQuery);
-        return;
       }
       setItems(results);
     }, 350);
@@ -171,7 +170,6 @@ ListWithSearch.propTypes = {
   shouldSearchForImports: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
-  selectedItem: PropTypes.object,
   searchQuery: PropTypes.string,
   setSearchQuery: PropTypes.func,
 };
