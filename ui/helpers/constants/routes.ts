@@ -70,6 +70,8 @@ const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+const DESKTOP_ERROR_ROUTE = '/desktop/error';
+const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -85,10 +87,6 @@ const SIGNATURE_REQUEST_PATH = '/signature-request';
 const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request';
 const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-const DESKTOP_ERROR_ROUTE = '/desktop/error';
-const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
-///: END:ONLY_INCLUDE_IN
 
 // Used to pull a convenient name for analytics tracking events. The key must
 // be react-router ready path, and can include params such as :id for popup windows
@@ -245,8 +243,6 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_ERROR_ROUTE,
   DESKTOP_PAIRING_ROUTE,
   ///: END:ONLY_INCLUDE_IN
