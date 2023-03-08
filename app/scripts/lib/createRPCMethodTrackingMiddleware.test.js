@@ -173,28 +173,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
-    it(`should track a ${EVENT_NAMES.REQUEST_DISABLED} for 'eth_sign' event if 'eth_sign' is disabled in advanced settings`, async () => {
-      const req = {
-        method: MESSAGE_TYPE.ETH_SIGN,
-        origin: 'some.dapp',
-      };
-      const res = {
-        error: { code: errorCodes.rpc.methodNotFound },
-      };
-      const { next, executeMiddlewareStack } = getNext();
-
-      handler(req, res, next);
-      await executeMiddlewareStack();
-
-      expect(trackEvent).toHaveBeenCalledTimes(2);
-      expect(trackEvent.mock.calls[1][0]).toMatchObject({
-        category: 'inpage_provider',
-        event: EVENT_NAMES.REQUEST_DISABLED,
-        properties: { signature_type: MESSAGE_TYPE.ETH_SIGN },
-        referrer: { url: 'some.dapp' },
-      });
-    });
-
     it(`should never track blocked methods such as ${MESSAGE_TYPE.GET_PROVIDER_STATE}`, () => {
       const req = {
         method: MESSAGE_TYPE.GET_PROVIDER_STATE,
@@ -235,6 +213,33 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[0][0].properties.method).toBe('eth_chainId');
       expect(trackEvent.mock.calls[1][0].properties.method).toBe('eth_chainId');
+    });
+
+    describe(`when RPC method is '${MESSAGE_TYPE.ETH_SIGN}'`, () => {
+      describe(`when '${MESSAGE_TYPE.ETH_SIGN}' is disabled in advanced settings`, () => {
+        it(`should track ${EVENT_NAMES.REQUEST_DISABLED} and not track ${EVENT_NAMES.SIGNATURE_REQUESTED}`, async () => {
+          const req = {
+            method: MESSAGE_TYPE.ETH_SIGN,
+            origin: 'some.dapp',
+          };
+          const res = {
+            error: { code: errorCodes.rpc.methodNotFound },
+          };
+          const { next, executeMiddlewareStack } = getNext();
+
+          handler(req, res, next);
+          await executeMiddlewareStack();
+
+          expect(trackEvent).toHaveBeenCalledTimes(1);
+
+          expect(trackEvent.mock.calls[0][0]).toMatchObject({
+            category: 'inpage_provider',
+            event: EVENT_NAMES.REQUEST_DISABLED,
+            properties: { signature_type: MESSAGE_TYPE.ETH_SIGN },
+            referrer: { url: 'some.dapp' },
+          });
+        });
+      });
     });
   });
 });
