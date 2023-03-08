@@ -1205,7 +1205,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls setActiveNetwork', async () => {
+    it('calls setActiveNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
       const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
@@ -1325,6 +1325,115 @@ describe('Actions', () => {
         }),
       );
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#requestUserApproval', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestUserApproval in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const requestUserApprovalStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        requestUserApproval: requestUserApprovalStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.requestUserApproval({
+          origin: ORIGIN_METAMASK,
+          type: 'test',
+          requestData: networkConfiguration,
+        }),
+      );
+
+      expect(
+        requestUserApprovalStub.calledOnceWith({
+          origin: ORIGIN_METAMASK,
+          type: 'test',
+          requestData: networkConfiguration,
+        }),
+      ).toBe(true);
+    });
+  });
+
+  describe('#removeNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removeNetworkConfiguration in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.removeNetworkConfiguration('testNetworkConfigurationId'),
+      );
+
+      expect(
+        removeNetworkConfigurationStub.calledOnceWith(
+          'testNetworkConfigurationId',
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('#setSelectedNetworkConfigurationId', () => {
+    it('sets appState.networkConfigurationId to provided value', async () => {
+      const store = mockStore();
+
+      const networkConfigurationId = 'testNetworkConfigurationId';
+
+      store.dispatch(
+        actions.setSelectedNetworkConfigurationId(networkConfigurationId),
+      );
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_SELECTED_NETWORK_CONFIGURATION_ID',
+        payload: networkConfigurationId,
+      });
+    });
+  });
+
+  describe('#setNewNetworkAdded', () => {
+    it('sets appState.setNewNetworkAdded to provided value', async () => {
+      const store = mockStore();
+
+      const newNetworkAddedDetails = {
+        networkConfigurationId: 'testNetworkConfigurationId',
+        nickname: 'test-chain',
+      };
+
+      store.dispatch(actions.setNewNetworkAdded(newNetworkAddedDetails));
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_NEW_NETWORK_ADDED',
+        payload: newNetworkAddedDetails,
+      });
     });
   });
 
