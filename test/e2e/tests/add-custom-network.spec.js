@@ -3,7 +3,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Custom network', function () {
-  const chainID = 42161;
+  const chainID = '42161';
   const networkURL = 'https://arbitrum-mainnet.infura.io';
   const networkNAME = 'Arbitrum One';
   const currencySYMBOL = 'ETH';
