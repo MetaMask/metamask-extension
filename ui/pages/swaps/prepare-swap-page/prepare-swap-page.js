@@ -780,18 +780,13 @@ export default function PrepareSwap({
           <ImportToken {...importTokenProps} />
         )}
         {isSwapToOpen && (
-          <Popover
-            title={t('swapSwapTo')}
-            className="smart-transactions-popover"
-            onClose={onSwapToClose}
-          >
+          <Popover title={t('swapSwapTo')} onClose={onSwapToClose}>
             <Box
-              paddingRight={6}
-              paddingLeft={6}
+              paddingRight={4}
+              paddingLeft={4}
               paddingTop={0}
               paddingBottom={0}
               display={DISPLAY.FLEX}
-              className="smart-transactions-popover__content"
             >
               <ListWithSearch
                 selectedItem={selectedToToken}
@@ -811,18 +806,13 @@ export default function PrepareSwap({
           </Popover>
         )}
         {isSwapFromOpen && (
-          <Popover
-            title={t('swapSwapFrom')}
-            className="smart-transactions-popover"
-            onClose={onSwapFromClose}
-          >
+          <Popover title={t('swapSwapFrom')} onClose={onSwapFromClose}>
             <Box
-              paddingRight={6}
-              paddingLeft={6}
+              paddingRight={4}
+              paddingLeft={4}
               paddingTop={0}
               paddingBottom={0}
               display={DISPLAY.FLEX}
-              className="smart-transactions-popover__content"
             >
               <ListWithSearch
                 selectedItem={selectedFromToken}

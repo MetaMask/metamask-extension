@@ -125,6 +125,7 @@ export default function ListWithSearch({
           clearButtonOnClick={handleOnClear}
           value={searchQuery}
           placeholder="Enter token name or paste address"
+          inputProps={{ marginRight: 0 }}
         />
       </Box>
       {items?.length > 0 && (
