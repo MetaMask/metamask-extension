@@ -157,7 +157,7 @@ class NetworkDropdown extends Component {
   renderCustomRpcList(networkConfigurations, provider, opts = {}) {
     return Object.entries(networkConfigurations).map(
       ([networkConfigurationId, networkConfiguration]) => {
-        const { rpcUrl, chainId, nickname = '' } = networkConfiguration;
+        const { rpcUrl, chainId, nickname = '', id } = networkConfiguration;
         const isCurrentRpcTarget =
           provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
         return (
@@ -198,7 +198,7 @@ class NetworkDropdown extends Component {
             >
               {nickname || rpcUrl}
             </span>
-            {isCurrentRpcTarget && (
+            {!isCurrentRpcTarget && (
               <ButtonIcon
                 className="delete"
                 iconName={ICON_NAMES.CLOSE}
@@ -207,7 +207,7 @@ class NetworkDropdown extends Component {
                 onClick={(e) => {
                   e.stopPropagation();
                   this.props.showConfirmDeleteNetworkModal({
-                    target: rpcUrl,
+                    target: id,
                     onConfirm: () => undefined,
                   });
                 }}
