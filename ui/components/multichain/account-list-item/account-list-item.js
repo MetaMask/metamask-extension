@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { AccountListItemMenu } from '../account-list-item-menu/account-list-item-menu';
@@ -25,23 +26,48 @@ import {
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
-
+import {
+  HardwareKeyringTypes,
+  HardwareKeyringNames,
+} from '../../../../shared/constants/hardware-wallets';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
+import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 
 import { shortenAddress } from '../../../helpers/utils/util';
+
+function getLabel(keyring, t) {
+  const { type } = keyring;
+  switch (type) {
+    case HardwareKeyringTypes.qr:
+      return HardwareKeyringNames.qr;
+    case HardwareKeyringTypes.imported:
+      return t('imported');
+    case HardwareKeyringTypes.trezor:
+      return HardwareKeyringNames.trezor;
+    case HardwareKeyringTypes.ledger:
+      return HardwareKeyringNames.ledger;
+    case HardwareKeyringTypes.lattice:
+      return HardwareKeyringNames.lattice;
+    default:
+      return null;
+  }
+}
 
 export const AccountListItem = ({
   identity,
   selected = false,
   onClick,
-  label = '',
   connectedAvatar,
   connectedAvatarName,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const ref = useRef(false);
+  const keyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+  const label = getLabel(keyring, t);
 
   return (
     <Box
@@ -138,6 +164,7 @@ export const AccountListItem = ({
             anchorElement={ref.current}
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}
+            isRemovable={keyring.type !== HardwareKeyringTypes.hdKeyTree}
           />
         ) : null}
       </div>
@@ -151,7 +178,6 @@ AccountListItem.propTypes = {
   onClick: PropTypes.func.isRequired,
   connectedAvatar: PropTypes.string,
   connectedAvatarName: PropTypes.string,
-  label: PropTypes.string,
 };
 
 AccountListItem.displayName = 'AccountListItem';

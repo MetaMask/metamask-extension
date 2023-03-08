@@ -23,7 +23,6 @@ import Popover from '../../ui/popover';
 import {
   getSelectedAccount,
   getMetaMaskAccountsOrdered,
-  getMetaMaskKeyrings,
 } from '../../../selectors';
 import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
@@ -34,39 +33,6 @@ import {
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import {
-  HardwareKeyringTypes,
-  HardwareKeyringNames,
-} from '../../../../shared/constants/hardware-wallets';
-
-function getLabel(address = '', keyrings = [], t) {
-  const simpleAddress = address.substring(2).toLowerCase();
-  const keyring = keyrings.find(
-    (kr) =>
-      kr.accounts.includes(simpleAddress) || kr.accounts.includes(address),
-  );
-
-  // Keyring value might take a while to get a value
-  if (!keyring) {
-    return null;
-  }
-  const { type } = keyring;
-
-  switch (type) {
-    case HardwareKeyringTypes.qr:
-      return HardwareKeyringNames.qr;
-    case HardwareKeyringTypes.imported:
-      return t('imported');
-    case HardwareKeyringTypes.trezor:
-      return HardwareKeyringNames.trezor;
-    case HardwareKeyringTypes.ledger:
-      return HardwareKeyringNames.ledger;
-    case HardwareKeyringTypes.lattice:
-      return HardwareKeyringNames.lattice;
-    default:
-      return null;
-  }
-}
 
 export const AccountListMenu = ({
   onClose = () => console.log('Account list closed'),
@@ -75,7 +41,6 @@ export const AccountListMenu = ({
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const selectedAccount = useSelector(getSelectedAccount);
-  const keyrings = useSelector(getMetaMaskKeyrings);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -112,25 +77,26 @@ export const AccountListMenu = ({
               {t('noAccountsFound')}
             </Text>
           ) : null}
-          {searchResults.map((account) => (
-            <AccountListItem
-              onClick={() => {
-                dispatch(toggleAccountMenu());
-                trackEvent({
-                  category: EVENT.CATEGORIES.NAVIGATION,
-                  event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
-                  properties: {
-                    location: 'Main Menu',
-                  },
-                });
-                dispatch(setSelectedAccount(account.address));
-              }}
-              identity={account}
-              key={account.address}
-              selected={selectedAccount.address === account.address}
-              label={getLabel(account.address, keyrings, t)}
-            />
-          ))}
+          {searchResults.map((account) => {
+            return (
+              <AccountListItem
+                onClick={() => {
+                  dispatch(toggleAccountMenu());
+                  trackEvent({
+                    category: EVENT.CATEGORIES.NAVIGATION,
+                    event: EVENT_NAMES.NAV_ACCOUNT_SWITCHED,
+                    properties: {
+                      location: 'Main Menu',
+                    },
+                  });
+                  dispatch(setSelectedAccount(account.address));
+                }}
+                identity={account}
+                key={account.address}
+                selected={selectedAccount.address === account.address}
+              />
+            );
+          })}
         </Box>
         {/* Add / Import / Hardware */}
         <Box padding={4}>
