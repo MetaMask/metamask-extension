@@ -1,68 +1,69 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import {
+  CONTEXT_PROPS,
   EVENT,
   EVENT_NAMES,
-  CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
+import { SECOND } from '../../../shared/constants/time';
+///: BEGIN:ONLY_INCLUDE_IN(main)
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
-import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
-import MultipleNotifications from '../../components/app/multiple-notifications';
-import TransactionList from '../../components/app/transaction-list';
 import MenuBar from '../../components/app/menu-bar';
-import Popover from '../../components/ui/popover';
-import Button from '../../components/ui/button';
-import Box from '../../components/ui/box';
-import ConnectedSites from '../connected-sites';
-import ConnectedAccounts from '../connected-accounts';
-import { Tabs, Tab } from '../../components/ui/tabs';
+import MultipleNotifications from '../../components/app/multiple-notifications';
+import NftsTab from '../../components/app/nfts-tab';
+import OpenSeaWhatsNewPopover from '../../components/app/open-sea-whats-new-popover/open-sea-whats-new-popover';
+import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import TransactionList from '../../components/app/transaction-list';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
-import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-import Typography from '../../components/ui/typography/typography';
-import {
-  TypographyVariant,
-  FONT_WEIGHT,
-  DISPLAY,
-  TextColor,
-} from '../../helpers/constants/design-system';
-import { SECOND } from '../../../shared/constants/time';
 import {
   ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
+  Text,
 } from '../../components/component-library';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import Box from '../../components/ui/box';
+import Button from '../../components/ui/button';
+import Popover from '../../components/ui/popover';
+import { Tab, Tabs } from '../../components/ui/tabs';
+import {
+  DISPLAY,
+  FONT_WEIGHT,
+  TextColor,
+  TextVariant,
+} from '../../helpers/constants/design-system';
 
 import {
+  ADD_NFT_ROUTE,
   ASSET_ROUTE,
-  RESTORE_VAULT_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONNECT_ROUTE,
-  CONNECTED_ROUTE,
-  CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
-  VIEW_QUOTE_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_NFT_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ACCOUNTS_ROUTE,
+  CONNECTED_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  RESTORE_VAULT_ROUTE,
+  VIEW_QUOTE_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import OpenSeaWhatsNewPopover from '../../components/app/open-sea-whats-new-popover/open-sea-whats-new-popover';
-///: BEGIN:ONLY_INCLUDE_IN(main)
-import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import ConnectedAccounts from '../connected-accounts';
+import ConnectedSites from '../connected-sites';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
+
 ///: END:ONLY_INCLUDE_IN
 
 function shouldCloseNotificationPopup({
@@ -300,20 +301,22 @@ export default class Home extends PureComponent {
                     infoText={error.data.snapId}
                     descriptionText={
                       <>
-                        <Typography
+                        <Text
+                          variant={TextVariant.bodyMd}
+                          as="h5"
                           color={TextColor.textAlternative}
-                          variant={TypographyVariant.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
-                        </Typography>
-                        <Typography
+                        </Text>
+                        <Text
                           color={TextColor.textAlternative}
-                          variant={TypographyVariant.H7}
+                          variant={TextVariant.bodySm}
+                          as="h7"
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('snapError', [error.message, error.code])}
-                        </Typography>
+                        </Text>
                       </>
                     }
                     onIgnore={async () => {
@@ -336,17 +339,17 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h7"
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newNftAddedMessage')}
-                </Typography>
+                </Text>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
                   size={ICON_SIZES.SM}
                   ariaLabel={t('close')}
-                  onClick={onAutoHide}
                 />
               </Box>
             }
@@ -362,12 +365,13 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h7"
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('removeNftMessage')}
-                </Typography>
+                </Text>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
                   size={ICON_SIZES.SM}
@@ -385,12 +389,13 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h7"
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('newNetworkAdded', [newNetworkAdded])}
-                </Typography>
+                </Text>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
                   size={ICON_SIZES.SM}
@@ -410,20 +415,21 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
                 <Box>
-                  <Typography
+                  <Text
                     className="home__new-tokens-imported-notification-title"
-                    variant={TypographyVariant.H6}
-                    fontWeight={FONT_WEIGHT.BOLD}
+                    variant={TextVariant.bodySmBold}
+                    as="h6"
                   >
                     {t('newTokensImportedTitle')}
-                  </Typography>
-                  <Typography
+                  </Text>
+                  <Text
                     className="home__new-tokens-imported-notification-message"
-                    variant={TypographyVariant.H7}
+                    variant={TextVariant.bodySm}
+                    as="h7"
                     fontWeight={FONT_WEIGHT.NORMAL}
                   >
                     {t('newTokensImportedMessage', [newTokensImported])}
-                  </Typography>
+                  </Text>
                 </Box>
 
                 <ButtonIcon
@@ -511,8 +517,9 @@ export default class Home extends PureComponent {
         {Object.keys(newCustomNetworkAdded).length !== 0 && (
           <Popover className="home__new-network-added">
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
-            <Typography
-              variant={TypographyVariant.H4}
+            <Text
+              variant={TextVariant.headingSm}
+              as="h4"
               marginTop={5}
               marginRight={9}
               marginLeft={9}
@@ -520,7 +527,7 @@ export default class Home extends PureComponent {
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('networkAddedSuccessfully')}
-            </Typography>
+            </Text>
             <Box marginTop={8} marginRight={8} marginLeft={8} marginBottom={5}>
               <Button
                 type="primary"
@@ -535,25 +542,27 @@ export default class Home extends PureComponent {
                   clearNewCustomNetworkAdded();
                 }}
               >
-                <Typography
-                  variant={TypographyVariant.H6}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   fontWeight={FONT_WEIGHT.NORMAL}
                   color={TextColor.primaryInverse}
                 >
                   {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
-                </Typography>
+                </Text>
               </Button>
               <Button
                 type="secondary"
                 onClick={() => clearNewCustomNetworkAdded()}
               >
-                <Typography
-                  variant={TypographyVariant.H6}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   fontWeight={FONT_WEIGHT.NORMAL}
                   color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
-                </Typography>
+                </Text>
               </Button>
             </Box>
           </Popover>
