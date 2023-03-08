@@ -34,7 +34,7 @@ export const SelectedItem = () => (
 
 export const HardwareItem = () => (
   <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} onClick={noop} isHardware />
+    <AccountListItem identity={SampleIdentity} onClick={noop} label="Ledger" />
   </div>
 );
 
@@ -43,7 +43,7 @@ export const SelectedHardwareItem = () => (
     <AccountListItem
       identity={SampleIdentity}
       onClick={noop}
-      isHardware
+      label="Ledger"
       selected
     />
   </div>

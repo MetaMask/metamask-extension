@@ -9,15 +9,21 @@ import {
   AvatarIcon,
   ICON_NAMES,
   TextFieldSearch,
+  Text,
 } from '../../component-library';
 import { AccountListItem } from '../account-list-item/account-list-item';
-import { BLOCK_SIZES, Size } from '../../../helpers/constants/design-system';
+import {
+  BLOCK_SIZES,
+  Size,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Popover from '../../ui/popover';
 import {
   getSelectedAccount,
   getMetaMaskAccountsOrdered,
+  getMetaMaskKeyrings,
 } from '../../../selectors';
 import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
@@ -28,6 +34,39 @@ import {
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  HardwareKeyringTypes,
+  HardwareKeyringNames,
+} from '../../../../shared/constants/hardware-wallets';
+
+function getLabel(address = '', keyrings = [], t) {
+  const simpleAddress = address.substring(2).toLowerCase();
+  const keyring = keyrings.find(
+    (kr) =>
+      kr.accounts.includes(simpleAddress) || kr.accounts.includes(address),
+  );
+
+  // Keyring value might take a while to get a value
+  if (!keyring) {
+    return null;
+  }
+  const { type } = keyring;
+
+  switch (type) {
+    case HardwareKeyringTypes.qr:
+      return HardwareKeyringNames.qr;
+    case HardwareKeyringTypes.imported:
+      return t('imported');
+    case HardwareKeyringTypes.trezor:
+      return HardwareKeyringNames.trezor;
+    case HardwareKeyringTypes.ledger:
+      return HardwareKeyringNames.ledger;
+    case HardwareKeyringTypes.lattice:
+      return HardwareKeyringNames.lattice;
+    default:
+      return null;
+  }
+}
 
 export const AccountListMenu = ({
   onClose = () => console.log('Account list closed'),
@@ -36,6 +75,7 @@ export const AccountListMenu = ({
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const selectedAccount = useSelector(getSelectedAccount);
+  const keyrings = useSelector(getMetaMaskKeyrings);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -66,7 +106,12 @@ export const AccountListMenu = ({
           />
         </Box>
         {/* Account list block */}
-        <Box style={{ height: '200px', overflow: 'auto' }}>
+        <Box style={{ maxHeight: '200px', overflow: 'auto' }}>
+          {searchResults.length === 0 && searchQuery !== '' ? (
+            <Text paddingLeft={4} paddingRight={4} color={TextColor.textMuted}>
+              {t('noAccountsFound')}
+            </Text>
+          ) : null}
           {searchResults.map((account) => (
             <AccountListItem
               onClick={() => {
@@ -83,6 +128,7 @@ export const AccountListMenu = ({
               identity={account}
               key={account.address}
               selected={selectedAccount.address === account.address}
+              label={getLabel(account.address, keyrings, t)}
             />
           ))}
         </Box>

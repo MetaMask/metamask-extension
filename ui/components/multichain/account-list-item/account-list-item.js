@@ -35,7 +35,7 @@ export const AccountListItem = ({
   identity,
   selected = false,
   onClick,
-  isHardware = false,
+  label = '',
   connectedAvatar,
   connectedAvatarName,
 }) => {
@@ -115,9 +115,9 @@ export const AccountListItem = ({
             />
           </Text>
         </Box>
-        {isHardware ? (
+        {label ? (
           <Tag
-            label={t('hardware')}
+            label={label}
             labelProps={{ color: Color.textAlternative }}
             variant={TextVariant.bodyXs}
           />
@@ -149,9 +149,9 @@ AccountListItem.propTypes = {
   identity: PropTypes.object.isRequired,
   selected: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
-  isHardware: PropTypes.bool,
   connectedAvatar: PropTypes.string,
   connectedAvatarName: PropTypes.string,
+  label: PropTypes.string,
 };
 
 AccountListItem.displayName = 'AccountListItem';
