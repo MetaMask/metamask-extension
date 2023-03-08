@@ -584,11 +584,7 @@ export default class NetworkController extends EventEmitter {
         properties: {
           chain_id: chainId,
           symbol: ticker,
-          source: [
-            EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
-            EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
-            ORIGIN_METAMASK,
-          ].includes(source)
+          source: Object.values(EVENT.SOURCE.NETWORK).includes(source)
             ? source
             : EVENT.SOURCE.TRANSACTION.DAPP,
         },
