@@ -11,7 +11,9 @@ import {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
+///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
 import Button from '../../ui/button';
+///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
@@ -91,6 +93,9 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    noteComponent,
+    ///: END:ONLY_INCLUDE_IN
   } = props;
 
   const t = useI18nContext();
@@ -230,6 +235,9 @@ const ConfirmPageContainer = (props) => {
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
             txData={txData}
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            noteComponent={noteComponent}
+            ///: END:ONLY_INCLUDE_IN
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -241,6 +249,7 @@ const ConfirmPageContainer = (props) => {
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
+                      ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -259,6 +268,7 @@ const ConfirmPageContainer = (props) => {
                       >
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
+                      ///: END:ONLY_INCLUDE_IN
                     ])}
                   </Typography>
                 ) : (
@@ -381,6 +391,9 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  noteComponent: PropTypes.node,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default ConfirmPageContainer;
