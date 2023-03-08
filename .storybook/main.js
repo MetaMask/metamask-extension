@@ -12,6 +12,7 @@ module.exports = {
   features: { buildStoriesJson: true },
   stories: [
     '../ui/**/*.stories.js',
+    '../ui/**/*.stories.tsx',
     '../ui/**/*.stories.mdx',
     './*.stories.mdx',
   ],
