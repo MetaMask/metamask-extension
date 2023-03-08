@@ -186,27 +186,32 @@ export default function createRPCMethodTrackingMiddleware({
           type: req.method,
         };
 
-        const securityProviderResponse = await securityProviderRequest(
-          msgData,
-          req.method,
-        );
+        try {
+          const securityProviderResponse = await securityProviderRequest(
+            msgData,
+            req.method,
+          );
 
-        properties.ui_customizations =
-          securityProviderResponse?.flagAsDangerous === 1
-            ? ['flagged_as_malicious']
-            : [];
-      } else {
-        properties.method = method;
-      }
+          properties.ui_customizations =
+            securityProviderResponse?.flagAsDangerous === 1
+              ? ['flagged_as_malicious']
+              : [];
 
-      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
-        const data = req?.params?.[0];
-        const { isSIWEMessage } = detectSIWE({ data });
-        if (isSIWEMessage) {
-          properties.ui_customizations.push(
-            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+            const { isSIWEMessage } = detectSIWE({ data });
+            if (isSIWEMessage) {
+              properties.ui_customizations.push(
+                METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+              );
+            }
+          }
+        } catch (e) {
+          console.warn(
+            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
           );
         }
+      } else {
+        properties.method = method;
       }
 
       trackEvent({
