@@ -12,7 +12,7 @@ const customTransaction = ({
   hasSimulationError,
   i = 0,
   ...props
-}) => {
+} = {}) => {
   const tx = {
     simulationFails: Boolean(hasSimulationError),
     userFeeLevel: estimateUsed ? 'low' : 'medium',
@@ -43,7 +43,11 @@ const customTransaction = ({
 };
 
 // simulate gas fee state
-const customStore = ({ supportsEIP1559, isNetworkBusy, pendingCount = 0 }) => {
+const customStore = ({
+  supportsEIP1559,
+  isNetworkBusy,
+  pendingCount = 0,
+} = {}) => {
   const data = cloneDeep({
     ...testData,
     metamask: {
@@ -92,6 +96,7 @@ export default {
   },
 };
 
+// show everything
 export const DefaultStory = (args) => (
   <Provider
     store={customStore({
@@ -110,5 +115,53 @@ export const DefaultStory = (args) => (
     </GasFeeContextProvider>
   </Provider>
 );
-
 DefaultStory.storyName = 'Default';
+
+export const SimulationError = (args) => (
+  <Provider store={customStore({ supportsEIP1559: true })}>
+    <GasFeeContextProvider
+      transaction={customTransaction({ hasSimulationError: true })}
+    >
+      <TransactionAlerts {...args} />
+    </GasFeeContextProvider>
+  </Provider>
+);
+SimulationError.storyName = 'SimulationError';
+
+export const SinglePendingTransaction = (args) => (
+  <Provider store={customStore({ supportsEIP1559: true, pendingCount: 1 })}>
+    <GasFeeContextProvider transaction={customTransaction()}>
+      <TransactionAlerts {...args} />
+    </GasFeeContextProvider>
+  </Provider>
+);
+SinglePendingTransaction.storyName = 'SinglePendingTransaction';
+
+export const MultiplePendingTransactions = (args) => (
+  <Provider store={customStore({ supportsEIP1559: true, pendingCount: 2 })}>
+    <GasFeeContextProvider transaction={customTransaction()}>
+      <TransactionAlerts {...args} />
+    </GasFeeContextProvider>
+  </Provider>
+);
+MultiplePendingTransactions.storyName = 'MultiplePendingTransactions';
+
+export const LowPriority = (args) => (
+  <Provider store={customStore()}>
+    <GasFeeContextProvider
+      transaction={customTransaction({ estimateUsed: true })}
+    >
+      <TransactionAlerts {...args} />
+    </GasFeeContextProvider>
+  </Provider>
+);
+LowPriority.storyName = 'LowPriority';
+
+export const BusyNetwork = (args) => (
+  <Provider store={customStore({ isNetworkBusy: true })}>
+    <GasFeeContextProvider transaction={customTransaction()}>
+      <TransactionAlerts {...args} />
+    </GasFeeContextProvider>
+  </Provider>
+);
+BusyNetwork.storyName = 'BusyNetwork';
