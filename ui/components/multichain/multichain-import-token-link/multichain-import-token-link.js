@@ -42,7 +42,7 @@ export const MultichainImportTokenLink = ({ className = '' }) => {
     >
       <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
         <Icon
-          name={ICON_NAMES.IMPORT}
+          name={ICON_NAMES.ADD}
           color={IconColor.infoDefault}
           marginRight={2}
         />

@@ -44,14 +44,9 @@ export const MultichainTokenList = ({
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
         padding={4}
+        as="a"
+        href="#"
         onClick={onClick}
-        role="button"
-        tabIndex={0}
-        onKeyPress={(event) => {
-          if (event.key === 'Enter') {
-            onClick();
-          }
-        }}
       >
         <AvatarWithBadge
           badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
