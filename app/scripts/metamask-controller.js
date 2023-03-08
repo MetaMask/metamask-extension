@@ -754,7 +754,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.12.0',
+        'https://metamask.github.io/iframe-execution-environment/0.13.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -782,6 +782,8 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:revokeAllPermissions`,
         `${this.permissionController.name}:revokePermissions`,
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
+        `${this.permissionController.name}:getSubjectNames`,
+        `${this.permissionController.name}:updateCaveat`,
         `${this.approvalController.name}:addRequest`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
@@ -4673,6 +4675,24 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  updateCaveat = (origin, target, caveatType, caveatValue) => {
+    try {
+      this.controllerMessenger.call(
+        'PermissionController:updateCaveat',
+        origin,
+        target,
+        caveatType,
+        caveatValue,
+      );
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+  ///: END:ONLY_INCLUDE_IN
 
   rejectPermissionsRequest = (requestId) => {
     try {
