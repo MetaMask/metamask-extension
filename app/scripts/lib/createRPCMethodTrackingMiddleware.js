@@ -140,6 +140,7 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[method];
 
+    // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
     const isDisabledEthSignAdvancedSetting =
       method === MESSAGE_TYPE.ETH_SIGN &&
       res.error?.code === errorCodes.rpc.methodNotFound;
