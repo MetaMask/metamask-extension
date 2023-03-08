@@ -294,7 +294,7 @@ export default class NetworkController extends EventEmitter {
 
   rollbackToPreviousProvider() {
     const config = this.previousProviderStore.getState();
-    this.providerStore.updateState(config);
+    this.providerStore.putState(config);
     this._switchNetwork(config);
   }
 
@@ -352,7 +352,7 @@ export default class NetworkController extends EventEmitter {
    * @param {boolean} isSupported - True if the EIP is supported
    */
   _setNetworkEIPSupport(EIPNumber, isSupported) {
-    this.networkDetails.updateState({
+    this.networkDetails.putState({
       EIPS: {
         [EIPNumber]: isSupported,
       },
@@ -372,8 +372,8 @@ export default class NetworkController extends EventEmitter {
    * @param config
    */
   _setProviderConfig(config) {
-    this.previousProviderStore.updateState(this.providerStore.getState());
-    this.providerStore.updateState(config);
+    this.previousProviderStore.putState(this.providerStore.getState());
+    this.providerStore.putState(config);
     this._switchNetwork(config);
   }
 
