@@ -1,4 +1,6 @@
 import React from 'react';
+import { Size } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES, Button } from '..';
 import { HeaderBase } from './header-base';
 import README from './README.mdx';
 
@@ -60,14 +62,13 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const onClose = () => console.log('HeaderBase onClose trigger');
-  return <HeaderBase {...args} onClose={onClose} />;
+  return <HeaderBase {...args} />;
 };
 
 DefaultStory.args = {
-  title: 'Title is sentence case no period',
-  // startAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
-  // endAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
+  children: 'Title is sentence case no period',
+  startAccessory: <Button>Click Me</Button>,
+  endAccessory: <Icon name={ICON_NAMES.INFO} size={Size.LG} />,
 };
 
 DefaultStory.storyName = 'Default';

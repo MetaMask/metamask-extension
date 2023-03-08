@@ -1,11 +1,12 @@
-.item-1 {
+.mm-header-base__start-accessory {
   grid-column: 1;
 }
 
-.item-2 {
+.mm-header-base__title {
   grid-column: 2;
+  background-color: yellowgreen;
 }
 
-.item-3 {
+.mm-header-base__end-accessory {
   grid-column: 3;
 }
