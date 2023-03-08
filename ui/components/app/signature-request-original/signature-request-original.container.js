@@ -12,6 +12,8 @@ import {
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
   isHardwareWallet,
+  getPreferences,
+  getCurrentCurrency,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -34,15 +36,20 @@ function mapStateToProps(state, ownProps) {
   const isHdWallet = isHardwareWallet(state, from);
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
+  const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
+
   return {
     requester: null,
     requesterAddress: null,
-    conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     hardwareWalletRequiresConnection,
     isLedgerWallet,
     isHardwareWallet: isHdWallet,
     nativeCurrency: getNativeCurrency(state),
+    currentCurrency: getCurrentCurrency(state),
+    conversionRate: useNativeCurrencyAsPrimaryCurrency
+      ? null
+      : conversionRateSelector(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
     subjectMetadata: getSubjectMetadata(state),

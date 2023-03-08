@@ -22,6 +22,8 @@ import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-pa
 import HardwareWalletState from '../hardware-wallet-state';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -69,7 +71,7 @@ export default class SignatureRequest extends PureComponent {
     rpcPrefs: PropTypes.object,
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
-    useNativeCurrencyAsPrimaryCurrency: PropTypes.bool.isRequired,
+    conversionRate: PropTypes.number,
     provider: PropTypes.object,
     subjectMetadata: PropTypes.object,
     unapprovedMessagesCount: PropTypes.number,
@@ -165,9 +167,10 @@ export default class SignatureRequest extends PureComponent {
       subjectMetadata,
       nativeCurrency,
       currentCurrency,
-      useNativeCurrencyAsPrimaryCurrency,
+      conversionRate,
       unapprovedMessagesCount,
     } = this.props;
+
     const { t, trackEvent } = this.context;
     const { hardwareLocked } = this.state;
     const {
@@ -177,15 +180,25 @@ export default class SignatureRequest extends PureComponent {
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
     const currentNetwork = this.getNetworkName();
-    const tokenName = useNativeCurrencyAsPrimaryCurrency
-      ? nativeCurrency
-      : currentCurrency?.toUpperCase();
 
-    const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
-      .toDenomination(EtherDenomination.ETH)
-      .round(6)
-      .toBase(10)
-      .toString();
+    const balanceInBaseAsset = conversionRate
+      ? formatCurrency(
+          getValueFromWeiHex({
+            value: balance,
+            fromCurrency: nativeCurrency,
+            toCurrency: currentCurrency,
+            conversionRate,
+            numberOfDecimals: 6,
+            toDenomination: EtherDenomination.ETH,
+          }),
+          currentCurrency,
+        )
+      : new Numeric(balance, 16, EtherDenomination.WEI)
+          .toDenomination(EtherDenomination.ETH)
+          .round(6)
+          .toBase(10)
+          .toString();
+
     const onSign = (event) => {
       sign(event);
       trackEvent({
@@ -224,12 +237,17 @@ export default class SignatureRequest extends PureComponent {
     return (
       <div className="signature-request">
         <ConfirmPageContainerNavigation />
-        <div className="request-signature__account">
+        <div
+          className="request-signature__account"
+          data-testid="request-signature-account"
+        >
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
             accountName={name}
             accountBalance={balanceInBaseAsset}
-            tokenName={tokenName}
+            tokenName={
+              conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+            }
             accountAddress={address}
           />
         </div>

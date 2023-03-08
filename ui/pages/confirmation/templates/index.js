@@ -33,6 +33,7 @@ const ALLOWED_TEMPLATE_KEYS = [
   'onSubmit',
   'networkDisplay',
   'submitText',
+  'loadingText',
 ];
 
 /**
