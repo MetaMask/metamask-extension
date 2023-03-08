@@ -143,7 +143,6 @@
         "console.log": true
       },
       "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
         "@ethersproject/abi>@ethersproject/hash": true,
@@ -151,16 +150,8 @@
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/address": true,
         "@ethersproject/bignumber": true
-      }
-    },
-    "@ethersproject/abi>@ethersproject/address": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/providers>@ethersproject/rlp": true
       }
     },
     "@ethersproject/abi>@ethersproject/bytes": {
@@ -175,12 +166,12 @@
     },
     "@ethersproject/abi>@ethersproject/hash": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/address": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/providers>@ethersproject/base64": true
       }
@@ -216,6 +207,21 @@
         "@ethersproject/abi>@ethersproject/logger": true
       }
     },
+    "@ethersproject/address": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/keccak256": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/address>@ethersproject/rlp": true,
+        "@ethersproject/bignumber": true
+      }
+    },
+    "@ethersproject/address>@ethersproject/rlp": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/logger": true
+      }
+    },
     "@ethersproject/bignumber": {
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
@@ -237,10 +243,10 @@
       },
       "packages": {
         "@ethersproject/abi": true,
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/address": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
@@ -297,15 +303,15 @@
     },
     "@ethersproject/hdnode>@ethersproject/transactions": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/address": true,
+        "@ethersproject/address>@ethersproject/rlp": true,
         "@ethersproject/bignumber": true,
-        "@ethersproject/hdnode>@ethersproject/signing-key": true,
-        "@ethersproject/providers>@ethersproject/rlp": true
+        "@ethersproject/hdnode>@ethersproject/signing-key": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/wordlists": {
@@ -328,13 +334,13 @@
         "setTimeout": true
       },
       "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
         "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/address": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/basex": true,
@@ -371,12 +377,6 @@
       }
     },
     "@ethersproject/providers>@ethersproject/random": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true
-      }
-    },
-    "@ethersproject/providers>@ethersproject/rlp": {
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true
@@ -2230,7 +2230,7 @@
     },
     "@truffle/decoder>@truffle/encoder": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
+        "@ethersproject/address": true,
         "@ethersproject/bignumber": true,
         "@truffle/codec": true,
         "@truffle/codec>@truffle/abi-utils": true,
@@ -2324,7 +2324,6 @@
     "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers": {
       "packages": {
         "@ethersproject/abi": true,
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/constants": true,
         "@ethersproject/abi>@ethersproject/hash": true,
@@ -2332,6 +2331,8 @@
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/address": true,
+        "@ethersproject/address>@ethersproject/rlp": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/contracts": true,
         "@ethersproject/hdnode": true,
@@ -2344,7 +2345,6 @@
         "@ethersproject/providers": true,
         "@ethersproject/providers>@ethersproject/base64": true,
         "@ethersproject/providers>@ethersproject/random": true,
-        "@ethersproject/providers>@ethersproject/rlp": true,
         "@ethersproject/providers>@ethersproject/web": true,
         "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets": true,
         "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/solidity": true,
@@ -2354,12 +2354,12 @@
     },
     "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
+        "@ethersproject/address": true,
         "@ethersproject/hdnode": true,
         "@ethersproject/hdnode>@ethersproject/pbkdf2": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
@@ -2391,12 +2391,12 @@
     },
     "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/wallet": {
       "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/hash": true,
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/address": true,
         "@ethersproject/hdnode": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/signing-key": true,
