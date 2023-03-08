@@ -38,9 +38,9 @@ exports[`Signature Request Component render should match snapshot when useNative
           class="confirm-page-container-navigation__navtext"
         >
           0
-
+           
           of
-
+           
           1
         </div>
         <div
@@ -162,7 +162,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
             0
-
+             
             DEF
           </h6>
         </div>
@@ -248,7 +248,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             >
               Contents
               :
-
+               
             </span>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -264,7 +264,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             >
               From
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -277,7 +277,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                 >
                   Name
                   :
-
+                   
                 </span>
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -293,7 +293,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                 >
                   Wallets
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -306,7 +306,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       0
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -382,7 +382,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       1
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -462,7 +462,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             >
               To
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -475,7 +475,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                 >
                   0
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -488,7 +488,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       Name
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -504,7 +504,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       Wallets
                       :
-
+                       
                     </span>
                     <div
                       class="box signature-request-data__node box--flex-direction-row"
@@ -517,7 +517,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                         >
                           0
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -593,7 +593,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                         >
                           1
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -669,7 +669,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                         >
                           2
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -810,9 +810,9 @@ exports[`Signature Request Component render should match snapshot when useNative
           class="confirm-page-container-navigation__navtext"
         >
           0
-
+           
           of
-
+           
           1
         </div>
         <div
@@ -934,7 +934,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
             0
-
+             
             ABC
           </h6>
         </div>
@@ -1020,7 +1020,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             >
               Contents
               :
-
+               
             </span>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1036,7 +1036,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             >
               From
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -1049,7 +1049,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                 >
                   Name
                   :
-
+                   
                 </span>
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1065,7 +1065,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                 >
                   Wallets
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -1078,7 +1078,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       0
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1154,7 +1154,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       1
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1234,7 +1234,7 @@ exports[`Signature Request Component render should match snapshot when useNative
             >
               To
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -1247,7 +1247,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                 >
                   0
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -1260,7 +1260,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       Name
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1276,7 +1276,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                     >
                       Wallets
                       :
-
+                       
                     </span>
                     <div
                       class="box signature-request-data__node box--flex-direction-row"
@@ -1289,7 +1289,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                         >
                           0
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1365,7 +1365,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                         >
                           1
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1441,7 +1441,7 @@ exports[`Signature Request Component render should match snapshot when useNative
                         >
                           2
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
