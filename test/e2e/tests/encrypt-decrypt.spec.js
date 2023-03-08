@@ -42,11 +42,6 @@ describe('Encrypt Decrypt', function () {
           css: '.request-encryption-public-key__header__text',
           text: 'Request encryption public key',
         });
-        // Account balance is converted properly
-        const accountBalanceLabel = await driver.findElement(
-          '.request-encryption-public-key__balance-value',
-        );
-        assert.equal(await accountBalanceLabel.getText(), '25 ETH');
         await driver.clickElement({ text: 'Provide', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
@@ -96,6 +91,88 @@ describe('Encrypt Decrypt', function () {
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         const clearTextLabel = await driver.findElement('#cleartextDisplay');
         assert.equal(await clearTextLabel.getText(), message);
+      },
+    );
+  });
+
+  it('should show balance correctly as ETH', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        await driver.openNewPage('http://127.0.0.1:8080');
+
+        // ------ Get Encryption key and display ETH ------
+        await driver.clickElement('#getEncryptionKeyButton');
+        await driver.waitUntilXWindowHandles(3);
+        const windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.waitForSelector({
+          css: '.request-encryption-public-key__header__text',
+          text: 'Request encryption public key',
+        });
+        // Account balance is converted properly
+        const accountBalanceLabel = await driver.findElement(
+          '.request-encryption-public-key__balance-value',
+        );
+        assert.equal(await accountBalanceLabel.getText(), '25 ETH');
+      },
+    );
+  });
+
+  it('should show balance correctly as Fiat', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            preferences: {
+              useNativeCurrencyAsPrimaryCurrency: false,
+            },
+          })
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.clickElement('.account-menu__icon');
+        await driver.openNewPage('http://127.0.0.1:8080');
+
+        // ------ Get Encryption key and display ETH ------
+        await driver.clickElement('#getEncryptionKeyButton');
+        await driver.waitUntilXWindowHandles(3);
+        const windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.waitForSelector({
+          css: '.request-encryption-public-key__header__text',
+          text: 'Request encryption public key',
+        });
+
+        // Account balance is converted properly
+        const accountBalanceLabel = await driver.findElement(
+          '.request-encryption-public-key__balance-value',
+        );
+        assert.equal(await accountBalanceLabel.getText(), '$42,500.00 USD');
       },
     );
   });
