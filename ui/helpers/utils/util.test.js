@@ -922,10 +922,14 @@ describe('util', () => {
   describe('getNetworkName()', () => {
     const t = (key) => {
       switch (key) {
-        case 'goerli':
-          return 'Goerli test network';
         case 'mainnet':
           return 'Ethereum Mainnet';
+        case 'goerli':
+          return 'Goerli test network';
+        case 'sepolia':
+          return 'Sepolia test network';
+        case 'localhost':
+          return 'Localhost 8545';
         default:
           return 'Unknown private network';
       }
@@ -965,6 +969,20 @@ describe('util', () => {
       provider.nickname = 'nickname';
 
       expect(util.getNetworkName(provider, t)).toStrictEqual('nickname');
+    });
+
+    it('should return Sepolia test network', () => {
+      provider.type = 'sepolia';
+
+      expect(util.getNetworkName(provider, t)).toStrictEqual(
+        'Sepolia test network',
+      );
+    });
+
+    it('should return Localhost 8545', () => {
+      provider.type = 'localhost';
+
+      expect(util.getNetworkName(provider, t)).toStrictEqual('Localhost 8545');
     });
   });
 });
