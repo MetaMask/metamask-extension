@@ -6,20 +6,18 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import {
-  TypographyVariant,
-  FONT_WEIGHT,
   BLOCK_SIZES,
   JustifyContent,
   DISPLAY,
   TextColor,
   IconColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
@@ -31,6 +29,7 @@ import {
   ICON_NAMES,
   ButtonIcon,
   Icon,
+  Text,
 } from '../../../components/component-library';
 
 export default class ConfirmApproveContent extends Component {
@@ -330,12 +329,9 @@ export default class ConfirmApproveContent extends Component {
               className="confirm-approve-content__custom-nonce-header"
               justifyContent={JustifyContent.flexStart}
             >
-              <Typography
-                variant={TypographyVariant.H6}
-                fontWeight={FONT_WEIGHT.NORMAL}
-              >
+              <Text variant={TextVariant.bodySm} as="h6">
                 {t('nonce')}
-              </Typography>
+              </Text>
               <Button
                 type="link"
                 className="confirm-approve-content__custom-nonce-edit"
@@ -351,13 +347,13 @@ export default class ConfirmApproveContent extends Component {
                 {t('edit')}
               </Button>
             </Box>
-            <Typography
+            <Text
               className="confirm-approve-content__custom-nonce-value"
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
+              variant={TextVariant.bodySmBold}
+              as="h6"
             >
               {customNonceValue || nextNonce}
-            </Typography>
+            </Text>
           </div>
         )}
       </>
@@ -550,14 +546,14 @@ export default class ConfirmApproveContent extends Component {
               name={origin}
               url={siteImage}
             />
-            <Typography
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.NORMAL}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
               color={TextColor.textAlternative}
               boxProps={{ marginLeft: 1, marginTop: 2 }}
             >
               {origin}
-            </Typography>
+            </Text>
           </Box>
         </Box>
         <div
