@@ -56,7 +56,7 @@ import { deferredPromise, getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
 /* eslint-disable import/order */
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
   CONNECTION_TYPE_EXTERNAL,
   CONNECTION_TYPE_INTERNAL,
@@ -107,7 +107,7 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 const OVERRIDE_ORIGIN = {
   EXTENSION: 'EXTENSION',
   DESKTOP: 'DESKTOP_APP',
@@ -263,7 +263,7 @@ async function initialize() {
     const initState = await loadStateFromPersistence();
     const initLangCode = await getFirstPreferredLangCode();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     await DesktopManager.init(platform.getVersion());
     ///: END:ONLY_INCLUDE_IN
 
@@ -503,7 +503,7 @@ export function setupController(initState, initLangCode, overrides) {
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     if (
       DesktopManager.isDesktopEnabled() &&
       OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
@@ -625,7 +625,7 @@ export function setupController(initState, initLangCode, overrides) {
 
   // communication with page or other extension
   connectExternal = (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     if (
       DesktopManager.isDesktopEnabled() &&
       OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
@@ -814,7 +814,7 @@ export function setupController(initState, initLangCode, overrides) {
     updateBadge();
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   if (OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()) {
     controller.store.subscribe((state) => {
       DesktopManager.setState(state);

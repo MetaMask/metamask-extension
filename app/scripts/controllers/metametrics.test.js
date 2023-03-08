@@ -119,6 +119,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
   category: 'Unit Test',
   successEvent: 'sample non-persisted event success',
   failureEvent: 'sample non-persisted event failure',
+  uniqueIdentifier: 'sample-non-persisted-event',
   properties: {
     test: true,
   },
@@ -175,7 +176,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
             test: true,
           },
-          messageId: Utils.generateRandomId(),
+          messageId: 'sample-non-persisted-event-failure',
           timestamp: new Date(),
         });
       const metaMetricsController = getMetaMetricsController();
