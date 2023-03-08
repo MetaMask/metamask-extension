@@ -9,7 +9,7 @@
     z-index: 25;
     align-items: center;
     position: relative;
-    height: 100%;
+    height: max-content;
     margin-left: auto;
     margin-right: auto;
 
@@ -19,9 +19,7 @@
       box-shadow: none;
     }
 
-    @include screen-sm-min {
-      height: 650px;
-    }
+    @include screen-sm-min;
 
     &__reject {
       padding-bottom: 20px;
