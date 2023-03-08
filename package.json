@@ -550,6 +550,7 @@
       "chromedriver": true,
       "geckodriver": true,
       "react-devtools>electron": true,
+      "@ethersproject/bytes": true,
       "@eth-optimism/contracts>@ethersproject/hardware-wallets>@ledgerhq/hw-transport-node-hid>@ledgerhq/hw-transport-node-hid-noevents>node-hid": false,
       "@eth-optimism/contracts>@ethersproject/hardware-wallets>@ledgerhq/hw-transport-node-hid>node-hid": false,
       "@eth-optimism/contracts>@ethersproject/hardware-wallets>@ledgerhq/hw-transport-node-hid>usb": false,
