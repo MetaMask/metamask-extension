@@ -37,52 +37,68 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
         Send anonymized click and pageview events
       </li>
       <li>
-        <i
-          class="fa fa-times"
-        />
-        <span>
-           
-          
-          <p
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
-          >
-            Never
-          </p>
-           collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)
-           
-        </span>
+        <div
+          class="box box--flex-direction-row"
+        >
+          <span
+            class="box mm-icon mm-icon--size-sm box--margin-inline-end-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+          <span>
+             
+            
+            <span
+              class="box box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+            >
+              Never
+            </span>
+             collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)
+             
+          </span>
+        </div>
       </li>
       <li>
-        <i
-          class="fa fa-times"
-        />
-        <span>
-           
-          
-          <p
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
-          >
-            Never
-          </p>
-           collect your full IP address*
-           
-        </span>
+        <div
+          class="box box--flex-direction-row"
+        >
+          <span
+            class="box mm-icon mm-icon--size-sm box--margin-inline-end-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+          <span>
+             
+            
+            <span
+              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+            >
+              Never
+            </span>
+             collect your full IP address*
+             
+          </span>
+        </div>
       </li>
       <li>
-        <i
-          class="fa fa-times"
-        />
-        <span>
-           
-          
-          <p
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
-          >
-            Never
-          </p>
-           sell data.  Ever!
-           
-        </span>
+        <div
+          class="box box--flex-direction-row"
+        >
+          <span
+            class="box mm-icon mm-icon--size-sm box--margin-inline-end-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+          <span>
+             
+            
+            <span
+              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
+            >
+              Never
+            </span>
+             sell data.  Ever!
+             
+          </span>
+        </div>
+         
       </li>
     </ul>
     <h6
