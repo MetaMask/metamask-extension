@@ -306,7 +306,10 @@ export const StartAccessoryEndAccessory = (args) => {
         truncate
         startAccessory={
           value.accountAddress && (
-            <AvatarAccount size={AvatarAccountSize.SM} address={value.accountAddress} />
+            <AvatarAccount
+              size={AvatarAccountSize.SM}
+              address={value.accountAddress}
+            />
           )
         }
         endAccessory={
