@@ -12,10 +12,11 @@ import {
 } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { ICON_NAMES } from '../../component-library';
+import { ICON_NAMES, Text } from '../../component-library';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
 export const AccountListItemMenu = ({
   anchorElement,
@@ -68,7 +69,7 @@ export const AccountListItemMenu = ({
         subtitle={blockExplorerUrlSubTitle || null}
         iconName={ICON_NAMES.EXPORT}
       >
-        {t('viewOnExplorer')}
+        <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
       </MenuItem>
       <MenuItem
         onClick={() => {
@@ -84,7 +85,7 @@ export const AccountListItemMenu = ({
         }}
         iconName={ICON_NAMES.SCAN_BARCODE}
       >
-        {t('accountDetails')}
+        <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>
       {isRemovable ? (
         <MenuItem
@@ -99,7 +100,7 @@ export const AccountListItemMenu = ({
           }}
           iconName={ICON_NAMES.TRASH}
         >
-          {t('removeAccount')}
+          <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
         </MenuItem>
       ) : null}
     </Menu>
