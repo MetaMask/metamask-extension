@@ -32,6 +32,9 @@ import {
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { checkForUnapprovedTypedMessages, updateCustodyState } from './institution/institution-actions';
+///: END:ONLY_INCLUDE_IN
 import {
   computeEstimatedGasLimit,
   initializeSendState,
@@ -367,7 +370,7 @@ export function resetAccount(): ThunkAction<
 
 export function removeAccount(
   address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<void, MetaMaskReduxState, undefined, AnyAction> {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
 
@@ -715,6 +718,11 @@ export function signPersonalMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if(newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState)
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -842,6 +850,11 @@ export function signTypedMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if(newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState)
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1828,6 +1841,10 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    updateCustodyState(dispatch, newState, getState());
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
