@@ -5,124 +5,18 @@ import {
   // AlignItems,
   DISPLAY,
   JustifyContent,
-  TextVariant,
-  TEXT_ALIGN,
-  // FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 import { Text } from '../text';
-
-// export const HeaderBase = ({
-//   startAccessory,
-//   endAccessory,
-//   className,
-//   children,
-//   titleProps,
-//   ...props
-// }) => {
-//   const startAccessoryRef = useRef();
-//   const endAccessoryRef = useRef();
-//   const [accessoryMinWidth, setAccessoryMinWidth] = useState();
-
-//   function getLargerSize(item1, item2) {
-//     const size1 = item1.scrollWidth;
-//     const size2 = item2.scrollWidth;
-//     const largerSize = size1 > size2 ? size1 : size2;
-//     return largerSize;
-//   }
-
-//   useEffect(() => {
-//     function handleResize() {
-//       if (startAccessoryRef.current && endAccessoryRef.current) {
-//         // Both startAccessoryRef and endAccessoryRef exist, so will find the larger of the two
-//         const accMinWidth = getLargerSize(
-//           startAccessoryRef.current,
-//           endAccessoryRef.current,
-//         );
-//         setAccessoryMinWidth(accMinWidth);
-//       } else if (startAccessoryRef.current && !endAccessoryRef.current) {
-//         // Only startAccessoryRef exists
-//         setAccessoryMinWidth(startAccessoryRef.current.scrollWidth);
-//       } else if (!startAccessoryRef.current && endAccessoryRef.current) {
-//         // Only endAccessoryRef exists
-//         setAccessoryMinWidth(endAccessoryRef.current.scrollWidth);
-//       } else {
-//         // Neither startAccessoryRef nor endAccessoryRef exist
-//         setAccessoryMinWidth(0);
-//       }
-//     }
-
-//     handleResize();
-//     window.addEventListener('resize', handleResize);
-
-//     return () => {
-//       window.removeEventListener('resize', handleResize);
-//     };
-//   }, [startAccessoryRef, endAccessoryRef]);
-
-//   return (
-//     <Box
-//       className={classnames('mm-header-base', className)}
-//       // display={DISPLAY.GRID}
-//       alignItems={AlignItems.flexStart}
-//       style={{
-//         display: 'grid',
-//         gridTemplateColumns: `${accessoryMinWidth}px 1fr ${accessoryMinWidth}px`,
-//       }}
-//       {...props}
-//     >
-//       {startAccessory && (
-//         <Box
-//           display={DISPLAY.FLEX}
-//           alignItems={AlignItems.center}
-//           className="mm-header-base__start-accessory"
-//           ref={startAccessoryRef}
-//           style={{
-//             width: 'max-content',
-//             gridColumn: 1,
-//           }}
-//         >
-//           {startAccessory}
-//         </Box>
-//       )}
-//       {children && (
-//         <Text
-//           variant={TextVariant.headingSm}
-//           className="mm-header-base__title"
-//           textAlign={TEXT_ALIGN.CENTER}
-//           {...titleProps}
-//           style={{
-//             gridColumn: 2,
-//           }}
-//         >
-//           {children}
-//         </Text>
-//       )}
-//       {endAccessory && (
-//         <Box
-//           display={DISPLAY.FLEX}
-//           alignItems={AlignItems.center}
-//           marginLeft="auto"
-//           className="mm-header-base__end-accessory"
-//           ref={endAccessoryRef}
-//           style={{
-//             width: 'max-content',
-//             gridColumn: 3,
-//           }}
-//         >
-//           {endAccessory}
-//         </Box>
-//       )}
-//     </Box>
-//   );
-// };
 
 export const HeaderBase = ({
   startAccessory,
   endAccessory,
   className,
   children,
-  titleProps,
+  childrenWrapperProps,
+  startAccessoryWrapperProps,
+  endAccessoryWrapperProps,
   ...props
 }) => {
   const startAccessoryRef = useRef();
@@ -201,27 +95,26 @@ export const HeaderBase = ({
         <Box
           className="mm-header-base__start-accessory"
           ref={startAccessoryRef}
-          style={{
-            minWidth: `${accessoryMinWidth}px`,
-          }}
+          style={
+            children && {
+              minWidth: `${accessoryMinWidth}px`,
+              backgroundColor: 'lightblue',
+            }
+          }
+          {...startAccessoryWrapperProps}
         >
           {startAccessory}
         </Box>
       )}
       {children && (
         <Box
+          className="mm-header-base__title"
           style={getTitleStyles()}
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.center}
+          {...childrenWrapperProps}
         >
-          <Text
-            variant={TextVariant.headingSm}
-            className="mm-header-base__title"
-            textAlign={TEXT_ALIGN.CENTER}
-            {...titleProps}
-          >
-            {children}
-          </Text>
+          {children}
         </Box>
       )}
       {endAccessory && (
@@ -230,9 +123,14 @@ export const HeaderBase = ({
           justifyContent={JustifyContent.flexEnd}
           className="mm-header-base__end-accessory"
           ref={endAccessoryRef}
-          style={{
-            minWidth: `${accessoryMinWidth}px`,
-          }}
+          style={
+            children && {
+              width: 'fit-content',
+              minWidth: `${accessoryMinWidth}px`,
+              background: 'blue',
+            }
+          }
+          {...endAccessoryWrapperProps}
         >
           {endAccessory}
         </Box>
@@ -247,17 +145,25 @@ HeaderBase.propTypes = {
    */
   children: PropTypes.node,
   /**
-   * Additional props to pass to the `Text` component used for the children (title) text
+   * Additional props to pass to the `Box` component wrapped around the children
    */
-  titleProps: PropTypes.shape(Text.PropTypes),
+  childrenWrapperProps: PropTypes.shape(Box.PropTypes),
   /**
    * The start(defualt left) content area of HeaderBase
    */
   startAccessory: PropTypes.node,
   /**
+   * Additional props to pass to the `Box` component wrapped around the startAccessory
+   */
+  startAccessoryWrapperProps: PropTypes.shape(Box.PropTypes),
+  /**
    * The end (defualt right) content area of HeaderBase
    */
   endAccessory: PropTypes.node,
+  /**
+   * Additional props to pass to the `Box` component wrapped around the endAccessory
+   */
+  endAccessoryWrapperProps: PropTypes.shape(Box.PropTypes),
   /**
    * An additional className to apply to the HeaderBase
    */

@@ -152,7 +152,7 @@ export const Demo = (args) => (
     </Box>
     <Box backgroundColor={Color.backgroundDefault}>
       <HeaderBase
-        startAccessory={<Button size={BUTTON_SIZES.SM}>Unlock</Button>}
+        startAccessory={<Button size={BUTTON_SIZES.SM}>Unlock Now</Button>}
         endAccessory={
           <ButtonIcon
             size={BUTTON_ICON_SIZES.SM}
@@ -164,6 +164,34 @@ export const Demo = (args) => (
       >
         Title is sentence case no period
       </HeaderBase>
+    </Box>
+    <Box backgroundColor={Color.backgroundDefault}>
+      <HeaderBase
+        startAccessory={
+          <ButtonIcon
+            size={BUTTON_ICON_SIZES.SM}
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel="close"
+          />
+        }
+        endAccessory={<Button size={BUTTON_SIZES.SM}>Fix This</Button>}
+        {...args}
+      >
+        Title is sentence case no period
+      </HeaderBase>
+    </Box>
+    <Box backgroundColor={Color.backgroundDefault}>
+      <HeaderBase
+        startAccessory={<Button size={BUTTON_SIZES.SM}>Unlock</Button>}
+        endAccessory={
+          <ButtonIcon
+            size={BUTTON_ICON_SIZES.SM}
+            iconName={ICON_NAMES.CLOSE}
+            ariaLabel="close"
+          />
+        }
+        {...args}
+      ></HeaderBase>
     </Box>
   </Box>
 );
