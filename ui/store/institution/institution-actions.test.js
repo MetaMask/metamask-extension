@@ -65,7 +65,7 @@ describe('#InstitutionActions', () => {
       },
     ];
 
-    await expect(store.dispatch(showInteractiveReplacementTokenModal()));
+    await store.dispatch(showInteractiveReplacementTokenModal());
 
     expect(store.getActions()).toStrictEqual(expectedActions);
   });
@@ -94,8 +94,8 @@ describe('#InstitutionActions', () => {
       },
     ];
 
-    await expect(
-      store.dispatch(showCustodyConfirmLink('link', '0x1', false, 'custodyId')),
+    await store.dispatch(
+      showCustodyConfirmLink('link', '0x1', false, 'custodyId'),
     );
 
     expect(store.getActions()).toStrictEqual(expectedActions);
