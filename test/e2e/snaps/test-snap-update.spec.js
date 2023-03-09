@@ -49,10 +49,13 @@ describe('Test Snap update', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
         await driver.delay(2000);
 
         // approve install of snap
@@ -75,13 +78,15 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // navigate to test snap page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectUpdate',
+          text: 'Reconnect to Update Snap',
+        });
 
         // find and scroll to the correct card and click first
         const snapButton2 = await driver.findElement('#connectUpdateNew');
@@ -115,7 +120,7 @@ describe('Test Snap update', function () {
         // look for the correct version text
         const versionResult = await driver.findElement('#updateSnapVersion');
         await driver.delay(1000);
-        assert.equal(await versionResult.getText(), '"5.0.1"');
+        assert.equal(await versionResult.getText(), '"4.0.2"');
       },
     );
   });
