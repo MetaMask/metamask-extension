@@ -33,7 +33,6 @@ export default function setupIpfsResolver({
 
   async function webRequestDidFail(details) {
     const { tabId, url } = details;
-    console.log('details', details);
     // ignore requests that are not associated with tabs
     // only attempt resolution on mainnet
     if (tabId === -1 || getCurrentChainId() !== '0x1') {
@@ -41,21 +40,15 @@ export default function setupIpfsResolver({
     }
     // parse domain name
     const { hostname: name, pathname, search, hash: fragment } = new URL(url);
-    // if domain name contains an Unstoppable TLD, it will attempt tp resolve to IPFS
-    udTlds.forEach((tld) => {
-      if (name.toLowerCase().endsWith(`.${tld}`)) {
-        attemptResolveUns(tabId, name);
-      }
-    });
-
     const domainParts = name.split('.');
     const topLevelDomain = domainParts[domainParts.length - 1];
-    // if unsupported TLD, abort
-    if (!supportedEnsTopLevelDomains.includes(topLevelDomain)) {
-      return;
+    // if supported ENS TLD, attempt resolve ENS
+    if (supportedEnsTopLevelDomains.includes(topLevelDomain)) {
+      attemptResolveEns({ tabId, name, pathname, search, fragment });
+    } else {
+      // otherwise attempt resolve UNS
+      attemptResolveUns(tabId, name);
     }
-    // otherwise attempt resolve for ENS
-    attemptResolveEns({ tabId, name, pathname, search, fragment });
   }
   /**
    *  Checks for an IPFS site under an Unstoppable Domain,
@@ -70,6 +63,7 @@ export default function setupIpfsResolver({
     let url = `http://unstoppabledomains.com/search?searchTerm=${domainName}`;
     try {
       const ipfsHash = await resolveUnsToIpfsContentId(domainName);
+      console.log(ipfsHash);
       if (ipfsHash) {
         url = `https://${ipfsGateway}/ipfs/${ipfsHash}`;
       }

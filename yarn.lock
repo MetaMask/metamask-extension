@@ -8120,7 +8120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unstoppabledomains/resolution@npm:^8.3.3":
+"@unstoppabledomains/resolution@npm:^8.5.0":
   version: 8.5.0
   resolution: "@unstoppabledomains/resolution@npm:8.5.0"
   dependencies:
@@ -8133,10 +8133,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unstoppabledomains/tldsresolverkeys@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@unstoppabledomains/tldsresolverkeys@npm:1.2.0"
-  checksum: 47a3cc358fa02641db7e627b227b538ab7f6f5c7e0846468155edf01be99343f56cc593d2644bc4a194ebaaec05c5d5f42751e348fba8e5c7722ab8906d68871
+"@unstoppabledomains/tldsresolverkeys@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "@unstoppabledomains/tldsresolverkeys@npm:2.2.3"
+  checksum: 070eda8ba29193a46f729c94d826b84b26332d69312d68f37c66a61f1e595d9ca2832f4856b599c3878efdc7b2e2210a38961607e34f437e8ade111cfde63b45
   languageName: node
   linkType: hard
 
@@ -24260,8 +24260,8 @@ __metadata:
     "@types/yargs": ^17.0.8
     "@typescript-eslint/eslint-plugin": ^5.30.7
     "@typescript-eslint/parser": ^5.30.7
-    "@unstoppabledomains/resolution": ^8.3.3
-    "@unstoppabledomains/tldsresolverkeys": ^1.2.0
+    "@unstoppabledomains/resolution": ^8.5.0
+    "@unstoppabledomains/tldsresolverkeys": ^2.2.3
     "@zxing/browser": ^0.0.10
     "@zxing/library": 0.8.0
     addons-linter: ^5.2.0

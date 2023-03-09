@@ -82,6 +82,9 @@
     "*://*.blockchain/",
     "*://*.888/",
     "*://*.zil/",
+    "*://*.hi/",
+    "*://*.klever/",
+    "*://*.kresus/",
     "notifications"
   ],
   "short_name": "__MSG_appName__"
