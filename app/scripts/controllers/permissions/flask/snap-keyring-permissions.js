@@ -1,9 +1,4 @@
 import {
-  errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
-import {
   PermissionType,
 } from '@metamask/permission-controller';
 
@@ -37,27 +32,16 @@ function getImplementation({
   saveSnapKeyring,
 }) {
   return async function implementation(
-    args,
+    request,
   ) {
     const {
-      params: [methodName, params],
+      params,
       context: { origin },
-    } = args;
+    } = request;
 
-    // const validatedParams = getValidatedParams(params);
-    // const validatedParams = params;
-
-    switch (methodName) {
-      // case 'create':
-      // case NotificationType.Native:
-      //   return await showNativeNotification(origin, validatedParams);
-      // case NotificationType.InApp:
-      //   return await showInAppNotification(origin, validatedParams);
-      default:
-        throw ethErrors.rpc.invalidParams({
-          message: 'Must specify a valid snap_manageAccounts "methodName".',
-        });
-    }
+    const keyring = await getSnapKeyring(origin);
+    // very lame to pass saveSnapKeyring through, should review how other keyrings do this
+    return keyring.handleKeyringSnapMessage(origin, params, saveSnapKeyring);
   };
 }
 

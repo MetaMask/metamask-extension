@@ -17,8 +17,14 @@
  *  may perform and must specify the `origin` for the snap; `createAccount()`,
  *  `readAccount()`, `updateAccount()` and `deleteAccount()` for example.
  */
+import { Buffer } from "buffer";
 import { Json } from "@metamask/utils";
 import { publicToAddress, stripHexPrefix, bufferToHex } from "ethereumjs-util";
+import { HandlerType } from "@metamask/snaps-utils";
+import { v4 as uuidv4 } from 'uuid';
+
+import { ethErrors } from 'eth-rpc-errors';
+import { deferredPromise, DeferredPromise } from "./util";
 
 export const type = "Snap Keyring";
 
@@ -26,29 +32,115 @@ export type Origin = string; // Origin of the snap
 export type Address = string; // String public address
 export type PublicKey = Buffer; // 33 or 64 byte public key
 export type JsonWallet = [PublicKey, Json];
-export type SnapWallet = Map<Origin, JsonWallet[]>;
+export type SnapWallet = Map<Address, Origin>;
 
 // Type for serialized format.
 export type SerializedWallets = {
-  [key: string]: [string, Json][];
+  [key: string]: string;
 };
-
-function arrayEquals(a: Uint8Array, b: Uint8Array) {
-  return a.length === b.length && a.every((val, index) => val === b[index]);
-}
 
 class SnapKeyring {
   static type: string;
   type: string;
-  _wallets: SnapWallet;
+  _addressToOrigin: SnapWallet;
+  _provider: any;
+  _snapController: any;
+  _pendingRequests: Map<string,DeferredPromise>;
 
   constructor() {
     this.type = type;
-    this._wallets = new Map();
+    this._addressToOrigin = new Map();
+    this._pendingRequests = new Map();
+
+    globalThis.__snapKeyring = this;
   }
 
-  _publicKeyToAddress(publicKey: PublicKey): Address {
-    return bufferToHex(publicToAddress(publicKey));
+  // keyrings cant take constructor arguments so we
+  // late-set the provider
+  setProvider (provider: any, snapController: any) {
+    console.log('setProvider', provider, snapController)
+    this._provider = provider;
+    this._snapController = snapController;
+  }
+
+  async sendRequestToSnap (origin: Origin, request: any): Promise<any> {
+    console.log('setProvider', this._provider, this._snapController)
+    // return this._provider.request({
+    //   method: 'wallet_invokeSnap',
+    //   params: {
+    //     snapId: origin,
+    //     request,
+    //   },
+    // });
+    return this._snapController.handleRequest({
+      snapId: origin,
+      origin: 'metamask',
+      handler: HandlerType.OnRpcRequest,
+      request,
+    })
+  }
+
+  async sendSignatureRequestToSnap (origin: Origin, request: any): Promise<any> {
+    console.log('sendSignatureRequest', origin, request)
+    const resP = this.sendRequestToSnap(origin, { method: 'snap_keyring_sign_request', params: request });
+    console.log('sendSignatureRequest returned')
+    try {
+      const result = await resP;
+      console.log('sendSignatureRequest resolved', result)
+      return result;
+    } catch (err) {
+      console.log('sendSignatureRequest error', err)
+      throw err;
+    }
+  }
+
+  async handleKeyringSnapMessage (origin: Origin, message: any, saveSnapKeyring: Function): Promise<any> {
+    const [methodName, params] = message;
+
+    switch (methodName) {
+      case 'create': {
+        const address = params as Address;
+        const added = this.createAccount(
+          origin,
+          address
+        );
+        if (added) {
+          await saveSnapKeyring();
+        }
+        return added;
+      }
+      case 'read': {
+        const accounts = this.listAccounts(origin);
+        return accounts;
+      }
+      // case 'update': {
+
+      // }
+      case 'delete': {
+        const address = params as Address;
+        if (address) {
+          const deleted = this.deleteAccount(address);
+          if (deleted) {
+            // include deleted address
+            await saveSnapKeyring(address);
+          }
+          return deleted;
+        }
+        return;
+      }
+
+      case 'submit': {
+        const { id, result } = params;
+        console.log('submit', id, result)
+        this.submitSignatureRequestResult(id, result);
+        return true
+      }
+
+      default:
+        throw ethErrors.rpc.invalidParams({
+          message: 'Must specify a valid snap_manageAccounts "methodName".',
+        });
+    }
   }
 
   /**
@@ -60,11 +152,8 @@ class SnapKeyring {
    */
   async serialize(): Promise<SerializedWallets> {
     const output: SerializedWallets = {};
-    for (const [origin, accounts] of this._wallets.entries()) {
-      output[origin] = accounts.map((wallet: JsonWallet) => {
-        const [publicKey, privateValue] = wallet;
-        return [publicKey.toString("hex"), privateValue];
-      });
+    for (const [address, origin] of this._addressToOrigin.entries()) {
+      output[address] = origin;
     }
     return output;
   }
@@ -75,14 +164,14 @@ class SnapKeyring {
    *  This function is synchronous but uses an async signature
    *  for consistency with other keyring implementations.
    */
-  async deserialize(wallets: SerializedWallets): Promise<void> {
-    for (const [key, accounts] of Object.entries(wallets)) {
-      this._wallets.set(
-        key,
-        accounts.map((value: [string, Json]) => {
-          const [publicKey, privateValue] = value;
-          return [Buffer.from(publicKey, "hex"), privateValue];
-        })
+  async deserialize(wallets: SerializedWallets | undefined): Promise<void> {
+    if (!wallets) {
+      return;
+    }
+    for (const [address, origin] of Object.entries(wallets)) {
+      this._addressToOrigin.set(
+        address,
+        origin,
       );
     }
   }
@@ -91,32 +180,57 @@ class SnapKeyring {
    *  Get an array of public addresses.
    */
   async getAccounts(): Promise<Address[]> {
-    let addresses: Address[] = [];
-    for (const [, wallets] of this._wallets.entries()) {
-      addresses = addresses.concat(
-        wallets.map((value: JsonWallet) => {
-          const [publicKey] = value;
-          return this._publicKeyToAddress(publicKey);
-        })
-      );
-    }
-    return addresses;
+    return Array.from(this._addressToOrigin.keys());
   }
 
   /**
    *  Sign a transaction.
    */
-  async signTransaction(/* address, tx, opts = {} */) {
-    // istanbul ignore next
-    throw new Error("signTransaction is not supported for the snap keyring");
+  async signTransaction(address: Address, tx: any, opts = {}) {
+    const origin = this._addressToOrigin.get(address);
+    if (origin === undefined) {
+      throw new Error(`No origin found for address "${address}"`)
+    }
+    const id = uuidv4();
+    const txParams = tx.toJSON();
+    // forward to snap
+    await this.sendSignatureRequestToSnap(origin, { id, method: 'eth_sendTransaction', params: [txParams] })
+    const signingPromise = deferredPromise()
+    console.log('new pending request', id)
+    this._pendingRequests.set(id, signingPromise);
+    // wait for signing to complete
+    const sigHexString = (await signingPromise.promise) as unknown as string;
+    const { v, r, s } = signatureHexStringToRsv(sigHexString);
+    console.log('signTransaction', sigHexString);
+    return tx._processSignature(v, r, s);
   }
 
   /**
    *  Sign a message.
    */
-  async signMessage(/* address, data, opts = {} */) {
-    // istanbul ignore next
-    throw new Error("signMessage is not supported for the snap keyring");
+  async signMessage(address: Address, data: any, opts = {}) {
+    throw new Error('death to eth_sign!');
+  }
+
+  /**
+   *  Sign a message.
+   */
+  // KeyringController says this should return a Buffer but it actually expects a string.
+  async signPersonalMessage(address: Address, data: any, opts = {}): Promise<string> {
+    const origin = this._addressToOrigin.get(address);
+    if (origin === undefined) {
+      throw new Error(`No origin found for address "${address}"`)
+    }
+    const id = uuidv4();
+    // forward to snap
+    await this.sendSignatureRequestToSnap(origin, { id, method: 'personal_sign', params: [data, address] })
+    const signingPromise = deferredPromise()
+    console.log('new pending request', id)
+    this._pendingRequests.set(id, signingPromise);
+    // wait for signing to complete
+    const sigHexString = (await signingPromise.promise) as unknown as string;
+    console.log('signPersonalMessage', sigHexString);
+    return sigHexString;
   }
 
   /**
@@ -129,41 +243,14 @@ class SnapKeyring {
    *  Used by the UI to export an account.
    */
   exportAccount(address: Address): [PublicKey, Json] | undefined {
-    const normalizedAddress = stripHexPrefix(address);
-    for (const [, accounts] of this._wallets.entries()) {
-      const matchedAccount = accounts.find((wallet: JsonWallet) => {
-        const [publicKey] = wallet;
-        const walletAddress = stripHexPrefix(
-          this._publicKeyToAddress(publicKey)
-        );
-        return normalizedAddress === walletAddress;
-      });
-      if (matchedAccount) {
-        return matchedAccount;
-      }
-    }
+    throw new Error('snap-keyring: "exportAccount" not supported')
   }
 
   /**
    *  Removes the first account matching the given public address.
    */
   removeAccount(address: Address): boolean {
-    const normalizedAddress = stripHexPrefix(address);
-    for (const [origin, accounts] of this._wallets.entries()) {
-      const filtered = accounts.filter((wallet: JsonWallet) => {
-        const [publicKey] = wallet;
-        const walletAddress = stripHexPrefix(
-          this._publicKeyToAddress(publicKey)
-        );
-        return normalizedAddress !== walletAddress;
-      });
-
-      if (filtered.length !== accounts.length) {
-        this._wallets.set(origin, filtered);
-        return true;
-      }
-    }
-    return false;
+    throw new Error('snap-keyring: "removeAccount" not supported')
   }
 
   /* SNAP RPC METHODS */
@@ -171,9 +258,16 @@ class SnapKeyring {
   /**
    *  List the accounts for a snap origin.
    */
-  listAccounts(origin: Origin): PublicKey[] {
-    const accounts = this._wallets.get(origin) || [];
-    return accounts.map((v) => v[0]);
+  listAccounts(targetOrigin: Origin): Address[] {
+    return (
+      Array.from(this._addressToOrigin.entries())
+      .filter(([address, origin]) => {
+        return origin === targetOrigin;
+      })
+      .map(([address, origin]) => {
+        return address;
+      })
+    )
   }
 
   /**
@@ -186,62 +280,76 @@ class SnapKeyring {
    *  not across all snaps. The keyring controller is responsible for checking
    *  for duplicates across all addresses.
    */
-  createAccount(origin: Origin, publicKey: PublicKey, value: Json): boolean {
-    const accounts = this._wallets.get(origin) || [];
-    const exists = accounts.find((v) => arrayEquals(v[0], publicKey));
+  createAccount(origin: Origin, address: string): boolean {
+    const exists = this._addressToOrigin.has(address)
     if (!exists) {
-      accounts.push([publicKey, value]);
-      this._wallets.set(origin, accounts);
+      this._addressToOrigin.set(address, origin);
       return true;
     }
     return false;
   }
 
-  /**
-   *  Read the private data for an account belonging to a snap origin.
-   */
-  readAccount(origin: Origin, publicKey: PublicKey): Json {
-    const accounts = this._wallets.get(origin) || [];
-    const value = accounts.find((v) => arrayEquals(v[0], publicKey));
-    if (value) {
-      const [, privateData] = value;
-      return privateData;
-    }
-    return null;
-  }
+  // /**
+  //  *  Read the private data for an account belonging to a snap origin.
+  //  */
+  // readAccount(origin: Origin, address: string): Json {
+  //   const accounts = this._addressToOrigin.get(address);
+  //   const value = accounts.find((v) => arrayEquals(v[0], address));
+  //   if (value) {
+  //     const [, privateData] = value;
+  //     return privateData;
+  //   }
+  //   return null;
+  // }
 
-  /**
-   *  Update the private data for the account belonging to the snap origin.
-   *
-   *  The account must already exist.
-   */
-  updateAccount(origin: Origin, publicKey: PublicKey, value: Json): boolean {
-    const accounts = this._wallets.get(origin) || [];
-    const exists = accounts.find((v) => arrayEquals(v[0], publicKey));
-    if (exists) {
-      exists[1] = value;
-      return true;
-    }
-    return false;
-  }
+  // /**
+  //  *  Update the private data for the account belonging to the snap origin.
+  //  *
+  //  *  The account must already exist.
+  //  */
+  // updateAccount(origin: Origin, _address: string, value: Json): boolean {
+  //   const address = Buffer.from(_address, "hex");
+  //   const accounts = this._addressToOrigin.get(origin) || [];
+  //   const exists = accounts.find((v) => arrayEquals(v[0], address));
+  //   if (exists) {
+  //     exists[1] = value;
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   /**
    *  Delete the private data for an account belonging to a snap origin.
    */
-  deleteAccount(origin: Origin, publicKey: PublicKey): Address | null {
-    const accounts = this._wallets.get(origin) || [];
-    const index = accounts.findIndex((v) => arrayEquals(v[0], publicKey));
-    if (index > -1) {
-      accounts.splice(index, 1);
-      if (accounts.length === 0) {
-        this._wallets.delete(origin);
-      }
-      return this._publicKeyToAddress(publicKey);
+  deleteAccount(address: string): boolean {
+    return this._addressToOrigin.delete(address);
+  }
+
+  deleteAccountsByOrigin(origin: Origin): void {
+    for (const address of this.listAccounts(origin)) {
+      this._addressToOrigin.delete(address);
     }
-    return null;
+  }
+
+  submitSignatureRequestResult(id: string, result: any): void {
+    const signingPromise = this._pendingRequests.get(id);
+    if (signingPromise === undefined) {
+      console.warn('submitSignatureRequestResult missing requested id', id, result)
+      return
+    }
+    this._pendingRequests.delete(id);
+    signingPromise.resolve(result);
   }
 }
 
 SnapKeyring.type = type;
 
 export default SnapKeyring;
+
+
+function signatureHexStringToRsv (signatureHexString: string) {
+  const r = signatureHexString.slice(0, 66)
+  const s = '0x' + signatureHexString.slice(66, 130)
+  const v = parseInt(signatureHexString.slice(130, 132), 16)
+  return { r, s, v }
+}
