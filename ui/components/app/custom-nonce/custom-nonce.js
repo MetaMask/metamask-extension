@@ -1,16 +1,16 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../.storybook/i18n';
-import Box from '../box';
-import Button from '../button';
-import { Text } from '../../component-library';
+import Box from '../../ui/box';
+import { Text, ButtonLink } from '../../component-library';
 import {
-  TextVariant,
-  JustifyContent,
   AlignItems,
   BorderRadius,
   DISPLAY,
   FONT_WEIGHT,
+  JustifyContent,
+  Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export default function CustomNonce({
@@ -44,13 +44,14 @@ export default function CustomNonce({
         >
           {t('nonce')}
         </Text>
-        <Button
-          type="link"
-          className="custom-nonce__edit"
+        <ButtonLink
+          key="editCustomNonce"
+          size={Size.auto}
+          marginLeft={3}
           onClick={() => showCustomizeNonceModal()}
         >
           {t('edit')}
-        </Button>
+        </ButtonLink>
       </Box>
       <Text
         className="custom-nonce__value"

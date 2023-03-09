@@ -12,10 +12,4 @@
   &__value {
     flex: 0;
   }
-
-  &__edit {
-    @include H7;
-
-    width: auto;
-  }
 }

@@ -67,7 +67,7 @@ import LedgerInstructionField from '../../components/app/ledger-instruction-fiel
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
 import { Text, Icon, IconName } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
-import CustomNonce from '../../components/ui/custom-nonce';
+import CustomNonce from '../../components/app/custom-nonce';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 

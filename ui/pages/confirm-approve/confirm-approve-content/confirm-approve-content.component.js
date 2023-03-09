@@ -37,7 +37,7 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
-import CustomNonce from '../../../components/ui/custom-nonce';
+import CustomNonce from '../../../components/app/custom-nonce';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
