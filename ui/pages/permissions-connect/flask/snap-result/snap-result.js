@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -13,15 +12,13 @@ import {
   BorderStyle,
   FLEX_DIRECTION,
   JustifyContent,
-  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
-import Typography from '../../../../components/ui/typography';
 import { getSnapInstallWarnings } from '../util';
+import { Text } from '../../../../components/component-library';
 
-export default function SnapInstall({
+export default function SnapResult({
   request,
-  approveSnapInstall,
-  rejectSnapInstall,
+  approveSnapResult,
   targetSubjectMetadata,
   requestState,
 }) {
@@ -29,14 +26,9 @@ export default function SnapInstall({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
-  const onCancel = useCallback(
-    () => rejectSnapInstall(request.metadata.id),
-    [request, rejectSnapInstall],
-  );
-
   const onSubmit = useCallback(
-    () => approveSnapInstall(request.metadata.id),
-    [request, approveSnapInstall],
+    () => approveSnapResult(request.metadata.id),
+    [request, approveSnapResult],
   );
 
   const hasPermissions =
@@ -74,23 +66,13 @@ export default function SnapInstall({
           snapVersion={targetSubjectMetadata.version}
           boxProps={{ alignItems: AlignItems.center }}
         />
-        {!requestState.loading && hasPermissions && (
-          <>
-            <Typography
-              boxProps={{
-                padding: [4, 4, 0, 4],
-              }}
-              variant={TypographyVariant.H7}
-              as="span"
-            >
-              {t('snapRequestsPermission')}
-            </Typography>
-            <PermissionsConnectPermissionList
-              permissions={requestState.permissions || {}}
-            />
-          </>
+        {requestState.loading && !requestState.error && <Text>Am loading</Text>}
+        {!requestState.loading && requestState.error && (
+          <Text>{requestState.error}</Text>
         )}
-        {requestState.loading && <p>loading</p>}
+        {!requestState.loading && !requestState.error && (
+          <Text>All good bro</Text>
+        )}
       </Box>
       <Box
         className="footers"
@@ -101,9 +83,7 @@ export default function SnapInstall({
           <PermissionsConnectFooter />
         </Box>
         <PageContainerFooter
-          cancelButtonType="default"
-          onCancel={onCancel}
-          cancelText={t('cancel')}
+          hideCancel
           onSubmit={
             shouldShowWarning ? () => setIsShowingWarning(true) : onSubmit
           }
@@ -121,10 +101,9 @@ export default function SnapInstall({
   );
 }
 
-SnapInstall.propTypes = {
+SnapResult.propTypes = {
   request: PropTypes.object.isRequired,
-  approveSnapInstall: PropTypes.func.isRequired,
-  rejectSnapInstall: PropTypes.func.isRequired,
+  approveSnapResult: PropTypes.func.isRequired,
   requestState: PropTypes.object,
   targetSubjectMetadata: PropTypes.shape({
     iconUrl: PropTypes.string,

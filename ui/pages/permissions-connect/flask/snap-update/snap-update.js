@@ -17,9 +17,11 @@ import {
 import Typography from '../../../../components/ui/typography';
 import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
 import { getSnapInstallWarnings } from '../util';
+import { Text } from '../../../../components/component-library';
 
 export default function SnapUpdate({
   request,
+  requestState,
   approveSnapUpdate,
   rejectSnapUpdate,
   targetSubjectMetadata,
@@ -38,9 +40,9 @@ export default function SnapUpdate({
     [request, approveSnapUpdate],
   );
 
-  const approvedPermissions = request.approvedPermissions ?? {};
-  const revokedPermissions = request.unusedPermissions ?? {};
-  const newPermissions = request.newPermissions ?? {};
+  const approvedPermissions = requestState.approvedPermissions ?? {};
+  const revokedPermissions = requestState.unusedPermissions ?? {};
+  const newPermissions = requestState.newPermissions ?? {};
   const hasPermissions =
     Object.keys(approvedPermissions).length +
       Object.keys(revokedPermissions).length +
@@ -75,7 +77,7 @@ export default function SnapUpdate({
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={request.snapId}
           isSnapInstallOrUpdate
-          snapVersion={request.newVersion}
+          snapVersion={requestState.newVersion}
           boxProps={{ alignItems: AlignItems.center }}
         />
         <Typography
@@ -87,7 +89,7 @@ export default function SnapUpdate({
         >
           {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
         </Typography>
-        {hasPermissions && (
+        {hasPermissions && !requestState.loading && (
           <>
             <Typography
               boxProps={{
@@ -105,6 +107,7 @@ export default function SnapUpdate({
             />
           </>
         )}
+        {requestState.loading && <Text>loading</Text>}
       </Box>
       <Box
         className="footers"
@@ -138,6 +141,7 @@ export default function SnapUpdate({
 
 SnapUpdate.propTypes = {
   request: PropTypes.object.isRequired,
+  requestState: PropTypes.object.isRequired,
   approveSnapUpdate: PropTypes.func.isRequired,
   rejectSnapUpdate: PropTypes.func.isRequired,
   targetSubjectMetadata: PropTypes.shape({
