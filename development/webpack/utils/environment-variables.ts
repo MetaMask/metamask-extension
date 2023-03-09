@@ -76,7 +76,7 @@ const productionConfigurationPropertyNames = [
  * @returns The production configuration.
  */
 function getConfig(): EnvironmentConfig {
-  const configPath = path.resolve(__dirname, '..', '..', '.metamaskrc');
+  const configPath = path.resolve(__dirname, '..', '..', '..', '.metamaskrc');
   let configContents = '';
   try {
     configContents = readFileSync(configPath, {
@@ -116,7 +116,7 @@ function getConfig(): EnvironmentConfig {
 function getProductionConfig(
   buildType: typeof BuildType[keyof typeof BuildType],
 ): EnvironmentConfig {
-  const prodConfigPath = path.resolve(__dirname, '..', '..', '.metamaskprodrc');
+  const prodConfigPath = path.resolve(__dirname, '..', '..', '..', '.metamaskprodrc');
   let prodConfigContents = '';
   try {
     prodConfigContents = readFileSync(prodConfigPath, {
