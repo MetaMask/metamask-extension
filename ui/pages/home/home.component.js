@@ -1,69 +1,68 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(main)
 import {
-  CONTEXT_PROPS,
   EVENT,
   EVENT_NAMES,
+  CONTEXT_PROPS,
 } from '../../../shared/constants/metametrics';
-import { SECOND } from '../../../shared/constants/time';
-///: BEGIN:ONLY_INCLUDE_IN(main)
-import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
-import HomeNotification from '../../components/app/home-notification';
-import MenuBar from '../../components/app/menu-bar';
-import MultipleNotifications from '../../components/app/multiple-notifications';
 import NftsTab from '../../components/app/nfts-tab';
-import OpenSeaWhatsNewPopover from '../../components/app/open-sea-whats-new-popover/open-sea-whats-new-popover';
-import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import HomeNotification from '../../components/app/home-notification';
+import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
+import MenuBar from '../../components/app/menu-bar';
+import Popover from '../../components/ui/popover';
+import Button from '../../components/ui/button';
+import Box from '../../components/ui/box';
+import ConnectedSites from '../connected-sites';
+import ConnectedAccounts from '../connected-accounts';
+import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
+import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import {
+  FONT_WEIGHT,
+  DISPLAY,
+  TextColor,
+  TextVariant,
+} from '../../helpers/constants/design-system';
+import { SECOND } from '../../../shared/constants/time';
 import {
   ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
   Text,
 } from '../../components/component-library';
-import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-import Box from '../../components/ui/box';
-import Button from '../../components/ui/button';
-import Popover from '../../components/ui/popover';
-import { Tab, Tabs } from '../../components/ui/tabs';
-import {
-  DISPLAY,
-  FONT_WEIGHT,
-  TextColor,
-  TextVariant,
-} from '../../helpers/constants/design-system';
 
 import {
-  ADD_NFT_ROUTE,
   ASSET_ROUTE,
+  RESTORE_VAULT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONNECT_ROUTE,
+  CONNECTED_ROUTE,
+  CONNECTED_ACCOUNTS_ROUTE,
   AWAITING_SWAP_ROUTE,
   BUILD_QUOTE_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-  CONNECT_ROUTE,
-  CONNECTED_ACCOUNTS_ROUTE,
-  CONNECTED_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  RESTORE_VAULT_ROUTE,
   VIEW_QUOTE_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  ADD_NFT_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import ConnectedAccounts from '../connected-accounts';
-import ConnectedSites from '../connected-sites';
+import OpenSeaWhatsNewPopover from '../../components/app/open-sea-whats-new-popover/open-sea-whats-new-popover';
+///: BEGIN:ONLY_INCLUDE_IN(main)
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
-
 ///: END:ONLY_INCLUDE_IN
 
 function shouldCloseNotificationPopup({
@@ -305,15 +304,13 @@ export default class Home extends PureComponent {
                           variant={TextVariant.bodyMd}
                           as="h5"
                           color={TextColor.textAlternative}
-                          fontWeight={FONT_WEIGHT.NORMAL}
                         >
                           {t('somethingWentWrong')}
                         </Text>
                         <Text
                           color={TextColor.textAlternative}
                           variant={TextVariant.bodySm}
-                          as="h7"
-                          fontWeight={FONT_WEIGHT.NORMAL}
+                          as="h6"
                         >
                           {t('snapError', [error.message, error.code])}
                         </Text>
@@ -339,11 +336,7 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h7"
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
+                <Text variant={TextVariant.bodySm} as="h6">
                   {t('newNftAddedMessage')}
                 </Text>
                 <ButtonIcon
@@ -365,11 +358,7 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h7"
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
+                <Text variant={TextVariant.bodySm} as="h6">
                   {t('removeNftMessage')}
                 </Text>
                 <ButtonIcon
@@ -389,11 +378,7 @@ export default class Home extends PureComponent {
             message={
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h7"
-                  fontWeight={FONT_WEIGHT.NORMAL}
-                >
+                <Text variant={TextVariant.bodySm} as="h6">
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Text>
                 <ButtonIcon
@@ -425,8 +410,7 @@ export default class Home extends PureComponent {
                   <Text
                     className="home__new-tokens-imported-notification-message"
                     variant={TextVariant.bodySm}
-                    as="h7"
-                    fontWeight={FONT_WEIGHT.NORMAL}
+                    as="h6"
                   >
                     {t('newTokensImportedMessage', [newTokensImported])}
                   </Text>
@@ -545,7 +529,6 @@ export default class Home extends PureComponent {
                 <Text
                   variant={TextVariant.bodySm}
                   as="h6"
-                  fontWeight={FONT_WEIGHT.NORMAL}
                   color={TextColor.primaryInverse}
                 >
                   {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
@@ -558,7 +541,6 @@ export default class Home extends PureComponent {
                 <Text
                   variant={TextVariant.bodySm}
                   as="h6"
-                  fontWeight={FONT_WEIGHT.NORMAL}
                   color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
