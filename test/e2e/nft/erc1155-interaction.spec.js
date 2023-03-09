@@ -56,9 +56,14 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
+        const transactionItem = await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Deposit',
+        });
+        assert.equal(
+          await transactionItem.isDisplayed(),
+          true,
+          `transaction item should be displayed in activity tab`,
         );
       },
     );
@@ -100,9 +105,14 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
+        const transactionItem = await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Deposit',
+        });
+        assert.equal(
+          await transactionItem.isDisplayed(),
+          true,
+          `transaction item should be displayed in activity tab`,
         );
       },
     );
