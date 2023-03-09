@@ -132,6 +132,9 @@ import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import MMIController from './mmi-controller';
+///: END:ONLY_INCLUDE_IN
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
@@ -2742,7 +2745,7 @@ export default class MetamaskController extends EventEmitter {
     await this.keyringController.submitPassword(password);
 
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    this.mmiController.onSubmitPasswrod();
+    this.mmiController.onSubmitPassword();
     ///: END:ONLY_INCLUDE_IN
 
     try {
@@ -2865,6 +2868,52 @@ export default class MetamaskController extends EventEmitter {
 
     return keyring.mnemonic;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  async addKeyringIfNotExists(type) {
+    let keyring = await this.keyringController.getKeyringsByType(type)[0];
+    if (!keyring) {
+      keyring = await this.keyringController.addNewKeyring(type);
+    }
+    return keyring;
+  }
+
+  async getCustodyKeyringIfExists(address) {
+    const custodyType = this.custodyController.getCustodyTypeByAddress(
+      toChecksumHexAddress(address),
+    );
+    const keyring = this.keyringController.getKeyringsByType(custodyType)[0];
+    return keyring?.getAccountDetails(address) ? keyring : undefined;
+  }
+
+  async setMmiPortfolioCookie() {
+    await this.appStateController.getUnlockPromise(true);
+    const keyringAccounts = await this.keyringController.getAccounts();
+    const { identities } = this.preferencesController.store.getState();
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const { mmiConfiguration } =
+      this.mmiConfigurationController.store.getState();
+    const { cookieSetUrls } = mmiConfiguration?.portfolio;
+    const getAccountDetails = (address) =>
+      this.custodyController.getAccountDetails(address);
+    const extensionId = this.extension.runtime.id;
+    const networks = [
+      ...this.preferencesController.getFrequentRpcListDetail(),
+      { chainId: CHAIN_IDS.MAINNET },
+      { chainId: CHAIN_IDS.GOERLI },
+    ];
+
+    handleMmiPortfolio({
+      keyringAccounts,
+      identities,
+      metaMetricsId,
+      networks,
+      cookieSetUrls,
+      getAccountDetails,
+      extensionId,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   //
   // Hardware
@@ -3246,6 +3295,10 @@ export default class MetamaskController extends EventEmitter {
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address]);
 
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.custodyController.removeAccount(address);
+    ///: END:ONLY_INCLUDE_IN(mmi)
+
     const keyring = await this.keyringController.getKeyringForAccount(address);
     // Remove account from the keyring
     await this.keyringController.removeAccount(address);
@@ -3427,6 +3480,45 @@ export default class MetamaskController extends EventEmitter {
    */
   async signPersonalMessage(msgParams) {
     log.info('MetaMaskController - signPersonalMessage');
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    const custodyKeyring = await this.getCustodyKeyringIfExists(msgParams.from);
+
+    if (custodyKeyring) {
+      const msgId = msgParams.metamaskId;
+
+      const msg = this.personalMessageManager.getMsg(msgId);
+
+      if (msg.custodyId) {
+        return this.getState();
+      }
+
+      const messageObject = await this.keyringController.signPersonalMessage(
+        msgParams,
+      );
+
+      this.personalMessageManager.setMsgCustodyId(
+        msgId,
+        messageObject.custodian_transactionId,
+      );
+
+      /**
+       * From "messageObject" we have:
+       * - custodian_transactionId
+       * - from
+       * -transactionStatus
+       */
+      this.transactionUpdateController.addTransactionToWatchList(
+        messageObject.custodian_transactionId,
+        messageObject.from,
+        'personal',
+        true,
+      );
+
+      return this.getState();
+    }
+    ///: END:ONLY_INCLUDE_IN(mmi)
+
     const msgId = msgParams.metamaskId;
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
@@ -3683,9 +3775,18 @@ export default class MetamaskController extends EventEmitter {
     const msgId = msgParams.metamaskId;
     const { version } = msgParams;
     try {
-      const cleanMsgParams = await this.typedMessageManager.approveMessage(
-        msgParams,
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      const custodyKeyring = await this.getCustodyKeyringIfExists(
+        msgParams.from,
       );
+      ///: END:ONLY_INCLUDE_IN(mmi)
+
+      let cleanMsgParams = msgParams;
+      if (!custodyKeyring) {
+        cleanMsgParams = await this.typedMessageManager.approveMessage(
+          msgParams,
+        );
+      }
 
       // For some reason every version after V1 used stringified params.
       if (version !== 'V1') {
@@ -3694,6 +3795,34 @@ export default class MetamaskController extends EventEmitter {
           cleanMsgParams.data = JSON.parse(cleanMsgParams.data);
         }
       }
+
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      if (custodyKeyring) {
+        // This is a custodial signature so we cannot get the signature straight away
+        const msg = this.typedMessageManager.getMsg(msgId);
+
+        if (msg.custodyId) {
+          return this.getState();
+        }
+        const messageObject = await this.keyringController.signTypedMessage(
+          cleanMsgParams,
+          { version },
+        );
+        this.typedMessageManager.setMsgCustodyId(
+          msgId,
+          messageObject.custodian_transactionId,
+        );
+
+        this.transactionUpdateController.addTransactionToWatchList(
+          messageObject.custodian_transactionId,
+          messageObject.from,
+          'v4',
+          true,
+        );
+
+        return this.getState();
+      }
+      ///: END:ONLY_INCLUDE_IN(mmi)
 
       const signature = await this.keyringController.signTypedMessage(
         cleanMsgParams,
@@ -4239,6 +4368,20 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
+
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        handleMmiAuthenticate:
+          this.institutionalFeaturesController.handleMmiAuthenticate.bind(
+            this.institutionalFeaturesController,
+          ),
+        handleMmiCheckIfTokenIsPresent:
+          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
+        handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
+        handleMmiOpenSwaps: this.handleMmiOpenSwaps.bind(this),
+        handleMmiSetAccountAndNetwork: this.setAccountAndNetwork.bind(this),
+        handleMmiOpenAddHardwareWallet:
+          this.mmiController.handleMmiOpenAddHardwareWallet.bind(this),
+        ///: END:ONLY_INCLUDE_IN
       }),
     );
 
