@@ -73,7 +73,7 @@ export function updateCustodyState(
       const custody = custodyAccountDetails?.custodyType
         .split(' - ')[1]
         .toLowerCase();
-      if (!custody) {
+        if (!custody) {
         return false;
       }
 
@@ -104,6 +104,7 @@ export function updateCustodyState(
   ) {
     if (state.appState.modal.modalState.props?.closeNotification) {
       dispatch(closeCurrentNotificationWindow());
+      return true;
     }
   }
 }
