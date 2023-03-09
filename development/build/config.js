@@ -1,5 +1,5 @@
 const path = require('path');
-const { readFile } = require('fs/promises');
+const { readFileSync } = require('fs');
 const ini = require('ini');
 const { BuildType } = require('../lib/build-type');
 
@@ -38,11 +38,11 @@ const productionConfigurationPropertyNames = [
  *
  * @returns {object} The production configuration.
  */
-async function getConfig() {
+function getConfig() {
   const configPath = path.resolve(__dirname, '..', '..', '.metamaskrc');
   let configContents = '';
   try {
-    configContents = await readFile(configPath, {
+    configContents = readFileSync(configPath, {
       encoding: 'utf8',
     });
   } catch (error) {
@@ -74,11 +74,11 @@ async function getConfig() {
  * etc.).
  * @returns {object} The production configuration.
  */
-async function getProductionConfig(buildType) {
+function getProductionConfig(buildType) {
   const prodConfigPath = path.resolve(__dirname, '..', '..', '.metamaskprodrc');
   let prodConfigContents = '';
   try {
-    prodConfigContents = await readFile(prodConfigPath, {
+    prodConfigContents = readFileSync(prodConfigPath, {
       encoding: 'utf8',
     });
   } catch (error) {

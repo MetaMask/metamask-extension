@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { readFileSync } from 'fs';
 import path from 'path';
 import ini from 'ini';
 import phishingWarningManifest from '@metamask/phishing-warning/package.json';
@@ -75,11 +75,11 @@ const productionConfigurationPropertyNames = [
  *
  * @returns The production configuration.
  */
-async function getConfig(): Promise<EnvironmentConfig> {
+function getConfig(): EnvironmentConfig {
   const configPath = path.resolve(__dirname, '..', '..', '.metamaskrc');
   let configContents = '';
   try {
-    configContents = await readFile(configPath, {
+    configContents = readFileSync(configPath, {
       encoding: 'utf8',
     });
   } catch (error) {
@@ -113,13 +113,13 @@ async function getConfig(): Promise<EnvironmentConfig> {
  * etc.).
  * @returns The production configuration.
  */
-async function getProductionConfig(
+function getProductionConfig(
   buildType: typeof BuildType[keyof typeof BuildType],
-): Promise<EnvironmentConfig> {
+): EnvironmentConfig {
   const prodConfigPath = path.resolve(__dirname, '..', '..', '.metamaskprodrc');
   let prodConfigContents = '';
   try {
-    prodConfigContents = await readFile(prodConfigPath, {
+    prodConfigContents = readFileSync(prodConfigPath, {
       encoding: 'utf8',
     });
   } catch (error) {
@@ -353,7 +353,7 @@ function getEnvironment({
  * @param options.version - The current version of the extension.
  * @returns A map of environment variables to inject.
  */
-export async function getEnvironmentVariables({
+export function getEnvironmentVariables({
   buildTarget,
   buildType,
   version,
@@ -365,12 +365,12 @@ export async function getEnvironmentVariables({
   const environment = getEnvironment({ buildTarget });
   const config =
     environment === ENVIRONMENT.PRODUCTION
-      ? await getProductionConfig(buildType)
-      : await getConfig();
+      ? getProductionConfig(buildType)
+      : getConfig();
 
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
-  const iconNames = await generateIconNames();
+  const iconNames = generateIconNames();
   return {
     ICON_NAMES: iconNames,
     NFTS_V1: config.NFTS_V1 === '1',
