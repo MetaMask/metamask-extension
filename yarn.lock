@@ -24030,6 +24030,7 @@ __metadata:
     "@ethersproject/abi": ^5.6.4
     "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
+    "@ethersproject/bytes": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/hdnode": ^5.6.2
     "@ethersproject/providers": ^5.7.2

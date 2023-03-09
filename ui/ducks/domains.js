@@ -3,9 +3,7 @@ import log from 'loglevel';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { BigNumber } from '@ethersproject/bignumber';
 import { getCurrentChainId } from '../selectors';
-import { getMulticoinAddress } from './ens';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   NETWORK_IDS,
@@ -27,6 +25,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
+import { getMulticoinAddress } from './ens';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -144,11 +143,11 @@ export function initializeDomainSlice() {
 
 export function lookupEnsName(domainName) {
   return async (dispatch, getState) => {
-    console.log('***lookupEnsName1', {domainName})
+    console.log('***lookupEnsName1', { domainName });
     const trimmedDomainName = domainName.trim();
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
-      console.log('***lookupEnsName2', {domainName})
+      console.log('***lookupEnsName2', { domainName });
       await dispatch(initializeDomainSlice());
     }
     state = getState();
@@ -160,23 +159,20 @@ export function lookupEnsName(domainName) {
       ) &&
       !isHexString(trimmedDomainName)
     ) {
-      console.log('***lookupEnsName3', {domainName})
+      console.log('***lookupEnsName3', { domainName });
       await dispatch(ensNotSupported());
     } else {
-      console.log('***lookupEnsName4', {domainName})
+      console.log('***lookupEnsName4', { domainName });
       const chainId = getCurrentChainId(state);
       const logMessage = `ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`;
       log.info(logMessage);
-      const address = await getMulticoinAddress(web3Provider, trimmedDomainName, chainId)
-      console.log('***lookupEnsName5', {address})
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      console.log('***lookupEnsName6', {
-        address,
+      const address = await getMulticoinAddress(
+        web3Provider,
+        trimmedDomainName,
         chainId,
-        network,
-        domainType: ENS,
-        domainName: trimmedDomainName,
-      })
+      );
+      console.log('***lookupEnsName5', { address });
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       await dispatch(
         domainLookup({
           address,
