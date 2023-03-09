@@ -28,6 +28,7 @@ export default class ReadOnlyNetworkStore {
   async _init() {
     try {
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
+
       if (response.ok) {
         this._state = await response.json();
       }
