@@ -48,6 +48,6 @@ export const DetectedTokensBanner = ({
 };
 
 DetectedTokensBanner.propTypes = {
-  setShowDetectedTokens: PropTypes.string.isRequired,
+  setShowDetectedTokens: PropTypes.func.isRequired,
   className: PropTypes.string,
 };

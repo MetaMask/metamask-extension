@@ -8,7 +8,7 @@ export default {
     setShowDetectedTokens: { control: 'func' },
   },
   args: {
-    setShowDetectedTokens: 'setShowDetectedTokensSpy',
+    setShowDetectedTokens: () => console.log('Test'),
   },
 };
 

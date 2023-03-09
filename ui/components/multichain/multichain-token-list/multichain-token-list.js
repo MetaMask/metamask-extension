@@ -46,7 +46,10 @@ export const MultichainTokenList = ({
         padding={4}
         as="a"
         href="#"
-        onClick={onClick}
+        onClick={(e) => {
+          e.preventDefault();
+          onClick();
+        }}
       >
         <AvatarWithBadge
           badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
