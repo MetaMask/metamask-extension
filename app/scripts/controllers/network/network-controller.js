@@ -519,7 +519,7 @@ export default class NetworkController extends EventEmitter {
    */
   upsertNetworkConfiguration(
     { rpcUrl, chainId, ticker, nickname, rpcPrefs },
-    { setActive = false, referrer, source } = {},
+    { setActive = false, referrer, source },
   ) {
     assert.ok(
       isPrefixedFormattedHexString(chainId),
@@ -532,7 +532,13 @@ export default class NetworkController extends EventEmitter {
 
     if (!rpcUrl) {
       throw new Error(
-        'An rpcUrl is required to add or update networkConfiguration',
+        'An rpcUrl is required to add or update network configuration',
+      );
+    }
+
+    if (!referrer || !source) {
+      throw new Error(
+        'referrer and source are required arguments for adding or updating a network configuration',
       );
     }
 
