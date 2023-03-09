@@ -11,7 +11,7 @@ import {
   AvatarAccountDiameter,
   AvatarAccountVariant,
   AvatarAccountSize,
-} from './avatar-account.constants';
+} from './avatar-account.types';
 
 export const AvatarAccount = ({
   size = AvatarAccountSize.Md,

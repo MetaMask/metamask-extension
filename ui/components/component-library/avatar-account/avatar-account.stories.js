@@ -5,7 +5,7 @@ import { AvatarAccount } from './avatar-account';
 import {
   AvatarAccountVariant,
   AvatarAccountSize,
-} from './avatar-account.constants';
+} from './avatar-account.types';
 
 import README from './README.mdx';
 

@@ -3,4 +3,4 @@ export {
   AvatarAccountSize,
   AvatarAccountVariant,
   AvatarAccountDiameter,
-} from './avatar-account.constants';
+} from './avatar-account.types';
