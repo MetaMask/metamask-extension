@@ -318,6 +318,10 @@
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
+  "allYourNFTsOf": {
+    "message": "All your NFTs of $1",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
@@ -384,6 +388,10 @@
   },
   "approveTokenDescription": {
     "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
+  },
+  "approveTokenDescriptionWithoutSymbol": {
+    "message": "This allows a third party to access and transfer all NFTs of $1 without further notice until you revoke its access.",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveTokenTitle": {
     "message": "Allow access to and transfer of your $1?",
@@ -3140,7 +3148,7 @@
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
   "revokeAllTokensTitleWithoutSymbol": {
-    "message": "Revoke permission to access and transfer all of your NFTs of $1?",
+    "message": "Revoke permission to access and transfer all your NFTs of $1?",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "revokeApproveForAllDescription": {
@@ -3148,7 +3156,7 @@
     "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeApproveForAllDescriptionWithoutSymbol": {
-    "message": "This revokes the permission for a third party to access and transfer all of your NFTs of $1 without further notice.",
+    "message": "This revokes the permission for a third party to access and transfer all your NFTs of $1 without further notice.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "revokeSpendingCap": {

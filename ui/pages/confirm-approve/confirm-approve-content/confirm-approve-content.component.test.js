@@ -361,10 +361,10 @@ describe('ConfirmApproveContent Component', () => {
       ' Allow access to and transfer of all your NFTs of this collection? ',
     );
     expect(
-      queryByText(
-        'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
-      ),
-    ).toBeInTheDocument();
+      getByTestId('confirm-approve-description').textContent,
+    ).toStrictEqual(
+      ' This allows a third party to access and transfer all NFTs of this collection without further notice until you revoke its access. ',
+    );
     expect(queryByText('Verify contract details')).toBeInTheDocument();
     expect(queryByText('View full transaction details')).toBeInTheDocument();
 
@@ -386,14 +386,14 @@ describe('ConfirmApproveContent Component', () => {
     const showViewTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission request')).not.toBeInTheDocument();
     expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All of your')).not.toBeInTheDocument();
+    expect(queryByText('All your NFTs of')).not.toBeInTheDocument();
     expect(queryByText('Granted to:')).not.toBeInTheDocument();
     expect(queryByText('Data')).not.toBeInTheDocument();
     fireEvent.click(showViewTxDetails);
     expect(getByText('Hide full transaction details')).toBeInTheDocument();
     expect(getByText('Permission request')).toBeInTheDocument();
     expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All of your')).toBeInTheDocument();
+    expect(getByText('All your NFTs of')).toBeInTheDocument();
     const tokenWithoutSymbol = container.querySelector(
       '.confirm-approve-content__approval-asset-title',
     );
@@ -486,12 +486,12 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Revoke permission to access and transfer all of your NFTs of this collection? ',
+      ' Revoke permission to access and transfer all your NFTs of this collection? ',
     );
     expect(
       getByTestId('confirm-approve-description').textContent,
     ).toStrictEqual(
-      ' This revokes the permission for a third party to access and transfer all of your NFTs of this collection without further notice. ',
+      ' This revokes the permission for a third party to access and transfer all your NFTs of this collection without further notice. ',
     );
     expect(queryByText('Verify contract details')).toBeInTheDocument();
     expect(queryByText('View full transaction details')).toBeInTheDocument();
@@ -514,14 +514,14 @@ describe('ConfirmApproveContent Component', () => {
     const showViewTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission request')).not.toBeInTheDocument();
     expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All of your')).not.toBeInTheDocument();
+    expect(queryByText('All your NFTs of')).not.toBeInTheDocument();
     expect(queryByText('Granted to:')).not.toBeInTheDocument();
     expect(queryByText('Data')).not.toBeInTheDocument();
     fireEvent.click(showViewTxDetails);
     expect(getByText('Hide full transaction details')).toBeInTheDocument();
     expect(getByText('Permission request')).toBeInTheDocument();
     expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All of your')).toBeInTheDocument();
+    expect(getByText('All your NFTs of')).toBeInTheDocument();
     const tokenWithoutSymbol = container.querySelector(
       '.confirm-approve-content__approval-asset-title',
     );
