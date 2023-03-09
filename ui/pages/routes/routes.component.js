@@ -322,7 +322,11 @@ export default class Routes extends Component {
   }
 
   onEditTransactionPage() {
-    return this.props.sendStage === SEND_STAGES.EDIT;
+    return (
+      this.props.sendStage === SEND_STAGES.EDIT ||
+      this.props.sendStage === SEND_STAGES.DRAFT ||
+      this.props.sendStage === SEND_STAGES.ADD_RECIPIENT
+    );
   }
 
   onSwapsPage() {
