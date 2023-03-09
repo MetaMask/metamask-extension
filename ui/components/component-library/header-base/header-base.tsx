@@ -1,5 +1,4 @@
 import React, { useRef, useLayoutEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
   BLOCK_SIZES,
@@ -8,7 +7,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 
-export const HeaderBase = ({
+import { HeaderBaseProps } from './header-base.types';
+
+export const HeaderBase: React.FC<HeaderBaseProps> = ({
   startAccessory,
   endAccessory,
   className,
@@ -18,9 +19,9 @@ export const HeaderBase = ({
   endAccessoryWrapperProps,
   ...props
 }) => {
-  const startAccessoryRef = useRef();
-  const endAccessoryRef = useRef();
-  const [accessoryMinWidth, setAccessoryMinWidth] = useState();
+  const startAccessoryRef = useRef<HTMLDivElement>(null);
+  const endAccessoryRef = useRef<HTMLDivElement>(null);
+  const [accessoryMinWidth, setAccessoryMinWidth] = useState<number>();
 
   useLayoutEffect(() => {
     function handleResize() {
@@ -109,39 +110,4 @@ export const HeaderBase = ({
       )}
     </Box>
   );
-};
-
-HeaderBase.propTypes = {
-  /**
-   * The children is the title area of the HeaderBase
-   */
-  children: PropTypes.node,
-  /**
-   * Additional props to pass to the `Box` component wrapped around the children
-   */
-  childrenWrapperProps: PropTypes.shape(Box.PropTypes),
-  /**
-   * The start(defualt left) content area of HeaderBase
-   */
-  startAccessory: PropTypes.node,
-  /**
-   * Additional props to pass to the `Box` component wrapped around the startAccessory
-   */
-  startAccessoryWrapperProps: PropTypes.shape(Box.PropTypes),
-  /**
-   * The end (defualt right) content area of HeaderBase
-   */
-  endAccessory: PropTypes.node,
-  /**
-   * Additional props to pass to the `Box` component wrapped around the endAccessory
-   */
-  endAccessoryWrapperProps: PropTypes.shape(Box.PropTypes),
-  /**
-   * An additional className to apply to the HeaderBase
-   */
-  className: PropTypes.string,
-  /**
-   * HeaderBase accepts all the props from Box
-   */
-  ...Box.propTypes,
 };

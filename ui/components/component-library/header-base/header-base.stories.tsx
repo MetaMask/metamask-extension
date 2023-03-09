@@ -1,4 +1,5 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box';
 import {
   ICON_NAMES,
@@ -72,11 +73,13 @@ export default {
       table: { category: 'box props' },
     },
   },
-};
+} as ComponentMeta<typeof HeaderBase>;
 
-export const DefaultStory = (args) => {
-  return <HeaderBase {...args} />;
-};
+const Template: ComponentStory<typeof HeaderBase> = (args) => (
+  <HeaderBase {...args} />
+);
+
+export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   children: (
