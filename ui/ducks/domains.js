@@ -161,9 +161,11 @@ export function initializeDomainSlice() {
 
 export function lookupEnsName(domainName) {
   return async (dispatch, getState) => {
+    console.log('***lookupEnsName1', {domainName})
     const trimmedDomainName = domainName.trim();
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
+      console.log('***lookupEnsName2', {domainName})
       await dispatch(initializeDomainSlice());
     }
     state = getState();
@@ -175,23 +177,38 @@ export function lookupEnsName(domainName) {
       ) &&
       !isHexString(trimmedDomainName)
     ) {
+      console.log('***lookupEnsName3', {domainName})
       await dispatch(ensNotSupported());
     } else {
+      console.log('***lookupEnsName4', {domainName})
       const chainId = getCurrentChainId(state);
       const logMessage = `ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`;
       log.info(logMessage);
       let address;
       let error;
+      let coinType;
       const emptyAddress = '0x0000000000000000000000000000000000000000';
+      console.log('***lookupEnsName5', {trimmedDomainName})
       const resolver = await web3Provider.getResolver(trimmedDomainName);
+      console.log('***lookupEnsName6', {resolver})
       if (resolver) {
-        const coinType = convertEVMChainIdToCoinType(parseInt(chainId, 10));
+        const chainIdInt = parseInt(chainId, 16);
+        if(chainIdInt === 1){
+          coinType = 60;
+        }else{
+          coinType = convertEVMChainIdToCoinType(chainIdInt);
+        }
+        console.log('***lookupEnsName7', {chainId, chainIdInt, coinType})
         const hexCoinType = BigNumber.from(coinType).toHexString();
+        console.log('***lookupEnsName8', {hexCoinType})
         const encodedCoinType = hexZeroPad(hexCoinType, 32);
+        console.log('***lookupEnsName9', {encodedCoinType})
         // 0xf1cb7e06 is address interface id
         // https://docs.ens.domains/contract-api-reference/publicresolver#get-blockchain-address
         const data = await resolver._fetchBytes('0xf1cb7e06', encodedCoinType);
+        console.log('***lookupEnsName10', {data})
         if ([emptyAddress, '0x', null].includes(data)) {
+          console.log('***lookupEnsName11')
           address = emptyAddress;
         }
         address = getAddress(data);
@@ -199,7 +216,7 @@ export function lookupEnsName(domainName) {
         address = emptyAddress;
       }
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-
+      console.log('***lookupEnsName12')
       await dispatch(
         domainLookup({
           address,
