@@ -198,7 +198,7 @@ class NetworkDropdown extends Component {
             >
               {nickname || rpcUrl}
             </span>
-            {!isCurrentRpcTarget && (
+            {isCurrentRpcTarget ? null : (
               <ButtonIcon
                 className="delete"
                 iconName={ICON_NAMES.CLOSE}
