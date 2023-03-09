@@ -1,6 +1,6 @@
 import { mmiActionsFactory } from './institution-background';
 
-describe('MMI Actions', () => {
+describe('Institution Actions', () => {
   describe('#mmiActionsFactory', () => {
     it('returns mmiActions object', async () => {
       const actionsMock = {
