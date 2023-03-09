@@ -83,7 +83,7 @@ export const HeaderBase = ({
       )}
       {children && (
         <Box
-          className="mm-header-base__title"
+          className="mm-header-base__children"
           width={BLOCK_SIZES.FULL}
           style={getTitleStyles}
           {...childrenWrapperProps}

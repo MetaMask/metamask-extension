@@ -102,6 +102,56 @@ DefaultStory.args = {
 
 DefaultStory.storyName = 'Default';
 
+export const Children = (args) => {
+  return (
+    <HeaderBase {...args}>
+      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+        Title is sentence case no period
+      </Text>
+    </HeaderBase>
+  );
+};
+
+export const StartAccessory = (args) => {
+  return (
+    <HeaderBase
+      marginBottom={4}
+      startAccessory={
+        <ButtonIcon
+          size={BUTTON_ICON_SIZES.SM}
+          iconName={ICON_NAMES.ARROW_LEFT}
+          ariaLabel="back"
+        />
+      }
+      {...args}
+    >
+      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+        Title is sentence case no period
+      </Text>
+    </HeaderBase>
+  );
+};
+
+export const EndAccessory = (args) => {
+  return (
+    <HeaderBase
+      marginBottom={4}
+      endAccessory={
+        <ButtonIcon
+          size={BUTTON_ICON_SIZES.SM}
+          iconName={ICON_NAMES.CLOSE}
+          ariaLabel="close"
+        />
+      }
+      {...args}
+    >
+      <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+        Title is sentence case no period
+      </Text>
+    </HeaderBase>
+  );
+};
+
 export const UseCaseDemos = (args) => (
   <>
     <Text>children only assigned </Text>
