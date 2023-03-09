@@ -8,11 +8,7 @@ const Vinyl = require('vinyl');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const log = require('fancy-log');
-const browserify = require('browserify');
 const watchify = require('watchify');
-const babelify = require('babelify');
-const brfs = require('brfs');
-const envify = require('loose-envify/custom');
 const sourcemaps = require('gulp-sourcemaps');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const pify = require('pify');
@@ -22,10 +18,10 @@ const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
-const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
 
-const bifyModuleGroups = require('bify-module-groups');
 
 const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
@@ -33,6 +29,7 @@ const { BuildType } = require('../lib/build-type');
 const { generateIconNames } = require('../generate-icon-names');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig, getProductionConfig } = require('./config');
+const generateWebpackConfig = require('../webpack/generateConfig');
 const {
   isDevBuild,
   isTestBuild,
@@ -47,9 +44,6 @@ const {
   composeSeries,
   runInChildProcess,
 } = require('./task');
-const {
-  createRemoveFencedCodeTransform,
-} = require('./transforms/remove-fenced-code');
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfig = {
@@ -253,7 +247,7 @@ function createScriptTasks({
   /**
    * Define tasks for building the JavaScript modules used by the extension.
    * This function returns a single task that builds JavaScript modules in
-   * parallel for a single type of build (e.g. dev, testing, production).
+   * series for a single type of build (e.g. dev, testing, production).
    *
    * @param {object} options - The build options.
    * @param {BUILD_TARGETS} options.buildTarget - The build target that these
@@ -334,7 +328,7 @@ function createScriptTasks({
       }),
     );
     // make a parent task that runs each task in a child thread
-    return composeParallel(initiateLiveReload, ...allSubtasks);
+    return composeSeries(initiateLiveReload, ...allSubtasks);
   }
 
   /**
