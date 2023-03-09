@@ -544,6 +544,7 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-remove-code-blocks": "^0.1.5",
+    "webpack-stream": "^7.0.0",
     "yargs": "^17.0.1"
   },
   "engines": {

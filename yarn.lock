@@ -23713,6 +23713,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.clone@npm:^4.3.2":
+  version: 4.5.0
+  resolution: "lodash.clone@npm:4.5.0"
+  checksum: 5839f22acf3a43c026ac4325f7bcd378f34967415cd0b9fd7efa9bbbf38dc665900d36e040944c5afab94a51ff8a24f6cfc3781fe439705cbad5c722e9506b16
+  languageName: node
+  linkType: hard
+
 "lodash.clonedeep@npm:^4.3.2":
   version: 4.5.0
   resolution: "lodash.clonedeep@npm:4.5.0"
@@ -23759,6 +23766,13 @@ __metadata:
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: ad580b4bdbb7ca1f7abf7e1bce63a9a0b98e370cf40194b03380a46b4ed799c9573029599caebc1b14e3f24b111aef72b96674a56cfa105e0f5ac70546cdc005
+  languageName: node
+  linkType: hard
+
+"lodash.some@npm:^4.2.2":
+  version: 4.6.0
+  resolution: "lodash.some@npm:4.6.0"
+  checksum: 4469e76a389446d1166a29f844fb21398c36060d00258ce799710e046c55ed3c1af150c31b4856504e252bc813ba3fdcb6f255c490d9846738dd363a44665322
   languageName: node
   linkType: hard
 
@@ -24857,6 +24871,7 @@ __metadata:
     webpack: ^5.75.0
     webpack-cli: ^5.0.1
     webpack-remove-code-blocks: ^0.1.5
+    webpack-stream: ^7.0.0
     yargs: ^17.0.1
     zxcvbn: ^4.4.2
   languageName: unknown
@@ -32799,7 +32814,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^8.0.0, supports-color@npm:^8.1.0":
+"supports-color@npm:^8.0.0, supports-color@npm:^8.1.0, supports-color@npm:^8.1.1":
   version: 8.1.1
   resolution: "supports-color@npm:8.1.1"
   dependencies:
@@ -33234,7 +33249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"through@npm:2, through@npm:>=2.2.7 <3, through@npm:^2.3.6, through@npm:~2.3, through@npm:~2.3.1":
+"through@npm:2, through@npm:>=2.2.7 <3, through@npm:^2.3.6, through@npm:^2.3.8, through@npm:~2.3, through@npm:~2.3.1":
   version: 2.3.8
   resolution: "through@npm:2.3.8"
   checksum: a38c3e059853c494af95d50c072b83f8b676a9ba2818dcc5b108ef252230735c54e0185437618596c790bbba8fcdaef5b290405981ffa09dce67b1f1bf190cbd
@@ -35317,6 +35332,24 @@ __metadata:
   version: 3.2.3
   resolution: "webpack-sources@npm:3.2.3"
   checksum: 989e401b9fe3536529e2a99dac8c1bdc50e3a0a2c8669cbafad31271eadd994bc9405f88a3039cd2e29db5e6d9d0926ceb7a1a4e7409ece021fe79c37d9c4607
+  languageName: node
+  linkType: hard
+
+"webpack-stream@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "webpack-stream@npm:7.0.0"
+  dependencies:
+    fancy-log: ^1.3.3
+    lodash.clone: ^4.3.2
+    lodash.some: ^4.2.2
+    memory-fs: ^0.5.0
+    plugin-error: ^1.0.1
+    supports-color: ^8.1.1
+    through: ^2.3.8
+    vinyl: ^2.2.1
+  peerDependencies:
+    webpack: ^5.21.2
+  checksum: e3069e0a4c9ee9ab7b0d68937be56471ffdc05bd5e0c696e672196da2d4454746a8da129ba773ab81760c079dfbb9fd9d10f64e6b7bc65548712a6be69dfd1e3
   languageName: node
   linkType: hard
 
