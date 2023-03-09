@@ -63,7 +63,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
 
   return (
     <Box
-      className={classnames('mm-header-base', className)}
+      className={classnames('mm-header-base', className || '')}
       display={DISPLAY.FLEX}
       justifyContent={JustifyContent.spaceBetween}
       {...props}
