@@ -292,7 +292,8 @@
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
-        "ganache>secp256k1>elliptic": true
+        "ganache>secp256k1>elliptic": true,
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/transactions": {
@@ -994,7 +995,7 @@
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-lattice-keyring>@ethereumjs/util": true,
-        "ethereumjs-wallet>randombytes": true
+        "ethereumjs-wallet>randombytes": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
@@ -1086,7 +1087,8 @@
         "eth-trezor-keyring>hdkey>secp256k1>bip66": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-wallet>safe-buffer": true,
-        "ganache>secp256k1>elliptic": true
+        "ganache>secp256k1>elliptic": true,
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -2197,6 +2199,7 @@
       },
       "packages": {
         "@metamask/controllers>@ethersproject/abi": true,
+        "@ethersproject/abi": true,
         "@unstoppabledomains/resolution>cross-fetch": true,
         "@unstoppabledomains/resolution>crypto-js": true,
         "@unstoppabledomains/resolution>elliptic": true,
@@ -2232,6 +2235,7 @@
         "@unstoppabledomains/resolution>elliptic>minimalistic-crypto-utils": true,
         "bn.js": true,
         "ethers>@ethersproject/sha2>hash.js": true,
+        "ethereumjs-util>ethereum-cryptography>hash.js": true,
         "pumpify>inherits": true
       }
     },
@@ -2248,7 +2252,8 @@
       "packages": {
         "@unstoppabledomains/resolution>elliptic>minimalistic-assert": true,
         "@unstoppabledomains/resolution>elliptic>minimalistic-crypto-utils": true,
-        "ethers>@ethersproject/sha2>hash.js": true
+        "ethers>@ethersproject/sha2>hash.js": true,
+        "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
     "@zxing/browser": {
@@ -2439,8 +2444,8 @@
     "browserify>crypto-browserify>diffie-hellman>miller-rabin": {
       "packages": {
         "bn.js": true,
-        "ganache>secp256k1>elliptic>brorand": true
-        "@unstoppabledomains/resolution>elliptic>brorand": true,
+        "ganache>secp256k1>elliptic>brorand": true,
+        "@unstoppabledomains/resolution>elliptic>brorand": true
       }
     },
     "browserify>crypto-browserify>pbkdf2": {
@@ -2991,7 +2996,8 @@
     },
     "eth-lattice-keyring>gridplus-sdk>secp256k1": {
       "packages": {
-        "ganache>secp256k1>elliptic": true
+        "ganache>secp256k1>elliptic": true,
+        "@unstoppabledomains/resolution>elliptic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>uuid": {
@@ -3170,7 +3176,7 @@
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "@unstoppabledomains/resolution>cross-fetch": true,
         "browserify>events": true,
-        "eth-trezor-keyring>trezor-connect>cross-fetch": true
+        "eth-trezor-keyring>trezor-connect>cross-fetch": true,
         "eth-trezor-keyring>@metamask/eth-sig-util": true
       }
     },
@@ -3295,6 +3301,7 @@
     "ethereumjs-util>ethereum-cryptography>hash.js": {
       "packages": {
         "ganache>secp256k1>elliptic>minimalistic-assert": true,
+        "@unstoppabledomains/resolution>elliptic>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -3326,7 +3333,7 @@
     },
     "ethereumjs-util>ethereum-cryptography>secp256k1": {
       "packages": {
-        "ganache>secp256k1>elliptic": true
+        "ganache>secp256k1>elliptic": true,
         "@unstoppabledomains/resolution>elliptic": true
       }
     },
@@ -4770,7 +4777,7 @@
         "ganache>secp256k1>elliptic>hmac-drbg": true,
         "ganache>secp256k1>elliptic>minimalistic-assert": true,
         "ganache>secp256k1>elliptic>minimalistic-crypto-utils": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
         "@unstoppabledomains/resolution>elliptic": true
       }
     },

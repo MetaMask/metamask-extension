@@ -172,6 +172,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       src: `./app/unsLoading.html`,
       dest: `unsLoading.html`,
     },
+    {
       src: getPathInsideNodeModules('globalthis', 'dist/browser.js'),
       dest: `globalthis.js`,
     },
