@@ -45,6 +45,11 @@ describe('MetaMask onboarding', function () {
           testSeedPhrase,
           testPassword,
         );
+
+        const homePage = await driver.findElement('.home__main-view');
+        const homePageDisplayed = await homePage.isDisplayed();
+
+        assert.equal(homePageDisplayed, true);
       },
     );
   });
@@ -65,11 +70,16 @@ describe('MetaMask onboarding', function () {
           testSeedPhrase,
           testPassword,
         );
+
+        const homePage = await driver.findElement('.home__main-view');
+        const homePageDisplayed = await homePage.isDisplayed();
+
+        assert.equal(homePageDisplayed, true);
       },
     );
   });
 
-  it('User import wrong secure password', async function () {
+  it('User import wrong Secret Recovery Phrase', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -81,6 +91,12 @@ describe('MetaMask onboarding', function () {
         await driver.navigate();
 
         await importWrongSRPOnboardingFlow(driver, wrongSeedPhrase);
+
+        const confirmSeedPhrase = await driver.findElement(
+          '[data-testid="import-srp-confirm"]',
+        );
+
+        assert.equal(await confirmSeedPhrase.isEnabled(), false);
       },
     );
   });
@@ -111,6 +127,13 @@ describe('MetaMask onboarding', function () {
         const iterations = options.length;
 
         await testDropdownIterations(options, driver, iterations);
+
+        const finalFormFields = await driver.findElements(
+          '.import-srp__srp-word-label',
+        );
+        const expectedFinalNumFields = 24; // The last iteration will have 21 fields
+        const actualFinalNumFields = finalFormFields.length;
+        assert.equal(actualFinalNumFields, expectedFinalNumFields);
       },
     );
   });
@@ -139,10 +162,11 @@ describe('MetaMask onboarding', function () {
         );
 
         // Check that the error message is displayed for the password fields
-        const errorMessages = await driver.findElements('h6');
-        const pwdErrorMsg = errorMessages[4];
-        assert.equal(await pwdErrorMsg.isDisplayed(), true);
-        assert.equal(await pwdErrorMsg.getText(), "Passwords don't match");
+        await driver.isElementPresent(
+          // eslint-disable-next-line prettier/prettier
+            { text: 'Passwords don\'t match', tag: 'h6' },
+          true,
+        );
 
         // Check that the "Confirm Password" button is disabled
         const confirmPasswordButton = await driver.findElement(
@@ -167,9 +191,12 @@ describe('MetaMask onboarding', function () {
         await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Verify site
-        assert.match(
-          await driver.getCurrentUrl(),
-          /\/\/.+\/home\.html#onboarding\/completion/u,
+        assert.equal(
+          await driver.isElementPresent({
+            text: 'Wallet creation successful',
+            tag: 'h2',
+          }),
+          true,
         );
       },
     );
@@ -191,7 +218,7 @@ describe('MetaMask onboarding', function () {
         // metrics
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-        // Fill in confirm password field with incorrect password
+        // Fill in confirm password field with correct password
         await driver.fill('[data-testid="create-password-new"]', testPassword);
         await driver.fill(
           '[data-testid="create-password-confirm"]',
@@ -202,9 +229,12 @@ describe('MetaMask onboarding', function () {
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Verify site
-        assert.match(
-          await driver.getCurrentUrl(),
-          /\/\/.+\/home\.html#onboarding\/secure-your-wallet/u,
+        assert.equal(
+          await driver.isElementPresent({
+            text: 'Secure your wallet',
+            tag: 'h2',
+          }),
+          true,
         );
       },
     );

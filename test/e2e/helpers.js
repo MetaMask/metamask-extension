@@ -361,12 +361,8 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   const warningText = 'Invalid Secret Recovery Phrase';
   const warnings = await driver.findElements('.actionable-message__message');
   const warning = warnings[1];
-  const confirmSeedPhrase = await driver.findElement(
-    '[data-testid="import-srp-confirm"]',
-  );
 
   assert.equal(await warning.getText(), warningText);
-  assert.equal(await confirmSeedPhrase.isEnabled(), false);
 };
 
 const selectDropdownByNum = async (elements, index) => {
