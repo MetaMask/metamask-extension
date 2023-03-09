@@ -565,6 +565,7 @@ function createFactoredBuild({
       ignoredFiles,
       minify,
       reloadOnChange,
+      version,
     });
     buildConfiguration.label = 'primary';
     const { bundlerOpts, events } = buildConfiguration;
@@ -782,6 +783,7 @@ function createNormalBundle({
       ignoredFiles,
       minify,
       reloadOnChange,
+      version,
     });
     buildConfiguration.label = label;
     const { bundlerOpts, events } = buildConfiguration;
@@ -1033,6 +1035,23 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     const bundleStream = webpackStream({
       ...bundlerOpts,
     }, webpack, onBundleComplete);
+    // manually apply non-standard options
+    /*
+    bundler.external(bundlerOpts.manualExternal);
+    bundler.ignore(bundlerOpts.manualIgnore);
+    if (Array.isArray(bundlerOpts.manualExclude)) {
+      bundler.exclude(bundlerOpts.manualExclude);
+    }
+    */
+
+    // output build logs to terminal
+    // TODO: webpack logging
+    // bundler.on('log', log);
+
+    // TODO: watch
+    // forward update event (used by watchify)
+    // bundler.on('update', () => performBundle());
+
     if (!reloadOnChange) {
       bundleStream.on('error', (error) => {
         console.error('Bundling failed! See details below.');
@@ -1051,15 +1070,6 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
 
     // call the completion event to handle any post-processing
     events.emit('bundleDone');
-
-
-    // output build logs to terminal
-    // TODO: webpack logging
-    // bundler.on('log', log);
-    // TODO: watch
-    // forward update event (used by watchify)
-    // bundler.on('update', () => performBundle());
-    // compiler.run(onBundleComplete);
   }
 }
 

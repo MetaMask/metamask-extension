@@ -6,10 +6,12 @@ const { EnvironmentPlugin, IgnorePlugin, ProgressPlugin } = require('webpack');
 const { createRemoveFencedCodeTransform } = require('../build/transforms/remove-fenced-code.js');
 
 module.exports = ({
+  // buildTarget,
   buildType,
   envVars,
   ignoredFiles,
-  shouldLintFenceFiles,
+  // shouldLintFenceFiles,
+  // version,
 }) => ({
   entry: {
     background: './app/scripts/background.js',
