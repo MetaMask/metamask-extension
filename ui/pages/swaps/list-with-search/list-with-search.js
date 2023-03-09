@@ -11,6 +11,7 @@ import {
   JustifyContent,
   AlignItems,
   TextVariant,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { TextFieldSearch, Text } from '../../../components/component-library';
 import ItemList from '../searchable-item-list/item-list';
@@ -96,6 +97,7 @@ export default function ListWithSearch({
       const results = newSearchQuery === '' ? itemsToSearch : filteredItems;
       if (shouldSearchForImports && results.length === 0 && validHexAddress) {
         await handleSearchTokenForImport(trimmedNewSearchQuery);
+        return;
       }
       setItems(results);
     }, 350);
@@ -111,7 +113,7 @@ export default function ListWithSearch({
   };
 
   return (
-    <Box className="list-with-search">
+    <Box className="list-with-search" width={BLOCK_SIZES.FULL}>
       <Box
         style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
         display={DISPLAY.FLEX}
