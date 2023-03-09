@@ -73,7 +73,7 @@ describe('Test Snap bip-44', function () {
         // deal with permissions popover
         await driver.delay(1000);
         await driver.clickElement('#key-access-bip44-1-0');
-        await driver.delay(1000);
+        await driver.delay(1500);
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
