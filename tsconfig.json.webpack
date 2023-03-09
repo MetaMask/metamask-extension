@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "inlineSources": false,
+    "isolatedModules": true,
+    "jsx": "react",
+    "lib": ["dom"],
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "rootDir": ".",
+    "sourceMap": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "target": "es2020",
+    "module": "node16"
+  },
+  "exclude": [
+    "**/*.test.js",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/jest-coverage/**/*",
+    "**/__mocks__/**/*",
+    "**/storybook-build/**/*",
+    ".storybook/**/*",
+    "builds/**/*",
+    "dist/**/*",
+    "node_modules/**",
+    "development/ts-migration-dashboard/build/**/*",
+    "development/ts-migration-dashboard/intermediate/**/*"
+  ],
+  "include": [
+    "shared/constants/*",
+    "development/webpack/utils/*"
+  ],
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "paths": {
+    "*": ["./types/*"]
+  }
+}
