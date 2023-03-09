@@ -128,7 +128,7 @@ describe('Test Snap bip-32', function () {
 
         // wait then run SECP256K1 test
         await driver.delay(1000);
-        await driver.fill('#bip32Message-secp256k1', 'foo bar');
+        await driver.pasteIntoField('#bip32Message-secp256k1', 'foo bar');
         await driver.clickElement('#sendBip32-secp256k1');
 
         // hit 'approve' on the custom confirm
@@ -163,7 +163,7 @@ describe('Test Snap bip-32', function () {
 
         // wait then run ed25519 test
         await driver.delay(1000);
-        await driver.fill('#bip32Message-ed25519', 'foo bar');
+        await driver.pasteIntoField('#bip32Message-ed25519', 'foo bar');
         await driver.clickElement('#sendBip32-ed25519');
 
         // hit 'approve' on the custom confirm
