@@ -10,6 +10,7 @@ import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlist
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
+import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
   HardwareKeyringTypes,
@@ -85,8 +86,28 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
+const MOCK_TOKEN_BALANCE = '888';
+
+function MockEthContract() {
+  return () => {
+    return {
+      at: () => {
+        return {
+          balanceOf: () => MOCK_TOKEN_BALANCE,
+        };
+      },
+    };
+  };
+}
+
+// TODO, Feb 24, 2023:
+// ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
+// this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
+// us set up the test infrastructure for a mocked provider. Github ticket for that is:
+// https://github.com/MetaMask/metamask-extension/issues/17890
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
+  'ethjs-contract': MockEthContract,
 }).default;
 
 const currentNetworkId = '5';
@@ -1270,6 +1291,323 @@ describe('MetaMaskController', function () {
       assert.ok(
         !Object.values(state).includes(NOTIFICATION_ID),
         'Object should not include the deleted notification',
+      );
+    });
+  });
+
+  describe('getTokenStandardAndDetails', function () {
+    it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        decimals: 18,
+        symbol: 'DAI',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+
+      assert.ok(
+        tokenDetails.standard === 'ERC20',
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === '3000000000000000000',
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from tokens if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        decimals: 18,
+        symbol: 'DAI',
+      };
+
+      metamaskController.tokensController.update({
+        tokens: [
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            ...tokenData,
+          },
+        ],
+      });
+
+      metamaskController.provider = provider;
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+
+      assert.ok(
+        tokenDetails.standard === 'ERC20',
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === '3000000000000000000',
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from contract-metadata if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      metamaskController.provider = provider;
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+
+      assert.ok(
+        tokenDetails.standard === 'ERC20',
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === '18',
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === 'DAI',
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === '3000000000000000000',
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from the blockchain, via the assetsContractController, if not available through other sources', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        standard: 'ERC20',
+        decimals: 18,
+        symbol: 'DAI',
+        balance: '333',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+
+      sandbox
+        .stub(
+          metamaskController.assetsContractController,
+          'getTokenStandardAndDetails',
+        )
+        .callsFake(() => {
+          return tokenData;
+        });
+
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0xNotInTokenList',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === tokenData.balance,
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC721', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        standard: 'ERC721',
+        decimals: 18,
+        symbol: 'DAI',
+        balance: '333',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+
+      sandbox
+        .stub(
+          metamaskController.assetsContractController,
+          'getTokenStandardAndDetails',
+        )
+        .callsFake(() => {
+          return tokenData;
+        });
+
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0xAAA75474e89094c44da98b954eedeac495271d0f',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === tokenData.balance,
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC1155', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        standard: 'ERC1155',
+        decimals: 18,
+        symbol: 'DAI',
+        balance: '333',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+
+      sandbox
+        .stub(
+          metamaskController.assetsContractController,
+          'getTokenStandardAndDetails',
+        )
+        .callsFake(() => {
+          return tokenData;
+        });
+
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0xAAA75474e89094c44da98b954eedeac495271d0f',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === tokenData.balance,
+        'tokenDetails should include a balance',
       );
     });
   });

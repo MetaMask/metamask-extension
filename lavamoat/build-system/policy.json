@@ -2891,7 +2891,7 @@
         "console": true
       },
       "packages": {
-        "eslint>ajv>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true

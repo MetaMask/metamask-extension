@@ -2713,7 +2713,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "$1 alanına bağlanın.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "İnternete erişim sağla.",
@@ -2721,7 +2721,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 snap'e bağlan.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Periyodik eylemleri planla ve gerçekleştir.",
