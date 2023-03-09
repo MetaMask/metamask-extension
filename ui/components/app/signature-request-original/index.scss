@@ -19,8 +19,6 @@
       box-shadow: none;
     }
 
-    @include screen-sm-min;
-
     &__reject {
       padding-bottom: 20px;
     }
