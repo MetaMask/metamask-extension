@@ -22,7 +22,7 @@ export const DetectedTokensBanner = ({
     ({ address, symbol }) => `${symbol} - ${address}`,
   );
 
-  const onClick = () => {
+  const handleOnClick = () => {
     setShowDetectedTokens(true);
     trackEvent({
       event: EVENT_NAMES.TOKEN_IMPORT_CLICKED,
@@ -37,7 +37,7 @@ export const DetectedTokensBanner = ({
     <BannerAlert
       className={classNames('multichain-detected-token-banner', className)}
       actionButtonLabel={t('importTokensCamelCase')}
-      actionButtonOnClick={onClick}
+      actionButtonOnClick={handleOnClick}
       {...props}
     >
       {detectedTokens.length === 1
