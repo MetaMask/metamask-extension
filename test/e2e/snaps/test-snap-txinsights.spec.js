@@ -48,10 +48,13 @@ describe('Test Snap TxInsights', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
 
         // delay for npm installation
         await driver.delay(2000);

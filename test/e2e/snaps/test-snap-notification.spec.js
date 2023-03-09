@@ -50,10 +50,13 @@ describe('Test Snap Notification', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
         await driver.delay(2000);
 
         // approve install of snap
@@ -67,13 +70,16 @@ describe('Test Snap Notification', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectNotification',
+          text: 'Reconnect to Notification Snap',
+        });
+
         await driver.clickElement('#sendInAppNotification');
 
         // switch back to the extension page

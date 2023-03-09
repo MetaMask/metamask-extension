@@ -47,10 +47,13 @@ describe('Test Snap Installed', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
 
         await driver.delay(2000);
 
@@ -65,12 +68,15 @@ describe('Test Snap Installed', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectDialogSnap',
+          text: 'Reconnect to Dialog Snap',
+        });
 
         const errorButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(errorButton);
@@ -83,10 +89,13 @@ describe('Test Snap Installed', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          {
+            text: 'Connect',
+            tag: 'button',
+          },
+          10000,
+        );
 
         await driver.delay(2000);
 
@@ -101,11 +110,14 @@ describe('Test Snap Installed', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectErrorSnap',
+          text: 'Reconnect to Error Snap',
+        });
 
         const result = await driver.findElement('#installedSnapsResult');
         await driver.scrollToElement(result);
