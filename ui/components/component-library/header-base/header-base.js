@@ -1,13 +1,12 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useLayoutEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
-  // AlignItems,
+  BLOCK_SIZES,
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
-import { Text } from '../text';
 
 export const HeaderBase = ({
   startAccessory,
@@ -23,30 +22,19 @@ export const HeaderBase = ({
   const endAccessoryRef = useRef();
   const [accessoryMinWidth, setAccessoryMinWidth] = useState();
 
-  function getLargerSize(item1, item2) {
-    const size1 = item1.scrollWidth;
-    const size2 = item2.scrollWidth;
-    const largerSize = size1 > size2 ? size1 : size2;
-    return largerSize;
-  }
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     function handleResize() {
       if (startAccessoryRef.current && endAccessoryRef.current) {
-        // Both startAccessoryRef and endAccessoryRef exist, so will find the larger of the two
-        const accMinWidth = getLargerSize(
-          startAccessoryRef.current,
-          endAccessoryRef.current,
+        const accMinWidth = Math.max(
+          startAccessoryRef.current.scrollWidth,
+          endAccessoryRef.current.scrollWidth,
         );
         setAccessoryMinWidth(accMinWidth);
       } else if (startAccessoryRef.current && !endAccessoryRef.current) {
-        // Only startAccessoryRef exists
         setAccessoryMinWidth(startAccessoryRef.current.scrollWidth);
       } else if (!startAccessoryRef.current && endAccessoryRef.current) {
-        // Only endAccessoryRef exists
         setAccessoryMinWidth(endAccessoryRef.current.scrollWidth);
       } else {
-        // Neither startAccessoryRef nor endAccessoryRef exist
         setAccessoryMinWidth(0);
       }
     }
@@ -57,32 +45,20 @@ export const HeaderBase = ({
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [startAccessoryRef, endAccessoryRef]);
+  }, [startAccessoryRef, endAccessoryRef, children]);
 
-  function getTitleStyles() {
-    if (startAccessory && endAccessory) {
+  const getTitleStyles = useMemo(() => {
+    if (startAccessory && !endAccessory) {
       return {
-        width: '100%',
-        backgroundColor: 'gold',
-      };
-    } else if (startAccessory && !endAccessory) {
-      return {
-        width: '100%',
         marginRight: `${accessoryMinWidth}px`,
-        backgroundColor: 'green',
       };
     } else if (!startAccessory && endAccessory) {
       return {
-        width: '100%',
         marginLeft: `${accessoryMinWidth}px`,
-        backgroundColor: 'red',
       };
     }
-    return {
-      width: '100%',
-      backgroundColor: 'pink',
-    };
-  }
+    return {};
+  }, [accessoryMinWidth, startAccessory, endAccessory]);
 
   return (
     <Box
@@ -98,7 +74,6 @@ export const HeaderBase = ({
           style={
             children && {
               minWidth: `${accessoryMinWidth}px`,
-              backgroundColor: 'lightblue',
             }
           }
           {...startAccessoryWrapperProps}
@@ -109,9 +84,8 @@ export const HeaderBase = ({
       {children && (
         <Box
           className="mm-header-base__title"
-          style={getTitleStyles()}
-          display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.center}
+          width={BLOCK_SIZES.FULL}
+          style={getTitleStyles}
           {...childrenWrapperProps}
         >
           {children}
@@ -125,9 +99,7 @@ export const HeaderBase = ({
           ref={endAccessoryRef}
           style={
             children && {
-              width: 'fit-content',
               minWidth: `${accessoryMinWidth}px`,
-              background: 'blue',
             }
           }
           {...endAccessoryWrapperProps}
