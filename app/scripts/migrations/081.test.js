@@ -1,110 +1,162 @@
-import { migrate } from './081';
+import { migrate, version as newVersion } from './081';
 
 describe('migration #81', () => {
-  it('updates the version metadata', async () => {
-    const originalVersionedData = {
-      meta: {
-        version: 80,
-      },
-      data: {},
-    };
-
-    const newVersionedData = await migrate(originalVersionedData);
-
-    expect(newVersionedData.meta).toStrictEqual({
-      version: 81,
-    });
-  });
-
-  it('does not change the state if the network controller state does not exist', async () => {
-    const originalVersionedData = {
+  it('should consolidate snap permissions as caveats under the wallet_snap permission', async () => {
+    const oldStorage = {
       meta: {
         version: 80,
       },
       data: {
-        test: '123',
+        SnapController: {},
+        PermissionController: {
+          subjects: {
+            'example.com': {
+              permissions: {
+                'wallet_snap_npm:foobar': {
+                  caveats: null,
+                  date: 2,
+                  id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
+                  invoker: 'example.com',
+                  parentCapability: 'wallet_snap_npm:foobar',
+                },
+                'wallet_snap_npm:baz': {
+                  caveats: null,
+                  date: 3,
+                  id: 'x342A44-beae-4525-a36c-c0635fd03359',
+                  invoker: 'example.com',
+                  parentCapability: 'wallet_snap_npm:baz',
+                },
+              },
+            },
+            'aave.com': {
+              permissions: {
+                'wallet_snap_npm:filsnap': {
+                  caveats: null,
+                  date: 10,
+                  id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
+                  invoker: 'aave.com',
+                  parentCapability: 'wallet_snap_npm:foobar',
+                },
+                'wallet_snap_npm:btcsnap': {
+                  caveats: null,
+                  date: 3,
+                  id: 'x342A44-beae-4525-a36c-c0635fd03359',
+                  invoker: 'aave.com',
+                  parentCapability: 'wallet_snap_npm:btcsnap',
+                },
+              },
+            },
+          },
+        },
       },
     };
 
-    const newVersionedData = await migrate(originalVersionedData);
+    const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
+    expect(newStorage).toStrictEqual({
+      meta: { version: newVersion },
+      data: {
+        SnapController: {},
+        PermissionController: {
+          subjects: {
+            'example.com': {
+              permissions: {
+                wallet_snap: {
+                  caveats: [
+                    {
+                      type: 'snapIds',
+                      value: {
+                        'npm:foobar': {},
+                        'npm:baz': {},
+                      },
+                    },
+                  ],
+                  date: 3,
+                  id: 'x342A44-beae-4525-a36c-c0635fd03359',
+                  invoker: 'example.com',
+                  parentCapability: 'wallet_snap',
+                },
+              },
+            },
+            'aave.com': {
+              permissions: {
+                wallet_snap: {
+                  caveats: [
+                    {
+                      type: 'snapIds',
+                      value: {
+                        'npm:btcsnap': {},
+                        'npm:filsnap': {},
+                      },
+                    },
+                  ],
+                  date: 10,
+                  id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
+                  invoker: 'aave.com',
+                  parentCapability: 'wallet_snap',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
   });
 
-  const nonObjects = [undefined, null, 'test', 1, ['test']];
-  for (const invalidState of nonObjects) {
-    it(`does not change the state if the network controller state is ${invalidState}`, async () => {
-      const originalVersionedData = {
-        meta: {
-          version: 80,
-        },
-        data: {
-          NetworkController: invalidState,
-        },
-      };
-
-      const newVersionedData = await migrate(originalVersionedData);
-
-      expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
-    });
-  }
-
-  it('does not change the state if the network controller state does not include "network"', async () => {
-    const originalVersionedData = {
+  it('should leave state unchanged if there are no snap permissions', async () => {
+    const oldStorage = {
       meta: {
         version: 80,
       },
       data: {
-        NetworkController: {
-          test: '123',
+        SnapController: {},
+        PermissionController: {
+          subjects: {
+            'example.com': {
+              permissions: {
+                eth_accounts: {
+                  date: 2,
+                  id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
+                  invoker: 'example.com',
+                  parentCapability: 'eth_accounts',
+                },
+              },
+            },
+          },
         },
       },
     };
 
-    const newVersionedData = await migrate(originalVersionedData);
+    const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('replaces "network" in the network controller state with "networkStatus": "unknown" if it is "loading"', async () => {
-    const originalVersionedData = {
+  it('should leave state unchanged if there is no SnapController installed (i.e. not a flask build)', async () => {
+    const oldStorage = {
       meta: {
         version: 80,
       },
       data: {
-        NetworkController: {
-          network: 'loading',
+        PermissionController: {
+          subjects: {
+            'example.com': {
+              permissions: {
+                eth_accounts: {
+                  date: 2,
+                  id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
+                  invoker: 'example.com',
+                  parentCapability: 'eth_accounts',
+                },
+              },
+            },
+          },
         },
       },
     };
 
-    const newVersionedData = await migrate(originalVersionedData);
+    const newStorage = await migrate(oldStorage);
 
-    expect(newVersionedData.data).toStrictEqual({
-      NetworkController: {
-        networkStatus: 'unknown',
-      },
-    });
-  });
-
-  it('replaces "network" in the network controller state with "networkStatus": "available" if it is not "loading"', async () => {
-    const originalVersionedData = {
-      meta: {
-        version: 80,
-      },
-      data: {
-        NetworkController: {
-          network: '12345',
-        },
-      },
-    };
-
-    const newVersionedData = await migrate(originalVersionedData);
-
-    expect(newVersionedData.data).toStrictEqual({
-      NetworkController: {
-        networkStatus: 'available',
-      },
-    });
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 });

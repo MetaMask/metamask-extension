@@ -10,6 +10,7 @@ import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlist
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
+import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
   HardwareKeyringTypes,
@@ -17,35 +18,6 @@ import {
 import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
-
-const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
-
-const firstTimeState = {
-  config: {},
-  NetworkController: {
-    provider: {
-      type: NETWORK_TYPES.RPC,
-      rpcUrl: 'http://localhost:8545',
-      chainId: '0x539',
-    },
-    networkDetails: {
-      EIPS: {
-        1559: false,
-      },
-    },
-  },
-  NotificationController: {
-    notifications: {
-      [NOTIFICATION_ID]: {
-        id: NOTIFICATION_ID,
-        origin: 'local:http://localhost:8086/',
-        createdDate: 1652967897732,
-        readDate: null,
-        message: 'Hello, http://localhost:8086!',
-      },
-    },
-  },
-};
 
 const ganacheServer = new Ganache();
 
@@ -85,8 +57,28 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
+const MOCK_TOKEN_BALANCE = '888';
+
+function MockEthContract() {
+  return () => {
+    return {
+      at: () => {
+        return {
+          balanceOf: () => MOCK_TOKEN_BALANCE,
+        };
+      },
+    };
+  };
+}
+
+// TODO, Feb 24, 2023:
+// ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
+// this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
+// us set up the test infrastructure for a mocked provider. Github ticket for that is:
+// https://github.com/MetaMask/metamask-extension/issues/17890
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
+  'ethjs-contract': MockEthContract,
 }).default;
 
 const currentNetworkId = '5';
@@ -99,8 +91,78 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-const CUSTOM_RPC_URL = 'http://localhost:8545';
-const CUSTOM_RPC_CHAIN_ID = '0x539';
+
+const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
+
+const ALT_MAINNET_RPC_URL = 'http://localhost:8545';
+const POLYGON_RPC_URL = 'https://polygon.llamarpc.com';
+const POLYGON_RPC_URL_2 = 'https://polygon-rpc.com';
+
+const NETWORK_CONFIGURATION_ID_1 = 'networkConfigurationId1';
+const NETWORK_CONFIGURATION_ID_2 = 'networkConfigurationId2';
+const NETWORK_CONFIGURATION_ID_3 = 'networkConfigurationId3';
+
+const ETH = 'ETH';
+const MATIC = 'MATIC';
+
+const POLYGON_CHAIN_ID = '0x89';
+const MAINNET_CHAIN_ID = '0x1';
+
+const firstTimeState = {
+  config: {},
+  NetworkController: {
+    provider: {
+      type: NETWORK_TYPES.RPC,
+      rpcUrl: ALT_MAINNET_RPC_URL,
+      chainId: MAINNET_CHAIN_ID,
+      ticker: ETH,
+      nickname: 'Alt Mainnet',
+      id: NETWORK_CONFIGURATION_ID_1,
+    },
+    networkConfigurations: {
+      [NETWORK_CONFIGURATION_ID_1]: {
+        rpcUrl: ALT_MAINNET_RPC_URL,
+        type: NETWORK_TYPES.RPC,
+        chainId: MAINNET_CHAIN_ID,
+        ticker: ETH,
+        nickname: 'Alt Mainnet',
+        id: NETWORK_CONFIGURATION_ID_1,
+      },
+      [NETWORK_CONFIGURATION_ID_2]: {
+        rpcUrl: POLYGON_RPC_URL,
+        type: NETWORK_TYPES.RPC,
+        chainId: POLYGON_CHAIN_ID,
+        ticker: MATIC,
+        nickname: 'Polygon',
+        id: NETWORK_CONFIGURATION_ID_2,
+      },
+      [NETWORK_CONFIGURATION_ID_3]: {
+        rpcUrl: POLYGON_RPC_URL_2,
+        type: NETWORK_TYPES.RPC,
+        chainId: POLYGON_CHAIN_ID,
+        ticker: MATIC,
+        nickname: 'Alt Polygon',
+        id: NETWORK_CONFIGURATION_ID_1,
+      },
+    },
+    networkDetails: {
+      EIPS: {
+        1559: false,
+      },
+    },
+  },
+  NotificationController: {
+    notifications: {
+      [NOTIFICATION_ID]: {
+        id: NOTIFICATION_ID,
+        origin: 'local:http://localhost:8086/',
+        createdDate: 1652967897732,
+        readDate: null,
+        message: 'Hello, http://localhost:8086!',
+      },
+    },
+  },
+};
 
 describe('MetaMaskController', function () {
   let metamaskController;
@@ -679,26 +741,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#setCustomRpc', function () {
-    it('returns custom RPC that when called', async function () {
-      const rpcUrl = await metamaskController.setCustomRpc(
-        CUSTOM_RPC_URL,
-        CUSTOM_RPC_CHAIN_ID,
-      );
-      assert.equal(rpcUrl, CUSTOM_RPC_URL);
-    });
-
-    it('changes the network controller rpc', async function () {
-      await metamaskController.setCustomRpc(
-        CUSTOM_RPC_URL,
-        CUSTOM_RPC_CHAIN_ID,
-      );
-      const networkControllerState =
-        metamaskController.networkController.store.getState();
-      assert.equal(networkControllerState.provider.rpcUrl, CUSTOM_RPC_URL);
-    });
-  });
-
   describe('#addNewAccount', function () {
     it('errors when an primary keyring is does not exist', async function () {
       const addNewAccount = metamaskController.addNewAccount();
@@ -1271,6 +1313,415 @@ describe('MetaMaskController', function () {
         !Object.values(state).includes(NOTIFICATION_ID),
         'Object should not include the deleted notification',
       );
+    });
+  });
+
+  describe('getTokenStandardAndDetails', function () {
+    it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        decimals: 18,
+        symbol: 'DAI',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+
+      assert.ok(
+        tokenDetails.standard === 'ERC20',
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === '3000000000000000000',
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from tokens if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        decimals: 18,
+        symbol: 'DAI',
+      };
+
+      metamaskController.tokensController.update({
+        tokens: [
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            ...tokenData,
+          },
+        ],
+      });
+
+      metamaskController.provider = provider;
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+
+      assert.ok(
+        tokenDetails.standard === 'ERC20',
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === '3000000000000000000',
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from contract-metadata if available, and with a balance retrieved by fetchTokenBalance', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      metamaskController.provider = provider;
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+
+      assert.ok(
+        tokenDetails.standard === 'ERC20',
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === '18',
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === 'DAI',
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === '3000000000000000000',
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from the blockchain, via the assetsContractController, if not available through other sources', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        standard: 'ERC20',
+        decimals: 18,
+        symbol: 'DAI',
+        balance: '333',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+
+      sandbox
+        .stub(
+          metamaskController.assetsContractController,
+          'getTokenStandardAndDetails',
+        )
+        .callsFake(() => {
+          return tokenData;
+        });
+
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0xNotInTokenList',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === tokenData.balance,
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC721', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        standard: 'ERC721',
+        decimals: 18,
+        symbol: 'DAI',
+        balance: '333',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+
+      sandbox
+        .stub(
+          metamaskController.assetsContractController,
+          'getTokenStandardAndDetails',
+        )
+        .callsFake(() => {
+          return tokenData;
+        });
+
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0xAAA75474e89094c44da98b954eedeac495271d0f',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === tokenData.balance,
+        'tokenDetails should include a balance',
+      );
+    });
+
+    it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC1155', async function () {
+      const providerResultStub = {
+        eth_getCode: '0x123',
+        eth_call:
+          '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+      };
+      const { provider } = createTestProviderTools({
+        scaffold: providerResultStub,
+        networkId: '5',
+        chainId: '5',
+      });
+
+      const tokenData = {
+        standard: 'ERC1155',
+        decimals: 18,
+        symbol: 'DAI',
+        balance: '333',
+      };
+
+      metamaskController.tokenListController.update(() => {
+        return {
+          tokenList: {
+            '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+          },
+        };
+      });
+
+      metamaskController.provider = provider;
+
+      sandbox
+        .stub(
+          metamaskController.assetsContractController,
+          'getTokenStandardAndDetails',
+        )
+        .callsFake(() => {
+          return tokenData;
+        });
+
+      const tokenDetails = await metamaskController.getTokenStandardAndDetails(
+        '0xAAA75474e89094c44da98b954eedeac495271d0f',
+        '0xf0d172594caedee459b89ad44c94098e474571b6',
+      );
+      assert.ok(
+        tokenDetails.standard === tokenData.standard.toUpperCase(),
+        'tokenDetails should include token standard in upper case',
+      );
+      assert.ok(
+        tokenDetails.decimals === String(tokenData.decimals),
+        'tokenDetails should include token decimals as a string',
+      );
+      assert.ok(
+        tokenDetails.symbol === tokenData.symbol,
+        'tokenDetails should include token symbol',
+      );
+      assert.ok(
+        tokenDetails.balance === tokenData.balance,
+        'tokenDetails should include a balance',
+      );
+    });
+
+    describe('findNetworkConfigurationBy', function () {
+      it('returns null if passed an object containing a valid networkConfiguration key but no matching value is found', function () {
+        assert.strictEqual(
+          metamaskController.findNetworkConfigurationBy({
+            chainId: '0xnone',
+          }),
+          null,
+        );
+      });
+      it('returns null if passed an object containing an invalid networkConfiguration key', function () {
+        assert.strictEqual(
+          metamaskController.findNetworkConfigurationBy({
+            invalidKey: '0xnone',
+          }),
+          null,
+        );
+      });
+
+      it('returns matching networkConfiguration when passed a chainId that matches an existing configuration', function () {
+        assert.deepStrictEqual(
+          metamaskController.findNetworkConfigurationBy({
+            chainId: MAINNET_CHAIN_ID,
+          }),
+          {
+            chainId: MAINNET_CHAIN_ID,
+            nickname: 'Alt Mainnet',
+            id: NETWORK_CONFIGURATION_ID_1,
+            rpcUrl: ALT_MAINNET_RPC_URL,
+            ticker: ETH,
+            type: NETWORK_TYPES.RPC,
+          },
+        );
+      });
+
+      it('returns matching networkConfiguration when passed a ticker that matches an existing configuration', function () {
+        assert.deepStrictEqual(
+          metamaskController.findNetworkConfigurationBy({
+            ticker: MATIC,
+          }),
+          {
+            rpcUrl: POLYGON_RPC_URL,
+            type: NETWORK_TYPES.RPC,
+            chainId: POLYGON_CHAIN_ID,
+            ticker: MATIC,
+            nickname: 'Polygon',
+            id: NETWORK_CONFIGURATION_ID_2,
+          },
+        );
+      });
+
+      it('returns matching networkConfiguration when passed a nickname that matches an existing configuration', function () {
+        assert.deepStrictEqual(
+          metamaskController.findNetworkConfigurationBy({
+            nickname: 'Alt Mainnet',
+          }),
+          {
+            chainId: MAINNET_CHAIN_ID,
+            nickname: 'Alt Mainnet',
+            id: NETWORK_CONFIGURATION_ID_1,
+            rpcUrl: ALT_MAINNET_RPC_URL,
+            ticker: ETH,
+            type: NETWORK_TYPES.RPC,
+          },
+        );
+      });
+
+      it('returns null if passed an object containing mismatched networkConfiguration key/value combination', function () {
+        assert.deepStrictEqual(
+          metamaskController.findNetworkConfigurationBy({
+            nickname: MAINNET_CHAIN_ID,
+          }),
+          null,
+        );
+      });
+
+      it('returns the first networkConfiguration added if passed an key/value combination for which there are multiple matching configurations', function () {
+        assert.deepStrictEqual(
+          metamaskController.findNetworkConfigurationBy({
+            chainId: POLYGON_CHAIN_ID,
+          }),
+          {
+            rpcUrl: POLYGON_RPC_URL,
+            type: NETWORK_TYPES.RPC,
+            chainId: POLYGON_CHAIN_ID,
+            ticker: MATIC,
+            nickname: 'Polygon',
+            id: NETWORK_CONFIGURATION_ID_2,
+          },
+        );
+      });
     });
   });
 });
