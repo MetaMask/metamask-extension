@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -15,13 +15,9 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { Text, Icon, ICON_NAMES } from '../../../components/component-library';
-import {
-  PREPARE_SWAP_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import SwapsFooter from '../swaps-footer';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { prepareToLeaveSwaps } from '../../../ducks/swaps/swaps';
 
 export default function NotificationPage({ notificationKey }) {
   const t = useContext(I18nContext);
@@ -37,16 +33,6 @@ export default function NotificationPage({ notificationKey }) {
     description = t('swapAreYouStillThereDescription');
     buttonText = t('swapShowLatestQuotes');
   }
-
-  useEffect(() => {
-    const redirectToHomePage = async () => {
-      await dispatch(prepareToLeaveSwaps());
-      history.push(DEFAULT_ROUTE);
-    };
-    if (!title) {
-      redirectToHomePage();
-    }
-  }, [title, dispatch, history]);
 
   return (
     <div className="notification-page">

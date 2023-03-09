@@ -554,6 +554,9 @@ export default function Swap() {
               path={SWAPS_NOTIFICATION_ROUTE}
               exact
               render={() => {
+                if (!swapsErrorKey) {
+                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
+                }
                 return <NotificationPage notificationKey={swapsErrorKey} />;
               }}
             />
