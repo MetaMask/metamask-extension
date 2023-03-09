@@ -11,7 +11,7 @@ import {
   TemporaryMessageDataType,
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { TransactionStatus } from 'shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
