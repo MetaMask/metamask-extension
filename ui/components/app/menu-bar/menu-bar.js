@@ -2,6 +2,9 @@ import React, { useState, useContext, useRef } from 'react';
 import browser from 'webextension-polyfill';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { getCustodianIconForAddress } from '@codefi/mmi-sdk';
+///: END:ONLY_INCLUDE_IN
 import SelectedAccount from '../selected-account';
 import ConnectedStatusIndicator from '../connected-status-indicator';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -9,7 +12,12 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { CONNECTED_ACCOUNTS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getOriginOfCurrentTab } from '../../../selectors';
+import {
+  getOriginOfCurrentTab,
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  getSelectedAddress,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ButtonIcon, ICON_NAMES } from '../../component-library';
 import AccountOptionsMenu from './account-options-menu';
@@ -20,6 +28,12 @@ export default function MenuBar() {
   const history = useHistory();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const origin = useSelector(getOriginOfCurrentTab);
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  const selectedAddress = useSelector(getSelectedAddress);
+  const custodianIcon = useSelector((state) =>
+    getCustodianIconForAddress(state, selectedAddress),
+  );
+  ///: END:ONLY_INCLUDE_IN
   const ref = useRef(false);
 
   const showStatus =
@@ -34,6 +48,20 @@ export default function MenuBar() {
           onClick={() => history.push(CONNECTED_ACCOUNTS_ROUTE)}
         />
       ) : null}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        custodianIcon && (
+          <div className="menu-bar__custody-logo">
+            <img
+              src={custodianIcon}
+              className="menu-bar__custody-logo--icon"
+              alt=""
+            />
+          </div>
+        )
+
+        ///: END:ONLY_INCLUDE_IN
+      }
       <SelectedAccount />
       <span style={{ display: 'inherit' }} ref={ref}>
         <ButtonIcon
