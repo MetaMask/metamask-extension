@@ -29,7 +29,6 @@ import {
   FEATURED_RPCS,
 } from '../../../../../shared/constants/network';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -532,7 +531,6 @@ const NetworksForm = ({
             {
               setActive: true,
               source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
-              referrer: ORIGIN_METAMASK,
             },
           ),
         );
