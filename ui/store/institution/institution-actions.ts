@@ -11,7 +11,6 @@ import {
   TemporaryMessageDataType,
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -81,7 +80,7 @@ export function updateCustodyState(
       return (
         tx.custodyId === state.appState.modal.modalState.props?.custodyId &&
         (state.metamask.custodyStatusMaps[custody][tx.custodyStatus]
-          ?.mmStatus !== TransactionStatus.approved ||
+          ?.mmStatus !== 'approved' ||
           tx.custodyStatus === 'created')
       );
     }),
