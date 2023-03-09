@@ -263,6 +263,9 @@
   "addToken": {
     "message": "Add token"
   },
+  "addingCustomNetwork": {
+    "message": "Adding Network"
+  },
   "address": {
     "message": "Address"
   },
@@ -514,6 +517,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "bridge": {
+    "message": "Bridge"
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
@@ -1305,6 +1311,9 @@
     "message": "Stack:",
     "description": "Title for error stack, which is displayed for debugging purposes"
   },
+  "errorWhileConnectingToRPC": {
+    "message": "Error while connecting to the custom network."
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -1640,8 +1649,23 @@
   "importAccountError": {
     "message": "Error importing account."
   },
+  "importAccountErrorIsSRP": {
+    "message": "You have entered a Secret Recovery Phrase (or mnemonic). To import an account here, you have to enter a private key, which is a hexadecimal string of length 64."
+  },
+  "importAccountErrorNotAValidPrivateKey": {
+    "message": "This is not a valid private key. You have entered a hexadecimal string, but it must be 64 characters long."
+  },
+  "importAccountErrorNotHexadecimal": {
+    "message": "This is not a valid private key. You must enter a hexadecimal string of length 64."
+  },
+  "importAccountJsonLoading1": {
+    "message": "Expect this JSON import to take a few minutes and freeze MetaMask."
+  },
+  "importAccountJsonLoading2": {
+    "message": "We apologize, and we will make it faster in the future."
+  },
   "importAccountMsg": {
-    "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
+    "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importMyWallet": {
     "message": "Import my wallet"
@@ -2014,6 +2038,9 @@
   },
   "mismatchedNetworkSymbol": {
     "message": "The submitted currency symbol does not match what we expect for this chain ID."
+  },
+  "mismatchedRpcChainId": {
+    "message": "Chain ID returned by the custom network does not match the submitted chain ID."
   },
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
@@ -2713,7 +2740,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Connect to $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Access the internet.",
@@ -2721,7 +2748,7 @@
   },
   "permission_accessSnap": {
     "message": "Connect to the $1 snap.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Schedule and execute periodic actions.",

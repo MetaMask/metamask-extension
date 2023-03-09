@@ -68,6 +68,7 @@ import {
   AssetType,
   TransactionStatus,
   TransactionType,
+  TokenStandard,
 } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -104,7 +105,10 @@ import {
 } from '../../shared/constants/app';
 import { EVENT, EVENT_NAMES } from '../../shared/constants/metametrics';
 
-import { getTokenIdParam } from '../../shared/lib/token-util';
+import {
+  getTokenIdParam,
+  fetchTokenBalance,
+} from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
@@ -113,6 +117,8 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { isMain, isFlask } from '../../shared/constants/environment';
+// eslint-disable-next-line import/order
+import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
@@ -174,16 +180,6 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
-
-/* eslint-disable import/first */
-/* eslint-disable import/order */
-
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-///: END:ONLY_INCLUDE_IN
-
-/* eslint-enable import/first */
-/* eslint-enable import/order */
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -758,7 +754,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.12.0',
+        'https://metamask.github.io/iframe-execution-environment/0.13.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -786,6 +782,8 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:revokeAllPermissions`,
         `${this.permissionController.name}:revokePermissions`,
         `${this.permissionController.name}:revokePermissionForAllSubjects`,
+        `${this.permissionController.name}:getSubjectNames`,
+        `${this.permissionController.name}:updateCaveat`,
         `${this.approvalController.name}:addRequest`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
@@ -868,6 +866,10 @@ export default class MetamaskController extends EventEmitter {
       state: initState.CronjobController,
       messenger: cronjobControllerMessenger,
     });
+
+    this.desktopController = new DesktopController({
+      initState: initState.DesktopController,
+    });
     ///: END:ONLY_INCLUDE_IN
 
     this.detectTokensController = new DetectTokensController({
@@ -948,10 +950,7 @@ export default class MetamaskController extends EventEmitter {
         this.getExternalPendingTransactions.bind(this),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
-      getTokenStandardAndDetails:
-        this.assetsContractController.getTokenStandardAndDetails.bind(
-          this.assetsContractController,
-        ),
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
@@ -1121,12 +1120,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    this.desktopController = new DesktopController({
-      initState: initState.DesktopController,
-    });
-    ///: END:ONLY_INCLUDE_IN
-
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.accountTracker._updateAccounts();
@@ -1233,8 +1226,6 @@ export default class MetamaskController extends EventEmitter {
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
       NotificationController: this.notificationController,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
@@ -1268,8 +1259,6 @@ export default class MetamaskController extends EventEmitter {
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
-        ///: END:ONLY_INCLUDE_IN
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
@@ -2038,6 +2027,22 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      // Desktop
+      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
+        this.desktopController,
+      ),
+      generateDesktopOtp: this.desktopController.generateOtp.bind(
+        this.desktopController,
+      ),
+      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
+        this.desktopController,
+      ),
+      disableDesktop: this.desktopController.disableDesktop.bind(
+        this.desktopController,
+      ),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -2178,24 +2183,6 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
-
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-      getDesktopEnabled: this.desktopController.getDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      setDesktopEnabled: this.desktopController.setDesktopEnabled.bind(
-        this.desktopController,
-      ),
-      generateOtp: this.desktopController.generateOtp.bind(
-        this.desktopController,
-      ),
-      testDesktopConnection: this.desktopController.testDesktopConnection.bind(
-        this.desktopController,
-      ),
-      disableDesktop: this.desktopController.disableDesktop.bind(
-        this.desktopController,
-      ),
-      ///: END:ONLY_INCLUDE_IN
     };
   }
 
@@ -2205,12 +2192,72 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getTokenStandardAndDetails(address, userAddress, tokenId) {
-    const details =
-      await this.assetsContractController.getTokenStandardAndDetails(
+    const { tokenList } = this.tokenListController.state;
+    const { tokens } = this.tokensController.state;
+
+    const staticTokenListDetails =
+      STATIC_MAINNET_TOKEN_LIST[address.toLowerCase()] || {};
+    const tokenListDetails = tokenList[address.toLowerCase()] || {};
+    const userDefinedTokenDetails =
+      tokens.find(({ address: _address }) =>
+        isEqualCaseInsensitive(_address, address),
+      ) || {};
+
+    const tokenDetails = {
+      ...staticTokenListDetails,
+      ...tokenListDetails,
+      ...userDefinedTokenDetails,
+    };
+    const tokenDetailsStandardIsERC20 =
+      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      tokenDetails.erc20 === true;
+    const noEvidenceThatTokenIsAnNFT =
+      !tokenId &&
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !tokenDetails.erc721;
+
+    const otherDetailsAreERC20Like =
+      tokenDetails.decimals !== undefined && tokenDetails.symbol;
+
+    const tokenCanBeTreatedAsAnERC20 =
+      tokenDetailsStandardIsERC20 ||
+      (noEvidenceThatTokenIsAnNFT && otherDetailsAreERC20Like);
+
+    let details;
+    if (tokenCanBeTreatedAsAnERC20) {
+      try {
+        const balance = await fetchTokenBalance(
+          address,
+          userAddress,
+          this.provider,
+        );
+
+        details = {
+          address,
+          balance,
+          standard: TokenStandard.ERC20,
+          decimals: tokenDetails.decimals,
+          symbol: tokenDetails.symbol,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
+        log.warning(`Failed to get token balance. Error: ${e}`);
+      }
+    }
+
+    // `details`` will be undefined if `tokenCanBeTreatedAsAnERC20`` is false,
+    // or if it is true but the `fetchTokenBalance`` call failed. In either case, we should
+    // attempt to retrieve details from `assetsContractController.getTokenStandardAndDetails`
+    if (details === undefined) {
+      details = await this.assetsContractController.getTokenStandardAndDetails(
         address,
         userAddress,
         tokenId,
       );
+    }
+
     return {
       ...details,
       decimals: details?.decimals?.toString(10),
@@ -4035,11 +4082,6 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
-
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-        testDesktopConnection: this.desktopController.testDesktopConnection,
-        generateOtp: this.desktopController.generateOtp,
-        ///: END:ONLY_INCLUDE_IN
       }),
     );
 
@@ -4633,6 +4675,24 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  updateCaveat = (origin, target, caveatType, caveatValue) => {
+    try {
+      this.controllerMessenger.call(
+        'PermissionController:updateCaveat',
+        origin,
+        target,
+        caveatType,
+        caveatValue,
+      );
+    } catch (exp) {
+      if (!(exp instanceof PermissionsRequestNotFoundError)) {
+        throw exp;
+      }
+    }
+  };
+  ///: END:ONLY_INCLUDE_IN
 
   rejectPermissionsRequest = (requestId) => {
     try {

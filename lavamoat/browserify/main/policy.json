@@ -1298,12 +1298,27 @@
     "@metamask/permission-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>isomorphic-fetch": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1347,7 +1362,8 @@
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "@metamask/utils>superstruct": true
       }
     },
     "@metamask/rpc-methods>@metamask/browser-passworder": {

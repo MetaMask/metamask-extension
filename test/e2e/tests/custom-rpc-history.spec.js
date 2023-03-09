@@ -290,6 +290,11 @@ describe('Stores custom RPC history', function () {
           networkListItems[networkListItems.length - 1];
         await lastNetworkListItem.click();
 
+        await driver.waitForSelector({
+          css: '.form-field .form-field__input:nth-of-type(1)',
+          value: 'http://127.0.0.1:8545/2',
+        });
+
         await driver.clickElement('.btn-danger');
 
         // wait for confirm delete modal to be visible
