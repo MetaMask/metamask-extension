@@ -119,7 +119,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of your TestDappCollectibles (#1)?',
+          'Allow access to and transfer your TestDappCollectibles (#1)?',
         );
         assert.equal(await func.getText(), 'Function: Approve');
 
@@ -188,7 +188,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of all your TestDappCollectibles?',
+          'Allow access to and transfer all your TestDappCollectibles?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: true');
@@ -263,7 +263,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         assert.equal(
           await title.getText(),
-          'Revoke permission to access and transfer all of your TestDappCollectibles?',
+          'Revoke permission to access and transfer all your TestDappCollectibles?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: false');

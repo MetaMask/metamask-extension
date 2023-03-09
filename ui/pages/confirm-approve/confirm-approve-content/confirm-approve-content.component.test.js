@@ -49,7 +49,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
@@ -112,7 +112,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
@@ -174,7 +174,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
@@ -232,7 +232,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
@@ -295,7 +295,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of all your ZenAcademy? ',
+      ' Allow access to and transfer all your ZenAcademy? ',
     );
     expect(
       queryByText(
@@ -323,14 +323,14 @@ describe('ConfirmApproveContent Component', () => {
     const showViewTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission request')).not.toBeInTheDocument();
     expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All of your')).not.toBeInTheDocument();
+    expect(queryByText('All your')).not.toBeInTheDocument();
     expect(queryByText('Granted to:')).not.toBeInTheDocument();
     expect(queryByText('Data')).not.toBeInTheDocument();
     fireEvent.click(showViewTxDetails);
     expect(getByText('Hide full transaction details')).toBeInTheDocument();
     expect(getByText('Permission request')).toBeInTheDocument();
     expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All of your')).toBeInTheDocument();
+    expect(getByText('All your')).toBeInTheDocument();
     const tokenWithSymbol = container.querySelector(
       '.confirm-approve-content__approval-asset-title',
     );
@@ -358,7 +358,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer of all your NFTs of this collection? ',
+      ' Allow access to and transfer all your NFTs of this collection? ',
     );
     expect(
       getByTestId('confirm-approve-description').textContent,
@@ -422,12 +422,12 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Revoke permission to access and transfer all of your ZenAcademy? ',
+      ' Revoke permission to access and transfer all your ZenAcademy? ',
     );
     expect(
       getByTestId('confirm-approve-description').textContent,
     ).toStrictEqual(
-      ' This revokes the permission for a third party to access and transfer all of your ZenAcademy without further notice. ',
+      ' This revokes the permission for a third party to access and transfer all your ZenAcademy without further notice. ',
     );
     expect(queryByText('Verify contract details')).toBeInTheDocument();
     expect(queryByText('View full transaction details')).toBeInTheDocument();
@@ -450,14 +450,14 @@ describe('ConfirmApproveContent Component', () => {
     const showViewTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission request')).not.toBeInTheDocument();
     expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All of your')).not.toBeInTheDocument();
+    expect(queryByText('All your')).not.toBeInTheDocument();
     expect(queryByText('Granted to:')).not.toBeInTheDocument();
     expect(queryByText('Data')).not.toBeInTheDocument();
     fireEvent.click(showViewTxDetails);
     expect(getByText('Hide full transaction details')).toBeInTheDocument();
     expect(getByText('Permission request')).toBeInTheDocument();
     expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All of your')).toBeInTheDocument();
+    expect(getByText('All your')).toBeInTheDocument();
     const tokenWithSymbol = container.querySelector(
       '.confirm-approve-content__approval-asset-title',
     );
