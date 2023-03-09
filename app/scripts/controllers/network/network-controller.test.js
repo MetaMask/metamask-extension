@@ -109,13 +109,13 @@ const INFURA_NETWORKS = [
     networkVersion: '5',
     ticker: 'GoerliETH',
   },
-  // {
-  // networkName: 'Sepolia',
-  // networkType: 'sepolia',
-  // chainId: '0xaa36a7',
-  // networkVersion: '11155111',
-  // ticker: 'SepoliaETH',
-  // },
+  {
+    networkName: 'Sepolia',
+    networkType: 'sepolia',
+    chainId: '0xaa36a7',
+    networkVersion: '11155111',
+    ticker: 'SepoliaETH',
+  },
 ];
 
 /**
@@ -2298,7 +2298,6 @@ describe('NetworkController', () => {
                     await waitForStateChanges({
                       controller,
                       propertyPath: ['networkDetails'],
-                      count: 2,
                       operation: () => {
                         controller.setProviderType('goerli');
                       },
@@ -2314,9 +2313,6 @@ describe('NetworkController', () => {
               });
               network2.mockEssentialRpcCalls({
                 latestBlock: PRE_1559_BLOCK,
-                eth_blockNumber: {
-                  times: 1,
-                },
               });
               await withoutCallingLookupNetwork({
                 controller,
@@ -2328,6 +2324,9 @@ describe('NetworkController', () => {
               await waitForStateChanges({
                 controller,
                 propertyPath: ['networkDetails'],
+                // setProviderType clears networkDetails first, and then updates
+                // it to what we expect it to be
+                count: 2,
                 operation: async () => {
                   await controller.lookupNetwork();
                 },
@@ -2903,6 +2902,8 @@ describe('NetworkController', () => {
           await waitForStateChanges({
             controller,
             propertyPath: ['networkDetails'],
+            // setActiveNetwork clears networkDetails first, and then updates it
+            // to what we expect it to be
             count: 2,
             operation: () => {
               controller.setActiveNetwork('testNetworkConfigurationId');
@@ -3330,6 +3331,8 @@ describe('NetworkController', () => {
               await waitForStateChanges({
                 controller,
                 propertyPath: ['networkDetails'],
+                // setProviderType clears networkDetails first, and then updates
+                // it to what we expect it to be
                 count: 2,
                 operation: () => {
                   controller.setProviderType(networkType);
