@@ -11,6 +11,9 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import CustodyIcon from '../../ui/mmi/icon/custody-icon.component';
+///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { TransactionType } from '../../../../shared/constants/transaction';
@@ -52,10 +55,18 @@ export default class TransactionListItemDetails extends PureComponent {
     isCustomNetwork: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    getCustodianTransactionDeepLink: PropTypes.func,
+    selectedIdentity: PropTypes.object,
+    transactionNote: PropTypes.string,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
     justCopied: false,
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    custodyTransactionDeepLink: null,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   handleBlockExplorerClick = () => {
@@ -123,8 +134,26 @@ export default class TransactionListItemDetails extends PureComponent {
     });
   };
 
-  componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress } = this.props;
+  async componentDidMount() {
+    const {
+      recipientAddress,
+      tryReverseResolveAddress,
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      getCustodianTransactionDeepLink,
+      selectedIdentity,
+      transactionGroup,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (selectedIdentity && transactionGroup?.primaryTransaction?.custodyId) {
+      const custodyTransactionDeepLink = await getCustodianTransactionDeepLink(
+        selectedIdentity.address,
+        transactionGroup.primaryTransaction.custodyId,
+      );
+      this.setState({ custodyTransactionDeepLink });
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
@@ -133,7 +162,12 @@ export default class TransactionListItemDetails extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { justCopied } = this.state;
+    const {
+      justCopied,
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      custodyTransactionDeepLink,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.state;
     const {
       transactionGroup,
       primaryCurrency,
@@ -152,6 +186,9 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      transactionNote,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -229,6 +266,28 @@ export default class TransactionListItemDetails extends PureComponent {
                   </Button>
                 </Tooltip>
               </div>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+                custodyTransactionDeepLink && custodyTransactionDeepLink.url && (
+                  <div>
+                    <Tooltip
+                      wrapperClassName="transaction-list-item-details__header-button"
+                      containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                      title={t('viewinCustodianApp')}
+                    >
+                      <Button
+                        type="raised"
+                        onClick={() => {
+                          window.open(custodyTransactionDeepLink.url);
+                        }}
+                      >
+                        <CustodyIcon color="#3098DC" width={10} height={10} />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                )
+                ///: END:ONLY_INCLUDE_IN
+              }
             </div>
           </div>
           <div className="transaction-list-item-details__body">
@@ -281,6 +340,20 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+                transactionNote && transactionNote.length !== 0 && (
+                  <div className="transaction-list-item-details__transaction-breakdown">
+                    <h4 className="transaction-breakdown__title">
+                      {t('transactionNote')}
+                    </h4>
+                    <p className="transaction-breakdown__description">
+                      {transactionNote}
+                    </p>
+                  </div>
+                )
+                ///: END:ONLY_INCLUDE_IN
+              }
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (
                 <Disclosure title={t('activityLog')} size="small">

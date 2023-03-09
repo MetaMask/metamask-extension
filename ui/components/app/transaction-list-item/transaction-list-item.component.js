@@ -13,6 +13,9 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import CustodyIcon from '../../ui/mmi/icon/custody-icon.component';
+///: END:ONLY_INCLUDE_IN
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
   TransactionGroupCategory,
@@ -125,6 +128,9 @@ function TransactionListItemInner({
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
   const isSwap = category === TransactionGroupCategory.swap;
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  const isCustodian = Boolean(transactionGroup.primaryTransaction.custodyId);
+  ///: END:ONLY_INCLUDE_IN
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
@@ -144,10 +150,29 @@ function TransactionListItemInner({
     setShowDetails((prev) => !prev);
   }, [isUnapproved, history, id]);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  const debugTransactionMeta = {
+    'data-hash': transactionGroup.primaryTransaction.hash,
+    ...(isCustodian
+      ? {
+          'data-custodiantransactionid':
+            transactionGroup.primaryTransaction.custodyId,
+        }
+      : {}),
+  };
+  ///: END:ONLY_INCLUDE_IN
+
   const speedUpButton = useMemo(() => {
     if (!shouldShowSpeedUp || !isPending || isUnapproved) {
       return null;
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (isCustodian) {
+      return null;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return (
       <Button
         type="primary"
@@ -165,9 +190,31 @@ function TransactionListItemInner({
     hasCancelled,
     retryTransaction,
     cancelTransaction,
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    isCustodian,
+    ///: END:ONLY_INCLUDE_IN
   ]);
 
-  const showCancelButton = !hasCancelled && isPending && !isUnapproved;
+  let showCancelButton = !hasCancelled && isPending && !isUnapproved;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  showCancelButton = showCancelButton && !isCustodian;
+  const PENDING_COLOR = '#6A737D';
+  const OK_COLOR = '#2F80ED';
+  const FAIL_COLOR = '#D73A49';
+  const getTransactionColor = (tsStatus) => {
+    switch (tsStatus) {
+      case TransactionStatus.SIGNED:
+        return PENDING_COLOR;
+      case TransactionStatus.REJECTED:
+      case TransactionStatus.FAILED:
+      case TransactionStatus.DROPPED:
+        return FAIL_COLOR;
+      default:
+        return OK_COLOR;
+    }
+  };
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <>
@@ -176,7 +223,26 @@ function TransactionListItemInner({
         className={className}
         title={title}
         icon={
-          <TransactionIcon category={category} status={displayedStatusKey} />
+          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          isCustodian ? (
+            <div style={{ position: 'relative' }}>
+              <TransactionIcon
+                category={category}
+                status={displayedStatusKey}
+              />
+              <CustodyIcon
+                className="transaction-list-item__icon-badge"
+                color={getTransactionColor(status)}
+                width={12}
+                height={12}
+              />
+            </div>
+          ) : (
+            ///: END:ONLY_INCLUDE_IN
+            <TransactionIcon category={category} status={displayedStatusKey} />
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          )
+          ///: END:ONLY_INCLUDE_IN
         }
         subtitle={
           <h3>
@@ -186,6 +252,12 @@ function TransactionListItemInner({
               error={err}
               date={date}
               status={displayedStatusKey}
+              ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+              custodyStatusDisplayText={
+                transactionGroup.primaryTransaction.custodyStatusDisplayText
+              }
+              ///: END:ONLY_INCLUDE_IN
             />
             {subtitleContainsOrigin ? (
               <SiteOrigin siteOrigin={subtitle} />
@@ -222,6 +294,11 @@ function TransactionListItemInner({
             />
           )}
         </div>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+          <a {...debugTransactionMeta} className="test-transaction-meta" />
+          ///: END:ONLY_INCLUDE_IN
+        }
       </ListItem>
       {showDetails && (
         <TransactionListItemDetails
@@ -232,11 +309,28 @@ function TransactionListItemInner({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
-          showRetry={status === TransactionStatus.failed && !isSwap}
-          showSpeedUp={shouldShowSpeedUp}
+          showRetry={
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            !isCustodian &&
+            ///: END:ONLY_INCLUDE_IN
+            status === TransactionStatus.failed &&
+            !isSwap
+          }
+          showSpeedUp={
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            !isCustodian &&
+            ///: END:ONLY_INCLUDE_IN
+            shouldShowSpeedUp
+          }
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
-          showCancel={isPending && !hasCancelled}
+          showCancel={
+            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            !isCustodian &&
+            ///: END:ONLY_INCLUDE_IN
+            isPending &&
+            !hasCancelled
+          }
           transactionStatus={() => (
             <TransactionStatusLabel
               isPending={isPending}
