@@ -697,19 +697,14 @@ export default class MetaMetricsController {
       ),
       [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
-      [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
-        (rpc) => rpc.chainId,
-      ),
-      [TRAITS.NETWORKS_WITHOUT_TICKER]:
-        metamaskState.frequentRpcListDetail.reduce(
-          (networkList, currentNetwork) => {
-            if (!currentNetwork.ticker) {
-              networkList.push(currentNetwork.chainId);
-            }
-            return networkList;
-          },
-          [],
-        ),
+      [TRAITS.NETWORKS_ADDED]: Object.values(
+        metamaskState.networkConfigurations,
+      ).map((networkConfiguration) => networkConfiguration.chainId),
+      [TRAITS.NETWORKS_WITHOUT_TICKER]: Object.values(
+        metamaskState.networkConfigurations,
+      )
+        .filter(({ ticker }) => !ticker)
+        .map(({ chainId }) => chainId),
       [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
       [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
         .length,
