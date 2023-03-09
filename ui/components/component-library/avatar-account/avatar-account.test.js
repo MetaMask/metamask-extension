@@ -13,6 +13,10 @@ describe('AvatarAccount', () => {
       />,
     );
     expect(getByTestId('avatar-account')).toBeDefined();
+    expect(container.querySelector('svg')).toBeDefined();
+    expect(
+      container.getElementsByClassName('mm-avatar-account__jazzicon'),
+    ).toBeDefined();
     expect(container).toMatchSnapshot();
   });
 
@@ -27,12 +31,12 @@ describe('AvatarAccount', () => {
     expect(container.querySelector('svg')).toBeDefined();
   });
 
-  it('should render Blockie correctly', () => {
+  it('should render Blockies correctly', () => {
     const { container } = render(
       <AvatarAccount
         data-testid="avatar-account"
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-        variant={AvatarAccountVariant.Blockie}
+        variant={AvatarAccountVariant.Blockies}
       />,
     );
     expect(container.querySelector('canvas')).toBeDefined();
@@ -43,18 +47,17 @@ describe('AvatarAccount', () => {
     const { getByTestId } = render(
       <AvatarAccount
         className="mm-avatar-account--test"
-        data-testid="classname"
+        data-testid="test"
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
       />,
     );
-    expect(getByTestId('classname')).toHaveClass('mm-avatar-account--test');
+    expect(getByTestId('test')).toHaveClass('mm-avatar-account--test');
   });
 
   it('should render with address', () => {
     const container = (
       <AvatarAccount
         className="mm-avatar-account--test"
-        data-testid="classname"
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
       />
     );

@@ -33,7 +33,6 @@ export const AvatarAccount = ({
       />
     ) : (
       <BlockieIdenticon
-        className={classnames('mm-avatar-account__blockie')}
         address={address}
         diameter={AvatarAccountDiameter[size]}
         borderRadius="50%"
