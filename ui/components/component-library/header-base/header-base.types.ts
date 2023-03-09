@@ -1,5 +1,5 @@
 import React from 'react';
-import BoxProps from '../../ui/box';
+import { BoxProps } from '../../ui/box';
 
 export interface HeaderBaseProps extends BoxProps {
   /**
