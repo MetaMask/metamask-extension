@@ -38,9 +38,9 @@ exports[`Signature Request Component render should match snapshot when we are us
           class="confirm-page-container-navigation__navtext"
         >
           0
-
+           
           of
-
+           
           1
         </div>
         <div
@@ -165,7 +165,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
             966.987986
-
+             
             ABC
           </h6>
         </div>
@@ -251,7 +251,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             >
               Contents
               :
-
+               
             </span>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -267,7 +267,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             >
               From
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -280,7 +280,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                 >
                   Name
                   :
-
+                   
                 </span>
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -296,7 +296,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                 >
                   Wallets
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -309,7 +309,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                     >
                       0
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -385,7 +385,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                     >
                       1
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -465,7 +465,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             >
               To
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -478,7 +478,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                 >
                   0
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -491,7 +491,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                     >
                       Name
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -507,7 +507,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                     >
                       Wallets
                       :
-
+                       
                     </span>
                     <div
                       class="box signature-request-data__node box--flex-direction-row"
@@ -520,7 +520,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                         >
                           0
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -596,7 +596,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                         >
                           1
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -672,7 +672,7 @@ exports[`Signature Request Component render should match snapshot when we are us
                         >
                           2
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -813,9 +813,9 @@ exports[`Signature Request Component render should match snapshot when we want t
           class="confirm-page-container-navigation__navtext"
         >
           0
-
+           
           of
-
+           
           1
         </div>
         <div
@@ -940,7 +940,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
           >
             1515270.174798
-
+             
             DEF
           </h6>
         </div>
@@ -1026,7 +1026,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             >
               Contents
               :
-
+               
             </span>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1042,7 +1042,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             >
               From
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -1055,7 +1055,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                 >
                   Name
                   :
-
+                   
                 </span>
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1071,7 +1071,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                 >
                   Wallets
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -1084,7 +1084,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                     >
                       0
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1144,7 +1144,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xCD2...D826
                           </div>
@@ -1160,7 +1160,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                     >
                       1
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1220,7 +1220,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xDea...beeF
                           </div>
@@ -1240,7 +1240,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             >
               To
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -1253,7 +1253,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                 >
                   0
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -1266,7 +1266,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                     >
                       Name
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1282,7 +1282,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                     >
                       Wallets
                       :
-
+                       
                     </span>
                     <div
                       class="box signature-request-data__node box--flex-direction-row"
@@ -1295,7 +1295,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                         >
                           0
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1355,7 +1355,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xbBb...BBbB
                               </div>
@@ -1371,7 +1371,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                         >
                           1
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1431,7 +1431,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...Ea57
                               </div>
@@ -1447,7 +1447,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                         >
                           2
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -1507,7 +1507,7 @@ exports[`Signature Request Component render should match snapshot when we want t
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...0000
                               </div>
