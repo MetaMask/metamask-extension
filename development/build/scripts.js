@@ -547,11 +547,6 @@ function createFactoredBuild({
   version,
 }) {
   return async function () {
-    // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
-    buildConfiguration.label = 'primary';
-    const { bundlerOpts, events } = buildConfiguration;
-
     // devMode options
     const reloadOnChange = isDevBuild(buildTarget);
     const minify = !isDevBuild(buildTarget);
@@ -561,19 +556,21 @@ function createFactoredBuild({
       buildType,
       version,
     });
-    setupBundlerDefaults(buildConfiguration, {
+    // create bundler setup and apply defaults
+    const buildConfiguration = createWebpackBuildConfiguration({
+      browserPlatforms,
       buildTarget,
       buildType,
       envVars,
       ignoredFiles,
-      policyOnly,
       minify,
       reloadOnChange,
-      shouldLintFenceFiles,
     });
+    buildConfiguration.label = 'primary';
+    const { bundlerOpts, events } = buildConfiguration;
 
     // set bundle entries
-    bundlerOpts.entries = [...entryFiles];
+    bundlerOpts.entry = [...entryFiles];
 
     // setup lavamoat
     // lavamoat will add lavapack but it will be removed by bify-module-groups
@@ -590,32 +587,20 @@ function createFactoredBuild({
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     };
-    Object.assign(bundlerOpts, lavamoatBrowserify.args);
-    bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
+    // Object.assign(bundlerOpts, lavamoatBrowserify.args);
+    // bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
 
+    // TODO
     // setup bundle factoring with bify-module-groups plugin
     // note: this will remove lavapack, but its ok bc we manually readd it later
-    Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
-    bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
+    // Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
+    // bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
 
     // instrument pipeline
     let sizeGroupMap;
     events.on('configurePipeline', ({ pipeline }) => {
       // to be populated by the group-by-size transform
       sizeGroupMap = new Map();
-      pipeline.get('groups').unshift(
-        // factor modules
-        bifyModuleGroups.groupByFactor({
-          entryFileToLabel(filepath) {
-            return path.parse(filepath).name;
-          },
-        }),
-        // cap files at 2 mb
-        bifyModuleGroups.groupBySize({
-          sizeLimit: 2e6,
-          groupingMap: sizeGroupMap,
-        }),
-      );
       // converts each module group into a single vinyl file containing its bundle
       const moduleGroupPackerStream = streamFlatMap((moduleGroup) => {
         const filename = `${moduleGroup.label}.js`;
@@ -775,16 +760,6 @@ function createNormalBundle({
   applyLavaMoat,
 }) {
   return async function () {
-    // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
-    buildConfiguration.label = label;
-    const { bundlerOpts, events } = buildConfiguration;
-
-    // devMode options
-    const devMode = isDevBuild(buildTarget);
-    const reloadOnChange = Boolean(devMode);
-    const minify = Boolean(devMode) === false;
-
     const envVars = {
       ...(getEnvironmentVariables({
         buildTarget,
@@ -793,6 +768,24 @@ function createNormalBundle({
       })),
       ...extraEnvironmentVariables,
     };
+
+    // devMode options
+    const devMode = isDevBuild(buildTarget);
+    const reloadOnChange = Boolean(devMode);
+    const minify = Boolean(devMode) === false;
+
+    // create bundler setup and apply defaults
+    const buildConfiguration = createWebpackBuildConfiguration({
+      buildTarget,
+      buildType,
+      envVars,
+      ignoredFiles,
+      minify,
+      reloadOnChange,
+    });
+    buildConfiguration.label = label;
+    const { bundlerOpts, events } = buildConfiguration;
+
     setupBundlerDefaults(buildConfiguration, {
       buildType,
       envVars,
@@ -805,7 +798,7 @@ function createNormalBundle({
     });
 
     // set bundle entries
-    bundlerOpts.entries = [entryFilepath];
+    bundlerOpts.entry = [entryFilepath];
 
     // instrument pipeline
     events.on('configurePipeline', ({ pipeline }) => {
@@ -825,7 +818,15 @@ function createNormalBundle({
   };
 }
 
-function createBuildConfiguration() {
+function createWebpackBuildConfiguration(opts) {
+  const label = '(unnamed bundle)';
+  const events = new EventEmitter();
+  const bundlerOpts = generateWebpackConfig(opts);
+  // TODO: pass args
+  return { bundlerOpts, events, label };
+}
+
+function createBrowserifyBuildConfiguration() {
   const label = '(unnamed bundle)';
   const events = new EventEmitter();
   const bundlerOpts = {
@@ -844,72 +845,29 @@ function setupBundlerDefaults(
   buildConfiguration,
   {
     buildTarget,
-    buildType,
-    envVars,
-    ignoredFiles,
     policyOnly,
     minify,
-    reloadOnChange,
-    shouldLintFenceFiles,
+    // reloadOnChange,
+    // shouldLintFenceFiles,
     applyLavaMoat,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
-  const extensions = ['.js', '.ts', '.tsx'];
 
-  Object.assign(bundlerOpts, {
-    // Source transforms
-    transform: [
-      // // Remove code that should be excluded from builds of the current type
-      createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
-      // Transpile top-level code
-      [
-        babelify,
-        // Run TypeScript files through Babel
-        { extensions },
-      ],
-      // Transpile libraries that use ES2020 unsupported by Chrome v78
-      [
-        babelify,
-        {
-          only: [
-            './**/node_modules/@ethereumjs/util',
-            './**/node_modules/superstruct',
-          ],
-          global: true,
-        },
-      ],
-      // Inline `fs.readFileSync` files
-      brfs,
-    ],
-    // Look for TypeScript files when walking the dependency tree
-    extensions,
-    // Use entryFilepath for moduleIds, easier to determine origin file
-    fullPaths: isDevBuild(buildTarget) || isTestBuild(buildTarget),
-    // For sourcemaps
-    debug: true,
-  });
-
+  // TODO
   // Ensure react-devtools is only included in dev builds
   if (buildTarget !== BUILD_TARGETS.DEV) {
-    bundlerOpts.manualIgnore.push('react-devtools');
-    bundlerOpts.manualIgnore.push('remote-redux-devtools');
+    bundlerOpts.manualIgnore?.push('react-devtools');
+    bundlerOpts.manualIgnore?.push('remote-redux-devtools');
   }
 
-  // Inject environment variables via node-style `process.env`
-  if (envVars) {
-    bundlerOpts.transform.push([envify(envVars), { global: true }]);
-  }
-
-  // Ensure that any files that should be ignored are excluded from the build
-  if (ignoredFiles) {
-    bundlerOpts.manualExclude = ignoredFiles;
-  }
-
+  // TODO
   // Setup reload on change
+  /*
   if (reloadOnChange) {
     setupReloadOnChange(buildConfiguration);
   }
+  */
 
   if (!policyOnly) {
     if (minify) {
@@ -1013,20 +971,11 @@ function setupSourcemaps(buildConfiguration, { buildTarget }) {
 
 async function createBundle(buildConfiguration, { reloadOnChange }) {
   const { label, bundlerOpts, events } = buildConfiguration;
-  const bundler = browserify(bundlerOpts);
-
-  // manually apply non-standard options
-  bundler.external(bundlerOpts.manualExternal);
-  bundler.ignore(bundlerOpts.manualIgnore);
-  if (Array.isArray(bundlerOpts.manualExclude)) {
-    bundler.exclude(bundlerOpts.manualExclude);
-  }
-
-  // output build logs to terminal
-  bundler.on('log', log);
-
-  // forward update event (used by watchify)
-  bundler.on('update', () => performBundle());
+  // MultiCompiler:
+  // webpack([
+  //   { entry: './index1.js', output: { filename: 'bundle1.js' } },
+  //   { entry: './index2.js', output: { filename: 'bundle2.js' } },
+  // ])
 
   console.log(`Bundle start: "${label}"`);
   await performBundle();
@@ -1051,7 +1000,39 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
       'dest',
       [],
     ]);
-    const bundleStream = bundler.bundle();
+    const onBundleComplete = (err, stats) => {
+      ////////////// begin boilerplate
+      if (err) {
+        console.error('Bundling failed! See details below.');
+        console.error(err.stack || err);
+        if (err.details) {
+          console.error(err.details);
+        }
+        if (!reloadOnChange) {
+          process.exit(1);
+        }
+        return;
+      }
+
+      const info = stats.toJson();
+      if (stats.hasErrors()) {
+        if (!reloadOnChange) {
+          console.error('Webpack error! See details below.');
+          logError(info.errors);
+          process.exit(1);
+        } else {
+          logError(info.errors);
+        }
+      }
+
+      if (stats.hasWarnings()) {
+        console.warn(info.warnings);
+      }
+      // //////////////end boilerplate
+    }
+    const bundleStream = webpackStream({
+      ...bundlerOpts,
+    }, webpack, onBundleComplete);
     if (!reloadOnChange) {
       bundleStream.on('error', (error) => {
         console.error('Bundling failed! See details below.');
@@ -1070,6 +1051,15 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
 
     // call the completion event to handle any post-processing
     events.emit('bundleDone');
+
+
+    // output build logs to terminal
+    // TODO: webpack logging
+    // bundler.on('log', log);
+    // TODO: watch
+    // forward update event (used by watchify)
+    // bundler.on('update', () => performBundle());
+    // compiler.run(onBundleComplete);
   }
 }
 
