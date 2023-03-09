@@ -228,7 +228,7 @@ export default function createRPCMethodTrackingMiddleware({
       }, SECOND * rateLimitSeconds);
     }
 
-    next((callback) => {
+    next(async (callback) => {
       if (shouldTrackEvent === false || typeof eventType === 'undefined') {
         return callback();
       }
@@ -252,20 +252,54 @@ export default function createRPCMethodTrackingMiddleware({
         event = eventType.APPROVED;
       }
 
+      let msgParams;
+
       if (eventType.REQUESTED === EVENT_NAMES.SIGNATURE_REQUESTED) {
         properties.signature_type = method;
-      } else {
-        properties.method = method;
-      }
 
-      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
         const data = req?.params?.[0];
-        const { isSIWEMessage } = detectSIWE({ data });
-        if (isSIWEMessage) {
-          properties.ui_customizations.push(
-            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+        const from = req?.params?.[1];
+        const paramsExamplePassword = req?.params?.[2];
+
+        msgParams = {
+          ...paramsExamplePassword,
+          from,
+          data,
+          origin,
+        };
+
+        const msgData = {
+          msgParams,
+          status: 'unapproved',
+          type: req.method,
+        };
+
+        try {
+          const securityProviderResponse = await securityProviderRequest(
+            msgData,
+            req.method,
+          );
+
+          properties.ui_customizations =
+            securityProviderResponse?.flagAsDangerous === 1
+              ? ['flagged_as_malicious']
+              : [];
+
+          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+            const { isSIWEMessage } = detectSIWE({ data });
+            if (isSIWEMessage) {
+              properties.ui_customizations.push(
+                METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+              );
+            }
+          }
+        } catch (e) {
+          console.warn(
+            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
           );
         }
+      } else {
+        properties.method = method;
       }
 
       trackEvent({
