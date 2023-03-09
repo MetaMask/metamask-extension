@@ -1679,9 +1679,20 @@ export default class MetamaskController extends EventEmitter {
    */
   async getSnapKeyring() {
     if (!this.snapKeyring) {
-      this.snapKeyring = await this.keyringController.addNewKeyring(
+      // perform lookup
+      let [snapKeyring] = this.keyringController.getKeyringsByType(
         'Snap Keyring',
       );
+      // if still missing, create
+      if (!snapKeyring) {
+        snapKeyring = await this.keyringController.addNewKeyring(
+          'Snap Keyring',
+        );
+      }
+      // we can't provide constructor arguments to keyrings
+      // so we have to set the provider here
+      snapKeyring.setProvider(this.provider, this.snapController);
+      this.snapKeyring = snapKeyring;
     }
     return this.snapKeyring;
   }
