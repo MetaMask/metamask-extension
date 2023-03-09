@@ -73,9 +73,11 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
           className="mm-header-base__start-accessory"
           ref={startAccessoryRef}
           style={
-            children && {
-              minWidth: `${accessoryMinWidth}px`,
-            }
+            children
+              ? {
+                  minWidth: `${accessoryMinWidth}px`,
+                }
+              : undefined
           }
           {...startAccessoryWrapperProps}
         >
@@ -99,9 +101,11 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
           className="mm-header-base__end-accessory"
           ref={endAccessoryRef}
           style={
-            children && {
-              minWidth: `${accessoryMinWidth}px`,
-            }
+            children
+              ? {
+                  minWidth: `${accessoryMinWidth}px`,
+                }
+              : undefined
           }
           {...endAccessoryWrapperProps}
         >
