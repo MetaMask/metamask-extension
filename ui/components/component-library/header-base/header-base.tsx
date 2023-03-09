@@ -7,7 +7,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 
-import { HeaderBaseProps } from './header-base.types';
+import { HeaderBaseProps, CustomBoxProps } from './header-base.types';
 
 export const HeaderBase: React.FC<HeaderBaseProps> = ({
   startAccessory,
@@ -79,7 +79,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
                 }
               : undefined
           }
-          {...startAccessoryWrapperProps}
+          {...(startAccessoryWrapperProps as CustomBoxProps)}
         >
           {startAccessory}
         </Box>
@@ -107,7 +107,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
                 }
               : undefined
           }
-          {...endAccessoryWrapperProps}
+          {...(endAccessoryWrapperProps as CustomBoxProps)}
         >
           {endAccessory}
         </Box>

@@ -1,11 +1,11 @@
 import React, { RefObject } from 'react';
 import type { BoxProps } from '../../ui/box/box.d';
 
-export interface HeaderBaseProps extends BoxProps {
-  /**
-   * The ref prop is used to pass a ref to the HeaderBase startAccessory and endAccessory
-   */
+export interface CustomBoxProps extends BoxProps {
   ref?: RefObject<HTMLDivElement>;
+}
+
+export interface HeaderBaseProps extends BoxProps {
   /**
    * The children is the title area of the HeaderBase
    */
