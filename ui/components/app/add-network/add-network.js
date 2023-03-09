@@ -193,7 +193,7 @@ const AddNetwork = () => {
                   <Box>
                     <IconBorder size={24}>
                       <IconWithFallback
-                        icon={item.rpcPrefs.imageUrl}
+                        icon={item.rpcPrefs?.imageUrl}
                         name={item.nickname}
                         size={24}
                       />
@@ -261,7 +261,7 @@ const AddNetwork = () => {
                             rpcUrl: item.rpcUrl,
                             ticker: item.ticker,
                             rpcPrefs: item.rpcPrefs,
-                            imageUrl: item.rpcPrefs.imageUrl,
+                            imageUrl: item.rpcPrefs?.imageUrl,
                             chainName: item.nickname,
                             referrer: ORIGIN_METAMASK,
                             source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
