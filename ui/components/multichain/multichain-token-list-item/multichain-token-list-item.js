@@ -38,6 +38,7 @@ export const MultichainTokenListItem = ({
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
       gap={4}
+      data-testid="multichain-token-list-item"
     >
       <Box
         className="multichain-token-list-item__container-cell"
@@ -45,6 +46,7 @@ export const MultichainTokenListItem = ({
         flexDirection={FLEX_DIRECTION.ROW}
         padding={4}
         as="a"
+        data-testid="multichain-token-list-button"
         href="#"
         onClick={(e) => {
           e.preventDefault();

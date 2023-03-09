@@ -38,6 +38,7 @@ export const DetectedTokensBanner = ({
       className={classNames('multichain-detected-token-banner', className)}
       actionButtonLabel={t('importTokensCamelCase')}
       actionButtonOnClick={handleOnClick}
+      data-testid="detected-token-banner"
       {...props}
     >
       {detectedTokens.length === 1

@@ -42,6 +42,7 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
       <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
         <ButtonLink
           size={Size.MD}
+          data-testid="import-token-button"
           startIconName={ICON_NAMES.ADD}
           onClick={() => {
             history.push(IMPORT_TOKEN_ROUTE);
@@ -55,9 +56,9 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
           }}
         >
           {isTokenDetectionAvailable
-            ? t('importTokens')
-            : t('importTokens').charAt(0).toUpperCase() +
-              t('importTokens').slice(1)}
+            ? t('importTokensCamelCase')
+            : t('importTokensCamelCase').charAt(0).toUpperCase() +
+              t('importTokensCamelCase').slice(1)}
         </ButtonLink>
       </Box>
       <Box
@@ -68,6 +69,7 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
       >
         <ButtonLink
           startIconName={ICON_NAMES.REFRESH}
+          data-testid="refresh-list-button"
           onClick={() => detectNewTokens()}
         >
           {t('refreshList')}

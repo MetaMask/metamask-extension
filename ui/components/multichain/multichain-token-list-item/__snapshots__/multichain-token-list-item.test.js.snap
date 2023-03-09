@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MultichainTokenListItem should render correctly 1`] = `
+<div>
+  <div
+    class="box multichain-token-list-item box--display-flex box--gap-4 box--flex-direction-column"
+    data-testid="multichain-token-list-item"
+  >
+    <a
+      class="box multichain-token-list-item__container-cell box--padding-4 box--display-flex box--flex-direction-row"
+      data-testid="multichain-token-list-button"
+      href="#"
+    >
+      <div
+        class="box mm-avatar-with-badge box--margin-right-3 box--flex-direction-row"
+      >
+        <div
+          class="box mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
+          ?
+        </div>
+        <div
+          class="box mm-avatar-with-badge__badge-wrapper--position-top box--flex-direction-row"
+        >
+          <div
+            class="box mm-avatar-base mm-avatar-base--size-xs mm-avatar-network box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <img
+              alt="Ethereum logo"
+              class="mm-avatar-network__network-image"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="box multichain-token-list-item__container-cell--text-container box--display-flex box--flex-direction-column"
+      >
+        <div
+          class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
+        >
+          <p
+            class="box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--color-text-default box--flex-direction-row"
+          />
+          <p
+            class="box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--color-text-default box--flex-direction-row"
+          />
+        </div>
+        <p
+          class="box mm-text mm-text--body-md mm-text--color-text-alternative box--flex-direction-row"
+        >
+           
+        </p>
+      </div>
+    </a>
+  </div>
+</div>
+`;
