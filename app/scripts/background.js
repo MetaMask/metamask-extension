@@ -211,7 +211,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
- * @property {Array} frequentRpcList - A list of frequently used RPCs, including custom user-provided ones.
+ * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
  * @property {object} contractExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
