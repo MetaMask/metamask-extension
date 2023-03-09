@@ -4,8 +4,8 @@ import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { BigNumber } from '@ethersproject/bignumber';
-import { getAddress } from '@ethersproject/address';
 import { getCurrentChainId } from '../selectors';
+import { getMulticoinAddress } from './ens';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   NETWORK_IDS,
@@ -32,23 +32,6 @@ import {
 const ZERO_X_ERROR_ADDRESS = '0x';
 const ENS = 'ENS';
 const mainnetProviderUrl = `https://mainnet.infura.io/v3/${infuraProjectId}`;
-
-// Ported from https://github.com/ethers-io/ethers.io/blob/e2592917a1fd84df3b82bd16c1f5d1b4ad082a2d/dist/scripts/ethers-app-v0.5.js#L11272
-function hexZeroPad(value, length) {
-  while (value.length < 2 * length + 2) {
-      value = '0x0' + value.substring(2);
-  }
-  return value;
-}
-
-export const SLIP44_MSB = 0x80000000;
-export const convertEVMChainIdToCoinType = (chainId) => {
-  if (chainId >= SLIP44_MSB) {
-    throw Error(`chainId ${chainId} must be less than ${SLIP44_MSB}`);
-  }
-  // eslint-disable-next-line no-bitwise
-  return (SLIP44_MSB | chainId) >>> 0;
-};
 
 const initialState = {
   stage: 'UNINITIALIZED',
@@ -184,43 +167,20 @@ export function lookupEnsName(domainName) {
       const chainId = getCurrentChainId(state);
       const logMessage = `ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`;
       log.info(logMessage);
-      let address;
-      let error;
-      let coinType;
-      const emptyAddress = '0x0000000000000000000000000000000000000000';
-      console.log('***lookupEnsName5', {trimmedDomainName})
-      const resolver = await web3Provider.getResolver(trimmedDomainName);
-      console.log('***lookupEnsName6', {resolver})
-      if (resolver) {
-        const chainIdInt = parseInt(chainId, 16);
-        if(chainIdInt === 1){
-          coinType = 60;
-        }else{
-          coinType = convertEVMChainIdToCoinType(chainIdInt);
-        }
-        console.log('***lookupEnsName7', {chainId, chainIdInt, coinType})
-        const hexCoinType = BigNumber.from(coinType).toHexString();
-        console.log('***lookupEnsName8', {hexCoinType})
-        const encodedCoinType = hexZeroPad(hexCoinType, 32);
-        console.log('***lookupEnsName9', {encodedCoinType})
-        // 0xf1cb7e06 is address interface id
-        // https://docs.ens.domains/contract-api-reference/publicresolver#get-blockchain-address
-        const data = await resolver._fetchBytes('0xf1cb7e06', encodedCoinType);
-        console.log('***lookupEnsName10', {data})
-        if ([emptyAddress, '0x', null].includes(data)) {
-          console.log('***lookupEnsName11')
-          address = emptyAddress;
-        }
-        address = getAddress(data);
-      } else {
-        address = emptyAddress;
-      }
+      const address = await getMulticoinAddress(web3Provider, trimmedDomainName, chainId)
+      console.log('***lookupEnsName5', {address})
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      console.log('***lookupEnsName12')
+      console.log('***lookupEnsName6', {
+        address,
+        chainId,
+        network,
+        domainType: ENS,
+        domainName: trimmedDomainName,
+      })
       await dispatch(
         domainLookup({
           address,
-          error,
+          error: null,
           chainId,
           network,
           domainType: ENS,
