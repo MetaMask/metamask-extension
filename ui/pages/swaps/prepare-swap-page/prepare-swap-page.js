@@ -119,7 +119,10 @@ import {
 import { countDecimals, fetchTokenPrice } from '../swaps.util';
 import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import {
+  calcTokenAmount,
+  toPrecisionWithoutTrailingZeros,
+} from '../../../../shared/lib/transactions-controller-utils';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import Mascot from '../../../components/ui/mascot';
 import {
@@ -1035,7 +1038,8 @@ export default function PrepareSwap({
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <Text variant={TextVariant.headingSm} as="h4">
-                {receiveToAmount}
+                {receiveToAmount &&
+                  toPrecisionWithoutTrailingZeros(receiveToAmount, 6)}
               </Text>
             </Box>
           </Box>
