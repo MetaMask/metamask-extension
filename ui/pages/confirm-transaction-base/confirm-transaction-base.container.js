@@ -13,6 +13,7 @@ import {
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
+  addToAddressBook,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -32,14 +33,11 @@ import {
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
-  getEIP1559V2Enabled,
   getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
   getFullTxData,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getInsightSnaps,
-  ///: END:ONLY_INCLUDE_IN
+  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -47,7 +45,9 @@ import {
   updateGasFees,
   getIsGasEstimatesLoading,
   getNativeCurrency,
+  getSendToAccounts,
 } from '../../ducks/metamask/metamask';
+import { addHexPrefix } from '../../../app/scripts/lib/util';
 
 import {
   parseStandardTokenTransactionData,
@@ -60,8 +60,8 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import {
-  TRANSACTION_STATUSES,
-  TRANSACTION_TYPES,
+  TransactionStatus,
+  TransactionType,
 } from '../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
@@ -76,6 +76,14 @@ const customNonceMerge = (txData) =>
         customNonceValue,
       }
     : txData;
+
+function addressIsNew(toAccounts, newAddress) {
+  const newAddressNormalized = newAddress.toLowerCase();
+  const foundMatching = toAccounts.some(
+    ({ address }) => address.toLowerCase() === newAddressNormalized,
+  );
+  return !foundMatching;
+}
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -121,9 +129,11 @@ const mapStateToProps = (state, ownProps) => {
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
   let toAddress = txParamsToAddress;
-  if (type !== TRANSACTION_TYPES.SIMPLE_SEND) {
+  if (type !== TransactionType.simpleSend) {
     toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
   }
+
+  const toAccounts = getSendToAccounts(state);
 
   const tokenList = getTokenList(state);
 
@@ -170,11 +180,11 @@ const mapStateToProps = (state, ownProps) => {
   const fullTxData = getFullTxData(
     state,
     txId,
-    TRANSACTION_STATUSES.UNAPPROVED,
+    TransactionStatus.unapproved,
     customTxParamsData,
   );
 
-  const isCollectibleTransfer = Boolean(
+  const isNftTransfer = Boolean(
     allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
@@ -194,16 +204,12 @@ const mapStateToProps = (state, ownProps) => {
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
-  const eip1559V2Enabled = getEIP1559V2Enabled(state);
-
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const insightSnaps = getInsightSnaps(state);
-  ///: END:ONLY_INCLUDE_IN
 
   return {
     balance,
     fromAddress,
     fromName,
+    toAccounts,
     toAddress,
     toEns,
     toName,
@@ -221,7 +227,6 @@ const mapStateToProps = (state, ownProps) => {
     nonce,
     unapprovedTxs,
     unapprovedTxCount,
-    currentNetworkUnapprovedTxs,
     customGas: {
       gasLimit,
       gasPrice,
@@ -230,7 +235,7 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state) && !isCollectibleTransfer,
+    hideSubtitle: !getShouldShowFiat(state) && !isNftTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
@@ -250,11 +255,8 @@ const mapStateToProps = (state, ownProps) => {
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
     chainId,
-    eip1559V2Enabled,
     isBuyableChain,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    insightSnaps,
-    ///: END:ONLY_INCLUDE_IN
+    useCurrencyRateCheck: getUseCurrencyRateCheck(state),
   };
 };
 
@@ -288,6 +290,13 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
+    },
+    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
+    addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
+      const hexPrefixedAddress = addHexPrefix(newAddress);
+      if (addressIsNew(toAccounts, hexPrefixedAddress)) {
+        dispatch(addToAddressBook(hexPrefixedAddress, nickname));
+      }
     },
   };
 };

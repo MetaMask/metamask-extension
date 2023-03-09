@@ -31,7 +31,7 @@ describe('Settings', function () {
 
         // finds the jazzicon toggle turned on
         await driver.findElement(
-          '[data-test-id="jazz_icon"] .settings-page__content-item__identicon__item__icon--active',
+          '[data-testid="jazz_icon"] .settings-page__content-item__identicon__item__icon--active',
         );
 
         const jazziconText = await driver.findElement({

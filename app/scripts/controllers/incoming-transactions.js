@@ -2,18 +2,15 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import BN from 'bn.js';
 import createId from '../../../shared/modules/random-id';
-import { bnToHex } from '../lib/util';
+import { previousValueComparator } from '../lib/util';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionStatus,
 } from '../../../shared/constants/transaction';
-import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_NETWORK_ID_MAP,
-  CHAIN_ID_TO_TYPE_MAP,
-} from '../../../shared/constants/network';
+import { ETHERSCAN_SUPPORTED_NETWORKS } from '../../../shared/constants/network';
+import { bnToHex } from '../../../shared/modules/conversion.utils';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -45,15 +42,9 @@ const fetchWithTimeout = getFetchWithTimeout();
  * This controller is responsible for retrieving incoming transactions. Etherscan is polled once every block to check
  * for new incoming transactions for the current selected account on the current network
  *
- * Note that only the built-in Infura networks are supported (i.e. anything in `INFURA_PROVIDER_TYPES`). We will not
- * attempt to retrieve incoming transactions on any custom RPC endpoints.
+ * Note that only Etherscan-compatible networks are supported. We will not attempt to retrieve incoming transactions
+ * on non-compatible custom RPC endpoints.
  */
-const etherscanSupportedNetworks = [
-  CHAIN_IDS.GOERLI,
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.SEPOLIA,
-];
-
 export default class IncomingTransactionsController {
   constructor(opts = {}) {
     const {
@@ -61,10 +52,12 @@ export default class IncomingTransactionsController {
       onNetworkDidChange,
       getCurrentChainId,
       preferencesController,
+      onboardingController,
     } = opts;
     this.blockTracker = blockTracker;
     this.getCurrentChainId = getCurrentChainId;
     this.preferencesController = preferencesController;
+    this.onboardingController = onboardingController;
 
     this._onLatestBlock = async (newBlockNumberHex) => {
       const selectedAddress = this.preferencesController.getSelectedAddress();
@@ -72,13 +65,16 @@ export default class IncomingTransactionsController {
       await this._update(selectedAddress, newBlockNumberDec);
     };
 
+    const incomingTxLastFetchedBlockByChainId = Object.keys(
+      ETHERSCAN_SUPPORTED_NETWORKS,
+    ).reduce((network, chainId) => {
+      network[chainId] = null;
+      return network;
+    }, {});
+
     const initState = {
       incomingTransactions: {},
-      incomingTxLastFetchedBlockByChainId: {
-        [CHAIN_IDS.GOERLI]: null,
-        [CHAIN_IDS.MAINNET]: null,
-        [CHAIN_IDS.SEPOLIA]: null,
-      },
+      incomingTxLastFetchedBlockByChainId,
       ...opts.initState,
     };
     this.store = new ObservableStore(initState);
@@ -121,6 +117,17 @@ export default class IncomingTransactionsController {
       }, this.preferencesController.store.getState()),
     );
 
+    this.onboardingController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { completedOnboarding: prevCompletedOnboarding } = prevState;
+        const { completedOnboarding: currCompletedOnboarding } = currState;
+        if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          const address = this.preferencesController.getSelectedAddress();
+          await this._update(address);
+        }
+      }, this.onboardingController.store.getState()),
+    );
+
     onNetworkDidChange(async () => {
       const address = this.preferencesController.getSelectedAddress();
       await this._update(address);
@@ -154,8 +161,13 @@ export default class IncomingTransactionsController {
    * @param {number} [newBlockNumberDec] - block number to begin fetching from
    */
   async _update(address, newBlockNumberDec) {
+    const { completedOnboarding } = this.onboardingController.store.getState();
     const chainId = this.getCurrentChainId();
-    if (!etherscanSupportedNetworks.includes(chainId) || !address) {
+    if (
+      !Object.hasOwnProperty.call(ETHERSCAN_SUPPORTED_NETWORKS, chainId) ||
+      !address ||
+      !completedOnboarding
+    ) {
       return;
     }
     try {
@@ -216,12 +228,10 @@ export default class IncomingTransactionsController {
    * @returns {TransactionMeta[]}
    */
   async _getNewIncomingTransactions(address, fromBlock, chainId) {
-    const etherscanSubdomain =
-      chainId === CHAIN_IDS.MAINNET
-        ? 'api'
-        : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`;
+    const etherscanDomain = ETHERSCAN_SUPPORTED_NETWORKS[chainId].domain;
+    const etherscanSubdomain = ETHERSCAN_SUPPORTED_NETWORKS[chainId].subdomain;
 
-    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`;
+    const apiUrl = `https://${etherscanSubdomain}.${etherscanDomain}`;
     let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`;
 
     if (fromBlock) {
@@ -259,8 +269,8 @@ export default class IncomingTransactionsController {
     const time = parseInt(etherscanTransaction.timeStamp, 10) * 1000;
     const status =
       etherscanTransaction.isError === '0'
-        ? TRANSACTION_STATUSES.CONFIRMED
-        : TRANSACTION_STATUSES.FAILED;
+        ? TransactionStatus.confirmed
+        : TransactionStatus.failed;
     const txParams = {
       from: etherscanTransaction.from,
       gas: bnToHex(new BN(etherscanTransaction.gas)),
@@ -284,40 +294,12 @@ export default class IncomingTransactionsController {
       blockNumber: etherscanTransaction.blockNumber,
       id: createId(),
       chainId,
-      metamaskNetworkId: CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
+      metamaskNetworkId: ETHERSCAN_SUPPORTED_NETWORKS[chainId].networkId,
       status,
       time,
       txParams,
       hash: etherscanTransaction.hash,
-      type: TRANSACTION_TYPES.INCOMING,
+      type: TransactionType.incoming,
     };
   }
-}
-
-/**
- * Returns a function with arity 1 that caches the argument that the function
- * is called with and invokes the comparator with both the cached, previous,
- * value and the current value. If specified, the initialValue will be passed
- * in as the previous value on the first invocation of the returned method.
- *
- * @template A - The type of the compared value.
- * @param {(prevValue: A, nextValue: A) => void} comparator - A method to compare
- * the previous and next values.
- * @param {A} [initialValue] - The initial value to supply to prevValue
- * on first call of the method.
- */
-function previousValueComparator(comparator, initialValue) {
-  let first = true;
-  let cache;
-  return (value) => {
-    try {
-      if (first) {
-        first = false;
-        return comparator(initialValue ?? value, value);
-      }
-      return comparator(cache, value);
-    } finally {
-      cache = value;
-    }
-  };
 }

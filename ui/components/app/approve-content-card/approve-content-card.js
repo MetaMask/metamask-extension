@@ -4,19 +4,19 @@ import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
-import Typography from '../../ui/typography/typography';
+import { Text } from '../../component-library';
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   BLOCK_SIZES,
-  COLORS,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   TEXT_ALIGN,
-  TYPOGRAPHY,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { I18nContext } from '../../../../.storybook/i18n';
+import { I18nContext } from '../../../contexts/i18n';
 import GasDetailsItem from '../gas-details-item/gas-details-item';
 import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -30,7 +30,7 @@ export default function ApproveContentCard({
   onEditClick,
   footer,
   noBorder,
-  supportsEIP1559V2,
+  supportsEIP1559,
   renderTransactionDetailsContent,
   renderDataContent,
   isMultiLayerFeeNetwork,
@@ -43,6 +43,9 @@ export default function ApproveContentCard({
   isSetApproveForAll,
   isApprovalOrRejection,
   data,
+  userAcknowledgedGasMissing,
+  renderSimulationFailureWarning,
+  useCurrencyRateCheck,
 }) {
   const t = useContext(I18nContext);
 
@@ -57,11 +60,11 @@ export default function ApproveContentCard({
         <Box
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.ROW}
-          alignItems={ALIGN_ITEMS.CENTER}
-          justifyContent={JUSTIFY_CONTENT.FLEX_END}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.flexEnd}
           className="approve-content-card-container__card-header"
         >
-          {supportsEIP1559V2 && title === t('transactionFee') ? null : (
+          {supportsEIP1559 && title === t('transactionFee') ? null : (
             <>
               <Box className="approve-content-card-container__card-header__symbol">
                 {symbol}
@@ -70,30 +73,33 @@ export default function ApproveContentCard({
                 marginLeft={4}
                 className="approve-content-card-container__card-header__title"
               >
-                <Typography
-                  variant={TYPOGRAPHY.H6}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                >
+                <Text variant={TextVariant.bodySmBold} as="h6">
                   {title}
-                </Typography>
+                </Text>
               </Box>
             </>
           )}
-          {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
+          {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
             <Box width={BLOCK_SIZES.ONE_SIXTH}>
               <Button type="link" onClick={() => onEditClick()}>
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.PRIMARY_DEFAULT}
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.primaryDefault}
+                  as="h6"
                 >
                   {t('edit')}
-                </Typography>
+                </Text>
               </Button>
             </Box>
           )}
-          {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
-            <EditGasFeeButton />
-          )}
+          {showEdit &&
+            showAdvanceGasFeeOptions &&
+            supportsEIP1559 &&
+            !renderSimulationFailureWarning && (
+              <EditGasFeeButton
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              />
+            )}
         </Box>
       )}
       <Box
@@ -102,13 +108,17 @@ export default function ApproveContentCard({
         className="approve-content-card-container__card-content"
       >
         {renderTransactionDetailsContent &&
-          (!isMultiLayerFeeNetwork && supportsEIP1559V2 ? (
-            <GasDetailsItem />
+          (!isMultiLayerFeeNetwork &&
+          supportsEIP1559 &&
+          !renderSimulationFailureWarning ? (
+            <GasDetailsItem
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            />
           ) : (
             <Box
               display={DISPLAY.FLEX}
               flexDirection={FLEX_DIRECTION.ROW}
-              justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+              justifyContent={JustifyContent.spaceBetween}
             >
               {isMultiLayerFeeNetwork ? (
                 <Box
@@ -118,16 +128,17 @@ export default function ApproveContentCard({
                 >
                   <Box
                     display={DISPLAY.FLEX}
-                    justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+                    justifyContent={JustifyContent.spaceBetween}
                   >
-                    <Typography
-                      variant={TYPOGRAPHY.H6}
+                    <Text
+                      variant={TextVariant.bodySm}
                       fontWeight={FONT_WEIGHT.NORMAL}
-                      color={COLORS.TEXT_MUTED}
+                      color={TextColor.textMuted}
+                      as="h6"
                     >
                       <span>{t('transactionDetailLayer2GasHeading')}</span>
                       {`${ethTransactionTotal} ${nativeCurrency}`}
-                    </Typography>
+                    </Text>
                   </Box>
                   <MultiLayerFeeMessage
                     transaction={fullTxData}
@@ -139,36 +150,44 @@ export default function ApproveContentCard({
               ) : (
                 <>
                   <Box>
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      color={COLORS.TEXT_ALTERNATIVE}
+                    <Text
+                      variant={TextVariant.bodySm}
+                      color={TextColor.textAlternative}
+                      as="h6"
                     >
                       {t('feeAssociatedRequest')}
-                    </Typography>
+                    </Text>
                   </Box>
                   <Box
                     display={DISPLAY.FLEX}
                     flexDirection={FLEX_DIRECTION.COLUMN}
-                    alignItems={ALIGN_ITEMS.FLEX_END}
+                    alignItems={AlignItems.flexEnd}
                     textAlign={TEXT_ALIGN.RIGHT}
                   >
+                    {useCurrencyRateCheck && (
+                      <Box>
+                        <Text
+                          variant={TextVariant.headingSm}
+                          fontWeight={FONT_WEIGHT.BOLD}
+                          color={TextColor.TEXT_DEFAULT}
+                          as="h4"
+                        >
+                          {formatCurrency(
+                            fiatTransactionTotal,
+                            currentCurrency,
+                          )}
+                        </Text>
+                      </Box>
+                    )}
                     <Box>
-                      <Typography
-                        variant={TYPOGRAPHY.H4}
-                        fontWeight={FONT_WEIGHT.BOLD}
-                        color={COLORS.TEXT_DEFAULT}
-                      >
-                        {formatCurrency(fiatTransactionTotal, currentCurrency)}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography
-                        variant={TYPOGRAPHY.H6}
+                      <Text
+                        variant={TextVariant.bodySm}
                         fontWeight={FONT_WEIGHT.NORMAL}
-                        color={COLORS.TEXT_MUTED}
+                        color={TextColor.textMuted}
+                        as="h6"
                       >
                         {`${ethTransactionTotal} ${nativeCurrency}`}
-                      </Typography>
+                      </Text>
                     </Box>
                   </Box>
                 </>
@@ -178,35 +197,38 @@ export default function ApproveContentCard({
         {renderDataContent && (
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
             <Box>
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.TEXT_ALTERNATIVE}
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                as="h6"
               >
                 {isSetApproveForAll
                   ? t('functionSetApprovalForAll')
                   : t('functionApprove')}
-              </Typography>
+              </Text>
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
               <Box>
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  as="h6"
                 >
                   {`${t('parameters')}: ${isApprovalOrRejection}`}
-                </Typography>
+                </Text>
               </Box>
             ) : null}
             <Box
               marginRight={4}
               className="approve-content-card-container__data__data-block"
             >
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.TEXT_ALTERNATIVE}
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                as="h6"
               >
                 {data}
-              </Typography>
+              </Text>
             </Box>
           </Box>
         )}
@@ -252,7 +274,7 @@ ApproveContentCard.propTypes = {
   /**
    * Is enhanced gas fee enabled or not
    */
-  supportsEIP1559V2: PropTypes.bool,
+  supportsEIP1559: PropTypes.bool,
   /**
    * Whether to render transaction details content or not
    */
@@ -301,4 +323,16 @@ ApproveContentCard.propTypes = {
    * Current transaction data
    */
   data: PropTypes.string,
+  /**
+   * User acknowledge gas is missing or not
+   */
+  userAcknowledgedGasMissing: PropTypes.bool,
+  /**
+   * Render simulation failure warning
+   */
+  renderSimulationFailureWarning: PropTypes.bool,
+  /**
+   * Fiat conversion control
+   */
+  useCurrencyRateCheck: PropTypes.bool,
 };

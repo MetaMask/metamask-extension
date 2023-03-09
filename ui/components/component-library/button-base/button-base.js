@@ -7,13 +7,14 @@ import { Icon, ICON_NAMES } from '../icon';
 import { Text } from '../text';
 
 import {
-  ALIGN_ITEMS,
+  AlignItems,
   DISPLAY,
-  JUSTIFY_CONTENT,
-  TEXT_COLORS,
-  TEXT,
-  SIZES,
-  FLEX_DIRECTION,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+  Size,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -24,62 +25,67 @@ export const ButtonBase = ({
   className,
   href,
   size = BUTTON_BASE_SIZES.MD,
-  icon,
-  iconPositionRight,
+  startIconName,
+  startIconProps,
+  endIconName,
+  endIconProps,
   loading,
   disabled,
-  iconProps,
+  iconLoadingProps,
+  textProps,
   ...props
 }) => {
   const Tag = href ? 'a' : as;
   return (
     <Box
       as={Tag}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      color={TextColor.textDefault}
       href={href}
-      paddingLeft={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
-      paddingRight={size === BUTTON_BASE_SIZES.AUTO ? 0 : 4}
+      paddingLeft={4}
+      paddingRight={4}
       className={classnames(
-        'mm-button',
-        `mm-button--size-${size}`,
+        'mm-button-base',
         {
-          'mm-button--loading': loading,
-          'mm-button--disabled': disabled,
-          'mm-button--block': block,
+          [`mm-button-base--size-${size}`]:
+            Object.values(BUTTON_BASE_SIZES).includes(size),
+          'mm-button-base--loading': loading,
+          'mm-button-base--disabled': disabled,
+          'mm-button-base--block': block,
         },
         className,
       )}
       disabled={disabled}
       display={DISPLAY.INLINE_FLEX}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
-      alignItems={ALIGN_ITEMS.CENTER}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
       {...props}
     >
       <Text
         as="span"
-        className="mm-button__content"
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
-        flexDirection={
-          iconPositionRight ? FLEX_DIRECTION.ROW_REVERSE : FLEX_DIRECTION.ROW
-        }
+        className="mm-button-base__content"
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
         gap={2}
-        variant={size === BUTTON_BASE_SIZES.AUTO ? TEXT.INHERIT : TEXT.BODY_MD}
-        color={TEXT_COLORS.INHERIT}
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
+        {...textProps}
       >
-        {icon && (
-          <Icon
-            name={icon}
-            size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.SM}
-            {...iconProps}
-          />
+        {startIconName && (
+          <Icon name={startIconName} size={Size.SM} {...startIconProps} />
         )}
         {children}
+        {endIconName && (
+          <Icon name={endIconName} size={Size.SM} {...endIconProps} />
+        )}
       </Text>
       {loading && (
         <Icon
-          className="mm-button__icon-loading"
-          name={ICON_NAMES.LOADING_FILLED}
-          size={size === BUTTON_BASE_SIZES.AUTO ? SIZES.AUTO : SIZES.MD}
+          className="mm-button-base__icon-loading"
+          name={ICON_NAMES.LOADING}
+          size={Size.MD}
+          {...iconLoadingProps}
         />
       )}
     </Box>
@@ -95,6 +101,10 @@ ButtonBase.propTypes = {
    * Boolean prop to quickly activate box prop display block
    */
   block: PropTypes.bool,
+  /**
+   * Additional props to pass to the Text component that wraps the button children
+   */
+  buttonTextProps: PropTypes.shape(Text.PropTypes),
   /**
    * The children to be rendered inside the ButtonBase
    */
@@ -112,28 +122,43 @@ ButtonBase.propTypes = {
    */
   href: PropTypes.string,
   /**
-   * Add icon to left side of button text passing icon name
+   * Add icon to start (left side) of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  icon: PropTypes.string, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
-  /**
-   * Boolean that when true will position the icon on right of children
-   * Icon default position left
-   */
-  iconPositionRight: PropTypes.bool,
+  startIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps: PropTypes.object,
+  startIconProps: PropTypes.shape(Icon.PropTypes),
+  /**
+   * Add icon to end (right side) of button text passing icon name
+   * The name of the icon to display. Should be one of ICON_NAMES
+   */
+  endIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  /**
+   * iconProps accepts all the props from Icon
+   */
+  endIconProps: PropTypes.shape(Icon.PropTypes),
+  /**
+   * iconLoadingProps accepts all the props from Icon
+   */
+  iconLoadingProps: PropTypes.shape(Icon.PropTypes),
   /**
    * Boolean to show loading spinner in button
    */
   loading: PropTypes.bool,
   /**
    * The size of the ButtonBase.
-   * Possible values could be 'SIZES.AUTO', 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px),
+   * Possible values could be 'Size.SM'(32px), 'Size.MD'(40px), 'Size.LG'(48px),
    */
-  size: PropTypes.oneOf(Object.values(BUTTON_BASE_SIZES)),
+  size: PropTypes.oneOfType([
+    PropTypes.shape(BUTTON_BASE_SIZES),
+    PropTypes.string,
+  ]),
+  /**
+   * textProps accepts all the props from Icon
+   */
+  textProps: PropTypes.shape(Text.PropTypes),
   /**
    * ButtonBase accepts all the props from Box
    */

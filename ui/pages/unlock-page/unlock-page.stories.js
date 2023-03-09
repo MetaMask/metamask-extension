@@ -5,7 +5,7 @@ import UnlockPage from './unlock-page.component';
 
 export default {
   title: 'Pages/UnlockPage',
-  id: __filename,
+
   component: UnlockPage,
   parameters: {
     docs: {
@@ -18,7 +18,6 @@ export default {
     onRestore: { action: 'onRestore' },
     onSubmit: { action: 'onSubmit' },
     forceUpdateMetamaskState: { action: 'forceUpdateMetamaskState' },
-    showOptInModal: { action: 'showOptInModal' },
   },
 };
 

@@ -45,23 +45,17 @@ describe('Sign Typed Data V4 Signature Request', function () {
         );
 
         const title = await driver.findElement(
-          '.signature-request-content__title',
+          '.signature-request__content__title',
         );
-        const name = await driver.findElement(
-          '.signature-request-content__info--bolded',
-        );
-        const content = await driver.findElements(
-          '.signature-request-content__info',
-        );
+        const origin = await driver.findElement('.signature-request__origin');
         const verifyContractDetailsButton = await driver.findElement(
           '.signature-request-content__verify-contract-details',
         );
-        const origin = content[0];
         const message = await driver.findElement(
           '.signature-request-data__node__value',
         );
+
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
 
         verifyContractDetailsButton.click();
@@ -131,23 +125,18 @@ describe('Sign Typed Data V3 Signature Request', function () {
         );
 
         const title = await driver.findElement(
-          '.signature-request-content__title',
+          '.signature-request__content__title',
         );
-        const name = await driver.findElement(
-          '.signature-request-content__info--bolded',
-        );
-        const content = await driver.findElements(
-          '.signature-request-content__info',
-        );
+        const origin = await driver.findElement('.signature-request__origin');
         const verifyContractDetailsButton = await driver.findElement(
           '.signature-request-content__verify-contract-details',
         );
-        const origin = content[0];
+
         const messages = await driver.findElements(
           '.signature-request-data__node__value',
         );
+
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
 
         verifyContractDetailsButton.click();
@@ -217,7 +206,7 @@ describe('Sign Typed Data Signature Request', function () {
         );
 
         const title = await driver.findElement(
-          '.request-signature__header__text',
+          '.request-signature__content__title',
         );
         const origin = await driver.findElement('.request-signature__origin');
         const message = await driver.findElements(

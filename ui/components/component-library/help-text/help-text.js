@@ -3,42 +3,54 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import {
-  COLORS,
-  TEXT,
-  TEXT_COLORS,
+  Color,
+  TextVariant,
+  TextColor,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
 
 export const HelpText = ({
-  error,
-  color = COLORS.TEXT_DEFAULT,
+  severity,
+  color = Color.textDefault,
   className,
   children,
   ...props
-}) => (
-  <Text
-    as="span"
-    className={classnames('mm-help-text', className)}
-    variant={TEXT.BODY_XS}
-    color={error ? COLORS.ERROR_DEFAULT : color}
-    {...props}
-  >
-    {children}
-  </Text>
-);
-
+}) => {
+  const severityColor = () => {
+    switch (severity) {
+      case SEVERITIES.DANGER:
+        return TextColor.errorDefault;
+      case SEVERITIES.WARNING:
+        return TextColor.warningDefault;
+      case SEVERITIES.SUCCESS:
+        return TextColor.successDefault;
+      case SEVERITIES.INFO:
+        return TextColor.infoDefault;
+      // Defaults to SEVERITIES.INFO
+      default:
+        return TextColor.textDefault;
+    }
+  };
+  return (
+    <Text
+      className={classnames('mm-help-text', className)}
+      as={children && typeof children === 'object' ? 'div' : 'p'}
+      variant={TextVariant.bodyXs}
+      color={severity ? severityColor() : color}
+      {...props}
+    >
+      {children}
+    </Text>
+  );
+};
 HelpText.propTypes = {
   /**
-   * If the HelperText should display in error state
-   * Will override the color prop if true
+   * The color of the HelpText will be overridden if there is a severity passed
+   * Defaults to Color.textDefault
    */
-  error: PropTypes.bool,
-  /**
-   * The color of the HelpText will be overridden if error is true
-   * Defaults to COLORS.TEXT_DEFAULT
-   */
-  color: PropTypes.oneOf(Object.values(TEXT_COLORS)),
+  color: PropTypes.oneOf(Object.values(TextColor)),
   /**
    * The content of the help-text
    */

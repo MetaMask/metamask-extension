@@ -1,22 +1,23 @@
 import sinon from 'sinon';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { ethers } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
+  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
-import { KEYRING_TYPES } from '../../../shared/constants/keyrings';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
+import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
 import {
-  ASSET_TYPES,
-  TOKEN_STANDARDS,
-  TRANSACTION_ENVELOPE_TYPES,
+  AssetType,
+  TokenStandard,
+  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
 import { setBackgroundConnection } from '../../../test/jest';
@@ -92,7 +93,7 @@ jest.mock('lodash', () => ({
 
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
-  addUnapprovedTransaction: jest.fn((_v, _w, _x, _y, _z, cb) => {
+  addUnapprovedTransaction: jest.fn((_u, _v, _w, _x, _y, _z, cb) => {
     cb(null);
   }),
   updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
@@ -185,7 +186,7 @@ describe('Send Slice', () => {
               maxFeePerGas: '0x2',
               gasLimit: GAS_LIMITS.SIMPLE,
             },
-            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+            transactionType: TransactionEnvelopeType.feeMarket,
           }),
           action,
         );
@@ -298,7 +299,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateGasFees',
           payload: {
-            transactionType: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+            transactionType: TransactionEnvelopeType.feeMarket,
             maxFeePerGas: '0x2',
             maxPriorityFeePerGas: '0x1',
           },
@@ -319,7 +320,7 @@ describe('Send Slice', () => {
         );
 
         expect(draftTransaction.transactionType).toBe(
-          TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+          TransactionEnvelopeType.feeMarket,
         );
       });
 
@@ -327,7 +328,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateGasFees',
           payload: {
-            transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+            transactionType: TransactionEnvelopeType.legacy,
             gasPrice: '0x1',
           },
         };
@@ -342,7 +343,7 @@ describe('Send Slice', () => {
           action.payload.gasPrice,
         );
         expect(draftTransaction.transactionType).toBe(
-          TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          TransactionEnvelopeType.legacy,
         );
       });
     });
@@ -481,7 +482,7 @@ describe('Send Slice', () => {
             error: CONTRACT_ADDRESS_ERROR,
           },
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
           },
         });
 
@@ -509,7 +510,7 @@ describe('Send Slice', () => {
           type: 'send/updateAsset',
           payload: {
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {
                 address: '0xTokenAddress',
                 decimals: 0,
@@ -712,7 +713,7 @@ describe('Send Slice', () => {
         const tokenAssetTypeState = {
           ...getInitialSendStateWithExistingTxState({
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {
                 address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
               },
@@ -839,7 +840,7 @@ describe('Send Slice', () => {
             value: '0x6fc23ac0', // 1875000000
           },
           asset: {
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
             balance: '0x77359400', // 2000000000
           },
           gas: {
@@ -856,7 +857,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.amount.error).toStrictEqual(
-          INSUFFICIENT_FUNDS_ERROR,
+          INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
         );
       });
 
@@ -866,7 +867,7 @@ describe('Send Slice', () => {
             value: '0x77359400', // 2000000000
           },
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
             balance: '0x6fc23ac0', // 1875000000
             details: {
               decimals: 0,
@@ -993,7 +994,7 @@ describe('Send Slice', () => {
       it('should set `INVALID` send state status when asset type is `TOKEN` without token details present', () => {
         const assetErrorState = getInitialSendStateWithExistingTxState({
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
           },
         });
 
@@ -1031,7 +1032,7 @@ describe('Send Slice', () => {
         const validSendStatusState = {
           ...getInitialSendStateWithExistingTxState({
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {
                 address: '0x000',
               },
@@ -1266,7 +1267,7 @@ describe('Send Slice', () => {
       it('should dispatch async action thunk first with pending, then finally fulfilling from minimal state', async () => {
         getState = jest.fn().mockReturnValue({
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             networkDetails: {
               EIPS: {
@@ -1277,7 +1278,7 @@ describe('Send Slice', () => {
             identities: { '0xAddress': { address: '0xAddress' } },
             keyrings: [
               {
-                type: KEYRING_TYPES.HD_KEY_TREE,
+                type: HardwareKeyringTypes.hdKeyTree,
                 accounts: ['0xAddress'],
               },
             ],
@@ -1364,7 +1365,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'GAS_FEE_ESTIMATES_UPDATED',
           payload: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+            gasEstimateType: GasEstimateTypes.legacy,
             gasFeeEstimates: {
               medium: '1',
             },
@@ -1409,7 +1410,7 @@ describe('Send Slice', () => {
             payload: {
               gasPrice: '0x0',
               manuallyEdited: true,
-              transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+              transactionType: TransactionEnvelopeType.legacy,
             },
           },
         ];
@@ -1535,7 +1536,7 @@ describe('Send Slice', () => {
           },
           send: getInitialSendStateWithExistingTxState({
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {},
             },
             gas: {
@@ -1615,7 +1616,7 @@ describe('Send Slice', () => {
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
-          type: ASSET_TYPES.NATIVE,
+          type: AssetType.native,
         };
 
         await store.dispatch(updateSendAsset(newSendAsset));
@@ -1631,7 +1632,7 @@ describe('Send Slice', () => {
         expect(actionResult[1].type).toStrictEqual('send/updateAsset');
         expect(actionResult[1].payload).toStrictEqual({
           asset: {
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
             balance: '0x0',
             error: null,
             details: null,
@@ -1666,7 +1667,7 @@ describe('Send Slice', () => {
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
-          type: ASSET_TYPES.TOKEN,
+          type: AssetType.token,
           details: {
             address: 'tokenAddress',
             symbol: 'tokenSymbol',
@@ -1687,7 +1688,7 @@ describe('Send Slice', () => {
         });
         expect(actionResult[3].payload).toStrictEqual({
           asset: {
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
             details: {
               address: 'tokenAddress',
               symbol: 'TokenSymbol',
@@ -1710,14 +1711,14 @@ describe('Send Slice', () => {
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
-        process.env.COLLECTIBLES_V1 = true;
+        process.env.NFTS_V1 = true;
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({ standard: 'ERC1155', balance: '0x1' }),
         );
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
-          type: ASSET_TYPES.TOKEN,
+          type: AssetType.token,
           details: {
             address: 'tokenAddress',
             symbol: 'tokenSymbol',
@@ -1739,7 +1740,7 @@ describe('Send Slice', () => {
           },
           type: 'UI_MODAL_OPEN',
         });
-        process.env.COLLECTIBLES_V1 = false;
+        process.env.NFTS_V1 = false;
       });
     });
 
@@ -2002,7 +2003,7 @@ describe('Send Slice', () => {
               balance: '',
             },
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {},
             },
             gas: {
@@ -2150,7 +2151,7 @@ describe('Send Slice', () => {
         const sendMaxModeState = {
           send: {
             asset: {
-              type: ASSET_TYPES.TOKEN,
+              type: AssetType.token,
               details: {},
             },
             gas: {
@@ -2198,7 +2199,7 @@ describe('Send Slice', () => {
           send: {
             ...getInitialSendStateWithExistingTxState({
               asset: {
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
                 details: {},
               },
               gas: {
@@ -2307,7 +2308,7 @@ describe('Send Slice', () => {
             },
           };
 
-          jest.mock('../../store/actions.js');
+          jest.mock('../../store/actions.ts');
 
           const store = mockStore(tokenTransferTxState);
 
@@ -2315,13 +2316,13 @@ describe('Send Slice', () => {
 
           expect(
             addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][0].data,
+              .calls[0][1].data,
           ).toStrictEqual(
             '0xa9059cbb0000000000000000000000004f90e18605fd46f9f9fab0e225d88e1acf5f53240000000000000000000000000000000000000000000000000000000000000001',
           );
           expect(
             addUnapprovedTransactionAndRouteToConfirmationPageStub.mock
-              .calls[0][0].to,
+              .calls[0][1].to,
           ).toStrictEqual('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
         });
       });
@@ -2344,7 +2345,7 @@ describe('Send Slice', () => {
           },
         };
 
-        jest.mock('../../store/actions.js');
+        jest.mock('../../store/actions.ts');
 
         const store = mockStore(editStageSignTxState);
 
@@ -2371,7 +2372,7 @@ describe('Send Slice', () => {
       it('should set up the appropriate state for editing a native asset transaction', async () => {
         const editTransactionState = {
           metamask: {
-            gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
+            gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             provider: {
               chainId: CHAIN_IDS.GOERLI,
@@ -2423,7 +2424,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editTransactionState);
 
-        await store.dispatch(editExistingTransaction(ASSET_TYPES.NATIVE, 1));
+        await store.dispatch(editExistingTransaction(AssetType.native, 1));
         const actionResult = store.getActions();
 
         expect(actionResult).toHaveLength(7);
@@ -2441,7 +2442,7 @@ describe('Send Slice', () => {
               balance: '0x0',
               details: null,
               error: null,
-              type: ASSET_TYPES.NATIVE,
+              type: AssetType.native,
             },
             fromAccount: {
               address: '0xAddress',
@@ -2496,12 +2497,12 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should set up the appropriate state for editing a collectible asset transaction', async () => {
+      it('should set up the appropriate state for editing an NFT asset transaction', async () => {
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({
             standard: 'ERC721',
             balance: '0x1',
-            address: '0xCollectibleAddress',
+            address: '0xNftAddress',
           }),
         );
         const editTransactionState = {
@@ -2535,10 +2536,10 @@ describe('Send Slice', () => {
                   data: generateERC721TransferData({
                     toAddress: BURN_ADDRESS,
                     fromAddress: '0xAddress',
-                    tokenId: ethers.BigNumber.from(15000).toString(),
+                    tokenId: BigNumber.from(15000).toString(),
                   }),
                   from: '0xAddress',
-                  to: '0xCollectibleAddress',
+                  to: '0xNftAddress',
                   gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
                   gasPrice: '0x3b9aca00', // 1000000000
                   value: '0x0',
@@ -2567,7 +2568,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editTransactionState);
 
-        await store.dispatch(editExistingTransaction(ASSET_TYPES.NFT, 1));
+        await store.dispatch(editExistingTransaction(AssetType.NFT, 1));
         const actionResult = store.getActions();
         expect(actionResult).toHaveLength(9);
         expect(actionResult[0]).toMatchObject({
@@ -2584,7 +2585,7 @@ describe('Send Slice', () => {
               balance: '0x0',
               details: null,
               error: null,
-              type: ASSET_TYPES.NATIVE,
+              type: AssetType.native,
             },
             fromAccount: {
               address: '0xAddress',
@@ -2620,7 +2621,7 @@ describe('Send Slice', () => {
         expect(actionResult[4]).toStrictEqual({
           type: 'send/addHistoryEntry',
           payload:
-            'sendFlow - user set asset to NFT with tokenId 15000 and address 0xCollectibleAddress',
+            'sendFlow - user set asset to NFT with tokenId 15000 and address 0xNftAddress',
         });
         expect(actionResult[5]).toStrictEqual({
           type: 'send/updateAsset',
@@ -2628,13 +2629,13 @@ describe('Send Slice', () => {
             asset: {
               balance: '0x1',
               details: {
-                address: '0xCollectibleAddress',
+                address: '0xNftAddress',
                 balance: '0x1',
-                standard: TOKEN_STANDARDS.ERC721,
+                standard: TokenStandard.ERC721,
                 tokenId: '15000',
               },
               error: null,
-              type: ASSET_TYPES.NFT,
+              type: AssetType.NFT,
             },
             initialAssetSet: true,
           },
@@ -2759,7 +2760,7 @@ describe('Send Slice', () => {
 
       const store = mockStore(editTransactionState);
 
-      await store.dispatch(editExistingTransaction(ASSET_TYPES.TOKEN, 1));
+      await store.dispatch(editExistingTransaction(AssetType.token, 1));
       const actionResult = store.getActions();
 
       expect(actionResult).toHaveLength(9);
@@ -2775,7 +2776,7 @@ describe('Send Slice', () => {
             balance: '0x0',
             details: null,
             error: null,
-            type: ASSET_TYPES.NATIVE,
+            type: AssetType.native,
           },
           fromAccount: {
             address: '0xAddress',
@@ -2818,7 +2819,7 @@ describe('Send Slice', () => {
         payload: {
           asset: {
             balance: '0x0',
-            type: ASSET_TYPES.TOKEN,
+            type: AssetType.token,
             error: null,
             details: {
               balance: '0x0',
@@ -2951,7 +2952,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),
@@ -2965,7 +2966,7 @@ describe('Send Slice', () => {
               metamask: {
                 provider: { chainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
-                gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+                gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
               send: initialState,
             }),
@@ -3006,7 +3007,7 @@ describe('Send Slice', () => {
               asset: {
                 balance: '0x0',
                 details: { address: '0x0' },
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
               },
             }),
           }),
@@ -3021,7 +3022,7 @@ describe('Send Slice', () => {
           getIsAssetSendable({
             send: getInitialSendStateWithExistingTxState({
               asset: {
-                type: ASSET_TYPES.TOKEN,
+                type: AssetType.token,
                 details: { isERC721: true },
               },
             }),
@@ -3113,7 +3114,14 @@ describe('Send Slice', () => {
         expect(
           getSendTo({
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              identities: {},
+              addressBook: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toBe('');
         expect(
@@ -3121,7 +3129,14 @@ describe('Send Slice', () => {
             send: getInitialSendStateWithExistingTxState({
               recipient: { address: '0xb' },
             }),
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              addressBook: {},
+              identities: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toBe('0xb');
       });
@@ -3162,7 +3177,14 @@ describe('Send Slice', () => {
         expect(
           getRecipient({
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-            metamask: { ensResolutionsByAddress: {} },
+            metamask: {
+              ensResolutionsByAddress: {},
+              identities: {},
+              addressBook: {},
+              provider: {
+                chainId: '0x5',
+              },
+            },
           }),
         ).toMatchObject(
           getTestUUIDTx(INITIAL_SEND_STATE_FOR_EXISTING_DRAFT).recipient,

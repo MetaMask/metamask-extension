@@ -21,9 +21,10 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { KEYRING_TYPES } from '../../../../shared/constants/keyrings';
+import { HardwareKeyringTypes } from '../../../../shared/constants/hardware-wallets';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ICON_NAMES } from '../../component-library';
 
 export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const t = useI18nContext();
@@ -41,7 +42,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const trackEvent = useContext(MetaMetricsContext);
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
-  const isRemovable = keyring.type !== KEYRING_TYPES.HD_KEY_TREE;
+  const isRemovable = keyring.type !== HardwareKeyringTypes.hdKeyTree;
 
   const routeToAddBlockExplorerUrl = () => {
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -82,7 +83,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             </span>
           ) : null
         }
-        iconClassName="fas fa-external-link-alt"
+        iconName={ICON_NAMES.EXPORT}
       >
         {t(
           blockExplorerLinkText.firstPart,
@@ -104,7 +105,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             global.platform.openExtensionInBrowser();
             onClose();
           }}
-          iconClassName="fas fa-expand-alt"
+          iconName={ICON_NAMES.EXPAND}
         >
           {t('expandView')}
         </MenuItem>
@@ -122,7 +123,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           });
           onClose();
         }}
-        iconClassName="fas fa-qrcode"
+        iconName={ICON_NAMES.SCAN_BARCODE}
       >
         {t('accountDetails')}
       </MenuItem>
@@ -139,7 +140,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
           history.push(CONNECTED_ROUTE);
           onClose();
         }}
-        iconClassName="fa fa-bullseye"
+        iconName={ICON_NAMES.CONNECT}
       >
         {t('connectedSites')}
       </MenuItem>
@@ -155,7 +156,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
             );
             onClose();
           }}
-          iconClassName="fas fa-trash-alt"
+          iconName={ICON_NAMES.TRASH}
         >
           {t('removeAccount')}
         </MenuItem>

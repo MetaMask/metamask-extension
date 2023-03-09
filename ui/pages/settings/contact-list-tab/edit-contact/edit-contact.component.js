@@ -100,7 +100,7 @@ export default class EditContact extends PureComponent {
               onChange={(e) => this.setState({ newAddress: e.target.value })}
               fullWidth
               multiline
-              rows={3}
+              rows={4}
               margin="dense"
               classes={{
                 inputMultiline:
@@ -169,6 +169,12 @@ export default class EditContact extends PureComponent {
             history.push(`${viewRoute}/${address}`);
           }}
           submitText={this.context.t('save')}
+          disabled={
+            (this.state.newName === name &&
+              this.state.newAddress === address &&
+              this.state.newMemo === memo) ||
+            !this.state.newName.trim()
+          }
         />
       </div>
     );

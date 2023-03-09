@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
-  COLORS,
+  BorderColor,
   SEVERITIES,
-  TYPOGRAPHY,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../box';
 import Typography from '../typography';
@@ -10,7 +10,7 @@ import Callout from './callout';
 
 export default {
   title: 'Components/UI/Callout',
-  id: __filename,
+
   argTypes: {
     severity: {
       control: {
@@ -22,10 +22,12 @@ export default {
 };
 
 export const PersistentCallout = (args) => (
-  <Box borderColor={COLORS.BORDER_DEFAULT} paddingTop={8}>
+  <Box borderColor={BorderColor.borderDefault} paddingTop={8}>
     <Box margin={2}>
-      <Typography variant={TYPOGRAPHY.H4}>This is your private key:</Typography>
-      <Typography variant={TYPOGRAPHY.H6}>
+      <Typography variant={TypographyVariant.H4}>
+        This is your private key:
+      </Typography>
+      <Typography variant={TypographyVariant.H6}>
         some seed words that are super important and probably deserve a callout
       </Typography>
     </Box>
@@ -36,12 +38,12 @@ export const PersistentCallout = (args) => (
 export const DismissibleCallout = (args) => {
   const [dismissed, setDismissed] = useState(false);
   return (
-    <Box borderColor={COLORS.BORDER_DEFAULT} paddingTop={8}>
+    <Box borderColor={BorderColor.borderDefault} paddingTop={8}>
       <Box margin={2}>
-        <Typography variant={TYPOGRAPHY.H4}>
+        <Typography variant={TypographyVariant.H4}>
           This is your private key:
         </Typography>
-        <Typography variant={TYPOGRAPHY.H6}>
+        <Typography variant={TypographyVariant.H6}>
           some seed words that are super important and probably deserve a
           callout
         </Typography>
@@ -81,12 +83,12 @@ export const MultipleDismissibleCallouts = () => {
   };
 
   return (
-    <Box borderColor={COLORS.BORDER_DEFAULT} paddingTop={8}>
+    <Box borderColor={BorderColor.borderDefault} paddingTop={8}>
       <Box margin={2}>
-        <Typography variant={TYPOGRAPHY.H4}>
+        <Typography variant={TypographyVariant.H4}>
           This is your private key:
         </Typography>
-        <Typography variant={TYPOGRAPHY.H6}>
+        <Typography variant={TypographyVariant.H6}>
           some seed words that are super important and probably deserve a
           callout
         </Typography>

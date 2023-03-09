@@ -29,10 +29,10 @@ const t = (key) => {
       return 'State logs contain your public account addresses and sent transactions.';
     case 'syncWithMobile':
       return 'Sync with mobile';
-    case 'resetAccount':
-      return 'Reset account';
-    case 'resetAccountDescription':
-      return 'Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase.';
+    case 'clearActivity':
+      return 'Clear activity and nonce data';
+    case 'clearActivityDescription':
+      return "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change.";
     case 'showAdvancedGasInline':
       return 'Advanced gas controls';
     case 'showAdvancedGasInlineDescription':
@@ -103,21 +103,17 @@ const t = (key) => {
       return 'Localhost 8545';
     case 'experimental':
       return 'Experimental';
-    case 'enhancedTokenDetection':
-      return 'Enhanced token detection';
-    case 'enhancedTokenDetectionDescription':
-      return "ConsenSys' token API aggregates a list of tokens from various third party token lists. When turned on, tokens will be automatically detected, and searchable, on Ethereum mainnet, Binance, Polygon and Avalanche. When turned off, automatic detection and search can only be done on Ethereum mainnet.";
-    case 'enableEIP1559V2':
-      return 'Enable enhanced gas fee UI';
-    case 'enableEIP1559V2Description':
-      return "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. Learn more";
+    case 'autoDetectTokens':
+      return 'Autodetect tokens';
+    case 'autoDetectTokensDescription':
+      return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services.';
     case 'enableOpenSeaAPI':
       return 'Enable OpenSea API';
     case 'enableOpenSeaAPIDescription':
       return "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.";
-    case 'useCollectibleDetection':
+    case 'useNftDetection':
       return 'Autodetect NFTs';
-    case 'useCollectibleDetectionDescription':
+    case 'useNftDetectionDescription':
       return 'Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services.';
     case 'about':
       return 'About';
@@ -141,6 +137,10 @@ const t = (key) => {
       return 'Contact us';
     case 'snaps':
       return 'Snaps';
+    case 'currencyRateCheckToggle':
+      return 'Show balance and token price checker';
+    case 'currencyRateCheckToggleDescription':
+      return 'We use Coingecko and CryptoCompare APIs to display your balance and token price. Privacy Policy';
     default:
       return '';
   }
@@ -159,7 +159,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(15);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(14);
     });
 
     it('should get good contact section number', () => {
@@ -169,7 +169,7 @@ describe('Settings Search Utils', () => {
     it('should get good security & privacy section number', () => {
       expect(
         getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(4);
+      ).toStrictEqual(9);
     });
 
     it('should get good alerts section number', () => {
@@ -182,7 +182,7 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        3,
+        1,
       );
     });
 

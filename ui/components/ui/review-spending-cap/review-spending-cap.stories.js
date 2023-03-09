@@ -3,7 +3,7 @@ import ReviewSpendingCap from './review-spending-cap';
 
 export default {
   title: 'Components/UI/ReviewSpendingCap',
-  id: __filename,
+
   argTypes: {
     tokenName: {
       control: { type: 'text' },
@@ -12,7 +12,7 @@ export default {
       control: { type: 'number' },
     },
     tokenValue: {
-      control: { type: 'number' },
+      control: { type: 'text' },
     },
     onEdit: {
       action: 'onEdit',
@@ -21,7 +21,7 @@ export default {
   args: {
     tokenName: 'DAI',
     currentTokenBalance: 200.12,
-    tokenValue: 7,
+    tokenValue: '7',
   },
 };
 

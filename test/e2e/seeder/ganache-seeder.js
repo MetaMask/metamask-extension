@@ -1,4 +1,6 @@
-const { ethers } = require('ethers');
+const { Web3Provider } = require('@ethersproject/providers');
+const { ContractFactory } = require('@ethersproject/contracts');
+
 const { SMART_CONTRACTS, contractConfiguration } = require('./smart-contracts');
 const GanacheContractAddressRegistry = require('./ganache-contract-address-registry');
 
@@ -18,13 +20,10 @@ class GanacheSeeder {
    */
 
   async deploySmartContract(contractName) {
-    const ethersProvider = new ethers.providers.Web3Provider(
-      this.ganacheProvider,
-      'any',
-    );
+    const ethersProvider = new Web3Provider(this.ganacheProvider, 'any');
     const signer = ethersProvider.getSigner();
     const fromAddress = await signer.getAddress();
-    const contractFactory = new ethers.ContractFactory(
+    const contractFactory = new ContractFactory(
       contractConfiguration[contractName].abi,
       contractConfiguration[contractName].bytecode,
       signer,
@@ -45,10 +44,20 @@ class GanacheSeeder {
 
     await contract.deployTransaction.wait();
 
-    if (contractName === SMART_CONTRACTS.COLLECTIBLES) {
+    if (contractName === SMART_CONTRACTS.NFTS) {
       const transaction = await contract.mintCollectibles(1, {
         from: fromAddress,
       });
+      await transaction.wait();
+    }
+
+    if (contractName === SMART_CONTRACTS.ERC1155) {
+      const transaction = await contract.mintBatch(
+        fromAddress,
+        [1, 2, 3],
+        [1, 1, 100000000000000],
+        '0x',
+      );
       await transaction.wait();
     }
     this.storeSmartContractAddress(contractName, contract.address);

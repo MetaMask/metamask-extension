@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  flex-flow: wrap;
 
   &__value {
     max-width: 250px;
@@ -26,15 +27,8 @@
   }
 
   &__icon-button {
-    position: absolute;
     margin-left: 10px;
     left: 100%;
-    background: unset;
-  }
-
-  &__icon {
-    cursor: pointer;
-    color: var(--color-icon-default);
   }
 
   &__error {
@@ -42,6 +36,8 @@
 
     left: 8px;
     color: var(--color-error-default);
+    width: 100%;
+    text-align: center;
   }
 
   &__error-amount {

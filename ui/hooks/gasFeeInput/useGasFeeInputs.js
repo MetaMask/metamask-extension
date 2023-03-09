@@ -3,21 +3,20 @@ import { useSelector } from 'react-redux';
 
 import {
   CUSTOM_GAS_ESTIMATE,
-  GAS_RECOMMENDATIONS,
-  EDIT_GAS_MODES,
-  PRIORITY_LEVELS,
+  GasRecommendations,
+  EditGasModes,
+  PriorityLevels,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
-  getEIP1559V2Enabled,
 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { editGasModeIsSpeedUpOrCancel } from '../../helpers/utils/gas';
-import { hexToDecimal } from '../../../shared/lib/metamask-controller-utils';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { useGasFeeErrors } from './useGasFeeErrors';
 import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
@@ -42,37 +41,39 @@ import { useTransactionFunctions } from './useTransactionFunctions';
 
 /**
  * @typedef {object} GasFeeInputReturnType
+ * @property {object} [transaction] - .
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
- * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
- *  user's preferred currency.
- * @property {(DecGweiString) => void} setMaxFeePerGas - state setter method to
- *  update the maxFeePerGas.
  * @property {DecGweiString} [maxPriorityFeePerGas] - the maxPriorityFeePerGas
  *  input value.
- * @property {string} [maxPriorityFeePerGasFiat] - the maxPriorityFeePerGas
- *  converted to the user's preferred currency.
- * @property {(DecGweiString) => void} setMaxPriorityFeePerGas - state setter
- *  method to update the maxPriorityFeePerGas.
  * @property {DecGweiString} [gasPrice] - the gasPrice input value.
  * @property {(DecGweiString) => void} setGasPrice - state setter method to
  *  update the gasPrice.
  * @property {DecGweiString} gasLimit - the gasLimit input value.
  * @property {(DecGweiString) => void} setGasLimit - state setter method to
  *  update the gasLimit.
+ * @property {DecGweiString} [properGasLimit] - proper gas limit.
+ * @property {string} [editGasMode] - one of CANCEL, SPEED-UP, MODIFY_IN_PLACE, SWAPS.
  * @property {EstimateLevel} [estimateToUse] - the estimate level currently
- *  selected. This will be null if the user has ejected from using the
- *  estimates.
- * @property {([EstimateLevel]) => void} setEstimateToUse - Setter method for
- *  choosing which EstimateLevel to use.
- * @property {string} [estimatedMinimumFiat] - The amount estimated to be paid
- *  based on current network conditions. Expressed in user's preferred
- *  currency.
- * @property {string} [estimatedMaximumFiat] - the maximum amount estimated to be
- *  paid if current network transaction volume increases. Expressed in user's
- *  preferred currency.
- * @property {string} [estimatedMaximumNative] - the maximum amount estimated to
- *  be paid if the current network transaction volume increases. Expressed in
- *  the network's native currency.
+ *  selected. This will be null if the user has ejected from using the estimates.
+ * @property {boolean} [isGasEstimatesLoading] - true if gas estimate is loading.
+ * @property {DecGweiString} [maximumCostInHexWei] - maximum cost of transaction in HexWei.
+ * @property {DecGweiString} [minimumCostInHexWei] - minimum cost of transaction in HexWei.
+ * @property {string} [estimateUsed] - estimate used in the transaction.
+ * @property {boolean} [isNetworkBusy] - true if network is busy.
+ * @property {() => void} [onManualChange] - function to call when transaciton is manually changed.
+ * @property {boolean} [balanceError] - true if user balance is less than transaction value.
+ * @property {object} [gasErrors] - object of gas errors.
+ * @property {boolean} [hasGasErrors] - true if there are gas errors.
+ * @property {boolean} [hasSimulationError] - true if simulation error exists.
+ * @property {number} [minimumGasLimitDec] - minimum gas limit in decimals.
+ * @property {boolean} [supportsEIP1559] - true if EIP1559 is cupported.
+ * @property {() => void} cancelTransaction - cancel the transaction.
+ * @property {() => void} speedUpTransaction - speed up the transaction.
+ * @property {(string, number, number, number, string) => void} updateTransaction - update the transaction.
+ * @property {(boolean) => void} updateTransactionToTenPercentIncreasedGasFee - update the cancel / speed transaction to
+ * gas fee which is equal to current gas fee +10 percent.
+ * @property {(string) => void} updateTransactionUsingDAPPSuggestedValues - update the transaction to DAPP suggested gas value.
+ * @property {(string) => void} updateTransactionUsingEstimate - update the transaction using the estimate passed.
  */
 
 /**
@@ -80,20 +81,20 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  * Will update the gas fee state when estimates update if the user has not yet
  * modified the fields.
  *
- * @param {EstimateLevel} [defaultEstimateToUse] - which estimate
+ * @param {GasRecommendations} [defaultEstimateToUse] - which estimate
  *  level to default the 'estimateToUse' state variable to.
  * @param {object} [_transaction]
  * @param {string} [minimumGasLimit]
- * @param {EDIT_GAS_MODES[keyof EDIT_GAS_MODES]} editGasMode
+ * @param {EditGasModes[keyof EditGasModes]} editGasMode
  * @returns {GasFeeInputReturnType & import(
  *  './useGasFeeEstimates'
  * ).GasEstimates} gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
-  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
+  defaultEstimateToUse = GasRecommendations.medium,
   _transaction,
   minimumGasLimit = '0x5208',
-  editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
+  editGasMode = EditGasModes.modifyInPlace,
 ) {
   const initialRetryTxMeta = {
     txParams: _transaction?.txParams,
@@ -113,13 +114,9 @@ export function useGasFeeInputs(
     ? retryTxMeta
     : _transaction;
 
-  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
-
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
-
-  const supportsEIP1559V2 = supportsEIP1559 && eip1559V2Enabled;
 
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
@@ -128,7 +125,6 @@ export function useGasFeeInputs(
     gasEstimateType,
     gasFeeEstimates,
     isGasEstimatesLoading,
-    estimatedGasFeeTimeBounds,
     isNetworkBusy,
   } = useGasFeeEstimates();
 
@@ -152,7 +148,7 @@ export function useGasFeeInputs(
     if (estimateToUse) {
       return estimateToUse;
     }
-    return PRIORITY_LEVELS.CUSTOM;
+    return PriorityLevels.custom;
   });
 
   const [gasLimit, setGasLimit] = useState(() =>
@@ -161,17 +157,13 @@ export function useGasFeeInputs(
 
   const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
 
-  const [userEditedGasLimit, setUserEditedGasLimit] = useState(() =>
-    Boolean(transaction?.userEditedGasLimit),
-  );
-
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
    * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
    * so that transaction is source of truth whenever possible.
    */
   useEffect(() => {
-    if (supportsEIP1559V2) {
+    if (supportsEIP1559) {
       if (transaction?.userFeeLevel) {
         setEstimateUsed(transaction?.userFeeLevel);
         setInternalEstimateToUse(transaction?.userFeeLevel);
@@ -182,7 +174,7 @@ export function useGasFeeInputs(
     setEstimateUsed,
     setGasLimit,
     setInternalEstimateToUse,
-    supportsEIP1559V2,
+    supportsEIP1559,
     transaction,
   ]);
 
@@ -194,69 +186,47 @@ export function useGasFeeInputs(
       transaction,
     });
 
-  const { maxFeePerGas, maxFeePerGasFiat, setMaxFeePerGas } =
-    useMaxFeePerGasInput({
+  const { maxFeePerGas, setMaxFeePerGas } = useMaxFeePerGasInput({
+    estimateToUse,
+    gasEstimateType,
+    gasFeeEstimates,
+    transaction,
+  });
+
+  const { maxPriorityFeePerGas, setMaxPriorityFeePerGas } =
+    useMaxPriorityFeePerGasInput({
       estimateToUse,
+      gasEstimateType,
+      gasFeeEstimates,
+      transaction,
+    });
+
+  const { estimatedMinimumNative, maximumCostInHexWei, minimumCostInHexWei } =
+    useGasEstimates({
+      editGasMode,
       gasEstimateType,
       gasFeeEstimates,
       gasLimit,
       gasPrice,
-      supportsEIP1559V2,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      minimumGasLimit,
       transaction,
     });
 
-  const {
-    maxPriorityFeePerGas,
-    maxPriorityFeePerGasFiat,
-    setMaxPriorityFeePerGas,
-  } = useMaxPriorityFeePerGasInput({
-    estimateToUse,
-    gasEstimateType,
-    gasFeeEstimates,
-    gasLimit,
-    supportsEIP1559V2,
-    transaction,
-  });
-
-  const {
-    estimatedBaseFee,
-    estimatedMaximumFiat,
-    estimatedMinimumFiat,
-    estimatedMaximumNative,
-    estimatedMinimumNative,
-    maximumCostInHexWei,
-    minimumCostInHexWei,
-  } = useGasEstimates({
-    editGasMode,
-    gasEstimateType,
-    gasFeeEstimates,
-    gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    minimumGasLimit,
-    transaction,
-  });
-
-  const {
-    balanceError,
-    estimatesUnavailableWarning,
-    gasErrors,
-    gasWarnings,
-    hasGasErrors,
-    hasSimulationError,
-  } = useGasFeeErrors({
-    gasEstimateType,
-    gasFeeEstimates,
-    isGasEstimatesLoading,
-    gasLimit,
-    gasPrice,
-    maxPriorityFeePerGas,
-    maxFeePerGas,
-    minimumCostInHexWei,
-    minimumGasLimit,
-    transaction,
-  });
+  const { balanceError, gasErrors, hasGasErrors, hasSimulationError } =
+    useGasFeeErrors({
+      gasEstimateType,
+      gasFeeEstimates,
+      isGasEstimatesLoading,
+      gasLimit,
+      gasPrice,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      minimumCostInHexWei,
+      minimumGasLimit,
+      transaction,
+    });
 
   const handleGasLimitOutOfBoundError = useCallback(() => {
     if (gasErrors.gasLimit === GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS) {
@@ -288,37 +258,12 @@ export function useGasFeeInputs(
     setRetryTxMeta,
   });
 
-  // When a user selects an estimate level, it will wipe out what they have
-  // previously put in the inputs. This returns the inputs to the estimated
-  // values at the level specified.
-  const setEstimateToUse = useCallback(
-    (estimateLevel) => {
-      setInternalEstimateToUse(estimateLevel);
-      handleGasLimitOutOfBoundError();
-      setMaxFeePerGas(null);
-      setMaxPriorityFeePerGas(null);
-      setGasPrice(null);
-      setGasPriceHasBeenManuallySet(false);
-      setEstimateUsed(estimateLevel);
-    },
-    [
-      setInternalEstimateToUse,
-      handleGasLimitOutOfBoundError,
-      setMaxFeePerGas,
-      setMaxPriorityFeePerGas,
-      setGasPrice,
-      setGasPriceHasBeenManuallySet,
-      setEstimateUsed,
-    ],
-  );
-
   const onManualChange = useCallback(() => {
     setInternalEstimateToUse(CUSTOM_GAS_ESTIMATE);
     handleGasLimitOutOfBoundError();
     // Restore existing values
     setGasPrice(gasPrice);
     setGasLimit(gasLimit);
-    setUserEditedGasLimit(true);
     setMaxFeePerGas(maxFeePerGas);
     setMaxPriorityFeePerGas(maxPriorityFeePerGas);
     setGasPriceHasBeenManuallySet(true);
@@ -330,7 +275,6 @@ export function useGasFeeInputs(
     gasPrice,
     setGasLimit,
     gasLimit,
-    setUserEditedGasLimit,
     setMaxFeePerGas,
     maxFeePerGas,
     setMaxPriorityFeePerGas,
@@ -341,44 +285,28 @@ export function useGasFeeInputs(
   return {
     transaction,
     maxFeePerGas,
-    maxFeePerGasFiat,
-    setMaxFeePerGas,
     maxPriorityFeePerGas,
-    maxPriorityFeePerGasFiat,
-    setMaxPriorityFeePerGas,
     gasPrice,
     setGasPrice,
     gasLimit,
     setGasLimit,
     properGasLimit,
-    userEditedGasLimit,
     editGasMode,
     estimateToUse,
-    setEstimateToUse,
-    estimatedMinimumFiat,
-    estimatedMaximumFiat,
-    estimatedMaximumNative,
     estimatedMinimumNative,
-    isGasEstimatesLoading,
     maximumCostInHexWei,
     minimumCostInHexWei,
     estimateUsed,
     gasFeeEstimates,
-    gasEstimateType,
-    estimatedGasFeeTimeBounds,
     isNetworkBusy,
     onManualChange,
-    estimatedBaseFee,
     // error and warnings
     balanceError,
-    estimatesUnavailableWarning,
     gasErrors,
-    gasWarnings,
     hasGasErrors,
     hasSimulationError,
     minimumGasLimitDec: hexToDecimal(minimumGasLimit),
     supportsEIP1559,
-    supportsEIP1559V2,
     cancelTransaction,
     speedUpTransaction,
     updateTransaction,

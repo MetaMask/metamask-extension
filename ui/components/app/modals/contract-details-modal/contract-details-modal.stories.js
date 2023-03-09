@@ -3,7 +3,7 @@ import ContractDetailsModal from './contract-details-modal';
 
 export default {
   title: 'Components/App/Modals/ContractDetailsModal',
-  id: __filename,
+
   argTypes: {
     onClose: {
       action: 'onClose',
@@ -33,16 +33,6 @@ export default {
         type: 'object',
       },
     },
-    origin: {
-      control: {
-        type: 'text',
-      },
-    },
-    siteImage: {
-      control: {
-        type: 'text',
-      },
-    },
   },
   args: {
     tokenName: 'DAI',
@@ -50,8 +40,6 @@ export default {
     toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
     chainId: '0x3',
     rpcPrefs: {},
-    origin: 'https://metamask.github.io',
-    siteImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   },
 };
 

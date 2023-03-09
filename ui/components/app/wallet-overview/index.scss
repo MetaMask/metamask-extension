@@ -51,6 +51,7 @@
 
   &__primary-container {
     display: flex;
+    position: relative;
   }
 
   &__primary-balance {
@@ -63,6 +64,13 @@
 
   &__cached-star {
     margin-left: 4px;
+  }
+
+  &__portfolio-button {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    left: calc(100% + 2px);
   }
 
   &__cached-balance,
@@ -82,9 +90,6 @@
     color: var(--color-text-alternative);
   }
 
-  &__button {
-    margin-right: 24px;
-  }
 
   &__button:last-of-type {
     margin-right: 0;
@@ -126,10 +131,6 @@
     @include H5;
 
     color: var(--color-text-alternative);
-  }
-
-  &__button {
-    margin-right: 24px;
   }
 
   &__button:last-of-type {

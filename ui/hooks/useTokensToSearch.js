@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { isEqual, uniqBy } from 'lodash';
-import { formatIconUrlWithProxy } from '@metamask/controllers';
+import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
   getTokenExchangeRates,
@@ -16,7 +16,7 @@ import { getConversionRate } from '../ducks/metamask/metamask';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-import { TOKEN_BUCKET_PRIORITY } from '../../shared/constants/swaps';
+import { TokenBucketPriority } from '../../shared/constants/swaps';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
@@ -96,7 +96,7 @@ export function useTokensToSearch({
   usersTokens = [],
   topTokens = {},
   shuffledTokensList,
-  tokenBucketPriority = TOKEN_BUCKET_PRIORITY.OWNED,
+  tokenBucketPriority = TokenBucketPriority.owned,
 }) {
   const chainId = useSelector(getCurrentChainId);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
@@ -156,7 +156,7 @@ export function useTokensToSearch({
         chainId,
         tokenList,
       );
-      if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+      if (tokenBucketPriority === TokenBucketPriority.owned) {
         if (
           isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
           usersTokensAddressMap[token.address.toLowerCase()]
@@ -189,7 +189,7 @@ export function useTokensToSearch({
       },
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
-    if (tokenBucketPriority === TOKEN_BUCKET_PRIORITY.OWNED) {
+    if (tokenBucketPriority === TokenBucketPriority.owned) {
       return [
         ...tokensToSearchBuckets.owned,
         ...tokensToSearchBuckets.top,

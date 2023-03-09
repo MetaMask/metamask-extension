@@ -1,4 +1,5 @@
 const { promises: fs } = require('fs');
+const path = require('path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -17,6 +18,12 @@ async function main() {
             description: `Set the browser used; either 'chrome' or 'firefox'.`,
             type: 'string',
             choices: ['chrome', 'firefox'],
+          })
+          .option('debug', {
+            default: process.env.E2E_DEBUG === 'true',
+            description:
+              'Run tests in debug mode, logging each driver interaction',
+            type: 'boolean',
           })
           .option('retries', {
             default: 0,
@@ -39,7 +46,7 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, e2eTestPath, retries, leaveRunning } = argv;
+  const { browser, debug, e2eTestPath, retries, leaveRunning } = argv;
 
   if (!browser) {
     exitWithError(
@@ -69,7 +76,13 @@ async function main() {
     throw error;
   }
 
-  let testTimeoutInMilliseconds = 60 * 1000;
+  const testFileName = path.basename(e2eTestPath);
+
+  if (debug) {
+    process.env.E2E_DEBUG = 'true';
+  }
+
+  let testTimeoutInMilliseconds = 80 * 1000;
   let exit = '--exit';
 
   if (leaveRunning) {
@@ -78,15 +91,26 @@ async function main() {
     exit = '--no-exit';
   }
 
+  const configFile = path.join(__dirname, '.mocharc.js');
+  const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
+
+  const dir = 'test/test-results/e2e';
+  fs.mkdir(dir, { recursive: true });
+
   await retry({ retries }, async () => {
-    await runInShell('yarn', [
-      'mocha',
-      '--no-config',
-      '--timeout',
-      testTimeoutInMilliseconds,
-      e2eTestPath,
-      exit,
-    ]);
+    await runInShell(
+      'yarn',
+      [
+        'mocha',
+        `--config=${configFile}`,
+        `--timeout=${testTimeoutInMilliseconds}`,
+        '--reporter=xunit',
+        ...extraArgs,
+        e2eTestPath,
+        exit,
+      ],
+      `${dir}/${testFileName}.xml`,
+    );
   });
 }
 

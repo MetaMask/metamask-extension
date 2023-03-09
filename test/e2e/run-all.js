@@ -36,8 +36,22 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
+          .option('debug', {
+            default: process.env.E2E_DEBUG === 'true',
+            description:
+              'Run tests in debug mode, logging each driver interaction',
+            type: 'boolean',
+          })
           .option('snaps', {
             description: `run snaps e2e tests`,
+            type: 'boolean',
+          })
+          .option('mv3', {
+            description: `run mv3 specific e2e tests`,
+            type: 'boolean',
+          })
+          .option('nft', {
+            description: `run nft specific e2e tests`,
             type: 'boolean',
           })
           .option('retries', {
@@ -49,22 +63,29 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries, snaps } = argv;
+  const { browser, debug, retries, snaps, mv3, nft } = argv;
 
-  let testDir = path.join(__dirname, 'tests');
+  let testPaths;
 
   if (snaps) {
-    testDir = path.join(__dirname, 'snaps');
-  }
-
-  let testPaths = await getTestPathsForTestDir(testDir);
-
-  if (!snaps) {
+    const testDir = path.join(__dirname, 'snaps');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (nft) {
+    const testDir = path.join(__dirname, 'nft');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else {
+    const testDir = path.join(__dirname, 'tests');
     testPaths = [
-      ...testPaths,
+      ...(await getTestPathsForTestDir(testDir)),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
+
+    if (mv3) {
+      testPaths.push(
+        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
+      );
+    }
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
@@ -76,6 +97,9 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
+  if (debug) {
+    args.push('--debug');
+  }
 
   // For running E2Es in parallel in CI
   const currentChunkIndex = process.env.CIRCLE_NODE_INDEX ?? 0;
@@ -84,6 +108,8 @@ async function main() {
   const currentChunk = chunks[currentChunkIndex];
 
   for (const testPath of currentChunk) {
+    const dir = 'test/test-results/e2e';
+    fs.mkdir(dir, { recursive: true });
     await runInShell('node', [...args, testPath]);
   }
 }

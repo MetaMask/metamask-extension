@@ -30,13 +30,13 @@ describe('Test Snap update', function () {
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
 
         // find and scroll to the correct card and click first
-        const snapButton = await driver.findElement('#connectUpdateNew');
+        const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
-
         await driver.delay(2000);
 
         // switch to metamask extension and click connect
@@ -49,13 +49,10 @@ describe('Test Snap update', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.delay(2000);
 
         // approve install of snap
@@ -78,6 +75,9 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
+        // delay for npm installation
+        await driver.delay(2000);
+
         // navigate to test snap page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
@@ -88,6 +88,7 @@ describe('Test Snap update', function () {
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await driver.waitUntilXWindowHandles(2, 1000, 10000);
@@ -104,6 +105,9 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
+        // delay for npm installation
+        await driver.delay(2000);
+
         // navigate to test snap page
         windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
@@ -111,7 +115,7 @@ describe('Test Snap update', function () {
         // look for the correct version text
         const versionResult = await driver.findElement('#updateSnapVersion');
         await driver.delay(1000);
-        assert.equal(await versionResult.getText(), '"4.0.2"');
+        assert.equal(await versionResult.getText(), '"5.0.1"');
       },
     );
   });

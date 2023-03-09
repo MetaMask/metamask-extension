@@ -3,21 +3,31 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { ButtonBase } from '../button-base';
+import {
+  BackgroundColor,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
 
 export const ButtonPrimary = ({
   className,
   danger,
+  disabled,
   size = BUTTON_PRIMARY_SIZES.MD,
   ...props
 }) => {
   return (
     <ButtonBase
+      backgroundColor={
+        danger ? BackgroundColor.errorDefault : BackgroundColor.primaryDefault
+      }
+      color={danger ? TextColor.errorInverse : TextColor.primaryInverse}
       className={classnames(className, 'mm-button-primary', {
         'mm-button-primary--type-danger': danger,
+        'mm-button-primary--disabled': disabled,
       })}
       size={size}
-      {...props}
+      {...{ disabled, ...props }}
     />
   );
 };
@@ -31,6 +41,10 @@ ButtonPrimary.propTypes = {
    * When true, `ButtonPrimary` color becomes Danger.
    */
   danger: PropTypes.bool,
+  /**
+   * Boolean to disable button
+   */
+  disabled: PropTypes.bool,
   /**
    * Possible size values: 'SIZES.SM'(32px), 'SIZES.MD'(40px), 'SIZES.LG'(48px).
    * Default value is 'SIZES.MD'.

@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import MessageManager from './message-manager';
 
 describe('Message Manager', () => {
@@ -22,7 +22,7 @@ describe('Message Manager', () => {
     it('adds a Msg returned in getMsgList', () => {
       const Msg = {
         id: 1,
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       };
       messageManager.addMsg(Msg);
@@ -45,7 +45,7 @@ describe('Message Manager', () => {
       const result = messageManager.messages;
       expect(Array.isArray(result)).toStrictEqual(true);
       expect(result).toHaveLength(1);
-      expect(result[0].status).toStrictEqual(TRANSACTION_STATUSES.APPROVED);
+      expect(result[0].status).toStrictEqual(TransactionStatus.approved);
     });
   });
 
@@ -61,7 +61,7 @@ describe('Message Manager', () => {
       const result = messageManager.messages;
       expect(Array.isArray(result)).toStrictEqual(true);
       expect(result).toHaveLength(1);
-      expect(result[0].status).toStrictEqual(TRANSACTION_STATUSES.REJECTED);
+      expect(result[0].status).toStrictEqual(TransactionStatus.rejected);
     });
   });
 
@@ -74,7 +74,7 @@ describe('Message Manager', () => {
       });
       messageManager.addMsg({
         id: '2',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       });
       messageManager._updateMsg({
@@ -97,7 +97,7 @@ describe('Message Manager', () => {
       });
       messageManager.addMsg({
         id: '2',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       });
       const result = messageManager.getUnapprovedMsgs();
@@ -116,12 +116,12 @@ describe('Message Manager', () => {
       });
       messageManager.addMsg({
         id: '2',
-        status: TRANSACTION_STATUSES.APPROVED,
+        status: TransactionStatus.approved,
         metamaskNetworkId: 'unit test',
       });
       expect(messageManager.getMsg('1').status).toStrictEqual('unapproved');
       expect(messageManager.getMsg('2').status).toStrictEqual(
-        TRANSACTION_STATUSES.APPROVED,
+        TransactionStatus.approved,
       );
     });
   });

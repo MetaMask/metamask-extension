@@ -8,7 +8,11 @@ import {
   TRAITS,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
 import { NETWORK_EVENTS } from './network';
@@ -16,7 +20,6 @@ import { NETWORK_EVENTS } from './network';
 const segment = createSegmentMock(2, 10000);
 
 const VERSION = '0.0.1-test';
-const NETWORK = 'Mainnet';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
@@ -46,7 +49,6 @@ const DEFAULT_TEST_CONTEXT = {
 const DEFAULT_SHARED_PROPERTIES = {
   chain_id: FAKE_CHAIN_ID,
   locale: LOCALE.replace('_', '-'),
-  network: NETWORK,
   environment_type: 'background',
 };
 
@@ -62,23 +64,24 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
-function getMockNetworkController(
-  chainId = FAKE_CHAIN_ID,
-  provider = { type: NETWORK },
-) {
-  let networkStore = { chainId, provider };
+function getMockNetworkController() {
+  let state = {
+    provider: {
+      type: NETWORK_TYPES.GOERLI,
+      chainId: FAKE_CHAIN_ID,
+    },
+    network: 'loading',
+  };
   const on = sinon.stub().withArgs(NETWORK_EVENTS.NETWORK_DID_CHANGE);
   const updateState = (newState) => {
-    networkStore = { ...networkStore, ...newState };
+    state = { ...state, ...newState };
     on.getCall(0).args[1]();
   };
   return {
     store: {
-      getState: () => networkStore,
+      getState: () => state,
       updateState,
     },
-    getCurrentChainId: () => networkStore.chainId,
-    getNetworkIdentifier: () => networkStore.provider.type,
     on,
   };
 }
@@ -116,6 +119,7 @@ const SAMPLE_NON_PERSISTED_EVENT = {
   category: 'Unit Test',
   successEvent: 'sample non-persisted event success',
   failureEvent: 'sample non-persisted event failure',
+  uniqueIdentifier: 'sample-non-persisted-event',
   properties: {
     test: true,
   },
@@ -130,10 +134,8 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getNetworkIdentifier:
-      networkController.getNetworkIdentifier.bind(networkController),
-    getCurrentChainId:
-      networkController.getCurrentChainId.bind(networkController),
+    getCurrentChainId: () =>
+      networkController.store.getState().provider.chainId,
     onNetworkDidChange: networkController.on.bind(
       networkController,
       NETWORK_EVENTS.NETWORK_DID_CHANGE,
@@ -159,6 +161,7 @@ describe('MetaMetricsController', function () {
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
+
   describe('constructor', function () {
     it('should properly initialize', function () {
       const mock = sinon.mock(segment);
@@ -173,12 +176,11 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
             test: true,
           },
-          messageId: Utils.generateRandomId(),
+          messageId: 'sample-non-persisted-event-failure',
           timestamp: new Date(),
         });
       const metaMetricsController = getMetaMetricsController();
       assert.strictEqual(metaMetricsController.version, VERSION);
-      assert.strictEqual(metaMetricsController.network, NETWORK);
       assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID);
       assert.strictEqual(
         metaMetricsController.state.participateInMetaMetrics,
@@ -203,14 +205,12 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         networkController,
       });
-      assert.strictEqual(metaMetricsController.network, NETWORK);
       networkController.store.updateState({
         provider: {
           type: 'NEW_NETWORK',
+          chainId: '0xaab',
         },
-        chainId: '0xaab',
       });
-      assert.strictEqual(metaMetricsController.network, 'NEW_NETWORK');
       assert.strictEqual(metaMetricsController.chainId, '0xaab');
     });
 
@@ -219,7 +219,6 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController({
         preferencesStore,
       });
-      assert.strictEqual(metaMetricsController.network, NETWORK);
       preferencesStore.updateState({
         currentLocale: 'en_UK',
       });
@@ -681,6 +680,197 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('deterministic messageId', function () {
+    it('should use the actionId as messageId when provided', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: { foo: 'bar' },
+        actionId: '0x001',
+      });
+      assert.ok(spy.calledOnce);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: '0x001',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should append 0x000 to the actionId of anonymized event when tracking sensitiveProperties', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+        actionId: '0x001',
+      });
+      assert.ok(spy.calledTwice);
+
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: '0x001-0x000',
+          timestamp: new Date(),
+        }),
+      );
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: '0x001',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should use the uniqueIdentifier as messageId when provided', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: { foo: 'bar' },
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledOnce);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should append 0x000 to the uniqueIdentifier of anonymized event when tracking sensitiveProperties', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x000',
+          timestamp: new Date(),
+        }),
+      );
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should combine the uniqueIdentifier and actionId as messageId when both provided', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        properties: { foo: 'bar' },
+        actionId: '0x001',
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledOnce);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x001',
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should append 0x000 to the combined uniqueIdentifier and actionId of anonymized event when tracking sensitiveProperties', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+        actionId: '0x001',
+        uniqueIdentifier: 'transaction-submitted-0000',
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x001-0x000',
+          timestamp: new Date(),
+        }),
+      );
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: 'transaction-submitted-0000-0x001',
+          timestamp: new Date(),
+        }),
+      );
+    });
+  });
+
   describe('_buildUserTraitsObject', function () {
     it('should return full user traits object on first call', function () {
       const MOCK_ALL_TOKENS = {
@@ -755,6 +945,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.deepEqual(traits, {
@@ -772,6 +963,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.THREE_BOX_ENABLED]: false,
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
+        [TRAITS.DESKTOP_ENABLED]: false,
       });
     });
 
@@ -793,6 +985,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -813,6 +1006,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.deepEqual(updatedTraits, {
@@ -841,6 +1035,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
@@ -859,6 +1054,7 @@ describe('MetaMetricsController', function () {
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
+        desktopEnabled: false,
       });
 
       assert.equal(updatedTraits, null);

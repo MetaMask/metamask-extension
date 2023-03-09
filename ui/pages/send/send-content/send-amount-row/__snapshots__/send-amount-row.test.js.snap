@@ -1,0 +1,144 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SendAmountRow Component render NFT Asset Type should match snapshot for token NFT type 1`] = `<div />`;
+
+exports[`SendAmountRow Component render Native Asset Type should match snapshot for native asset type 1`] = `
+<div>
+  <div
+    class="send-v2__form-row"
+  >
+    <div
+      class="send-v2__form-label"
+    >
+      Amount:
+      <button
+        class="send-v2__amount-max"
+      >
+        <input
+          readonly=""
+          type="checkbox"
+        />
+        <div
+          class="send-v2__amount-max__button"
+        >
+          Max
+        </div>
+      </button>
+    </div>
+    <div
+      class="send-v2__form-field-container"
+    >
+      <div
+        class="send-v2__form-field"
+      >
+        <div
+          class="unit-input"
+        >
+          <div
+            class="unit-input__inputs"
+          >
+            <div
+              class="unit-input__input-container"
+            >
+              <input
+                class="unit-input__input"
+                data-testid="currency-input"
+                dir="ltr"
+                placeholder="0"
+                style="width: 1.5ch;"
+                type="number"
+                value="1"
+              />
+              <div
+                class="unit-input__suffix"
+              >
+                ETH
+              </div>
+            </div>
+            <div
+              class="currency-input__conversion-component"
+            >
+              No conversion rate available
+            </div>
+          </div>
+          <button
+            class="currency-input__swap-component"
+            data-testid="currency-swap"
+          >
+            <i
+              class="fa fa-retweet fa-lg"
+            />
+          </button>
+        </div>
+      </div>
+      <div />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SendAmountRow Component render Token Asset Type should match snapshot for token asset type 1`] = `
+<div>
+  <div
+    class="send-v2__form-row"
+  >
+    <div
+      class="send-v2__form-label"
+    >
+      Amount:
+      <button
+        class="send-v2__amount-max"
+      >
+        <input
+          readonly=""
+          type="checkbox"
+        />
+        <div
+          class="send-v2__amount-max__button"
+        >
+          Max
+        </div>
+      </button>
+    </div>
+    <div
+      class="send-v2__form-field-container"
+    >
+      <div
+        class="send-v2__form-field"
+      >
+        <div
+          class="unit-input"
+        >
+          <div
+            class="unit-input__inputs"
+          >
+            <div
+              class="unit-input__input-container"
+            >
+              <input
+                class="unit-input__input"
+                dir="ltr"
+                placeholder="0"
+                style="width: 1.5ch;"
+                type="number"
+                value="0"
+              />
+              <div
+                class="unit-input__suffix"
+              >
+                META
+              </div>
+            </div>
+            <div
+              class="currency-input__conversion-component"
+            >
+              No conversion rate available
+            </div>
+          </div>
+        </div>
+      </div>
+      <div />
+    </div>
+  </div>
+</div>
+`;

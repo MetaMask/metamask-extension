@@ -9,8 +9,8 @@ const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
 
 export default {
-  title: 'Components/APP/AddNetwork',
-  id: __filename,
+  title: 'Components/App/AddNetwork',
+
   argTypes: {
     onBackClick: {
       action: 'onBackClick',

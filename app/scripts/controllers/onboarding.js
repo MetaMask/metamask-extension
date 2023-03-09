@@ -46,11 +46,11 @@ export default class OnboardingController {
   //  * Sets the completedOnboarding state to true, indicating that the user has completed the
   //  * onboarding process.
   //  */
-  completeOnboarding() {
+  async completeOnboarding() {
     this.store.updateState({
       completedOnboarding: true,
     });
-    return Promise.resolve(true);
+    return true;
   }
 
   /**

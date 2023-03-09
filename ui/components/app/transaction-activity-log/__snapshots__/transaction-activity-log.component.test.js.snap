@@ -19,8 +19,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <i
-            class="fa transaction-activity-log-icon__icon fa-plus"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            style="mask-image: url('./images/icons/add.svg');"
           />
         </div>
         <div
@@ -40,8 +41,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <i
-            class="fa transaction-activity-log-icon__icon fa-arrow-up"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            style="mask-image: url('./images/icons/arrow-up.svg');"
           />
         </div>
         <div
@@ -61,8 +63,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <i
-            class="fa transaction-activity-log-icon__icon fa-retweet"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            style="mask-image: url('./images/icons/programming-arrows.svg');"
           />
         </div>
         <div
@@ -82,8 +85,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         <div
           class="transaction-activity-log-icon transaction-activity-log__activity-icon"
         >
-          <i
-            class="fa transaction-activity-log-icon__icon fa-check"
+          <span
+            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            style="mask-image: url('./images/icons/check.svg');"
           />
         </div>
         <div

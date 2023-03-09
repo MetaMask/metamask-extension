@@ -5,16 +5,18 @@ import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TypographyVariant,
   TEXT_ALIGN,
+  BackgroundColor,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
 
 const snapIdPrefixes = ['npm:', 'local:'];
 
 const SnapsAuthorshipPill = ({ snapId, version, className }) => {
-  // @todo Use getSnapPrefix from snaps-skunkworks when possible
+  // @todo Use getSnapPrefix from snaps-monorepo when possible
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata
@@ -29,6 +31,9 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
     : packageName;
   const icon = isNPM ? 'fab fa-npm fa-lg' : 'fas fa-code';
   const t = useI18nContext();
+
+  const friendlyName = SNAPS_METADATA[snapId]?.name ?? packageName;
+
   return (
     <a
       href={url}
@@ -46,13 +51,13 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
           version && (
             <Box
               className="snaps-authorship-version"
-              backgroundColor={COLORS.PRIMARY_DEFAULT}
+              backgroundColor={BackgroundColor.primaryDefault}
               paddingLeft={2}
               paddingRight={2}
             >
               <Typography
-                color={COLORS.PRIMARY_INVERSE}
-                variant={TYPOGRAPHY.H7}
+                color={TextColor.primaryInverse}
+                variant={TypographyVariant.H7}
                 align={TEXT_ALIGN.CENTER}
                 as="span"
                 className="version"
@@ -62,16 +67,16 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
             </Box>
           )
         }
-        backgroundColor={COLORS.BACKGROUND_DEFAULT}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         <Typography
           className="chip__label"
-          variant={TYPOGRAPHY.H7}
+          variant={TypographyVariant.H7}
           as="span"
-          color={COLORS.TEXT_ALTERNATIVE}
-          title={packageName}
+          color={TextColor.textAlternative}
+          title={friendlyName}
         >
-          {packageName}
+          {friendlyName}
         </Typography>
       </Chip>
     </a>

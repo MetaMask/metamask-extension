@@ -4,7 +4,7 @@ import AdvancedTab from './advanced-tab.component';
 
 export default {
   title: 'Pages/Settings/AdvancedTab',
-  id: __filename,
+
   argTypes: {
     warning: { control: 'text' },
     useNonceField: { control: 'boolean' },

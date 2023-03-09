@@ -1,8 +1,7 @@
-import { SIZES } from '../../../helpers/constants/design-system';
+import { Size } from '../../../helpers/constants/design-system';
 
 export const BUTTON_BASE_SIZES = {
-  SM: SIZES.SM,
-  MD: SIZES.MD,
-  LG: SIZES.LG,
-  AUTO: SIZES.AUTO,
+  SM: Size.SM,
+  MD: Size.MD,
+  LG: Size.LG,
 };

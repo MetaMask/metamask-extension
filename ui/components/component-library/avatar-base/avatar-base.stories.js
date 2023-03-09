@@ -1,15 +1,16 @@
 import React from 'react';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   DISPLAY,
-  TEXT_COLORS,
-  BACKGROUND_COLORS,
-  BORDER_COLORS,
+  TextColor,
+  BackgroundColor,
+  BorderColor,
+  Color,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
+import { Icon, ICON_NAMES } from '../icon';
 import README from './README.mdx';
 import { AvatarBase } from './avatar-base';
 import { AVATAR_BASE_SIZES } from './avatar-base.constants';
@@ -33,7 +34,7 @@ const marginSizeKnobOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/AvatarBase',
-  id: __filename,
+
   component: AvatarBase,
   parameters: {
     docs: {
@@ -46,21 +47,20 @@ export default {
       options: Object.values(AVATAR_BASE_SIZES),
     },
     color: {
-      options: Object.values(TEXT_COLORS),
+      options: Object.values(TextColor),
       control: 'select',
     },
     backgroundColor: {
-      options: Object.values(BACKGROUND_COLORS),
+      options: Object.values(BackgroundColor),
       control: 'select',
     },
     borderColor: {
-      options: Object.values(BORDER_COLORS),
+      options: Object.values(BorderColor),
       control: 'select',
     },
     display: {
       options: Object.values(DISPLAY),
       control: 'select',
-      defaultValue: DISPLAY.FLEX,
       table: { category: 'box props' },
     },
     marginTop: {
@@ -86,9 +86,9 @@ export default {
   },
   args: {
     size: AVATAR_BASE_SIZES.MD,
-    color: COLORS.TEXT_DEFAULT,
-    backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
-    borderColor: COLORS.BORDER_DEFAULT,
+    color: TextColor.textDefault,
+    backgroundColor: BackgroundColor.backgroundAlternative,
+    borderColor: BorderColor.borderDefault,
   },
 };
 
@@ -97,7 +97,7 @@ export const DefaultStory = (args) => <AvatarBase {...args}>B</AvatarBase>;
 DefaultStory.storyName = 'Default';
 
 export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.BASELINE} gap={1}>
+  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
     <AvatarBase {...args} size={AVATAR_BASE_SIZES.XS} />
     <AvatarBase {...args} size={AVATAR_BASE_SIZES.SM} />
     <AvatarBase {...args} size={AVATAR_BASE_SIZES.MD} />
@@ -120,13 +120,10 @@ export const Children = (args) => (
     <AvatarBase {...args}>A</AvatarBase>
     <AvatarBase
       {...args}
-      backgroundColor={COLORS.INFO_MUTED}
-      borderColor={COLORS.INFO_MUTED}
+      backgroundColor={BackgroundColor.infoMuted}
+      borderColor={BorderColor.infoMuted}
     >
-      <i
-        className="fa fa-user"
-        style={{ color: 'var(--color-info-default)' }}
-      />
+      <Icon name={ICON_NAMES.USER} color={Color.infoDefault} />
     </AvatarBase>
   </Box>
 );
@@ -136,17 +133,17 @@ export const ColorBackgroundColorAndBorderColor = (args) => (
     <AvatarBase {...args}>B</AvatarBase>
     <AvatarBase
       {...args}
-      backgroundColor={COLORS.GOERLI}
-      borderColor={COLORS.GOERLI}
-      color={COLORS.PRIMARY_INVERSE}
+      backgroundColor={BackgroundColor.goerli}
+      borderColor={BorderColor.goerli}
+      color={TextColor.primaryInverse}
     >
       G
     </AvatarBase>
     <AvatarBase
       {...args}
-      backgroundColor={COLORS.SEPOLIA}
-      borderColor={COLORS.SEPOLIA}
-      color={COLORS.PRIMARY_INVERSE}
+      backgroundColor={BackgroundColor.sepolia}
+      borderColor={BorderColor.sepolia}
+      color={TextColor.primaryInverse}
     >
       S
     </AvatarBase>

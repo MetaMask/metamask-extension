@@ -6,26 +6,26 @@ import {
   createInflightCacheMiddleware,
   createBlockTrackerInspectorMiddleware,
   providerFromMiddleware,
-} from 'eth-json-rpc-middleware';
+} from '@metamask/eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
 import { SECOND } from '../../../../shared/constants/time';
 
-const inTest = process.env.IN_TEST;
-const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
-const getTestMiddlewares = () => {
-  return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
-};
-
 export default function createJsonRpcClient({ rpcUrl, chainId }) {
+  const blockTrackerOpts = process.env.IN_TEST
+    ? { pollingInterval: SECOND }
+    : {};
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
     ...blockTrackerOpts,
     provider: blockProvider,
   });
+  const testMiddlewares = process.env.IN_TEST
+    ? [createEstimateGasDelayTestMiddleware()]
+    : [];
 
   const networkMiddleware = mergeMiddleware([
-    ...getTestMiddlewares(),
+    ...testMiddlewares,
     createChainIdMiddleware(chainId),
     createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockCacheMiddleware({ blockTracker }),

@@ -2,9 +2,9 @@ import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  SIZES,
-  COLORS,
-  BORDER_RADIUS,
+  Size,
+  Color,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from '../text-field';
@@ -32,7 +32,7 @@ const marginSizeControlOptions = [
 
 export default {
   title: 'Components/ComponentLibrary/TextFieldSearch',
-  id: __filename,
+
   component: TextFieldSearch,
   parameters: {
     docs: {
@@ -45,9 +45,6 @@ export default {
     },
     onChange: {
       action: 'onChange',
-    },
-    showClearButton: {
-      control: 'boolean',
     },
     clearButtonOnClick: {
       action: 'clearButtonOnClick',
@@ -83,7 +80,7 @@ export default {
       control: 'object',
       table: { category: 'text field base props' },
     },
-    leftAccessory: {
+    startAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
@@ -127,7 +124,7 @@ export default {
       control: 'boolean',
       table: { category: 'text field base props' },
     },
-    rightAccessory: {
+    endAccessory: {
       control: 'text',
       table: { category: 'text field base props' },
     },
@@ -167,8 +164,8 @@ export default {
     },
   },
   args: {
-    showClearButton: true,
     placeholder: 'Search',
+    value: '',
   },
 };
 
@@ -193,20 +190,18 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const ShowClearButton = Template.bind({});
+export const ClearButtonOnClick = Template.bind({});
 
-ShowClearButton.args = {
-  placeholder: 'Enter text to show clear',
-  showClearButton: true,
+ClearButtonOnClick.args = {
+  value: 'Text to clear',
 };
 
 export const ClearButtonProps = Template.bind({});
 ClearButtonProps.args = {
   value: 'clear button props',
-  size: SIZES.LG,
-  showClearButton: true,
+  size: Size.LG,
   clearButtonProps: {
-    backgroundColor: COLORS.BACKGROUND_ALTERNATIVE,
-    borderRadius: BORDER_RADIUS.XS,
+    backgroundColor: Color.backgroundAlternative,
+    borderRadius: BorderRadius.XS,
   },
 };

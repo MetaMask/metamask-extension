@@ -9,10 +9,9 @@ import {
   setShowTestNetworks,
   setAutoLockTimeLimit,
   setUseNonceField,
-  setIpfsGateway,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
-  setUseTokenDetection,
+  setDisabledRpcMethodPreference,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -27,11 +26,13 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
+    disabledRpcMethodPreferences,
     useNonceField,
-    ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
-    useTokenDetection,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    desktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
   } = metamask;
   const {
     showFiatInTestnets,
@@ -49,11 +50,13 @@ export const mapStateToProps = (state) => {
     showTestNetworks,
     autoLockTimeLimit,
     useNonceField,
-    ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
-    useTokenDetection,
+    disabledRpcMethodPreferences,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    desktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -78,17 +81,14 @@ export const mapDispatchToProps = (dispatch) => {
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
-    setIpfsGateway: (value) => {
-      return dispatch(setIpfsGateway(value));
-    },
     setLedgerTransportPreference: (value) => {
       return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setUseTokenDetection: (value) => {
-      return dispatch(setUseTokenDetection(value));
+    setDisabledRpcMethodPreference: (methodName, isEnabled) => {
+      return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
     },
   };
 };

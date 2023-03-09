@@ -10,16 +10,21 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
 } from '../selectors';
-import { getTokens, getNativeCurrency } from '../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  getNfts,
+} from '../ducks/metamask/metamask';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
-  TRANSACTION_TYPES,
-  TRANSACTION_GROUP_CATEGORIES,
-  TRANSACTION_STATUSES,
+  TransactionType,
+  TransactionGroupCategory,
+  TransactionStatus,
 } from '../../shared/constants/transaction';
+import { formatDateWithYearContext } from '../helpers/utils/util';
 import * as i18nhooks from './useI18nContext';
 import * as useTokenFiatAmountHooks from './useTokenFiatAmount';
 import { useTransactionDisplayData } from './useTransactionDisplayData';
@@ -27,112 +32,112 @@ import { useTransactionDisplayData } from './useTransactionDisplayData';
 const expectedResults = [
   {
     title: 'Send',
-    category: TRANSACTION_GROUP_CATEGORIES.SEND,
+    category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe...1a97',
     subtitleContainsOrigin: false,
-    date: 'May 12, 2020',
+    date: formatDateWithYearContext(1589314601567),
     primaryCurrency: '-1 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
   },
   {
     title: 'Send',
-    category: TRANSACTION_GROUP_CATEGORIES.SEND,
+    category: TransactionGroupCategory.send,
     subtitle: 'To: 0x0cc...8848',
     subtitleContainsOrigin: false,
-    date: 'May 12, 2020',
+    date: formatDateWithYearContext(1589314355872),
     primaryCurrency: '-2 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Send',
-    category: TRANSACTION_GROUP_CATEGORIES.SEND,
+    category: TransactionGroupCategory.send,
     subtitle: 'To: 0xffe...1a97',
     subtitleContainsOrigin: false,
-    date: 'May 12, 2020',
+    date: formatDateWithYearContext(1589314345433),
     primaryCurrency: '-2 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-2 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Receive',
-    category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
+    category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x31b...4523',
     subtitleContainsOrigin: false,
-    date: 'May 12, 2020',
+    date: formatDateWithYearContext(1589314295000),
     primaryCurrency: '18.75 ETH',
     senderAddress: '0x31b98d14007bdee637298086988a0bbd31184523',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '18.75 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Receive',
-    category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
+    category: TransactionGroupCategory.receive,
     subtitle: 'From: 0x9ec...a149',
     subtitleContainsOrigin: false,
-    date: 'May 8, 2020',
+    date: formatDateWithYearContext(1588972833000),
     primaryCurrency: '0 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '0 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Receive',
-    category: TRANSACTION_GROUP_CATEGORIES.RECEIVE,
+    category: TransactionGroupCategory.receive,
     subtitle: 'From: 0xee0...febb',
     subtitleContainsOrigin: false,
-    date: 'May 24, 2020',
+    date: formatDateWithYearContext(1585087013000),
     primaryCurrency: '1 ETH',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '1 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Swap ETH to ABC',
-    category: TRANSACTION_TYPES.SWAP,
+    category: TransactionType.swap,
     subtitle: '',
     subtitleContainsOrigin: false,
-    date: 'May 12, 2020',
+    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '+1 ABC',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: undefined,
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Contract deployment',
-    category: TRANSACTION_GROUP_CATEGORIES.INTERACTION,
+    category: TransactionGroupCategory.interaction,
     subtitle: 'metamask.github.io',
     subtitleContainsOrigin: true,
-    date: 'May 12, 2020',
+    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-0 ETH',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: undefined,
     secondaryCurrency: '-0 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
   },
   {
     title: 'Safe transfer from',
-    category: TRANSACTION_GROUP_CATEGORIES.SEND,
+    category: TransactionGroupCategory.send,
     subtitle: 'To: 0xe7d...dd98',
     subtitleContainsOrigin: true,
     primaryCurrency: '-0 ETH',
@@ -140,7 +145,19 @@ const expectedResults = [
     recipientAddress: '0xe7d522230eff653bb0a9b4385f0be0815420dd98',
     secondaryCurrency: '-0 ETH',
     isPending: false,
-    displayedStatusKey: TRANSACTION_STATUSES.CONFIRMED,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
+  {
+    title: 'Approve ABC spending cap',
+    category: TransactionGroupCategory.approval,
+    subtitle: `metamask.github.io`,
+    subtitleContainsOrigin: true,
+    primaryCurrency: '0.00000000000005 ABC',
+    senderAddress: '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
+    recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
+    secondaryCurrency: undefined,
+    displayedStatusKey: TransactionStatus.confirmed,
+    isPending: false,
   },
 ];
 
@@ -165,9 +182,7 @@ describe('useTransactionDisplayData', () => {
       useTokenFiatAmountHooks,
       'useTokenFiatAmount',
     );
-    useTokenFiatAmount.returns((tokenAddress) => {
-      return tokenAddress ? '1 TST' : undefined;
-    });
+    useTokenFiatAmount.returns(undefined);
     useI18nContext = sinon.stub(i18nhooks, 'useI18nContext');
     useI18nContext.returns((key, variables) =>
       getMessage('en', messages, key, variables),
@@ -193,6 +208,8 @@ describe('useTransactionDisplayData', () => {
         return 'ETH';
       } else if (selector === getCurrentChainId) {
         return CHAIN_IDS.MAINNET;
+      } else if (selector === getNfts) {
+        return [];
       }
       return null;
     });

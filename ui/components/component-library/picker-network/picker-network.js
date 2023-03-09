@@ -6,12 +6,13 @@ import { Icon, ICON_NAMES } from '../icon';
 import { Text } from '../text';
 import Box from '../../ui/box';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   DISPLAY,
-  SIZES,
-  BORDER_RADIUS,
-  TEXT,
+  Size,
+  BorderRadius,
+  TextVariant,
+  IconColor,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
 export const PickerNetwork = ({
@@ -26,30 +27,30 @@ export const PickerNetwork = ({
     <Box
       className={classnames('mm-picker-network', className)}
       as="button"
-      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
-      alignItems={ALIGN_ITEMS.CENTER}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      alignItems={AlignItems.center}
       paddingLeft={2}
       paddingRight={4}
       gap={2}
-      borderRadius={BORDER_RADIUS.PILL}
+      borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
       {...props}
     >
       <AvatarNetwork
         className="mm-picker-network__avatar-network"
-        networkImageUrl={src}
-        networkName={label}
-        size={SIZES.XS}
+        src={src}
+        name={label}
+        size={Size.XS}
         {...avatarNetworkProps}
       />
-      <Text ellipsis variant={TEXT.BODY_SM}>
+      <Text ellipsis variant={TextVariant.bodySm}>
         {label}
       </Text>
       <Icon
         className="mm-picker-network__arrow-down-icon"
         name={ICON_NAMES.ARROW_DOWN}
-        color={COLORS.ICON_DEFAULT}
-        size={SIZES.XS}
+        color={IconColor.iconDefault}
+        size={Size.XS}
         {...iconProps}
       />
     </Box>

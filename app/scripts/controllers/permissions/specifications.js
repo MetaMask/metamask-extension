@@ -1,4 +1,7 @@
-import { constructPermission, PermissionType } from '@metamask/controllers';
+import {
+  constructPermission,
+  PermissionType,
+} from '@metamask/permission-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snaps-controllers';
 import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
@@ -257,10 +260,12 @@ export const unrestrictedMethods = Object.freeze([
   'eth_signTypedData_v1',
   'eth_signTypedData_v3',
   'eth_signTypedData_v4',
+  'eth_subscribe',
   'eth_submitHashrate',
   'eth_submitWork',
   'eth_syncing',
   'eth_uninstallFilter',
+  'eth_unsubscribe',
   'metamask_getProviderState',
   'metamask_watchAsset',
   'net_listening',

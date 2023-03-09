@@ -46,6 +46,8 @@
  * @typedef {object} MetaMetricsEventPayload
  * @property {string} event - event name to track
  * @property {string} category - category to associate event to
+ * @property {number} [actionId] - Action id to deduplicate event requests from
+ * the UI
  * @property {string} [environmentType] - The type of environment this event
  *  occurred in. Defaults to the background process type
  * @property {object} [properties] - object of custom values to track, keys
@@ -184,6 +186,7 @@
  * @property {'token_detection_enabled'} TOKEN_DETECTION_ENABLED - when token detection feature is toggled we
  * identify the token_detection_enabled trait
  * @property {'install_date_ext'} INSTALL_DATE_EXT - when the user installed the extension
+ * @property {'desktop_enabled'} [DESKTOP_ENABLED] - optional / does the user have desktop enabled?
  */
 
 /**
@@ -206,6 +209,7 @@ export const TRAITS = {
   THEME: 'theme',
   THREE_BOX_ENABLED: 'three_box_enabled',
   TOKEN_DETECTION_ENABLED: 'token_detection_enabled',
+  DESKTOP_ENABLED: 'desktop_enabled',
 };
 
 /**
@@ -235,6 +239,7 @@ export const TRAITS = {
  *  enabled? (deprecated)
  * @property {string} [theme] - which theme the user has selected
  * @property {boolean} [token_detection_enabled] - does the user have token detection is enabled?
+ * @property {boolean} [desktop_enabled] - optional / does the user have desktop enabled?
  */
 
 // Mixpanel converts the zero address value to a truly anonymous event, which
@@ -281,12 +286,13 @@ export const EVENT_NAMES = {
   ACCOUNT_ADDED: 'Account Added',
   ACCOUNT_ADD_SELECTED: 'Account Add Selected',
   ACCOUNT_ADD_FAILED: 'Account Add Failed',
-  ACCOUNT_PASSWORD_CREATED: 'Wallet Password Created',
+  ACCOUNT_PASSWORD_CREATED: 'Account Password Created',
   ACCOUNT_RESET: 'Account Reset',
   APP_INSTALLED: 'App Installed',
   APP_UNLOCKED: 'App Unlocked',
   APP_UNLOCKED_FAILED: 'App Unlocked Failed',
   APP_WINDOW_EXPANDED: 'App Window Expanded',
+  BRIDGE_LINK_CLICKED: 'Bridge Link Clicked',
   DECRYPTION_APPROVED: 'Decryption Approved',
   DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
@@ -300,6 +306,14 @@ export const EVENT_NAMES = {
   KEY_EXPORT_CANCELED: 'Key Export Canceled',
   KEY_EXPORT_REVEALED: 'Key Material Revealed',
   KEY_EXPORT_COPIED: 'Key Material Copied',
+  KEY_TOKEN_DETECTION_SELECTED: 'Key Token Detection Selected',
+  KEY_GLOBAL_SECURITY_TOGGLE_SELECTED: 'Key Global Security/Privacy Settings',
+  KEY_BALANCE_TOKEN_PRICE_CHECKER:
+    'Key Show Balance and Token Price Checker Settings',
+  KEY_GAS_FEE_ESTIMATION_BUY_SWAP_TOKENS:
+    'Key Show Gas Fee Estimation, Buy Crypto and Swap Tokens',
+  KEY_AUTO_DETECT_TOKENS: 'Key Autodetect tokens',
+  KEY_BATCH_ACCOUNT_BALANCE_REQUESTS: 'Key Batch account balance requests',
   METRICS_OPT_IN: 'Metrics Opt In',
   METRICS_OPT_OUT: 'Metrics Opt Out',
   NAV_ACCOUNT_MENU_OPENED: 'Account Menu Opened',
@@ -323,6 +337,7 @@ export const EVENT_NAMES = {
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PHISHING_PAGE_DISPLAYED: 'Phishing Page Displayed',
   PORTFOLIO_LINK_CLICKED: 'Portfolio Link Clicked',
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
@@ -337,6 +352,23 @@ export const EVENT_NAMES = {
   TOKEN_HIDDEN: 'Token Hidden',
   TOKEN_IMPORT_CANCELED: 'Token Import Canceled',
   TOKEN_IMPORT_CLICKED: 'Token Import Clicked',
+  ONBOARDING_WELCOME: 'App Installed',
+  ONBOARDING_WALLET_CREATION_STARTED: 'Wallet Setup Selected',
+  ONBOARDING_WALLET_IMPORT_STARTED: 'Wallet Import Started',
+  ONBOARDING_WALLET_CREATION_ATTEMPTED: 'Wallet Password Created',
+  ONBOARDING_WALLET_SECURITY_STARTED: 'SRP Backup Selected',
+  ONBOARDING_WALLET_SECURITY_SKIP_INITIATED: 'SRP Skip Backup Selected',
+  ONBOARDING_WALLET_SECURITY_SKIP_CONFIRMED: 'SRP Backup Skipped',
+  ONBOARDING_WALLET_SECURITY_SKIP_CANCELED: 'SRP Skip Backup Canceled',
+  ONBOARDING_WALLET_SECURITY_PHRASE_REVEALED: 'SRP Revealed',
+  ONBOARDING_WALLET_SECURITY_PHRASE_WRITTEN_DOWN: 'SRP Backup Confirm Display',
+  ONBOARDING_WALLET_SECURITY_PHRASE_CONFIRMED: 'SRP Backup Confirmed',
+  ONBOARDING_WALLET_CREATION_COMPLETE: 'Wallet Created',
+  ONBOARDING_WALLET_SETUP_COMPLETE: 'Application Opened',
+  ONBOARDING_WALLET_ADVANCED_SETTINGS: 'Settings Updated',
+  ONBOARDING_WALLET_IMPORT_ATTEMPTED: 'Wallet Import Attempted',
+  ONBOARDING_WALLET_VIDEO_PLAY: 'SRP Intro Video Played',
+  ONBOARDING_TWITTER_CLICK: 'External Link Clicked',
 };
 
 export const EVENT = {
@@ -364,12 +396,14 @@ export const EVENT = {
     NAVIGATION: 'Navigation',
     NETWORK: 'Network',
     ONBOARDING: 'Onboarding',
+    PHISHING: 'Phishing',
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
     SNAPS: 'Snaps',
     SWAPS: 'Swaps',
     TRANSACTIONS: 'Transactions',
     WALLET: 'Wallet',
+    DESKTOP: 'Desktop',
   },
   EXTERNAL_LINK_TYPES: {
     TRANSACTION_BLOCK_EXPLORER: 'Transaction Block Explorer',
@@ -419,4 +453,20 @@ export const EVENT = {
 // tracking object as keys, e.g. { location: 'Home' }
 export const CONTEXT_PROPS = {
   PAGE_TITLE: 'location',
+};
+
+/**
+ * These types correspond to the keys in the METAMETRIC_KEY_OPTIONS object
+ */
+export const METAMETRIC_KEY = {
+  UI_CUSTOMIZATIONS: `ui_customizations`,
+};
+
+/**
+ * This object maps a method name to a METAMETRIC_KEY
+ */
+export const METAMETRIC_KEY_OPTIONS = {
+  [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
+    SIWE: 'sign_in_with_ethereum',
+  },
 };

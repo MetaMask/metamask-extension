@@ -4,7 +4,7 @@ import README from './README.mdx';
 
 export default {
   title: 'Pages/Swaps/CountdownTimer',
-  id: __filename,
+
   component: CountdownTimer,
   parameters: {
     docs: {

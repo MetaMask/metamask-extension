@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react-hooks';
 
 import configureStore from '../store/store';
 import * as Actions from '../store/actions';
-import { ERC1155, ERC20, ERC721 } from '../../shared/constants/transaction';
+import { TokenStandard } from '../../shared/constants/transaction';
 import { useAssetDetails } from './useAssetDetails';
 
 const renderUseAssetDetails = ({
@@ -19,6 +19,7 @@ const renderUseAssetDetails = ({
         chainId: '0x5',
       },
       tokenList: {},
+      tokens: [],
     },
   };
 
@@ -69,7 +70,7 @@ describe('useAssetDetails', () => {
     const toAddress = '000000000000000000000000000000000000dead';
     const transactionData = `0xa9059cbb000000000000000000000000${toAddress}00000000000000000000000000000000000000000000000000000000000001f4`;
 
-    const standard = ERC20;
+    const standard = TokenStandard.ERC20;
     const symbol = 'WETH';
     const balance = '1';
     const decimals = 18;
@@ -117,7 +118,7 @@ describe('useAssetDetails', () => {
     const name = 'BoredApeYachtClub';
     const image =
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
-    const standard = ERC721;
+    const standard = TokenStandard.ERC721;
 
     getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({
@@ -161,7 +162,7 @@ describe('useAssetDetails', () => {
 
     const image =
       'https://bafybeihw3gvmthmvrenfmcvagtais5tv7r4nmiezgsv7nyknjubxw4lite.ipfs.dweb.link';
-    const standard = ERC1155;
+    const standard = TokenStandard.ERC1155;
 
     getTokenStandardAndDetailsStub.mockImplementation(() =>
       Promise.resolve({

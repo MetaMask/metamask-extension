@@ -5,33 +5,35 @@ import classnames from 'classnames';
 import Box from '../../ui/box/box';
 
 import {
-  SIZES,
-  COLORS,
-  ICON_COLORS,
+  Size,
+  IconColor,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 
-import { ICON_SIZES } from './icon.constants';
+import { ICON_SIZES, ICON_NAMES } from './icon.constants';
 
 export const Icon = ({
   name,
-  size = SIZES.MD,
-  color = COLORS.INHERIT,
+  size = Size.MD,
+  color = IconColor.inherit,
   className,
   style,
   ...props
 }) => {
   return (
     <Box
-      color={color}
       className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
+      as="span"
+      display={DISPLAY.INLINE_BLOCK}
+      color={color}
       style={{
         /**
          * To reduce the possibility of injection attacks
          * the icon component uses mask-image instead of rendering
          * the svg directly.
          */
-        maskImage: `url('./images/icons/icon-${name}.svg')`,
-        WebkitMaskImage: `url('./images/icons/icon-${name}.svg')`,
+        maskImage: `url('./images/icons/${name}.svg')`,
+        WebkitMaskImage: `url('./images/icons/${name}.svg')`,
         ...style,
       }}
       {...props}
@@ -43,18 +45,18 @@ Icon.propTypes = {
   /**
    * The name of the icon to display. Should be one of ICON_NAMES
    */
-  name: PropTypes.string.isRequired, // Can't set PropTypes.oneOf(ICON_NAMES) because ICON_NAMES is an environment variable
+  name: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
   /**
    * The size of the Icon.
-   * Possible values could be SIZES.XXS (10px), SIZES.XS (12px), SIZES.SM (16px), SIZES.MD (20px), SIZES.LG (24px), SIZES.XL (32px),
+   * Possible values could be SIZES.XS (12px), SIZES.SM (16px), SIZES.MD (20px), SIZES.LG (24px), SIZES.XL (32px),
    * Default value is SIZES.MD (20px).
    */
   size: PropTypes.oneOf(Object.values(ICON_SIZES)),
   /**
    * The color of the icon.
-   * Defaults to COLORS.INHERIT.
+   * Defaults to IconColor.inherit.
    */
-  color: PropTypes.oneOf(Object.values(ICON_COLORS)),
+  color: PropTypes.oneOf(Object.values(IconColor)),
   /**
    * An additional className to apply to the icon.
    */

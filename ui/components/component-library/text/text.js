@@ -5,12 +5,13 @@ import Box from '../../ui/box';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT,
+  TextVariant,
   TEXT_ALIGN,
   TEXT_TRANSFORM,
   OVERFLOW_WRAP,
-  TEXT_COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
+import { TEXT_DIRECTIONS } from './text.constants';
 
 export const ValidTags = [
   'dd',
@@ -32,15 +33,34 @@ export const ValidTags = [
   'input',
 ];
 
+const getTextElementDefault = (variant) => {
+  switch (variant) {
+    case TextVariant.displayMd:
+      return 'h1';
+    case TextVariant.headingLg:
+      return 'h2';
+    case TextVariant.headingMd:
+      return 'h3';
+    case TextVariant.headingSm:
+      return 'h4';
+    case TextVariant.inherit:
+      return 'span';
+    // TextVariant.bodyLgMedium, TextVariant.bodyMd, TextVariant.bodyMdBold, TextVariant.bodySm, TextVariant.bodySmBold, TextVariant.bodyXs use default 'p' tag
+    default:
+      return 'p';
+  }
+};
+
 export const Text = React.forwardRef(
   (
     {
-      variant = TEXT.BODY_MD,
-      color = TEXT_COLORS.TEXT_DEFAULT,
+      variant = TextVariant.bodyMd,
+      color = TextColor.textDefault,
       fontWeight,
       fontStyle,
       textTransform,
       textAlign,
+      textDirection,
       overflowWrap,
       ellipsis,
       as,
@@ -50,7 +70,8 @@ export const Text = React.forwardRef(
     },
     ref,
   ) => {
-    let Tag = as ?? variant;
+    // Check if as is set otherwise set a default tag based on variant
+    const Tag = as ?? getTextElementDefault(variant);
     let strongTagFontWeight;
 
     if (Tag === 'strong') {
@@ -58,36 +79,27 @@ export const Text = React.forwardRef(
     }
 
     const computedClassName = classnames(
-      'text',
+      'mm-text',
       className,
-      `text--${variant}`,
+      `mm-text--${variant}`,
       (strongTagFontWeight || fontWeight) &&
-        `text--font-weight-${strongTagFontWeight || fontWeight}`,
+        `mm-text--font-weight-${strongTagFontWeight || fontWeight}`,
       {
-        [`text--font-style-${fontStyle}`]: Boolean(fontStyle),
-        [`text--ellipsis`]: Boolean(ellipsis),
-        [`text--text-transform-${textTransform}`]: Boolean(textTransform),
-        [`text--text-align-${textAlign}`]: Boolean(textAlign),
-        [`text--color-${color}`]: Boolean(color),
-        [`text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
+        [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`mm-text--ellipsis`]: Boolean(ellipsis),
+        [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
+        [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
+        [`mm-text--color-${color}`]: Boolean(color),
+        [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },
     );
-
-    // // Set a default tag based on variant
-    const splitTag = Tag.split('-')[0];
-    if (splitTag === 'body') {
-      Tag = 'p';
-    } else if (splitTag === 'heading') {
-      Tag = 'h2';
-    } else if (splitTag === 'display') {
-      Tag = 'h1';
-    }
 
     return (
       <Box
         ref={ref}
         className={classnames(computedClassName)}
         as={Tag}
+        dir={textDirection}
         {...props}
       >
         {children}
@@ -98,14 +110,26 @@ export const Text = React.forwardRef(
 
 Text.propTypes = {
   /**
-   * The variation of font styles including sizes and weights of the Text component (display, heading, body)
+   * The variation of font styles including sizes and weights of the Text component
+   * Possible values:
+   * `DISPLAY_MD` large screen: 48px / small screen: 32px,
+   * `HEADING_LG` large screen: 32px / small screen: 24px,
+   * `HEADING_MD` large screen: 24px / small screen: 18px,
+   * `HEADING_SM` large screen: 18px / small screen: 16px,
+   * `BODY_LG_MEDIUM` large screen: 18px / small screen: 16px,
+   * `BODY_MD` large screen: 16px / small screen: 14px,
+   * `BODY_MD_BOLD` large screen: 16px / small screen: 14px,
+   * `BODY_SM` large screen: 14px / small screen: 12px,
+   * `BODY_SM_BOLD` large screen: 14px / small screen: 12px,
+   * `BODY_XS` large screen: 12px / small screen: 10px,
+   * `INHERIT`
    */
-  variant: PropTypes.oneOf(Object.values(TEXT)),
+  variant: PropTypes.oneOf(Object.values(TextVariant)),
   /**
    * The color of the Text component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js
    */
-  color: PropTypes.oneOf(Object.values(TEXT_COLORS)),
+  color: PropTypes.oneOf(Object.values(TextColor)),
   /**
    * The font-weight of the Text component. Should use the FONT_WEIGHT object from
    * ./ui/helpers/constants/design-system.js
@@ -126,6 +150,11 @@ Text.propTypes = {
    * ./ui/helpers/constants/design-system.js
    */
   textAlign: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
+  /**
+   * Change the dir (direction) global attribute of text to support the direction a language is written
+   * Possible values: `LEFT_TO_RIGHT` (default), `RIGHT_TO_LEFT`, `AUTO` (user agent decides)
+   */
+  textDirection: PropTypes.oneOf(Object.values(TEXT_DIRECTIONS)),
   /**
    * The overflow-wrap of the Text component. Should use the OVERFLOW_WRAP object from
    * ./ui/helpers/constants/design-system.js

@@ -6,12 +6,15 @@ import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import {
   DISPLAY,
-  ALIGN_ITEMS,
-  JUSTIFY_CONTENT,
-  COLORS,
   FONT_WEIGHT,
   FLEX_DIRECTION,
-  SIZES,
+  AlignItems,
+  JustifyContent,
+  Color,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import SignatureRequestData from '../signature-request-data';
 
@@ -21,6 +24,7 @@ export default function SignatureRequestMessage({
   setMessageRootRef,
   messageRootRef,
   messageIsScrollable,
+  primaryType,
 }) {
   const t = useContext(I18nContext);
   const [messageIsScrolled, setMessageIsScrolled] = useState(false);
@@ -48,11 +52,11 @@ export default function SignatureRequestMessage({
       {messageIsScrollable ? (
         <Box
           display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
-          justifyContent={JUSTIFY_CONTENT.CENTER}
-          borderColor={COLORS.BORDER_DEFAULT}
-          backgroundColor={COLORS.BACKGROUND_DEFAULT}
-          color={COLORS.ICON_DEFAULT}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          borderColor={BorderColor.borderDefault}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          color={Color.iconDefault}
           onClick={() => {
             setMessageIsScrolled(true);
             onMessageScrolled();
@@ -65,25 +69,25 @@ export default function SignatureRequestMessage({
         </Box>
       ) : null}
       <Box
-        backgroundColor={COLORS.BACKGROUND_DEFAULT}
+        backgroundColor={BackgroundColor.backgroundDefault}
         paddingBottom={3}
         paddingTop={3}
         paddingRight={3}
         margin={2}
-        borderRadius={SIZES.XL}
-        borderColor={COLORS.BORDER_MUTED}
+        borderRadius={BorderRadius.XL}
+        borderColor={BorderColor.borderMuted}
         className="signature-request-message__root"
         ref={setMessageRootRef}
       >
         <Typography
           fontWeight={FONT_WEIGHT.BOLD}
-          color={COLORS.TEXT_DEFAULT}
+          color={TextColor.textDefault}
           marginLeft={4}
           className="signature-request-message__title"
         >
-          {t('signatureRequest1')}
+          {primaryType}
         </Typography>
-        <SignatureRequestData data={data} />
+        <SignatureRequestData data={data.value} />
       </Box>
     </Box>
   );
@@ -95,4 +99,5 @@ SignatureRequestMessage.propTypes = {
   setMessageRootRef: PropTypes.func,
   messageRootRef: PropTypes.object,
   messageIsScrollable: PropTypes.bool,
+  primaryType: PropTypes.string,
 };

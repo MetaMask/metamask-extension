@@ -31,9 +31,11 @@ describe('Test Snap Installed', function () {
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const confirmButton = await driver.findElement('#connectConfirmSnap');
+        const confirmButton = await driver.findElement('#connectDialogSnap');
         await driver.scrollToElement(confirmButton);
-        await driver.clickElement('#connectConfirmSnap');
+        await driver.delay(1000);
+        await driver.clickElement('#connectDialogSnap');
+        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -45,13 +47,10 @@ describe('Test Snap Installed', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         await driver.delay(2000);
 
@@ -65,6 +64,9 @@ describe('Test Snap Installed', function () {
           text: 'Approve & install',
           tag: 'button',
         });
+
+        // delay for npm installation
+        await driver.delay(2000);
 
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
@@ -81,13 +83,10 @@ describe('Test Snap Installed', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         await driver.delay(2000);
 
@@ -102,6 +101,9 @@ describe('Test Snap Installed', function () {
           tag: 'button',
         });
 
+        // delay for npm installation
+        await driver.delay(2000);
+
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
@@ -110,7 +112,7 @@ describe('Test Snap Installed', function () {
         await driver.delay(1000);
         assert.equal(
           await result.getText(),
-          'npm:@metamask/test-snap-confirm, npm:@metamask/test-snap-error',
+          'npm:@metamask/test-snap-dialog, npm:@metamask/test-snap-error',
         );
       },
     );

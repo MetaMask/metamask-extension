@@ -1,9 +1,10 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
+import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
@@ -13,7 +14,6 @@ describe('Confirm Page Container Content', () => {
         type: 'test',
         chainId: '0x5',
       },
-      eip1559V2Enabled: false,
       addressBook: {
         '0x5': {
           '0x06195827297c7A80a443b6894d3BDB8824b43896': {
@@ -48,6 +48,13 @@ describe('Confirm Page Container Content', () => {
       disabled: true,
       origin: 'http://localhost:4200',
       hideTitle: false,
+      txData: {
+        securityProviderResponse: {
+          flagAsDangerous: '?',
+          reason: 'Some reason...',
+          reason_header: 'Some reason header...',
+        },
+      },
     };
   });
 
@@ -107,7 +114,7 @@ describe('Confirm Page Container Content', () => {
   it('render contract address name from addressBook in title for contract', async () => {
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
-    props.transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
+    props.transactionType = TransactionType.contractInteraction;
     const { queryByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
       store,
@@ -119,12 +126,48 @@ describe('Confirm Page Container Content', () => {
   it('render simple title without address name for simple send', async () => {
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
-    props.transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    props.transactionType = TransactionType.simpleSend;
     const { queryByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
       store,
     );
 
     expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
+  });
+
+  it('should render SecurityProviderBannerMessage component properly', () => {
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Request not verified')).toBeInTheDocument();
+    expect(
+      queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeInTheDocument();
+    expect(
+      queryByText('This is based on information from'),
+    ).toBeInTheDocument();
+  });
+
+  it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
+    props.txData.securityProviderResponse = {
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+    };
+
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Request not verified')).toBeNull();
+    expect(
+      queryByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeNull();
+    expect(queryByText('This is based on information from')).toBeNull();
   });
 });
