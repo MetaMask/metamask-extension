@@ -63,6 +63,14 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { CUSTODIAN_TYPES, MmiConfigurationController } from '@metamask-institutional/custody-keyring';
+import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
+///: END:ONLY_INCLUDE_IN
+
 import browser from 'webextension-polyfill';
 import {
   AssetType,
@@ -254,6 +262,13 @@ export default class MetamaskController extends EventEmitter {
       }),
       showApprovalRequest: opts.showUserConfirmation,
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.mmiConfigurationController = new MmiConfigurationController({
+      initState: initState.MmiConfigurationController,
+      mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
+    });
+    ///: END:ONLY_INCLUDE_IN
 
     this.networkController = new NetworkController({
       state: initState.NetworkController,
@@ -665,6 +680,13 @@ export default class MetamaskController extends EventEmitter {
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
+
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+        additionalKeyringTypes.push(CUSTODIAN_TYPES[custodianType].keyringClass);
+      }
+      ///: END:ONLY_INCLUDE_IN
+
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
         keyringBuilderFactory(keyringType),
       );
@@ -894,6 +916,22 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.custodyController = new CustodyController({
+      initState: initState.CustodyController,
+    });
+    this.institutionalFeaturesController = new InstitutionalFeaturesController({
+      initState: initState.InstitutionalFeaturesController,
+      showConfirmRequest: opts.showUserConfirmation,
+    });
+    this.transactionUpdateController = new TransactionUpdateController({
+      initState: initState.TransactionUpdateController,
+      getCustodyKeyring: this.getCustodyKeyringIfExists.bind(this),
+      mmiConfigurationController: this.mmiConfigurationController,
+      captureException,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     this.backupController = new BackupController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -952,7 +990,30 @@ export default class MetamaskController extends EventEmitter {
       getDeviceModel: this.getDeviceModel.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      transactionUpdateController: this.transactionUpdateController,
+      ///: END:ONLY_INCLUDE_IN
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.mmiController = new MMIController({
+      mmiConfigurationController: this.mmiConfigurationController,
+      keyringController: this.keyringController,
+      txController: this.txController,
+      typedMessageManager: this.typedMessageManager,
+      personalMessageManager: this.personalMessageManager,
+      preferencesController: this.preferencesController,
+      appStateController: this.appStateController,
+      transactionUpdateController: this.transactionUpdateController,
+      custodyController: this.custodyController,
+      institutionalFeaturesController: this.institutionalFeaturesController,
+      addKeyringIfNotExists: this.addKeyringIfNotExists.bind(this),
+      getState: this.getState.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
+      showConfirmRequest: opts.showUserConfirmation,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
@@ -1228,6 +1289,13 @@ export default class MetamaskController extends EventEmitter {
       NotificationController: this.notificationController,
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
+
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      CustodyController: this.custodyController.store,
+      InstitutionalFeaturesController:
+        this.institutionalFeaturesController.store,
+      MmiConfigurationController: this.mmiConfigurationController.store,
+      ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
 
@@ -1260,6 +1328,13 @@ export default class MetamaskController extends EventEmitter {
         CronjobController: this.cronjobController,
         NotificationController: this.notificationController,
         DesktopController: this.desktopController.store,
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+        CustodyController: this.custodyController.store,
+        InstitutionalFeaturesController:
+          this.institutionalFeaturesController.store,
+        MmiConfigurationController: this.mmiConfigurationController.store,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
       },
@@ -2003,6 +2078,84 @@ export default class MetamaskController extends EventEmitter {
       rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
 
+      ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+      connectCustodyAddresses:
+      this.mmiController.connectCustodyAddresses.bind(this),
+      getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(this),
+      getCustodianAccountsByAddress:
+        this.mmiController.getCustodianAccountsByAddress.bind(this),
+      getCustodianTransactionDeepLink:
+        this.mmiController.getCustodianTransactionDeepLink.bind(this),
+      getCustodianConfirmDeepLink:
+        this.mmiController.getCustodianConfirmDeepLink.bind(this),
+      getCustodianSignMessageDeepLink:
+        this.mmiController.getCustodianSignMessageDeepLink.bind(this),
+      getCustodianToken: this.mmiController.getCustodianToken.bind(this),
+      getCustodianJWTList: this.mmiController.getCustodianJWTList.bind(this),
+      setWaitForConfirmDeepLinkDialog:
+        this.custodyController.setWaitForConfirmDeepLinkDialog.bind(
+          this.custodyController,
+        ),
+      setCustodianConnectRequest:
+        this.custodyController.setCustodianConnectRequest.bind(
+          this.custodyController,
+        ),
+      getCustodianConnectRequest:
+        this.custodyController.getCustodianConnectRequest.bind(
+          this.custodyController,
+        ),
+      getAllCustodianAccountsWithToken:
+        this.mmiController.getAllCustodianAccountsWithToken.bind(this),
+      setTypedMsgInProgress: this.typedMessageManager.setMsgInProgress.bind(
+        this.typedMessageManager,
+      ),
+      getMmiConfiguration:
+        this.mmiConfigurationController.getConfiguration.bind(
+          this.mmiConfigurationController,
+        ),
+      setPersonalMsgInProgress:
+        this.personalMessageManager.setMsgInProgress.bind(
+          this.personalMessageManager,
+        ),
+        // MMI: Institutional features
+        setComplianceAuthData:
+        this.institutionalFeaturesController.setComplianceAuthData.bind(
+          this.institutionalFeaturesController,
+        ),
+      deleteComplianceAuthData:
+        this.institutionalFeaturesController.deleteComplianceAuthData.bind(
+          this.institutionalFeaturesController,
+        ),
+      generateComplianceReport:
+        this.institutionalFeaturesController.generateComplianceReport.bind(
+          this.institutionalFeaturesController,
+        ),
+      syncReportsInProgress:
+        this.institutionalFeaturesController.syncReportsInProgress.bind(
+          this.institutionalFeaturesController,
+        ),
+
+      removeConnectInstitutionalFeature:
+        this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
+          this.institutionalFeaturesController,
+        ),
+
+      getComplianceHistoricalReportsByAddress:
+        this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
+          this.institutionalFeaturesController,
+        ),
+      removeAddTokenConnectRequest:
+        this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
+          this.institutionalFeaturesController,
+        ),
+      setCustodianNewRefreshToken:
+        this.mmiController.setCustodianNewRefreshToken.bind(this),
+      showInteractiveReplacementTokenBanner:
+        appStateController.showInteractiveReplacementTokenBanner.bind(
+          appStateController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
+
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       // snaps
       removeSnapError: this.controllerMessenger.call.bind(
@@ -2587,6 +2740,10 @@ export default class MetamaskController extends EventEmitter {
    */
   async submitPassword(password) {
     await this.keyringController.submitPassword(password);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.mmiController.onSubmitPasswrod();
+    ///: END:ONLY_INCLUDE_IN
 
     try {
       await this.blockTracker.checkForLatestBlock();
