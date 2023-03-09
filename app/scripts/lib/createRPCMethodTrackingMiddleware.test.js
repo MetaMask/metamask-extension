@@ -7,7 +7,14 @@ import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddlewa
 const trackEvent = jest.fn();
 const metricsState = { participateInMetaMetrics: null };
 const getMetricsState = () => metricsState;
-const securityProviderRequest = jest.fn();
+
+let flagAsDangerous = 0;
+
+const securityProviderRequest = () => {
+  return {
+    flagAsDangerous,
+  };
+};
 
 const handler = createRPCMethodTrackingMiddleware({
   trackEvent,
@@ -109,7 +116,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent.mock.calls[0][0]).toMatchObject({
         category: 'inpage_provider',
         event: EVENT_NAMES.SIGNATURE_REQUESTED,
-        properties: { signature_type: MESSAGE_TYPE.ETH_SIGN },
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN,
+          ui_customizations: [],
+        },
         referrer: { url: 'some.dapp' },
       });
     });
@@ -130,7 +140,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
         event: EVENT_NAMES.SIGNATURE_APPROVED,
-        properties: { signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4 },
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+          ui_customizations: [],
+        },
         referrer: { url: 'some.dapp' },
       });
     });
@@ -151,7 +164,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent.mock.calls[1][0]).toMatchObject({
         category: 'inpage_provider',
         event: EVENT_NAMES.SIGNATURE_REJECTED,
-        properties: { signature_type: MESSAGE_TYPE.PERSONAL_SIGN },
+        properties: {
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+          ui_customizations: [],
+        },
         referrer: { url: 'some.dapp' },
       });
     });
@@ -243,6 +259,36 @@ describe('createRPCMethodTrackingMiddleware', () => {
           },
           referrer: { url: 'some.dapp' },
         });
+      });
+    });
+  });
+
+  describe('participateInMetaMetrics is set to true with a request flagged as malicious', () => {
+    beforeEach(() => {
+      metricsState.participateInMetaMetrics = true;
+      flagAsDangerous = 1;
+    });
+
+    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as malicious`, async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next } = getNext();
+      await handler(req, res, next);
+      expect(trackEvent).toHaveBeenCalledTimes(1);
+      expect(trackEvent.mock.calls[0][0]).toMatchObject({
+        category: 'inpage_provider',
+        event: EVENT_NAMES.SIGNATURE_REQUESTED,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN,
+          ui_customizations: ['flagged_as_malicious'],
+        },
+        referrer: { url: 'some.dapp' },
       });
     });
   });
