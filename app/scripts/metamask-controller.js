@@ -64,7 +64,10 @@ import {
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-import { CUSTODIAN_TYPES, MmiConfigurationController } from '@metamask-institutional/custody-keyring';
+import {
+  CUSTODIAN_TYPES,
+  MmiConfigurationController,
+} from '@metamask-institutional/custody-keyring';
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
@@ -686,7 +689,9 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(mmi)
       for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
-        additionalKeyringTypes.push(CUSTODIAN_TYPES[custodianType].keyringClass);
+        additionalKeyringTypes.push(
+          CUSTODIAN_TYPES[custodianType].keyringClass,
+        );
       }
       ///: END:ONLY_INCLUDE_IN
 
@@ -2083,7 +2088,7 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(mmi)
       connectCustodyAddresses:
-      this.mmiController.connectCustodyAddresses.bind(this),
+        this.mmiController.connectCustodyAddresses.bind(this),
       getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(this),
       getCustodianAccountsByAddress:
         this.mmiController.getCustodianAccountsByAddress.bind(this),
@@ -2120,8 +2125,8 @@ export default class MetamaskController extends EventEmitter {
         this.personalMessageManager.setMsgInProgress.bind(
           this.personalMessageManager,
         ),
-        // MMI: Institutional features
-        setComplianceAuthData:
+      // MMI: Institutional features
+      setComplianceAuthData:
         this.institutionalFeaturesController.setComplianceAuthData.bind(
           this.institutionalFeaturesController,
         ),

@@ -1,13 +1,15 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
+import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
-  CUSTODIAN_TYPES,
   updateCustodianTransactions,
   custodianEventHandlerFactory,
+} from '@metamask-institutional/extension';
+import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
-} from '@codefi/mmi-sdk';
+} from '@metamask-institutional/sdk';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import { CONNECT_HARDWARE_ROUTE } from '../../ui/helpers/constants/routes';
