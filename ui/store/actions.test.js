@@ -7,6 +7,7 @@ import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
+import { EVENT } from '../../shared/constants/metametrics';
 import * as actions from './actions';
 import { _setBackgroundConnection } from './action-queue';
 
@@ -1276,10 +1277,13 @@ describe('Actions', () => {
       };
 
       await store.dispatch(
-        actions.editAndSetNetworkConfiguration({
-          ...networkConfiguration,
-          networkConfigurationId: 'networkConfigurationId',
-        }),
+        actions.editAndSetNetworkConfiguration(
+          {
+            ...networkConfiguration,
+            networkConfigurationId: 'networkConfigurationId',
+          },
+          { source: 'https://test-dapp.com' },
+        ),
       );
       expect(
         removeNetworkConfigurationStub.calledOnceWith('networkConfigurationId'),
@@ -1287,7 +1291,8 @@ describe('Actions', () => {
       expect(
         upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
           setActive: true,
-          source: ORIGIN_METAMASK,
+          referrer: ORIGIN_METAMASK,
+          source: 'https://test-dapp.com',
         }),
       ).toBe(true);
     });
@@ -1315,16 +1320,96 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(
-        actions.editAndSetNetworkConfiguration({
-          networkConfigurationId: 'networkConfigurationId',
-          rpcUrl: 'newRpc',
-          chainId: '0x',
-          ticker: 'ETH',
-          nickname: 'nickname',
-          rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
-        }),
+        actions.editAndSetNetworkConfiguration(
+          {
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          },
+          { source: 'https://test-dapp.com' },
+        ),
       );
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('throws when no options object is passed as a second argument', async () => {
+      const store = mockStore();
+      await expect(() =>
+        store.dispatch(
+          actions.editAndSetNetworkConfiguration({
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          }),
+        ),
+      ).toThrow(
+        "Cannot destructure property 'source' of 'undefined' as it is undefined.",
+      );
+    });
+  });
+
+  describe('#upsertNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls upsertNetworkConfiguration in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.upsertNetworkConfiguration(networkConfiguration, {
+          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+        }),
+      );
+
+      expect(
+        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
+          referrer: ORIGIN_METAMASK,
+          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          setActive: undefined,
+        }),
+      ).toBe(true);
+    });
+
+    it('throws when no options object is passed as a second argument', async () => {
+      const store = mockStore();
+      await expect(() =>
+        store.dispatch(
+          actions.upsertNetworkConfiguration({
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          }),
+        ),
+      ).toThrow(
+        "Cannot destructure property 'setActive' of 'undefined' as it is undefined.",
+      );
     });
   });
 

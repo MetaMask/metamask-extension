@@ -497,17 +497,23 @@ const NetworksForm = ({
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
-          editAndSetNetworkConfiguration({
-            rpcUrl,
-            ticker,
-            networkConfigurationId: selectedNetwork.networkConfigurationId,
-            chainId: prefixedChainId,
-            nickname: networkName,
-            rpcPrefs: {
-              ...rpcPrefs,
-              blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+          editAndSetNetworkConfiguration(
+            {
+              rpcUrl,
+              ticker,
+              networkConfigurationId: selectedNetwork.networkConfigurationId,
+              chainId: prefixedChainId,
+              nickname: networkName,
+              rpcPrefs: {
+                ...rpcPrefs,
+                blockExplorerUrl:
+                  blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+              },
             },
-          }),
+            {
+              source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+            },
+          ),
         );
       } else {
         networkConfigurationId = await dispatch(

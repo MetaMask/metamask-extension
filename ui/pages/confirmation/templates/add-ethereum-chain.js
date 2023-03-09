@@ -391,8 +391,8 @@ function getValues(pendingApproval, t, actions, history) {
             nickname: pendingApproval.requestData.chainName,
           },
           {
+            setActive: false,
             source: pendingApproval.requestData.source,
-            referrer: pendingApproval.requestData.referrer,
           },
         );
         await actions.setNewNetworkAdded({

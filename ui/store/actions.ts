@@ -2475,7 +2475,7 @@ export function upsertNetworkConfiguration(
     source,
   }: {
     setActive: boolean;
-    source?: string;
+    source: string;
   },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
@@ -2499,21 +2499,24 @@ export function upsertNetworkConfiguration(
   };
 }
 
-export function editAndSetNetworkConfiguration({
-  networkConfigurationId,
-  rpcUrl,
-  chainId,
-  nickname,
-  rpcPrefs,
-  ticker = EtherDenomination.ETH,
-}: {
-  networkConfigurationId: string;
-  rpcUrl: string;
-  chainId: string;
-  nickname: string;
-  rpcPrefs: RPCDefinition['rpcPrefs'];
-  ticker: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function editAndSetNetworkConfiguration(
+  {
+    networkConfigurationId,
+    rpcUrl,
+    chainId,
+    nickname,
+    rpcPrefs,
+    ticker = EtherDenomination.ETH,
+  }: {
+    networkConfigurationId: string;
+    rpcUrl: string;
+    chainId: string;
+    nickname: string;
+    rpcPrefs: RPCDefinition['rpcPrefs'];
+    ticker: string;
+  },
+  { source }: { source: string },
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
       `background.removeNetworkConfiguration: ${networkConfigurationId}`,
@@ -2537,7 +2540,7 @@ export function editAndSetNetworkConfiguration({
           nickname: nickname || rpcUrl,
           rpcPrefs,
         },
-        { setActive: true, source: ORIGIN_METAMASK },
+        { setActive: true, referrer: ORIGIN_METAMASK, source },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
