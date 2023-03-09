@@ -24,7 +24,6 @@ const state = {
         address: '0xAddress',
       },
     },
-    frequentRpcListDetail: [],
     cachedBalances: {},
     addressBook: [
       {
