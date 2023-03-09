@@ -22,7 +22,7 @@ import Box from '../../ui/box/box';
 import { getNativeCurrencyImage } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export const MultichainTokenList = ({
+export const MultichainTokenListItem = ({
   className,
   onClick,
   tokenSymbol,
@@ -34,13 +34,13 @@ export const MultichainTokenList = ({
   const t = useI18nContext();
   return (
     <Box
-      className={classnames('multichain-token-list', className)}
+      className={classnames('multichain-token-list-item', className)}
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
       gap={4}
     >
       <Box
-        className="multichain-token-list__container-cell"
+        className="multichain-token-list-item__container-cell"
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
         padding={4}
@@ -65,7 +65,7 @@ export const MultichainTokenList = ({
           <AvatarToken name={tokenSymbol} src={tokenImage} showHalo />
         </AvatarWithBadge>
         <Box
-          className="multichain-token-list__container-cell--text-container"
+          className="multichain-token-list-item__container-cell--text-container"
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
@@ -89,14 +89,14 @@ export const MultichainTokenList = ({
   );
 };
 
-MultichainTokenList.propTypes = {
+MultichainTokenListItem.propTypes = {
   /**
    * An additional className to apply to the TokenList.
    */
 
   className: PropTypes.string,
   /**
-   * The onClick handler to be passed to the MultichainTokenList component
+   * The onClick handler to be passed to the MultichainTokenListItem component
    */
   onClick: PropTypes.func,
   /**

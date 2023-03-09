@@ -1,9 +1,9 @@
 import React from 'react';
-import { MultichainTokenList } from './multichain-token-list';
+import { MultichainTokenListItem } from './multichain-token-list-item';
 
 export default {
-  title: 'Components/Multichain/MultichainTokenList',
-  component: MultichainTokenList,
+  title: 'Components/Multichain/MultichainTokenListItem',
+  component: MultichainTokenListItem,
   argTypes: {
     tokenSymbol: {
       control: 'text',
@@ -26,6 +26,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <MultichainTokenList {...args} />;
+export const DefaultStory = (args) => <MultichainTokenListItem {...args} />;
 
 DefaultStory.storyName = 'Default';
