@@ -194,7 +194,9 @@ module.exports = ({
       resourceRegExp: new RegExp(ignoredFiles.map(p => ['^',p,'$']).join('|'))
     }),
     new CleanWebpackPlugin({ verbose: false }),
-    new EnvironmentPlugin(envVars),
+    new EnvironmentPlugin(
+      envVars
+    ),
     new ProgressPlugin(),
     /*
     new MiniCssExtractPlugin({
