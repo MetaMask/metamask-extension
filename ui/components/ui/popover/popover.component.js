@@ -14,8 +14,15 @@ import {
   TextVariant,
   Size,
   BorderColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
-import { ButtonIcon, Text, ICON_NAMES } from '../../component-library';
+import {
+  ButtonIcon,
+  Text,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../component-library';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],
@@ -123,7 +130,12 @@ const Popover = ({
             className="whats-new-popup__scroll-button"
             data-testid="whats-new-popup-scroll-button"
           >
-            <i className="fa fa-chevron-down" aria-label={t('scrollDown')} />
+            <Icon
+              name={ICON_NAMES.ARROW_DOWN}
+              color={IconColor.primaryDefault}
+              size={ICON_SIZES.MD}
+              aria-label={t('scrollDown')}
+            />
           </Box>
         ) : null}
         {showArrow ? <div className="popover-arrow" /> : null}
