@@ -12,7 +12,7 @@ import {
   submitRequestToBackground,
 } from '../action-queue';
 import { MetaMaskReduxState } from '../store';
-import { isErrorWithMessage } from 'shared/modules/error';
+import { isErrorWithMessage } from '../../../shared/modules/error';
 
 export function showInteractiveReplacementTokenBanner(
   url: string,
