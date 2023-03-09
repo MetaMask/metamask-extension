@@ -10,8 +10,9 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { BannerAlert } from '../../component-library';
 
 export const DetectedTokensBanner = ({
-  className = '',
+  className,
   setShowDetectedTokens,
+  ...props
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -37,7 +38,7 @@ export const DetectedTokensBanner = ({
       className={classNames('multichain-detected-token-banner', className)}
       actionButtonLabel={t('importTokensCamelCase')}
       actionButtonOnClick={onClick}
-      margin={4}
+      {...props}
     >
       {detectedTokens.length === 1
         ? t('numberOfNewTokensDetectedSingular')
@@ -47,6 +48,6 @@ export const DetectedTokensBanner = ({
 };
 
 DetectedTokensBanner.propTypes = {
-  setShowDetectedTokens: PropTypes.func.isRequired,
+  setShowDetectedTokens: PropTypes.string.isRequired,
   className: PropTypes.string,
 };

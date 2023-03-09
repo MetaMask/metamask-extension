@@ -4,11 +4,10 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { ButtonLink, Icon, ICON_NAMES } from '../../component-library';
+import { ButtonLink, ICON_NAMES } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
-  IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -21,7 +20,7 @@ import {
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
 
-export const MultichainImportTokenLink = ({ className = '' }) => {
+export const MultichainImportTokenLink = ({ className, ...props }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const history = useHistory();
@@ -38,16 +37,12 @@ export const MultichainImportTokenLink = ({ className = '' }) => {
   return (
     <Box
       className={classnames('multichain-import-token-link', className)}
-      margin={4}
+      {...props}
     >
       <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-        <Icon
-          name={ICON_NAMES.ADD}
-          color={IconColor.infoDefault}
-          marginRight={2}
-        />
         <ButtonLink
           size={Size.MD}
+          startIconName={ICON_NAMES.ADD}
           onClick={() => {
             history.push(IMPORT_TOKEN_ROUTE);
             trackEvent({
@@ -71,12 +66,10 @@ export const MultichainImportTokenLink = ({ className = '' }) => {
         paddingBottom={4}
         paddingTop={4}
       >
-        <Icon
-          name={ICON_NAMES.REFRESH}
-          color={IconColor.infoDefault}
-          marginRight={2}
-        />
-        <ButtonLink onClick={() => detectNewTokens()}>
+        <ButtonLink
+          startIconName={ICON_NAMES.REFRESH}
+          onClick={() => detectNewTokens()}
+        >
           {t('refreshList')}
         </ButtonLink>
       </Box>
@@ -88,6 +81,5 @@ MultichainImportTokenLink.propTypes = {
   /**
    * An additional className to apply to the TokenList.
    */
-
   className: PropTypes.string,
 };

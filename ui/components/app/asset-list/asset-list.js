@@ -122,6 +122,7 @@ const AssetList = ({ onClickAsset }) => {
             {process.env.MULTICHAIN ? (
               <DetectedTokensBanner
                 setShowDetectedTokens={setShowDetectedTokens}
+                margin={4}
               />
             ) : (
               <DetectedTokensLink
@@ -132,7 +133,7 @@ const AssetList = ({ onClickAsset }) => {
         )}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         {process.env.MULTICHAIN ? (
-          <MultichainImportTokenLink />
+          <MultichainImportTokenLink margin={4} />
         ) : (
           <>
             <Box justifyContent={JustifyContent.center}>

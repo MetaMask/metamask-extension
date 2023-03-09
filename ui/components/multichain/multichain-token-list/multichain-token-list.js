@@ -59,7 +59,7 @@ export const MultichainTokenList = ({
           }
           marginRight={3}
         >
-          <AvatarToken src={tokenImage} showHalo />
+          <AvatarToken name={tokenSymbol} src={tokenImage} showHalo />
         </AvatarWithBadge>
         <Box
           className="multichain-token-list__container-cell--text-container"
