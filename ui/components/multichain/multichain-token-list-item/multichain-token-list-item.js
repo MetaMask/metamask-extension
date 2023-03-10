@@ -23,6 +23,7 @@ import Box from '../../ui/box/box';
 import { getNativeCurrencyImage } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
+
 export const MultichainTokenListItem = ({
   className,
   onClick,
@@ -40,11 +41,6 @@ export const MultichainTokenListItem = ({
       flexDirection={FLEX_DIRECTION.COLUMN}
       gap={4}
       data-testid="multichain-token-list-item"
-      width={[
-        BLOCK_SIZES.ONE_FIFTH,
-        BLOCK_SIZES.HALF,
-        BLOCK_SIZES.ONE_THIRD,
-      ]}
     >
       <Box
         className="multichain-token-list-item__container-cell"
@@ -76,15 +72,25 @@ export const MultichainTokenListItem = ({
           className="multichain-token-list-item__container-cell--text-container"
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
+          style={{ flexGrow: 1, overflow: 'hidden' }}
         >
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
           >
-            <Text fontWeight={FONT_WEIGHT.MEDIUM} variant={TextVariant.bodyMd}>
+            <Text
+              fontWeight={FONT_WEIGHT.MEDIUM}
+              variant={TextVariant.bodyMd}
+              ellipsis
+              width={[BLOCK_SIZES.HALF]}
+            >
               {tokenSymbol}
             </Text>
-            <Text fontWeight={FONT_WEIGHT.MEDIUM} variant={TextVariant.bodyMd}>
+            <Text
+              fontWeight={FONT_WEIGHT.MEDIUM}
+              variant={TextVariant.bodyMd}
+              width={[BLOCK_SIZES.HALF]}
+            >
               {secondary}
             </Text>
           </Box>
