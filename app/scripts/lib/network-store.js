@@ -6,6 +6,7 @@ const fetchWithTimeout = getFetchWithTimeout();
 const FIXTURE_SERVER_HOST = 'localhost';
 const FIXTURE_SERVER_PORT = 12345;
 const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`;
+// const FIXTURE_SERVER_PERSISTED_STATE_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/persisted-state.json`;
 
 /**
  * A read-only network-based storage wrapper
@@ -15,6 +16,7 @@ export default class ReadOnlyNetworkStore {
     this._initialized = false;
     this._initializing = this._init();
     this._state = undefined;
+    // this.hasStatePersisted = null;
   }
 
   /**
@@ -27,6 +29,10 @@ export default class ReadOnlyNetworkStore {
    */
   async _init() {
     try {
+      // const url = this.hasStatePersisted
+      //   ? FIXTURE_SERVER_PERSISTED_STATE_URL
+      //   : FIXTURE_SERVER_URL;
+      // const response = await fetchWithTimeout(url);
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
 
       if (response.ok) {
@@ -84,4 +90,33 @@ export default class ReadOnlyNetworkStore {
     }
     this._state = { data: state, meta: this._metadata };
   }
+
+  // async postToLocalStore() {
+  //   console.log('postToLocalStore');
+
+  //   const candidateStateForPersistence = JSON.stringify(this._state.data);
+
+  //   console.log({
+  //     candidateStateForPersistence,
+  //     hasStatePersisted: this.hasStatePersisted,
+  //   });
+
+  //   if (
+  //     candidateStateForPersistence &&
+  //     this.hasStatePersisted !== candidateStateForPersistence
+  //   ) {
+  //     try {
+  //       await fetchWithTimeout(FIXTURE_SERVER_PERSISTED_STATE_URL, {
+  //         method: 'POST',
+  //         body: candidateStateForPersistence,
+  //       });
+
+  //       this.hasStatePersisted = candidateStateForPersistence;
+  //     } catch (error) {
+  //       log.debug(`Error loading network state: '${error.message}'`);
+  //     } finally {
+  //       this._initialized = true;
+  //     }
+  //   }
+  // }
 }

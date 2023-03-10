@@ -80,11 +80,11 @@ let controller;
 
 // state persistence
 const inTest = process.env.IN_TEST;
-const beforeServiceWorkerRestart =
-  globalThis.isFirstTimeProfileLoaded === true ||
-  globalThis.isFirstTimeProfileLoaded === undefined;
+// const beforeServiceWorkerRestart =
+//   globalThis.isFirstTimeProfileLoaded === true ||
+//   globalThis.isFirstTimeProfileLoaded === undefined;
 
-console.log({ inTest, beforeServiceWorkerRestart });
+// console.log({ inTest, beforeServiceWorkerRestart });
 
 // const localStore =
 //   inTest && beforeServiceWorkerRestart
