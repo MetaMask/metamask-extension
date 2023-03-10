@@ -767,7 +767,7 @@
     "message": "Contract deployment"
   },
   "contractDescription": {
-    "message": "To protect yourself against scammers, take a moment to verify contract details."
+    "message": "To protect yourself against scammers, take a moment to verify third party details."
   },
   "contractInteraction": {
     "message": "Contract interaction"
@@ -782,10 +782,10 @@
     "message": "Contract requesting signature"
   },
   "contractRequestingSpendingCap": {
-    "message": "Contract requesting spending cap"
+    "message": "Third party requesting spending cap"
   },
   "contractTitle": {
-    "message": "Contract details"
+    "message": "Third party details"
   },
   "contractToken": {
     "message": "Token contract"
@@ -1743,14 +1743,14 @@
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
   "inputLogicEmptyState": {
-    "message": "Only enter a number that you're comfortable with the contract spending now or in the future. You can always increase the spending cap later."
+    "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
   },
   "inputLogicEqualOrSmallerNumber": {
-    "message": "This allows the contract to spend $1 from your current balance.",
+    "message": "This allows the third party to spend $1 from your current balance.",
     "description": "$1 is the current token balance in the account and the name of the current token"
   },
   "inputLogicHigherNumber": {
-    "message": "This allows the contract to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+    "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
   },
   "install": {
     "message": "Install"
@@ -4553,7 +4553,7 @@
     "message": "Username"
   },
   "verifyContractDetails": {
-    "message": "Verify contract details"
+    "message": "Verify third party details"
   },
   "verifyThisTokenDecimalOn": {
     "message": "Token decimal can be found on $1",
@@ -4639,7 +4639,7 @@
     "message": "Warning"
   },
   "warningTooltipText": {
-    "message": "$1 The contract could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
+    "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",
     "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
   },
   "weak": {
