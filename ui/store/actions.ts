@@ -91,7 +91,7 @@ import * as actionConstants from './actionConstants';
 import {
   checkForUnapprovedTypedMessages,
   updateCustodyState,
-} from './institution/institution-actions';
+} from './institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
   generateActionId,
