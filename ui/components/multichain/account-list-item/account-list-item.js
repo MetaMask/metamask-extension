@@ -36,6 +36,8 @@ import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 
 import { shortenAddress } from '../../../helpers/utils/util';
 
+const MAXIMUM_CURRENCY_DECIMALS = 3;
+
 function getLabel(keyring = {}, t) {
   const { type } = keyring;
   switch (type) {
@@ -119,6 +121,7 @@ export const AccountListItem = ({
               ) : null}
               <Text textAlign={TEXT_ALIGN.END} as="div">
                 <UserPreferencedCurrencyDisplay
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                   value={identity.balance}
                   type={SECONDARY}
                 />
@@ -140,6 +143,7 @@ export const AccountListItem = ({
             as="div"
           >
             <UserPreferencedCurrencyDisplay
+              ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
               value={identity.balance}
               type={PRIMARY}
             />
