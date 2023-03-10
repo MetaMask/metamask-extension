@@ -119,7 +119,7 @@ describe('Create token, approve token and approve token without gas', function (
         );
 
         await driver.clickElement({
-          text: 'Verify contract details',
+          text: 'Verify third party details',
           css: '.token-allowance-container__verify-link',
         });
 
@@ -128,7 +128,7 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'h5',
         });
 
-        assert.equal(await modalTitle.getText(), 'Contract details');
+        assert.equal(await modalTitle.getText(), 'Third party details');
 
         await driver.clickElement({
           text: 'Got it',
