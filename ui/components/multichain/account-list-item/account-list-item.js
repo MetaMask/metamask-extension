@@ -148,8 +148,10 @@ export const AccountListItem = ({
         {label ? (
           <Tag
             label={label}
-            labelProps={{ color: Color.textAlternative }}
-            variant={TextVariant.bodyXs}
+            labelProps={{
+              variant: TextVariant.bodyXs,
+              color: Color.textAlternative,
+            }}
           />
         ) : null}
       </Box>

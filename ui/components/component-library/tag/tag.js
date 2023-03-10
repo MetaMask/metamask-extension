@@ -10,16 +10,9 @@ import {
   BorderRadius,
   DISPLAY,
   JustifyContent,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 
-export const Tag = ({
-  label,
-  className,
-  labelProps,
-  variant = TextVariant.bodySm,
-  ...props
-}) => {
+export const Tag = ({ label, className, labelProps, ...props }) => {
   return (
     <Box
       className={classnames('mm-tag', className)}
@@ -34,9 +27,7 @@ export const Tag = ({
       display={DISPLAY.INLINE_BLOCK}
       {...props}
     >
-      <Text variant={variant} {...labelProps}>
-        {label}
-      </Text>
+      <Text {...labelProps}>{label}</Text>
     </Box>
   );
 };
