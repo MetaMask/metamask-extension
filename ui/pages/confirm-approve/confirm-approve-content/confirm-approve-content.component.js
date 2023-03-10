@@ -18,6 +18,7 @@ import {
   TextColor,
   IconColor,
   TextVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
@@ -539,7 +540,7 @@ export default class ConfirmApproveContent extends Component {
           display={DISPLAY.FLEX}
           className="confirm-approve-content__icon-display-content"
         >
-          <Box display={DISPLAY.FLEX}>
+          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
             <UrlIcon
               className="confirm-approve-content__siteimage-identicon"
               fallbackClassName="confirm-approve-content__siteimage-identicon"
@@ -551,7 +552,6 @@ export default class ConfirmApproveContent extends Component {
               as="h6"
               color={TextColor.textAlternative}
               marginLeft={1}
-              marginTop={1}
             >
               {origin}
             </Text>
