@@ -4,9 +4,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap RPC', function () {
-  // TODO: Re-enable this test once `test-snaps` is fixed.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can use the cross-snap RPC endowment and produce a public key', async function () {
+  it('can use the cross-snap RPC endowment and produce a public key', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -49,13 +47,10 @@ describe('Test Snap RPC', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         await driver.delay(2000);
 

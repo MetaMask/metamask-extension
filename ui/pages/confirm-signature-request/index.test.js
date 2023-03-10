@@ -33,7 +33,7 @@ const mockState = {
     unapprovedTypedMessagesCount: 1,
     provider: { chainId: '0x5', type: 'goerli' },
     keyrings: [],
-    frequentRpcListDetail: [],
+    networkConfigurations: {},
     subjectMetadata: {},
     cachedBalances: {
       '0x5': {},
@@ -47,6 +47,7 @@ const mockState = {
     selectedAddress: '0x8eeee1781fd885ff5ddef7789486676961873d12',
     addressBook: {},
     tokenList: {},
+    preferences: {},
   },
   appState: {
     warning: null,

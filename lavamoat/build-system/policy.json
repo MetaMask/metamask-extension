@@ -2891,7 +2891,7 @@
         "console": true
       },
       "packages": {
-        "eslint>ajv>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true
@@ -6562,22 +6562,6 @@
         "define": true
       }
     },
-    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": {
-      "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities-legacy": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-reference-invalid": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-hexadecimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
-      }
-    },
-    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": {
-      "packages": {
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true
-      }
-    },
     "react-markdown>unified": {
       "packages": {
         "jsdom>request>extend": true,
@@ -6618,6 +6602,22 @@
     "react-markdown>vfile>vfile-message": {
       "packages": {
         "react-markdown>vfile>unist-util-stringify-position": true
+      }
+    },
+    "react-syntax-highlighter>refractor>parse-entities": {
+      "packages": {
+        "react-syntax-highlighter>refractor>parse-entities>character-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
+        "react-syntax-highlighter>refractor>parse-entities>character-reference-invalid": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true
+      }
+    },
+    "react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": {
+      "packages": {
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
+        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true
       }
     },
     "readable-stream": {
@@ -6964,11 +6964,11 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse": {
       "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>collapse-white-space": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-alphabetical": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-word-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
@@ -6995,9 +6995,9 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": {
       "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>ccount": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-whitespace-character": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>markdown-escapes": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse>repeat-string": true,
@@ -7023,10 +7023,10 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities": {
       "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>character-entities-legacy": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-alphanumerical": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities>is-hexadecimal": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-parse>is-decimal": true,
+        "react-syntax-highlighter>refractor>parse-entities>character-entities-legacy": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-alphanumerical": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-decimal": true,
+        "react-syntax-highlighter>refractor>parse-entities>is-hexadecimal": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities>character-entities-html4": true
       }
     },

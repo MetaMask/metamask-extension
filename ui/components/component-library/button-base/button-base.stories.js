@@ -149,6 +149,15 @@ Href.args = {
   href: '/metamask',
 };
 
+export const ExternalLink = (args) => (
+  <ButtonBase {...args}>Anchor element with external link</ButtonBase>
+);
+
+ExternalLink.args = {
+  href: 'https://metamask.io',
+  externalLink: true,
+};
+
 export const Disabled = (args) => (
   <ButtonBase {...args}>Disabled Button</ButtonBase>
 );
