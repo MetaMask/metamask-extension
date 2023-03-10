@@ -400,7 +400,7 @@ jobs:
       - when:
           condition:
             matches:
-              pattern: /^master$/
+              pattern: /^master5$/
               value: << pipeline.git.branch >>
           steps:
             - run:
