@@ -15,14 +15,12 @@ import {
 import {
   AvatarNetwork,
   AvatarToken,
-  AvatarWithBadge,
-  AVATAR_WITH_BADGE_POSTIONS,
+  BadgeWrapper,
   Text,
 } from '../../component-library';
 import Box from '../../ui/box/box';
 import { getNativeCurrencyImage } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-
 
 export const MultichainTokenListItem = ({
   className,
@@ -55,8 +53,7 @@ export const MultichainTokenListItem = ({
           onClick();
         }}
       >
-        <AvatarWithBadge
-          badgePosition={AVATAR_WITH_BADGE_POSTIONS.TOP}
+        <BadgeWrapper
           badge={
             <AvatarNetwork
               size={Size.XS}
@@ -67,7 +64,7 @@ export const MultichainTokenListItem = ({
           marginRight={3}
         >
           <AvatarToken name={tokenSymbol} src={tokenImage} showHalo />
-        </AvatarWithBadge>
+        </BadgeWrapper>
         <Box
           className="multichain-token-list-item__container-cell--text-container"
           display={DISPLAY.FLEX}
@@ -90,6 +87,7 @@ export const MultichainTokenListItem = ({
               fontWeight={FONT_WEIGHT.MEDIUM}
               variant={TextVariant.bodyMd}
               width={[BLOCK_SIZES.HALF]}
+              justifyContent={JustifyContent.flexEnd}
             >
               {secondary}
             </Text>
