@@ -120,7 +120,6 @@ describe('TokenOverview', () => {
     });
 
     it('should always show the Buy button regardless of token type', () => {
-      process.env.NFTS_V1 = true;
       const nftToken = {
         ...token,
         isERC721: true,
@@ -175,7 +174,6 @@ describe('TokenOverview', () => {
     });
 
     it('should have the Buy token button disabled for ERC721 tokens', () => {
-      process.env.NFTS_V1 = true;
       const nftToken = {
         ...token,
         isERC721: true,

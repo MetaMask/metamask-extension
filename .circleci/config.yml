@@ -503,27 +503,6 @@ jobs:
             - dist-test-mv3
             - builds-test-mv3
 
-  prep-build-test-nft:
-    executor: node-browsers-medium-plus
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension with nft's enabled for testing
-          command: yarn build:test:nft
-      - run:
-          name: Move test build to 'dist-test-nft' to avoid conflict with production build
-          command: mv ./dist ./dist-test-nft
-      - run:
-          name: Move test zips to 'builds-test-nft' to avoid conflict with production build
-          command: mv ./builds ./builds-test-nft
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-nft
-            - builds-test-nft
-
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
