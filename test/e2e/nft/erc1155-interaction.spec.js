@@ -129,7 +129,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
   it('should enable approval for a third party address to manage all ERC1155 token', async function () {
     const expectedMessageTitle =
-      'Allow access to and transfer of all your NFT?';
+      'Allow access to and transfer all your NFTs of this collection?';
     const expectedDescription =
       'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.';
     const expectedWarningMessage = 'Your NFT may be at risk';
@@ -219,7 +219,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
   it('should revoke approval for a third party address to manage all ERC1155 token', async function () {
     const expectedMessageTitle =
-      'Revoke permission to access and transfer all of your NFT?';
+      'Revoke permission to access and transfer all your NFTs of this collection?';
     const expectedDescription =
       'This revokes the permission for a third party to access and transfer all of your NFT without further notice.';
     await withFixtures(
