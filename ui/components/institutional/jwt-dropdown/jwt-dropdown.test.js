@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import sinon from 'sinon';
 import JwtDropdown from './jwt-dropdown';
@@ -12,6 +12,10 @@ describe('JwtDropdown', () => {
     };
 
     const { getByTestId, container } = render(<JwtDropdown {...props} />);
+
+    fireEvent.change(getByTestId('jwt-dropdown'), {
+      target: { value: 'jwt2' },
+    });
 
     expect(getByTestId('jwt-dropdown')).toBeDefined();
     expect(container).toMatchSnapshot();
