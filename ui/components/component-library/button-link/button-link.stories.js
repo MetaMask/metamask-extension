@@ -193,7 +193,7 @@ Href.args = {
 };
 
 export const ExternalLink = (args) => (
-  <ButtonLink {...args}>Href externalLink example</ButtonLink>
+  <ButtonLink {...args}>Anchor element with external link</ButtonLink>
 );
 
 ExternalLink.args = {
