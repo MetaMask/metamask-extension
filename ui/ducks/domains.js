@@ -25,7 +25,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
-import { getMulticoinAddress } from './ens';
+import { getEVMChainAddress } from './ens';
 
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
@@ -166,7 +166,7 @@ export function lookupEnsName(domainName) {
       const chainId = getCurrentChainId(state);
       const logMessage = `ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`;
       log.info(logMessage);
-      const address = await getMulticoinAddress(
+      const address = await getEVMChainAddress(
         web3Provider,
         trimmedDomainName,
         chainId,

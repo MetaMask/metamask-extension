@@ -13,7 +13,7 @@ export const convertEVMChainIdToCoinType = (chainId) => {
   return (SLIP44_MSB | chainId) >>> 0;
 };
 
-export async function getMulticoinAddress(provider, name, chainId) {
+export async function getEVMChainAddress(provider, name, chainId) {
   let address;
   let coinType;
   console.log('***getMulticoinAddres1', { name });
