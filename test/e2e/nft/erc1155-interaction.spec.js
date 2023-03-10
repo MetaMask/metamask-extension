@@ -131,7 +131,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     const expectedMessageTitle =
       'Allow access to and transfer all your NFTs of this collection?';
     const expectedDescription =
-      'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.';
+      'This allows a third party to access and transfer all NFTs of this collection without further notice until you revoke its access.';
     const expectedWarningMessage = 'Your NFT may be at risk';
     await withFixtures(
       {
@@ -221,7 +221,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     const expectedMessageTitle =
       'Revoke permission to access and transfer all your NFTs of this collection?';
     const expectedDescription =
-      'This revokes the permission for a third party to access and transfer all of your NFT without further notice.';
+      'This revokes the permission for a third party to access and transfer all your NFTs of this collection without further notice.';
     await withFixtures(
       {
         dapp: true,
