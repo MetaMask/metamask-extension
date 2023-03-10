@@ -80,18 +80,18 @@ let controller;
 
 // state persistence
 const inTest = process.env.IN_TEST;
-// const beforeServiceWorkerRestart =
-//   globalThis.isFirstTimeProfileLoaded === true ||
-//   globalThis.isFirstTimeProfileLoaded === undefined;
+const beforeServiceWorkerRestart =
+  globalThis.isFirstTimeProfileLoaded === true ||
+  globalThis.isFirstTimeProfileLoaded === undefined;
 
-// console.log({ inTest, beforeServiceWorkerRestart });
+console.log({ inTest, beforeServiceWorkerRestart });
 
-// const localStore =
-//   inTest && beforeServiceWorkerRestart
-//     ? new ReadOnlyNetworkStore()
-//     : new LocalStore();
+const localStore =
+  inTest && beforeServiceWorkerRestart
+    ? new ReadOnlyNetworkStore()
+    : new LocalStore();
 
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+// const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 
 let versionedData;
 
@@ -518,6 +518,10 @@ function setupController(initState, initLangCode) {
           if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
             // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
             remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
+          }
+
+          if (inTest) {
+            localStore.postToLocalStore();
           }
         });
       }

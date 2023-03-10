@@ -62,6 +62,9 @@ class FixtureServer {
       if (this._isStateRequest(ctx)) {
         ctx.body = this._stateMap.get(CURRENT_STATE_KEY);
       }
+      if (this._isPersistedStateRequest(ctx)) {
+        ctx.body = this._stateMap.set(CURRENT_STATE_KEY);
+      }
     });
   }
 
@@ -98,6 +101,10 @@ class FixtureServer {
 
   _isStateRequest(ctx) {
     return ctx.method === 'GET' && ctx.path === '/state.json';
+  }
+
+  _isPersistedStateRequest(ctx) {
+    return ctx.method === 'POST' && ctx.path === '/persisted-state.json';
   }
 }
 
