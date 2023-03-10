@@ -78,14 +78,14 @@ describe('Account Details Modal', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        frequentRpcListDetail: [
-          {
+        networkConfigurations: {
+          networkConfigurationId: {
             chainId: '0x99',
             rpcPrefs: {
               blockExplorerUrl,
             },
           },
-        ],
+        },
         provider: {
           chainId: '0x99',
         },
