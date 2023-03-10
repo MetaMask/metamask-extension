@@ -7,6 +7,7 @@ import {
   ICON_NAMES,
   ICON_SIZES,
 } from '../../../components/component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import UrlIcon from '../../../components/ui/url-icon';
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -48,7 +49,12 @@ export default function SelectedToken({ onClick, selectedToken }) {
           </div>
         </div>
       </div>
-      <Icon name={ICON_NAMES.ARROW_DOWN} size={ICON_SIZES.XS} marginRight={3} />
+      <Icon
+        name={ICON_NAMES.ARROW_DOWN}
+        size={ICON_SIZES.XS}
+        marginRight={3}
+        color={IconColor.iconAlternative}
+      />
     </div>
   );
 }

@@ -112,7 +112,6 @@ import {
   DISPLAY,
   AlignItems,
   FLEX_DIRECTION,
-  FONT_STYLE,
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -1159,7 +1158,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               <Text
                 variant={TextVariant.bodySm}
                 as="h7"
-                fontStyle={FONT_STYLE.ITALIC}
                 color={TextColor.textAlternative}
               >
                 {t('maxFee')}

@@ -9,6 +9,7 @@ import {
   JustifyContent,
   DISPLAY,
   AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { Icon, ICON_NAMES } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
@@ -98,6 +99,7 @@ export default function ExchangeRateDisplay({
         onClick={() => {
           setShowPrimaryToSecondary(!showPrimaryToSecondary);
         }}
+        color={IconColor.iconAlternative}
         style={{ cursor: 'pointer' }}
         title={t('switch')}
       />

@@ -40,6 +40,7 @@ import {
   Size,
   TextVariant,
   BLOCK_SIZES,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 
 import {
@@ -1022,7 +1023,11 @@ export default function PrepareSwap({
               style={{ cursor: 'pointer' }}
               title={t('swapSwapSwitch')}
             >
-              <Icon name={ICON_NAMES.ARROW_2_DOWN} size={ICON_SIZES.LG} />
+              <Icon
+                name={ICON_NAMES.ARROW_2_DOWN}
+                size={ICON_SIZES.LG}
+                color={IconColor.iconAlternative}
+              />
             </div>
           </Box>
         </div>
@@ -1037,7 +1042,7 @@ export default function PrepareSwap({
               selectedToken={selectedToToken}
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-              <Text variant={TextVariant.headingSm} as="h4">
+              <Text variant={TextVariant.headingMd} as="h4">
                 {receiveToAmount &&
                   toPrecisionWithoutTrailingZeros(receiveToAmount, 6)}
               </Text>
