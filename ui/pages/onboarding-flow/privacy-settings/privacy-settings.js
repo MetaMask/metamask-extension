@@ -7,9 +7,9 @@ import Box from '../../../components/ui/box/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
@@ -106,10 +106,13 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
-          <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+          <Typography
+            variant={TypographyVariant.H2}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
             {t('advancedConfiguration')}
           </Typography>
-          <Typography variant={TYPOGRAPHY.H4}>
+          <Typography variant={TypographyVariant.H4}>
             {t('setAdvancedPrivacySettingsDetails')}
           </Typography>
         </div>
@@ -225,7 +228,7 @@ export default function PrivacySettings() {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                       }}
-                      icon={<Icon name="add-outline" marginRight={2} />}
+                      icon={<Icon name="add" marginRight={2} />}
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
                     </Button>
@@ -249,11 +252,11 @@ export default function PrivacySettings() {
                   />
                   {ipfsURL ? (
                     <Typography
-                      variant={TYPOGRAPHY.H7}
+                      variant={TypographyVariant.H7}
                       color={
                         ipfsError
-                          ? COLORS.ERROR_DEFAULT
-                          : COLORS.SUCCESS_DEFAULT
+                          ? TextColor.errorDefault
+                          : TextColor.successDefault
                       }
                     >
                       {ipfsError || t('onboardingAdvancedPrivacyIPFSValid')}

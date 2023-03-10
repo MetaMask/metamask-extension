@@ -1,3 +1,4 @@
+import Bowser from 'bowser';
 import { BN } from 'ethereumjs-util';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
@@ -191,6 +192,77 @@ describe('util', () => {
       const needsParse = false;
       const result = util.formatBalance(value, 2, needsParse);
       expect(result).toStrictEqual('1.24 ETH');
+    });
+  });
+
+  describe('#getIsBrowserDeprecated', () => {
+    it('should call Bowser.getParser when no parameter is passed', () => {
+      const spy = jest.spyOn(Bowser, 'getParser');
+      util.getIsBrowserDeprecated();
+      expect(spy).toHaveBeenCalled();
+    });
+    it('should return false when given a modern chrome browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.2623.112 Safari/537.36',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated chrome browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.2623.112 Safari/537.36',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated firefox browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 OPR/68.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated opera browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 OPR/58.0.3135.47',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given a modern edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.3578.98 Safari/537.36 Edg/81.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
+    });
+    it('should return true when given an outdated edge browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36 Edge/71.0.416.68',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(true);
+    });
+    it('should return false when given an unknown browser', () => {
+      const browser = Bowser.getParser(
+        'Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/609.4 (KHTML, like Gecko) NF/6.0.2.21.3 NintendoBrowser/5.1.0.22474',
+      );
+      const result = util.getIsBrowserDeprecated(browser);
+      expect(result).toStrictEqual(false);
     });
   });
 
@@ -491,6 +563,30 @@ describe('util', () => {
       expect(result.to[0].wallets).toHaveLength(3);
       expect(result.do_not_display).toBeUndefined();
       expect(result.do_not_display_2).toBeUndefined();
+    });
+  });
+
+  describe('sanitizeString', () => {
+    it('should return the passed value, unchanged, if it is falsy', () => {
+      expect(util.sanitizeString('')).toStrictEqual('');
+    });
+
+    it('should return the passed value, unchanged, if it is not a string', () => {
+      expect(util.sanitizeString(true)).toStrictEqual(true);
+    });
+
+    it('should return a truthy string that oes not match the sanitizeString regex, unchanged', () => {
+      expect(
+        util.sanitizeString('The Quick Brown Fox Jumps Over The Lazy Dog'),
+      ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
+    });
+
+    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
+      expect(
+        util.sanitizeString(
+          'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
+        ),
+      ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
     });
   });
 });

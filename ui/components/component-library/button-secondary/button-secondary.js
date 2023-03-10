@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { ButtonBase } from '../button-base';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 import { BUTTON_SECONDARY_SIZES } from './button-secondary.constants';
 
 export const ButtonSecondary = ({
@@ -13,11 +13,12 @@ export const ButtonSecondary = ({
   size = BUTTON_SECONDARY_SIZES.MD,
   ...props
 }) => {
+  const buttonColor = danger ? Color.errorDefault : Color.primaryDefault;
   return (
     <ButtonBase
-      backgroundColor={COLORS.TRANSPARENT}
-      borderColor={danger ? COLORS.ERROR_DEFAULT : COLORS.PRIMARY_DEFAULT}
-      color={danger ? COLORS.ERROR_DEFAULT : COLORS.PRIMARY_DEFAULT}
+      backgroundColor={Color.transparent}
+      borderColor={buttonColor}
+      color={buttonColor}
       className={classnames(className, 'mm-button-secondary', {
         'mm-button-secondary--type-danger': danger,
         'mm-button-secondary--disabled': disabled,

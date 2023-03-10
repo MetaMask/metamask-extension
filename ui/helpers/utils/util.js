@@ -5,6 +5,8 @@ import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
+import * as lodash from 'lodash';
+import bowser from 'bowser';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -15,7 +17,11 @@ import {
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { toBigNumber } from '../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
+///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -328,6 +334,12 @@ export function getURL(url) {
   }
 }
 
+export function getIsBrowserDeprecated(
+  browser = bowser.getParser(window.navigator.userAgent),
+) {
+  return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
+}
+
 export function getURLHost(url) {
   return getURL(url)?.host || '';
 }
@@ -485,9 +497,10 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
   if (numberish === undefined || numberish === null) {
     return '';
   }
-  return toBigNumber
-    .dec(toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces))
-    .toNumber();
+  return new Numeric(
+    new Numeric(numberish, 10).toFixed(numberOfDecimalPlaces),
+    10,
+  ).toNumber();
 }
 
 /**
@@ -515,3 +528,37 @@ export function coinTypeToProtocolName(coinType) {
 export function isNullish(value) {
   return value === null || value === undefined;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * @param {string[]} path
+ * @param {string} curve
+ * @returns {string | null}
+ */
+export function getSnapDerivationPathName(path, curve) {
+  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
+    (derivationPath) =>
+      derivationPath.curve === curve &&
+      lodash.isEqual(derivationPath.path, path),
+  );
+
+  return pathMetadata?.name ?? null;
+}
+///: END:ONLY_INCLUDE_IN
+
+/**
+ * The method escape RTL character in string
+ *
+ * @param {*} value
+ * @returns {(string|*)} escaped string or original param value
+ */
+export const sanitizeString = (value) => {
+  if (!value) {
+    return value;
+  }
+  if (!lodash.isString(value)) {
+    return value;
+  }
+  const regex = /\u202E/giu;
+  return value.replace(regex, '\\u202E');
+};

@@ -92,10 +92,6 @@
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 può avere accesso e spendere al massimo",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 può accedere e spendere questa risorsa",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -211,9 +207,6 @@
   "address": {
     "message": "Indirizzo"
   },
-  "addressBookIcon": {
-    "message": "Icona rubrica indirizzo"
-  },
   "advanced": {
     "message": "Avanzate"
   },
@@ -309,15 +302,8 @@
   "approveButtonText": {
     "message": "Approva"
   },
-  "approveSpendLimit": {
-    "message": "Approva limite di spesa per $1",
-    "description": "The token symbol that is being approved"
-  },
   "approved": {
     "message": "Approvato"
-  },
-  "approvedAmountWithColon": {
-    "message": "Importo approvato:"
   },
   "approvedAsset": {
     "message": "Asset approvato"
@@ -392,24 +378,8 @@
   "beCareful": {
     "message": "Presta attenzione"
   },
-  "betaMetamaskDescription": {
-    "message": "Scelto da milioni di persone, MetaMask è un portafoglio sicuro che rende il mondo del web3 accessibile a tutti."
-  },
-  "betaMetamaskDescriptionExplanation": {
-    "message": "Usa questa versione per testare le funzionalità imminenti prima che vengano rilasciate. Il tuo utilizzo e il tuo feedback ci aiutano a creare la migliore versione possibile di MetaMask. L'utilizzo di MetaMask Beta è soggetto al nostro standard $1 e al nostro $2. Come versione beta, potrebbe esserci un aumento del rischio di bug. Procedendo, accetti e riconosci questi rischi, così come i rischi che si trovano nei nostri Termini e Termini beta.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Termini beta supplementari"
-  },
-  "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Termini"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Versione Beta"
-  },
-  "betaWelcome": {
-    "message": "Benvenuto in MetaMask Beta"
   },
   "blockExplorerAccountAction": {
     "message": "Profilo",
@@ -532,9 +502,6 @@
   "clickToManuallyAdd": {
     "message": "Clicca qui per aggiungere manualmente i token."
   },
-  "clickToRevealSeed": {
-    "message": "Clicca qui per rivelare la tua frase segreta"
-  },
   "close": {
     "message": "Chiudi"
   },
@@ -551,9 +518,6 @@
   "confirmPassword": {
     "message": "Conferma Password"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Conferma la tua Frase di Backup Segreta"
-  },
   "confirmed": {
     "message": "Confermata"
   },
@@ -565,9 +529,6 @@
   },
   "confusingEnsDomain": {
     "message": "Abbiamo rilevato un carattere confondibile nel nome ENS. Controlla il nome ENS per evitare una potenziale truffa."
-  },
-  "congratulations": {
-    "message": "Congratulazioni"
   },
   "connect": {
     "message": "Connetti"
@@ -718,9 +679,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAWallet": {
-    "message": "Crea un Portafoglio"
   },
   "createAccount": {
     "message": "Crea Account"
@@ -921,9 +879,6 @@
   "downloadNow": {
     "message": "Scarica ora"
   },
-  "downloadSecretBackup": {
-    "message": "Scarica questa Frase di Backup Segreta e tienila al sicuro in un hard disk o supporto di memorizzazione esterno criptato."
-  },
   "downloadStateLogs": {
     "message": "Scarica i log di stato"
   },
@@ -976,33 +931,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "Richiedi chiave pubblica di cifratura"
-  },
-  "endOfFlowMessage1": {
-    "message": "Hai passato il test - tieni la tua frase seed al sicuro, è tua responsabilità!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Tutto Fatto"
-  },
-  "endOfFlowMessage2": {
-    "message": "Suggerimenti su come tenerla al sicuro"
-  },
-  "endOfFlowMessage3": {
-    "message": "Salva un backup in più di un posto."
-  },
-  "endOfFlowMessage4": {
-    "message": "Non condividerla mai con nessuno."
-  },
-  "endOfFlowMessage5": {
-    "message": "Stai attento al phishing! MetaMask non ti chiederà mai spontaneamente la tua frase seed."
-  },
-  "endOfFlowMessage6": {
-    "message": "Se vorrai fare nuovamente un backup della frase, la puoi trovare in Impostazioni -> Sicurezza & Privacy."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask non può recuperare la tua frase seed. Impara di più."
-  },
-  "endOfFlowMessage9": {
-    "message": "Scopri di più."
   },
   "endpointReturnedDifferentChainId": {
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
@@ -1146,14 +1074,8 @@
     "message": "Ottieni Get Ether da un faucet per $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Inizia"
-  },
   "goerli": {
     "message": "Rete di test Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "Siamo contenti di vederti."
   },
   "hardware": {
     "message": "hardware"
@@ -1196,12 +1118,6 @@
   },
   "importAccountMsg": {
     "message": " Gli account importati non saranno associati alla frase seed originariamente creata con MetaMask. Scopri di più sugli account importati "
-  },
-  "importAccountSeedPhrase": {
-    "message": "Importa un Account con una Frase Seed"
-  },
-  "importWallet": {
-    "message": "Importa Portafoglio"
   },
   "imported": {
     "message": "Importato",
@@ -1291,9 +1207,6 @@
   "ledgerAccountRestriction": {
     "message": "E' necessario utilizzare l'ultimo account prima di poterne aggiungere uno nuovo."
   },
-  "letsGoSetUp": {
-    "message": "Si, iniziamo!"
-  },
   "likeToImportTokens": {
     "message": "Vorresti aggiungere questi token?"
   },
@@ -1324,9 +1237,6 @@
   "memo": {
     "message": "promemoria"
   },
-  "memorizePhrase": {
-    "message": "Memorizza questa frase."
-  },
   "message": {
     "message": "Messaggio"
   },
@@ -1338,9 +1248,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Il bottone di stato della connessione mostra se il sito che stai visitando è connesso all'account corrente"
-  },
-  "metamaskDescription": {
-    "message": "MetaMask è una cassaforte sicura per identità su Ethereum."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps è in manutenzione. Prova più tardi."
@@ -1416,9 +1323,6 @@
   "newPassword": {
     "message": "Nuova Password (minimo 8 caratteri)"
   },
-  "newToMetaMask": {
-    "message": "Nuovo su MetaMask?"
-  },
   "next": {
     "message": "Avanti"
   },
@@ -1431,9 +1335,6 @@
   },
   "noAddressForName": {
     "message": "Nessun indirizzo è stato impostato per questo nome."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "No, ho già una frase seed"
   },
   "noConversionRateAvailable": {
     "message": "Tasso di conversione non disponibile"
@@ -1470,10 +1371,6 @@
   },
   "offlineForMaintenance": {
     "message": "Offline per manutenzione"
-  },
-  "onboardingReturnNotice": {
-    "message": "\"$1\" chiuderà questa tab e ritornerà a $2",
-    "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
     "message": "Una rete malevola può mentire sullo stato della blockchain e registrare le tue azioni. Aggiungi solo reti fidate."
@@ -1581,9 +1478,6 @@
   "rejected": {
     "message": "Respinta"
   },
-  "remindMeLater": {
-    "message": "Ricordamelo dopo"
-  },
   "remove": {
     "message": "rimuovi"
   },
@@ -1656,12 +1550,6 @@
   "searchTokens": {
     "message": "Cerca Tokens"
   },
-  "secretBackupPhraseDescription": {
-    "message": "La tua frase di backup segreta rende facile fare il backup e ripristinare il tuo account."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "ATTENZIONE: Non dire mai a nessuno questa frase di backup. Chiunque con questa frase può rubare i tuoi Ether per sempre."
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1676,9 +1564,6 @@
   },
   "selectAnAccount": {
     "message": "Seleziona un Account"
-  },
-  "selectEachPhrase": {
-    "message": "Per favore seleziona ogni frase in ordine per assicurarti che sia corretta."
   },
   "selectHdPath": {
     "message": "Seleziona Percorso HD"
@@ -1760,9 +1645,6 @@
   "speedUpTransaction": {
     "message": "Accelera questa transazione"
   },
-  "spendLimitAmount": {
-    "message": "Limite di spesa"
-  },
   "spendLimitInsufficient": {
     "message": "Limite di spesa insufficiente"
   },
@@ -1796,9 +1678,6 @@
   },
   "statusNotConnected": {
     "message": "Non connesso"
-  },
-  "storePhrase": {
-    "message": "Conserva questa frase in un gestore di password come 1Password."
   },
   "submit": {
     "message": "Invia"
@@ -2047,9 +1926,6 @@
   "testFaucet": {
     "message": "Prova Faucet"
   },
-  "thisWillCreate": {
-    "message": "Questo creerà un nuovo portafoglio e frase seed"
-  },
   "tips": {
     "message": "Suggerimenti"
   },
@@ -2208,17 +2084,11 @@
     "message": "Abbiamo notato che il sito corrente ha provato ad usare la API window.web3 rimossa. Se il sito ti sembra non funzionare, clicca $1 per più informazioni.",
     "description": "$1 is a clickable link."
   },
-  "welcome": {
-    "message": "Benvenuto nella Beta di MetaMask"
-  },
   "welcomeBack": {
     "message": "Bentornato!"
   },
   "whatsThis": {
     "message": "Cos'è?"
-  },
-  "writePhrase": {
-    "message": "Scrivi questa frase su un foglio di carta e conservala in un posto sicuro. Se vuoi ancora più sicurezza, scrivila su più fogli e conserva ognuno in 2 o 3 posti diversi. "
   },
   "xOfY": {
     "message": "$1 di $2",

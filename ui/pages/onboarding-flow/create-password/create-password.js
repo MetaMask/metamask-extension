@@ -8,10 +8,10 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
   TEXT_ALIGN,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
+  TypographyVariant,
+  JustifyContent,
   FONT_WEIGHT,
-  ALIGN_ITEMS,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -133,7 +133,7 @@ export default function CreatePassword({
   };
 
   const handleCreate = async (event) => {
-    event.preventDefault();
+    event?.preventDefault();
 
     if (!isValid) {
       return;
@@ -178,13 +178,13 @@ export default function CreatePassword({
           marginBottom={4}
         />
       )}
-      <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+      <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
         {t('createPassword')}
       </Typography>
-      <Typography variant={TYPOGRAPHY.H4} align={TEXT_ALIGN.CENTER}>
+      <Typography variant={TypographyVariant.H4} align={TEXT_ALIGN.CENTER}>
         {t('passwordSetupDetails')}
       </Typography>
-      <Box justifyContent={JUSTIFY_CONTENT.CENTER} marginTop={3}>
+      <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
           <FormField
             dataTestId="create-password-new"
@@ -196,7 +196,7 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <Typography variant={TYPOGRAPHY.H7}>
+              <Typography variant={TypographyVariant.H7}>
                 <a
                   href=""
                   className="create-password__form--password-button"
@@ -226,8 +226,8 @@ export default function CreatePassword({
             }
           />
           <Box
-            alignItems={ALIGN_ITEMS.CENTER}
-            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             marginBottom={4}
           >
             <label className="create-password__form__terms-label">
@@ -236,7 +236,10 @@ export default function CreatePassword({
                 onClick={() => setTermsChecked(!termsChecked)}
                 checked={termsChecked}
               />
-              <Typography variant={TYPOGRAPHY.H5} boxProps={{ marginLeft: 3 }}>
+              <Typography
+                variant={TypographyVariant.H5}
+                boxProps={{ marginLeft: 3 }}
+              >
                 {t('passwordTermsWarning', [
                   <a
                     onClick={(e) => e.stopPropagation()}

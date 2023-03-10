@@ -13,6 +13,7 @@ import {
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
+  addToAddressBook,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -37,9 +38,6 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  getInsightSnaps,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -47,7 +45,9 @@ import {
   updateGasFees,
   getIsGasEstimatesLoading,
   getNativeCurrency,
+  getSendToAccounts,
 } from '../../ducks/metamask/metamask';
+import { addHexPrefix } from '../../../app/scripts/lib/util';
 
 import {
   parseStandardTokenTransactionData,
@@ -76,6 +76,14 @@ const customNonceMerge = (txData) =>
         customNonceValue,
       }
     : txData;
+
+function addressIsNew(toAccounts, newAddress) {
+  const newAddressNormalized = newAddress.toLowerCase();
+  const foundMatching = toAccounts.some(
+    ({ address }) => address.toLowerCase() === newAddressNormalized,
+  );
+  return !foundMatching;
+}
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -124,6 +132,8 @@ const mapStateToProps = (state, ownProps) => {
   if (type !== TransactionType.simpleSend) {
     toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
   }
+
+  const toAccounts = getSendToAccounts(state);
 
   const tokenList = getTokenList(state);
 
@@ -195,14 +205,11 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const insightSnaps = getInsightSnaps(state);
-  ///: END:ONLY_INCLUDE_IN
-
   return {
     balance,
     fromAddress,
     fromName,
+    toAccounts,
     toAddress,
     toEns,
     toName,
@@ -249,9 +256,6 @@ const mapStateToProps = (state, ownProps) => {
     isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    insightSnaps,
-    ///: END:ONLY_INCLUDE_IN
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
   };
 };
@@ -286,6 +290,13 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(setDefaultHomeActiveTabName(tabName)),
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
+    },
+    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
+    addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
+      const hexPrefixedAddress = addHexPrefix(newAddress);
+      if (addressIsNew(toAccounts, hexPrefixedAddress)) {
+        dispatch(addToAddressBook(hexPrefixedAddress, nickname));
+      }
     },
   };
 };

@@ -110,10 +110,6 @@
     "message": "Tôi đã đọc và đồng ý với $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 có thể truy cập và chi tiêu đến số tiền tối đa",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 có thể truy cập và chi tiêu tài sản này",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -270,9 +266,6 @@
   "address": {
     "message": "Địa chỉ"
   },
-  "addressBookIcon": {
-    "message": "Biểu tượng sổ địa chỉ"
-  },
   "advanced": {
     "message": "Nâng cao"
   },
@@ -374,10 +367,6 @@
   "approveButtonText": {
     "message": "Phê duyệt"
   },
-  "approveSpendLimit": {
-    "message": "Phê duyệt giới hạn chi tiêu $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Điều này cho phép bên thứ ba được quyền truy cập và chuyển các NFT sau đây mà không cần thông báo thêm cho đến khi bạn thu hồi quyền truy cập của họ."
   },
@@ -387,9 +376,6 @@
   },
   "approved": {
     "message": "Đã phê duyệt"
-  },
-  "approvedAmountWithColon": {
-    "message": "Số tiền được duyệt:"
   },
   "approvedAsset": {
     "message": "Tài sản được chấp nhận"
@@ -490,29 +476,6 @@
     "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
-  "betaMetamaskDescription": {
-    "message": "Được hàng triệu người tin dùng, MetaMask là một ví an toàn cho phép mọi người có thể truy cập vào thế giới web3."
-  },
-  "betaMetamaskDescriptionDisclaimerHeading": {
-    "message": "Tuyên bố miễn trừ trách nhiệm về phiên bản Beta"
-  },
-  "betaMetamaskDescriptionExplanation": {
-    "message": "Phiên bản này cho phép bạn thử nghiệm các tính năng sắp ra mắt trước khi chúng được phát hành, giúp cải thiện MetaMask trở nên tốt hơn nữa. Giống như tất cả các phiên bản beta, nguy cơ xuất hiện lỗi có thể tăng lên. MetaMask Beta tuân theo $1 và $2 của chúng tôi.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2": {
-    "message": "Bằng cách tiếp tục, bạn chấp nhận và thừa nhận các rủi ro này, $1 và $2 của chúng tôi.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
-    "message": "Điều khoản Beta"
-  },
-  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Điều khoản Beta bổ sung"
-  },
-  "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Điều khoản tiêu chuẩn"
-  },
   "betaMetamaskVersion": {
     "message": "Phiên Bản MetaMask Beta"
   },
@@ -527,9 +490,6 @@
   },
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask Beta sẽ không bao giờ hỏi về Cụm Mật Khẩu Khôi Phục Bí Mật của bạn."
-  },
-  "betaWelcome": {
-    "message": "Chào mừng đến với MetaMask Beta"
   },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
@@ -676,9 +636,6 @@
   "clickToManuallyAdd": {
     "message": "Nhấp vào đây để thêm token theo cách thủ công."
   },
-  "clickToRevealSeed": {
-    "message": "Nhấn vào đây để hiện các từ bí mật"
-  },
   "close": {
     "message": "Đóng"
   },
@@ -698,9 +655,6 @@
   "confirmRecoveryPhrase": {
     "message": "Xác nhận Cụm Mật Khẩu Khôi Phục Bí Mật"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Xác nhận Cụm mật khẩu khôi phục bí mật"
-  },
   "confirmed": {
     "message": "Đã xác nhận"
   },
@@ -712,9 +666,6 @@
   },
   "confusingEnsDomain": {
     "message": "Chúng tôi đã phát hiện thấy một ký tự có thể gây nhầm lẫn trong tên ENS. Hãy kiểm tra tên ENS để tránh nguy cơ bị lừa đảo."
-  },
-  "congratulations": {
-    "message": "Chúc mừng bạn"
   },
   "connect": {
     "message": "Kết nối"
@@ -881,9 +832,6 @@
   },
   "create": {
     "message": "Tạo"
-  },
-  "createAWallet": {
-    "message": "Tạo ví"
   },
   "createAccount": {
     "message": "Tạo tài khoản"
@@ -1099,9 +1047,6 @@
   "downloadNow": {
     "message": "Tải về ngay"
   },
-  "downloadSecretBackup": {
-    "message": "Tải về Cụm mật khẩu khôi phục bí mật này và lưu trữ trên một ổ đĩa cứng hoặc phương tiện lưu trữ bên ngoài an toàn và được mã hóa."
-  },
   "downloadStateLogs": {
     "message": "Tải về nhật ký trạng thái"
   },
@@ -1228,37 +1173,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "Yêu cầu khóa mã hóa công khai"
-  },
-  "endOfFlowMessage1": {
-    "message": "Bạn đã vượt qua bài kiểm tra - hãy lưu giữ Cụm mật khẩu khôi phục bí mật của bạn an toàn, đó là trách nhiệm của bạn!"
-  },
-  "endOfFlowMessage10": {
-    "message": "Tất cả đã hoàn tất"
-  },
-  "endOfFlowMessage2": {
-    "message": "Mẹo lưu trữ an toàn"
-  },
-  "endOfFlowMessage3": {
-    "message": "Lưu bản sao lưu ở nhiều nơi."
-  },
-  "endOfFlowMessage4": {
-    "message": "Tuyệt đối không chia sẻ cụm mật khẩu với bất kỳ ai."
-  },
-  "endOfFlowMessage5": {
-    "message": "Hãy cẩn thận với hành vi lừa đảo! MetaMask sẽ không bao giờ tự ý hỏi Cụm mật khẩu khôi phục bí mật của bạn."
-  },
-  "endOfFlowMessage6": {
-    "message": "Nếu bạn cần sao lưu lại Cụm mật khẩu khôi phục bí mật, bạn có thể tìm thấy chức năng này trong phần Cài đặt > Bảo mật."
-  },
-  "endOfFlowMessage7": {
-    "message": "Nếu bạn có thắc mắc hoặc thấy điều gì đó đáng ngờ, hãy liên hệ với bộ phận hỗ trợ của chúng tôi $1.",
-    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask không thể khôi phục Cụm mật khẩu khôi phục bí mật của bạn."
-  },
-  "endOfFlowMessage9": {
-    "message": "Tìm hiểu thêm."
   },
   "endpointReturnedDifferentChainId": {
     "message": "Điểm cuối đã trả về một mã chuỗi khác: $1",
@@ -1555,9 +1469,6 @@
     "message": "Nhận Ether từ một vòi dành cho mạng $1.",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Bắt đầu"
-  },
   "goBack": {
     "message": "Quay Lại"
   },
@@ -1572,9 +1483,6 @@
   },
   "gwei": {
     "message": "GWEI"
-  },
-  "happyToSeeYou": {
-    "message": "Chúng tôi rất vui khi được gặp bạn."
   },
   "hardware": {
     "message": "Phần cứng"
@@ -1656,9 +1564,6 @@
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm mật khẩu khôi phục bí mật cho tài khoản MetaMask đã tạo ban đầu của bạn. Tìm hiểu thêm về các tài khoản đã nhập"
   },
-  "importAccountSeedPhrase": {
-    "message": "Nhập một ví bằng Cụm mật khẩu khôi phục bí mật"
-  },
   "importMyWallet": {
     "message": "Nhập ví của tôi"
   },
@@ -1695,25 +1600,13 @@
   "importTokensCamelCase": {
     "message": "Nhập token"
   },
-  "importWallet": {
-    "message": "Nhập ví"
-  },
   "importWithCount": {
     "message": "Nhập $1",
     "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
-  "importYourExisting": {
-    "message": "Nhập ví hiện tại của bạn bằng Cụm mật khẩu khôi phục bí mật"
-  },
   "imported": {
     "message": "Đã nhập",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "improvedTokenAllowance": {
-    "message": "Trải nghiệm cho phép token được cải thiện"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Bật tính năng này để có trải nghiệm cho phép token được cải thiện mỗi khi có một dapp yêu cầu phê duyệt ERC20"
   },
   "inYourSettings": {
     "message": "trong phần Cài đặt"
@@ -1911,9 +1804,6 @@
     "message": "Thiết bị Ledger chưa được kết nối. Nếu bạn muốn kết nối với Ledger, vui lòng nhấn lại vào \"Tiếp tục\" và chấp thuận kết nối HID",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "letsGoSetUp": {
-    "message": "Có, hãy thiết lập!"
-  },
   "levelArrow": {
     "message": "mũi tên cấp độ"
   },
@@ -2008,9 +1898,6 @@
   "memo": {
     "message": "bản ghi nhớ"
   },
-  "memorizePhrase": {
-    "message": "Ghi nhớ cụm mật khẩu này."
-  },
   "message": {
     "message": "Thông báo"
   },
@@ -2022,9 +1909,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Nút trạng thái kết nối sẽ hiển thị nếu trang web mà bạn đang truy cập được kết nối với tài khoản bạn đang chọn."
-  },
-  "metamaskDescription": {
-    "message": "Kết nối bạn với Ethereum và trang Web phi tập trung."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "Tính năng Hoán đổi trên MetaMask đang được bảo trì. Vui lòng kiểm tra lại sau."
@@ -2237,9 +2121,6 @@
   "newPassword": {
     "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
   },
-  "newToMetaMask": {
-    "message": "Bạn mới sử dụng MetaMask?"
-  },
   "newTokensImportedMessage": {
     "message": "Bạn đã nhập thành công $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -2285,9 +2166,6 @@
   },
   "noAddressForName": {
     "message": "Chưa có địa chỉ nào được đặt cho tên này."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Không, tôi đã có Cụm mật khẩu khôi phục bí mật"
   },
   "noConversionDateAvailable": {
     "message": "Hiện không có ngày quy đổi tiền tệ nào"
@@ -2397,15 +2275,6 @@
   },
   "notifications15Title": {
     "message": "Hợp nhất Ethereum đã được triển khai!"
-  },
-  "notifications16ActionText": {
-    "message": "Dùng thử tại đây"
-  },
-  "notifications16Description": {
-    "message": "Chúng tôi đã thiết kế lại xác nhận cho phép token để giúp bạn đưa ra quyết định sáng suốt hơn."
-  },
-  "notifications16Title": {
-    "message": "Trải nghiệm cho phép token được cải thiện"
   },
   "notifications17ActionText": {
     "message": "Hiển thị cài đặt Bảo mật và Quyền riêng tư"
@@ -2654,10 +2523,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
-  },
-  "onboardingReturnNotice": {
-    "message": "\"$1\" sẽ đóng tab này và quay về $2",
-    "description": "Return the user to the site that initiated onboarding"
   },
   "onboardingShowIncomingTransactionsDescription": {
     "message": "Việc hiển thị các giao dịch đến trong ví của bạn tùy thuộc vào quá trình truyền tin với $1. Etherscan sẽ có quyền truy cập vào địa chỉ Ethereum và địa chỉ IP của bạn. Xem $2.",
@@ -2981,9 +2846,6 @@
   "remember": {
     "message": "Ghi nhớ:"
   },
-  "remindMeLater": {
-    "message": "Nhắc tôi sau"
-  },
   "remove": {
     "message": "Xóa"
   },
@@ -3084,7 +2946,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "Bằng cách thu hồi quyền truy cập, $1 sau đây sẽ không thể truy cập vào $2 của bạn nữa",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Thu hồi hạn mức chi tiêu cho $1 của bạn",
@@ -3129,15 +2991,6 @@
   "searchTokens": {
     "message": "Tìm kiếm token"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Cụm mật khẩu khôi phục bí mật giúp việc sao lưu và khôi phục tài khoản trở nên dễ dàng."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "CẢNH BÁO: Tuyệt đối không để lộ Cụm mật khẩu khôi phục bí mật của bạn. Bất kỳ ai có cụm mật khẩu này cũng có thể lấy Ether của bạn vĩnh viễn."
-  },
-  "secretPhrase": {
-    "message": "Chỉ tự động tải tài khoản đầu tên trên ví. Sau khi hoàn tất quá trình này, để thêm tài khoản bổ sung, hãy nhấn vào trình đơn thả xuống và chọn Tạo tài khoản."
-  },
   "secretRecoveryPhrase": {
     "message": "Cụm Mật Khẩu Khôi Phục Bí Mật"
   },
@@ -3170,9 +3023,6 @@
   },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "Lưu giữ trong hộp ký gửi an toàn."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Lưu giữ trong két an toàn của ngân hàng."
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Cụm mật khẩu khôi phục bí mật gồm 12 từ là “chìa khóa chính” để truy cập ví và số tiền của bạn"
@@ -3218,9 +3068,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Tài khoản này đã được kết nối với MetaMask"
-  },
-  "selectEachPhrase": {
-    "message": "Vui lòng chọn từng cụm mật khẩu theo thứ tự để đảm bảo sự chính xác."
   },
   "selectHdPath": {
     "message": "Chọn đường dẫn HD"
@@ -3464,9 +3311,6 @@
   "speedUpTransaction": {
     "message": "Tăng tốc giao dịch này"
   },
-  "spendLimitAmount": {
-    "message": "Khoản tiền giới hạn chi tiêu"
-  },
   "spendLimitInsufficient": {
     "message": "Giới hạn chi tiêu không đủ"
   },
@@ -3572,9 +3416,6 @@
   "stillGettingMessage": {
     "message": "Vẫn nhận được thông báo này?"
   },
-  "storePhrase": {
-    "message": "Lưu trữ cụm mật khẩu này trong trình quản lý mật khẩu chẳng hạn như 1Password."
-  },
   "strong": {
     "message": "Mạnh"
   },
@@ -3618,12 +3459,6 @@
     "message": "Thị trường thay đổi đột ngột có thể gây thất bại. Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Giao dịch thông minh tạm thời không khả dụng vì bạn có một giao dịch đang chờ xử lý."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Bạn vẫn có thể hoán đổi token ngay cả khi Giao dịch thông minh không khả dụng."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Đang bí mật gửi yêu cầu Hoán đổi của bạn..."
   },
@@ -3647,14 +3482,8 @@
   "stxTooltip": {
     "message": "Mô phỏng giao dịch trước khi gửi để giảm chi phí giao dịch và tỷ lệ thất bại."
   },
-  "stxTryRegular": {
-    "message": "Hãy thử hoán đổi thông thường."
-  },
   "stxTryingToCancel": {
     "message": "Đang cố gắng hủy giao dịch của bạn..."
-  },
-  "stxUnavailable": {
-    "message": "Đã tắt Giao dịch thông minh"
   },
   "stxUnknown": {
     "message": "Trạng thái không xác định"
@@ -3706,10 +3535,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Bạn cần $1 $2 nữa để hoàn tất giao dịch hoán đổi này",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Bạn cần thêm $1 để hoàn thành hoán đổi này bằng các giao dịch thông minh.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Tốt nhất trong $1 báo giá.",
@@ -4076,9 +3901,6 @@
   "thingsToKeep": {
     "message": "Những điều cần lưu ý:"
   },
-  "thisWillCreate": {
-    "message": "Thao tác này sẽ tạo một ví mới và Cụm mật khẩu khôi phục bí mật"
-  },
   "time": {
     "message": "Thời gian"
   },
@@ -4125,9 +3947,6 @@
   },
   "tokenList": {
     "message": "Danh sách token:"
-  },
-  "tokenNftAutoDetection": {
-    "message": "Tự động phát hiện Token và NFT"
   },
   "tokenScamSecurityRisk": {
     "message": "rủi ro về bảo mật và lừa đảo token"
@@ -4514,9 +4333,6 @@
     "message": "trang web",
     "description": "Used in the 'permission_rpc' message."
   },
-  "welcome": {
-    "message": "Chào mừng bạn đến với MetaMask"
-  },
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại!"
   },
@@ -4544,9 +4360,6 @@
   },
   "whatsThis": {
     "message": "Đây là gì?"
-  },
-  "writePhrase": {
-    "message": "Ghi cụm mật khẩu này ra giấy và lưu giữ ở một nơi an toàn. Nếu bạn cần độ bảo mật cao hơn nữa, hãy ghi ra nhiều tờ giấy và lưu giữ ở 2 đến 3 nơi khác nhau."
   },
   "xOfY": {
     "message": "$1/$2",

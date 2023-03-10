@@ -1,15 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
-import { debounce } from 'lodash';
+import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  conversionGreaterThan,
-  conversionUtil,
-  multiplyCurrencies,
-  subtractCurrencies,
+  decimalToHex,
+  getValueFromWeiHex,
 } from '../../../shared/modules/conversion.utils';
-import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
+import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -89,13 +87,9 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
-import {
-  isSmartContractAddress,
-  sumHexes,
-} from '../../helpers/utils/transactions.util';
+import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
 import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
-import { ETH } from '../../helpers/constants/common';
 import {
   AssetType,
   TokenStandard,
@@ -104,13 +98,14 @@ import {
 } from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { getValueFromWeiHex } from '../../helpers/utils/confirm-tx.util';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import {
   calcGasTotal,
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -576,6 +571,8 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  * the send slice. It returns the values that might change from this action and
  * those values are written to the slice in the `initializeSendState.fulfilled`
  * action handler.
+ *
+ * @type {import('@reduxjs/toolkit').AsyncThunk<any, { chainHasChanged: boolean }, {}>}
  */
 export const initializeSendState = createAsyncThunk(
   'send/initializeSendState',
@@ -631,11 +628,11 @@ export const initializeSendState = createAsyncThunk(
       // Because we are only interested in getting a gasLimit estimation we only
       // need to worry about gasPrice. So we use maxFeePerGas as gasPrice if we
       // have a fee market estimation.
-      if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      if (gasEstimateType === GasEstimateTypes.legacy) {
         gasPrice = getGasPriceInHexWei(gasFeeEstimates.medium);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
         gasPrice = getRoundedGasPrice(gasFeeEstimates.gasPrice);
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET) {
+      } else if (gasEstimateType === GasEstimateTypes.feeMarket) {
         gasPrice = getGasPriceInHexWei(
           gasFeeEstimates.medium.suggestedMaxFeePerGas,
         );
@@ -649,7 +646,7 @@ export const initializeSendState = createAsyncThunk(
     // Set a basic gasLimit in the event that other estimation fails
     let { gasLimit } = draftTransaction.gas;
     if (
-      gasEstimateType !== GAS_ESTIMATE_TYPES.NONE &&
+      gasEstimateType !== GasEstimateTypes.none &&
       sendState.stage !== SEND_STAGES.EDIT &&
       draftTransaction.recipient.address
     ) {
@@ -904,31 +901,21 @@ const slice = createSlice({
       let amount = '0x0';
       if (draftTransaction.asset.type === AssetType.token) {
         const decimals = draftTransaction.asset.details?.decimals ?? 0;
+
         const multiplier = Math.pow(10, Number(decimals));
 
-        amount = multiplyCurrencies(
-          draftTransaction.asset.balance,
-          multiplier,
-          {
-            toNumericBase: 'hex',
-            multiplicandBase: 16,
-            multiplierBase: 10,
-          },
-        );
+        amount = new Numeric(draftTransaction.asset.balance, 16)
+          .times(multiplier, 10)
+          .toString();
       } else {
-        const _gasTotal = sumHexes(
+        const _gasTotal = new Numeric(
           draftTransaction.gas.gasTotal || '0x0',
-          state.gasTotalForLayer1 || '0x0',
-        );
-        amount = subtractCurrencies(
-          addHexPrefix(draftTransaction.asset.balance),
-          addHexPrefix(_gasTotal),
-          {
-            toNumericBase: 'hex',
-            aBase: 16,
-            bBase: 16,
-          },
-        );
+          16,
+        ).add(new Numeric(state.gasTotalForLayer1 || '0x0', 16));
+
+        amount = new Numeric(draftTransaction.asset.balance, 16)
+          .minus(_gasTotal)
+          .toString();
       }
       slice.caseReducers.updateSendAmount(state, {
         payload: amount,
@@ -988,7 +975,7 @@ const slice = createSlice({
       const { gasFeeEstimates, gasEstimateType } = action.payload;
       let gasPriceEstimate = '0x0';
       switch (gasEstimateType) {
-        case GAS_ESTIMATE_TYPES.FEE_MARKET:
+        case GasEstimateTypes.feeMarket:
           slice.caseReducers.updateGasFees(state, {
             payload: {
               transactionType: TransactionEnvelopeType.feeMarket,
@@ -1001,7 +988,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.LEGACY:
+        case GasEstimateTypes.legacy:
           gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.medium);
           slice.caseReducers.updateGasFees(state, {
             payload: {
@@ -1011,7 +998,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
+        case GasEstimateTypes.ethGasPrice:
           gasPriceEstimate = getRoundedGasPrice(gasFeeEstimates.gasPrice);
           slice.caseReducers.updateGasFees(state, {
             payload: {
@@ -1021,7 +1008,7 @@ const slice = createSlice({
             },
           });
           break;
-        case GAS_ESTIMATE_TYPES.NONE:
+        case GasEstimateTypes.none:
         default:
           break;
       }
@@ -1268,6 +1255,9 @@ const slice = createSlice({
     validateAmountField: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      const amountValue = new Numeric(draftTransaction.amount.value, 16);
+
       switch (true) {
         // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
         // than the total price of the transaction inclusive of gas fees.
@@ -1291,10 +1281,7 @@ const slice = createSlice({
           break;
         // if the amount is negative, set error to NEGATIVE_ETH_ERROR
         // TODO: change this to NEGATIVE_ERROR and remove the currency bias.
-        case conversionGreaterThan(
-          { value: 0, fromNumericBase: 'dec' },
-          { value: draftTransaction.amount.value, fromNumericBase: 'hex' },
-        ):
+        case amountValue.isNegative():
           draftTransaction.amount.error = NEGATIVE_ETH_ERROR;
           break;
         // If none of the above are true, set error to null
@@ -1409,28 +1396,81 @@ const slice = createSlice({
     validateSendState: (state) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+      slice.caseReducers.addHistoryEntry(state, {
+        payload: 'Begin validating send state',
+      });
       if (draftTransaction) {
         switch (true) {
           case Boolean(draftTransaction.amount.error):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Amount is in error ${draftTransaction.amount.error}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case Boolean(draftTransaction.gas.error):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Gas is in error ${draftTransaction.gas.error}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case Boolean(draftTransaction.asset.error):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Asset is in error ${draftTransaction.asset.error}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case draftTransaction.asset.type === AssetType.token &&
             draftTransaction.asset.details === null:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Asset is TOKEN and token details is null`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case state.stage === SEND_STAGES.ADD_RECIPIENT:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is invalid because stage is ADD_RECIPIENT`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case state.stage === SEND_STAGES.INACTIVE:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is invalid because stage is INACTIVE`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case state.gasEstimateIsLoading:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is invalid because gasEstimateIsLoading`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
             new BigNumber(state.gasLimitMinimum),
           ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is invalid because ${draftTransaction.gas.gasLimit} is lessThan ${state.gasLimitMinimum}`,
+            });
+
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
           case draftTransaction.recipient.warning === 'loading':
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is invalid because recipient warning is loading`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case draftTransaction.recipient.warning ===
             KNOWN_RECIPIENT_ADDRESS_WARNING &&
             draftTransaction.recipient.recipientWarningAcknowledged === false:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is invalid because recipient warning not acknolwedged`,
+            });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
           default:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Form is valid`,
+            });
             draftTransaction.status = SEND_STATUSES.VALID;
         }
       }
@@ -1732,13 +1772,7 @@ export function editExistingTransaction(assetType, transactionId) {
       const address = getTokenAddressParam(tokenData);
       const nickname = getAddressBookEntryOrAccountName(state, address) ?? '';
 
-      const tokenAmountInHex = addHexPrefix(
-        conversionUtil(tokenAmountInDec, {
-          fromNumericBase: 'dec',
-          toNumericBase: 'hex',
-        }),
-      );
-
+      const tokenAmountInHex = addHexPrefix(decimalToHex(tokenAmountInDec));
       await dispatch(
         actions.addNewDraft({
           ...draftTransactionInitialState,
@@ -1938,24 +1972,25 @@ export function updateSendAmount(amount) {
         10,
         Number(draftTransaction.asset.details?.decimals || 0),
       );
-      const decimalValueString = conversionUtil(addHexPrefix(amount), {
-        fromNumericBase: 'hex',
-        toNumericBase: 'dec',
-        toCurrency: draftTransaction.asset.details?.symbol,
-        conversionRate: multiplier,
-        invertConversionRate: true,
-      });
-
+      const decimalValueString = new Numeric(addHexPrefix(amount), 16)
+        .toBase(10)
+        .applyConversionRate(
+          draftTransaction.asset.details?.symbol ? multiplier : 1,
+          true,
+        )
+        .toString();
       logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
         draftTransaction.asset.details?.symbol
       }`;
     } else {
       const ethValue = getValueFromWeiHex({
         value: amount,
-        toCurrency: ETH,
+        toCurrency: EtherDenomination.ETH,
         numberOfDecimals: 8,
       });
-      logAmount = `${ethValue} ${metamask?.provider?.ticker || ETH}`;
+      logAmount = `${ethValue} ${
+        metamask?.provider?.ticker || EtherDenomination.ETH
+      }`;
     }
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
@@ -1999,7 +2034,7 @@ export function updateSendAsset(
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${AssetType.native} with symbol ${
-            state.metamask.provider?.ticker ?? ETH
+            state.metamask.provider?.ticker ?? EtherDenomination.ETH
           }`,
         ),
       );
@@ -2235,7 +2270,7 @@ export function signTransaction() {
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
       const unapprovedTxs = getUnapprovedTxs(state);
-      const unapprovedTx = unapprovedTxs[draftTransaction.id];
+      const unapprovedTx = cloneDeep(unapprovedTxs[draftTransaction.id]);
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
         data: txParams.data,
@@ -2293,6 +2328,7 @@ export function signTransaction() {
 
       dispatch(
         addUnapprovedTransactionAndRouteToConfirmationPage(
+          undefined,
           txParams,
           transactionType,
           draftTransaction.history,
@@ -2468,7 +2504,7 @@ export function getGasInputMode(state) {
   // mainnet or IN_TEST.
   if (
     (isMainnet || process.env.IN_TEST) &&
-    gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE
+    gasEstimateType === GasEstimateTypes.ethGasPrice
   ) {
     return GAS_INPUT_MODES.INLINE;
   }

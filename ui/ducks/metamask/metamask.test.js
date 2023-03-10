@@ -128,42 +128,6 @@ describe('MetaMask Reducers', () => {
     expect(lockMetaMask.isUnlocked).toStrictEqual(false);
   });
 
-  it('sets rpc target', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_RPC_TARGET,
-        value: 'https://custom.rpc',
-      },
-    );
-
-    expect(state.provider.rpcUrl).toStrictEqual('https://custom.rpc');
-  });
-
-  it('sets provider type', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_PROVIDER_TYPE,
-        value: 'provider type',
-      },
-    );
-
-    expect(state.provider.type).toStrictEqual('provider type');
-  });
-
-  it('shows account detail', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SHOW_ACCOUNT_DETAIL,
-      },
-    );
-
-    expect(state.isUnlocked).toStrictEqual(true);
-    expect(state.isInitialized).toStrictEqual(true);
-  });
-
   it('sets account label', () => {
     const state = reduceMetamask(
       {},
@@ -211,32 +175,6 @@ describe('MetaMask Reducers', () => {
     expect(state.currentNetworkTxList[0].txParams).toStrictEqual('bar');
   });
 
-  it('sets blockies', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_USE_BLOCKIE,
-        value: true,
-      },
-    );
-
-    expect(state.useBlockie).toStrictEqual(true);
-  });
-
-  it('updates an arbitrary feature flag', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.UPDATE_FEATURE_FLAGS,
-        value: {
-          foo: true,
-        },
-      },
-    );
-
-    expect(state.featureFlags.foo).toStrictEqual(true);
-  });
-
   it('close welcome screen', () => {
     const state = reduceMetamask(
       {},
@@ -246,18 +184,6 @@ describe('MetaMask Reducers', () => {
     );
 
     expect(state.welcomeScreenSeen).toStrictEqual(true);
-  });
-
-  it('sets current locale', () => {
-    const state = reduceMetamask(
-      {},
-      {
-        type: actionConstants.SET_CURRENT_LOCALE,
-        value: { locale: 'ge' },
-      },
-    );
-
-    expect(state.currentLocale).toStrictEqual('ge');
   });
 
   it('sets pending tokens', () => {

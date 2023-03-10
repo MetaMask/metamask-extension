@@ -1,10 +1,9 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-import { ethers } from 'ethers';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
-import { THEME_TYPE } from '../../../ui/pages/settings/settings-tab/settings-tab.constant';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { ThemeType } from '../../../shared/constants/preferences';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -67,16 +66,14 @@ export default class PreferencesController {
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
-        ? LEDGER_TRANSPORT_TYPES.WEBHID
-        : LEDGER_TRANSPORT_TYPES.U2F,
-      improvedTokenAllowanceEnabled: false,
+        ? LedgerTransportTypes.webhid
+        : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
-      theme: THEME_TYPE.OS,
+      theme: ThemeType.os,
       ...opts.initState,
     };
 
     this.network = opts.network;
-    this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.openPopup = opts.openPopup;
@@ -196,17 +193,6 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `improvedTokenAllowanceEnabled` property
-   *
-   * @param improvedTokenAllowanceEnabled
-   */
-  setImprovedTokenAllowanceEnabled(improvedTokenAllowanceEnabled) {
-    this.store.updateState({
-      improvedTokenAllowanceEnabled,
-    });
   }
 
   /**
@@ -388,7 +374,7 @@ export default class PreferencesController {
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}
    */
-  setAccountLabel(account, label) {
+  async setAccountLabel(account, label) {
     if (!account) {
       throw new Error(
         `setAccountLabel requires a valid address, got ${String(account)}`,
@@ -399,7 +385,7 @@ export default class PreferencesController {
     identities[address] = identities[address] || {};
     identities[address].name = label;
     this.store.updateState({ identities });
-    return Promise.resolve(label);
+    return label;
   }
 
   /**
@@ -442,7 +428,7 @@ export default class PreferencesController {
    * @param {string} url - The RPC url to remove from frequentRpcList.
    * @returns {Promise<Array>} Promise resolving to updated frequentRpcList.
    */
-  removeFromFrequentRpcList(url) {
+  async removeFromFrequentRpcList(url) {
     const rpcList = this.getFrequentRpcListDetail();
     const index = rpcList.findIndex((element) => {
       return element.rpcUrl === url;
@@ -451,7 +437,7 @@ export default class PreferencesController {
       rpcList.splice(index, 1);
     }
     this.store.updateState({ frequentRpcListDetail: rpcList });
-    return Promise.resolve(rpcList);
+    return rpcList;
   }
 
   /**
@@ -470,7 +456,7 @@ export default class PreferencesController {
    * @param {boolean} activated - Indicates whether or not the UI feature should be displayed
    * @returns {Promise<object>} Promises a new object; the updated featureFlags object.
    */
-  setFeatureFlag(feature, activated) {
+  async setFeatureFlag(feature, activated) {
     const currentFeatureFlags = this.store.getState().featureFlags;
     const updatedFeatureFlags = {
       ...currentFeatureFlags,
@@ -479,7 +465,7 @@ export default class PreferencesController {
 
     this.store.updateState({ featureFlags: updatedFeatureFlags });
 
-    return Promise.resolve(updatedFeatureFlags);
+    return updatedFeatureFlags;
   }
 
   /**
@@ -490,7 +476,7 @@ export default class PreferencesController {
    * @param {boolean} value - Indicates whether or not the preference should be enabled or disabled.
    * @returns {Promise<object>} Promises a new object; the updated preferences object.
    */
-  setPreference(preference, value) {
+  async setPreference(preference, value) {
     const currentPreferences = this.getPreferences();
     const updatedPreferences = {
       ...currentPreferences,
@@ -498,7 +484,7 @@ export default class PreferencesController {
     };
 
     this.store.updateState({ preferences: updatedPreferences });
-    return Promise.resolve(updatedPreferences);
+    return updatedPreferences;
   }
 
   /**
@@ -525,9 +511,9 @@ export default class PreferencesController {
    * @param {string} domain - The new IPFS gateway domain
    * @returns {Promise<string>} A promise of the update IPFS gateway domain
    */
-  setIpfsGateway(domain) {
+  async setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
-    return Promise.resolve(domain);
+    return domain;
   }
 
   /**

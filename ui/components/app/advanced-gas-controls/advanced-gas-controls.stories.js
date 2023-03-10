@@ -4,7 +4,6 @@ import AdvancedGasControls from '.';
 
 export default {
   title: 'Components/App/AdvancedGasControls',
-  id: __filename,
 };
 
 export const DefaultStory = () => {

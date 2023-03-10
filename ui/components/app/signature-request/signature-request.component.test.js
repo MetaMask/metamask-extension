@@ -1,18 +1,36 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SignatureRequest from './signature-request.component';
 
+const baseProps = {
+  hardwareWalletRequiresConnection: false,
+  clearConfirmTransaction: () => undefined,
+  cancel: () => undefined,
+  cancelAll: () => undefined,
+  mostRecentOverviewPage: '/',
+  showRejectTransactionsConfirmationModal: () => undefined,
+  sign: () => undefined,
+  history: { push: '/' },
+  provider: { type: 'rpc' },
+  nativeCurrency: 'ABC',
+  currentCurrency: 'def',
+  fromAccount: {
+    address: '0x123456789abcdef',
+    balance: '0x346ba7725f412cbfdb',
+    name: 'Antonio',
+  },
+};
+
 describe('Signature Request Component', () => {
   const store = configureMockStore()(mockState);
 
   describe('render', () => {
-    let fromAddress;
     let messageData;
 
     beforeEach(() => {
-      fromAddress = '0x123456789abcdef';
       messageData = {
         domain: {
           chainId: 97,
@@ -61,7 +79,7 @@ describe('Signature Request Component', () => {
       };
     });
 
-    it('should match snapshot', () => {
+    it('should match snapshot when we want to switch to fiat', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
         version: 'V4',
@@ -69,20 +87,56 @@ describe('Signature Request Component', () => {
       };
       const { container } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={1567}
         />,
         store,
       );
 
       expect(container).toMatchSnapshot();
+    });
+
+    it('should match snapshot when we are using eth', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+        />,
+        store,
+      );
+
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should render navigation', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { queryByTestId } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+        />,
+        store,
+      );
+
+      expect(queryByTestId('navigation-container')).toBeInTheDocument();
     });
 
     it('should render a div message parsed without typeless data', () => {
@@ -97,15 +151,11 @@ describe('Signature Request Component', () => {
       };
       const { queryByText } = renderWithProvider(
         <SignatureRequest
-          hardwareWalletRequiresConnection={false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          sign={() => undefined}
+          {...baseProps}
           txData={{
             msgParams,
           }}
-          fromAccount={{ address: fromAddress }}
-          provider={{ type: 'rpc' }}
+          conversionRate={null}
         />,
         store,
       );
@@ -114,6 +164,97 @@ describe('Signature Request Component', () => {
       expect(queryByText('one')).not.toBeInTheDocument();
       expect(queryByText('do_not_display_2')).not.toBeInTheDocument();
       expect(queryByText('two')).not.toBeInTheDocument();
+    });
+
+    it('should not render a reject multiple requests link if there is not multiple requests', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+        />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.signature-request__reject-all-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should render a reject multiple requests link if there is multiple requests (greater than 1)', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.signature-request__reject-all-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('should call reject all button when button is clicked', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      const rejectRequestsLink = container.querySelector(
+        '.signature-request__reject-all-button',
+      );
+      fireEvent.click(rejectRequestsLink);
+      expect(rejectRequestsLink).toBeDefined();
+    });
+
+    it('should render text of reject all button', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+      const { getByText } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          txData={{
+            msgParams,
+          }}
+          conversionRate={null}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(getByText('Reject 2 requests')).toBeInTheDocument();
     });
   });
 });

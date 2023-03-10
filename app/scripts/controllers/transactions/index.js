@@ -12,7 +12,6 @@ import { merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
-  bnToHex,
   BnMultiplyByFraction,
   addHexPrefix,
   getChainType,
@@ -28,12 +27,17 @@ import {
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
-  GAS_ESTIMATE_TYPES,
-  GAS_RECOMMENDATIONS,
+  GasEstimateTypes,
+  GasRecommendations,
   CUSTOM_GAS_ESTIMATE,
-  PRIORITY_LEVELS,
+  PriorityLevels,
 } from '../../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import {
+  bnToHex,
+  decGWEIToHexWEI,
+  hexWEIToDecETH,
+  hexWEIToDecGWEI,
+} from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import {
@@ -50,12 +54,10 @@ import {
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   calcGasTotal,
-  decimalToHex,
   getSwapsTokensReceivedFromTxMeta,
-  hexWEIToDecETH,
-  hexWEIToDecGWEI,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -81,6 +83,7 @@ const VALID_UNAPPROVED_TRANSACTION_TYPES = [
 
 /**
  * @typedef {import('../../../../shared/constants/transaction').TransactionMeta} TransactionMeta
+ * @typedef {import('../../../../shared/constants/gas').TxGasFees} TxGasFees
  */
 
 const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -149,6 +152,7 @@ export default class TransactionController extends EventEmitter {
     this.getDeviceModel = opts.getDeviceModel;
     this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
+    this.securityProviderRequest = opts.securityProviderRequest;
 
     this.memStore = new ObservableStore({});
 
@@ -335,6 +339,7 @@ export default class TransactionController extends EventEmitter {
     );
 
     const initialTxMeta = await this.addUnapprovedTransaction(
+      opts.method,
       txParams,
       opts.origin,
       undefined,
@@ -504,18 +509,7 @@ export default class TransactionController extends EventEmitter {
    * updates the gas fees of the transaction with id if the transaction state is unapproved
    *
    * @param {string} txId - transaction id
-   * @param {object} txGasFees - holds the gas fees parameters
-   * @param {string} txGasFees.gasLimit
-   * @param {string} txGasFees.gasPrice
-   * @param {string} txGasFees.maxPriorityFeePerGas
-   * @param {string} txGasFees.maxFeePerGas
-   * @param {string} txGasFees.estimateUsed
-   * @param {string} txGasFees.estimateSuggested
-   * @param {string} txGasFees.defaultGasEstimates
-   * @param {string} txGasFees.gas
-   * @param {string} txGasFees.originalGasEstimate
-   * @param {string} txGasFees.userEditedGasLimit
-   * @param {string} txGasFees.userFeeLevel
+   * @param {TxGasFees} txGasFees - holds the gas fees parameters
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
   updateTransactionGasFees(
@@ -764,6 +758,7 @@ export default class TransactionController extends EventEmitter {
    * actionId is fix used for making this action idempotent to deal with scenario when
    * action is invoked multiple times with same parameters in MV3 due to service worker re-activation.
    *
+   * @param txMethodType
    * @param txParams
    * @param origin
    * @param transactionType
@@ -772,6 +767,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(
+    txMethodType,
     txParams,
     origin,
     transactionType,
@@ -854,6 +850,15 @@ export default class TransactionController extends EventEmitter {
       ? addHexPrefix(txMeta.txParams.value)
       : '0x0';
 
+    if (txMethodType && this.securityProviderRequest) {
+      const securityProviderResponse = await this.securityProviderRequest(
+        txMeta,
+        txMethodType,
+      );
+
+      txMeta.securityProviderResponse = securityProviderResponse;
+    }
+
     this.addTransaction(txMeta);
     this.emit('newUnapprovedTx', txMeta);
 
@@ -912,7 +917,7 @@ export default class TransactionController extends EventEmitter {
         if (txMeta.origin === ORIGIN_METAMASK) {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         } else {
-          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
+          txMeta.userFeeLevel = PriorityLevels.dAppSuggested;
         }
       } else {
         if (
@@ -922,9 +927,9 @@ export default class TransactionController extends EventEmitter {
             !txMeta.txParams.maxPriorityFeePerGas) ||
           txMeta.origin === ORIGIN_METAMASK
         ) {
-          txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
+          txMeta.userFeeLevel = GasRecommendations.medium;
         } else {
-          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
+          txMeta.userFeeLevel = PriorityLevels.dAppSuggested;
         }
 
         if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
@@ -1021,7 +1026,7 @@ export default class TransactionController extends EventEmitter {
         await this._getEIP1559GasFeeEstimates();
       if (
         eip1559Compatibility &&
-        gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET
+        gasEstimateType === GasEstimateTypes.feeMarket
       ) {
         const {
           medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {},
@@ -1035,13 +1040,13 @@ export default class TransactionController extends EventEmitter {
             ),
           };
         }
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
+      } else if (gasEstimateType === GasEstimateTypes.legacy) {
         // The LEGACY type includes low, medium and high estimates of
         // gas price values.
         return {
           gasPrice: decGWEIToHexWEI(gasFeeEstimates.medium),
         };
-      } else if (gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE) {
+      } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
         // The ETH_GASPRICE type just includes a single gas price property,
         // which we can assume was retrieved from eth_gasPrice
         return {
@@ -1448,7 +1453,7 @@ export default class TransactionController extends EventEmitter {
       ...normalizedTxParams,
       type,
       gasLimit: normalizedTxParams.gas,
-      chainId: addHexPrefix(decimalToHex(chainId)),
+      chainId: new Numeric(chainId, 10).toPrefixedHexString(),
     };
     // sign tx
     const fromAddress = txParams.from;
@@ -2171,9 +2176,9 @@ export default class TransactionController extends EventEmitter {
 
         if (
           [
-            GAS_RECOMMENDATIONS.LOW,
-            GAS_RECOMMENDATIONS.MEDIUM,
-            GAS_RECOMMENDATIONS.MEDIUM.HIGH,
+            GasRecommendations.low,
+            GasRecommendations.medium,
+            GasRecommendations.high,
           ].includes(estimateType)
         ) {
           const { gasFeeEstimates } = await this._getEIP1559GasFeeEstimates();

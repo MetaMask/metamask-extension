@@ -18,7 +18,7 @@ import {
   TransactionGroupCategory,
   TransactionStatus,
 } from '../../../../shared/constants/transaction';
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import { EditGasModes } from '../../../../shared/constants/gas';
 import {
   GasFeeContextProvider,
   useGasFeeContext,
@@ -72,7 +72,7 @@ function TransactionListItemInner({
         },
       });
       if (supportsEIP1559) {
-        setEditGasMode(EDIT_GAS_MODES.SPEED_UP);
+        setEditGasMode(EditGasModes.speedUp);
         openModal('cancelSpeedUpTransaction');
       } else {
         setShowRetryEditGasPopover(true);
@@ -93,7 +93,7 @@ function TransactionListItemInner({
         },
       });
       if (supportsEIP1559) {
-        setEditGasMode(EDIT_GAS_MODES.CANCEL);
+        setEditGasMode(EditGasModes.cancel);
         openModal('cancelSpeedUpTransaction');
       } else {
         setShowCancelEditGasPopover(true);
@@ -252,14 +252,14 @@ function TransactionListItemInner({
       {!supportsEIP1559 && showRetryEditGasPopover && (
         <EditGasPopover
           onClose={() => setShowRetryEditGasPopover(false)}
-          mode={EDIT_GAS_MODES.SPEED_UP}
+          mode={EditGasModes.speedUp}
           transaction={transactionGroup.primaryTransaction}
         />
       )}
       {!supportsEIP1559 && showCancelEditGasPopover && (
         <EditGasPopover
           onClose={() => setShowCancelEditGasPopover(false)}
-          mode={EDIT_GAS_MODES.CANCEL}
+          mode={EditGasModes.cancel}
           transaction={transactionGroup.primaryTransaction}
         />
       )}

@@ -11,7 +11,7 @@ exports[`TagUrl should render the label inside the TagUrl 1`] = `
     >
       <div
         class="box mm-icon mm-icon--size-md box--flex-direction-row box--color-icon-default"
-        style="mask-image: url('./images/icons/icon-global-filled.svg');"
+        style="mask-image: url('./images/icons/global.svg');"
       />
     </div>
     <p

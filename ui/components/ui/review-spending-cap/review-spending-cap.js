@@ -6,16 +6,17 @@ import Tooltip from '../tooltip';
 import Typography from '../typography';
 import { ButtonLink } from '../../component-library';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TypographyVariant,
   TEXT_ALIGN,
-  SIZES,
+  Size,
+  BackgroundColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
-import { conversionGreaterThan } from '../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 export default function ReviewSpendingCap({
   tokenName,
@@ -24,28 +25,28 @@ export default function ReviewSpendingCap({
   onEdit,
 }) {
   const t = useContext(I18nContext);
-  const valueIsGreaterThanBalance = conversionGreaterThan(
-    { value: Number(tokenValue), fromNumericBase: 'dec' },
-    { value: Number(currentTokenBalance), fromNumericBase: 'dec' },
-  );
+  const valueIsGreaterThanBalance = new Numeric(
+    Number(tokenValue),
+    10,
+  ).greaterThan(Number(currentTokenBalance), 10);
 
   return (
     <Box
       className="review-spending-cap"
-      borderRadius={SIZES.SM}
+      borderRadius={Size.SM}
       paddingTop={4}
       paddingRight={4}
       paddingLeft={4}
       display={DISPLAY.FLEX}
-      alignItems={ALIGN_ITEMS.FLEX_START}
+      alignItems={AlignItems.flexStart}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+      backgroundColor={BackgroundColor.backgroundAlternative}
       gap={1}
     >
       <Box
         flexDirection={FLEX_DIRECTION.ROW}
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
+        alignItems={AlignItems.center}
         className="review-spending-cap__heading"
       >
         <Box
@@ -53,9 +54,9 @@ export default function ReviewSpendingCap({
           className="review-spending-cap__heading-title"
         >
           <Typography
-            as={TYPOGRAPHY.H6}
+            as={TypographyVariant.H6}
             fontWeight={FONT_WEIGHT.BOLD}
-            variant={TYPOGRAPHY.H6}
+            variant={TypographyVariant.H6}
             boxProps={{ display: DISPLAY.INLINE_BLOCK }}
           >
             {t('customSpendingCap')}
@@ -66,17 +67,17 @@ export default function ReviewSpendingCap({
               position="top"
               html={
                 <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.TEXT_ALTERNATIVE}
+                  variant={TypographyVariant.H7}
+                  color={TextColor.textAlternative}
                   className="review-spending-cap__heading-title__tooltip"
                 >
                   {valueIsGreaterThanBalance &&
                     t('warningTooltipText', [
                       <Typography
                         key="tooltip-text"
-                        variant={TYPOGRAPHY.H7}
+                        variant={TypographyVariant.H7}
                         fontWeight={FONT_WEIGHT.BOLD}
-                        color={COLORS.ERROR_DEFAULT}
+                        color={TextColor.errorDefault}
                       >
                         <i className="fa fa-exclamation-circle" />{' '}
                         {t('beCareful')}
@@ -101,7 +102,7 @@ export default function ReviewSpendingCap({
           textAlign={TEXT_ALIGN.END}
         >
           <ButtonLink
-            size={SIZES.AUTO}
+            size={Size.auto}
             onClick={(e) => {
               e.preventDefault();
               onEdit();
@@ -113,13 +114,13 @@ export default function ReviewSpendingCap({
       </Box>
       <Box className="review-spending-cap__value">
         <Typography
-          as={TYPOGRAPHY.H6}
+          as={TypographyVariant.H6}
           color={
             valueIsGreaterThanBalance
-              ? COLORS.ERROR_DEFAULT
-              : COLORS.TEXT_DEFAULT
+              ? TextColor.errorDefault
+              : TextColor.textDefault
           }
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           marginBottom={3}
         >
           {tokenValue} {tokenName}

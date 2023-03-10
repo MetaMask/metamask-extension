@@ -3,7 +3,7 @@ import SignatureRequestData from './signature-request-data';
 
 export default {
   title: 'Components/App/SignatureRequest/SignatureRequestData',
-  id: __filename,
+
   component: SignatureRequestData,
   argTypes: {
     data: { control: 'object' },

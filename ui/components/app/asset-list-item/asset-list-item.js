@@ -11,11 +11,12 @@ import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { Color, SEVERITIES } from '../../../helpers/constants/design-system';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const AssetListItem = ({
   className,
@@ -138,7 +139,11 @@ const AssetListItem = ({
       rightContent={
         !isERC721 && (
           <>
-            <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+            <Icon
+              name={ICON_NAMES.ARROW_RIGHT}
+              color={Color.iconDefault}
+              className="asset-list-item__chevron-right"
+            />
             {sendTokenButton}
           </>
         )

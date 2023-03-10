@@ -25,8 +25,7 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
-      // Snow currently only works on Chromium based browsers
-      shouldIncludeSnow && browser === 'chrome',
+      shouldIncludeSnow,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -42,6 +41,12 @@ module.exports = function createStaticAssetTasks({
     [BuildType.flask]: [
       {
         src: './app/build-types/flask/images/',
+        dest: `images`,
+      },
+    ],
+    [BuildType.desktop]: [
+      {
+        src: './app/build-types/desktop/images/',
         dest: `images`,
       },
     ],

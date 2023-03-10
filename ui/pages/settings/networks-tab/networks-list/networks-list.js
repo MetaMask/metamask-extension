@@ -5,8 +5,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CustomContentSearch from '../custom-content-search';
 import Typography from '../../../../components/ui/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  Color,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import NetworksListItem from '../networks-list-item';
 
@@ -63,9 +63,9 @@ const NetworksList = ({
       ))}
       {searchQuery === '' && (
         <Typography
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           marginTop={4}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={Color.textAlternative}
           className="networks-tab__networks-list__label"
         >
           {t('testNetworks')}

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
 
 import { usePrevious } from '../../../hooks/usePrevious';
 import { I18nContext } from '../../../contexts/i18n';
@@ -18,7 +18,7 @@ import {
 
 import Typography from '../../ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 
@@ -99,7 +99,7 @@ export default function GasTiming({
   ) {
     return (
       <Typography
-        variant={TYPOGRAPHY.H7}
+        variant={TypographyVariant.H7}
         fontWeight={FONT_WEIGHT.BOLD}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
@@ -109,10 +109,7 @@ export default function GasTiming({
   }
 
   // Don't show anything if we don't have enough information
-  if (
-    isGasEstimatesLoading ||
-    gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET
-  ) {
+  if (isGasEstimatesLoading || gasEstimateType !== GasEstimateTypes.feeMarket) {
     return null;
   }
 
@@ -168,7 +165,7 @@ export default function GasTiming({
 
   return (
     <Typography
-      variant={TYPOGRAPHY.H7}
+      variant={TypographyVariant.H7}
       className={classNames('gas-timing', {
         [`gas-timing--${attitude}`]: attitude,
       })}

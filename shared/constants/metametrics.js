@@ -46,6 +46,8 @@
  * @typedef {object} MetaMetricsEventPayload
  * @property {string} event - event name to track
  * @property {string} category - category to associate event to
+ * @property {number} [actionId] - Action id to deduplicate event requests from
+ * the UI
  * @property {string} [environmentType] - The type of environment this event
  *  occurred in. Defaults to the background process type
  * @property {object} [properties] - object of custom values to track, keys
@@ -331,6 +333,7 @@ export const EVENT_NAMES = {
   PERMISSIONS_APPROVED: 'Permissions Approved',
   PERMISSIONS_REJECTED: 'Permissions Rejected',
   PERMISSIONS_REQUESTED: 'Permissions Requested',
+  PHISHING_PAGE_DISPLAYED: 'Phishing Page Displayed',
   PORTFOLIO_LINK_CLICKED: 'Portfolio Link Clicked',
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
@@ -391,6 +394,7 @@ export const EVENT = {
     NAVIGATION: 'Navigation',
     NETWORK: 'Network',
     ONBOARDING: 'Onboarding',
+    PHISHING: 'Phishing',
     RETENTION: 'Retention',
     SETTINGS: 'Settings',
     SNAPS: 'Snaps',
@@ -446,4 +450,20 @@ export const EVENT = {
 // tracking object as keys, e.g. { location: 'Home' }
 export const CONTEXT_PROPS = {
   PAGE_TITLE: 'location',
+};
+
+/**
+ * These types correspond to the keys in the METAMETRIC_KEY_OPTIONS object
+ */
+export const METAMETRIC_KEY = {
+  UI_CUSTOMIZATIONS: `ui_customizations`,
+};
+
+/**
+ * This object maps a method name to a METAMETRIC_KEY
+ */
+export const METAMETRIC_KEY_OPTIONS = {
+  [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
+    SIWE: 'sign_in_with_ethereum',
+  },
 };

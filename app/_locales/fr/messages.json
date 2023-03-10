@@ -110,10 +110,6 @@
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
   },
-  "accessAndSpendNotice": {
-    "message": "$1 peut accéder et dépenser jusqu’à ce montant maximal",
-    "description": "$1 is the url of the site requesting ability to spend"
-  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 peut accéder à cet actif et le dépenser",
     "description": "$1 is the url of the site requesting ability to spend"
@@ -270,9 +266,6 @@
   "address": {
     "message": "Adresse"
   },
-  "addressBookIcon": {
-    "message": "Icône du carnet d’adresses"
-  },
   "advanced": {
     "message": "Paramètres avancés"
   },
@@ -374,10 +367,6 @@
   "approveButtonText": {
     "message": "Approuver"
   },
-  "approveSpendLimit": {
-    "message": "Approuver la limite de dépenses de $1",
-    "description": "The token symbol that is being approved"
-  },
   "approveTokenDescription": {
     "message": "Tant que vous n’aurez pas révoqué cette autorisation, l’autre partie pourra accéder à votre portefeuille et transférer sans préavis les NFT suivants."
   },
@@ -387,9 +376,6 @@
   },
   "approved": {
     "message": "Approuvé"
-  },
-  "approvedAmountWithColon": {
-    "message": "Montant approuvé :"
   },
   "approvedAsset": {
     "message": "Actif approuvé"
@@ -490,29 +476,6 @@
     "message": "Il s’agit d’une version bêta. Veuillez signaler les bogues $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
-  "betaMetamaskDescription": {
-    "message": "MetaMask est un portefeuille sécurisé utilisé par des millions de personnes qui rend l’univers du web3 accessible à toutes et à tous."
-  },
-  "betaMetamaskDescriptionDisclaimerHeading": {
-    "message": "Avis de non-responsabilité relatif à la version bêta"
-  },
-  "betaMetamaskDescriptionExplanation": {
-    "message": "Cette version vous permet de tester les fonctionnalités à venir avant leur sortie, ce qui contribue à rendre MetaMask encore meilleur. Comme avec toutes les versions bêta, il peut y avoir un risque accru de bugs. MetaMask Beta est soumis à nos $1 ainsi qu’à nos $2.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2": {
-    "message": "En continuant, vous confirmez que vous avez pris connaissance des risques et que vous acceptez les $1 et les $2.",
-    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanation2BetaTermsLinkText"
-  },
-  "betaMetamaskDescriptionExplanation2BetaTermsLinkText": {
-    "message": "Conditions générales d’utilisation de la version bêta"
-  },
-  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
-    "message": "Conditions bêta supplémentaires"
-  },
-  "betaMetamaskDescriptionExplanationTermsLinkText": {
-    "message": "Conditions d’utilisation"
-  },
   "betaMetamaskVersion": {
     "message": "Version MetaMask Beta"
   },
@@ -527,9 +490,6 @@
   },
   "betaWalletCreationSuccessReminder2": {
     "message": "La version bêta de MetaMask ne vous demandera jamais votre phrase secrète de récupération."
-  },
-  "betaWelcome": {
-    "message": "Bienvenue sur MetaMask Bêta"
   },
   "blockExplorerAccountAction": {
     "message": "Compte",
@@ -676,9 +636,6 @@
   "clickToManuallyAdd": {
     "message": "Cliquez ici pour ajouter les jetons manuellement."
   },
-  "clickToRevealSeed": {
-    "message": "Cliquez ici pour révéler des mots secrets"
-  },
   "close": {
     "message": "Fermer"
   },
@@ -698,9 +655,6 @@
   "confirmRecoveryPhrase": {
     "message": "Confirmer la phrase secrète de récupération"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "Confirmez votre phrase mnémotechnique "
-  },
   "confirmed": {
     "message": "Confirmé"
   },
@@ -712,9 +666,6 @@
   },
   "confusingEnsDomain": {
     "message": "Nous avons détecté un caractère pouvant prêter à confusion dans le nom de l’ENS. Vérifiez le nom de l’ENS pour éviter toute fraude potentielle."
-  },
-  "congratulations": {
-    "message": "Félicitations"
   },
   "connect": {
     "message": "Connecter"
@@ -881,9 +832,6 @@
   },
   "create": {
     "message": "Créer"
-  },
-  "createAWallet": {
-    "message": "Créer un portefeuille"
   },
   "createAccount": {
     "message": "Créer un compte"
@@ -1099,9 +1047,6 @@
   "downloadNow": {
     "message": "Télécharger maintenant"
   },
-  "downloadSecretBackup": {
-    "message": "Téléchargez cette phrase de sauvegarde secrète et conservez-la en lieu sûr sur un disque dur ou un support de stockage externe chiffré."
-  },
   "downloadStateLogs": {
     "message": "Télécharger les journaux d’événements"
   },
@@ -1228,37 +1173,6 @@
   },
   "encryptionPublicKeyRequest": {
     "message": "Demander la clé publique de cryptage"
-  },
-  "endOfFlowMessage1": {
-    "message": "Vous avez réussi l’essai : gardez votre phrase de départ en sécurité, c’est de votre responsabilité !"
-  },
-  "endOfFlowMessage10": {
-    "message": "Terminé"
-  },
-  "endOfFlowMessage2": {
-    "message": "Conseils pour la ranger en toute sécurité"
-  },
-  "endOfFlowMessage3": {
-    "message": "Enregistrez une sauvegarde à plusieurs endroits."
-  },
-  "endOfFlowMessage4": {
-    "message": "Ne partagez jamais cette phrase avec qui que ce soit."
-  },
-  "endOfFlowMessage5": {
-    "message": "Attention à l’hameçonnage ! MetaMask ne vous demandera jamais spontanément votre phrase de départ."
-  },
-  "endOfFlowMessage6": {
-    "message": "Si vous avez besoin de sauvegarder à nouveau votre phrase secrète de récupération, vous pouvez la trouver dans Paramètres > Sécurité."
-  },
-  "endOfFlowMessage7": {
-    "message": "Si vous avez des questions ou si vous constatez une quelconque anomalie, contactez notre service d’assistance $1.",
-    "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask ne peut pas récupérer votre phrase de départ."
-  },
-  "endOfFlowMessage9": {
-    "message": "En savoir plus."
   },
   "endpointReturnedDifferentChainId": {
     "message": "Le point terminal a renvoyé un ID de chaîne différent : $1",
@@ -1555,9 +1469,6 @@
     "message": "Obtenir de l’Ether d’un faucet pour le réseau $1.",
     "description": "Displays network name for Ether faucet"
   },
-  "getStarted": {
-    "message": "Démarrer"
-  },
   "goBack": {
     "message": "Retour"
   },
@@ -1572,9 +1483,6 @@
   },
   "gwei": {
     "message": "GWEI"
-  },
-  "happyToSeeYou": {
-    "message": "Nous sommes ravis de vous voir."
   },
   "hardware": {
     "message": "Matériel"
@@ -1656,9 +1564,6 @@
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
   },
-  "importAccountSeedPhrase": {
-    "message": "Importez un compte avec une phrase mnémotechnique"
-  },
   "importMyWallet": {
     "message": "Importer mon portefeuille"
   },
@@ -1695,25 +1600,13 @@
   "importTokensCamelCase": {
     "message": "Importer des jetons"
   },
-  "importWallet": {
-    "message": "Importer le portefeuille"
-  },
   "importWithCount": {
     "message": "Importer $1",
     "description": "$1 will the number of detected tokens that are selected for importing, if all of them are selected then $1 will be all"
   },
-  "importYourExisting": {
-    "message": "Importez votre portefeuille existant à l’aide d’une phrase secrète de récupération"
-  },
   "imported": {
     "message": "Importé",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "improvedTokenAllowance": {
-    "message": "Amélioration du processus d’approbation des jetons"
-  },
-  "improvedTokenAllowanceDescription": {
-    "message": "Activez cette option si vous voulez lancer le processus amélioré d’approbation des jetons chaque fois qu’une dApp demande l’approbation de jetons ERC20"
   },
   "inYourSettings": {
     "message": "dans vos paramètres"
@@ -1911,9 +1804,6 @@
     "message": "Le dispositif Ledger n’est pas connecté. Si vous souhaitez le connecter, veuillez cliquer à nouveau sur « Continuer » et approuver la connexion au HID",
     "description": "An error message shown to the user during the hardware connect flow."
   },
-  "letsGoSetUp": {
-    "message": "Oui, passons à la configuration !"
-  },
   "levelArrow": {
     "message": "flèche de niveau"
   },
@@ -2008,9 +1898,6 @@
   "memo": {
     "message": "note"
   },
-  "memorizePhrase": {
-    "message": "Mémorisez cette phrase."
-  },
   "message": {
     "message": "Message"
   },
@@ -2022,9 +1909,6 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "Le bouton d’état de connexion indique si le site Web que vous visitez est connecté à votre compte actuellement sélectionné."
-  },
-  "metamaskDescription": {
-    "message": "MetaMask est un coffre sécurisé pour votre identité sur Ethereum."
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps est en cours de maintenance. Nous vous invitons à revenir plus tard."
@@ -2237,9 +2121,6 @@
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
   },
-  "newToMetaMask": {
-    "message": "Nouveau sur MetaMask ?"
-  },
   "newTokensImportedMessage": {
     "message": "Vous avez importé avec succès $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -2285,9 +2166,6 @@
   },
   "noAddressForName": {
     "message": "Aucune adresse n’a été définie pour ce nom."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "Non, j’ai déjà une phrase mnémotechnique"
   },
   "noConversionDateAvailable": {
     "message": "Aucune date de conversion des devises n’est disponible"
@@ -2397,15 +2275,6 @@
   },
   "notifications15Title": {
     "message": "La fusion Ethereum est en marche !"
-  },
-  "notifications16ActionText": {
-    "message": "Essayez-le"
-  },
-  "notifications16Description": {
-    "message": "Nous avons amélioré le processus d’approbation des jetons pour vous aider à prendre des décisions plus éclairées."
-  },
-  "notifications16Title": {
-    "message": "Amélioration du processus d’approbation des jetons"
   },
   "notifications17ActionText": {
     "message": "Afficher les paramètres de sécurité et de confidentialité"
@@ -2654,10 +2523,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Votre installation de MetaMask est terminée !"
-  },
-  "onboardingReturnNotice": {
-    "message": "« $1 » va fermer cet onglet et vous rediriger vers $2",
-    "description": "Return the user to the site that initiated onboarding"
   },
   "onboardingShowIncomingTransactionsDescription": {
     "message": "L’affichage des transactions entrantes dans votre portefeuille repose sur la communication avec $1. Etherscan aura accès à votre adresse Ethereum et à votre adresse IP. Voir $2.",
@@ -2981,9 +2846,6 @@
   "remember": {
     "message": "Rappel :"
   },
-  "remindMeLater": {
-    "message": "Rappelez-moi plus tard"
-  },
   "remove": {
     "message": "Supprimer"
   },
@@ -3084,7 +2946,7 @@
   },
   "revokeApproveForAllDescription": {
     "message": "En révoquant cette autorisation, les $1 suivants ne pourront plus accéder à vos $2. ",
-    "description": "$1 is either key 'account' or 'contract', and $2 is either a string or link of a given token symbol or name"
+    "description": "$1 is either a string or link of a given token symbol or name"
   },
   "revokeSpendingCap": {
     "message": "Supprimez le plafond des dépenses pour vos $1",
@@ -3129,15 +2991,6 @@
   "searchTokens": {
     "message": "Rechercher des jetons"
   },
-  "secretBackupPhraseDescription": {
-    "message": "Votre phrase de sauvegarde secrète facilite la sauvegarde et la restauration de votre compte."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "AVERTISSEMENT : ne révélez jamais votre phrase secrète de récupération. N’importe peut l’utiliser et définitivement voler votre compte Ether."
-  },
-  "secretPhrase": {
-    "message": "Seul le premier compte de ce portefeuille sera chargé automatiquement. Après avoir terminé ce processus, pour ajouter des comptes supplémentaires, cliquez sur le menu déroulant, puis sélectionnez Créer un compte."
-  },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
   },
@@ -3170,9 +3023,6 @@
   },
   "seedPhraseIntroSidebarBulletThree": {
     "message": "Stocker dans un coffre-fort."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Stocker dans un coffre-fort de banque."
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Votre phrase secrète de récupération est une formule de 12 mots qui constitue la « clé maîtresse » de votre portefeuille et de vos fonds"
@@ -3218,9 +3068,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Ce compte a déjà été connecté à MetaMask"
-  },
-  "selectEachPhrase": {
-    "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu’elle est correcte."
   },
   "selectHdPath": {
     "message": "Sélectionner le chemin HD"
@@ -3464,9 +3311,6 @@
   "speedUpTransaction": {
     "message": "Accélérez cette transaction"
   },
-  "spendLimitAmount": {
-    "message": "Montant limite de dépenses"
-  },
   "spendLimitInsufficient": {
     "message": "Limite de dépenses insuffisante"
   },
@@ -3572,9 +3416,6 @@
   "stillGettingMessage": {
     "message": "Vous recevez toujours ce message ?"
   },
-  "storePhrase": {
-    "message": "Stockez cette phrase dans un gestionnaire de mots de passe comme 1Password."
-  },
   "strong": {
     "message": "Robuste"
   },
@@ -3618,12 +3459,6 @@
     "message": "Les fluctuations soudaines du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxFallbackPendingTx": {
-    "message": "Les transactions intelligentes sont temporairement indisponibles parce que vous avez une transaction en attente."
-  },
-  "stxFallbackUnavailable": {
-    "message": "Vous pouvez toujours faire un swap de tokens, même si les transactions intelligentes ne sont pas disponibles."
-  },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Soumission privée de votre Swap..."
   },
@@ -3647,14 +3482,8 @@
   "stxTooltip": {
     "message": "Simulez les transactions avant de les soumettre pour réduire les coûts et les échecs de transaction."
   },
-  "stxTryRegular": {
-    "message": "Essayez un swap normal."
-  },
   "stxTryingToCancel": {
     "message": "Tentative d’annulation de votre transaction..."
-  },
-  "stxUnavailable": {
-    "message": "Transactions intelligentes désactivées"
   },
   "stxUnknown": {
     "message": "État inconnu"
@@ -3706,10 +3535,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Vous avez besoin de $1 $2 de plus pour effectuer ce swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapApproveNeedMoreTokensSmartTransactions": {
-    "message": "Vous avez besoin de plus de $1 pour effectuer cet échange en utilisant des transactions intelligentes.",
-    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Meilleures cotations de $1.",
@@ -4076,9 +3901,6 @@
   "thingsToKeep": {
     "message": "Les choses que vous devez garder à l’esprit :"
   },
-  "thisWillCreate": {
-    "message": "Cela créera un nouveau portefeuille et une nouvelle phrase mnémotechnique"
-  },
   "time": {
     "message": "Temps"
   },
@@ -4125,9 +3947,6 @@
   },
   "tokenList": {
     "message": "Listes de tokens :"
-  },
-  "tokenNftAutoDetection": {
-    "message": "Détection automatique des jetons et des NFT"
   },
   "tokenScamSecurityRisk": {
     "message": "les arnaques et les risques de piratage informatique"
@@ -4514,9 +4333,6 @@
     "message": "sites Web",
     "description": "Used in the 'permission_rpc' message."
   },
-  "welcome": {
-    "message": "Bienvenue dans MetaMask"
-  },
   "welcomeBack": {
     "message": "Nous sommes heureux de vous revoir !"
   },
@@ -4544,9 +4360,6 @@
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
-  },
-  "writePhrase": {
-    "message": "Écrivez cette phrase sur une feuille de papier et rangez-la dans un endroit sûr. Si vous recherchez plus de sécurité, notez-la sur plusieurs feuilles de papier et rangez-les dans deux ou trois endroits différents."
   },
   "xOfY": {
     "message": "$1 sur $2",

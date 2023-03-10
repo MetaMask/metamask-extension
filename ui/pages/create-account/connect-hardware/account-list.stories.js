@@ -3,7 +3,7 @@ import AccountList from './account-list';
 
 export default {
   title: 'Pages/CreateAccount/ConnectHardware/AccountList',
-  id: __filename,
+
   argTypes: {
     onPathChange: {
       action: 'onPathChange',
