@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import sinon from 'sinon';
 import NoteToTrader from './note-to-trader';
@@ -15,6 +15,8 @@ describe('NoteToTrader', () => {
 
     const { getByTestId, container } = render(<NoteToTrader {...props} />);
 
+    fireEvent.change(getByTestId('transaction-note'));
+    expect(getByTestId('transaction-note').value).toBe('some text');
     expect(getByTestId('transaction-note')).toBeDefined();
     expect(container).toMatchSnapshot();
   });
