@@ -59,7 +59,7 @@ export const AccountListMenu = ({
 
   return (
     <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
-      <Box>
+      <Box className="multichain-account-menu">
         {/* Search box */}
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
           <TextFieldSearch
@@ -71,7 +71,7 @@ export const AccountListMenu = ({
           />
         </Box>
         {/* Account list block */}
-        <Box style={{ maxHeight: '200px', overflow: 'auto' }}>
+        <Box className="multichain-account-menu__list">
           {searchResults.length === 0 && searchQuery !== '' ? (
             <Text paddingLeft={4} paddingRight={4} color={TextColor.textMuted}>
               {t('noAccountsFound')}
