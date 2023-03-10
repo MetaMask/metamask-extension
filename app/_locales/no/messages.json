@@ -124,12 +124,6 @@
   "browserNotSupported": {
     "message": "Nettleseren din støttes ikke ..."
   },
-  "buyWithWyre": {
-    "message": "Kjøp $1 med Wyre"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre lar deg bruke et kredittkort for å sette inn $1 rett på MetaMask-kontoen din."
-  },
   "cancel": {
     "message": "Avbryt"
   },
@@ -168,9 +162,6 @@
   },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
-  },
-  "continueToWyre": {
-    "message": "Fortsett til Wyre "
   },
   "contractDeployment": {
     "message": "Distribusjon av kontrakten"
@@ -319,13 +310,6 @@
   },
   "general": {
     "message": "Generell"
-  },
-  "getEther": {
-    "message": "Skaff Ether "
-  },
-  "getEtherFromFaucet": {
-    "message": "Få Ether fra en kran for $1",
-    "description": "Displays network name for Ether faucet"
   },
   "hardware": {
     "message": "Maskinvare"
@@ -762,9 +746,6 @@
   "terms": {
     "message": "Brukervilkår"
   },
-  "testFaucet": {
-    "message": "Testkran"
-  },
   "to": {
     "message": "Til "
   },
@@ -879,9 +860,6 @@
   },
   "userName": {
     "message": "Brukernavn"
-  },
-  "viewAccount": {
-    "message": "Se konto"
   },
   "viewContact": {
     "message": "Se kontrakt"
