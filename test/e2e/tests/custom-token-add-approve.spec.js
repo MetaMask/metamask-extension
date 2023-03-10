@@ -124,7 +124,7 @@ describe('Create token, approve token and approve token without gas', function (
         });
 
         const modalTitle = await driver.waitForSelector({
-          text: 'Contract details',
+          text: 'Third party details',
           tag: 'h5',
         });
 
