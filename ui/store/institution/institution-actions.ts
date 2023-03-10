@@ -50,7 +50,7 @@ export function updateCustodyState(
   dispatch: ThunkDispatch<CombinedBackgroundAndReduxState, unknown, AnyAction>,
   newState: MetaMaskReduxState['metamask'],
   state: CombinedBackgroundAndReduxState & any,
-) {
+): any {
   if (!newState.currentNetworkTxList || !state.metamask.currentNetworkTxList) {
     return;
   }
@@ -73,7 +73,7 @@ export function updateCustodyState(
       const custody = custodyAccountDetails?.custodyType
         .split(' - ')[1]
         .toLowerCase();
-        if (!custody) {
+      if (!custody) {
         return false;
       }
 

@@ -3,7 +3,6 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
 import { _setBackgroundConnection } from '../action-queue';
-import { closeCurrentNotificationWindow } from '../actions';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
