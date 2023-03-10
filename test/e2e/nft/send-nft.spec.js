@@ -47,6 +47,27 @@ describe('Send NFT', function () {
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
         await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        // Edit the NFT, ensure same address, and move forward
+        await driver.isElementPresentAndVisible(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
+
+        const recipient = await driver.findElement(
+          '.ens-input__selected-input__title',
+        );
+
+        assert.equal(
+          await recipient.getText(),
+          '0xc427d562164062a23a5cff596a4a3208e72acd28',
+        );
+
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // When transaction complete, check the send NFT is displayed in activity tab
