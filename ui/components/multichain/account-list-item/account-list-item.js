@@ -78,11 +78,14 @@ export const AccountListItem = ({
       className={classnames('account-list-item', {
         'account-list-item--selected': selected,
       })}
-      as="a"
-      href="#"
+      as="button"
       onClick={(e) => {
         e.preventDefault();
-        onClick();
+        // Without this check, the account will be selected after
+        // the account options menu closes
+        if (!accountOptionsMenuOpen) {
+          onClick();
+        }
       }}
     >
       {selected && (
@@ -114,7 +117,7 @@ export const AccountListItem = ({
                   marginInlineEnd={2}
                 />
               ) : null}
-              <Text textAlign={TEXT_ALIGN.END}>
+              <Text textAlign={TEXT_ALIGN.END} as="div">
                 <UserPreferencedCurrencyDisplay
                   value={identity.balance}
                   type={SECONDARY}
@@ -134,6 +137,7 @@ export const AccountListItem = ({
             variant={TextVariant.bodySm}
             color={Color.textAlternative}
             textAlign={TEXT_ALIGN.END}
+            as="div"
           >
             <UserPreferencedCurrencyDisplay
               value={identity.balance}
@@ -158,13 +162,20 @@ export const AccountListItem = ({
             e.stopPropagation();
             setAccountOptionsMenuOpen(true);
           }}
+          as="div"
+          tabIndex={0}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              setAccountOptionsMenuOpen(true);
+            }
+          }}
         />
         {accountOptionsMenuOpen ? (
           <AccountListItemMenu
             anchorElement={ref.current}
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}
-            isRemovable={keyring.type !== HardwareKeyringTypes.hdKeyTree}
+            isRemovable={keyring?.type !== HardwareKeyringTypes.hdKeyTree}
           />
         ) : null}
       </div>

@@ -1,5 +1,6 @@
 .account-list-item {
   position: relative;
+  width: 100%;
 
   &:not(.account-list-item--selected) {
     &:hover,
@@ -19,5 +20,9 @@
   &__content {
     overflow: hidden;
     flex: 1;
+  }
+
+  .currency-display-component {
+    flex-wrap: nowrap;
   }
 }
