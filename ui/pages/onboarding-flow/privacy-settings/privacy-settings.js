@@ -56,7 +56,7 @@ export default function PrivacySettings() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const networks = useSelector(
-    (state) => state.metamask.frequentRpcListDetail || [],
+    (state) => state.metamask.networkConfigurations || {},
   );
 
   const handleSubmit = () => {
@@ -195,7 +195,7 @@ export default function PrivacySettings() {
                 ])}
 
                 <Box paddingTop={2}>
-                  {networks.length > 1 ? (
+                  {Object.values(networks).length > 1 ? (
                     <div className="privacy-settings__network">
                       <>
                         <NetworkDisplay
@@ -219,7 +219,7 @@ export default function PrivacySettings() {
                       </>
                     </div>
                   ) : null}
-                  {networks.length === 1 ? (
+                  {Object.values(networks).length === 1 ? (
                     <Button
                       type="secondary"
                       rounded
