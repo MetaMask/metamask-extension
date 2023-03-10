@@ -5,7 +5,7 @@
   margin: 0 0 5px 0;
 
   &__counter {
-    color: #535a61;
+    color: var(--color-text-alternative);
     font-size: 14px;
   }
 
@@ -27,7 +27,7 @@
     resize: none;
 
     &::placeholder {
-      color: #6a737d;
+      color: var(--color-icon-alternative);
     }
   }
 }
