@@ -49,13 +49,10 @@ describe('Test Snap Management', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
 
         await driver.delay(1000);
 
@@ -140,7 +137,7 @@ describe('Test Snap Management', function () {
         await driver.delay(1000);
 
         // try to remove snap
-        await driver.clickElement({ text: 'Remove Snap', tag: 'button' });
+        await driver.clickElement({ text: 'Remove snap', tag: 'button' });
         await driver.delay(1000);
 
         // try to click remove on popover

@@ -140,13 +140,6 @@
   "gasPrice": {
     "message": "Cena paliva (GWEI)"
   },
-  "getEther": {
-    "message": "Získejte Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Získejte Ether z faucetu za $1.",
-    "description": "Displays network name for Ether faucet"
-  },
   "here": {
     "message": "zde",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -356,9 +349,6 @@
   "terms": {
     "message": "Podmínky použití"
   },
-  "testFaucet": {
-    "message": "Testovací faucet"
-  },
   "to": {
     "message": "Komu"
   },
@@ -398,9 +388,6 @@
   },
   "usedByClients": {
     "message": "Používána různými klienty"
-  },
-  "viewAccount": {
-    "message": "Zobrazit účet"
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"

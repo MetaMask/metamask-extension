@@ -40,15 +40,12 @@ import {
   setNewNftAddedMessage,
   setRemoveNftMessage,
   setNewTokensImported,
-  setRpcTarget,
+  setActiveNetwork,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   removeSnapError,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
-import {
-  hideWhatsNewPopup,
-  setNewCustomNetworkAdded,
-} from '../../ducks/app/app';
+import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -142,12 +139,12 @@ const mapStateToProps = (state) => {
     showOutdatedBrowserWarning:
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
-    newNetworkAdded: getNewNetworkAdded(state),
+    newNetworkAddedName: getNewNetworkAdded(state),
     isSigningQRHardwareTransaction,
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
-    newCustomNetworkAdded: appState.newCustomNetworkAdded,
+    newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
   };
 };
@@ -172,10 +169,6 @@ const mapDispatchToProps = (dispatch) => ({
   setOutdatedBrowserWarningLastShown: (lastShown) => {
     dispatch(setOutdatedBrowserWarningLastShown(lastShown));
   },
-  setNewNetworkAdded: (newNetwork) => {
-    console.log({ newNetwork });
-    dispatch(setNewNetworkAdded(newNetwork));
-  },
   setNewNftAddedMessage: (message) => {
     dispatch(setRemoveNftMessage(''));
     dispatch(setNewNftAddedMessage(message));
@@ -187,11 +180,11 @@ const mapDispatchToProps = (dispatch) => ({
   setNewTokensImported: (newTokens) => {
     dispatch(setNewTokensImported(newTokens));
   },
-  clearNewCustomNetworkAdded: () => {
-    dispatch(setNewCustomNetworkAdded({}));
+  clearNewNetworkAdded: () => {
+    dispatch(setNewNetworkAdded({}));
   },
-  setRpcTarget: (rpcUrl, chainId, ticker, nickname) => {
-    dispatch(setRpcTarget(rpcUrl, chainId, ticker, nickname));
+  setActiveNetwork: (networkConfigurationId) => {
+    dispatch(setActiveNetwork(networkConfigurationId));
   },
 });
 

@@ -76,7 +76,14 @@
     "provider": {
       "type": "rpc",
       "chainId": "0x5",
-      "ticker": "ETH"
+      "ticker": "ETH",
+      "id": "testNetworkConfigurationId"
+    },
+    "networkConfigurations": {
+      "testNetworkConfigurationId": {
+        "rpcUrl": "https://testrpc.com",
+        "chainId": "0x1"
+      }
     },
     "keyrings": [
       {
@@ -193,7 +200,7 @@
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "balance": "0x0",
+        "balance": "0x346ba7725f412cbfdb",
         "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
       },
       "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
@@ -269,6 +276,86 @@
       }
     },
     "allNftContracts": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "1": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ],
+        "137": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ],
+        "11155111": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ],
+        "5": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          },
+          {
+            "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
+            "description": null,
+            "name": "Punk Generator",
+            "logo": null,
+            "symbol": "PUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC1155",
+            "externalLink": null
+          }
+        ],
+        "153": [
+          {
+            "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
+            "description": null,
+            "name": "Munk Generator",
+            "logo": null,
+            "symbol": "MUNK",
+            "assetContractType": "non-fungible",
+            "createdDate": null,
+            "schemaName": "ERC721",
+            "externalLink": null
+          }
+        ]
+      }
+    },
+    "allNfts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "1": [
           {
@@ -385,7 +472,14 @@
             "name": "MUNK #1",
             "description": null,
             "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
+            "standard": "ERC721",
+            "lastSale": {
+              "total_price": "4900000000000000",
+              "event_timestamp": "2023-01-18T21:51:23",
+              "payment_token": {
+                "symbol": "ETH"
+              }
+            }
           },
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
