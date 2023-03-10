@@ -333,6 +333,6 @@ describe('#updateCustodyState', () => {
       newState,
       customState,
     );
-    expect(closedNotification).toBe(true);
+    expect(closedNotification).toBe(undefined)
   });
 });

@@ -50,7 +50,7 @@ export function updateCustodyState(
   dispatch: ThunkDispatch<CombinedBackgroundAndReduxState, unknown, AnyAction>,
   newState: MetaMaskReduxState['metamask'],
   state: CombinedBackgroundAndReduxState & any,
-): any {
+) {
   if (!newState.currentNetworkTxList || !state.metamask.currentNetworkTxList) {
     return;
   }
@@ -104,7 +104,6 @@ export function updateCustodyState(
   ) {
     if (state.appState.modal.modalState.props?.closeNotification) {
       dispatch(closeCurrentNotificationWindow());
-      return true;
     }
   }
 }
