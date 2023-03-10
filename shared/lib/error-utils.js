@@ -126,7 +126,9 @@ function disableDesktop(backgroundConnection) {
 }
 
 export function downloadDesktopApp() {
-  global.platform.openTab({ url: 'https://metamask.io/' });
+  global.platform.openTab({
+    url: 'https://github.com/MetaMask/metamask-desktop/releases',
+  });
 }
 
 export function downloadExtension() {

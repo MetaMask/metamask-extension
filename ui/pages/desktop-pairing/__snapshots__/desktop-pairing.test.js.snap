@@ -3,139 +3,134 @@
 exports[`Desktop Pairing page should render otp component 1`] = `
 <div>
   <div
-    class="page-container__content"
+    class="box box--margin-right-2 box--margin-left-2 box--display-flex box--flex-direction-column box--align-items-center"
   >
     <div
-      class="desktop-pairing"
+      class="box box--margin-top-8 box--margin-bottom-8 box--display-flex box--flex-direction-row box--justify-content-center"
     >
-      <div>
-        <div
-          class="box box--margin-top-12 box--margin-right-6 box--margin-left-6 box--display-flex box--flex-direction-column box--align-items-center box--text-align-center"
-        >
-          <svg
-            fill="currentColor"
-            height="64"
-            viewBox="0 0 64 39"
-            width="64"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M2.05588 38.7539L2.05764 38.7541H40.952H40.9539C40.9557 38.7541 40.9573 38.7536 40.9591 38.7536C42.0608 38.7497 43.0116 37.8498 43.0116 36.6965C43.0112 35.5025 43.0127 41.0218 43.0084 25.0192H41.7318V32.2147H1.27784V8.06471H41.7318V13.7349H43.0084C43.0088 12.6803 43.0073 17.5546 43.0116 3.42458C43.0116 2.33886 42.1096 1.3715 40.9592 1.36749C40.9574 1.36749 40.9557 1.36694 40.9539 1.36694H40.952H2.05826L2.05592 1.3671C0.938953 1.36848 0 2.2928 0 3.42458C0.00118187 40.1604 0.00115779 35.5443 0.00151939 36.7115C0.00442983 37.7954 0.916013 38.7525 2.05588 38.7539ZM40.952 2.64354C40.9545 2.64354 40.9568 2.64459 40.9593 2.64463C41.3592 2.6475 41.7318 2.97087 41.7318 3.42396V6.78811H1.27784V3.42396C1.27784 3.4215 1.27776 3.42143 1.27773 3.41905C1.28066 3.03143 1.60496 2.64481 2.05596 2.64389L2.05826 2.64354H40.952ZM41.7318 33.4913V36.6971C41.7318 37.1484 41.3421 37.4739 40.959 37.4765C40.9566 37.4765 40.9545 37.4775 40.952 37.4775H2.05826L2.05588 37.4772C1.67874 37.4762 1.2822 37.1511 1.278 36.7035C1.278 36.7013 1.27784 36.6993 1.27784 36.6971V33.4913H41.7318Z"
-              fill="black"
-            />
-            <path
-              d="M8.2473 4.07751H3.19141V5.35411H8.2473V4.07751Z"
-              fill="black"
-            />
-            <path
-              d="M23.5665 34.8462H18.5106V36.1228H23.5665V34.8462Z"
-              fill="black"
-            />
-            <path
-              d="M36.5719 5.16847C36.8185 4.92251 36.8186 4.50823 36.5719 4.26214C36.3294 4.0259 35.9018 4.03244 35.6656 4.26214C35.4197 4.52205 35.4195 4.90836 35.6656 5.16847C35.9317 5.42024 36.3318 5.40917 36.5719 5.16847Z"
-              fill="black"
-            />
-            <path
-              d="M58.7234 1.98595V5.13942H44.305V6.41602H58.7234V29.2623H44.305V30.5389H58.7234V33.544C58.7234 33.9351 58.408 34.2533 58.0203 34.2533H44.305V35.5299H58.0203C59.1117 35.5299 60 34.6392 60 33.544C60 26.776 60 9.50087 60 1.98595V1.97972C60 0.888256 59.1117 0 58.0203 0H42.8152V1.2766H58.0203C58.408 1.2766 58.7234 1.59481 58.7234 1.98595Z"
-              fill="black"
-            />
-            <path
-              d="M51.0488 2.56812H46.2522V3.84471H51.0488V2.56812Z"
-              fill="black"
-            />
-            <path
-              d="M51.0488 31.7573H46.2522V33.0339H51.0488V31.7573Z"
-              fill="black"
-            />
-            <path
-              d="M53.8826 3.65558C54.1329 3.4194 54.1259 2.98539 53.8826 2.7558C53.6463 2.51955 53.2125 2.51955 52.9762 2.7558C52.7244 3.02196 52.7345 3.41386 52.9762 3.65558C53.236 3.91538 53.6465 3.90578 53.8826 3.65558Z"
-              fill="black"
-            />
-            <path
-              d="M37.2794 13.3285L34.9387 15.6694L37.2794 18.0101L38.1819 17.1075L37.3822 16.3077H48.899V15.0311H37.382L38.1819 14.2311L37.2794 13.3285Z"
-              fill="black"
-            />
-            <path
-              d="M46.5582 24.5231L47.4608 25.4257L49.8015 23.0848L47.4608 20.7441L46.5582 21.6467L47.358 22.4465H35.8412V23.7231H47.3581L46.5582 24.5231Z"
-              fill="black"
-            />
-            <path
-              d="M33.8298 12.7659H8.29785V14.0425H33.8298V12.7659Z"
-              fill="black"
-            />
-            <path
-              d="M33.8298 15.9574H8.29785V17.234H33.8298V15.9574Z"
-              fill="black"
-            />
-            <path
-              d="M33.8298 19.7874H8.29785V21.0639H33.8298V19.7874Z"
-              fill="black"
-            />
-            <path
-              d="M33.8298 22.9788H8.29785V24.2554H33.8298V22.9788Z"
-              fill="black"
-            />
-            <path
-              d="M57.0254 12.6194H51.0127V13.896H57.0254V12.6194Z"
-              fill="black"
-            />
-            <path
-              d="M57.0254 16.0691H51.0127V17.3457H57.0254V16.0691Z"
-              fill="black"
-            />
-            <path
-              d="M57.0254 19.5188H51.0127V20.7954H57.0254V19.5188Z"
-              fill="black"
-            />
-            <path
-              d="M57.0254 22.9688H51.0127V24.2453H57.0254V22.9688Z"
-              fill="black"
-            />
-          </svg>
-        </div>
-      </div>
-      <div
-        class="desktop-pairing__title"
+      <svg
+        class="desktop-pairing__icon"
+        fill="currentColor"
+        height="64"
+        viewBox="0 0 64 39"
+        width="64"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        Pair with Desktop
-      </div>
-      <div
-        class="desktop-pairing__subtitle"
-      >
-        Open your MetaMask Desktop and type this code
-      </div>
+        <path
+          d="M2.05588 38.7539L2.05764 38.7541H40.952H40.9539C40.9557 38.7541 40.9573 38.7536 40.9591 38.7536C42.0608 38.7497 43.0116 37.8498 43.0116 36.6965C43.0112 35.5025 43.0127 41.0218 43.0084 25.0192H41.7318V32.2147H1.27784V8.06471H41.7318V13.7349H43.0084C43.0088 12.6803 43.0073 17.5546 43.0116 3.42458C43.0116 2.33886 42.1096 1.3715 40.9592 1.36749C40.9574 1.36749 40.9557 1.36694 40.9539 1.36694H40.952H2.05826L2.05592 1.3671C0.938953 1.36848 0 2.2928 0 3.42458C0.00118187 40.1604 0.00115779 35.5443 0.00151939 36.7115C0.00442983 37.7954 0.916013 38.7525 2.05588 38.7539ZM40.952 2.64354C40.9545 2.64354 40.9568 2.64459 40.9593 2.64463C41.3592 2.6475 41.7318 2.97087 41.7318 3.42396V6.78811H1.27784V3.42396C1.27784 3.4215 1.27776 3.42143 1.27773 3.41905C1.28066 3.03143 1.60496 2.64481 2.05596 2.64389L2.05826 2.64354H40.952ZM41.7318 33.4913V36.6971C41.7318 37.1484 41.3421 37.4739 40.959 37.4765C40.9566 37.4765 40.9545 37.4775 40.952 37.4775H2.05826L2.05588 37.4772C1.67874 37.4762 1.2822 37.1511 1.278 36.7035C1.278 36.7013 1.27784 36.6993 1.27784 36.6971V33.4913H41.7318Z"
+          fill="black"
+        />
+        <path
+          d="M8.2473 4.07751H3.19141V5.35411H8.2473V4.07751Z"
+          fill="black"
+        />
+        <path
+          d="M23.5665 34.8462H18.5106V36.1228H23.5665V34.8462Z"
+          fill="black"
+        />
+        <path
+          d="M36.5719 5.16847C36.8185 4.92251 36.8186 4.50823 36.5719 4.26214C36.3294 4.0259 35.9018 4.03244 35.6656 4.26214C35.4197 4.52205 35.4195 4.90836 35.6656 5.16847C35.9317 5.42024 36.3318 5.40917 36.5719 5.16847Z"
+          fill="black"
+        />
+        <path
+          d="M58.7234 1.98595V5.13942H44.305V6.41602H58.7234V29.2623H44.305V30.5389H58.7234V33.544C58.7234 33.9351 58.408 34.2533 58.0203 34.2533H44.305V35.5299H58.0203C59.1117 35.5299 60 34.6392 60 33.544C60 26.776 60 9.50087 60 1.98595V1.97972C60 0.888256 59.1117 0 58.0203 0H42.8152V1.2766H58.0203C58.408 1.2766 58.7234 1.59481 58.7234 1.98595Z"
+          fill="black"
+        />
+        <path
+          d="M51.0488 2.56812H46.2522V3.84471H51.0488V2.56812Z"
+          fill="black"
+        />
+        <path
+          d="M51.0488 31.7573H46.2522V33.0339H51.0488V31.7573Z"
+          fill="black"
+        />
+        <path
+          d="M53.8826 3.65558C54.1329 3.4194 54.1259 2.98539 53.8826 2.7558C53.6463 2.51955 53.2125 2.51955 52.9762 2.7558C52.7244 3.02196 52.7345 3.41386 52.9762 3.65558C53.236 3.91538 53.6465 3.90578 53.8826 3.65558Z"
+          fill="black"
+        />
+        <path
+          d="M37.2794 13.3285L34.9387 15.6694L37.2794 18.0101L38.1819 17.1075L37.3822 16.3077H48.899V15.0311H37.382L38.1819 14.2311L37.2794 13.3285Z"
+          fill="black"
+        />
+        <path
+          d="M46.5582 24.5231L47.4608 25.4257L49.8015 23.0848L47.4608 20.7441L46.5582 21.6467L47.358 22.4465H35.8412V23.7231H47.3581L46.5582 24.5231Z"
+          fill="black"
+        />
+        <path
+          d="M33.8298 12.7659H8.29785V14.0425H33.8298V12.7659Z"
+          fill="black"
+        />
+        <path
+          d="M33.8298 15.9574H8.29785V17.234H33.8298V15.9574Z"
+          fill="black"
+        />
+        <path
+          d="M33.8298 19.7874H8.29785V21.0639H33.8298V19.7874Z"
+          fill="black"
+        />
+        <path
+          d="M33.8298 22.9788H8.29785V24.2554H33.8298V22.9788Z"
+          fill="black"
+        />
+        <path
+          d="M57.0254 12.6194H51.0127V13.896H57.0254V12.6194Z"
+          fill="black"
+        />
+        <path
+          d="M57.0254 16.0691H51.0127V17.3457H57.0254V16.0691Z"
+          fill="black"
+        />
+        <path
+          d="M57.0254 19.5188H51.0127V20.7954H57.0254V19.5188Z"
+          fill="black"
+        />
+        <path
+          d="M57.0254 22.9688H51.0127V24.2453H57.0254V22.9688Z"
+          fill="black"
+        />
+      </svg>
     </div>
+    <h3
+      align="center"
+      class="box mm-text mm-text--heading-md mm-text--color-text-default box--flex-direction-row"
+    >
+      Pair with Desktop
+    </h3>
+    <p
+      align="center"
+      class="box mm-text mm-text--body-md mm-text--color-text-default box--margin-top-2 box--flex-direction-row"
+    >
+      Open your MetaMask Desktop and type this code
+    </p>
     <div
-      class="desktop-pairing"
+      class="box desktop-pairing__clickable box--margin-top-6 box--margin-bottom-6 box--flex-direction-row"
+      data-testid="desktop-pairing-otp-content"
     >
       <div
-        class="desktop-pairing__clickable"
-        data-testid="desktop-pairing-otp-content"
+        class="desktop-pairing__tooltip-wrapper"
       >
         <div
-          class="box box--margin-right-6 box--margin-left-6 box--display-flex box--flex-direction-column box--align-items-center box--text-align-center"
+          aria-describedby="tippy-tooltip-1"
+          class=""
+          data-original-title="Copy to clipboard"
+          data-tooltipped=""
+          style="display: inline;"
+          tabindex="0"
         >
-          <div
-            class="desktop-pairing__tooltip-wrapper"
+          <p
+            align="center"
+            class="box mm-text desktop-pairing__otp mm-text--body-md mm-text--color-text-default box--flex-direction-row"
           >
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class=""
-              data-original-title="Copy to clipboard"
-              data-tooltipped=""
-              style="display: inline;"
-              tabindex="0"
-            >
-              <p
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography desktop-pairing__otp typography--p typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-              >
-                123456
-              </p>
-            </div>
-          </div>
+            123456
+          </p>
         </div>
+      </div>
+      <div
+        class="box box--margin-top-4 box--margin-bottom-6 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+      >
         <p
-          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography desktop-pairing__countdown-timer typography--p typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+          align="center"
+          class="box mm-text desktop-pairing__countdown-timer mm-text--body-md mm-text--color-text-default box--flex-direction-row"
         >
           <span>
              
@@ -149,15 +144,16 @@ exports[`Desktop Pairing page should render otp component 1`] = `
              
           </span>
         </p>
-        <div
-          class="desktop-pairing__description"
-        >
-          If the pairing is successful, extension will restart and you'll have to re-enter your password.
-        </div>
       </div>
+      <p
+        align="center"
+        class="box mm-text mm-text--body-sm mm-text--color-text-default box--flex-direction-row"
+      >
+        If the pairing is successful, extension will restart and you'll have to re-enter your password.
+      </p>
     </div>
     <div
-      class="desktop-pairing__buttons"
+      class="box box--flex-direction-row box--width-1/2"
     >
       <button
         class="button btn--rounded btn-primary"

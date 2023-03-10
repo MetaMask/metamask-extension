@@ -3,19 +3,20 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Button from '../../components/ui/button';
 import { SECOND } from '../../../shared/constants/time';
-import Typography from '../../components/ui/typography';
 import { I18nContext } from '../../contexts/i18n';
 import IconDesktopPairing from '../../components/ui/icon/icon-desktop-pairing';
 import {
   TEXT_ALIGN,
-  TypographyVariant,
+  TextVariant,
   DISPLAY,
   AlignItems,
-  FLEX_DIRECTION,
+  BLOCK_SIZES,
+  JustifyContent,
 } from '../../helpers/constants/design-system';
 import Box from '../../components/ui/box/box';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Tooltip from '../../components/ui/tooltip';
+import { Text } from '../../components/component-library';
 
 export default function DesktopPairingPage({
   generateDesktopOtp,
@@ -75,19 +76,14 @@ export default function DesktopPairingPage({
 
   const renderIcon = () => {
     return (
-      <div>
-        <Box
-          display={DISPLAY.FLEX}
-          alignItems={AlignItems.center}
-          textAlign={TEXT_ALIGN.CENTER}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          marginLeft={6}
-          marginRight={6}
-          marginTop={12}
-        >
-          <IconDesktopPairing size={64} />
-        </Box>
-      </div>
+      <Box
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        marginTop={8}
+        marginBottom={8}
+      >
+        <IconDesktopPairing className="desktop-pairing__icon" size={64} />
+      </Box>
     );
   };
 
@@ -104,56 +100,68 @@ export default function DesktopPairingPage({
     hideLoadingIndication();
 
     return (
-      <div
-        className="desktop-pairing__clickable"
-        onClick={() => {
-          handleCopy(otp);
-        }}
-        data-testid="desktop-pairing-otp-content"
-      >
+      <>
+        <Text variant={TextVariant.headingMd} align={TEXT_ALIGN.CENTER}>
+          {t('desktopPageTitle')}
+        </Text>
+        <Text
+          marginTop={2}
+          variant={TextVariant.bodyMd}
+          align={TEXT_ALIGN.CENTER}
+        >
+          {t('desktopPageSubTitle')}
+        </Text>
         <Box
-          display={DISPLAY.FLEX}
-          alignItems={AlignItems.center}
-          textAlign={TEXT_ALIGN.CENTER}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          marginLeft={6}
-          marginRight={6}
+          marginBottom={6}
+          marginTop={6}
+          className="desktop-pairing__clickable"
+          onClick={() => {
+            handleCopy(otp);
+          }}
+          data-testid="desktop-pairing-otp-content"
         >
           <Tooltip
             wrapperClassName="desktop-pairing__tooltip-wrapper"
             position="top"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
-            <Typography
-              align={TEXT_ALIGN.CENTER}
-              className="desktop-pairing__otp"
-            >
+            <Text align={TEXT_ALIGN.CENTER} className="desktop-pairing__otp">
               {otp}
-            </Typography>
+            </Text>
           </Tooltip>
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            marginTop={4}
+            marginBottom={6}
+          >
+            <Text
+              variant={TextVariant.paragraph}
+              align={TEXT_ALIGN.CENTER}
+              className="desktop-pairing__countdown-timer"
+            >
+              {t('desktopPairingExpireMessage', [
+                <span
+                  className="desktop-pairing__countdown-timer-seconds"
+                  key={1}
+                >
+                  {getExpireDuration()}
+                </span>,
+              ])}
+            </Text>
+          </Box>
+          <Text align={TEXT_ALIGN.CENTER} variant={TextVariant.bodySm}>
+            {t('desktopPageDescription')}
+          </Text>
         </Box>
-
-        <Typography
-          variant={TypographyVariant.paragraph}
-          align={TEXT_ALIGN.CENTER}
-          className="desktop-pairing__countdown-timer"
-        >
-          {t('desktopPairingExpireMessage', [
-            <span className="desktop-pairing__countdown-timer-seconds" key={1}>
-              {getExpireDuration()}
-            </span>,
-          ])}
-        </Typography>
-        <div className="desktop-pairing__description">
-          {t('desktopPageDescription')}
-        </div>
-      </div>
+      </>
     );
   };
 
   const renderFooter = () => {
     return (
-      <div className="desktop-pairing__buttons">
+      <Box width={BLOCK_SIZES.HALF}>
         <Button
           type="primary"
           rounded
@@ -163,22 +171,22 @@ export default function DesktopPairingPage({
         >
           {t('done')}
         </Button>
-      </div>
+      </Box>
     );
   };
 
   return (
-    <div className="page-container__content">
-      <div className="desktop-pairing">
-        {renderIcon()}
-        <div className="desktop-pairing__title">{t('desktopPageTitle')}</div>
-        <div className="desktop-pairing__subtitle">
-          {t('desktopPageSubTitle')}
-        </div>
-      </div>
-      <div className="desktop-pairing">{renderContent()}</div>
+    <Box
+      display={DISPLAY.FLEX}
+      flexDirection="column"
+      alignItems={AlignItems.center}
+      marginLeft={2}
+      marginRight={2}
+    >
+      {renderIcon()}
+      {renderContent()}
       {renderFooter()}
-    </div>
+    </Box>
   );
 }
 
