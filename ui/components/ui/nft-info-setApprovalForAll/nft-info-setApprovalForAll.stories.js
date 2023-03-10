@@ -15,8 +15,8 @@ export default {
       control: { type: 'number' },
     },
     isERC721: {
-      control: { type: 'boolean' }
-    }
+      control: { type: 'boolean' },
+    },
   },
   args: {
     assetName: 'Bored Ape Yatch Club',

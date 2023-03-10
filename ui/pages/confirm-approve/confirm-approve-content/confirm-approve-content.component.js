@@ -32,7 +32,7 @@ import {
   Icon,
   Text,
 } from '../../../components/component-library';
-import { fetchTokenBalance } from '../../swaps/swaps.util';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import NftInfoSetApprovalForAll from '../../../components/ui/nft-info-setApprovalForAll';
 
 export default class ConfirmApproveContent extends Component {

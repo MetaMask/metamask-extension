@@ -4,10 +4,10 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Typography from '../typography';
 import {
-  COLORS,
+  BackgroundColor,
+  Color,
   DISPLAY,
   FONT_WEIGHT,
-  TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
 import NftCollectionImage from '../nft-collection-image/nft-collection-image';
@@ -24,14 +24,10 @@ export default function NftInfoSetApprovalForAll({
     <Box
       display={DISPLAY.FLEX}
       className="nft-info-setApproveForAll"
-      backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
       <Box marginTop={4} marginBottom={4} marginLeft={4}>
-        <Typography
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
-          marginTop={0}
-        >
+        <Typography fontWeight={FONT_WEIGHT.BOLD} variant="h6" marginTop={0}>
           {t('nftCollectionName')}:
         </Typography>
         <Box display={DISPLAY.FLEX}>
@@ -40,9 +36,9 @@ export default function NftInfoSetApprovalForAll({
             tokenAddress={tokenAddress}
           />
           <Typography
-            variant={TYPOGRAPHY.H5}
+            variant="h5"
             display={DISPLAY.FLEX}
-            color={COLORS.TEXT_ALTERNATIVE}
+            color={Color.textAlternative}
             marginLeft={2}
             marginTop={0}
           >
@@ -53,7 +49,7 @@ export default function NftInfoSetApprovalForAll({
           <Box marginTop={4}>
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
-              variant={TYPOGRAPHY.H6}
+              variant="h6"
               marginTop={0}
             >
               {t('numberOfNfts')}:
@@ -63,14 +59,14 @@ export default function NftInfoSetApprovalForAll({
                 position="top"
                 html={
                   <Typography
-                    variant={TYPOGRAPHY.H7}
-                    color={COLORS.TEXT_ALTERNATIVE}
+                    variant="h7"
+                    color={Color.textAlternative}
                     className="nft-info-setApproveForAll__tooltip"
                   >
                     <Typography
-                      variant={TYPOGRAPHY.H7}
+                      variant="h7"
                       fontWeight={FONT_WEIGHT.BOLD}
-                      color={COLORS.ERROR_DEFAULT}
+                      color={Color.errorDefault}
                     >
                       <i className="fa fa-exclamation-triangle" />{' '}
                       {t('beCareful')}
@@ -82,9 +78,9 @@ export default function NftInfoSetApprovalForAll({
                 <i className="fa fa-exclamation-triangle nft-info-setApproveForAll__tooltip__icon" />
               </Tooltip>
               <Typography
-                variant={TYPOGRAPHY.H5}
+                variant="h5"
                 display={DISPLAY.FLEX}
-                color={COLORS.TEXT_ALTERNATIVE}
+                color={Color.textAlternative}
                 marginTop={0}
                 marginLeft={2}
               >
