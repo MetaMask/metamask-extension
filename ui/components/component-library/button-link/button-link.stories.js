@@ -192,6 +192,15 @@ Href.args = {
   href: '/metamask',
 };
 
+export const ExternalLink = (args) => (
+  <ButtonLink {...args}>Href externalLink example</ButtonLink>
+);
+
+ExternalLink.args = {
+  href: 'https://metamask.io/',
+  externalLink: true,
+};
+
 export const HitArea = (args) => (
   <>
     <Text marginBottom={4}>Default</Text>
