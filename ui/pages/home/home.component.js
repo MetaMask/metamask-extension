@@ -133,8 +133,7 @@ export default class Home extends PureComponent {
         );
       }
     },
-    newNetworkAdded: PropTypes.string,
-    setNewNetworkAdded: PropTypes.func.isRequired,
+    newNetworkAddedName: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
@@ -145,9 +144,9 @@ export default class Home extends PureComponent {
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    newCustomNetworkAdded: PropTypes.object,
-    clearNewCustomNetworkAdded: PropTypes.func,
-    setRpcTarget: PropTypes.func,
+    newNetworkAddedConfigurationId: PropTypes.string,
+    clearNewNetworkAdded: PropTypes.func,
+    setActiveNetwork: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
   };
 
@@ -268,17 +267,16 @@ export default class Home extends PureComponent {
       ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       showOutdatedBrowserWarning,
-      newNetworkAdded,
-      setNewNetworkAdded,
       newNftAddedMessage,
       setNewNftAddedMessage,
+      newNetworkAddedName,
       removeNftMessage,
       setRemoveNftMessage,
       newTokensImported,
       setNewTokensImported,
-      newCustomNetworkAdded,
-      clearNewCustomNetworkAdded,
-      setRpcTarget,
+      newNetworkAddedConfigurationId,
+      clearNewNetworkAdded,
+      setActiveNetwork,
     } = this.props;
 
     const onAutoHide = () => {
@@ -371,7 +369,7 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-        {newNetworkAdded ? (
+        {newNetworkAddedName ? (
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
@@ -379,13 +377,13 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
-                  {t('newNetworkAdded', [newNetworkAdded])}
+                  {t('newNetworkAdded', [newNetworkAddedName])}
                 </Text>
                 <ButtonIcon
                   iconName={ICON_NAMES.CLOSE}
                   size={ICON_SIZES.SM}
                   ariaLabel={t('close')}
-                  onClick={() => setNewNetworkAdded('')}
+                  onClick={() => clearNewNetworkAdded()}
                   className="home__new-network-notification-close"
                 />
               </Box>
@@ -498,7 +496,7 @@ export default class Home extends PureComponent {
             key="home-outdatedBrowserNotification"
           />
         ) : null}
-        {Object.keys(newCustomNetworkAdded).length !== 0 && (
+        {newNetworkAddedConfigurationId && (
           <Popover className="home__new-network-added">
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
             <Text
@@ -517,13 +515,8 @@ export default class Home extends PureComponent {
                 type="primary"
                 className="home__new-network-added__switch-to-button"
                 onClick={() => {
-                  setRpcTarget(
-                    newCustomNetworkAdded.rpcUrl,
-                    newCustomNetworkAdded.chainId,
-                    newCustomNetworkAdded.ticker,
-                    newCustomNetworkAdded.chainName,
-                  );
-                  clearNewCustomNetworkAdded();
+                  setActiveNetwork(newNetworkAddedConfigurationId);
+                  clearNewNetworkAdded();
                 }}
               >
                 <Text
@@ -531,17 +524,14 @@ export default class Home extends PureComponent {
                   as="h6"
                   color={TextColor.primaryInverse}
                 >
-                  {t('switchToNetwork', [newCustomNetworkAdded.chainName])}
+                  {t('switchToNetwork', [newNetworkAddedName])}
                 </Text>
               </Button>
-              <Button
-                type="secondary"
-                onClick={() => clearNewCustomNetworkAdded()}
-              >
+              <Button type="secondary" onClick={() => clearNewNetworkAdded()}>
                 <Text
                   variant={TextVariant.bodySm}
                   as="h6"
-                  color={TextColor.primaryDefault}
+                   color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
                 </Text>
@@ -616,7 +606,7 @@ export default class Home extends PureComponent {
       firstTimeFlowType,
       completedOnboarding,
       onboardedInThisUISession,
-      newCustomNetworkAdded,
+      newNetworkAddedConfigurationId,
     } = this.props;
 
     if (forgottenPassword) {
@@ -631,7 +621,7 @@ export default class Home extends PureComponent {
       announcementsToShow &&
       showWhatsNewPopup &&
       !process.env.IN_TEST &&
-      Object.keys(newCustomNetworkAdded).length === 0;
+      !newNetworkAddedConfigurationId;
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />

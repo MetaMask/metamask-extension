@@ -426,6 +426,7 @@ export const EVENT = {
     NETWORK: {
       CUSTOM_NETWORK_FORM: 'custom_network_form',
       POPULAR_NETWORK_LIST: 'popular_network_list',
+      DAPP: 'dapp',
     },
     SWAPS: {
       MAIN_VIEW: 'Main View',
