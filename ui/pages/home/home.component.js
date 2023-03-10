@@ -531,7 +531,7 @@ export default class Home extends PureComponent {
                 <Text
                   variant={TextVariant.bodySm}
                   as="h6"
-                   color={TextColor.primaryDefault}
+                  color={TextColor.primaryDefault}
                 >
                   {t('dismiss')}
                 </Text>
