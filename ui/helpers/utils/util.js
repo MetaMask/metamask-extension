@@ -560,5 +560,5 @@ export const sanitizeString = (value) => {
     return value;
   }
   const regex = /\u202E/giu;
-  return value.replaceAll(regex, '\\u202E');
+  return value.replace(regex, '\\u202E');
 };
