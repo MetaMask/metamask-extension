@@ -1042,7 +1042,7 @@ export default function PrepareSwap({
               selectedToken={selectedToToken}
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-              <Text variant={TextVariant.headingMd} as="h4">
+              <Text variant={TextVariant.headingSm} as="h6">
                 {receiveToAmount &&
                   toPrecisionWithoutTrailingZeros(receiveToAmount, 6)}
               </Text>
