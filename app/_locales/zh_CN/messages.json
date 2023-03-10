@@ -2713,7 +2713,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "连接至$1。",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "访问互联网。",
@@ -2721,7 +2721,7 @@
   },
   "permission_accessSnap": {
     "message": "连接到$1 Snap。",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "规划并执行定期操作。",
