@@ -9,8 +9,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   accountsWithSendEtherInfoSelector,
+  conversionRateSelector,
   getSubjectMetadata,
+  getCurrentCurrency,
   getCurrentChainId,
+  getPreferences,
   getProvider,
 } from '../../../selectors';
 import {
@@ -29,6 +32,8 @@ import NetworkAccountBalanceHeader from '../network-account-balance-header/netwo
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import Message from './signature-request-siwe-message';
 import Header from './signature-request-siwe-header';
 
@@ -40,6 +45,7 @@ export default function SignatureRequestSIWE({
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const nativeCurrency = useSelector(getNativeCurrency);
+  const currentCurrency = useSelector(getCurrentCurrency);
   const currentChainId = useSelector(getCurrentChainId);
   const provider = useSelector(getProvider);
 
@@ -96,15 +102,31 @@ export default function SignatureRequestSIWE({
     [cancelPersonalMessage],
   );
 
-  const balanceInBaseAsset = new Numeric(
-    fromAccount.balance,
-    16,
-    EtherDenomination.WEI,
-  )
-    .toDenomination(EtherDenomination.ETH)
-    .toBase(10)
-    .round(6)
-    .toString();
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+
+  const conversionRateFromSelector = useSelector(conversionRateSelector);
+
+  const conversionRate = useNativeCurrencyAsPrimaryCurrency
+    ? null
+    : conversionRateFromSelector;
+
+  const balanceInBaseAsset = conversionRate
+    ? formatCurrency(
+        getValueFromWeiHex({
+          value: fromAccount.balance,
+          fromCurrency: nativeCurrency,
+          toCurrency: currentCurrency,
+          conversionRate,
+          numberOfDecimals: 6,
+          toDenomination: EtherDenomination.ETH,
+        }),
+        currentCurrency,
+      )
+    : new Numeric(fromAccount.balance, 16, EtherDenomination.WEI)
+        .toDenomination(EtherDenomination.ETH)
+        .round(6)
+        .toBase(10)
+        .toString();
 
   const currentNetwork = getNetworkName(provider, t);
 
@@ -114,7 +136,9 @@ export default function SignatureRequestSIWE({
         networkName={currentNetwork}
         accountName={fromAccount.name}
         accountBalance={balanceInBaseAsset}
-        tokenName={nativeCurrency}
+        tokenName={
+          conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+        }
         accountAddress={fromAccount.address}
         chainId={currentChainId}
       />
