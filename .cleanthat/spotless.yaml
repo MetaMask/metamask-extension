@@ -1,0 +1,26 @@
+syntax_version: "2023-01-09"
+encoding: "UTF-8"
+git:
+  core_eol: "native"
+line_ending: "GIT_ATTRIBUTES"
+formatters:
+- format: "json"
+  steps:
+  - id: "jackson"
+    skip: false
+    parameters:
+      features:
+        ORDER_MAP_ENTRIES_BY_KEYS: true
+      yaml_features:
+        QUOTE_FIELD_NAMES: false
+- format: "markdown"
+  steps:
+  - id: "flexmark"
+    skip: false
+    parameters:
+      version: "0.62.2"
+  - id: "freshmark"
+    skip: false
+    parameters:
+      properties:
+        k1: "v1"
