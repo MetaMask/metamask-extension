@@ -157,9 +157,6 @@ export default class SignatureRequest extends PureComponent {
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
     const currentNetwork = getNetworkName(provider, t);
-    const tokenName = useNativeCurrencyAsPrimaryCurrency
-      ? nativeCurrency
-      : currentCurrency?.toUpperCase();
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(
