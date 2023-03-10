@@ -1,75 +1,126 @@
 import React from 'react';
+
+import { Provider } from 'react-redux';
+
+import testData from '../../../../.storybook/test-data';
+import configureStore from '../../../store/store';
 import { AccountListItem } from './account-list-item';
 
-const SampleIdentity = {
-  address: '0x12C7...135f',
-  name: 'Account 1',
+const store = configureStore(testData);
+
+const [chaosAddress, simpleAddress, hardwareAddress] = Object.keys(
+  testData.metamask.identities,
+);
+
+const SimpleIdentity = {
+  ...testData.metamask.identities[simpleAddress],
+  balance: '0x152387ad22c3f0',
+};
+
+const HardwareIdentity = {
+  ...testData.metamask.identities[hardwareAddress],
   balance: '0x152387ad22c3f0',
 };
 
 const ChaosIdentity = {
-  address: '0x12C7...135f',
-  name: 'pneumonoultramicroscopicsilicovolcanoconiosis',
+  ...testData.metamask.identities[chaosAddress],
   balance: '0x152387ad22c3f0',
 };
 
-const noop = () => console.log('Clicked account!');
+console.log(SimpleIdentity, HardwareIdentity, ChaosIdentity);
+
+const onClick = () => console.log('Clicked account!');
 
 export default {
   title: 'Components/Multichain/AccountListItem',
   component: AccountListItem,
+  argTypes: {
+    identity: {
+      control: 'object',
+    },
+    selected: {
+      control: 'boolean',
+    },
+    onClick: {
+      action: 'onClick',
+    },
+    connectedAvatar: {
+      control: 'text',
+    },
+    connectedAvatarName: {
+      control: 'text',
+    },
+  },
+  args: {
+    identity: SimpleIdentity,
+    onClick,
+  },
 };
 
-export const DefaultStory = () => (
-  <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} onClick={noop} />
+export const DefaultStory = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <AccountListItem {...args} />
   </div>
 );
 
-export const SelectedItem = () => (
-  <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} onClick={noop} selected />
+export const SelectedItem = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <AccountListItem {...args} selected />
   </div>
 );
 
-export const HardwareItem = () => (
-  <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={SampleIdentity} onClick={noop} label="Ledger" />
+export const HardwareItem = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <AccountListItem {...args} identity={HardwareIdentity} />
+  </div>
+);
+HardwareItem.decorators = [
+  (story) => <Provider store={store}>{story()}</Provider>,
+];
+
+export const SelectedHardwareItem = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <AccountListItem {...args} identity={HardwareIdentity} selected />
+  </div>
+);
+HardwareItem.decorators = [
+  (story) => <Provider store={store}>{story()}</Provider>,
+];
+
+export const ChaosDataItem = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <AccountListItem {...args} identity={ChaosIdentity} />
   </div>
 );
 
-export const SelectedHardwareItem = () => (
-  <div style={{ width: '328px', border: '1px solid #eee' }}>
+export const ConnectedSiteItem = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
     <AccountListItem
-      identity={SampleIdentity}
-      onClick={noop}
-      label="Ledger"
-      selected
-    />
-  </div>
-);
-
-export const ChaosDataItem = () => (
-  <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem identity={ChaosIdentity} onClick={noop} selected />
-  </div>
-);
-
-export const ConnectedSiteItem = () => (
-  <div style={{ width: '328px', border: '1px solid #eee' }}>
-    <AccountListItem
-      onClick={noop}
-      identity={SampleIdentity}
+      {...args}
       connectedAvatar="https://uniswap.org/favicon.ico"
       connectedAvatarName="Uniswap"
     />
   </div>
 );
 
-export const ConnectedSiteChaosItem = () => (
-  <div style={{ width: '328px', border: '1px solid #eee' }}>
+export const ConnectedSiteChaosItem = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
     <AccountListItem
-      onClick={noop}
+      {...args}
       identity={ChaosIdentity}
       connectedAvatar="https://uniswap.org/favicon.ico"
       connectedAvatarName="Uniswap"

@@ -1,18 +1,24 @@
 import React from 'react';
+import testData from '../../../../.storybook/test-data';
 import { AccountListMenu } from './account-list-menu';
 
-const SampleIdentity = {
-  address: '0x12C7...135f',
-  name: 'Account 1',
+const [choasAddress, simpleAddress, hardwareAddress] = Object.keys(
+  testData.metamask.identities,
+);
+
+const SimpleIdentity = {
+  ...testData.metamask.identities[simpleAddress],
   balance: '0x152387ad22c3f0',
-  tokenBalance: '32.09 ETH',
 };
 
 const ChaosIdentity = {
-  address: '0x12C7...135f',
-  name: 'pneumonoultramicroscopicsilicovolcanoconiosis',
+  ...testData.metamask.identities[choasAddress],
   balance: '0x152387ad22c3f0',
-  tokenBalance: '3,299.09 ETH',
+};
+
+const HardwareIdentity = {
+  ...testData.metamask.identities[hardwareAddress],
+  balance: '0x152387ad22c3f0',
 };
 
 export default {
@@ -23,12 +29,12 @@ export default {
 export const DefaultStory = () => (
   <AccountListMenu
     identities={[
-      SampleIdentity,
+      SimpleIdentity,
       ChaosIdentity,
-      SampleIdentity,
+      HardwareIdentity,
+      SimpleIdentity,
       ChaosIdentity,
-      SampleIdentity,
-      ChaosIdentity,
+      HardwareIdentity,
     ]}
   />
 );
