@@ -331,6 +331,11 @@
     &__select-default {
       color: var(--color-text-default);
     }
+
+    &__labels {
+      flex: auto;
+      width: 130px;
+    }
   }
 
   .dropdown-input-pair {
@@ -339,7 +344,7 @@
 
     .dropdown-input-pair__selector--closed {
       height: 32px;
-      width: 180px;
+      width: 165px;
       border-top-right-radius: 100px;
       border-bottom-right-radius: 100px;
     }
@@ -414,7 +419,7 @@
   }
 
   .dropdown-search-list__selector-closed {
-    width: 180px;
+    width: 140px;
   }
 
   .dropdown-search-list__selector-closed-container {
@@ -422,12 +427,13 @@
     border-radius: 100px;
     height: 32px;
     max-height: 32px;
-    width: 180px;
+    width: 165px;
   }
 
   .dropdown-search-list__selector-closed-icon {
     width: 24px;
     height: 24px;
+    margin-right: 8px;
   }
 
   .dropdown-search-list__selector-closed {
@@ -443,6 +449,7 @@
 
     .dropdown-search-list__item-labels {
       width: 100%;
+      margin-left: 0;
     }
   }
 
