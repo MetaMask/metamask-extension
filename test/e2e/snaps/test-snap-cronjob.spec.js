@@ -3,8 +3,8 @@ const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap Error', function () {
-  it('can pop up a snap error and see the error', async function () {
+describe('Test Snap Cronjob', function () {
+  it('can trigger a cronjob to open a dialog every minute', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -31,10 +31,10 @@ describe('Test Snap Error', function () {
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const snapButton = await driver.findElement('#connectErrorSnap');
+        const snapButton = await driver.findElement('#connectCronjobSnap');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectErrorSnap');
+        await driver.clickElement('#connectCronjobSnap');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -43,7 +43,6 @@ describe('Test Snap Error', function () {
           1000,
           10000,
         );
-        const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -66,39 +65,29 @@ describe('Test Snap Error', function () {
           tag: 'button',
         });
 
+        // delay for npm installation
+        await driver.delay(2000);
+
         // click send inputs on test snap page
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
 
-        // wait for npm installation success
-        await driver.waitForSelector({
-          css: '#connectErrorSnap',
-          text: 'Reconnect to Error Snap',
-        });
-
-        // find and click on send error
-        await driver.clickElement('#sendError');
-
-        // switch back to the extension page
-        await driver.switchToWindow(extensionPage);
-        await driver.delay(1000);
-
-        // look for the actual error and check if it is correct
-        const error = await driver.findElement(
-          '.home-notification__content-container',
+        // switch to dialog popup, wait for a maximum of 65 seconds
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 65000);
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
         );
+        await driver.delay(1000);
+
+        // look for the dialog popup to verify cronjob fired
+        const error = await driver.findElement('.snap-delineator__content');
         const text = await error.getText();
-        assert.equal(
-          text.includes(
-            "Snap Error: 'random error inside'. Error Code: '-32603'",
-          ),
-          true,
-        );
+        assert.equal(text.includes(`Cronjob\nfired`), true);
 
-        // try to click on the dismiss button and pass test if it works
+        // try to click on the Ok button and pass test if it works
         await driver.clickElement({
-          text: 'Dismiss',
+          text: 'Ok',
           tag: 'button',
         });
       },
