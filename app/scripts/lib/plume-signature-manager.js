@@ -111,6 +111,10 @@ export default class PlumeSignatureManager extends EventEmitter {
    */
   addUnapprovedMessage(msgParams, req) {
     log.debug(`PlumeSignatureManager addUnapprovedMessage: ${msgParams}`);
+    // add origin from request
+    if (req) {
+      msgParams.origin = req.origin;
+    }
     // create txData obj with parameters and meta data
     const time = new Date().getTime();
     const msgId = createId();
@@ -121,11 +125,6 @@ export default class PlumeSignatureManager extends EventEmitter {
       status: 'unapproved',
       type: MESSAGE_TYPE.ETH_GET_PLUME_SIGNATURE,
     };
-
-    if (req) {
-      msgData.origin = req.origin;
-    }
-
     this.addMsg(msgData);
 
     // signal update

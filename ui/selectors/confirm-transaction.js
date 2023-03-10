@@ -40,6 +40,8 @@ const unapprovedDecryptMsgsSelector = (state) =>
   state.metamask.unapprovedDecryptMsgs;
 const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
   state.metamask.unapprovedEncryptionPublicKeyMsgs;
+const unapprovedPlumeMsgsSelector = (state) =>
+  state.metamask.unapprovedPlumeMsgs;
 const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
@@ -49,6 +51,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedPlumeMsgsSelector,
   unapprovedTypedMessagesSelector,
   deprecatedGetCurrentNetworkId,
   getCurrentChainId,
@@ -58,6 +61,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
+    unapprovedPlumeMsgs = {},
     unapprovedTypedMessages = {},
     network,
     chainId,
@@ -68,6 +72,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
       unapprovedPersonalMsgs,
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
+      unapprovedPlumeMsgs,
       unapprovedTypedMessages,
       network,
       chainId,
@@ -80,6 +85,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedPlumeMsgsSelector,
   unapprovedTypedMessagesSelector,
   deprecatedGetCurrentNetworkId,
   getCurrentChainId,
@@ -89,6 +95,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
+    unapprovedPlumeMsgs = {},
     unapprovedTypedMessages = {},
     network,
     chainId,
@@ -114,6 +121,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
       ...unapprovedPersonalMsgs,
       ...unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,
+      ...unapprovedPlumeMsgs,
       ...unapprovedTypedMessages,
     };
   },
@@ -124,12 +132,14 @@ export const unconfirmedMessagesHashSelector = createSelector(
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedPlumeMsgsSelector,
   unapprovedTypedMessagesSelector,
   (
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
+    unapprovedPlumeMsgs = {},
     unapprovedTypedMessages = {},
   ) => {
     return {
@@ -137,6 +147,7 @@ export const unconfirmedMessagesHashSelector = createSelector(
       ...unapprovedPersonalMsgs,
       ...unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,
+      ...unapprovedPlumeMsgs,
       ...unapprovedTypedMessages,
     };
   },
@@ -149,6 +160,8 @@ const unapprovedDecryptMsgCountSelector = (state) =>
   state.metamask.unapprovedDecryptMsgCount;
 const unapprovedEncryptionPublicKeyMsgCountSelector = (state) =>
   state.metamask.unapprovedEncryptionPublicKeyMsgCount;
+const unapprovedPlumeMsgCountSelector = (state) =>
+  state.metamask.unapprovedPlumeMsgCount;
 const unapprovedTypedMessagesCountSelector = (state) =>
   state.metamask.unapprovedTypedMessagesCount;
 
@@ -158,6 +171,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
   unapprovedPersonalMsgCountSelector,
   unapprovedDecryptMsgCountSelector,
   unapprovedEncryptionPublicKeyMsgCountSelector,
+  unapprovedPlumeMsgCountSelector,
   unapprovedTypedMessagesCountSelector,
   deprecatedGetCurrentNetworkId,
   getCurrentChainId,
@@ -167,6 +181,7 @@ export const unconfirmedTransactionsCountSelector = createSelector(
     unapprovedPersonalMsgCount = 0,
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedPlumeMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
     network,
     chainId,
@@ -181,7 +196,8 @@ export const unconfirmedTransactionsCountSelector = createSelector(
       unapprovedMsgCount +
       unapprovedPersonalMsgCount +
       unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount
+      unapprovedEncryptionPublicKeyMsgCount +
+      unapprovedPlumeMsgCount
     );
   },
 );

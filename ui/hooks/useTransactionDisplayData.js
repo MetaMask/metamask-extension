@@ -56,6 +56,7 @@ const signatureTypes = [
   TransactionType.signTypedData,
   TransactionType.ethDecrypt,
   TransactionType.ethGetEncryptionPublicKey,
+  TransactionType.ethGetPlumeSignature,
 ];
 
 /**

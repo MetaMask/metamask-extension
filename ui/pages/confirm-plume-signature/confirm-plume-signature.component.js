@@ -14,7 +14,7 @@ import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 
-export default class ConfirmDecryptMessage extends Component {
+export default class ConfirmPlumeSignature extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
     trackEvent: PropTypes.func.isRequired,
@@ -27,9 +27,8 @@ export default class ConfirmDecryptMessage extends Component {
       name: PropTypes.string,
     }).isRequired,
     clearConfirmTransaction: PropTypes.func.isRequired,
-    cancelDecryptMessage: PropTypes.func.isRequired,
-    decryptMessage: PropTypes.func.isRequired,
-    decryptMessageInline: PropTypes.func.isRequired,
+    cancelPlumeSignature: PropTypes.func.isRequired,
+    plumeSignature: PropTypes.func.isRequired,
     conversionRate: PropTypes.number,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
@@ -41,22 +40,6 @@ export default class ConfirmDecryptMessage extends Component {
 
   state = {
     fromAccount: this.props.fromAccount,
-    copyToClipboardPressed: false,
-    hasCopied: false,
-  };
-
-  copyMessage = () => {
-    copyToClipboard(this.state.rawMessage);
-    this.context.trackEvent({
-      category: EVENT.CATEGORIES.MESSAGES,
-      event: 'Copy',
-      properties: {
-        action: 'Plume Signature Copy',
-        legacy_event: true,
-      },
-    });
-    this.setState({ hasCopied: true });
-    setTimeout(() => this.setState({ hasCopied: false }), SECOND * 3);
   };
 
   renderHeader = () => {
@@ -65,7 +48,8 @@ export default class ConfirmDecryptMessage extends Component {
         <div className="request-plume-signature__header-background" />
 
         <div className="request-plume-signature__header__text">
-          {this.context.t('decryptRequest')}
+          {/* TODO: Translate into different languages and put under app/_locales */}
+          Plume Signature
         </div>
 
         <div className="request-plume-signature__header__tip-container">
@@ -141,21 +125,13 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   renderBody = () => {
-    const { decryptMessageInline, subjectMetadata, txData } = this.props;
+    const { subjectMetadata, txData } = this.props;
     const { t } = this.context;
 
     const targetSubjectMetadata = subjectMetadata[txData.msgParams.origin];
     const name = targetSubjectMetadata?.name || txData.msgParams.origin;
-    const notice = t('decryptMessageNotice', [txData.msgParams.origin]);
-
-    const {
-      hasCopied,
-      hasDecrypted,
-      hasError,
-      rawMessage,
-      errorMessage,
-      copyToClipboardPressed,
-    } = this.state;
+    // TODO: Translate into different languages and put under app/_locales
+    const notice = `${txData.msgParams.origin} would like to generate a plume for the following message:`;
 
     return (
       <div className="request-plume-signature__body">
@@ -178,81 +154,18 @@ export default class ConfirmDecryptMessage extends Component {
         </div>
         <div className="request-plume-signature__message">
           <div className="request-plume-signature__message-text">
-            {!hasDecrypted && !hasError ? txData.msgParams.data : rawMessage}
-            {hasError ? errorMessage : ''}
-          </div>
-          <div
-            className={classnames('request-decrypt-message__message-cover', {
-              'request-decrypt-message__message-lock--pressed':
-                hasDecrypted || hasError,
-            })}
-          />
-          <div
-            className={classnames('request-decrypt-message__message-lock', {
-              'request-decrypt-message__message-lock--pressed':
-                hasDecrypted || hasError,
-            })}
-            onClick={(event) => {
-              decryptMessageInline(txData, event).then((result) => {
-                if (result.error) {
-                  this.setState({
-                    hasError: true,
-                    errorMessage: this.context.t('decryptInlineError', [
-                      result.error,
-                    ]),
-                  });
-                } else {
-                  this.setState({
-                    hasDecrypted: true,
-                    rawMessage: result.rawData,
-                  });
-                }
-              });
-            }}
-          >
-            <div className="request-plume-signature__message-lock__container">
-              <i className="fa fa-lock fa-lg request-decrypt-message__message-lock__container__icon" />
-              <div className="request-plume-signature__message-lock__container__text">
-                {t('decryptMetamask')}
-              </div>
-            </div>
+            {txData.msgParams.data}
           </div>
         </div>
-        {hasDecrypted ? (
-          <div
-            className={classnames({
-              'request-decrypt-message__message-copy': true,
-              'request-decrypt-message__message-copy--pressed':
-                copyToClipboardPressed,
-            })}
-            onClick={() => this.copyMessage()}
-            onMouseDown={() => this.setState({ copyToClipboardPressed: true })}
-            onMouseUp={() => this.setState({ copyToClipboardPressed: false })}
-          >
-            <Tooltip
-              position="bottom"
-              title={hasCopied ? t('copiedExclamation') : t('copyToClipboard')}
-              wrapperClassName="request-plume-signature__message-copy-tooltip"
-              style={{ display: 'flex', alignItems: 'center' }}
-            >
-              <div className="request-plume-signature__message-copy-text">
-                {t('decryptCopy')}
-              </div>
-              <Copy size={17} color="var(--color-primary-default)" />
-            </Tooltip>
-          </div>
-        ) : (
-          <div></div>
-        )}
       </div>
     );
   };
 
   renderFooter = () => {
     const {
-      cancelDecryptMessage,
+      cancelPlumeSignature,
       clearConfirmTransaction,
-      decryptMessage,
+      plumeSignature,
       history,
       mostRecentOverviewPage,
       txData,
@@ -262,14 +175,14 @@ export default class ConfirmDecryptMessage extends Component {
     return (
       <PageContainerFooter
         cancelText={t('cancel')}
-        submitText={t('decrypt')}
+        submitText={t('confirm')}
         onCancel={async (event) => {
-          await cancelDecryptMessage(txData, event);
+          await cancelPlumeSignature(txData, event);
           trackEvent({
             category: EVENT.CATEGORIES.MESSAGES,
             event: 'Cancel',
             properties: {
-              action: 'Decrypt Message Request',
+              action: 'Plume Message Request',
               legacy_event: true,
             },
           });
@@ -277,12 +190,12 @@ export default class ConfirmDecryptMessage extends Component {
           history.push(mostRecentOverviewPage);
         }}
         onSubmit={async (event) => {
-          await decryptMessage(txData, event);
+          await plumeSignature(txData, event);
           trackEvent({
             category: EVENT.CATEGORIES.MESSAGES,
             event: 'Confirm',
             properties: {
-              action: 'Decrypt Message Request',
+              action: 'Plume Message Request',
               legacy_event: true,
             },
           });

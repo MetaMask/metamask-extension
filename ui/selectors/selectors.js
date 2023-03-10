@@ -473,6 +473,7 @@ export function getCurrentAccountWithSendEtherInfo(state) {
 
 export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
   const accounts = accountsWithSendEtherInfoSelector(state);
+  console.log({ state, targetAddress, accounts });
   return getAccountByAddress(accounts, targetAddress);
 }
 
@@ -498,6 +499,7 @@ export function getTotalUnapprovedCount(state) {
     unapprovedPersonalMsgCount = 0,
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedPlumeMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
     pendingApprovalCount = 0,
   } = state.metamask;
@@ -507,6 +509,7 @@ export function getTotalUnapprovedCount(state) {
     unapprovedPersonalMsgCount +
     unapprovedDecryptMsgCount +
     unapprovedEncryptionPublicKeyMsgCount +
+    unapprovedPlumeMsgCount +
     unapprovedTypedMessagesCount +
     getUnapprovedTxCount(state) +
     pendingApprovalCount +
@@ -520,6 +523,7 @@ export function getTotalUnapprovedMessagesCount(state) {
     unapprovedPersonalMsgCount = 0,
     unapprovedDecryptMsgCount = 0,
     unapprovedEncryptionPublicKeyMsgCount = 0,
+    unapprovedPlumeMsgCount = 0,
     unapprovedTypedMessagesCount = 0,
   } = state.metamask;
 
@@ -528,6 +532,7 @@ export function getTotalUnapprovedMessagesCount(state) {
     unapprovedPersonalMsgCount +
     unapprovedDecryptMsgCount +
     unapprovedEncryptionPublicKeyMsgCount +
+    unapprovedPlumeMsgCount +
     unapprovedTypedMessagesCount
   );
 }

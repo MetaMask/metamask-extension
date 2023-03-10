@@ -1127,6 +1127,7 @@ export default class MetamaskController extends EventEmitter {
       this.personalMessageManager.clearUnapproved();
       this.typedMessageManager.clearUnapproved();
       this.decryptMessageManager.clearUnapproved();
+      this.plumeSignatureManager.clearUnapproved();
       this.messageManager.clearUnapproved();
     });
 
@@ -1163,7 +1164,7 @@ export default class MetamaskController extends EventEmitter {
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processGetPlumeSignature: this.newRequestGetPlumeSignature.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
-      getPlumeSignature: this.getPlumeSignature.bind(this),
+      getPlumeSignature: this.plumeSignature.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
         this.txController.getTransactions({
@@ -1189,6 +1190,7 @@ export default class MetamaskController extends EventEmitter {
       PersonalMessageManager: this.personalMessageManager.memStore,
       DecryptMessageManager: this.decryptMessageManager.memStore,
       EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
+      PlumeSignatureManager: this.plumeSignatureManager.memStore,
       TypesMessageManager: this.typedMessageManager.memStore,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
@@ -1269,6 +1271,7 @@ export default class MetamaskController extends EventEmitter {
       this.personalMessageManager.resetState,
       this.decryptMessageManager.resetState,
       this.encryptionPublicKeyManager.resetState,
+      this.plumeSignatureManager.resetState,
       this.typedMessageManager.resetState,
       this.swapsController.resetState,
       this.ensController.resetState,
@@ -1739,8 +1742,9 @@ export default class MetamaskController extends EventEmitter {
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
-      markNotificationPopupAsAutomaticallyClosed: () =>
-        this.notificationManager.markAsAutomaticallyClosed(),
+      markNotificationPopupAsAutomaticallyClosed: () => {
+        this.notificationManager.markAsAutomaticallyClosed();
+      },
 
       // primary HD keyring management
       addNewAccount: this.addNewAccount.bind(this),
@@ -1946,6 +1950,10 @@ export default class MetamaskController extends EventEmitter {
       // EncryptionPublicKeyManager
       encryptionPublicKey: this.encryptionPublicKey.bind(this),
       cancelEncryptionPublicKey: this.cancelEncryptionPublicKey.bind(this),
+
+      // plumeSignatureManager
+      plumeSignature: this.plumeSignature.bind(this),
+      cancelPlumeSignature: this.cancelPlumeSignature.bind(this),
 
       // onboarding controller
       setSeedPhraseBackedUp:
@@ -3186,43 +3194,13 @@ export default class MetamaskController extends EventEmitter {
    * Passed back to the requesting Dapp.
    */
   async newRequestGetPlumeSignature(msgParams, req) {
-    console.log('newRequestGetPlumeSignature', { msgParams, req });
-    console.log(1);
-
-    // return this.keyringController.exportAccount(msgParams.from);
-    const privateKey = await this.keyringController.exportAccount(
-      msgParams.from,
+    const promise = this.plumeSignatureManager.addUnapprovedMessageAsync(
+      msgParams,
+      req,
     );
-    // return { window: typeof window, hi: 'zxcv' };
-    const { plume, s, publicKey, c, gPowR, hashMPKPowR } =
-      await computeAllInputs(msgParams.data, privateKey);
-    console.log({ privateKey, gPowR, plume, s, publicKey, c, hashMPKPowR });
-    return {
-      plume: plume.toHex(true),
-      publicKey: Buffer.from(publicKey).toString('hex'),
-      hashMPKPowR: hashMPKPowR.toHex(true),
-      gPowR: gPowR.toHex(true),
-      c,
-      s,
-    };
-
-    // const promise = this.plumeSignatureManager.addUnapprovedMessageAsync(
-    //   msgParams,
-    //   req,
-    // );
-    // REMOVE FROM HERE
-    // const privateKey = await this.keyringController.exportAccount(
-    //   msgParams.from,
-    // );
-
-    // // console.log({ privateKey });
-    // // computeHashMPk();
-    // // REMOVE END HERE
-    // console.log(2);
-    // this.sendUpdate();
-    // console.log(3);
-    // this.opts.showUserConfirmation();
-    // return promise;
+    this.sendUpdate();
+    this.opts.showUserConfirmation();
+    return promise;
   }
 
   /**
@@ -3232,21 +3210,43 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} msgParams - The params of the message to receive & return to the Dapp.
    * @returns {Promise<object>} A full state update.
    */
-  async getPlumeSignature(msgParams) {
-    log.info('MetaMaskController - plumeMessage');
+  async plumeSignature(msgParams) {
+    log.info('MetaMaskController - plumeSignature');
     const msgId = msgParams.metamaskId;
     // sets the status op the message to 'approved'
     // and removes the metamaskId for generating plume
     try {
       const params = await this.plumeSignatureManager.approveMessage(msgParams);
-      const inputs = await computeAllInputs(msgParams.data, privateKey);
+      const privateKey = await this.keyringController.exportAccount(
+        params.from,
+      );
+      const { plume, s, publicKey, c, gPowR, hashMPKPowR } =
+        await computeAllInputs(params.data, privateKey);
 
       // tells the listener that the message has been received and can be returned to the dapp
-      this.plumeSignatureManager.setMsgStatusReceived(msgId, inputs);
+      this.plumeSignatureManager.setMsgStatusReceived(msgId, {
+        plume: plume.toHex(true),
+        publicKey: Buffer.from(publicKey).toString('hex'),
+        hashMPKPowR: hashMPKPowR.toHex(true),
+        gPowR: gPowR.toHex(true),
+        c,
+        s,
+      });
     } catch (error) {
       log.info('MetaMaskController - eth_getPlumeSignature failed.', error);
       this.plumeSignatureManager.errorMessage(msgId, error);
     }
+    return this.getState();
+  }
+
+  /**
+   * Used to cancel a eth_getPlumeSignature type message.
+   *
+   * @param {string} msgId - The ID of the message to cancel.
+   */
+  cancelPlumeSignature(msgId) {
+    const messageManager = this.plumeSignatureManager;
+    messageManager.rejectMsg(msgId);
     return this.getState();
   }
 

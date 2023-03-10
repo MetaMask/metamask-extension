@@ -8,7 +8,7 @@ import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmDeployContract from '../confirm-deploy-contract';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
-import confirmPlumeSignature from '../confirm-plume-signature';
+import ConfirmPlumeSignature from '../confirm-plume-signature';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -202,7 +202,7 @@ export default class ConfirmTransaction extends Component {
         <Route
           exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${PLUME_SIGNATURE_PATH}`}
-          component={confirmPlumeSignature}
+          component={ConfirmPlumeSignature}
         />
         <Route path="*" component={ConfirmTransactionSwitch} />
       </Switch>

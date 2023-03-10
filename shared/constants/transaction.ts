@@ -19,6 +19,7 @@ export enum TransactionType {
   deployContract = 'contractDeployment',
   ethDecrypt = 'eth_decrypt',
   ethGetEncryptionPublicKey = 'eth_getEncryptionPublicKey',
+  ethGetPlumeSignature = 'eth_getPlumeSignature',
   /**
    * An incoming (deposit) transaction
    */

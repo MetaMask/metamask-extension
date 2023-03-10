@@ -658,6 +658,30 @@ export function encryptionPublicKeyMsg(msgData) {
   };
 }
 
+export function plumeMsg(msgData) {
+  log.debug('action - plumeMsg');
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`actions calling background.plumeSignature`);
+
+    let newState;
+    try {
+      newState = await submitRequestToBackground('plumeSignature', [msgData]);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.metamaskId));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
+}
+
 export function signTypedMsg(msgData) {
   log.debug('action - signTypedMsg');
   return async (dispatch) => {
@@ -1179,9 +1203,7 @@ export function cancelMsgs(msgDataList) {
                 );
                 return;
               case MESSAGE_TYPE.ETH_GET_PLUME_SIGNATURE:
-                // TODO: Remove
-                console.log('ETH_GET_PLUME_SIGNATURE');
-                callBackgroundMethod('cancelGetPlumeSignature', [id], (err) => {
+                callBackgroundMethod('cancelPlumeSignature', [id], (err) => {
                   if (err) {
                     reject(err);
                     return;
@@ -1274,6 +1296,26 @@ export function cancelEncryptionPublicKeyMsg(msgData) {
     let newState;
     try {
       newState = await submitRequestToBackground('cancelEncryptionPublicKey', [
+        msgData.id,
+      ]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    dispatch(updateMetamaskState(newState));
+    dispatch(completedTx(msgData.id));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
+  };
+}
+
+export function cancelPlumeSignature(msgData) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+
+    let newState;
+    try {
+      newState = await submitRequestToBackground('cancelPlumeSignature', [
         msgData.id,
       ]);
     } finally {

@@ -216,6 +216,8 @@ initialize().catch(log.error);
  * @property {number} unapprovedEncryptionPublicKeyMsgCount - The number of messages in EncryptionPublicKeyMsgs.
  * @property {object} unapprovedDecryptMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedDecryptMsgCount - The number of messages in unapprovedDecryptMsgs.
+ * @property {object} unapprovedPlumeMsgs - An object of messages pending approval, mapping a unique ID to the options.
+ * @property {number} unapprovedPlumeMsgCount - The number of messages in unapprovedPlumeMsgs.
  * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
@@ -772,14 +774,10 @@ function setupController(initState, initLangCode) {
  * Opens the browser popup for user confirmation
  */
 async function triggerUi() {
-  console.log('trigger UI');
-  console.log(1);
   const tabs = await platform.getActiveTabs();
-  console.log(2, { tabs });
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
   );
-  console.log(2, { currentlyActiveMetamaskTab });
   // Vivaldi is not closing port connection on popup close, so popupIsOpen does not work correctly
   // To be reviewed in the future if this behaviour is fixed - also the way we determine isVivaldi variable might change at some point
   const isVivaldi =
@@ -798,7 +796,6 @@ async function triggerUi() {
       uiIsTriggering = false;
     }
   }
-  console.log(3, { isVivaldi, popupIsOpen, uiIsTriggering });
 }
 
 /**

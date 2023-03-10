@@ -48,6 +48,8 @@ export const unapprovedDecryptMsgsSelector = (state) =>
   state.metamask.unapprovedDecryptMsgs;
 export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
   state.metamask.unapprovedEncryptionPublicKeyMsgs;
+export const unapprovedPlumeMsgsSelector = (state) =>
+  state.metamask.unapprovedPlumeMsgs;
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
@@ -80,6 +82,7 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedPlumeMsgsSelector,
   unapprovedTypedMessagesSelector,
   deprecatedGetCurrentNetworkId,
   getCurrentChainId,
@@ -88,6 +91,7 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
+    unapprovedPlumeMsgs = {},
     unapprovedTypedMessages = {},
     network,
     chainId,
@@ -98,6 +102,7 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedPersonalMsgs,
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
+      unapprovedPlumeMsgs,
       unapprovedTypedMessages,
       network,
       chainId,

@@ -130,6 +130,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
+    metamaskState.unapprovedPlumeMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
     metamaskState.network,

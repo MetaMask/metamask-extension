@@ -2,12 +2,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 
-import {
-  goHome,
-  decryptMsg,
-  cancelDecryptMsg,
-  decryptMsgInline,
-} from '../../store/actions';
+import { goHome, plumeMsg, cancelPlumeSignature } from '../../store/actions';
 import {
   getTargetAccountWithSendEtherInfo,
   unconfirmedTransactionsListSelector,
@@ -49,21 +44,15 @@ function mapDispatchToProps(dispatch) {
   return {
     goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    decryptMessage: (msgData, event) => {
+    plumeSignature: (msgData, event) => {
       const params = msgData.msgParams;
       params.metamaskId = msgData.id;
       event.stopPropagation(event);
-      return dispatch(decryptMsg(params));
+      return dispatch(plumeMsg(params));
     },
-    cancelDecryptMessage: (msgData, event) => {
+    cancelPlumeSignature: (msgData, event) => {
       event.stopPropagation(event);
-      return dispatch(cancelDecryptMsg(msgData));
-    },
-    decryptMessageInline: (msgData, event) => {
-      const params = msgData.msgParams;
-      params.metamaskId = msgData.id;
-      event.stopPropagation(event);
-      return dispatch(decryptMsgInline(params));
+      return dispatch(cancelPlumeSignature(msgData));
     },
   };
 }

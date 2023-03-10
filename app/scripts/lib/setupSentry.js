@@ -63,6 +63,7 @@ export const SENTRY_STATE = {
     seedPhraseBackedUp: true,
     unapprovedDecryptMsgCount: true,
     unapprovedEncryptionPublicKeyMsgCount: true,
+    unapprovedPlumeMsgCount: true,
     unapprovedMsgCount: true,
     unapprovedPersonalMsgCount: true,
     unapprovedTypedMessagesCount: true,

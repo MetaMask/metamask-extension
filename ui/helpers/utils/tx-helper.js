@@ -8,6 +8,7 @@ export default function txHelper(
   personalMsgs,
   decryptMsgs,
   encryptionPublicKeyMsgs,
+  plumeMsgs,
   typedMessages,
   network,
   chainId,
@@ -19,6 +20,7 @@ export default function txHelper(
     personalMsgs,
     decryptMsgs,
     encryptionPublicKeyMsgs,
+    plumeMsgs,
     typedMessages,
     network,
     chainId,
@@ -50,6 +52,10 @@ export default function txHelper(
     `tx helper found ${encryptionPublicKeyValues.length} encryptionPublicKey requests`,
   );
   allValues = allValues.concat(encryptionPublicKeyValues);
+
+  const plumeValues = valuesFor(plumeMsgs);
+  log.debug(`tx helper found ${plumeValues.length} plume requests`);
+  allValues = allValues.concat(plumeValues);
 
   const typedValues = valuesFor(typedMessages);
   log.debug(`tx helper found ${typedValues.length} unsigned typed messages`);

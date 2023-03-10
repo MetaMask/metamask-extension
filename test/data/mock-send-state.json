@@ -269,6 +269,8 @@
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": {},
     "unapprovedEncryptionPublicKeyMsgCount": 0,
+    "unapprovedPlumeMsgs": {},
+    "unapprovedPlumeMsgCount": 0,
     "unapprovedTypedMessages": {},
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
