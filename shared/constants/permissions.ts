@@ -24,7 +24,6 @@ export const RestrictedMethods = Object.freeze({
  */
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
-  'endowment:webassembly': 'endowment:webassembly',
   'endowment:transaction-insight': 'endowment:transaction-insight',
   'endowment:cronjob': 'endowment:cronjob',
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
