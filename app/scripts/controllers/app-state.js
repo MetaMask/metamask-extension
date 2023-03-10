@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
+import { v4 as uuid } from 'uuid';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -9,6 +10,8 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../../shared/constants/app';
+
+const APPROVAL_REQUEST_TYPE = 'unlock';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -20,9 +23,9 @@ export default class AppStateController extends EventEmitter {
       isUnlocked,
       initState,
       onInactiveTimeout,
-      showUnlockRequest,
       preferencesStore,
       qrHardwareStore,
+      messenger,
     } = opts;
     super();
 
@@ -59,8 +62,6 @@ export default class AppStateController extends EventEmitter {
     this.waitingForUnlock = [];
     addUnlockListener(this.handleUnlock.bind(this));
 
-    this._showUnlockRequest = showUnlockRequest;
-
     preferencesStore.subscribe(({ preferences }) => {
       const currentState = this.store.getState();
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
@@ -74,6 +75,9 @@ export default class AppStateController extends EventEmitter {
 
     const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
+
+    this._messenger = messenger;
+    this._approvalRequestId = null;
   }
 
   /**
@@ -107,8 +111,9 @@ export default class AppStateController extends EventEmitter {
   waitForUnlock(resolve, shouldShowUnlockRequest) {
     this.waitingForUnlock.push({ resolve });
     this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
+
     if (shouldShowUnlockRequest) {
-      this._showUnlockRequest();
+      this._createApprovalRequest();
     }
   }
 
@@ -122,6 +127,8 @@ export default class AppStateController extends EventEmitter {
       }
       this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE);
     }
+
+    this._acceptApprovalRequest();
   }
 
   /**
@@ -368,5 +375,32 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({
       serviceWorkerLastActiveTime,
     });
+  }
+
+  _createApprovalRequest() {
+    this._approvalRequestId = uuid();
+
+    this._messenger.call(
+      'ApprovalController:addRequest',
+      {
+        id: this._approvalRequestId,
+        origin: this._messenger.controllerName,
+        type: APPROVAL_REQUEST_TYPE,
+      },
+      true,
+    );
+  }
+
+  _acceptApprovalRequest() {
+    if (!this._approvalRequestId) {
+      return;
+    }
+
+    this._messenger.call(
+      'ApprovalController:acceptRequest',
+      this._approvalRequestId,
+    );
+
+    this._approvalRequestId = null;
   }
 }
