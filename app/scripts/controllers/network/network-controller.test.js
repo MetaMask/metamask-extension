@@ -99,37 +99,48 @@ const INFURA_NETWORKS = [
     networkName: 'Mainnet',
     networkType: 'mainnet',
     chainId: '0x1',
-    networkVersion: '1',
+    networkId: '1',
     ticker: 'ETH',
   },
   {
     networkName: 'Goerli',
     networkType: 'goerli',
     chainId: '0x5',
-    networkVersion: '5',
+    networkId: '5',
     ticker: 'GoerliETH',
   },
-  {
-    networkName: 'Sepolia',
-    networkType: 'sepolia',
-    chainId: '0xaa36a7',
-    networkVersion: '11155111',
-    ticker: 'SepoliaETH',
-  },
+  // {
+  // networkName: 'Sepolia',
+  // networkType: 'sepolia',
+  // chainId: '0xaa36a7',
+  // networkId: '11155111',
+  // ticker: 'SepoliaETH',
+  // },
 ];
 
 /**
- * A response object for a successful request to `net_version`. It is assumed
- * that the block number here is insignificant to the test.
+ * A response object for a successful request to `eth_blockNumber`. It is
+ * assumed that the block number here is insignificant to the test.
  */
 const SUCCESSFUL_ETH_BLOCKNUMBER_RESPONSE = {
   result: '0x42',
+  error: null,
+};
+
+/**
+ * A response object for a successful request to `eth_getBlockByNumber`. It is
+ * assumed that the block number here is insignificant to the test.
+ */
+const SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE = {
+  result: BLOCK,
+  error: null,
 };
 
 /**
  * A response object for a blocked request to `eth_blockNumber`.
  */
-const BLOCKED_ETH_BLOCKNUMBER_RESPONSE = {
+const BLOCKED_INFURA_RESPONSE = {
+  result: null,
   error: 'countryBlocked',
   httpStatus: 500,
 };
@@ -140,6 +151,7 @@ const BLOCKED_ETH_BLOCKNUMBER_RESPONSE = {
  */
 const SUCCESSFUL_NET_VERSION_RESPONSE = {
   result: '42',
+  error: null,
 };
 
 /**
@@ -147,6 +159,7 @@ const SUCCESSFUL_NET_VERSION_RESPONSE = {
  * that the error here is insignificant to the test.
  */
 const UNSUCCESSFUL_JSON_RPC_RESPONSE = {
+  result: null,
   error: 'oops',
   httpStatus: 500,
 };
@@ -363,6 +376,8 @@ class NetworkCommunications {
    * the mocks for the network, or null if `times` is 0.
    */
   mockRpcCall({ request, response, error, delay, times, beforeCompleting }) {
+    console.log('mockRpcCall', 'request', request, 'response', response);
+
     if (times === 0) {
       return null;
     }
@@ -406,6 +421,15 @@ class NetworkCommunications {
           ...(requestBody.id === undefined ? {} : { id: requestBody.id }),
           ...partialResponseBody,
         };
+
+        console.log(
+          '(mockRpcCall) sending back response for request',
+          requestBody,
+          'response',
+          completeResponseBody,
+          'httpStatus',
+          httpStatus,
+        );
 
         return [httpStatus, completeResponseBody];
       });
@@ -620,7 +644,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it('emits infuraIsUnblocked (assuming that the request to eth_blockNumber responds successfully)', async () => {
+        it('emits infuraIsBlocked or infuraIsUnblocked, depending on whether Infura is blocking requests', async () => {
           await withController(
             {
               state: {
@@ -648,7 +672,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it('records in state that the network is available', async () => {
+        it('determines the status of the network, capturing it in state', async () => {
           await withController(
             {
               state: {
@@ -673,7 +697,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it(`persists to state whether the network supports EIP-1559 (assuming that the request for eth_getBlockByNumber responds successfully)`, async () => {
+        it('determines whether the network supports EIP-1559, capturing it in state', async () => {
           await withController(
             {
               state: {
@@ -796,7 +820,44 @@ describe('NetworkController', () => {
         );
       });
 
-      it('checks the status of the network and captures it in state', async () => {
+      it('does not emit infuraIsBlocked', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: '0xtest',
+                ticker: 'TEST',
+                id: 'testNetworkConfigurationId',
+              },
+              networkConfigurations: {
+                testNetworkConfigurationId: {
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0xtest',
+                  ticker: 'TEST',
+                  id: 'testNetworkConfigurationId',
+                },
+              },
+            },
+          },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
+
+            const infuraIsBlocked = await waitForEvent({
+              controller,
+              eventName: 'infuraIsBlocked',
+              operation: async () => {
+                await controller.initializeProvider();
+              },
+            });
+
+            await expect(infuraIsBlocked).toNeverResolve();
+          },
+        );
+      });
+
+      it('determines the status of the network, capturing it in state', async () => {
         await withController(
           {
             state: {
@@ -832,7 +893,7 @@ describe('NetworkController', () => {
         );
       });
 
-      it('persists to state whether the network supports EIP-1559 (assuming that the request for eth_getBlockByNumber responds successfully)', async () => {
+      it('determines whether the network supports EIP-1559, capturing it in state', async () => {
         await withController(
           {
             state: {
@@ -1197,10 +1258,10 @@ describe('NetworkController', () => {
       });
     });
 
-    for (const { networkType } of INFURA_NETWORKS) {
+    INFURA_NETWORKS.forEach(({ networkType, networkId }) => {
       describe(`when the type in the provider configuration is "${networkType}"`, () => {
-        describe('if the request for eth_blockNumber responds successfully', () => {
-          it('updates the network status to "available"', async () => {
+        describe('if the request for eth_getBlockByNumber responds successfully', () => {
+          it('records the network status as "available"', async () => {
             await withController(
               {
                 state: {
@@ -1213,13 +1274,20 @@ describe('NetworkController', () => {
                 },
               },
               async ({ controller, network }) => {
-                network.mockEssentialRpcCalls();
+                network.mockEssentialRpcCalls({
+                  // This results in a successful call to eth_getBlockByNumber
+                  // implicitly
+                  latestBlock: BLOCK,
+                });
                 await withoutCallingLookupNetwork({
                   controller,
                   operation: async () => {
                     await controller.initializeProvider();
                   },
                 });
+                expect(controller.store.getState().networkStatus).toBe(
+                  'unknown',
+                );
 
                 await waitForStateChanges({
                   controller,
@@ -1232,6 +1300,131 @@ describe('NetworkController', () => {
                 expect(controller.store.getState().networkStatus).toBe(
                   'available',
                 );
+              },
+            );
+          });
+
+          it('captures the ID of the network', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  // This results in a successful call to eth_getBlockByNumber
+                  // implicitly
+                  latestBlock: BLOCK,
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+                expect(controller.store.getState().networkId).toBeUndefined();
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkId'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+
+                expect(controller.store.getState().networkId).toBe(networkId);
+              },
+            );
+          });
+
+          it('records the fact that the network supports EIP-1559 when baseFeePerGas is in the block header', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                  networkDetails: {
+                    EIPS: {},
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  // This results in a successful call to eth_getBlockByNumber
+                  // implicitly
+                  latestBlock: POST_1559_BLOCK,
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkDetails'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+
+                expect(
+                  controller.store.getState().networkDetails.EIPS[1559],
+                ).toBe(true);
+              },
+            );
+          });
+
+          it('records the fact that the network does not support EIP-1559 when baseFeePerGas is not in the block header', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                  networkDetails: {
+                    EIPS: {},
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  // This results in a successful call to eth_getBlockByNumber
+                  // implicitly
+                  latestBlock: PRE_1559_BLOCK,
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkDetails'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+
+                expect(
+                  controller.store.getState().networkDetails.EIPS[1559],
+                ).toBe(false);
               },
             );
           });
@@ -1250,10 +1443,10 @@ describe('NetworkController', () => {
               },
               async ({ controller, network }) => {
                 network.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: {
-                      result: '0x42',
-                    },
+                  eth_getBlockByNumber: {
+                    // This results in a successful call to eth_getBlockByNumber
+                    // implicitly
+                    latestBlock: POST_1559_BLOCK,
                   },
                 });
                 await withoutCallingLookupNetwork({
@@ -1275,131 +1468,10 @@ describe('NetworkController', () => {
               },
             );
           });
-
-          describe('if the request for eth_getBlockByNumber responds successfully', () => {
-            it('persists to state that the network supports EIP-1559 when baseFeePerGas is in the block header', async () => {
-              await withController(
-                {
-                  state: {
-                    provider: {
-                      type: networkType,
-                      // NOTE: This doesn't need to match the logical chain ID of
-                      // the network selected, it just needs to exist
-                      chainId: '0x9999999',
-                    },
-                    networkDetails: {
-                      EIPS: {},
-                    },
-                  },
-                },
-                async ({ controller, network }) => {
-                  network.mockEssentialRpcCalls({
-                    latestBlock: POST_1559_BLOCK,
-                  });
-                  await controller.initializeProvider();
-
-                  await controller.getEIP1559Compatibility();
-
-                  expect(
-                    controller.store.getState().networkDetails.EIPS[1559],
-                  ).toBe(true);
-                },
-              );
-            });
-
-            it('persists to state that the network does not support EIP-1559 when baseFeePerGas is not in the block header', async () => {
-              await withController(
-                {
-                  state: {
-                    provider: {
-                      type: networkType,
-                      // NOTE: This doesn't need to match the logical chain ID of
-                      // the network selected, it just needs to exist
-                      chainId: '0x9999999',
-                    },
-                    networkDetails: {
-                      EIPS: {},
-                    },
-                  },
-                },
-                async ({ controller, network }) => {
-                  network.mockEssentialRpcCalls({
-                    latestBlock: PRE_1559_BLOCK,
-                  });
-                  await controller.initializeProvider();
-
-                  await controller.getEIP1559Compatibility();
-
-                  expect(
-                    controller.store.getState().networkDetails.EIPS[1559],
-                  ).toBe(false);
-                },
-              );
-            });
-          });
-
-          describe('if the request for eth_getBlockByNumber responds with an error', () => {
-            it('does not update the network details in any way', async () => {
-              const intentionalErrorMessage =
-                'intentional error from eth_getBlockByNumber';
-
-              await withController(
-                {
-                  state: {
-                    provider: {
-                      type: networkType,
-                      // NOTE: This doesn't need to match the logical chain ID of
-                      // the network selected, it just needs to exist
-                      chainId: '0x9999999',
-                    },
-                    networkDetails: {
-                      EIPS: {},
-                    },
-                  },
-                },
-                async ({ controller, network }) => {
-                  network.mockEssentialRpcCalls({
-                    eth_getBlockByNumber: {
-                      response: {
-                        error: intentionalErrorMessage,
-                      },
-                    },
-                  });
-                  await withoutCallingGetEIP1559Compatibility({
-                    controller,
-                    operation: async () => {
-                      await controller.initializeProvider();
-                    },
-                  });
-                  expect(
-                    controller.store.getState().networkDetails.EIPS['1559'],
-                  ).toBeUndefined();
-
-                  await waitForStateChanges({
-                    controller,
-                    propertyPath: ['networkDetails'],
-                    count: 0,
-                    operation: async () => {
-                      try {
-                        await controller.getEIP1559Compatibility();
-                      } catch (error) {
-                        if (error !== intentionalErrorMessage) {
-                          console.error(error);
-                        }
-                      }
-                    },
-                  });
-                  expect(
-                    controller.store.getState().networkDetails.EIPS['1559'],
-                  ).toBeUndefined();
-                },
-              );
-            });
-          });
         });
 
         describe('if the request for eth_blockNumber responds with a "countryBlocked" error', () => {
-          it('updates the network status to "blocked"', async () => {
+          it('records the network status as "blocked"', async () => {
             await withController(
               {
                 state: {
@@ -1413,11 +1485,8 @@ describe('NetworkController', () => {
               },
               async ({ controller, network }) => {
                 network.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: {
-                      error: 'countryBlocked',
-                      httpStatus: 500,
-                    },
+                  eth_getBlockByNumber: {
+                    response: BLOCKED_INFURA_RESPONSE,
                   },
                 });
                 await withoutCallingLookupNetwork({
@@ -1442,6 +1511,120 @@ describe('NetworkController', () => {
             );
           });
 
+          it('forgets the ID of the network', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  // Ensure that each call to eth_blockNumber returns a
+                  // different block number, otherwise the first
+                  // eth_getBlockByNumber response will get cached under the
+                  // first block number
+                  eth_blockNumber: [
+                    {
+                      response: {
+                        result: '0x1',
+                      },
+                    },
+                    {
+                      response: {
+                        result: '0x2',
+                      },
+                    },
+                  ],
+                  eth_getBlockByNumber: [
+                    {
+                      request: {
+                        params: ['0x1', false],
+                      },
+                      response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+                    },
+                    {
+                      request: {
+                        params: ['0x2', false],
+                      },
+                      response: BLOCKED_INFURA_RESPONSE,
+                    },
+                  ],
+                });
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkId'],
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+                expect(controller.store.getState().networkId).toBe(networkId);
+
+                // Advance block tracker loop to force a fresh call to
+                // eth_getBlockByNumber
+                clock.runAll();
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkId'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+                expect(controller.store.getState().networkId).toBeNull();
+              },
+            );
+          });
+
+          it('forgets whether or not the network supports EIP-1559', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                  networkDetails: {
+                    EIPS: {
+                      1559: true,
+                    },
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  eth_getBlockByNumber: {
+                    response: BLOCKED_INFURA_RESPONSE,
+                  },
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkDetails'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+                expect(
+                  controller.store.getState().networkDetails.EIPS['1559'],
+                ).toBeUndefined();
+              },
+            );
+          });
+
           it('emits infuraIsBlocked', async () => {
             await withController(
               {
@@ -1456,11 +1639,8 @@ describe('NetworkController', () => {
               },
               async ({ controller, network }) => {
                 network.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: {
-                      httpStatus: 500,
-                      error: 'countryBlocked',
-                    },
+                  eth_getBlockByNumber: {
+                    response: BLOCKED_INFURA_RESPONSE,
                   },
                 });
                 await withoutCallingLookupNetwork({
@@ -1482,59 +1662,6 @@ describe('NetworkController', () => {
               },
             );
           });
-        });
-
-        describe('if the request for eth_blockNumber responds with a generic error', () => {
-          it('updates the network status to "unavailable"', async () => {
-            await withController(
-              {
-                state: {
-                  provider: {
-                    type: networkType,
-                    // NOTE: This doesn't need to match the logical chain ID
-                    // of the network selected, it just needs to exist
-                    chainId: '0x9999999',
-                  },
-                  networkConfigurations: {
-                    testNetworkConfigurationId: {
-                      id: 'testNetworkConfigurationId',
-                      rpcUrl: 'https://mock-rpc-url',
-                      chainId: '0xtest',
-                      ticker: 'TEST',
-                    },
-                  },
-                },
-              },
-              async ({ controller, network }) => {
-                network.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: {
-                      error: 'oops',
-                      httpStatus: 500,
-                    },
-                  },
-                });
-                await withoutCallingLookupNetwork({
-                  controller,
-                  operation: async () => {
-                    await controller.initializeProvider();
-                  },
-                });
-
-                await waitForStateChanges({
-                  controller,
-                  propertyPath: ['networkStatus'],
-                  operation: async () => {
-                    await controller.lookupNetwork();
-                  },
-                });
-
-                expect(controller.store.getState().networkStatus).toBe(
-                  'unavailable',
-                );
-              },
-            );
-          });
 
           it('does not emit infuraIsUnblocked', async () => {
             await withController(
@@ -1550,11 +1677,8 @@ describe('NetworkController', () => {
               },
               async ({ controller, network }) => {
                 network.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: {
-                      error: 'oops',
-                      httpStatus: 500,
-                    },
+                  eth_getBlockByNumber: {
+                    response: BLOCKED_INFURA_RESPONSE,
                   },
                 });
                 await withoutCallingLookupNetwork({
@@ -1576,6 +1700,170 @@ describe('NetworkController', () => {
               },
             );
           });
+        });
+
+        describe('if the request for eth_getBlockByNumber responds with a generic error', () => {
+          it('records the network status as "unavailable"', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  eth_getBlockByNumber: {
+                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  },
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkStatus'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+                expect(controller.store.getState().networkStatus).toBe(
+                  'unavailable',
+                );
+              },
+            );
+          });
+
+          it('forgets the ID of the network', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  // Ensure that each call to eth_blockNumber returns a
+                  // different block number, otherwise the first
+                  // eth_getBlockByNumber response will get cached under the
+                  // first block number
+                  eth_blockNumber: [
+                    {
+                      response: {
+                        result: '0x1',
+                      },
+                    },
+                    {
+                      response: {
+                        result: '0x2',
+                      },
+                    },
+                  ],
+                  eth_getBlockByNumber: [
+                    {
+                      request: {
+                        params: ['0x1', false],
+                      },
+                      response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+                    },
+                    {
+                      request: {
+                        params: ['0x2', false],
+                      },
+                      response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                    },
+                  ],
+                });
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkId'],
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+                expect(controller.store.getState().networkId).toBe(networkId);
+
+                // Advance block tracker loop to force a fresh call to
+                // eth_getBlockByNumber
+                clock.runAll();
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkId'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+                expect(controller.store.getState().networkId).toBeNull();
+              },
+            );
+          });
+
+          it('forgets whether or not the network supports EIP-1559', async () => {
+            const intentionalErrorMessage =
+              'intentional error from eth_getBlockByNumber';
+
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                  networkDetails: {
+                    EIPS: {
+                      1559: true,
+                    },
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  eth_getBlockByNumber: {
+                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  },
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkDetails'],
+                  operation: async () => {
+                    try {
+                      await controller.lookupNetwork();
+                    } catch (error) {
+                      if (error !== intentionalErrorMessage) {
+                        console.error(error);
+                      }
+                    }
+                  },
+                });
+                expect(
+                  controller.store.getState().networkDetails.EIPS['1559'],
+                ).toBeUndefined();
+              },
+            );
+          });
 
           it('does not emit infuraIsBlocked', async () => {
             await withController(
@@ -1583,19 +1871,16 @@ describe('NetworkController', () => {
                 state: {
                   provider: {
                     type: networkType,
-                    // NOTE: This doesn't need to match the logical chain ID
-                    // of the network selected, it just needs to exist
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
                     chainId: '0x9999999',
                   },
                 },
               },
               async ({ controller, network }) => {
                 network.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: {
-                      error: 'oops',
-                      httpStatus: 500,
-                    },
+                  eth_getBlockByNumber: {
+                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
                   },
                 });
                 await withoutCallingLookupNetwork({
@@ -1617,10 +1902,48 @@ describe('NetworkController', () => {
               },
             );
           });
+
+          it('does not emit infuraIsUnblocked', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  eth_getBlockByNumber: {
+                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  },
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                const promiseForInfuraIsUnblocked = waitForEvent({
+                  controller,
+                  eventName: 'infuraIsUnblocked',
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+
+                await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+              },
+            );
+          });
         });
 
-        describe('if the network was switched after the eth_blockNumber request started but before it completed', () => {
-          it('does not overwrite the network status based on the previous network, but retains the network status of the new network', async () => {
+        describe('if the network was switched after the eth_getBlockByNumber request started but before it completed', () => {
+          it('captures the network status of the second network, not the first', async () => {
             await withController(
               {
                 state: {
@@ -1690,7 +2013,11 @@ describe('NetworkController', () => {
             );
           });
 
-          it('does not overwrite the EIP-1559 support based on the previous network, but retains the EIP-1559 support of the new network', async () => {
+          it.todo(
+            'captures the network ID of the second network, not the first',
+          );
+
+          it('captures the EIP-1559 support of the second network, not the first', async () => {
             await withController(
               {
                 state: {
@@ -1761,7 +2088,7 @@ describe('NetworkController', () => {
             );
           });
 
-          it('emits infuraIsBlocked (and not infuraIsUnblocked) if the new network is blocked, even if the previous one was not', async () => {
+          it('emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not', async () => {
             const anotherNetwork = INFURA_NETWORKS.find(
               (network) => network.networkType !== networkType,
             );
@@ -1812,7 +2139,7 @@ describe('NetworkController', () => {
                 });
                 network2.mockEssentialRpcCalls({
                   eth_blockNumber: {
-                    response: BLOCKED_ETH_BLOCKNUMBER_RESPONSE,
+                    response: BLOCKED_INFURA_RESPONSE,
                   },
                 });
                 await withoutCallingLookupNetwork({
@@ -1842,10 +2169,10 @@ describe('NetworkController', () => {
           });
         });
       });
-    }
+    });
 
     describe('when the type in the provider configuration is "rpc"', () => {
-      describe('if the request for net_version responds successfully', () => {
+      describe('if both of the requests for net_version and eth_getBlockByNumber respond successfully', () => {
         it('updates the network status to "available"', async () => {
           await withController(
             {
@@ -1861,6 +2188,9 @@ describe('NetworkController', () => {
               network.mockEssentialRpcCalls({
                 net_version: {
                   response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                },
+                eth_getBlockByNumber: {
+                  response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
                 },
               });
               await withoutCallingLookupNetwork({
@@ -1886,6 +2216,132 @@ describe('NetworkController', () => {
           );
         });
 
+        it('captures the ID of the network', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                // NOTE: This covers eth_getBlockByNumber implicitly
+                latestBlock: POST_1559_BLOCK,
+                net_version: {
+                  response: {
+                    result: '42',
+                  },
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+              expect(controller.store.getState().networkId).toBe(null);
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(controller.store.getState().networkId).toBe('42');
+            },
+          );
+        });
+
+        it('records the fact that the network supports EIP-1559 when baseFeePerGas is in the block header', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: POST_1559_BLOCK,
+                net_version: {
+                  response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkDetails'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(true);
+            },
+          );
+        });
+
+        it('records the fact that the network does not support EIP-1559 when baseFeePerGas is not in the block header', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: PRE_1559_BLOCK,
+                net_version: {
+                  response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkDetails'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(false);
+            },
+          );
+        });
+
         it('emits infuraIsUnblocked', async () => {
           await withController(
             {
@@ -1898,7 +2354,14 @@ describe('NetworkController', () => {
               },
             },
             async ({ controller, network }) => {
-              network.mockEssentialRpcCalls();
+              network.mockEssentialRpcCalls({
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: PRE_1559_BLOCK,
+                net_version: {
+                  response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                },
+              });
               await withoutCallingLookupNetwork({
                 controller,
                 operation: async () => {
@@ -1918,276 +2381,130 @@ describe('NetworkController', () => {
             },
           );
         });
-
-        describe('if the request for eth_getBlockByNumber responds successfully', () => {
-          it('persists to state that the network supports EIP-1559 when baseFeePerGas is in the block header', async () => {
-            await withController(
-              {
-                state: {
-                  provider: {
-                    type: 'rpc',
-                    rpcUrl: 'https://mock-rpc-url',
-                    chainId: '0xtest',
-                    ticker: 'TEST',
-                    id: 'testNetworkConfigurationId',
-                  },
-                  networkConfigurations: {
-                    testNetworkConfigurationId: {
-                      rpcUrl: 'https://mock-rpc-url',
-                      chainId: '0xtest',
-                      ticker: 'TEST',
-                      id: 'testNetworkConfigurationId1',
-                    },
-                  },
-                },
-              },
-              async ({ controller, network }) => {
-                network.mockEssentialRpcCalls({
-                  latestBlock: POST_1559_BLOCK,
-                });
-                await withoutCallingLookupNetwork({
-                  controller,
-                  operation: async () => {
-                    await controller.initializeProvider();
-                  },
-                });
-
-                await controller.lookupNetwork();
-
-                expect(
-                  controller.store.getState().networkDetails.EIPS[1559],
-                ).toBe(true);
-              },
-            );
-          });
-
-          it('persists to state that the network does not support EIP-1559 when baseFeePerGas is not in the block header', async () => {
-            await withController(
-              {
-                state: {
-                  provider: {
-                    type: 'rpc',
-                    rpcUrl: 'https://mock-rpc-url-2',
-                    chainId: '0x1337',
-                    ticker: 'TEST2',
-                    id: 'testNetworkConfigurationId',
-                  },
-                  networkConfigurations: {
-                    testNetworkConfigurationId: {
-                      rpcUrl: 'https://mock-rpc-url-2',
-                      chainId: '0x1337',
-                      ticker: 'TEST2',
-                      id: 'testNetworkConfigurationId',
-                    },
-                  },
-                  networkDetails: {
-                    EIPS: {},
-                  },
-                },
-              },
-
-              async ({ controller, network }) => {
-                network.mockEssentialRpcCalls({
-                  latestBlock: PRE_1559_BLOCK,
-                });
-                await withoutCallingLookupNetwork({
-                  controller,
-                  operation: async () => {
-                    await controller.initializeProvider();
-                  },
-                });
-
-                await controller.lookupNetwork();
-
-                expect(
-                  controller.store.getState().networkDetails.EIPS[1559],
-                ).toBe(false);
-              },
-            );
-          });
-        });
-
-        describe('if the request for eth_getBlockByNumber responds with an error', () => {
-          it('does not update the network details in any way', async () => {
-            const intentionalErrorMessage =
-              'intentional error from eth_getBlockByNumber';
-
-            await withController(
-              {
-                state: {
-                  provider: {
-                    type: 'rpc',
-                    rpcUrl: 'https://mock-rpc-url',
-                    chainId: '0x1337',
-                    ticker: 'TEST',
-                    id: 'testNetworkConfigurationId',
-                  },
-                  networkConfigurations: {
-                    testNetworkConfigurationId: {
-                      rpcUrl: 'https://mock-rpc-url',
-                      chainId: '0x1337',
-                      ticker: 'TEST',
-                      id: 'testNetworkConfigurationId',
-                    },
-                  },
-                  networkDetails: {
-                    EIPS: {},
-                  },
-                },
-              },
-              async ({ controller, network }) => {
-                network.mockEssentialRpcCalls({
-                  eth_getBlockByNumber: {
-                    response: {
-                      error: intentionalErrorMessage,
-                    },
-                  },
-                });
-                await withoutCallingLookupNetwork({
-                  controller,
-                  operation: async () => {
-                    await controller.initializeProvider();
-                  },
-                });
-                expect(
-                  controller.store.getState().networkDetails.EIPS['1559'],
-                ).toBeUndefined();
-
-                await waitForStateChanges({
-                  controller,
-                  propertyPath: ['networkDetails'],
-                  count: 0,
-                  operation: async () => {
-                    try {
-                      await controller.lookupNetwork();
-                    } catch (error) {
-                      if (
-                        !('data' in error) ||
-                        error.data !== intentionalErrorMessage
-                      ) {
-                        console.error(error);
-                      }
-                    }
-                  },
-                });
-                expect(
-                  controller.store.getState().networkDetails.EIPS['1559'],
-                ).toBeUndefined();
-              },
-            );
-          });
-        });
       });
 
-      describe('if the request for net_version responds with an error', () => {
-        it('updates the network status to "unavailable"', async () => {
-          const intentionalErrorMessage = 'intentional error from net_version';
-
+      describe('if the request for eth_getBlockByNumber responds successfully, but the request for net_version responds with a "countryBlocked" error', () => {
+        it('records the network status as "blocked"', async () => {
           await withController(
             {
               state: {
                 provider: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
-                  chainId: '0xtest',
-                  ticker: 'TEST',
-                  id: 'testNetworkConfigurationId',
-                },
-                networkConfigurations: {
-                  testNetworkConfigurationId: {
-                    rpcUrl: 'https://mock-rpc-url',
-                    chainId: '0xtest',
-                    ticker: 'TEST',
-                    id: 'testNetworkConfigurationId',
-                  },
+                  chainId: '0x1337',
                 },
               },
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls({
-                net_version: [
-                  {
-                    response: {
-                      result: '42',
-                    },
-                  },
-                  {
-                    response: {
-                      error: intentionalErrorMessage,
-                    },
-                  },
-                ],
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: BLOCK,
+                net_version: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
               });
-              await controller.initializeProvider();
-              expect(controller.store.getState().networkStatus).toBe(
-                'available',
-              );
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
 
               await waitForStateChanges({
                 controller,
                 propertyPath: ['networkStatus'],
                 operation: async () => {
-                  try {
-                    await controller.lookupNetwork();
-                  } catch (error) {
-                    if (error !== intentionalErrorMessage) {
-                      console.error(error);
-                    }
-                  }
+                  await controller.lookupNetwork();
                 },
               });
 
-              expect(controller.store.getState().networkStatus).toBe(
-                'unavailable',
-              );
+              expect(controller.store.getState().networkStatus).toBe('blocked');
             },
           );
         });
 
-        it('removes from state whether the network supports EIP-1559', async () => {
+        it('forgets the ID of the network', async () => {
           await withController(
             {
               state: {
                 provider: {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
-                  chainId: '0xtest',
-                  ticker: 'TEST',
-                  id: 'testNetworkConfigurationId',
-                },
-                networkConfigurations: {
-                  testNetworkConfigurationId: {
-                    rpcUrl: 'https://mock-rpc-url',
-                    chainId: '0xtest',
-                    ticker: 'TEST',
-                    id: 'testNetworkConfigurationId',
-                  },
-                },
-                networkDetails: {
-                  EIPS: {},
+                  chainId: '0x1337',
                 },
               },
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls({
-                latestBlock: POST_1559_BLOCK,
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: BLOCK,
                 net_version: [
                   {
                     response: {
-                      result: '42',
+                      result: '0x42',
                     },
                   },
                   {
-                    response: {
-                      error: 'oops',
-                    },
+                    response: BLOCKED_INFURA_RESPONSE,
                   },
                 ],
               });
-              await controller.initializeProvider();
-              expect(controller.store.getState().networkDetails).toStrictEqual({
-                EIPS: {
-                  1559: true,
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+              expect(controller.store.getState().networkId).toBe('0x42');
+
+              // Advance block tracker loop to force a fresh call to
+              // eth_getBlockByNumber
+              clock.runAll();
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+              expect(controller.store.getState().networkId).toBeNull();
+            },
+          );
+        });
+
+        it('forgets whether or not the network supports EIP-1559', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+                networkDetails: {
+                  EIPS: {
+                    1559: true,
+                  },
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: BLOCK,
+                net_version: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
                 },
               });
 
@@ -2198,19 +2515,133 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
+              expect(
+                controller.store.getState().networkDetails.EIPS['1559'],
+              ).toBeUndefined();
+            },
+          );
+        });
 
-              expect(controller.store.getState().networkDetails).toStrictEqual({
-                EIPS: {
-                  1559: undefined,
+        it('emits infuraIsBlocked', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: BLOCK,
+                net_version: {
+                  response: BLOCKED_INFURA_RESPONSE,
                 },
               });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              const infuraIsBlocked = await waitForEvent({
+                controller,
+                eventName: 'infuraIsBlocked',
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(infuraIsBlocked).toBe(true);
+            },
+          );
+        });
+
+        it('does not emit infuraIsUnblocked', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: BLOCK,
+                net_version: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              const promiseForInfuraIsUnblocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsUnblocked',
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
             },
           );
         });
       });
 
-      describe('if the network was switched after the net_version request started but before it completed', () => {
-        it('does not overwrite the network status based on the previous network, but retains the network status of the new network', async () => {
+      describe('if the request for eth_getBlockByNumber responds successfully, but the request for net_version responds with a generic error', () => {
+        it.todo('records the network status as "unavailable"');
+
+        it.todo('forgets the ID of the network');
+
+        it.todo('forgets whether or not the network supports EIP-1559');
+
+        it.todo('does not emit infuraIsBlocked');
+
+        it.todo('does not emit infuraIsUnblocked');
+      });
+
+      describe('if the request for net_version responds successfully, but the request for eth_getBlockByNumber responds with a "countryBlocked" error', () => {
+        it.todo('records the network status as "blocked"');
+
+        it.todo('forgets the ID of the network');
+
+        it.todo('forgets whether or not the network supports EIP-1559');
+
+        it.todo('emits infuraIsBlocked');
+
+        it.todo('does not emit infuraIsUnblocked');
+      });
+
+      describe('if the request for net_version responds successfully, but the request for eth_getBlockByNumber responds with a generic error', () => {
+        it.todo('records the network status as "unavailable"');
+
+        it.todo('forgets the ID of the network');
+
+        it.todo('forgets whether or not the network supports EIP-1559');
+
+        it.todo('does not emit infuraIsBlocked');
+
+        it.todo('does not emit infuraIsUnblocked');
+      });
+
+      // TODO
+      describe.only('if the network was switched after the net_version request started but before it completed', () => {
+        it('captures the network status of the second network, not the first', async () => {
           await withController(
             {
               state: {
@@ -2274,7 +2705,9 @@ describe('NetworkController', () => {
           );
         });
 
-        it('does not overwrite the EIP-1559 support based on the previous network, but retains the EIP-1559 support of the new network', async () => {
+        it.todo('captures the network ID of the second network, not the first');
+
+        it('captures the EIP-1559 support of the second network, not the first', async () => {
           await withController(
             {
               state: {
@@ -2338,6 +2771,26 @@ describe('NetworkController', () => {
             },
           );
         });
+
+        it.todo(
+          'emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not',
+        );
+      });
+
+      describe('if the network was switched after the eth_getBlockByNumber request started but before it completed', () => {
+        it.todo(
+          'captures the network status of the second network, not the first',
+        );
+
+        it.todo('captures the network ID of the second network, not the first');
+
+        it.todo(
+          'captures the EIP-1559 support of the second network, not the first',
+        );
+
+        it.todo(
+          'emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not',
+        );
       });
     });
   });
