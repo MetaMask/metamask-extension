@@ -77,8 +77,8 @@ export const AccountListItem = ({
       padding={4}
       gap={2}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
-      className={classnames('account-list-item', {
-        'account-list-item--selected': selected,
+      className={classnames('multichain-account-list-item', {
+        'multichain-account-list-item--selected': selected,
       })}
       as="button"
       onClick={(e) => {
@@ -92,7 +92,7 @@ export const AccountListItem = ({
     >
       {selected && (
         <Box
-          className="account-list-item__selected-indicator"
+          className="multichain-account-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
           backgroundColor={Color.primaryDefault}
         />
@@ -101,7 +101,7 @@ export const AccountListItem = ({
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.COLUMN}
-        className="account-list-item__content"
+        className="multichain-account-list-item__content"
       >
         <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
           <Box

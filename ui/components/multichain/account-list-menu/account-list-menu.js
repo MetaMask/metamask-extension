@@ -34,9 +34,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
-export const AccountListMenu = ({
-  onClose = () => console.log('Account list closed'),
-}) => {
+export const AccountListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
@@ -173,5 +171,5 @@ export const AccountListMenu = ({
 };
 
 AccountListMenu.propTypes = {
-  onClose: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
 };
