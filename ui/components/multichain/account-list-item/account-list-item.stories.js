@@ -44,6 +44,9 @@ export default {
     onClick: {
       action: 'onClick',
     },
+    closeMenu: {
+      action: 'closeMenu',
+    },
     connectedAvatar: {
       control: 'text',
     },

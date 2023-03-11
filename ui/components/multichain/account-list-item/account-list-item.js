@@ -60,6 +60,7 @@ export const AccountListItem = ({
   identity,
   selected = false,
   onClick,
+  closeMenu,
   connectedAvatar,
   connectedAvatarName,
 }) => {
@@ -182,6 +183,7 @@ export const AccountListItem = ({
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}
             isRemovable={keyring?.type !== HardwareKeyringTypes.hdKeyTree}
+            closeMenu={closeMenu}
           />
         ) : null}
       </div>
@@ -193,6 +195,7 @@ AccountListItem.propTypes = {
   identity: PropTypes.object.isRequired,
   selected: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
+  closeMenu: PropTypes.func,
   connectedAvatar: PropTypes.string,
   connectedAvatarName: PropTypes.string,
 };

@@ -8,7 +8,7 @@ export default {
     onClose: {
       action: 'onClose',
     },
-  }
+  },
 };
 
 export const DefaultStory = (args) => <AccountListMenu {...args} />;

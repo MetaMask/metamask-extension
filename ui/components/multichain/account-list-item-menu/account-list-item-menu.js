@@ -22,6 +22,7 @@ export const AccountListItemMenu = ({
   anchorElement,
   blockExplorerUrlSubTitle,
   onClose,
+  closeMenu,
   isRemovable,
   identity,
 }) => {
@@ -83,6 +84,7 @@ export const AccountListItemMenu = ({
             },
           });
           onClose();
+          closeMenu?.();
         }}
         iconName={ICON_NAMES.SCAN_BARCODE}
       >
@@ -111,6 +113,7 @@ export const AccountListItemMenu = ({
 AccountListItemMenu.propTypes = {
   anchorElement: PropTypes.instanceOf(window.Element),
   onClose: PropTypes.func.isRequired,
+  closeMenu: PropTypes.func,
   blockExplorerUrlSubTitle: PropTypes.string,
   isRemovable: PropTypes.bool.isRequired,
   identity: PropTypes.object.isRequired,

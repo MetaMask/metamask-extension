@@ -92,6 +92,7 @@ export const AccountListMenu = ({ onClose }) => {
                 identity={account}
                 key={account.address}
                 selected={selectedAccount.address === account.address}
+                closeMenu={onClose}
               />
             );
           })}

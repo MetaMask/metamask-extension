@@ -11,6 +11,9 @@ export default {
     onClose: {
       action: 'onClose',
     },
+    closeMenu: {
+      action: 'closeMenu',
+    },
     blockExplorerUrlSubTitle: {
       control: 'text',
     },
