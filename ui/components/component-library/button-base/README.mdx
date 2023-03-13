@@ -98,6 +98,20 @@ import { ButtonBase } from '../../component-library';
 <ButtonBase href="/metamask">Anchor Element</ButtonBase>;
 ```
 
+### External link
+
+When an `externalLink` prop is passed it will change the element to an anchor(`a`) tag and add the `target="_blank"` and `rel="noopener noreferrer"` attributes.
+
+  <Story id="components-componentlibrary-buttonbase--external-link" />
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<ButtonBase href="https://metamask.io" externalLink>
+  Anchor element with external link
+</ButtonBase>;
+```
+
 ### Disabled
 
 Use the boolean `disabled` prop to disable button
