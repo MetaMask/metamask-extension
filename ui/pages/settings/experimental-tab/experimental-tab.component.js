@@ -7,11 +7,15 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { EVENT } from '../../../../shared/constants/metametrics';
 import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library';
 import {
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import DesktopEnableButton from '../../../components/app/desktop-enable-button';
+///: END:ONLY_INCLUDE_IN
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -50,9 +54,6 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   renderOpenSeaEnabledToggle() {
-    if (!process.env.NFTS_V1) {
-      return null;
-    }
     const { t } = this.context;
     const {
       openSeaEnabled,
@@ -62,41 +63,81 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div
-        ref={this.settingsRefs[1]}
-        className="settings-page__content-row--parent"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('enableOpenSeaAPI')}</span>
-          <div className="settings-page__content-description">
-            {t('enableOpenSeaAPIDescription')}
+      <>
+        <div ref={this.settingsRefs[0]} className="settings-page__content-row">
+          <div className="settings-page__content-item">
+            <span>{t('enableOpenSeaAPI')}</span>
+            <div className="settings-page__content-description">
+              {t('enableOpenSeaAPIDescription')}
+            </div>
+          </div>
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <ToggleButton
+                value={openSeaEnabled}
+                onToggle={(value) => {
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.SETTINGS,
+                    event: 'Enabled/Disable OpenSea',
+                    properties: {
+                      action: 'Enabled/Disable OpenSea',
+                      legacy_event: true,
+                    },
+                  });
+                  // value is positive when being toggled off
+                  if (value && useNftDetection) {
+                    setUseNftDetection(false);
+                  }
+                  setOpenSeaEnabled(!value);
+                }}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={openSeaEnabled}
-              onToggle={(value) => {
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: 'Enabled/Disable OpenSea',
-                  properties: {
-                    action: 'Enabled/Disable OpenSea',
-                    legacy_event: true,
-                  },
-                });
-                // value is positive when being toggled off
-                if (value && useNftDetection) {
-                  setUseNftDetection(false);
-                }
-                setOpenSeaEnabled(!value);
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
+        <div ref={this.settingsRefs[1]} className="settings-page__content-row">
+          <div className="settings-page__content-item">
+            <span>{t('useNftDetection')}</span>
+            <div className="settings-page__content-description">
+              <Text color={TextColor.textAlternative}>
+                {t('useNftDetectionDescription')}
+              </Text>
+              <ul className="settings-page__content-unordered-list">
+                <li>{t('useNftDetectionDescriptionLine2')}</li>
+                <li>{t('useNftDetectionDescriptionLine3')}</li>
+                <li>{t('useNftDetectionDescriptionLine4')}</li>
+              </ul>
+              <Text color={TextColor.textAlternative} paddingTop={4}>
+                {t('useNftDetectionDescriptionLine5')}
+              </Text>
+            </div>
+          </div>
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <ToggleButton
+                value={useNftDetection}
+                onToggle={(value) => {
+                  this.context.trackEvent({
+                    category: EVENT.CATEGORIES.SETTINGS,
+                    event: 'NFT Detected',
+                    properties: {
+                      action: 'NFT Detected',
+                      legacy_event: true,
+                    },
+                  });
+                  if (!value && !openSeaEnabled) {
+                    setOpenSeaEnabled(!value);
+                  }
+                  setUseNftDetection(!value);
+                }}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -111,8 +152,8 @@ export default class ExperimentalTab extends PureComponent {
     return (
       <>
         <Typography
-          variant={TYPOGRAPHY.H4}
-          color={COLORS.TEXT_ALTERNATIVE}
+          variant={TypographyVariant.H4}
+          color={TextColor.textAlternative}
           marginBottom={2}
           fontWeight={FONT_WEIGHT.BOLD}
         >
@@ -126,23 +167,23 @@ export default class ExperimentalTab extends PureComponent {
             <span>{t('transactionSecurityCheck')}</span>
             <div className="settings-page__content-description">
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
               >
                 {t('transactionSecurityCheckDescription')}
               </Typography>
               <Typography
                 marginTop={3}
                 marginBottom={1}
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
               >
                 {t('selectProvider')}
               </Typography>
               <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
                 <Typography
-                  variant={TYPOGRAPHY.H5}
-                  color={COLORS.TEXT_DEFAULT}
+                  variant={TypographyVariant.H5}
+                  color={TextColor.textDefault}
                   fontWeight={FONT_WEIGHT.MEDIUM}
                   marginBottom={0}
                 >
@@ -164,15 +205,15 @@ export default class ExperimentalTab extends PureComponent {
                 />
               </div>
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
                 marginTop={0}
               >
                 {t('thisServiceIsExperimental')}
               </Typography>
               <Typography
-                variant={TYPOGRAPHY.H5}
-                color={COLORS.TEXT_MUTED}
+                variant={TypographyVariant.H5}
+                color={TextColor.textMuted}
                 fontWeight={FONT_WEIGHT.MEDIUM}
                 marginTop={2}
               >
@@ -185,12 +226,39 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  renderDesktopEnableButton() {
+    const { t } = this.context;
+
+    return (
+      <div
+        ref={this.settingsRefs[6]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-desktop-pairing"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('desktopEnableButtonDescription')}</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <DesktopEnableButton />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   render() {
     return (
       <div className="settings-page__body">
-        {process.env.TRANSACTION_SECURITY_PROVIDER &&
-          this.renderTransactionSecurityCheckToggle()}
-        {this.renderOpenSeaEnabledToggle()}
+        {this.renderTransactionSecurityCheckToggle()}
+        {process.env.NFTS_V1 && this.renderOpenSeaEnabledToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          this.renderDesktopEnableButton()
+          ///: END:ONLY_INCLUDE_IN
+        }
       </div>
     );
   }

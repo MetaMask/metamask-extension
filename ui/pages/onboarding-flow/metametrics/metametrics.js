@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
-  COLORS,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -14,12 +15,18 @@ import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
-  getParticipateInMetaMetrics,
 } from '../../../selectors';
 
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../../components/component-library';
+
+import Box from '../../../components/ui/box/box';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -29,31 +36,11 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
-
-    const isInitiallyNotParticipating = !participateInMetaMetrics;
-
     try {
-      if (isInitiallyNotParticipating) {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
-            properties: {
-              is_metrics_enabled: true,
-            },
-          },
-          {
-            isOptIn: true,
-            flushImmediately: true,
-          },
-        );
-      }
       trackEvent(
         {
           category: EVENT.CATEGORIES.ONBOARDING,
@@ -78,29 +65,7 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
-
-    const isInitiallyParticipatingOrNotSet =
-      participateInMetaMetrics === null || participateInMetaMetrics;
-
-    try {
-      if (isInitiallyParticipatingOrNotSet) {
-        trackEvent(
-          {
-            category: EVENT.CATEGORIES.ONBOARDING,
-            event: EVENT_NAMES.ONBOARDING_WALLET_METRICS_PREFENCE_SELECTED,
-            properties: {
-              is_metrics_enabled: false,
-            },
-          },
-          {
-            isOptIn: true,
-            flushImmediately: true,
-          },
-        );
-      }
-    } finally {
-      history.push(nextRoute);
-    }
+    history.push(nextRoute);
   };
 
   return (
@@ -109,7 +74,7 @@ export default function OnboardingMetametrics() {
       data-testid="onboarding-metametrics"
     >
       <Typography
-        variant={TYPOGRAPHY.H2}
+        variant={TypographyVariant.H2}
         align={TEXT_ALIGN.CENTER}
         fontWeight={FONT_WEIGHT.BOLD}
       >
@@ -129,62 +94,92 @@ export default function OnboardingMetametrics() {
       </Typography>
       <ul>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={IconColor.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsAllowOptOut')}
         </li>
         <li>
-          <i className="fa fa-check" />
+          <Icon
+            name={ICON_NAMES.CHECK}
+            color={IconColor.successDefault}
+            marginInlineEnd={3}
+          />
           {t('onboardingMetametricsSendAnonymize')}
         </li>
         <li>
-          <i className="fa fa-times" />
-          {t('onboardingMetametricsNeverCollect', [
-            <Typography
-              variant={TYPOGRAPHY.Span}
-              key="never"
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('onboardingMetametricsNeverEmphasis')}
-            </Typography>,
-          ])}
+          <Box>
+            <Icon
+              marginInlineEnd={2}
+              name={ICON_NAMES.CLOSE}
+              size={ICON_SIZES.SM}
+              color={IconColor.errorDefault}
+            />
+            {t('onboardingMetametricsNeverCollect', [
+              <Typography
+                variant={TypographyVariant.span}
+                key="never"
+                fontWeight={FONT_WEIGHT.BOLD}
+                marginTop={0}
+              >
+                {t('onboardingMetametricsNeverEmphasis')}
+              </Typography>,
+            ])}
+          </Box>
         </li>
         <li>
-          <i className="fa fa-times" />
-          {t('onboardingMetametricsNeverCollectIP', [
-            <Typography
-              variant={TYPOGRAPHY.Span}
-              key="never-collect"
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('onboardingMetametricsNeverEmphasis')}
-            </Typography>,
-          ])}
+          <Box>
+            <Icon
+              marginInlineEnd={2}
+              name={ICON_NAMES.CLOSE}
+              size={ICON_SIZES.SM}
+              color={IconColor.errorDefault}
+            />
+            {t('onboardingMetametricsNeverCollectIP', [
+              <Typography
+                variant={TypographyVariant.span}
+                key="never-collect"
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('onboardingMetametricsNeverEmphasis')}
+              </Typography>,
+            ])}
+          </Box>
         </li>
         <li>
-          <i className="fa fa-times" />
-          {t('onboardingMetametricsNeverSellData', [
-            <Typography
-              variant={TYPOGRAPHY.Span}
-              key="never-sell"
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('onboardingMetametricsNeverEmphasis')}
-            </Typography>,
-          ])}
+          <Box>
+            <Icon
+              marginInlineEnd={2}
+              name={ICON_NAMES.CLOSE}
+              size={ICON_SIZES.SM}
+              color={IconColor.errorDefault}
+            />
+            {t('onboardingMetametricsNeverSellData', [
+              <Typography
+                variant={TypographyVariant.span}
+                key="never-sell"
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('onboardingMetametricsNeverEmphasis')}
+              </Typography>,
+            ])}
+          </Box>{' '}
         </li>
       </ul>
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsDataTerms')}
       </Typography>
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         align={TEXT_ALIGN.CENTER}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [

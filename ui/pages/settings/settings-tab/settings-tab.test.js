@@ -13,7 +13,7 @@ const mockSetUseNativeCurrencyAsPrimaryCurrencyPreference = jest.fn();
 const mockSetUseBlockie = jest.fn();
 const mockSetHideZeroBalanceTokens = jest.fn();
 
-jest.mock('../../../store/actions.js', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   setCurrentCurrency: () => mockSetCurrentCurrency,
   updateCurrentLocale: () => mockUpdateCurrentLocale,
   setUseNativeCurrencyAsPrimaryCurrencyPreference: () =>

@@ -122,13 +122,6 @@
   "gasPrice": {
     "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
   },
-  "getEther": {
-    "message": "ईथर प्राप्त करें"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 के लिए एक नल से ईथर प्राप्त करें",
-    "description": "Displays network name for Ether faucet"
-  },
   "here": {
     "message": "यहां",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -195,9 +188,6 @@
   },
   "message": {
     "message": "संदेश"
-  },
-  "metamaskDescription": {
-    "message": "मेटामास्क इथीरियम के लिए एक सुरक्षित पहचान वॉल्ट है।"
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
@@ -269,14 +259,12 @@
   "required": {
     "message": "आवश्यक"
   },
-  "resetAccount": {
-    "message": "खाता रीसेट करें"
-  },
   "revealSeedWords": {
     "message": "बीज शब्द प्रकट करें"
   },
   "revealSeedWordsWarning": {
-    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
+    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "save": {
     "message": "सहेजें"
@@ -323,9 +311,6 @@
   "terms": {
     "message": "उपयोग की शर्तें"
   },
-  "testFaucet": {
-    "message": "टेस्ट नलि"
-  },
   "to": {
     "message": "के लिए"
   },
@@ -360,14 +345,8 @@
   "usedByClients": {
     "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
   },
-  "viewAccount": {
-    "message": "खाता देखें"
-  },
   "visitWebSite": {
     "message": "हमारी वेब साइट पर जाएं"
-  },
-  "welcome": {
-    "message": "मेटामास्क बीटा में आपका स्वागत है"
   },
   "youSign": {
     "message": "आप हस्ताक्षर कर रहे हैं"

@@ -9,15 +9,20 @@ import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
-  COLORS,
   TEXT_ALIGN,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -59,14 +64,17 @@ export default class SignatureRequest extends PureComponent {
      * RPC prefs of the current network
      */
     rpcPrefs: PropTypes.object,
-    /**
-     * Dapp image
-     */
-    siteImage: PropTypes.string,
-    conversionRate: PropTypes.number,
     nativeCurrency: PropTypes.string,
+    currentCurrency: PropTypes.string.isRequired,
+    conversionRate: PropTypes.number,
     provider: PropTypes.object,
     subjectMetadata: PropTypes.object,
+    unapprovedMessagesCount: PropTypes.number,
+    clearConfirmTransaction: PropTypes.func.isRequired,
+    history: PropTypes.object,
+    mostRecentOverviewPage: PropTypes.string,
+    showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
+    cancelAll: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -115,6 +123,26 @@ export default class SignatureRequest extends PureComponent {
     return { sanitizedMessage, domain, primaryType };
   });
 
+  handleCancelAll = () => {
+    const {
+      cancelAll,
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      showRejectTransactionsConfirmationModal,
+      unapprovedMessagesCount,
+    } = this.props;
+
+    showRejectTransactionsConfirmationModal({
+      unapprovedTxCount: unapprovedMessagesCount,
+      onSubmit: async () => {
+        await cancelAll();
+        clearConfirmTransaction();
+        history.push(mostRecentOverviewPage);
+      },
+    });
+  };
+
   render() {
     const {
       txData: {
@@ -128,26 +156,41 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
       chainId,
       rpcPrefs,
-      siteImage,
       txData,
       subjectMetadata,
-      conversionRate,
       nativeCurrency,
+      currentCurrency,
+      conversionRate,
+      unapprovedMessagesCount,
     } = this.props;
-    const { trackEvent } = this.context;
+
+    const { t, trackEvent } = this.context;
     const {
       sanitizedMessage,
       domain: { verifyingContract },
       primaryType,
     } = this.memoizedParseMessage(data);
+    const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
     const currentNetwork = this.getNetworkName();
 
-    const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
-      .toDenomination(EtherDenomination.ETH)
-      .applyConversionRate(conversionRate)
-      .round(6)
-      .toBase(10)
-      .toString();
+    const balanceInBaseAsset = conversionRate
+      ? formatCurrency(
+          getValueFromWeiHex({
+            value: balance,
+            fromCurrency: nativeCurrency,
+            toCurrency: currentCurrency,
+            conversionRate,
+            numberOfDecimals: 6,
+            toDenomination: EtherDenomination.ETH,
+          }),
+          currentCurrency,
+        )
+      : new Numeric(balance, 16, EtherDenomination.WEI)
+          .toDenomination(EtherDenomination.ETH)
+          .round(6)
+          .toBase(10)
+          .toString();
+
     const onSign = (event) => {
       sign(event);
       trackEvent({
@@ -185,16 +228,31 @@ export default class SignatureRequest extends PureComponent {
 
     return (
       <div className="signature-request">
-        <div className="request-signature__account">
+        <ConfirmPageContainerNavigation />
+        <div
+          className="request-signature__account"
+          data-testid="request-signature-account"
+        >
           <NetworkAccountBalanceHeader
             networkName={currentNetwork}
             accountName={name}
             accountBalance={balanceInBaseAsset}
-            tokenName={nativeCurrency}
+            tokenName={
+              conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+            }
             accountAddress={address}
           />
         </div>
         <div className="signature-request-content">
+          {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+            txData?.securityProviderResponse?.flagAsDangerous !==
+              SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+          (txData?.securityProviderResponse &&
+            Object.keys(txData.securityProviderResponse).length === 0) ? (
+            <SecurityProviderBannerMessage
+              securityProviderResponse={txData.securityProviderResponse}
+            />
+          ) : null}
           <div className="signature-request__origin">
             <SiteOrigin
               siteOrigin={origin}
@@ -206,7 +264,7 @@ export default class SignatureRequest extends PureComponent {
 
           <Typography
             className="signature-request__content__title"
-            variant={TYPOGRAPHY.H3}
+            variant={TypographyVariant.H3}
             fontWeight={FONT_WEIGHT.BOLD}
             boxProps={{
               marginTop: 4,
@@ -216,8 +274,8 @@ export default class SignatureRequest extends PureComponent {
           </Typography>
           <Typography
             className="request-signature__content__subtitle"
-            variant={TYPOGRAPHY.H7}
-            color={COLORS.TEXT_ALTERNATIVE}
+            variant={TypographyVariant.H7}
+            color={TextColor.textAlternative}
             align={TEXT_ALIGN.CENTER}
             margin={12}
             marginTop={3}
@@ -233,8 +291,8 @@ export default class SignatureRequest extends PureComponent {
                 data-testid="verify-contract-details"
               >
                 <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.PRIMARY_DEFAULT}
+                  variant={TypographyVariant.H7}
+                  color={TextColor.primaryDefault}
                 >
                   {this.context.t('verifyContractDetails')}
                 </Typography>
@@ -268,12 +326,23 @@ export default class SignatureRequest extends PureComponent {
             toAddress={verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
-            origin={origin}
-            siteImage={siteImage}
             onClose={() => this.setState({ showContractDetails: false })}
             isContractRequestingSignature
           />
         )}
+        {unapprovedMessagesCount > 1 ? (
+          <Button
+            type="link"
+            className="signature-request__reject-all-button"
+            data-testid="signature-request-reject-all"
+            onClick={(e) => {
+              e.preventDefault();
+              this.handleCancelAll();
+            }}
+          >
+            {rejectNText}
+          </Button>
+        ) : null}
       </div>
     );
   }

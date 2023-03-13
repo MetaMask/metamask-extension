@@ -75,12 +75,6 @@
   "asset": {
     "message": "سرمایه"
   },
-  "attemptToCancel": {
-    "message": "تلاش یا لغو؟"
-  },
-  "attemptToCancelDescription": {
-    "message": "تسلیم این تلاش لغو معامله اصلی تان را تضمین نمیکند. در صورتیکه تلاش لغو موفق باشد، بر شما فیس معامله فوق الذکر چارج خواهد شد."
-  },
   "attemptingConnect": {
     "message": "در حال تلاش برای اتصال با زنجیره بلوکی"
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
   },
-  "buyWithWyre": {
-    "message": "$1 را توسط Wyre خریداری نمایید"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre به شما اجازه میدهد تا یک کردیت کارت را جهت پرداخت 1$ مستقیمًا به حساب MetaMask تان استفاده نمایید."
-  },
   "bytes": {
     "message": "بایت ها"
   },
   "cancel": {
     "message": "لغو"
-  },
-  "cancellationGasFee": {
-    "message": "لغو فیس گاز"
   },
   "cancelled": {
     "message": "لغو شد"
@@ -154,9 +139,6 @@
   "chromeRequiredForHardwareWallets": {
     "message": "برای وصل شدن به کیف سخت افزار شما باید MetaMask را در گوگل کروم استفاده نمایید."
   },
-  "clickToRevealSeed": {
-    "message": "برای آشکار سازی کلمات مخفی اینجا کلیک نمایید"
-  },
   "close": {
     "message": "بستن"
   },
@@ -166,14 +148,8 @@
   "confirmPassword": {
     "message": "تأیید رمز"
   },
-  "confirmSecretBackupPhrase": {
-    "message": "تأیید عبارت پشتیبان مخفی تان"
-  },
   "confirmed": {
     "message": "تأیید شد"
-  },
-  "congratulations": {
-    "message": "تبریک"
   },
   "connect": {
     "message": "اتصال"
@@ -189,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
-  },
-  "continueToWyre": {
-    "message": "ادامه به Wyre"
   },
   "contractDeployment": {
     "message": "تطبیق قرارداد"
@@ -216,9 +189,6 @@
   },
   "create": {
     "message": "ایجاد"
-  },
-  "createAWallet": {
-    "message": "یک کیف ایجاد کنید"
   },
   "createAccount": {
     "message": "ایجاد حساب"
@@ -265,9 +235,6 @@
   "downloadGoogleChrome": {
     "message": "دانلود گوگل کروم"
   },
-  "downloadSecretBackup": {
-    "message": "این عبارت مخفی پشتیبان را دانلود نموده و بصورت مصؤن در هارد دیسک خارجی یا وسیله ذخیره دیگر رمز گذاری شده، ذخیره نمایید."
-  },
   "downloadStateLogs": {
     "message": "دانلود دفترچه وضعیت"
   },
@@ -279,33 +246,6 @@
   },
   "editContact": {
     "message": "ویرایش تماس"
-  },
-  "endOfFlowMessage1": {
-    "message": "شما در امتحان موفق شدید - عبارت بازیابی را مصؤن نگهدارید، این مسؤلیت شماست!"
-  },
-  "endOfFlowMessage10": {
-    "message": "همه انجام شد"
-  },
-  "endOfFlowMessage2": {
-    "message": "هدایات برای ذخیره سازی آن به شکل مصؤون"
-  },
-  "endOfFlowMessage3": {
-    "message": "نسخه پشتیبان را در جاهای مختلف ثبت کنید"
-  },
-  "endOfFlowMessage4": {
-    "message": "هرگز عبارت را با هیچکس در میان نگذارید."
-  },
-  "endOfFlowMessage5": {
-    "message": "مراقب فیشینگ باشید! MetaMask هرگز در یک زمان عبارت بازیاب را نمی پرسد."
-  },
-  "endOfFlowMessage6": {
-    "message": "در صورتیکه شما نیاز به گرفتن دوباره پشتیبان عبارت بازیاب داشته باشید، میتوانید آنرا در Settings -> Security دریافت نمایید."
-  },
-  "endOfFlowMessage8": {
-    "message": "MetaMask نمیتواند عبارت بازیاب تان را دوباره دریافت نماید.\nبیشتر بدانید."
-  },
-  "endOfFlowMessage9": {
-    "message": "بیشتر بدانید."
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "نام ENS در شبکه کنونی دریافت نشد. به تبدیل آن به شبکه اصلی ایتریم تلاش نمایید."
@@ -378,21 +318,8 @@
   "general": {
     "message": "عمومی"
   },
-  "getEther": {
-    "message": "اتر را بگیرید"
-  },
-  "getEtherFromFaucet": {
-    "message": "اخذ ایتر از یک فاست برای 1$1",
-    "description": "Displays network name for Ether faucet"
-  },
-  "getStarted": {
-    "message": "شروع به کار"
-  },
   "goerli": {
     "message": "شبکه آزمایشی Goerli"
-  },
-  "happyToSeeYou": {
-    "message": "از دیدن شما خوشحال هستیم."
   },
   "hardware": {
     "message": "سخت افزار"
@@ -431,12 +358,6 @@
   },
   "importAccountMsg": {
     "message": "حساب های وارد شده با عبارت بازیاب حساب MetaMask ایجاد شده اصلی تان یکجا نمیباشد. در مورد حساب های وارد شده بیشتر بدانید"
-  },
-  "importAccountSeedPhrase": {
-    "message": "یک حساب با عبارت بازیاب را وارد کنید"
-  },
-  "importWallet": {
-    "message": "وارد سازی کیف"
   },
   "imported": {
     "message": "وارد شده",
@@ -488,9 +409,6 @@
   "ledgerAccountRestriction": {
     "message": "لازم است تا حساب قبلی تان را قبل از اینکه جدید اضافه کنید، مورد استفاده قرار دهید."
   },
-  "letsGoSetUp": {
-    "message": "بلی، درست شد!"
-  },
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
@@ -521,14 +439,8 @@
   "memo": {
     "message": "یادداشت"
   },
-  "memorizePhrase": {
-    "message": "این عبارت را حفظ کنید."
-  },
   "message": {
     "message": "پیام"
-  },
-  "metamaskDescription": {
-    "message": "در حال اتصال شما با ایترم و وب غیر متمرکز شده."
   },
   "metamaskVersion": {
     "message": "نسخه MetaMask"
@@ -571,17 +483,11 @@
   "newPassword": {
     "message": "رمز عبور جدید (حداقل 8 حرف)"
   },
-  "newToMetaMask": {
-    "message": "آیا به MetaMask جدید هستید؟"
-  },
   "next": {
     "message": "بعدی"
   },
   "noAddressForName": {
     "message": "هیچ آدرسی برای این نام تنظیم نشده است."
-  },
-  "noAlreadyHaveSeed": {
-    "message": "نه خیر، من از قبل یک عبارت بازیاب داشتم"
   },
   "noConversionRateAvailable": {
     "message": "هیچ نرخ تغییر موجود نمیباشد"
@@ -690,9 +596,6 @@
   "rejected": {
     "message": "رد شد"
   },
-  "remindMeLater": {
-    "message": "بعدًا یادآوری کنید"
-  },
   "remove": {
     "message": "پاک کردن"
   },
@@ -711,35 +614,21 @@
   "reset": {
     "message": "بازنشانی"
   },
-  "resetAccount": {
-    "message": "تنظیم مجدد حساب"
-  },
-  "resetAccountDescription": {
-    "message": "دوباره سازی حساب تاریخچه معامله تان را پاک میکند."
-  },
   "restore": {
     "message": "بازیابی"
   },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"
   },
-  "revealSeedWordsDescription": {
-    "message": "در صورتیکه شما معمولًا براوزر ها را تغییر داده یا کمپیوتر ها را انتقال میدهید، شما این عبارت آغازین را نیاز خواهید داشت تا به حساب های تان دسترسی داشته باشید. آنها را در یکجای مصؤن و مخفی نگهدارید."
-  },
   "revealSeedWordsWarning": {
-    "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "این عبارت را با هیچکس شریک نسازید!"
+    "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "RPC URL جدید"
   },
   "save": {
     "message": "ذخیره"
-  },
-  "saveAsCsvFile": {
-    "message": "ذخیره منحیث فایل CSV"
   },
   "scanInstructions": {
     "message": "رمز QR را در مقابل کمره تان قرار دهید"
@@ -756,12 +645,6 @@
   "searchTokens": {
     "message": "رمزیاب های جستجو"
   },
-  "secretBackupPhraseDescription": {
-    "message": "عبارت مخفی پشتیبان تان نسخه پشتیبان و دوباره سازی حساب را تسهیل میسازد."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "هشدار: هرگز عبارت پشتیبان تان را به کسی فاش نسازید. هرکسیکه این عبارت را داشته باشد ایتر شما را برای همیشه خواهد گرفت."
-  },
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
@@ -770,9 +653,6 @@
   },
   "selectAnAccount": {
     "message": "یک حساب را انتخاب کنید"
-  },
-  "selectEachPhrase": {
-    "message": "لطفًا جهت اطمینان از درستی، هر عبارت را انتخاب کنید."
   },
   "selectHdPath": {
     "message": "انتخاب مسیر HD"
@@ -846,9 +726,6 @@
   "stateLogsDescription": {
     "message": "دفترچه وضعیت شامل آدرس های حساب عمومی و معاملات فرستاده شده تان میباشد."
   },
-  "storePhrase": {
-    "message": "این عبارت را در یک نرم افزار مدیریت رمز عبور مانند 1Password ذخیره نمایید."
-  },
   "submitted": {
     "message": "ارائه شد"
   },
@@ -887,12 +764,6 @@
   },
   "terms": {
     "message": "شرایط استفاده"
-  },
-  "testFaucet": {
-    "message": "  آزمایش فاسیت یا Test Faucet "
-  },
-  "thisWillCreate": {
-    "message": "این یک کیف جدید و عبارت بازیاب را ایجاد خواهد کرد"
   },
   "tips": {
     "message": "انعام"
@@ -1012,26 +883,14 @@
   "userName": {
     "message": "نام کاربری"
   },
-  "viewAccount": {
-    "message": "مشاهده حساب"
-  },
   "viewContact": {
     "message": "مشاهده تماس"
   },
   "visitWebSite": {
     "message": "از وب سایت ما دیدن نمایید"
   },
-  "welcome": {
-    "message": "به MetaMask خوش آمدید"
-  },
   "welcomeBack": {
     "message": "بازگشت شما را خوش‌آمد می‌گوییم!"
-  },
-  "writePhrase": {
-    "message": "این عبارت را در یک صفحه کاغذ نوشته و در یک موقعیت مصؤن نگهدارید. در صورتیکه شما امنیت بیشتر از این میخواهید، آنرا در صفحات متعدد کاغذ نوشته و در 2 - 3 موقعیت مختلف نگهدارید."
-  },
-  "yesLetsTry": {
-    "message": "بلی، بیایید امتحان کنیم"
   },
   "youNeedToAllowCameraAccess": {
     "message": "لازم است تا شما جهت استفاده از این مشخصه، به کمره اجازه دسترسی بدهید."

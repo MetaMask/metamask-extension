@@ -129,6 +129,7 @@ export default {
     useNonceField: true,
     nextNonce: 1,
     customNonceValue: '2',
+    txData: { simulationFails: null },
     chainId: '1337',
     rpcPrefs: {},
     isContract: true,

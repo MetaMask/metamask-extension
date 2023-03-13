@@ -40,9 +40,16 @@ describe('BannerBase', () => {
 
   it('should render bannerbase description', () => {
     const { getByText } = render(
-      <BannerBase>Bannerbase description test</BannerBase>,
+      <BannerBase description="Bannerbase description test" />,
     );
     expect(getByText('Bannerbase description test')).toBeDefined();
+  });
+
+  it('should render bannerbase children', () => {
+    const { getByText } = render(
+      <BannerBase>Bannerbase children test</BannerBase>,
+    );
+    expect(getByText('Bannerbase children test')).toBeDefined();
   });
 
   it('should render bannerbase action button', () => {
@@ -51,8 +58,7 @@ describe('BannerBase', () => {
         title="Action prop demo"
         actionButtonLabel="Action"
         actionButtonProps={{
-          icon: ICON_NAMES.ARROW_2_RIGHT, // TODO: change to iconName
-          iconPositionRight: true,
+          endIconName: ICON_NAMES.ARROW_2_RIGHT,
           'data-testid': 'action',
           className: 'mm-banner-base__action',
         }}

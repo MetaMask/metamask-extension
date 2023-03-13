@@ -537,5 +537,29 @@ describe('Numeric', () => {
         );
       });
     });
+
+    describe('round', () => {
+      it('should return number rounded', () => {
+        expect(new Numeric(10.4375, 10).round()).toEqual(
+          new Numeric(10.4375, 10),
+        );
+        expect(new Numeric(10.4375, 10).round(0)).toEqual(new Numeric(10, 10));
+        expect(new Numeric(10.4375, 10).round(1)).toEqual(
+          new Numeric(10.4, 10),
+        );
+        expect(new Numeric(10.4375, 10).round(2)).toEqual(
+          new Numeric(10.44, 10),
+        );
+        expect(new Numeric(10.4375, 10).round(3)).toEqual(
+          new Numeric(10.437, 10),
+        );
+        expect(new Numeric(10.4375, 10).round(4)).toEqual(
+          new Numeric(10.4375, 10),
+        );
+        expect(new Numeric(10.4375, 10).round(5)).toEqual(
+          new Numeric(10.4375, 10),
+        );
+      });
+    });
   });
 });

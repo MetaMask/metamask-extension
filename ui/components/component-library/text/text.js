@@ -5,13 +5,13 @@ import Box from '../../ui/box';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT,
+  TextVariant,
   TEXT_ALIGN,
   TEXT_TRANSFORM,
   OVERFLOW_WRAP,
-  TEXT_COLORS,
+  TextColor,
 } from '../../../helpers/constants/design-system';
-import { TEXT_VARIANTS, TEXT_DIRECTIONS } from './text.constants';
+import { TEXT_DIRECTIONS } from './text.constants';
 
 export const ValidTags = [
   'dd',
@@ -33,11 +33,29 @@ export const ValidTags = [
   'input',
 ];
 
+const getTextElementDefault = (variant) => {
+  switch (variant) {
+    case TextVariant.displayMd:
+      return 'h1';
+    case TextVariant.headingLg:
+      return 'h2';
+    case TextVariant.headingMd:
+      return 'h3';
+    case TextVariant.headingSm:
+      return 'h4';
+    case TextVariant.inherit:
+      return 'span';
+    // TextVariant.bodyLgMedium, TextVariant.bodyMd, TextVariant.bodyMdBold, TextVariant.bodySm, TextVariant.bodySmBold, TextVariant.bodyXs use default 'p' tag
+    default:
+      return 'p';
+  }
+};
+
 export const Text = React.forwardRef(
   (
     {
-      variant = TEXT.BODY_MD,
-      color = TEXT_COLORS.TEXT_DEFAULT,
+      variant = TextVariant.bodyMd,
+      color = TextColor.textDefault,
       fontWeight,
       fontStyle,
       textTransform,
@@ -52,7 +70,8 @@ export const Text = React.forwardRef(
     },
     ref,
   ) => {
-    let Tag = as ?? variant;
+    // Check if as is set otherwise set a default tag based on variant
+    const Tag = as ?? getTextElementDefault(variant);
     let strongTagFontWeight;
 
     if (Tag === 'strong') {
@@ -74,16 +93,6 @@ export const Text = React.forwardRef(
         [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },
     );
-
-    // // Set a default tag based on variant
-    const splitTag = Tag.split('-')[0];
-    if (splitTag === 'body') {
-      Tag = 'p';
-    } else if (splitTag === 'heading') {
-      Tag = 'h2';
-    } else if (splitTag === 'display') {
-      Tag = 'h1';
-    }
 
     return (
       <Box
@@ -115,12 +124,12 @@ Text.propTypes = {
    * `BODY_XS` large screen: 12px / small screen: 10px,
    * `INHERIT`
    */
-  variant: PropTypes.oneOf(Object.values(TEXT_VARIANTS)),
+  variant: PropTypes.oneOf(Object.values(TextVariant)),
   /**
    * The color of the Text component Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js
    */
-  color: PropTypes.oneOf(Object.values(TEXT_COLORS)),
+  color: PropTypes.oneOf(Object.values(TextColor)),
   /**
    * The font-weight of the Text component. Should use the FONT_WEIGHT object from
    * ./ui/helpers/constants/design-system.js

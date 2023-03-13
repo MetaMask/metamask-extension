@@ -7,9 +7,9 @@ import Box from '../../../components/ui/box/box';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import {
-  COLORS,
   FONT_WEIGHT,
-  TYPOGRAPHY,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
@@ -56,7 +56,7 @@ export default function PrivacySettings() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const networks = useSelector(
-    (state) => state.metamask.frequentRpcListDetail || [],
+    (state) => state.metamask.networkConfigurations || {},
   );
 
   const handleSubmit = () => {
@@ -106,10 +106,13 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
-          <Typography variant={TYPOGRAPHY.H2} fontWeight={FONT_WEIGHT.BOLD}>
+          <Typography
+            variant={TypographyVariant.H2}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
             {t('advancedConfiguration')}
           </Typography>
-          <Typography variant={TYPOGRAPHY.H4}>
+          <Typography variant={TypographyVariant.H4}>
             {t('setAdvancedPrivacySettingsDetails')}
           </Typography>
         </div>
@@ -192,7 +195,7 @@ export default function PrivacySettings() {
                 ])}
 
                 <Box paddingTop={2}>
-                  {networks.length > 1 ? (
+                  {Object.values(networks).length > 1 ? (
                     <div className="privacy-settings__network">
                       <>
                         <NetworkDisplay
@@ -216,7 +219,7 @@ export default function PrivacySettings() {
                       </>
                     </div>
                   ) : null}
-                  {networks.length === 1 ? (
+                  {Object.values(networks).length === 1 ? (
                     <Button
                       type="secondary"
                       rounded
@@ -249,11 +252,11 @@ export default function PrivacySettings() {
                   />
                   {ipfsURL ? (
                     <Typography
-                      variant={TYPOGRAPHY.H7}
+                      variant={TypographyVariant.H7}
                       color={
                         ipfsError
-                          ? COLORS.ERROR_DEFAULT
-                          : COLORS.SUCCESS_DEFAULT
+                          ? TextColor.errorDefault
+                          : TextColor.successDefault
                       }
                     >
                       {ipfsError || t('onboardingAdvancedPrivacyIPFSValid')}

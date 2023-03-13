@@ -5,14 +5,14 @@ import Box from '../../../../components/ui/box';
 import SiteIcon from '../../../../components/ui/site-icon';
 import Typography from '../../../../components/ui/typography/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  TypographyVariant,
   FONT_WEIGHT,
   DISPLAY,
-  JUSTIFY_CONTENT,
+  JustifyContent,
   BLOCK_SIZES,
-  ALIGN_ITEMS,
+  AlignItems,
   TEXT_ALIGN,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -31,7 +31,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
       className="confirmation-network-switch"
       display={DISPLAY.FLEX}
       height={BLOCK_SIZES.FULL}
-      justifyContent={JUSTIFY_CONTENT.CENTER}
+      justifyContent={JustifyContent.center}
       marginTop={8}
     >
       <Box
@@ -50,13 +50,13 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
           </div>
         )}
         <Typography
-          color={COLORS.TEXT_DEFAULT}
-          variant={TYPOGRAPHY.H6}
+          color={TextColor.textDefault}
+          variant={TypographyVariant.H6}
           fontWeight={FONT_WEIGHT.NORMAL}
           align={TEXT_ALIGN.CENTER}
           boxProps={{
             display: DISPLAY.FLEX,
-            justifyContent: JUSTIFY_CONTENT.CENTER,
+            justifyContent: JustifyContent.center,
           }}
         >
           {currentNetwork.nickname || NETWORK_TO_NAME_MAP[currentNetwork.type]}
@@ -65,8 +65,8 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
       <Box
         className="confirmation-network-switch__center-icon"
         display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
       >
         <i className="fa fa-angle-right fa-lg confirmation-network-switch__check" />
         <div className="confirmation-network-switch__dashed-line" />
@@ -78,7 +78,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
             icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
-            name={newNetwork.name}
+            name={newNetwork.nickname}
             size={64}
           />
         ) : (
@@ -87,16 +87,16 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
           </div>
         )}
         <Typography
-          color={COLORS.TEXT_DEFAULT}
-          variant={TYPOGRAPHY.H6}
+          color={TextColor.textDefault}
+          variant={TypographyVariant.H6}
           fontWeight={FONT_WEIGHT.NORMAL}
           align={TEXT_ALIGN.CENTER}
           boxProps={{
             display: DISPLAY.FLEX,
-            justifyContent: JUSTIFY_CONTENT.CENTER,
+            justifyContent: JustifyContent.center,
           }}
         >
-          {newNetwork.name}
+          {newNetwork.nickname}
         </Typography>
       </Box>
     </Box>
@@ -106,6 +106,6 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
 ConfirmationNetworkSwitch.propTypes = {
   newNetwork: PropTypes.shape({
     chainId: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    nickname: PropTypes.string.isRequired,
   }),
 };

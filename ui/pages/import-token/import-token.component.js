@@ -8,7 +8,7 @@ import {
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
@@ -19,7 +19,10 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography';
-import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+import {
+  TypographyVariant,
+  FONT_WEIGHT,
+} from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -130,7 +133,7 @@ class ImportToken extends Component {
     customAddressError: null,
     customSymbolError: null,
     customDecimalsError: null,
-    collectibleAddressError: null,
+    nftAddressError: null,
     forceEditSymbol: false,
     symbolAutoFilled: false,
     decimalAutoFilled: false,
@@ -195,7 +198,7 @@ class ImportToken extends Component {
       customAddressError,
       customSymbolError,
       customDecimalsError,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     return (
@@ -203,7 +206,7 @@ class ImportToken extends Component {
       customAddressError ||
       customSymbolError ||
       customDecimalsError ||
-      collectibleAddressError
+      nftAddressError
     );
   }
 
@@ -262,7 +265,7 @@ class ImportToken extends Component {
     this.setState({
       customAddress,
       customAddressError: null,
-      collectibleAddressError: null,
+      nftAddressError: null,
       tokenSelectorError: null,
       symbolAutoFilled: false,
       decimalAutoFilled: false,
@@ -309,18 +312,18 @@ class ImportToken extends Component {
       case process.env.NFTS_V1 &&
         (standard === 'ERC1155' || standard === 'ERC721'):
         this.setState({
-          collectibleAddressError: this.context.t('collectibleAddressError', [
+          nftAddressError: this.context.t('nftAddressError', [
             <a
-              className="import-token__collectible-address-error-link"
+              className="import-token__nft-address-error-link"
               onClick={() =>
                 this.props.history.push({
-                  pathname: ADD_COLLECTIBLE_ROUTE,
+                  pathname: ADD_NFT_ROUTE,
                   state: {
                     addressEnteredOnImportTokensPage: this.state.customAddress,
                   },
                 })
               }
-              key="collectibleAddressError"
+              key="nftAddressError"
             >
               {this.context.t('importNFTPage')}
             </a>,
@@ -403,7 +406,7 @@ class ImportToken extends Component {
       symbolAutoFilled,
       decimalAutoFilled,
       mainnetTokenWarning,
-      collectibleAddressError,
+      nftAddressError,
     } = this.state;
 
     const {
@@ -490,9 +493,7 @@ class ImportToken extends Component {
           type="text"
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
-          error={
-            customAddressError || mainnetTokenWarning || collectibleAddressError
-          }
+          error={customAddressError || mainnetTokenWarning || nftAddressError}
           fullWidth
           autoFocus
           margin="normal"
@@ -540,13 +541,13 @@ class ImportToken extends Component {
             message={
               <>
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
                   {t('tokenDecimalFetchFailed')}
                 </Typography>
                 <Typography
-                  variant={TYPOGRAPHY.H7}
+                  variant={TypographyVariant.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
                   {t('verifyThisTokenDecimalOn', [

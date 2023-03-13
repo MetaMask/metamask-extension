@@ -140,13 +140,6 @@
   "gasPrice": {
     "message": "Cena paliva (GWEI)"
   },
-  "getEther": {
-    "message": "Získejte Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Získejte Ether z faucetu za $1.",
-    "description": "Displays network name for Ether faucet"
-  },
   "here": {
     "message": "zde",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -212,9 +205,6 @@
   },
   "message": {
     "message": "Zpráva"
-  },
-  "metamaskDescription": {
-    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
@@ -292,14 +282,12 @@
   "required": {
     "message": "Povinné"
   },
-  "resetAccount": {
-    "message": "Resetovat účet"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
   "revealSeedWordsWarning": {
-    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
+    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "save": {
     "message": "Uložit"
@@ -361,9 +349,6 @@
   "terms": {
     "message": "Podmínky použití"
   },
-  "testFaucet": {
-    "message": "Testovací faucet"
-  },
   "to": {
     "message": "Komu"
   },
@@ -404,14 +389,8 @@
   "usedByClients": {
     "message": "Používána různými klienty"
   },
-  "viewAccount": {
-    "message": "Zobrazit účet"
-  },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "welcome": {
-    "message": "Vítejte v MetaMask"
   },
   "youSign": {
     "message": "Podepisujete"

@@ -11,12 +11,6 @@
   align-items: center;
   padding: 8px 10px;
 
-  &__icon {
-    margin-right: 8px;
-    flex: 0 0 auto;
-    color: var(--color-error-default);
-  }
-
   &__text {
     overflow: auto;
   }

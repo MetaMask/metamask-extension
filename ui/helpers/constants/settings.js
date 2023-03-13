@@ -1,3 +1,4 @@
+import { ICON_NAMES } from '../../components/component-library';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -18,21 +19,21 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('currencyConversion'),
     descriptionMessage: (t) => t('currencyConversion'),
     route: `${GENERAL_ROUTE}#currency-conversion`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('primaryCurrencySetting'),
     descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
     route: `${GENERAL_ROUTE}#primary-currency`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currentLanguage'),
     descriptionMessage: (t) => t('currentLanguage'),
     route: `${GENERAL_ROUTE}#current-language`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
@@ -46,14 +47,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('hideZeroBalanceTokens'),
     descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
-    icon: 'fa fa-cog',
+    iconName: ICON_NAMES.SETTING,
   },
   {
     tabMessage: (t) => t('advanced'),
@@ -71,9 +72,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('resetAccount'),
-    descriptionMessage: (t) => t('resetAccountDescription'),
-    route: `${ADVANCED_ROUTE}#reset-account`,
+    sectionMessage: (t) => t('clearActivity'),
+    descriptionMessage: (t) => t('clearActivityDescription'),
+    route: `${ADVANCED_ROUTE}#clear-activity`,
     icon: 'fas fa-sliders-h',
   },
   {
@@ -133,11 +134,18 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-sliders-h',
   },
   {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('toggleEthSignField'),
+    descriptionMessage: (t) => t('toggleEthSignDescriptionField'),
+    route: `${ADVANCED_ROUTE}#toggle-ethsign`,
+    icon: 'fas fa-sliders-h',
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    icon: 'fa fa-address-book',
+    icon: ICON_NAMES.BOOK,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   {
@@ -206,14 +214,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('useCollectibleDetection'),
-    descriptionMessage: (t) => t('useCollectibleDetectionDescription'),
-    route: `${SECURITY_ROUTE}#autodetect-nfts`,
-    icon: 'fa fa-flask',
-    featureFlag: 'NFTS_V1',
-  },
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('currencyRateCheckToggle'),
     descriptionMessage: (t) => t('currencyRateCheckToggleDescription'),
     route: `${SECURITY_ROUTE}#price-checker`,
@@ -224,7 +224,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     route: `${ALERTS_ROUTE}#unconnected-account`,
-    icon: 'fa fa-bell',
+    iconName: ICON_NAMES.NOTIFICATION,
   },
   {
     tabMessage: (t) => t('alerts'),
@@ -333,6 +333,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('enableOpenSeaAPI'),
     descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
     route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
+    icon: 'fa fa-flask',
+    featureFlag: 'NFTS_V1',
+  },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('useNftDetection'),
+    descriptionMessage: (t) => t('useNftDetectionDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
     featureFlag: 'NFTS_V1',
   },

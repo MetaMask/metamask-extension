@@ -49,21 +49,7 @@ const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
-const ADD_COLLECTIBLE_ROUTE = '/add-collectible';
-
-const INITIALIZE_ROUTE = '/initialize';
-const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome';
-const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock';
-const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password';
-const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE =
-  '/initialize/create-password/import-with-seed-phrase';
-const INITIALIZE_SELECT_ACTION_ROUTE = '/initialize/select-action';
-const INITIALIZE_SEED_PHRASE_ROUTE = '/initialize/seed-phrase';
-const INITIALIZE_BACKUP_SEED_PHRASE_ROUTE = '/initialize/backup-seed-phrase';
-const INITIALIZE_SEED_PHRASE_INTRO_ROUTE = '/initialize/seed-phrase-intro';
-const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow';
-const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
-const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
+const ADD_NFT_ROUTE = '/add-nft';
 
 const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -84,6 +70,8 @@ const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+const DESKTOP_ERROR_ROUTE = '/desktop/error';
+const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -168,23 +156,6 @@ const PATH_NAME_MAP = {
     'Encryption Public Key Request Page',
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${PLUME_SIGNATURE_PATH}`]:
     'Plume Signature Request Page',
-  [INITIALIZE_ROUTE]: 'Initialization Page',
-  [INITIALIZE_WELCOME_ROUTE]: 'Install Welcome Page',
-  [INITIALIZE_UNLOCK_ROUTE]: 'Initialization Unlock page',
-  [INITIALIZE_CREATE_PASSWORD_ROUTE]: 'Initialization Create Password Page',
-  [INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE]:
-    'Initialization Import Account With Secret Recovery Phrase Page',
-  [INITIALIZE_SELECT_ACTION_ROUTE]:
-    'Initialization Choose Restore or New Account Page',
-  [INITIALIZE_SEED_PHRASE_ROUTE]: 'Initialization Secret Recovery Phrase Page',
-  [INITIALIZE_BACKUP_SEED_PHRASE_ROUTE]:
-    'Initialization Backup Secret Recovery Phrase Page',
-  [INITIALIZE_SEED_PHRASE_INTRO_ROUTE]:
-    'Initialization Secret Recovery Phrase Intro Page',
-  [INITIALIZE_END_OF_FLOW_ROUTE]: 'End of Initialization Page',
-  [INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE]:
-    'Initialization Confirm Secret Recovery Phrase Page',
-  [INITIALIZE_METAMETRICS_OPT_IN_ROUTE]: 'MetaMetrics Opt In Page',
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
@@ -210,15 +181,6 @@ export {
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   TOKEN_DETAILS,
-  INITIALIZE_ROUTE,
-  INITIALIZE_WELCOME_ROUTE,
-  INITIALIZE_UNLOCK_ROUTE,
-  INITIALIZE_CREATE_PASSWORD_ROUTE,
-  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  INITIALIZE_SELECT_ACTION_ROUTE,
-  INITIALIZE_SEED_PHRASE_ROUTE,
-  INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
-  INITIALIZE_END_OF_FLOW_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
   CONFIRM_SEND_TOKEN_PATH,
@@ -233,7 +195,6 @@ export {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   PLUME_SIGNATURE_PATH,
   CONFIRMATION_V_NEXT_ROUTE,
-  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   ADVANCED_ROUTE,
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
@@ -249,8 +210,6 @@ export {
   NETWORKS_FORM_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
-  INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
-  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -270,7 +229,7 @@ export {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -288,5 +247,7 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
+  DESKTOP_ERROR_ROUTE,
+  DESKTOP_PAIRING_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 };

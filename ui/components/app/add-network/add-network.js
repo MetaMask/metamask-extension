@@ -5,21 +5,23 @@ import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography';
 import {
-  ALIGN_ITEMS,
-  COLORS,
+  AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  TYPOGRAPHY,
-  JUSTIFY_CONTENT,
-  SIZES,
+  TypographyVariant,
+  JustifyContent,
+  BorderRadius,
+  BackgroundColor,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import IconBorder from '../../ui/icon-border';
 import {
-  getFrequentRpcListDetail,
+  getNetworkConfigurations,
   getUnapprovedConfirmations,
 } from '../../../selectors';
 
@@ -27,22 +29,25 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   MESSAGE_TYPE,
+  ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
-import { requestAddNetworkApproval } from '../../../store/actions';
+import { requestUserApproval } from '../../../store/actions';
 import Popover from '../../ui/popover';
 import ConfirmationPage from '../../../pages/confirmation/confirmation';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { EVENT } from '../../../../shared/constants/metametrics';
 
 const AddNetwork = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const frequentRpcList = useSelector(getFrequentRpcListDetail);
+  const networkConfigurations = useSelector(getNetworkConfigurations);
 
-  const frequentRpcListChainIds = Object.values(frequentRpcList).map(
+  const networkConfigurationChainIds = Object.values(networkConfigurations).map(
     (net) => net.chainId,
   );
 
@@ -52,8 +57,8 @@ const AddNetwork = () => {
     a.nickname > b.nickname ? 1 : -1,
   ).slice(0, FEATURED_RPCS.length);
 
-  const notFrequentRpcNetworks = nets.filter(
-    (net) => frequentRpcListChainIds.indexOf(net.chainId) === -1,
+  const notExistingNetworkConfigurations = nets.filter(
+    (net) => networkConfigurationChainIds.indexOf(net.chainId) === -1,
   );
   const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const [showPopover, setShowPopover] = useState(false);
@@ -77,23 +82,23 @@ const AddNetwork = () => {
 
   return (
     <>
-      {Object.keys(notFrequentRpcNetworks).length === 0 ? (
+      {Object.keys(notExistingNetworkConfigurations).length === 0 ? (
         <Box
           className="add-network__edge-case-box"
-          borderRadius={SIZES.MD}
+          borderRadius={BorderRadius.MD}
           padding={4}
           marginTop={4}
           marginRight={6}
           marginLeft={6}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.ROW}
-          backgroundColor={COLORS.BACKGROUND_ALTERNATIVE}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         >
           <Box marginRight={4}>
             <img src="images/info-fox.svg" />
           </Box>
           <Box>
-            <Typography variant={TYPOGRAPHY.H7}>
+            <Typography variant={TypographyVariant.H7}>
               {t('youHaveAddedAll', [
                 <a
                   key="link"
@@ -117,8 +122,8 @@ const AddNetwork = () => {
                   }}
                 >
                   <Typography
-                    variant={TYPOGRAPHY.H7}
-                    color={COLORS.INFO_DEFAULT}
+                    variant={TypographyVariant.H7}
+                    color={TextColor.infoDefault}
                   >
                     {t('addMoreNetworks')}.
                   </Typography>
@@ -132,18 +137,24 @@ const AddNetwork = () => {
           {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN && (
             <Box
               display={DISPLAY.FLEX}
-              alignItems={ALIGN_ITEMS.CENTER}
+              alignItems={AlignItems.center}
               flexDirection={FLEX_DIRECTION.ROW}
               marginTop={7}
               marginBottom={4}
               paddingBottom={2}
               className="add-network__header"
             >
-              <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_MUTED}>
+              <Typography
+                variant={TypographyVariant.H4}
+                color={TextColor.textMuted}
+              >
                 {t('networks')}
               </Typography>
               <span className="add-network__header__subtitle">{'  >  '}</span>
-              <Typography variant={TYPOGRAPHY.H4} color={COLORS.TEXT_DEFAULT}>
+              <Typography
+                variant={TypographyVariant.H4}
+                color={TextColor.textDefault}
+              >
                 {t('addANetwork')}
               </Typography>
             </Box>
@@ -154,35 +165,35 @@ const AddNetwork = () => {
             className="add-network__main-container"
           >
             <Typography
-              variant={TYPOGRAPHY.H6}
-              color={COLORS.TEXT_ALTERNATIVE}
+              variant={TypographyVariant.H6}
+              color={TextColor.textAlternative}
               margin={0}
               marginTop={4}
             >
               {t('addFromAListOfPopularNetworks')}
             </Typography>
             <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.TEXT_MUTED}
+              variant={TypographyVariant.H7}
+              color={TextColor.textMuted}
               marginTop={4}
               marginBottom={3}
             >
               {t('popularCustomNetworks')}
             </Typography>
-            {notFrequentRpcNetworks.map((item, index) => (
+            {notExistingNetworkConfigurations.map((item, index) => (
               <Box
                 key={index}
                 display={DISPLAY.FLEX}
-                alignItems={ALIGN_ITEMS.CENTER}
-                justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.spaceBetween}
                 marginBottom={6}
                 className="add-network__list-of-networks"
               >
-                <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+                <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
                   <Box>
                     <IconBorder size={24}>
                       <IconWithFallback
-                        icon={item.rpcPrefs.imageUrl}
+                        icon={item.rpcPrefs?.imageUrl}
                         name={item.nickname}
                         size={24}
                       />
@@ -190,8 +201,8 @@ const AddNetwork = () => {
                   </Box>
                   <Box marginLeft={2}>
                     <Typography
-                      variant={TYPOGRAPHY.H7}
-                      color={COLORS.TEXT_DEFAULT}
+                      variant={TypographyVariant.H7}
+                      color={TextColor.textDefault}
                       fontWeight={FONT_WEIGHT.BOLD}
                     >
                       {item.nickname}
@@ -200,7 +211,7 @@ const AddNetwork = () => {
                 </Box>
                 <Box
                   display={DISPLAY.FLEX}
-                  alignItems={ALIGN_ITEMS.CENTER}
+                  alignItems={AlignItems.center}
                   marginLeft={1}
                 >
                   {
@@ -228,9 +239,11 @@ const AddNetwork = () => {
                         }
                         trigger="mouseenter"
                       >
-                        <i
-                          className="fa fa-exclamation-triangle add-network__warning-icon"
-                          title={t('warning')}
+                        <Icon
+                          className="add-network__warning-icon"
+                          name={ICON_NAMES.DANGER}
+                          color={IconColor.iconMuted}
+                          size={ICON_SIZES.SM}
                         />
                       </Tooltip>
                     )
@@ -239,7 +252,22 @@ const AddNetwork = () => {
                     type="inline"
                     className="add-network__add-button"
                     onClick={async () => {
-                      await dispatch(requestAddNetworkApproval(item, true));
+                      await dispatch(
+                        requestUserApproval({
+                          origin: ORIGIN_METAMASK,
+                          type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+                          requestData: {
+                            chainId: item.chainId,
+                            rpcUrl: item.rpcUrl,
+                            ticker: item.ticker,
+                            rpcPrefs: item.rpcPrefs,
+                            imageUrl: item.rpcPrefs?.imageUrl,
+                            chainName: item.nickname,
+                            referrer: ORIGIN_METAMASK,
+                            source: EVENT.SOURCE.NETWORK.POPULAR_NETWORK_LIST,
+                          },
+                        }),
+                      );
                     }}
                   >
                     {t('add')}
@@ -267,8 +295,8 @@ const AddNetwork = () => {
               }}
             >
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.PRIMARY_DEFAULT}
+                variant={TypographyVariant.H6}
+                color={TextColor.primaryDefault}
               >
                 {t('addANetworkManually')}
               </Typography>

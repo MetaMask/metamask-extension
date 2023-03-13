@@ -9,7 +9,7 @@ import AdvancedTab from '.';
 const mockSetAutoLockTimeLimit = jest.fn();
 const mockSetShowTestNetworks = jest.fn();
 
-jest.mock('../../../store/actions.js', () => {
+jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
     setShowTestNetworks: () => mockSetShowTestNetworks,
@@ -53,5 +53,22 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('should not render ledger live control with desktop pairing enabled', () => {
+    const mockStoreWithDesktopEnabled = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        desktopEnabled: true,
+      },
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <AdvancedTab />,
+      mockStoreWithDesktopEnabled,
+    );
+
+    expect(queryByTestId('ledger-live-control')).not.toBeInTheDocument();
   });
 });

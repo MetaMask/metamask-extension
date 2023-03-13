@@ -68,9 +68,6 @@
   "forgetDevice": {
     "message": "ఈ పరికరాన్ని విస్మరించు"
   },
-  "getStarted": {
-    "message": "ప్రారంభించండి"
-  },
   "hide": {
     "message": "దాచిపెట్టు"
   },
@@ -147,8 +144,5 @@
   },
   "userName": {
     "message": "యూజర్‌పేరు"
-  },
-  "viewAccount": {
-    "message": "ఖాతాను వీక్షించండి"
   }
 }

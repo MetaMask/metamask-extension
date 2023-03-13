@@ -10,12 +10,13 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
-  JUSTIFY_CONTENT,
-  TYPOGRAPHY,
-  COLORS,
+  JustifyContent,
+  TextColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import Identicon from '../../ui/identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const SetApproveForAllWarning = ({
   collectionName,
@@ -32,7 +33,7 @@ const SetApproveForAllWarning = ({
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.COLUMN}
-      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      justifyContent={JustifyContent.SPACE_BETWEEN}
       className="set-approval-for-all-warning__footer"
     >
       <Button
@@ -60,21 +61,27 @@ const SetApproveForAllWarning = ({
         padding={4}
         className="set-approval-for-all-warning__content__header"
       >
-        <i className="fa fa-exclamation-triangle set-approval-for-all-warning__content__header__warning-icon" />
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
+        <Icon
+          name={ICON_NAMES.DANGER}
+          className="set-approval-for-all-warning__content__header__warning-icon"
+        />
+        <Typography
+          variant={TypographyVariant.H4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('yourNFTmayBeAtRisk')}
         </Typography>
       </Box>
       <Box
         display={DISPLAY.FLEX}
         padding={4}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+        justifyContent={JustifyContent.spaceBetween}
         className="set-approval-for-all-warning__content__account"
       >
         <Box display={DISPLAY.FLEX}>
           <Identicon address={senderAddress} diameter={32} />
           <Typography
-            variant={TYPOGRAPHY.H5}
+            variant={TypographyVariant.H5}
             marginLeft={2}
             className="set-approval-for-all-warning__content__account-name"
           >
@@ -87,11 +94,11 @@ const SetApproveForAllWarning = ({
       </Box>
 
       <Typography
-        color={COLORS.TEXT_ALTERNATIVE}
+        color={TextColor.textAlternative}
         margin={4}
         marginTop={4}
         marginBottom={4}
-        variant={TYPOGRAPHY.H6}
+        variant={TypographyVariant.H6}
       >
         {t('nftWarningContent', [
           <strong

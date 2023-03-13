@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  SnapCaveatType,
+  WALLET_SNAP_PERMISSION_KEY,
+} from '@metamask/rpc-methods';
 import Button from '../../../../components/ui/button';
 import Typography from '../../../../components/ui/typography';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  TYPOGRAPHY,
-  COLORS,
+  TypographyVariant,
   TEXT_ALIGN,
   FRACTIONS,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
 import Box from '../../../../components/ui/box';
@@ -23,11 +27,13 @@ import {
   enableSnap,
   removeSnap,
   removePermissionsFor,
+  updateCaveat,
 } from '../../../../store/actions';
 import {
   getSnaps,
-  getSubjectsWithPermission,
+  getSubjectsWithSnapPermission,
   getPermissions,
+  getPermissionSubjects,
 } from '../../../../selectors';
 import { formatDate } from '../../../../helpers/utils/util';
 
@@ -52,24 +58,43 @@ function ViewSnap() {
   }, [history, snap]);
 
   const connectedSubjects = useSelector((state) =>
-    getSubjectsWithPermission(state, snap?.permissionName),
+    getSubjectsWithSnapPermission(state, snap?.id),
   );
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
   );
+  const subjects = useSelector((state) => getPermissionSubjects(state));
   const dispatch = useDispatch();
-  const onDisconnect = (connectedOrigin, snapPermissionName) => {
-    dispatch(
-      removePermissionsFor({
-        [connectedOrigin]: [snapPermissionName],
-      }),
-    );
-  };
+
   const onToggle = () => {
     if (snap.enabled) {
       dispatch(disableSnap(snap.id));
     } else {
       dispatch(enableSnap(snap.id));
+    }
+  };
+
+  const onDisconnect = (connectedOrigin, snapId) => {
+    const caveatValue =
+      subjects[connectedOrigin].permissions[WALLET_SNAP_PERMISSION_KEY]
+        .caveats[0].value;
+    const newCaveatValue = { ...caveatValue };
+    delete newCaveatValue[snapId];
+    if (Object.keys(newCaveatValue) > 0) {
+      dispatch(
+        updateCaveat(
+          connectedOrigin,
+          WALLET_SNAP_PERMISSION_KEY,
+          SnapCaveatType.SnapIds,
+          newCaveatValue,
+        ),
+      );
+    } else {
+      dispatch(
+        removePermissionsFor({
+          [connectedOrigin]: [WALLET_SNAP_PERMISSION_KEY],
+        }),
+      );
     }
   };
 
@@ -86,7 +111,7 @@ function ViewSnap() {
         <div className="view-snap__subheader">
           <Typography
             className="view-snap__title"
-            variant={TYPOGRAPHY.H3}
+            variant={TypographyVariant.H3}
             boxProps={{ textAlign: TEXT_ALIGN.CENTER }}
           >
             {snap.manifest.proposedName}
@@ -114,14 +139,17 @@ function ViewSnap() {
           padding={2}
         >
           {firstInstall && (
-            <Typography variant={TYPOGRAPHY.H8}>
+            <Typography variant={TypographyVariant.H8}>
               {t('snapAdded', [
                 formatDate(firstInstall.date, 'MMMM d, y'),
                 firstInstall.origin,
               ])}
             </Typography>
           )}
-          <Typography className="view-snap__version" variant={TYPOGRAPHY.H7}>
+          <Typography
+            className="view-snap__version"
+            variant={TypographyVariant.H7}
+          >
             {t('shorthandVersion', [snap.version])}
           </Typography>
         </Box>
@@ -131,16 +159,21 @@ function ViewSnap() {
         >
           <div className="view-snap__section">
             <Typography
-              variant={TYPOGRAPHY.H6}
-              color={COLORS.TEXT_ALTERNATIVE}
+              variant={TypographyVariant.H6}
+              color={TextColor.textAlternative}
               boxProps={{ marginTop: 5 }}
             >
               {snap.manifest.description}
             </Typography>
           </div>
           <div className="view-snap__section view-snap__permission-list">
-            <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
-            <Typography variant={TYPOGRAPHY.H6} color={COLORS.TEXT_ALTERNATIVE}>
+            <Typography variant={TypographyVariant.H4}>
+              {t('permissions')}
+            </Typography>
+            <Typography
+              variant={TypographyVariant.H6}
+              color={TextColor.textAlternative}
+            >
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
             <Box width={FRACTIONS.TEN_TWELFTHS}>
@@ -151,28 +184,30 @@ function ViewSnap() {
           </div>
           <div className="view-snap__section">
             <Box width="11/12">
-              <Typography variant={TYPOGRAPHY.H4}>
+              <Typography variant={TypographyVariant.H4}>
                 {t('connectedSites')}
               </Typography>
               <Typography
-                variant={TYPOGRAPHY.H6}
-                color={COLORS.TEXT_ALTERNATIVE}
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
               >
                 {t('connectedSnapSites', [snap.manifest.proposedName])}
               </Typography>
               <ConnectedSitesList
                 connectedSubjects={connectedSubjects}
                 onDisconnect={(origin) => {
-                  onDisconnect(origin, snap.permissionName);
+                  onDisconnect(origin, snap.id);
                 }}
               />
             </Box>
           </div>
           <div className="view-snap__section">
-            <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
+            <Typography variant={TypographyVariant.H4}>
+              {t('removeSnap')}
+            </Typography>
             <Typography
-              variant={TYPOGRAPHY.H6}
-              color={COLORS.TEXT_ALTERNATIVE}
+              variant={TypographyVariant.H6}
+              color={TextColor.textAlternative}
               boxProps={{ paddingBottom: 3 }}
             >
               {t('removeSnapDescription')}

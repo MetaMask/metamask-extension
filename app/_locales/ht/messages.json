@@ -60,12 +60,6 @@
   "approved": {
     "message": "Apwouve"
   },
-  "attemptToCancel": {
-    "message": "Eseye anile?"
-  },
-  "attemptToCancelDescription": {
-    "message": "Soumèt tantativ sa a pa garanti ke yo pral anile tranzaksyon ou anile. Si tantativ anile an gen siksè, ou pral chaje frè yo tranzaksyon pi wo a."
-  },
   "attemptingConnect": {
     "message": "Eseye konekte nan blockchain."
   },
@@ -83,9 +77,6 @@
   },
   "cancel": {
     "message": "Anile"
-  },
-  "cancellationGasFee": {
-    "message": "Anilasyon Gaz Chaj"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Ou bezwen sèvi ak MetaMask sou Google Chrome yo nan lòd yo konekte sou Hardware Wallet."
@@ -209,13 +200,6 @@
   "gasUsed": {
     "message": "Gaz yo Itilize"
   },
-  "getEther": {
-    "message": "Jwenn Ether"
-  },
-  "getEtherFromFaucet": {
-    "message": "Jwenn Ether nan yon tiyo pou $1 la",
-    "description": "Displays network name for Ether faucet"
-  },
   "hardware": {
     "message": "materyèl"
   },
@@ -315,9 +299,6 @@
   },
   "message": {
     "message": "Mesaje"
-  },
-  "metamaskDescription": {
-    "message": "MetaMask sekirize idantite pou Ethereum."
   },
   "metamaskVersion": {
     "message": "MetaMask Vèsyon"
@@ -455,32 +436,18 @@
   "reset": {
     "message": "Repwograme"
   },
-  "resetAccount": {
-    "message": "Repwograme Kont"
-  },
-  "resetAccountDescription": {
-    "message": "Repwograme kont a netwaye tranzaksyon ou yo."
-  },
   "restore": {
     "message": "Retabli"
   },
   "revealSeedWords": {
     "message": "Revele Seed Mo Yo"
   },
-  "revealSeedWordsDescription": {
-    "message": "Si ou pa janm chanje navigatè ou deplase òdinatè, ou pral bezwen fraz seed la pou ka gen aksè a kont ou. Sere yo on kote an sekirite e an sekrè."
-  },
   "revealSeedWordsWarning": {
-    "message": "Yo ka itilize mo sa pou vòlè kont ou."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "PA pataje fraz sa a avèk nenpòt moun!"
+    "message": "Yo ka itilize mo sa pou vòlè kont ou.",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "save": {
     "message": "Sove"
-  },
-  "saveAsCsvFile": {
-    "message": "Sove kòm dosye CSV"
   },
   "scanInstructions": {
     "message": "Mete kòd QR la devan kamera ou"
@@ -563,9 +530,6 @@
   "terms": {
     "message": "Tèm pou itilize"
   },
-  "testFaucet": {
-    "message": "Tès Tiyo"
-  },
   "to": {
     "message": "Pou"
   },
@@ -645,20 +609,11 @@
   "usedByClients": {
     "message": "Itilize pa yon varyete de kliyan diferan"
   },
-  "viewAccount": {
-    "message": "Wè Kont"
-  },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"
   },
-  "welcome": {
-    "message": "Byenveni nan MetaMask"
-  },
   "welcomeBack": {
     "message": "Bon Retou!"
-  },
-  "yesLetsTry": {
-    "message": "Wi, ann eseye"
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."

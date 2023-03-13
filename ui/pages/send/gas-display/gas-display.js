@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -12,11 +12,11 @@ import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
 import {
-  TYPOGRAPHY,
+  TypographyVariant,
   DISPLAY,
   FLEX_DIRECTION,
   BLOCK_SIZES,
-  COLORS,
+  Color,
   FONT_STYLE,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
@@ -26,7 +26,6 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail';
 import ActionableMessage from '../../../components/ui/actionable-message';
-import DepositPopover from '../../../components/app/deposit-popover';
 import {
   getProvider,
   getPreferences,
@@ -39,18 +38,24 @@ import {
 
 import { INSUFFICIENT_TOKENS_ERROR } from '../send.constants';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { showModal } from '../../../store/actions';
 import {
   addHexes,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
+import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import useRamps from '../../../hooks/experiences/useRamps';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
-  const [showDepositPopover, setShowDepositPopover] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const currentProvider = useSelector(getProvider);
   const isMainnet = useSelector(getIsMainnet);
@@ -61,7 +66,7 @@ export default function GasDisplay({ gasError }) {
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =
     useSelector(getPreferences);
   const { provider, unapprovedTxs } = useSelector((state) => state.metamask);
-  const nativeCurrency = provider.ticker;
+  const nativeCurrency = useSelector(getNativeCurrency);
   const { chainId } = provider;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
@@ -153,9 +158,6 @@ export default function GasDisplay({ gasError }) {
 
   return (
     <>
-      {showDepositPopover && (
-        <DepositPopover onClose={() => setShowDepositPopover(false)} />
-      )}
       <Box className="gas-display">
         <TransactionDetail
           userAcknowledgedGasMissing={false}
@@ -168,7 +170,7 @@ export default function GasDisplay({ gasError }) {
                   <Typography
                     as="span"
                     marginTop={0}
-                    color={COLORS.TEXT_MUTED}
+                    color={Color.textMuted}
                     fontStyle={FONT_STYLE.ITALIC}
                     fontWeight={FONT_WEIGHT.NORMAL}
                     className="gas-display__title__estimate"
@@ -178,15 +180,15 @@ export default function GasDisplay({ gasError }) {
                   <InfoTooltip
                     contentText={
                       <>
-                        <Typography variant={TYPOGRAPHY.H7}>
+                        <Typography variant={TypographyVariant.H7}>
                           {t('transactionDetailGasTooltipIntro', [
                             isMainnet ? t('networkNameEthereum') : '',
                           ])}
                         </Typography>
-                        <Typography variant={TYPOGRAPHY.H7}>
+                        <Typography variant={TypographyVariant.H7}>
                           {t('transactionDetailGasTooltipExplanation')}
                         </Typography>
-                        <Typography variant={TYPOGRAPHY.H7}>
+                        <Typography variant={TypographyVariant.H7}>
                           <a
                             href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                             target="_blank"
@@ -201,7 +203,7 @@ export default function GasDisplay({ gasError }) {
                   />
                 </Box>
               }
-              detailTitleColor={COLORS.TEXT_DEFAULT}
+              detailTitleColor={Color.textDefault}
               detailText={
                 showCurrencyRateCheck && (
                   <Box className="gas-display__currency-container">
@@ -330,7 +332,7 @@ export default function GasDisplay({ gasError }) {
             <ActionableMessage
               message={
                 isBuyableChain && draftTransaction.asset.type === 'NATIVE' ? (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
                       nativeCurrency,
                       currentNetworkName,
@@ -338,7 +340,15 @@ export default function GasDisplay({ gasError }) {
                         type="inline"
                         className="confirm-page-container-content__link"
                         onClick={() => {
-                          setShowDepositPopover(true);
+                          openBuyCryptoInPdapp();
+                          trackEvent({
+                            event: EVENT_NAMES.NAV_BUY_BUTTON_CLICKED,
+                            category: EVENT.CATEGORIES.NAVIGATION,
+                            properties: {
+                              location: 'Gas Warning Insufficient Funds',
+                              text: 'Buy',
+                            },
+                          });
                         }}
                         key={`${nativeCurrency}-buy-button`}
                       >
@@ -357,14 +367,11 @@ export default function GasDisplay({ gasError }) {
                     ])}
                   </Typography>
                 ) : (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrReceive', [
-                      draftTransaction.asset.details?.symbol ?? nativeCurrency,
+                      nativeCurrency,
                       currentNetworkName,
-                      `${t('buyAsset', [
-                        draftTransaction.asset.details?.symbol ??
-                          nativeCurrency,
-                      ])}`,
+                      `${t('buyAsset', [nativeCurrency])}`,
                       <Button
                         type="inline"
                         className="gas-display__link"

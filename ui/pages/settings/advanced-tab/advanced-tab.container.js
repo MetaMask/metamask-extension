@@ -11,6 +11,7 @@ import {
   setUseNonceField,
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
+  setDisabledRpcMethodPreference,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -25,9 +26,13 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData, advancedInlineGas } = {},
+    disabledRpcMethodPreferences,
     useNonceField,
     ledgerTransportType,
     dismissSeedBackUpReminder,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    desktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
   } = metamask;
   const {
     showFiatInTestnets,
@@ -48,6 +53,10 @@ export const mapStateToProps = (state) => {
     ledgerTransportType,
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
+    disabledRpcMethodPreferences,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    desktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -77,6 +86,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
+    },
+    setDisabledRpcMethodPreference: (methodName, isEnabled) => {
+      return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
     },
   };
 };

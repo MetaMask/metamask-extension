@@ -6,6 +6,8 @@ import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
+import { ORIGIN_METAMASK } from '../../shared/constants/app';
+import { EVENT } from '../../shared/constants/metametrics';
 import * as actions from './actions';
 import { _setBackgroundConnection } from './action-queue';
 
@@ -60,7 +62,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_SUCCEEDED', value: undefined },
         {
@@ -85,7 +87,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'UNLOCK_IN_PROGRESS' },
         { type: 'UNLOCK_FAILED', value: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -129,8 +131,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'FORGOT_PASSWORD', value: false },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -156,8 +157,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -202,8 +203,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -275,8 +275,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -303,7 +303,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'SHOW_ACCOUNTS_PAGE' },
       ];
@@ -323,9 +323,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await expect(store.dispatch(actions.resetAccount())).rejects.toThrow(
@@ -352,9 +352,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.importNewAccount('Private Key', [
-          'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
-        ]),
+        actions.importNewAccount(
+          'Private Key',
+          ['c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'],
+          '',
+        ),
       );
       expect(importAccountWithStrategy.callCount).toStrictEqual(1);
     });
@@ -371,9 +373,8 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'SHOW_LOADING_INDICATION',
-          value: 'This may take a while, please be patient.',
+          payload: undefined,
         },
-        { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -413,8 +414,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -461,8 +462,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -498,8 +499,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -551,9 +552,9 @@ describe('Actions', () => {
       const expectedActions = [
         {
           type: 'SHOW_LOADING_INDICATION',
-          value: 'Looking for your Ledger...',
+          payload: 'Looking for your Ledger...',
         },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -600,8 +601,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -635,8 +636,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -677,8 +678,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -723,8 +724,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -802,8 +803,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -876,7 +877,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'UPDATE_TRANSACTION_PARAMS',
           id: '1',
@@ -889,7 +890,6 @@ describe('Actions', () => {
           },
         },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'TRANSACTION_ERROR', message: 'error' },
         { type: 'GO_HOME' },
       ];
 
@@ -927,8 +927,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background);
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'LOCK_METAMASK' },
       ];
@@ -977,8 +977,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -987,12 +987,12 @@ describe('Actions', () => {
     });
   });
 
-  describe('#showAccountDetail', () => {
+  describe('#setSelectedAccount', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('#showAccountDetail', async () => {
+    it('#setSelectedAccount', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
@@ -1006,11 +1006,11 @@ describe('Actions', () => {
 
       _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.showAccountDetail());
+      await store.dispatch(actions.setSelectedAccount());
       expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
     });
 
-    it('displays warning if setSelectedAddress throws', async () => {
+    it('displays warning if setSelectedAccount throws', async () => {
       const store = mockStore({
         activeTab: {},
         metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
@@ -1027,12 +1027,12 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.showAccountDetail());
+      await store.dispatch(actions.setSelectedAccount());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1087,7 +1087,7 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -1141,8 +1141,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -1190,7 +1190,10 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'Had a problem changing networks!',
+        },
       ];
 
       await store.dispatch(actions.setProviderType());
@@ -1198,37 +1201,324 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setRpcTarget', () => {
+  describe('#setActiveNetwork', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls setRpcTarget', async () => {
+    it('calls setActiveNetwork in the background with the correct arguments', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) => cb());
+      const setCurrentNetworkStub = sinon.stub().callsFake((_, cb) => cb());
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setActiveNetwork: setCurrentNetworkStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setRpcTarget('http://localhost:8545'));
-      expect(background.setCustomRpc.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setActiveNetwork('networkConfigurationId'));
+      expect(
+        setCurrentNetworkStub.calledOnceWith('networkConfigurationId'),
+      ).toBe(true);
     });
 
-    it('displays warning when setRpcTarget throws', async () => {
+    it('displays warning when setActiveNetwork throws', async () => {
       const store = mockStore();
 
-      background.setCustomRpc.callsFake((_, __, ___, ____, cb) =>
-        cb(new Error('error')),
-      );
+      const setCurrentNetworkStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
 
-      _setBackgroundConnection(background);
+      background.getApi.returns({
+        setActiveNetwork: setCurrentNetworkStub,
+      });
+      _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
+        {
+          type: 'DISPLAY_WARNING',
+          payload: 'Had a problem changing networks!',
+        },
       ];
 
-      await store.dispatch(actions.setRpcTarget());
+      await store.dispatch(actions.setActiveNetwork());
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
+  describe('#editAndSetNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('removes then re-adds the given network configuration', async () => {
+      const store = mockStore();
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration(
+          {
+            ...networkConfiguration,
+            networkConfigurationId: 'networkConfigurationId',
+          },
+          { source: 'https://test-dapp.com' },
+        ),
+      );
+      expect(
+        removeNetworkConfigurationStub.calledOnceWith('networkConfigurationId'),
+      ).toBe(true);
+      expect(
+        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
+          setActive: true,
+          referrer: ORIGIN_METAMASK,
+          source: 'https://test-dapp.com',
+        }),
+      ).toBe(true);
+    });
+
+    it('displays warning when removeNetworkConfiguration throws', async () => {
+      const store = mockStore();
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+
+      _setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: 'Had a problem removing network!' },
+      ];
+
+      await store.dispatch(
+        actions.editAndSetNetworkConfiguration(
+          {
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          },
+          { source: 'https://test-dapp.com' },
+        ),
+      );
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('throws when no options object is passed as a second argument', async () => {
+      const store = mockStore();
+      await expect(() =>
+        store.dispatch(
+          actions.editAndSetNetworkConfiguration({
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          }),
+        ),
+      ).toThrow(
+        "Cannot destructure property 'source' of 'undefined' as it is undefined.",
+      );
+    });
+  });
+
+  describe('#upsertNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls upsertNetworkConfiguration in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const upsertNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        upsertNetworkConfiguration: upsertNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.upsertNetworkConfiguration(networkConfiguration, {
+          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+        }),
+      );
+
+      expect(
+        upsertNetworkConfigurationStub.calledOnceWith(networkConfiguration, {
+          referrer: ORIGIN_METAMASK,
+          source: EVENT.SOURCE.NETWORK.CUSTOM_NETWORK_FORM,
+          setActive: undefined,
+        }),
+      ).toBe(true);
+    });
+
+    it('throws when no options object is passed as a second argument', async () => {
+      const store = mockStore();
+      await expect(() =>
+        store.dispatch(
+          actions.upsertNetworkConfiguration({
+            networkConfigurationId: 'networkConfigurationId',
+            rpcUrl: 'newRpc',
+            chainId: '0x',
+            ticker: 'ETH',
+            nickname: 'nickname',
+            rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+          }),
+        ),
+      ).toThrow(
+        "Cannot destructure property 'setActive' of 'undefined' as it is undefined.",
+      );
+    });
+  });
+
+  describe('#requestUserApproval', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls requestUserApproval in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const requestUserApprovalStub = sinon.stub().callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        requestUserApproval: requestUserApprovalStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      const networkConfiguration = {
+        rpcUrl: 'newRpc',
+        chainId: '0x',
+        ticker: 'ETH',
+        nickname: 'nickname',
+        rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
+      };
+
+      await store.dispatch(
+        actions.requestUserApproval({
+          origin: ORIGIN_METAMASK,
+          type: 'test',
+          requestData: networkConfiguration,
+        }),
+      );
+
+      expect(
+        requestUserApprovalStub.calledOnceWith({
+          origin: ORIGIN_METAMASK,
+          type: 'test',
+          requestData: networkConfiguration,
+        }),
+      ).toBe(true);
+    });
+  });
+
+  describe('#removeNetworkConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removeNetworkConfiguration in the background with the correct arguments', async () => {
+      const store = mockStore();
+
+      const removeNetworkConfigurationStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+        removeNetworkConfiguration: removeNetworkConfigurationStub,
+      });
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.removeNetworkConfiguration('testNetworkConfigurationId'),
+      );
+
+      expect(
+        removeNetworkConfigurationStub.calledOnceWith(
+          'testNetworkConfigurationId',
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('#setSelectedNetworkConfigurationId', () => {
+    it('sets appState.networkConfigurationId to provided value', async () => {
+      const store = mockStore();
+
+      const networkConfigurationId = 'testNetworkConfigurationId';
+
+      store.dispatch(
+        actions.setSelectedNetworkConfigurationId(networkConfigurationId),
+      );
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_SELECTED_NETWORK_CONFIGURATION_ID',
+        payload: networkConfigurationId,
+      });
+    });
+  });
+
+  describe('#setNewNetworkAdded', () => {
+    it('sets appState.setNewNetworkAdded to provided value', async () => {
+      const store = mockStore();
+
+      const newNetworkAddedDetails = {
+        networkConfigurationId: 'testNetworkConfigurationId',
+        nickname: 'test-chain',
+      };
+
+      store.dispatch(actions.setNewNetworkAdded(newNetworkAddedDetails));
+
+      const resultantActions = store.getActions();
+
+      expect(resultantActions[0]).toStrictEqual({
+        type: 'SET_NEW_NETWORK_ADDED',
+        payload: newNetworkAddedDetails,
+      });
     });
   });
 
@@ -1276,11 +1566,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         {
           type: 'SHOW_PRIVATE_KEY',
-          value: testPrivKey,
+          payload: testPrivKey,
         },
       ];
 
@@ -1306,9 +1596,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'Incorrect Password.' },
+        { type: 'DISPLAY_WARNING', payload: 'Incorrect Password.' },
       ];
 
       await expect(
@@ -1335,11 +1625,11 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         {
           type: 'DISPLAY_WARNING',
-          value: 'Had a problem exporting the account.',
+          payload: 'Had a problem exporting the account.',
         },
       ];
 
@@ -1388,9 +1678,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await expect(
@@ -1438,9 +1728,9 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await expect(store.dispatch(actions.setFeatureFlag())).rejects.toThrow(
@@ -1482,8 +1772,8 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1518,10 +1808,9 @@ describe('Actions', () => {
       _setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
-        { type: 'SET_USE_BLOCKIE', value: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await store.dispatch(actions.setUseBlockie());
@@ -1556,9 +1845,9 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       store.dispatch(actions.setUsePhishDetect());
@@ -1597,9 +1886,9 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       store.dispatch(actions.setUseMultiAccountBalanceChecker());
@@ -1626,10 +1915,10 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'SET_CURRENT_LOCALE',
-          value: { locale: 'test', messages: enLocale },
+          payload: { locale: 'test', messages: enLocale },
         },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
@@ -1649,8 +1938,8 @@ describe('Actions', () => {
       });
 
       const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'DISPLAY_WARNING', value: 'error' },
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
@@ -1674,11 +1963,6 @@ describe('Actions', () => {
 
       await store.dispatch(actions.markPasswordForgotten());
 
-      const resultantActions = store.getActions();
-      expect(resultantActions[1]).toStrictEqual({
-        type: 'FORGOT_PASSWORD',
-        value: true,
-      });
       expect(background.markPasswordForgotten.callCount).toStrictEqual(1);
     });
 
@@ -1693,7 +1977,6 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'FORGOT_PASSWORD', value: true },
         {
           type: 'UPDATE_METAMASK_STATE',
           value: baseMockState,
@@ -1718,11 +2001,6 @@ describe('Actions', () => {
 
       store.dispatch(actions.unMarkPasswordForgotten());
 
-      const resultantActions = store.getActions();
-      expect(resultantActions[0]).toStrictEqual({
-        type: 'FORGOT_PASSWORD',
-        value: false,
-      });
       expect(background.unMarkPasswordForgotten.callCount).toStrictEqual(1);
     });
   });
@@ -1739,7 +2017,7 @@ describe('Actions', () => {
 
       expect(resultantActions[0]).toStrictEqual({
         type: 'DISPLAY_WARNING',
-        value: warningText,
+        payload: warningText,
       });
     });
   });
@@ -1832,12 +2110,37 @@ describe('Actions', () => {
 
       await store.dispatch(actions.cancelMsgs(msgsList));
       const resultantActions = store.getActions();
+      console.log(resultantActions);
       const expectedActions = resultantActions.filter(
         (action) => action.type === 'COMPLETED_TX',
       );
 
-      expect(expectedActions[0].value.id).toStrictEqual(msgsList[0]);
-      expect(expectedActions[1].value.id).toStrictEqual(msgsList[1]);
+      expect(expectedActions[0].value.id).toStrictEqual(msgsList[0].id);
+      expect(expectedActions[1].value.id).toStrictEqual(msgsList[1].id);
+    });
+  });
+
+  describe('Desktop', () => {
+    describe('#setDesktopEnabled', () => {
+      it('calls background setDesktopEnabled method', async () => {
+        const store = mockStore();
+        const setDesktopEnabled = sinon.stub().callsFake((_, cb) => cb());
+
+        background.getApi.returns({
+          setDesktopEnabled,
+          getState: sinon.stub().callsFake((cb) =>
+            cb(null, {
+              desktopEnabled: true,
+            }),
+          ),
+        });
+
+        _setBackgroundConnection(background.getApi());
+
+        await store.dispatch(actions.setDesktopEnabled(true));
+
+        expect(setDesktopEnabled.calledOnceWith(true)).toBeTruthy();
+      });
     });
   });
 });

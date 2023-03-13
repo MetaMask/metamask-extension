@@ -5,8 +5,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CustomContentSearch from '../custom-content-search';
 import Typography from '../../../../components/ui/typography';
 import {
-  COLORS,
-  TYPOGRAPHY,
+  Color,
+  TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import NetworksListItem from '../networks-list-item';
 
@@ -14,7 +14,7 @@ const NetworksList = ({
   networkIsSelected,
   networksToRender,
   networkDefaultedToProvider,
-  selectedRpcUrl,
+  selectedNetworkConfigurationId,
 }) => {
   const t = useI18nContext();
   const [searchedNetworks, setSearchedNetworks] = useState([]);
@@ -56,16 +56,16 @@ const NetworksList = ({
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
           networkIsSelected={networkIsSelected}
-          selectedRpcUrl={selectedRpcUrl}
+          selectedNetworkConfigurationId={selectedNetworkConfigurationId}
           setSearchQuery={setSearchQuery}
           setSearchedNetworks={setSearchedNetworks}
         />
       ))}
       {searchQuery === '' && (
         <Typography
-          variant={TYPOGRAPHY.H6}
+          variant={TypographyVariant.H6}
           marginTop={4}
-          color={COLORS.TEXT_ALTERNATIVE}
+          color={Color.textAlternative}
           className="networks-tab__networks-list__label"
         >
           {t('testNetworks')}
@@ -76,7 +76,7 @@ const NetworksList = ({
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
           networkIsSelected={networkIsSelected}
-          selectedRpcUrl={selectedRpcUrl}
+          selectedNetworkConfigurationId={selectedNetworkConfigurationId}
           setSearchQuery={setSearchQuery}
           setSearchedNetworks={setSearchedNetworks}
         />
@@ -89,7 +89,7 @@ NetworksList.propTypes = {
   networkDefaultedToProvider: PropTypes.bool,
   networkIsSelected: PropTypes.bool,
   networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectedRpcUrl: PropTypes.string,
+  selectedNetworkConfigurationId: PropTypes.string,
 };
 
 export default NetworksList;

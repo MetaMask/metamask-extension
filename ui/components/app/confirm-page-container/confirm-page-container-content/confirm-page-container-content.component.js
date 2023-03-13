@@ -8,9 +8,10 @@ import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
-import DepositPopover from '../../deposit-popover/deposit-popover';
+import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
+import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -55,10 +56,7 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
-  };
-
-  state = {
-    setShowDepositPopover: false,
+    txData: PropTypes.object,
   };
 
   renderContent() {
@@ -166,6 +164,7 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      txData,
     } = this.props;
 
     const { t } = this.context;
@@ -174,8 +173,6 @@ export default class ConfirmPageContainerContent extends Component {
       supportsEIP1559 &&
       (errorKey || errorMessage) &&
       errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
-
-    const { setShowDepositPopover } = this.state;
 
     return (
       <div
@@ -187,6 +184,15 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         <ConfirmPageContainerSummary
           className={classnames({
             'confirm-page-container-summary--border':
@@ -217,16 +223,19 @@ export default class ConfirmPageContainerContent extends Component {
               className="actionable-message--warning"
               message={
                 isBuyableChain ? (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() =>
-                          this.setState({ setShowDepositPopover: true })
-                        }
+                        onClick={() => {
+                          const portfolioUrl = process.env.PORTFOLIO_URL;
+                          global.platform.openTab({
+                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
+                          });
+                        }}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
@@ -234,7 +243,7 @@ export default class ConfirmPageContainerContent extends Component {
                     ])}
                   </Typography>
                 ) : (
-                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                  <Typography variant={TypographyVariant.H7} align="left">
                     {t('insufficientCurrencyDeposit', [
                       nativeCurrency,
                       networkName,
@@ -247,11 +256,6 @@ export default class ConfirmPageContainerContent extends Component {
               type="danger"
             />
           </div>
-        )}
-        {setShowDepositPopover && (
-          <DepositPopover
-            onClose={() => this.setState({ setShowDepositPopover: false })}
-          />
         )}
         <PageContainerFooter
           onCancel={onCancel}

@@ -62,19 +62,25 @@ describe('MetaMaskController', function () {
   beforeEach(function () {
     nock('https://static.metafi.codefi.network')
       .persist()
-      .get('/api/v1/lists/eth_phishing_detect_config.json')
+      .get('/api/v1/lists/stalelist.json')
       .reply(
         200,
         JSON.stringify({
           version: 2,
           tolerance: 2,
           fuzzylist: [],
-          whitelist: [],
-          blacklist: ['127.0.0.1'],
+          allowlist: [],
+          blocklist: ['127.0.0.1'],
+          lastUpdated: 0,
         }),
       )
-      .get('/api/v1/lists/phishfort_hotlist.json')
-      .reply(200, JSON.stringify(['127.0.0.1']));
+      .get('/api/v1/lists/hotlist.json')
+      .reply(
+        200,
+        JSON.stringify([
+          { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
+        ]),
+      );
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: {
@@ -213,27 +219,6 @@ describe('MetaMaskController', function () {
         metamaskController.getApi().addToken(address, symbol, decimals),
       ]);
       assert.deepEqual(token1, token2);
-    });
-  });
-
-  describe('#addCustomNetwork', function () {
-    const customRpc = {
-      chainId: '0x1',
-      chainName: 'DUMMY_CHAIN_NAME',
-      rpcUrl: 'DUMMY_RPCURL',
-      ticker: 'DUMMY_TICKER',
-      blockExplorerUrl: 'DUMMY_EXPLORER',
-    };
-    it('two successive calls with custom RPC details give same result', async function () {
-      await metamaskController.addCustomNetwork(customRpc);
-      const rpcList1Length =
-        metamaskController.preferencesController.store.getState()
-          .frequentRpcListDetail.length;
-      await metamaskController.addCustomNetwork(customRpc);
-      const rpcList2Length =
-        metamaskController.preferencesController.store.getState()
-          .frequentRpcListDetail.length;
-      assert.equal(rpcList1Length, rpcList2Length);
     });
   });
 
