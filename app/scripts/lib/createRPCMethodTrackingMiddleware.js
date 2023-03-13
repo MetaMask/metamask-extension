@@ -140,13 +140,6 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[method];
 
-    // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
-    const isDisabledEthSignAdvancedSetting =
-      method === MESSAGE_TYPE.ETH_SIGN &&
-      res.error?.code === errorCodes.rpc.methodNotFound;
-
-    const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
-
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
@@ -158,9 +151,7 @@ export default function createRPCMethodTrackingMiddleware({
       // Don't track if the user isn't participating in metametrics
       userParticipatingInMetaMetrics === true;
 
-    // If shouldTrackEvent is true and isDisabledRPCMethod is true, we will skip tracking the event
-    // here and track the event in the 'next' callback
-    if (shouldTrackEvent && !isDisabledRPCMethod) {
+    if (shouldTrackEvent) {
       // We track an initial "requested" event as soon as the dapp calls the
       // provider method. For the events not special cased this is the only
       // event that will be fired and the event name will be
@@ -206,6 +197,13 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
+      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
+      const isDisabledEthSignAdvancedSetting =
+        method === MESSAGE_TYPE.ETH_SIGN &&
+        res.error?.code === errorCodes.rpc.methodNotFound;
+
+      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
+
       let event;
       if (isDisabledRPCMethod) {
         event = eventType.DISABLED;
@@ -241,6 +239,7 @@ export default function createRPCMethodTrackingMiddleware({
         },
         properties,
       });
+
       return callback();
     });
   };
