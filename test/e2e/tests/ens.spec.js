@@ -53,15 +53,15 @@ describe('ENS', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-        .withNetworkController({
-          provider: {
-            chainId: '0x1',
-            nickname: '',
-            rpcUrl: '',
-            type: 'mainnet',
-          },
-        })
-        .build(),
+          .withNetworkController({
+            provider: {
+              chainId: '0x1',
+              nickname: '',
+              rpcUrl: '',
+              type: 'mainnet',
+            },
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockInfura,
@@ -72,7 +72,7 @@ describe('ENS', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.waitForElementNotPresent('.loading-overlay');
-        
+
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
