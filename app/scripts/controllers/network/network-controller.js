@@ -572,7 +572,7 @@ export default class NetworkController extends EventEmitter {
     )?.id;
 
     const newNetworkConfigurationId = oldNetworkConfigurationId || random();
-    this.networkConfigurationsStore.updateState({
+    this.networkConfigurationsStore.putState({
       ...networkConfigurations,
       [newNetworkConfigurationId]: {
         ...newNetworkConfiguration,
