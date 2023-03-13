@@ -27,8 +27,6 @@ const ChaosIdentity = {
   balance: '0x152387ad22c3f0',
 };
 
-console.log(SimpleIdentity, HardwareIdentity, ChaosIdentity);
-
 const onClick = () => console.log('Clicked account!');
 
 export default {

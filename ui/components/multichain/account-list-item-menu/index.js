@@ -70,6 +70,7 @@ export const AccountListItemMenu = ({
         }
         subtitle={blockExplorerUrlSubTitle || null}
         iconName={ICON_NAMES.EXPORT}
+        data-testid="account-list-menu-open-explorer"
       >
         <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
       </MenuItem>
@@ -92,6 +93,7 @@ export const AccountListItemMenu = ({
       </MenuItem>
       {isRemovable ? (
         <MenuItem
+          data-testid="account-list-menu-remove"
           onClick={() => {
             dispatch(
               showModal({
