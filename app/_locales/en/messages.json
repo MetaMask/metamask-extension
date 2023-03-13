@@ -3232,7 +3232,7 @@
     "description": "$1 is a token symbol"
   },
   "revokeSpendingCapTooltipText": {
-    "message": "This contract will be unable to spend any more of your current or future tokens."
+    "message": "This third party will be unable to spend any more of your current or future tokens."
   },
   "rpcUrl": {
     "message": "New RPC URL"
