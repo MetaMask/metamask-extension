@@ -141,6 +141,11 @@ export function initializeDomainSlice() {
     const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
+    console.log('***initializeDomainSlice1', {
+      networkName,
+      ensAddress,
+      networkIsSupported
+    })
     if (networkIsSupported) {
       web3Provider = new Web3Provider(global.ethereumProvider, {
         chainId: parseInt(network, 10),

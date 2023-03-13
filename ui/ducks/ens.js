@@ -32,6 +32,7 @@ export async function getEVMChainAddress(provider, name, chainId) {
     console.log('***getMulticoinAddres5', { hexCoinType });
     const encodedCoinType = hexZeroPad(hexCoinType, 32);
     console.log('***getMulticoinAddres6', { encodedCoinType });
+    try{
     // 0xf1cb7e06 is address interface id
     // https://docs.ens.domains/contract-api-reference/publicresolver#get-blockchain-address
     const data = await resolver._fetchBytes('0xf1cb7e06', encodedCoinType);
@@ -41,9 +42,12 @@ export async function getEVMChainAddress(provider, name, chainId) {
       address = emptyAddress;
     }
     address = getAddress(data);
+    }catch(e){
+      console.log('getMulticoinAddres9', e)
+    }
   } else {
     address = emptyAddress;
   }
-  console.log('***getMulticoinAddres9', { address });
+  console.log('***getMulticoinAddres10', { address });
   return address;
 }
