@@ -4,8 +4,6 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap RPC', function () {
-  // TODO: Re-enable this test once `test-snaps` is fixed.
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('can use the cross-snap RPC endowment and produce a public key', async function () {
     const ganacheOptions = {
       accounts: [
@@ -68,7 +66,6 @@ describe('Test Snap RPC', function () {
         });
 
         // switch back to test snaps page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success

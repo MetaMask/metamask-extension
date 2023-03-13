@@ -68,7 +68,6 @@ describe('Test Snap Notification', function () {
         });
 
         // click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success

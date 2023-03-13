@@ -77,7 +77,6 @@ describe('Test Snap bip-44', function () {
         });
 
         // click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success

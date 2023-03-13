@@ -78,7 +78,6 @@ describe('Test Snap bip-32', function () {
         });
 
         // switch back to test-snaps window
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success

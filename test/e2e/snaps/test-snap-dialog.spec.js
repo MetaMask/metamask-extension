@@ -66,7 +66,6 @@ describe('Test Snap Dialog', function () {
         });
 
         // switch to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success

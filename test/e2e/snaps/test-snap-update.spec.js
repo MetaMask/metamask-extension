@@ -76,7 +76,6 @@ describe('Test Snap update', function () {
         });
 
         // navigate to test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait for npm installation success

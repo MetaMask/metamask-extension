@@ -67,9 +67,7 @@ describe('Test Snap Error', function () {
         });
 
         // click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
 
         // wait for npm installation success
         await driver.waitForSelector({
