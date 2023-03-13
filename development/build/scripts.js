@@ -1,3 +1,5 @@
+// TODO(ritave): Remove switches on hardcoded build types
+
 const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync } = require('fs');
@@ -29,13 +31,13 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
-const { BuildType } = require('../lib/build-type');
+const { BuildType, loadBuildTypesConfig } = require('../lib/build-type');
 const { generateIconNames } = require('../generate-icon-names');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const {
   getConfig,
   getProductionConfig,
-  getFeatureConfig,
+  getBuildTypesConfig: getFeatureConfig,
 } = require('./config');
 const {
   isDevBuild,
@@ -54,6 +56,7 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
+const { segment } = require('app/scripts/lib/segment');
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {
@@ -105,7 +108,7 @@ const standardScuttlingConfig = {
  * Get the appropriate Infura project ID.
  *
  * @param {object} options - The Infura project ID options.
- * @param {BuildType} options.buildType - The current build type.
+ * @param {string} options.buildType - The current build type.
  * @param {object} options.config - The environment variable configuration.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether this is a test build or not.
@@ -117,23 +120,30 @@ function getInfuraProjectId({ buildType, config, environment, testing }) {
   } else if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks.
     return config.INFURA_PROJECT_ID;
-  } else if (buildType === BuildType.main) {
-    return config.INFURA_PROD_PROJECT_ID;
-  } else if (buildType === BuildType.beta) {
-    return config.INFURA_BETA_PROJECT_ID;
-  } else if (buildType === BuildType.flask) {
-    return config.INFURA_FLASK_PROJECT_ID;
-  } else if (buildType === BuildType.mmi) {
-    return config.INFURA_MMI_PROJECT_ID;
   }
-  throw new Error(`Invalid build type: '${buildType}'`);
+  /** @type {string|undefined} */
+  const infuraKeyReference =
+    loadBuildTypesConfig().builds[buildType].var?.infuraProjectKey;
+  if (infuraKeyReference === undefined) {
+    throw new Error(
+      `Build type "${buildType}" has undefined infuraEnvKey variable in builds.yml`,
+    );
+  }
+  /** @type {string|undefined} */
+  const infuraProjectId = config[infuraKeyReference];
+  if (infuraProjectId === undefined) {
+    throw new Error(
+      `Infura Project ID environmental variable "${infuraKeyReference}" doesn't exist. Misconfigured builds.yml`,
+    );
+  }
+  return infuraProjectId;
 }
 
 /**
  * Get the appropriate Segment write key.
  *
  * @param {object} options - The Segment write key options.
- * @param {BuildType} options.buildType - The current build type.
+ * @param {string} options.buildType - The current build type.
  * @param {object} options.config - The environment variable configuration.
  * @param {keyof ENVIRONMENT} options.environment - The current build environment.
  * @returns {string} The Segment write key.
@@ -142,16 +152,23 @@ function getSegmentWriteKey({ buildType, config, environment }) {
   if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
     return config.SEGMENT_WRITE_KEY;
-  } else if (buildType === BuildType.main) {
-    return config.SEGMENT_PROD_WRITE_KEY;
-  } else if (buildType === BuildType.beta) {
-    return config.SEGMENT_BETA_WRITE_KEY;
-  } else if (buildType === BuildType.flask) {
-    return config.SEGMENT_FLASK_WRITE_KEY;
-  } else if (buildType === BuildType.mmi) {
-    return config.SEGMENT_MMI_WRITE_KEY;
   }
-  throw new Error(`Invalid build type: '${buildType}'`);
+  /** @type {string|undefined} */
+  const segmentKeyReference =
+    loadBuildTypesConfig().builds[buildType].var?.segmentWriteKey;
+  if (segmentKeyReference === undefined) {
+    throw new Error(
+      `Build type "${buildType}" has undefined segmentKey variable in builds.yml`,
+    );
+  }
+  /** @type {string|undefined} */
+  const segmentWriteKey = config[segmentKeyReference];
+  if (segmentWriteKey === undefined) {
+    throw new Error(
+      `Segment Write Key environmental variable "${segmentKeyReference}" doesn't exist. Misconfigured builds.yml`,
+    );
+  }
+  return segmentWriteKey;
 }
 
 /**
@@ -213,7 +230,7 @@ module.exports = createScriptTasks;
  * LavaMoat at runtime or not.
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build bundles for.
- * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * @param {string} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string[] | null} options.ignoredFiles - A list of files to exclude
  * from the current build.
@@ -459,7 +476,7 @@ function createScriptTasks({
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build bundles for.
  * @param {BUILD_TARGETS} options.buildTarget - The current build target.
- * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * @param {string} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string[] | null} options.ignoredFiles - A list of files to exclude
  * from the current build.
@@ -545,7 +562,7 @@ async function createManifestV3AppInitializationBundle({
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build bundles for.
  * @param {BUILD_TARGETS} options.buildTarget - The current build target.
- * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * @param {string} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string[]} options.entryFiles - A list of entry point file paths,
  * relative to the repository root directory.
@@ -764,7 +781,7 @@ function createFactoredBuild({
  * @param {string[]} options.browserPlatforms - A list of browser platforms to
  * build the bundle for.
  * @param {BUILD_TARGETS} options.buildTarget - The current build target.
- * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * @param {string} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string} options.destFilepath - The file path the bundle should be
  * written to.
@@ -1098,7 +1115,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
  *
  * @param {object} options - Build options.
  * @param {BUILD_TARGETS} options.buildTarget - The current build target.
- * @param {BuildType} options.buildType - The current build type (e.g. "main",
+ * @param {string} options.buildType - The current build type (e.g. "main",
  * "flask", etc.).
  * @param {string} options.version - The current version of the extension.
  * @returns {object} A map of environment variables to inject.

@@ -18,14 +18,14 @@ class RemoveFencedCodeTransform extends Transform {
    * Optionally lints the file if it was modified.
    *
    * @param {string} filePath - The path to the file being transformed.
-   * @param {string} buildType - The type of the current build process.
+   * @param {string[]|Set<string>} features - Features that are currently enabled.
    * @param {boolean} shouldLintTransformedFiles - Whether the file should be
    * linted if modified by the transform.
    */
-  constructor(filePath, buildType, shouldLintTransformedFiles) {
+  constructor(filePath, features, shouldLintTransformedFiles) {
     super();
     this.filePath = filePath;
-    this.buildType = buildType;
+    this.features = new Set(features);
     this.shouldLintTransformedFiles = shouldLintTransformedFiles;
     this._fileBuffers = [];
   }
@@ -45,7 +45,7 @@ class RemoveFencedCodeTransform extends Transform {
     try {
       [fileContent, didModify] = removeFencedCode(
         this.filePath,
-        this.buildType,
+        this.features,
         Buffer.concat(this._fileBuffers).toString('utf8'),
       );
     } catch (error) {
@@ -82,20 +82,14 @@ class RemoveFencedCodeTransform extends Transform {
  * file is ignored by ESLint, since linting is our first line of defense against
  * making un-syntactic modifications to files using code fences.
  *
- * @param {string} buildType - The type of the current build.
+ * @param {string[]|Set<string>} features - Features that are currently enabled.
  * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.
  * @returns {(filePath: string) => Transform} The transform function.
  */
 function createRemoveFencedCodeTransform(
-  buildType,
+  features,
   shouldLintTransformedFiles = true,
 ) {
-  if (!hasKey(BuildType, buildType)) {
-    throw new Error(
-      `Code fencing transform received unrecognized build type "${buildType}".`,
-    );
-  }
-
   // Browserify transforms are functions that receive a file name and return a
   // duplex stream. The stream receives the file contents piecemeal in the form
   // of Buffers.
@@ -117,7 +111,7 @@ function createRemoveFencedCodeTransform(
 
     return new RemoveFencedCodeTransform(
       filePath,
-      buildType,
+      features,
       shouldLintTransformedFiles,
     );
   };

@@ -24342,6 +24342,7 @@ __metadata:
     string.prototype.matchall: ^4.0.2
     style-loader: ^0.21.0
     stylelint: ^13.6.1
+    superstruct: ^1.0.3
     terser: ^5.7.0
     through2: ^4.0.2
     ts-node: ^10.5.0

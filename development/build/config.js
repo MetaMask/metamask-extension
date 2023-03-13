@@ -3,7 +3,7 @@ const { readFile } = require('fs/promises');
 const fs = require('fs');
 const ini = require('ini');
 const yaml = require('js-yaml');
-const { BuildType } = require('../lib/build-type');
+const { BuildType, loadBuildTypesConfig } = require('../lib/build-type');
 
 const configurationPropertyNames = [
   'MULTICHAIN',
@@ -31,20 +31,6 @@ const productionConfigurationPropertyNames = [
   'SEGMENT_PROD_WRITE_KEY',
   'SENTRY_DSN',
 ];
-
-function getFeatureConfig(buildType) {
-  const featuresEnabled = {};
-  const featuresJson = yaml.load(fs.readFileSync('./features.yml', 'utf8'), {
-    json: true,
-  });
-  const buildTypeFeatures = featuresJson.builds[buildType];
-
-  buildTypeFeatures.features.forEach((feature) => {
-    featuresEnabled[feature] = true;
-  });
-
-  return featuresEnabled;
-}
 
 /**
  * Get configuration for non-production builds.
@@ -83,11 +69,12 @@ async function getConfig() {
  * This function validates that all required variables are present, and that
  * the production configuration file doesn't include any extraneous entries.
  *
- * @param {BuildType} buildType - The current build type (e.g. "main", "flask",
+ * @param {string} buildType - The current build type (e.g. "main", "flask",
  * etc.).
  * @returns {object} The production configuration.
  */
 async function getProductionConfig(buildType) {
+  asd;
   const prodConfigPath = path.resolve(__dirname, '..', '..', '.metamaskprodrc');
   let prodConfigContents = '';
   try {
@@ -112,24 +99,19 @@ async function getProductionConfig(buildType) {
     ...environmentVariables,
   };
 
-  const requiredEnvironmentVariables = {
-    all: ['SENTRY_DSN'],
-    [BuildType.beta]: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY'],
-    [BuildType.flask]: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY'],
-    [BuildType.main]: ['INFURA_PROD_PROJECT_ID', 'SEGMENT_PROD_WRITE_KEY'],
-    [BuildType.mmi]: ['INFURA_MMI_PROJECT_ID', 'SEGMENT_MMI_WRITE_KEY'],
-  };
+  const buildTypes = loadBuildTypesConfig();
 
-  for (const required of [
-    ...requiredEnvironmentVariables.all,
-    ...requiredEnvironmentVariables[buildType],
-  ]) {
+  const requiredEnvironmentVariables = buildTypes.builds[buildType].env ?? [];
+
+  for (const required of requiredEnvironmentVariables) {
     if (!prodConfig[required]) {
       throw new Error(`Missing '${required}' environment variable`);
     }
   }
 
-  const allValid = Object.values(requiredEnvironmentVariables).flat();
+  const allValid = Object.values(buildTypes.builds)
+    .map((build) => build.env ?? [])
+    .flat();
   for (const environmentVariable of Object.keys(prodConfig)) {
     if (!allValid.includes(environmentVariable)) {
       throw new Error(`Invalid environment variable: '${environmentVariable}'`);
@@ -138,4 +120,8 @@ async function getProductionConfig(buildType) {
   return prodConfig;
 }
 
-module.exports = { getConfig, getProductionConfig, getFeatureConfig };
+module.exports = {
+  getConfig,
+  getProductionConfig,
+  getBuildTypesConfig,
+};

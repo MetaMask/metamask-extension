@@ -1,0 +1,84 @@
+# TODO(ritave): Add support for METAMASK_ENVIRONMENT
+# The build type to use when no build type provided
+default: main
+
+# Declaration of build types
+# Each build type is composed of features, env variables and assets.
+builds:
+  main:
+    # Additional env variables that are specific to this build
+    # and required
+    # (Potentially set to undefined)
+    env:
+      - INFURA_BETA_PROJECT_ID
+      - SEGMENT_PROD_WRITE_KEY
+    # Variables that modify the build process itself
+    # It's an escape hatch for backwards compatibility
+    # for things that were hard-coded in.
+    # The end goal is not to have those
+    var:
+      # Variables used to remove hardcoded switches
+      # in backwards compatible way
+      infuraProjectKey: INFURA_PROD_PROJECT_ID
+      segmentWriteKey: SEGMENT_PROD_WRITE_KEY
+
+  beta:
+    env:
+      - INFURA_BETA_PROJECT_ID
+      - SEGMENT_BETA_WRITE_KEY
+    # Modifies how the version is displayed.
+    # eg. instead of 10.25.0 -> 10.25.0-beta.2
+    isPrerelease: true
+    # Additional assets that will be copied
+    assets:
+      - src: ./app/build-types/beta/images/
+        dest: images
+    var:
+      infuraProjectKey: INFURA_BETA_PROJECT_ID
+      segmentWriteKey: SEGMENT_BETA_WRITE_KEY
+
+  flask:
+    # Code surrounded using code fences for that feature
+    # will not be removed
+    features:
+      - snaps
+      - desktop
+    isPrerelease: true
+    env:
+      - INFURA_FLASK_PROJECT_ID
+      - SEGMENT_FLASK_WRITE_KEY
+    assets:
+      - src: ./app/build-types/flask/images/
+        dest: images
+    var:
+      infuraProjectKey: INFURA_FLASK_PROJECT_ID
+      segmentWriteKey: SEGMENT_FLASK_WRITE_KEY
+
+  desktop:
+    features:
+      - desktop
+    isPrerelease: true
+    assets:
+      - src: ./app/build-types/desktop/images/
+        dest: images
+
+  mmi:
+    env:
+      - INFURA_MMI_PROJECT_ID
+      - SEGMENT_MMI_WRITE_KEY
+    # For some reason, MMI uses this type of versioning
+    # Leaving it on for backwards compatibility
+    isPrerelease: true
+    assets:
+      - src: ./app/build-types/mmi/images/
+        dest: images
+    var:
+      infuraEnvKey: INFURA_MMI_PROJECT_ID
+      segmentWriteKey: SEGMENT_MMI_WRITE_KEY
+
+# Env variables that are required for all types of builds
+# (Potentially set to undefined)
+env:
+  - PUBNUB_PUB_KEY
+  - PUBNUB_SUB_KEY
+  - SENTRY_DSN
