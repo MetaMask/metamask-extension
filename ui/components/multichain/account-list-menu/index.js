@@ -23,6 +23,8 @@ import Popover from '../../ui/popover';
 import {
   getSelectedAccount,
   getMetaMaskAccountsOrdered,
+  getConnectedSubjectsForAllAddresses,
+  getOriginOfCurrentTab,
 } from '../../../selectors';
 import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
@@ -39,6 +41,8 @@ export const AccountListMenu = ({ onClose }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const selectedAccount = useSelector(getSelectedAccount);
+  const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
+  const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -76,6 +80,10 @@ export const AccountListMenu = ({ onClose }) => {
             </Text>
           ) : null}
           {searchResults.map((account) => {
+            const connectedSite = connectedSites[account.address]?.find(
+              ({ origin }) => origin === currentTabOrigin,
+            );
+
             return (
               <AccountListItem
                 onClick={() => {
@@ -93,6 +101,8 @@ export const AccountListMenu = ({ onClose }) => {
                 key={account.address}
                 selected={selectedAccount.address === account.address}
                 closeMenu={onClose}
+                connectedAvatar={connectedSite?.iconUrl}
+                connectedAvatarName={connectedSite?.name}
               />
             );
           })}
