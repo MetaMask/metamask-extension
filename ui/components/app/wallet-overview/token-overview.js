@@ -60,7 +60,7 @@ const TokenOverview = ({ className, token }) => {
   const { openBuyCryptoInPdapp } = useRamps();
 
   useEffect(() => {
-    if (token.isERC721 && process.env.NFTS_V1) {
+    if (token.isERC721) {
       dispatch(
         showModal({
           name: 'CONVERT_TOKEN_TO_NFT',

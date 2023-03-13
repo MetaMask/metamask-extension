@@ -666,21 +666,19 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              {process.env.NFTS_V1 ? (
-                <Tab
-                  activeClassName="home__tab--active"
-                  className="home__tab"
-                  data-testid="home__nfts-tab"
-                  name={this.context.t('nfts')}
-                  tabKey="nfts"
-                >
-                  <NftsTab
-                    onAddNFT={() => {
-                      history.push(ADD_NFT_ROUTE);
-                    }}
-                  />
-                </Tab>
-              ) : null}
+              <Tab
+                activeClassName="home__tab--active"
+                className="home__tab"
+                data-testid="home__nfts-tab"
+                name={this.context.t('nfts')}
+                tabKey="nfts"
+              >
+                <NftsTab
+                  onAddNFT={() => {
+                    history.push(ADD_NFT_ROUTE);
+                  }}
+                />
+              </Tab>
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
