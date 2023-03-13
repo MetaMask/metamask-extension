@@ -95,6 +95,7 @@ const CustomizeNonce = ({
               <Button
                 type="link"
                 className="customize-nonce-modal__reset"
+                data-testid="customize-nonce-reset"
                 onClick={() => {
                   setCustomNonce(nextNonce);
                 }}
@@ -106,6 +107,7 @@ const CustomizeNonce = ({
           <div className="customize-nonce-modal__input">
             <TextField
               type="number"
+              data-testid="custom-nonce-input"
               min="0"
               placeholder={
                 customNonceValue ||
