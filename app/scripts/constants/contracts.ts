@@ -4,8 +4,6 @@ export const SINGLE_CALL_BALANCES_ADDRESS_GOERLI =
   '0x9788C4E93f9002a7ad8e72633b11E8d1ecd51f9b';
 // TODO(SEPOLIA) There is currently no balance call address for Sepolia
 export const SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA = '';
-// TODO(CONSENSYS_ZKEVM) There is currently no balance call address for ConsenSys zkEVM
-export const SINGLE_CALL_BALANCES_ADDRESS_CONSENSYS_ZKEVM = '';
 export const SINGLE_CALL_BALANCES_ADDRESS_BSC =
   '0x2352c63A83f9Fd126af8676146721Fa00924d7e4';
 export const SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM =

@@ -209,9 +209,7 @@ export default class NetworkController extends EventEmitter {
     // Ping the RPC endpoint so we can confirm that it works
     const initialNetwork = this.networkStore.getState();
     const { type } = this.providerStore.getState();
-    const isInfura =
-      INFURA_PROVIDER_TYPES.includes(type) &&
-      type !== NETWORK_TYPES.CONSENSYS_ZKEVM;
+    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
 
     if (isInfura) {
       this._checkInfuraAvailability(type);
@@ -271,14 +269,20 @@ export default class NetworkController extends EventEmitter {
       NETWORK_TYPES.RPC,
       `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setActiveNetwork"`,
     );
-    assert.ok(
-      INFURA_PROVIDER_TYPES.includes(type),
-      `Unknown Infura provider type "${type}".`,
-    );
+    if (type !== NETWORK_TYPES.CONSENSYS_ZKEVM) {
+      assert.ok(
+        INFURA_PROVIDER_TYPES.includes(type),
+        `Unknown Infura provider type "${type}".`,
+      );
+    }
+
     const { chainId, ticker, blockExplorerUrl } = BUILT_IN_NETWORKS[type];
+    const rpcUrl =
+      type === NETWORK_TYPES.CONSENSYS_ZKEVM ? CONSENSYS_ZKEVM_RPC_URL : '';
+
     this._setProviderConfig({
       type,
-      rpcUrl: '',
+      rpcUrl,
       chainId,
       ticker: ticker ?? 'ETH',
       nickname: '',
@@ -429,9 +433,7 @@ export default class NetworkController extends EventEmitter {
 
   _configureProvider({ type, rpcUrl, chainId }) {
     // infura type-based endpoints
-    const isInfura =
-      INFURA_PROVIDER_TYPES.includes(type) &&
-      type !== NETWORK_TYPES.CONSENSYS_ZKEVM;
+    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
 
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId);

@@ -30,7 +30,6 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
   SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
   SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
-  SINGLE_CALL_BALANCES_ADDRESS_CONSENSYS_ZKEVM,
 } from '../constants/contracts';
 import { previousValueComparator } from './util';
 
@@ -279,13 +278,6 @@ export default class AccountTracker {
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
-          );
-          break;
-
-        case CHAIN_IDS.CONSENSYS_ZKEVM:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_CONSENSYS_ZKEVM,
           );
           break;
 
