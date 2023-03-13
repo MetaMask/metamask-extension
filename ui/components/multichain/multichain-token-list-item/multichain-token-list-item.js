@@ -11,6 +11,7 @@ import {
   Size,
   TextColor,
   TextVariant,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -75,6 +76,7 @@ export const MultichainTokenListItem = ({
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
+            gap={2}
           >
             <Text
               fontWeight={FONT_WEIGHT.MEDIUM}
@@ -88,7 +90,7 @@ export const MultichainTokenListItem = ({
               fontWeight={FONT_WEIGHT.MEDIUM}
               variant={TextVariant.bodyMd}
               width={[BLOCK_SIZES.HALF]}
-              justifyContent={JustifyContent.flexEnd}
+              textAlign={TEXT_ALIGN.END}
             >
               {secondary}
             </Text>
