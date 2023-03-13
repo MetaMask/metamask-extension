@@ -12,6 +12,7 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getTokenList,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -74,12 +75,17 @@ const AssetList = ({ onClickAsset }) => {
   const istokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
-
+  const tokenList = useSelector(getTokenList);
+  const tokenData = Object.values(tokenList).find(
+    (token) => token.symbol === primaryCurrencyProperties.suffix,
+  );
+  const title = tokenData?.name || primaryCurrencyProperties.suffix;
   return (
     <>
       {process.env.MULTICHAIN ? (
         <MultichainTokenListItem
           onClick={() => onClickAsset(nativeCurrency)}
+          title={title}
           data-testid="wallet-balance"
           primary={
             primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value

@@ -29,6 +29,7 @@ export const MultichainTokenListItem = ({
   tokenImage,
   primary,
   secondary,
+  title,
 }) => {
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const t = useI18nContext();
@@ -81,7 +82,7 @@ export const MultichainTokenListItem = ({
               ellipsis
               width={[BLOCK_SIZES.HALF]}
             >
-              {tokenSymbol}
+              {title}
             </Text>
             <Text
               fontWeight={FONT_WEIGHT.MEDIUM}
@@ -115,6 +116,10 @@ MultichainTokenListItem.propTypes = {
    * tokenSymbol represents the symbol of the Token
    */
   tokenSymbol: PropTypes.string,
+  /**
+   * title represents the name of the token and if name is not available then Symbol
+   */
+  title: PropTypes.string,
   /**
    * tokenImage represnts the image of the token icon
    */

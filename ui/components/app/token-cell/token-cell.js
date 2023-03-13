@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import AssetListItem from '../asset-list-item';
-import { getSelectedAddress } from '../../../selectors';
+import { getSelectedAddress, getTokenList } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { MultichainTokenListItem } from '../../multichain';
@@ -20,7 +20,11 @@ export default function TokenCell({
 }) {
   const userAddress = useSelector(getSelectedAddress);
   const t = useI18nContext();
-
+  const tokenList = useSelector(getTokenList);
+  const tokenData = Object.values(tokenList).find(
+    (token) => token.symbol === symbol,
+  );
+  const title = tokenData?.name || symbol;
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
   const warning = balanceError ? (
     <span>
@@ -51,6 +55,7 @@ export default function TokenCell({
           primary={`${string || 0}`}
           secondary={formattedFiat}
           isERC721={isERC721}
+          title={title}
         />
       ) : (
         <AssetListItem

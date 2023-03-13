@@ -5,10 +5,7 @@ export default {
   title: 'Components/Multichain/DetectedTokensBanner',
   component: DetectedTokensBanner,
   argTypes: {
-    setShowDetectedTokens: { control: 'func' },
-  },
-  args: {
-    setShowDetectedTokens: () => console.log('Test'),
+    setShowDetectedTokens: { action: 'setShowDetectedTokens' },
   },
 };
 
