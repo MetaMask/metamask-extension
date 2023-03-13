@@ -1,8 +1,8 @@
 export {
   AvatarAccount,
-  AVATAR_ACCOUNT_SIZES,
-  AVATAR_ACCOUNT_TYPES,
-  AVATAR_ACCOUNT_DIAMETERS,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  AvatarAccountDiameter,
 } from './avatar-account';
 export { AvatarFavicon, AVATAR_FAVICON_SIZES } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
