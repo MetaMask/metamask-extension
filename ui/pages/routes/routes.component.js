@@ -160,7 +160,7 @@ export default class Routes extends Component {
     const { theme } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === ThemeType.OS) {
+      if (theme === ThemeType.os) {
         this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
