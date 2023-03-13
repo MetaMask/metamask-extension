@@ -52,6 +52,10 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         );
 
         // Confirm Mint
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
@@ -101,6 +105,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           windowHandles,
         );
 
+        // Confirm Transfer
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
