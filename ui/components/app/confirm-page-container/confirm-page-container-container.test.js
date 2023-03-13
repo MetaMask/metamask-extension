@@ -15,8 +15,8 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-jest.mock('../../../pages/swaps/swaps.util', () => {
-  const actual = jest.requireActual('../../../pages/swaps/swaps.util');
+jest.mock('../../../../shared/lib/token-util.ts', () => {
+  const actual = jest.requireActual('../../../../shared/lib/token-util.ts');
   return {
     ...actual,
     fetchTokenBalance: jest.fn(() => Promise.resolve()),

@@ -3,7 +3,7 @@ import NftInfoSetApprovalForAll from './nft-info-setApprovalForAll';
 
 export default {
   title: 'Components/UI/NftInfoSetApprovalForAll',
-  id: __filename,
+
   argTypes: {
     assetName: {
       control: { type: 'text' },
@@ -19,8 +19,8 @@ export default {
     },
   },
   args: {
-    assetName: 'Bored Ape Yatch Club',
-    tokenAddress: '0xa3aee8bce55beea1951ef834b99f3ac60d1abeeb',
+    assetName: 'BoredApeYatchClub',
+    tokenAddress: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
     total: 4,
     isERC721: true,
   },
@@ -31,3 +31,13 @@ export const DefaultStory = (args) => {
 };
 
 DefaultStory.storyName = 'Default';
+
+export const NftInfoSetApprovalForAllWithoutAssetName = (args) => {
+  return <NftInfoSetApprovalForAll {...args} assetName={null} />;
+};
+
+export const NftInfoSetApprovalForAllErc1155 = (args) => {
+  return (
+    <NftInfoSetApprovalForAll {...args} assetName={null} isERC721={false} />
+  );
+};

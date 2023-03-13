@@ -508,9 +508,13 @@ export default class ConfirmApproveContent extends Component {
     const { tokenAddress, userAddress, isSetApproveForAll, assetStandard } =
       this.props;
     if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
-      const tokenBalance = await fetchTokenBalance(tokenAddress, userAddress);
+      const tokenBalance = await fetchTokenBalance(
+        tokenAddress,
+        userAddress,
+        global.ethereumProvider,
+      );
       this.setState({
-        collectionBalance: tokenBalance?.balance?.words?.[0] || 0,
+        collectionBalance: Number(tokenBalance._hex) || 0,
       });
     }
   }

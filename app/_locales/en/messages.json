@@ -2235,7 +2235,8 @@
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on."
   },
   "nftInfoTooltipText": {
-    "message": "You should have a good reason for doing an approval for all NFTs. It should not be your default."
+    "message": "$1 You should have a good reason for doing an approval for all NFTs. It should not be your default.",
+    "description": "$1 is a danger icon with text 'Be careful' in 'danger' colour"
   },
   "nftOptions": {
     "message": "NFT Options"
@@ -2487,7 +2488,7 @@
     "message": "Mark all as read"
   },
   "numberOfNFTsFromCollection": {
-    "message": "All ($1) + Future NFTs",
+    "message": "All $1 + Future NFTs",
     "description": "$1 is the number of NFTs from collection that are owned by the user"
   },
   "numberOfNewTokensDetectedPlural": {

@@ -39,8 +39,8 @@ const props = {
   useCurrencyRateCheck: true,
 };
 
-jest.mock('../../swaps/swaps.util', () => {
-  const actual = jest.requireActual('../../swaps/swaps.util');
+jest.mock('.../../../../shared/lib/token-util.ts', () => {
+  const actual = jest.requireActual('../../../../shared/lib/token-util.ts');
   return {
     ...actual,
     fetchTokenBalance: jest.fn(() => Promise.resolve()),
