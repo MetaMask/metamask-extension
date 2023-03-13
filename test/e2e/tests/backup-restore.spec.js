@@ -87,7 +87,7 @@ describe('Backup and Restore', function () {
         assert.notEqual(info, null);
         // Verify Json
         assert.equal(
-          info?.preferences?.frequentRpcListDetail[0].chainId,
+          Object.values(info?.network?.networkConfigurations)?.[0].chainId,
           '0x539',
         );
       },
