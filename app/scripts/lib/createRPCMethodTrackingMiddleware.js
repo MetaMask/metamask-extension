@@ -47,7 +47,7 @@ const RATE_LIMIT_MAP = {
 const EVENT_NAME_MAP = {
   [MESSAGE_TYPE.ETH_SIGN]: {
     APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
-    DISABLED: EVENT_NAMES.REQUEST_DISABLED,
+    FAILED: EVENT_NAMES.SIGNATURE_FAILED,
     REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
     REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
   },
@@ -197,6 +197,8 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
+      const properties = {};
+
       // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
       const isDisabledEthSignAdvancedSetting =
         method === MESSAGE_TYPE.ETH_SIGN &&
@@ -206,14 +208,13 @@ export default function createRPCMethodTrackingMiddleware({
 
       let event;
       if (isDisabledRPCMethod) {
-        event = eventType.DISABLED;
+        event = eventType.FAILED;
+        properties.error = res.error;
       } else if (res.error?.code === 4001) {
         event = eventType.REJECTED;
       } else {
         event = eventType.APPROVED;
       }
-
-      const properties = {};
 
       if (eventType.REQUESTED === EVENT_NAMES.SIGNATURE_REQUESTED) {
         properties.signature_type = method;
