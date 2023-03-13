@@ -2,21 +2,34 @@ import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import {
-  TypedMessageManager,
+  MessageManager,
   PersonalMessageManager,
+  TypedMessageManager,
 } from '@metamask/message-manager';
+import { ethErrors } from 'eth-rpc-errors';
+import { bufferToHex } from 'ethereumjs-util';
 
 export default class SignController extends EventEmitter {
-  constructor({ keyringController, sendUpdate, showPopup }) {
+  constructor({
+    keyringController,
+    preferencesController,
+    sendUpdate,
+    showPopup,
+    getState,
+  }) {
     super();
 
     this._keyringController = keyringController;
+    this._preferencesController = preferencesController;
     this._sendUpdate = sendUpdate;
     this._showPopup = showPopup;
+    this._getState = getState;
 
     const initialState = {
+      unapprovedMsgs: {},
       unapprovedPersonalMsgs: {},
       unapprovedTypedMessages: {},
+      unapprovedMsgCount: 0,
       unapprovedPersonalMsgCount: 0,
       unapprovedTypedMessagesCount: 0,
     };
@@ -27,10 +40,12 @@ export default class SignController extends EventEmitter {
       this.memStore.updateState(initialState);
     };
 
+    this._messageManager = new MessageManager();
     this._personalMessageManager = new PersonalMessageManager();
     this._typedMessageManager = new TypedMessageManager();
 
     this._messageManagers = [
+      this._messageManager,
       this._personalMessageManager,
       this._typedMessageManager,
     ];
@@ -39,6 +54,11 @@ export default class SignController extends EventEmitter {
       this._bubbleEvents(messageManager),
     );
 
+    this._subscribeToMessageState(
+      this._messageManager,
+      'unapprovedMsgs',
+      'unapprovedMsgCount',
+    );
     this._subscribeToMessageState(
       this._personalMessageManager,
       'unapprovedPersonalMsgs',
@@ -51,12 +71,61 @@ export default class SignController extends EventEmitter {
     );
   }
 
+  /**
+   * A getter for the number of 'unapproved' Messages in this.messages
+   *
+   * @returns {number} The number of 'unapproved' Messages in this.messages
+   */
+  get unapprovedMsgCount() {
+    return this._messageManager.getUnapprovedMessagesCount();
+  }
+
   get unapprovedPersonalMessagesCount() {
     return this._personalMessageManager.getUnapprovedMessagesCount();
   }
 
   get unapprovedTypedMessagesCount() {
     return this._typedMessageManager.getUnapprovedMessagesCount();
+  }
+
+  /**
+   * Called when a Dapp uses the eth_sign method, to request user approval.
+   * eth_sign is a pure signature of arbitrary data. It is on a deprecation
+   * path, since this data can be a transaction, or can leak private key
+   * information.
+   *
+   * @param {object} msgParams - The params passed to eth_sign.
+   * @param {object} [req] - The original request, containing the origin.
+   */
+  async newUnsignedMessage(msgParams, req) {
+    const {
+      // eslint-disable-next-line camelcase
+      disabledRpcMethodPreferences: { eth_sign },
+    } = this._preferencesController.store.getState();
+
+    // eslint-disable-next-line camelcase
+    if (!eth_sign) {
+      throw ethErrors.rpc.methodNotFound(
+        'eth_sign has been disabled. You must enable it in the advanced settings',
+      );
+    }
+
+    const data = this._normalizeMsgData(msgParams.data);
+
+    // 64 hex + "0x" at the beginning
+    // This is needed because Ethereum's EcSign works only on 32 byte numbers
+    // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607
+    if (data.length === 66 || data.length === 67) {
+      const promise = this._messageManager.addUnapprovedMessageAsync(
+        msgParams,
+        req,
+      );
+      this._sendUpdate();
+      this._showPopup();
+      return await promise;
+    }
+
+    throw ethErrors.rpc.invalidParams('eth_sign requires 32 byte message hash');
   }
 
   /**
@@ -91,6 +160,22 @@ export default class SignController extends EventEmitter {
   }
 
   /**
+   * Signifies user intent to complete an eth_sign method.
+   *
+   * @param {object} msgParams - The params passed to eth_call.
+   * @returns {Promise<object>} Full state update.
+   */
+  async signMessage(msgParams) {
+    return await this._signAbstractMessage(
+      this._messageManager,
+      'signMessage',
+      msgParams,
+      async (cleanMsgParams) =>
+        await this._keyringController.signMessage(cleanMsgParams),
+    );
+  }
+
+  /**
    * Signifies a user's approval to sign a personal_sign message in queue.
    * Triggers signing, and the callback function from newUnsignedPersonalMessage.
    *
@@ -98,7 +183,7 @@ export default class SignController extends EventEmitter {
    * @returns {Promise<object>} A full state update.
    */
   async signPersonalMessage(msgParams) {
-    await this._signAbstractMessage(
+    return await this._signAbstractMessage(
       this._personalMessageManager,
       'signPersonalMessage',
       msgParams,
@@ -110,7 +195,7 @@ export default class SignController extends EventEmitter {
   async signTypedMessage(msgParams) {
     const { version } = msgParams;
 
-    await this._signAbstractMessage(
+    return await this._signAbstractMessage(
       this._typedMessageManager,
       'eth_signTypedData',
       msgParams,
@@ -128,6 +213,15 @@ export default class SignController extends EventEmitter {
         });
       },
     );
+  }
+
+  /**
+   * Used to cancel a message submitted via eth_sign.
+   *
+   * @param {string} msgId - The id of the message to cancel.
+   */
+  cancelMessage(msgId) {
+    this._cancelAbstractMessage(this._messageManager, msgId);
   }
 
   /**
@@ -163,7 +257,7 @@ export default class SignController extends EventEmitter {
       const cleanMsgParams = await messageManager.approveMessage(msgParams);
       const signature = await getSignature(cleanMsgParams);
       messageManager.setMessageStatusSigned(msgId, signature);
-      return this.getState();
+      return this._getState();
     } catch (error) {
       log.info(`MetaMaskController - ${methodName} failed.`, error);
       this.typedMessageManager.setMessageStatusErrored(msgId, error);
@@ -205,5 +299,14 @@ export default class SignController extends EventEmitter {
       };
       return result;
     }, {});
+  }
+
+  _normalizeMsgData(data) {
+    if (data.slice(0, 2) === '0x') {
+      // data is already hex
+      return data;
+    }
+    // data is unicode, convert to hex
+    return bufferToHex(Buffer.from(data, 'utf8'));
   }
 }
