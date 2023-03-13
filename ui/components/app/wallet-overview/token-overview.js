@@ -93,7 +93,7 @@ const TokenOverview = ({ className, token }) => {
           <IconButton
             className="token-overview__button"
             Icon={
-              <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
             }
             label={t('buy')}
             data-testid="token-overview-buy"
