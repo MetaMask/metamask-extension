@@ -8,6 +8,7 @@ const FIXTURE_SERVER_HOST = 'localhost';
 const FIXTURE_SERVER_PORT = 12345;
 
 const fixtureSubstitutionPrefix = '__FIXTURE_SUBSTITUTION__';
+const CONTRACT_KEY = 'CONTRACT';
 const fixtureSubstitutionCommands = {
   currentDateInMilliseconds: 'currentDateInMilliseconds',
 };
@@ -16,13 +17,18 @@ const fixtureSubstitutionCommands = {
  * Perform substitutions on a single piece of state.
  *
  * @param {unknown} partialState - The piece of state to perform substitutions on.
+ * @param {object} contractRegistry - The smart contract registry.
  * @returns {unknown} The partial state with substititions performed.
  */
-function performSubstitution(partialState) {
+function performSubstitution(partialState, contractRegistry) {
   if (Array.isArray(partialState)) {
-    return partialState.map(performSubstitution);
+    return partialState.map((item) =>
+      performSubstitution(item, contractRegistry),
+    );
   } else if (isObject(partialState)) {
-    return mapValues(partialState, performSubstitution);
+    return mapValues(partialState, (item) =>
+      performSubstitution(item, contractRegistry),
+    );
   } else if (
     typeof partialState === 'string' &&
     partialState.startsWith(fixtureSubstitutionPrefix)
@@ -35,6 +41,9 @@ function performSubstitution(partialState) {
       fixtureSubstitutionCommands.currentDateInMilliseconds
     ) {
       return new Date().getTime();
+    } else if (partialState.includes(CONTRACT_KEY)) {
+      const contract = partialState.split(CONTRACT_KEY).pop();
+      return contractRegistry.getContractAddress(contract);
     }
     throw new Error(`Unknown substitution command: ${substitutionCommand}`);
   }
@@ -45,10 +54,13 @@ function performSubstitution(partialState) {
  * Substitute values in the state fixture.
  *
  * @param {object} rawState - The state fixture.
+ * @param {object} contractRegistry - The smart contract registry.
  * @returns {object} The state fixture with substitutions performed.
  */
-function performStateSubstitutions(rawState) {
-  return mapValues(rawState, performSubstitution);
+function performStateSubstitutions(rawState, contractRegistry) {
+  return mapValues(rawState, (item) => {
+    return performSubstitution(item, contractRegistry);
+  });
 }
 
 class FixtureServer {
@@ -91,8 +103,8 @@ class FixtureServer {
     });
   }
 
-  loadJsonState(rawState) {
-    const state = performStateSubstitutions(rawState);
+  loadJsonState(rawState, contractRegistry) {
+    const state = performStateSubstitutions(rawState, contractRegistry);
     this._stateMap.set(CURRENT_STATE_KEY, state);
   }
 
