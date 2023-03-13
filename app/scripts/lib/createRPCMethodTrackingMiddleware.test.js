@@ -118,7 +118,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: EVENT_NAMES.SIGNATURE_REQUESTED,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
-          ui_customizations: [],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -142,7 +141,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: EVENT_NAMES.SIGNATURE_APPROVED,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          ui_customizations: [],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -166,7 +164,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: EVENT_NAMES.SIGNATURE_REJECTED,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
-          ui_customizations: [],
         },
         referrer: { url: 'some.dapp' },
       });
