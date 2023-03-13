@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
+import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { Web3Provider, JsonRpcProvider } from '@ethersproject/providers';
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   NETWORK_IDS,
+  NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
   infuraProjectId,
 } from '../../shared/constants/network';
 import {
@@ -136,7 +138,18 @@ export function initializeDomainSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    web3Provider = new JsonRpcProvider(mainnetProviderUrl);
+    const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
+    const ensAddress = networkMap[network];
+    const networkIsSupported = Boolean(ensAddress);
+    if (networkIsSupported) {
+      web3Provider = new Web3Provider(global.ethereumProvider, {
+        chainId: parseInt(network, 10),
+        name: networkName,
+        ensAddress,
+      });
+    } else {
+      web3Provider = new JsonRpcProvider(mainnetProviderUrl);
+    }
     dispatch(enableDomainLookup(network));
   };
 }
@@ -166,13 +179,19 @@ export function lookupEnsName(domainName) {
       const chainId = getCurrentChainId(state);
       const logMessage = `ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`;
       log.info(logMessage);
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      console.log('***lookupEnsName4.1', { network });
+      const ensAddress = networkMap[network];
+      console.log('***lookupEnsName4.2', { ensAddress });
+      const networkIsSupported = Boolean(ensAddress);
+      console.log('***lookupEnsName4.3', { networkIsSupported });
       const address = await getEVMChainAddress(
         web3Provider,
         trimmedDomainName,
-        chainId,
+        (networkIsSupported ? 1 : chainId),
       );
       console.log('***lookupEnsName5', { address });
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+
       await dispatch(
         domainLookup({
           address,
