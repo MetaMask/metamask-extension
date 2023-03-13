@@ -18,7 +18,7 @@ import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Tooltip from '../../components/ui/tooltip';
 
 export default function DesktopPairingPage({
-  generateOtp,
+  generateDesktopOtp,
   mostRecentOverviewPage,
   showLoadingIndication,
   hideLoadingIndication,
@@ -54,7 +54,7 @@ export default function DesktopPairingPage({
   useEffect(() => {
     const generate = async () => {
       setLastOtpTime(new Date().getTime());
-      const OTP = await generateOtp();
+      const OTP = await generateDesktopOtp();
       setOtp(OTP);
     };
 
@@ -71,7 +71,7 @@ export default function DesktopPairingPage({
       clearInterval(generateIntervalRef.current);
       clearInterval(refreshIntervalRef.current);
     };
-  }, [OTP_DURATION, REFRESH_INTERVAL, generateOtp]);
+  }, [OTP_DURATION, REFRESH_INTERVAL, generateDesktopOtp]);
 
   const renderIcon = () => {
     return (
@@ -186,5 +186,5 @@ DesktopPairingPage.propTypes = {
   mostRecentOverviewPage: PropTypes.string,
   showLoadingIndication: PropTypes.func,
   hideLoadingIndication: PropTypes.func,
-  generateOtp: PropTypes.func,
+  generateDesktopOtp: PropTypes.func,
 };

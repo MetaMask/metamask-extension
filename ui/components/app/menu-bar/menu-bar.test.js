@@ -25,7 +25,7 @@ const initState = {
         accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
       },
     ],
-    frequentRpcListDetail: [],
+    networkConfigurations: {},
   },
 };
 const mockStore = configureStore();

@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import browserAPI from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IN(desktop)
+///: END:ONLY_INCLUDE_IN
 import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
@@ -38,12 +38,10 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import Notifications from '../notifications';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
-///: END:ONLY_INCLUDE_IN(desktop)
+///: END:ONLY_INCLUDE_IN
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -70,14 +68,12 @@ import {
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   NOTIFICATIONS_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
 ///: END:ONLY_INCLUDE_IN
 
@@ -144,7 +140,7 @@ export default class Routes extends Component {
     document.documentElement.setAttribute('data-theme', osTheme);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   componentDidMount() {
     const { history } = this.props;
     browserAPI.runtime.onMessage.addListener(
@@ -206,7 +202,7 @@ export default class Routes extends Component {
         <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
         <Route path={LOCK_ROUTE} component={Lock} exact />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           <Route
             path={`${DESKTOP_ERROR_ROUTE}/:errorType`}
             component={DesktopErrorPage}
@@ -281,7 +277,7 @@ export default class Routes extends Component {
         <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
         <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           <Authenticated
             path={DESKTOP_PAIRING_ROUTE}
             component={DesktopPairingPage}
@@ -345,7 +341,7 @@ export default class Routes extends Component {
   hideAppHeader() {
     const { location } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const isDesktopConnectionLostScreen = Boolean(
       matchPath(location.pathname, {
         path: `${DESKTOP_ERROR_ROUTE}/${EXTENSION_ERROR_PAGE_TYPES.CONNECTION_LOST}`,

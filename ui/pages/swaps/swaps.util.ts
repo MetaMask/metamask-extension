@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import abi from 'human-standard-token-abi';
 import { Json } from '@metamask/controller-utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import {
@@ -213,17 +212,6 @@ export async function fetchTokenPrice(address: string): Promise<any> {
     { cacheRefreshTime: 60000 },
   );
   return prices?.[address]?.eth;
-}
-
-export async function fetchTokenBalance(
-  address: string,
-  userAddress: string,
-): Promise<any> {
-  const tokenContract = (global as any).eth.contract(abi).at(address);
-  const tokenBalancePromise = tokenContract
-    ? tokenContract.balanceOf(userAddress)
-    : Promise.resolve();
-  return await tokenBalancePromise;
 }
 
 export async function fetchSwapsGasPrices(chainId: any): Promise<
