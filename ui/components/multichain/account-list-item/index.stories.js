@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { AccountListItem } from './account-list-item';
+import { AccountListItem } from '.';
 
 const store = configureStore(testData);
 

@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import { AccountListItemMenu } from '../account-list-item-menu/account-list-item-menu';
+import { AccountListItemMenu } from '../account-list-item-menu';
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,

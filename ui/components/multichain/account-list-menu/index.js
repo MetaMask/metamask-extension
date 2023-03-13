@@ -11,7 +11,7 @@ import {
   TextFieldSearch,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../account-list-item/account-list-item';
+import { AccountListItem } from '../account-list-item';
 import {
   BLOCK_SIZES,
   Size,
