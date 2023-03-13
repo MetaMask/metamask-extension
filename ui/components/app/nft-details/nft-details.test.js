@@ -10,9 +10,9 @@ import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   removeAndIgnoreNft,
-  setRemoveCollectibleMessage,
+  setRemoveNftMessage,
 } from '../../../store/actions';
-import CollectibleDetails from './nft-details';
+import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');
 
@@ -36,17 +36,17 @@ jest.mock('../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../store/actions.ts'),
   checkAndUpdateSingleNftOwnershipStatus: jest.fn().mockReturnValue(jest.fn()),
   removeAndIgnoreNft: jest.fn().mockReturnValue(jest.fn()),
-  setRemoveCollectibleMessage: jest.fn().mockReturnValue(jest.fn()),
+  setRemoveNftMessage: jest.fn().mockReturnValue(jest.fn()),
 }));
 
-describe('Collectible Details', () => {
+describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
-  const collectibles =
-    mockState.metamask.allNftContracts[mockState.metamask.selectedAddress][5];
+  const nfts =
+    mockState.metamask.allNfts[mockState.metamask.selectedAddress][5];
 
   const props = {
-    collectible: collectibles[5],
+    nft: nfts[5],
   };
 
   beforeEach(() => {
@@ -55,7 +55,7 @@ describe('Collectible Details', () => {
 
   it('should match minimal props and state snapshot', () => {
     const { container } = renderWithProvider(
-      <CollectibleDetails {...props} />,
+      <NftDetails {...props} />,
       mockStore,
     );
 
@@ -64,7 +64,7 @@ describe('Collectible Details', () => {
 
   it(`should route to '/' route when the back button is clicked`, () => {
     const { queryByTestId } = renderWithProvider(
-      <CollectibleDetails {...props} />,
+      <NftDetails {...props} />,
       mockStore,
     );
 
@@ -75,51 +75,51 @@ describe('Collectible Details', () => {
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it(`should call removeAndIgnoreNft with proper collectible details and route to '/' when removing collectible`, () => {
+  it(`should call removeAndIgnoreNFT with proper nft details and route to '/' when removing nft`, () => {
     const { queryByTestId } = renderWithProvider(
-      <CollectibleDetails {...props} />,
+      <NftDetails {...props} />,
       mockStore,
     );
 
-    const openOptionMenuButton = queryByTestId('collectible-options__button');
+    const openOptionMenuButton = queryByTestId('nft-options__button');
     fireEvent.click(openOptionMenuButton);
 
-    const removeCollectibleButton = queryByTestId('collectible-item-remove');
-    fireEvent.click(removeCollectibleButton);
+    const removeNftButton = queryByTestId('nft-item-remove');
+    fireEvent.click(removeNftButton);
 
     expect(removeAndIgnoreNft).toHaveBeenCalledWith(
-      collectibles[5].address,
-      collectibles[5].tokenId,
+      nfts[5].address,
+      nfts[5].tokenId,
     );
-    expect(setRemoveCollectibleMessage).toHaveBeenCalledWith('success');
+    expect(setRemoveNftMessage).toHaveBeenCalledWith('success');
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it('should copy collectible address', async () => {
+  it('should copy nft address', async () => {
     const { queryByTestId } = renderWithProvider(
-      <CollectibleDetails {...props} />,
+      <NftDetails {...props} />,
       mockStore,
     );
 
-    const copyAddressButton = queryByTestId('collectible-address-copy');
+    const copyAddressButton = queryByTestId('nft-address-copy');
     fireEvent.click(copyAddressButton);
 
-    expect(copyToClipboard).toHaveBeenCalledWith(collectibles[5].address);
+    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address);
   });
 
   it('should navigate to draft transaction send route with ERC721 data', async () => {
     const { queryByTestId } = renderWithProvider(
-      <CollectibleDetails {...props} />,
+      <NftDetails {...props} />,
       mockStore,
     );
 
-    const collectibleSendButton = queryByTestId('collectible-send-button');
-    fireEvent.click(collectibleSendButton);
+    const nftSendButton = queryByTestId('nft-send-button');
+    fireEvent.click(nftSendButton);
 
     await waitFor(() => {
       expect(startNewDraftTransaction).toHaveBeenCalledWith({
         type: AssetType.NFT,
-        details: collectibles[5],
+        details: nfts[5],
       });
 
       expect(mockHistoryPush).toHaveBeenCalledWith(SEND_ROUTE);
@@ -127,18 +127,18 @@ describe('Collectible Details', () => {
   });
 
   it('should not render send button if isCurrentlyOwned is false', () => {
-    const sixthCollectibleProps = {
-      collectible: collectibles[6],
+    const sixthNftProps = {
+      nft: nfts[6],
     };
-    collectibles[6].isCurrentlyOwned = false;
+    nfts[6].isCurrentlyOwned = false;
 
     const { queryByTestId } = renderWithProvider(
-      <CollectibleDetails {...sixthCollectibleProps} />,
+      <NftDetails {...sixthNftProps} />,
       mockStore,
     );
 
-    const collectibleSendButton = queryByTestId('collectible-send-button');
-    expect(collectibleSendButton).not.toBeInTheDocument();
+    const nftSendButton = queryByTestId('nft-send-button');
+    expect(nftSendButton).not.toBeInTheDocument();
   });
 
   describe(`Alternative Networks' OpenSea Links`, () => {
@@ -146,24 +146,24 @@ describe('Collectible Details', () => {
       global.platform = { openTab: jest.fn() };
 
       const { queryByTestId } = renderWithProvider(
-        <CollectibleDetails {...props} />,
+        <NftDetails {...props} />,
         mockStore,
       );
 
-      const openOptionMenuButton = queryByTestId('collectible-options__button');
+      const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('collectible-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${collectibles[5].address}/${collectibles[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
 
-    it('should open tab to mainnet opensea url with collectible info', async () => {
+    it('should open tab to mainnet opensea url with nft info', async () => {
       global.platform = { openTab: jest.fn() };
 
       const mainnetState = {
@@ -178,24 +178,24 @@ describe('Collectible Details', () => {
       const mainnetMockStore = configureMockStore([thunk])(mainnetState);
 
       const { queryByTestId } = renderWithProvider(
-        <CollectibleDetails {...props} />,
+        <NftDetails {...props} />,
         mainnetMockStore,
       );
 
-      const openOptionMenuButton = queryByTestId('collectible-options__button');
+      const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('collectible-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://opensea.io/assets/${collectibles[5].address}/${collectibles[5].tokenId}`,
+          url: `https://opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
 
-    it('should open tab to polygon opensea url with collectible info', async () => {
+    it('should open tab to polygon opensea url with nft info', async () => {
       const polygonState = {
         ...mockState,
         metamask: {
@@ -208,24 +208,24 @@ describe('Collectible Details', () => {
       const polygonMockStore = configureMockStore([thunk])(polygonState);
 
       const { queryByTestId } = renderWithProvider(
-        <CollectibleDetails {...props} />,
+        <NftDetails {...props} />,
         polygonMockStore,
       );
 
-      const openOptionMenuButton = queryByTestId('collectible-options__button');
+      const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('collectible-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://opensea.io/assets/matic/${collectibles[5].address}/${collectibles[5].tokenId}`,
+          url: `https://opensea.io/assets/matic/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
 
-    it('should open tab to sepolia opensea url with collectible info', async () => {
+    it('should open tab to sepolia opensea url with nft info', async () => {
       const sepoliaState = {
         ...mockState,
         metamask: {
@@ -238,19 +238,19 @@ describe('Collectible Details', () => {
       const sepoliaMockStore = configureMockStore([thunk])(sepoliaState);
 
       const { queryByTestId } = renderWithProvider(
-        <CollectibleDetails {...props} />,
+        <NftDetails {...props} />,
         sepoliaMockStore,
       );
 
-      const openOptionMenuButton = queryByTestId('collectible-options__button');
+      const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('collectible-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
       fireEvent.click(openOpenSea);
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${collectibles[5].address}/${collectibles[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -270,14 +270,14 @@ describe('Collectible Details', () => {
       );
 
       const { queryByTestId } = renderWithProvider(
-        <CollectibleDetails {...props} />,
+        <NftDetails {...props} />,
         randomNetworkMockStore,
       );
 
-      const openOptionMenuButton = queryByTestId('collectible-options__button');
+      const openOptionMenuButton = queryByTestId('nft-options__button');
       fireEvent.click(openOptionMenuButton);
 
-      const openOpenSea = queryByTestId('collectible-options__view-on-opensea');
+      const openOpenSea = queryByTestId('nft-options__view-on-opensea');
       await waitFor(() => {
         expect(openOpenSea).not.toBeInTheDocument();
       });

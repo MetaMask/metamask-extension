@@ -23,9 +23,9 @@ The `ButtonLink` accepts all [ButtonBase](/docs/components-componentlibrary-butt
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonLink`. Defaults to `SIZES.AUTO`.
+Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonLink`. Defaults to `Size.auto`.
 
-Optional: `BUTTON_LINK_SIZES` from `../../component-library` object can be used instead of `SIZES`
+Optional: `BUTTON_LINK_SIZES` from `../../component-library` object can be used instead of `Size`
 
 Possible sizes include:
 
@@ -36,7 +36,7 @@ Possible sizes include:
 - `Size.inherit` inherits the font-size of the parent element. Used for inline links in paragraphs.
 
 <Canvas>
-  <Story id="components-componentlibrary-buttonlink--size" />
+  <Story id="components-componentlibrary-buttonlink--size-story" />
 </Canvas>
 
 ```jsx
@@ -57,18 +57,18 @@ import { ButtonLink, Text, TextVariant } from '../../component-library';
 </ButtonLink>
 
 <Text variant={TextVariant.bodyLgMedium}>
-  Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
+  Inherits the font-size of the parent element. <ButtonLink size={Size.inherit}>Learn more</ButtonLink>
 </Text>
 <Text variant={TextVariant.bodyMd}>
-  Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
+  Inherits the font-size of the parent element. <ButtonLink size={Size.inherit}>Learn more</ButtonLink>
 </Text>
 <Text variant={TextVariant.bodySm}>
-  Inherits the font-size of the parent element. <ButtonLink size={SIZES.INHERIT}>Learn more</ButtonLink>
+  Inherits the font-size of the parent element. <ButtonLink size={Size.inherit}>Learn more</ButtonLink>
 </Text>
 
 <Text variant={TextVariant.bodyXs}>
   Inherits the font-size of the parent element and example with textProps override for a success color.
-   <ButtonLink size={Size.INHERIT}>Learn more</ButtonLink>
+   <ButtonLink size={Size.inherit}>Learn more</ButtonLink>
 </Text>
 ```
 
@@ -101,9 +101,27 @@ import { ButtonLink } from '../../component-library';
 <ButtonLink href="/">Href example</ButtonLink>;
 ```
 
+### External Link
+
+When an `externalLink` prop is passed it adds the `target="_blank"` and `rel="noopener noreferrer"` attributes. 
+
+`rel="noreferrer noopener"` is used in links to prevent security vulnerabilities that can be exploited by malicious websites. It disables the window.opener property and prevents the new page from sending the referrer information, providing an additional layer of security.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--external-link" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../component-library';
+
+<ButtonLink href="https://metamask.io" externalLink>
+  Anchor element with external link
+</ButtonLink>;
+```
+
 ### Hit area
 
-The default hit area for `ButtonLink` is the width of the text and height based on the `size` prop which is set to `SIZES.AUTO` by default. There may be times when you want to increase the hit area of the `ButtonLink`. To do this you can use the `Box` props `paddingLeft` and `paddingRight`. Or alternatively you can use the `block` prop which sets the width to 100%.
+The default hit area for `ButtonLink` is the width of the text and height based on the `size` prop which is set to `Size.auto` by default. There may be times when you want to increase the hit area of the `ButtonLink`. To do this you can use the `Box` props `paddingLeft` and `paddingRight`. Or alternatively you can use the `block` prop which sets the width to 100%.
 
 <Canvas>
   <Story id="components-componentlibrary-buttonlink--hit-area" />
@@ -115,16 +133,16 @@ import { ButtonLink } from '../../component-library';
 <ButtonLink paddingLeft={4} paddingRight={4}>
   Auto (default)
 </ButtonLink>
-<ButtonLink size={SIZES.SM} paddingLeft={4} paddingRight={4}>
+<ButtonLink size={Size.SM} paddingLeft={4} paddingRight={4}>
   Small
 </ButtonLink>
-<ButtonLink size={SIZES.MD} paddingLeft={4} paddingRight={4}>
+<ButtonLink size={Size.MD} paddingLeft={4} paddingRight={4}>
   Medium
 </ButtonLink>
-<ButtonLink size={SIZES.LG} paddingLeft={4} paddingRight={4}>
+<ButtonLink size={Size.LG} paddingLeft={4} paddingRight={4}>
   Large
 </ButtonLink>
-<ButtonLink size={SIZES.LG} block>
+<ButtonLink size={Size.LG} block>
   Large block
 </ButtonLink>
 ```

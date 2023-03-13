@@ -106,7 +106,7 @@ export const SizeStory = (args) => (
 );
 SizeStory.storyName = 'Size';
 
-Size.args = {
+SizeStory.args = {
   iconName: ICON_NAMES.CONFIRMATION,
 };
 

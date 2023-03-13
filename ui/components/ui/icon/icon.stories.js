@@ -22,11 +22,6 @@ import SendIcon from './send-icon.component';
 import Sign from './sign-icon.component';
 import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
-import IconCheck from './icon-check';
-import IconCog from './icon-cog';
-import IconConnect from './icon-connect';
-import IconImport from './icon-import';
-import IconPlus from './icon-plus';
 import IconEye from './icon-eye';
 import IconEyeSlash from './icon-eye-slash';
 import IconTokenSearch from './icon-token-search';
@@ -91,6 +86,13 @@ IconItem.propTypes = {
 
 export const DefaultStory = (args) => (
   <div>
+    <Typography
+      variant={TypographyVariant.H2}
+      color={TextColor.errorDefault}
+      boxProps={{ marginBottom: 4 }}
+    >
+      DEPRECATED
+    </Typography>
     <Typography variant={TypographyVariant.H2} boxProps={{ marginBottom: 4 }}>
       Icons
     </Typography>
@@ -112,22 +114,10 @@ export const DefaultStory = (args) => (
           gridTemplateColumns: 'repeat(auto-fill, 176px)',
         }}
       >
-        <IconItem Component={<IconCheck {...args} />} />
-        <IconItem Component={<IconPlus {...args} />} />
-        <IconItem Component={<IconImport {...args} />} />
-        <IconItem Component={<IconConnect {...args} />} />
-        <IconItem Component={<IconCog {...args} />} />
         <IconItem Component={<IconTokenSearch {...args} />} />
         <IconItem Component={<SearchIcon {...args} />} />
       </div>
     </Box>
-    <Typography
-      variant={TypographyVariant.H2}
-      color={TextColor.errorDefault}
-      boxProps={{ marginBottom: 4 }}
-    >
-      DEPRECATED
-    </Typography>
     <Box marginBottom={4}>
       <div
         style={{
