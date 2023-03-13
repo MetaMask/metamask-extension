@@ -150,7 +150,6 @@ import IncomingTransactionsController from './controllers/incoming-transactions'
 import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
-import PersonalMessageManager from './lib/personal-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
@@ -1058,12 +1057,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
-    this.personalMessageManager = new PersonalMessageManager({
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-    });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1133,7 +1126,7 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.on(NETWORK_EVENTS.NETWORK_WILL_CHANGE, () => {
       this.txController.txStateManager.clearUnapprovedTxs();
       this.encryptionPublicKeyManager.clearUnapproved();
-      this.personalMessageManager.clearUnapproved();
+      // this.personalMessageManager.clearUnapproved();
       // this.typedMessageManager.clearUnapproved();
       this.decryptMessageManager.clearUnapproved();
       this.messageManager.clearUnapproved();
@@ -1174,7 +1167,10 @@ export default class MetamaskController extends EventEmitter {
       processTypedMessageV4: this.signController.newUnsignedTypedMessage.bind(
         this.signController,
       ),
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processPersonalMessage:
+        this.signController.newUnsignedPersonalMessage.bind(
+          this.signController,
+        ),
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
@@ -1199,7 +1195,6 @@ export default class MetamaskController extends EventEmitter {
       TxController: this.txController.memStore,
       TokenRatesController: this.tokenRatesController,
       MessageManager: this.messageManager.memStore,
-      PersonalMessageManager: this.personalMessageManager.memStore,
       DecryptMessageManager: this.decryptMessageManager.memStore,
       EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
       SignController: this.signController.memStore,
@@ -1281,7 +1276,6 @@ export default class MetamaskController extends EventEmitter {
       this.accountTracker.resetState,
       this.txController.resetState,
       this.messageManager.resetState,
-      this.personalMessageManager.resetState,
       this.decryptMessageManager.resetState,
       this.encryptionPublicKeyManager.resetState,
       this.signController.resetState,
@@ -1982,11 +1976,13 @@ export default class MetamaskController extends EventEmitter {
       signMessage: this.signMessage.bind(this),
       cancelMessage: this.cancelMessage.bind(this),
 
-      // personalMessageManager
-      signPersonalMessage: this.signPersonalMessage.bind(this),
-      cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
-
-      // typedMessageManager
+      // signController
+      signPersonalMessage: this.signController.signPersonalMessage.bind(
+        this.signController,
+      ),
+      cancelPersonalMessage: this.signController.cancelPersonalMessage.bind(
+        this.signController,
+      ),
       signTypedMessage: this.signController.signTypedMessage.bind(
         this.signController,
       ),
@@ -3204,69 +3200,6 @@ export default class MetamaskController extends EventEmitter {
    */
   cancelMessage(msgId) {
     const { messageManager } = this;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
-
-  // personal_sign methods:
-
-  /**
-   * Called when a dapp uses the personal_sign method.
-   * This is identical to the Geth eth_sign method, and may eventually replace
-   * eth_sign.
-   *
-   * We currently define our eth_sign and personal_sign mostly for legacy Dapps.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @param {object} [req] - The original request, containing the origin.
-   */
-  async newUnsignedPersonalMessage(msgParams, req) {
-    const promise = this.personalMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
-
-  /**
-   * Signifies a user's approval to sign a personal_sign message in queue.
-   * Triggers signing, and the callback function from newUnsignedPersonalMessage.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @returns {Promise<object>} A full state update.
-   */
-  async signPersonalMessage(msgParams) {
-    log.info('MetaMaskController - signPersonalMessage');
-    const msgId = msgParams.metamaskId;
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    try {
-      const cleanMsgParams = await this.personalMessageManager.approveMessage(
-        msgParams,
-      );
-      const rawSig = await this.keyringController.signPersonalMessage(
-        cleanMsgParams,
-      );
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_personalSign failed', error);
-      this.personalMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a personal_sign type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelPersonalMessage(msgId) {
-    const messageManager = this.personalMessageManager;
     messageManager.rejectMsg(msgId);
     return this.getState();
   }

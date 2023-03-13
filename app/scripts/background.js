@@ -660,10 +660,6 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.personalMessageManager.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
   controller.decryptMessageManager.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -709,11 +705,11 @@ export function setupController(initState, initLangCode, overrides) {
   function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedMsgCount } = controller.messageManager;
-    const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
+    const { unapprovedPersonalMsgCount, unapprovedTypedMessagesCount } =
+      controller.signController;
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const { unapprovedEncryptionPublicKeyMsgCount } =
       controller.encryptionPublicKeyManager;
-    const { unapprovedTypedMessagesCount } = controller.signController;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
@@ -755,22 +751,7 @@ export function setupController(initState, initLangCode, overrides) {
           REJECT_NOTFICIATION_CLOSE_SIG,
         ),
       );
-    controller.personalMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.personalMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
-    controller.typedMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.typedMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE_SIG,
-        ),
-      );
+    controller.signController.rejectUnapproved();
     controller.decryptMessageManager.messages
       .filter((msg) => msg.status === 'unapproved')
       .forEach((tx) =>
