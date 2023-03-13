@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 
-const version = 81;
+const version = 83;
 /**
  * Adds the `chainId` property to the advancedGasFee.
  */
