@@ -4,6 +4,7 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { CHAIN_IDS } = require('../../shared/constants/network');
+const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 
 function defaultFixture() {
   return {
@@ -419,16 +420,6 @@ class FixtureBuilder {
     return this;
   }
 
-  withNftsController(data) {
-    merge(
-      this.fixture.data.NftController
-        ? this.fixture.data.NftController
-        : (this.fixture.data.NftController = {}),
-      data,
-    );
-    return this;
-  }
-
   withCurrencyController(data) {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -493,6 +484,91 @@ class FixtureBuilder {
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
     return this;
+  }
+
+  withNetworkControllerSupportEIP1559() {
+    merge(this.fixture.data.NetworkController, {
+      networkDetails: {
+        EIPS: { 1559: true },
+      },
+    });
+    return this;
+  }
+
+  withNftController(data) {
+    merge(
+      this.fixture.data.NftController
+        ? this.fixture.data.NftController
+        : (this.fixture.data.NftController = {}),
+      data,
+    );
+    return this;
+  }
+
+  withNftControllerERC1155() {
+    return this.withNftController({
+      allNftContracts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
+            },
+          ],
+        },
+      },
+      allNfts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
+              tokenId: '1',
+              favorite: false,
+              isCurrentlyOwned: true,
+              name: 'Rocks',
+              description: 'This is a collection of Rock NFTs.',
+              image:
+                'ipfs://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi',
+              standard: 'ERC1155',
+            },
+          ],
+        },
+      },
+      ignoredNfts: [],
+    });
+  }
+
+  withNftControllerERC721() {
+    return this.withNftController({
+      allNftContracts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              name: 'TestDappCollectibles',
+              symbol: 'TDC',
+            },
+          ],
+        },
+      },
+      allNfts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          1337: [
+            {
+              address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
+              description: 'Test Dapp Collectibles for testing.',
+              favorite: false,
+              image:
+                'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
+              isCurrentlyOwned: true,
+              name: 'Test Dapp Collectibles #1',
+              standard: 'ERC721',
+              tokenId: '1',
+            },
+          ],
+        },
+      },
+      ignoredNfts: [],
+    });
   }
 
   withOnboardingController(data) {
@@ -1319,15 +1395,6 @@ class FixtureBuilder {
         },
       },
     });
-  }
-
-  withNetworkSupportEIP1559() {
-    merge(this.fixture.data.NetworkController, {
-      networkDetails: {
-        EIPS: { 1559: true },
-      },
-    });
-    return this;
   }
 
   build() {
