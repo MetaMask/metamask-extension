@@ -52,6 +52,9 @@ workflows:
           requires:
             - prep-deps
       - prep-build-desktop:
+          filters:
+            branches:
+              ignore: master
           requires:
             - prep-deps
       - prep-build-flask:
@@ -134,6 +137,9 @@ workflows:
           requires:
             - prep-build-beta
       - validate-source-maps-desktop:
+          filters:
+            branches:
+              ignore: master
           requires:
             - prep-build-desktop
       - validate-source-maps-flask:
@@ -148,6 +154,9 @@ workflows:
             - prep-deps
             - prep-build-beta
       - test-mozilla-lint-desktop:
+          filters:
+            branches:
+              ignore: master
           requires:
             - prep-deps
             - prep-build-desktop
@@ -392,25 +401,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - when:
-          condition:
-            not:
-              matches:
-                pattern: /^master$/
-                value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:dist
-                command: yarn build --build-type desktop dist
-      - when:
-          condition:
-            matches:
-              pattern: /^master$/
-              value: << pipeline.git.branch >>
-          steps:
-            - run:
-                name: build:prod
-                command: yarn build --build-type desktop prod
+      - run:
+          name: build:dist
+          command: yarn build --build-type desktop dist
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
