@@ -151,7 +151,6 @@ import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
 import PersonalMessageManager from './lib/personal-message-manager';
-import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
@@ -162,6 +161,7 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import SignController from './controllers/sign';
 
 import {
   CaveatMutatorFactories,
@@ -1074,13 +1074,11 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
     });
-    this.typedMessageManager = new TypedMessageManager({
-      getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
+
+    this.signController = new SignController({
+      keyringController: this.keyringController,
+      sendUpdate: this.sendUpdate,
+      showPopup: this.opts.showUserConfirmation,
     });
 
     this.swapsController = new SwapsController({
@@ -1136,7 +1134,7 @@ export default class MetamaskController extends EventEmitter {
       this.txController.txStateManager.clearUnapprovedTxs();
       this.encryptionPublicKeyManager.clearUnapproved();
       this.personalMessageManager.clearUnapproved();
-      this.typedMessageManager.clearUnapproved();
+      // this.typedMessageManager.clearUnapproved();
       this.decryptMessageManager.clearUnapproved();
       this.messageManager.clearUnapproved();
     });
@@ -1167,9 +1165,15 @@ export default class MetamaskController extends EventEmitter {
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
       processEthSignMessage: this.newUnsignedMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
+      processTypedMessage: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessageV3: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessageV4: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
@@ -1198,7 +1202,7 @@ export default class MetamaskController extends EventEmitter {
       PersonalMessageManager: this.personalMessageManager.memStore,
       DecryptMessageManager: this.decryptMessageManager.memStore,
       EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
-      TypesMessageManager: this.typedMessageManager.memStore,
+      SignController: this.signController.memStore,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
@@ -1280,7 +1284,7 @@ export default class MetamaskController extends EventEmitter {
       this.personalMessageManager.resetState,
       this.decryptMessageManager.resetState,
       this.encryptionPublicKeyManager.resetState,
-      this.typedMessageManager.resetState,
+      this.signController.resetState,
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
@@ -1983,8 +1987,12 @@ export default class MetamaskController extends EventEmitter {
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
 
       // typedMessageManager
-      signTypedMessage: this.signTypedMessage.bind(this),
-      cancelTypedMessage: this.cancelTypedMessage.bind(this),
+      signTypedMessage: this.signController.signTypedMessage.bind(
+        this.signController,
+      ),
+      cancelTypedMessage: this.signController.cancelTypedMessage.bind(
+        this.signController,
+      ),
 
       // decryptMessageManager
       decryptMessage: this.decryptMessage.bind(this),
@@ -3451,74 +3459,6 @@ export default class MetamaskController extends EventEmitter {
    */
   cancelEncryptionPublicKey(msgId) {
     const messageManager = this.encryptionPublicKeyManager;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
-
-  // eth_signTypedData methods
-
-  /**
-   * Called when a dapp uses the eth_signTypedData method, per EIP 712.
-   *
-   * @param {object} msgParams - The params passed to eth_signTypedData.
-   * @param {object} [req] - The original request, containing the origin.
-   * @param version
-   */
-  async newUnsignedTypedMessage(msgParams, req, version) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-      version,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
-
-  /**
-   * The method for a user approving a call to eth_signTypedData, per EIP 712.
-   * Triggers the callback in newUnsignedTypedMessage.
-   *
-   * @param {object} msgParams - The params passed to eth_signTypedData.
-   * @returns {object} Full state update.
-   */
-  async signTypedMessage(msgParams) {
-    log.info('MetaMaskController - eth_signTypedData');
-    const msgId = msgParams.metamaskId;
-    const { version } = msgParams;
-    try {
-      const cleanMsgParams = await this.typedMessageManager.approveMessage(
-        msgParams,
-      );
-
-      // For some reason every version after V1 used stringified params.
-      if (version !== 'V1') {
-        // But we don't have to require that. We can stop suggesting it now:
-        if (typeof cleanMsgParams.data === 'string') {
-          cleanMsgParams.data = JSON.parse(cleanMsgParams.data);
-        }
-      }
-
-      const signature = await this.keyringController.signTypedMessage(
-        cleanMsgParams,
-        { version },
-      );
-      this.typedMessageManager.setMsgStatusSigned(msgId, signature);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_signTypedData failed.', error);
-      this.typedMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a eth_signTypedData type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelTypedMessage(msgId) {
-    const messageManager = this.typedMessageManager;
     messageManager.rejectMsg(msgId);
     return this.getState();
   }

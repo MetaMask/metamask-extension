@@ -672,7 +672,7 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.typedMessageManager.on(
+  controller.signController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -713,7 +713,7 @@ export function setupController(initState, initLangCode, overrides) {
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
     const { unapprovedEncryptionPublicKeyMsgCount } =
       controller.encryptionPublicKeyManager;
-    const { unapprovedTypedMessagesCount } = controller.typedMessageManager;
+    const { unapprovedTypedMessagesCount } = controller.signController;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
