@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dropdown from '../../ui/dropdown';
+import Box from '../../ui/box';
+import { Color } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const JwtDropdown = (props) => {
@@ -8,8 +11,14 @@ const JwtDropdown = (props) => {
   const { currentJwt, jwtList } = props;
 
   return (
-    <div>
-      <span className="custody-search-jwt__select-title">{t('selectJWT')}</span>
+    <Box>
+      <Text
+        padding={1}
+        color={Color.textDefault}
+        className="custody-search-jwt__select-title"
+      >
+        {t('selectJWT')}
+      </Text>
       <Dropdown
         data-testid="jwt-dropdown"
         className="custody-search-jwt__select"
@@ -36,7 +45,7 @@ const JwtDropdown = (props) => {
         ]}
         onChange={(opt) => props.onChange(opt.value)}
       />
-    </div>
+    </Box>
   );
 };
 

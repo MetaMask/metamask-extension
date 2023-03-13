@@ -6,8 +6,5 @@
 
   &-title {
     @include Paragraph;
-
-    color: var(--scorpion);
-    padding: 10px 0;
   }
 }
