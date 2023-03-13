@@ -1,5 +1,5 @@
 
-.popover {
+.mm-popover {
   // TODO
 
   &__header {
@@ -19,15 +19,15 @@
   }
 }
 
-.arrow,
-.arrow::before {
+.mm-popover__arrow,
+.mm-popover__arrow::before {
   position: absolute;
   width: 8px;
   height: 8px;
   background: inherit;
 }
 
-.arrow {
+.mm-popover__arrow {
   width: 40px;
   height: 40px;
   // display: flex;
@@ -36,7 +36,7 @@
   visibility: hidden;
 }
 
-.arrow::before {
+.mm-popover__arrow::before {
   display: block;
   background-color: inherit;
   border: 1px solid;
@@ -50,7 +50,7 @@
   border-radius: 2px  0 0 0;
 }
 
-.popover[data-popper-placement^='top'] > .arrow {
+.mm-popover[data-popper-placement^='top'] > .mm-popover__arrow {
   bottom: -20px;
 
   &::before {
@@ -58,11 +58,11 @@
   }
 }
 
-.popover[data-popper-placement^='bottom'] > .arrow {
+.mm-popover[data-popper-placement^='bottom'] > .mm-popover__arrow {
   top: -20px;
 }
 
-.popover[data-popper-placement^='left'] > .arrow {
+.mm-popover[data-popper-placement^='left'] > .mm-popover__arrow {
   right: -20px;
 
   &::before {
@@ -70,7 +70,7 @@
   }
 }
 
-.popover[data-popper-placement^='right'] > .arrow {
+.mm-popover[data-popper-placement^='right'] > .mm-popover__arrow {
   left: -20px;
 
   &::before {

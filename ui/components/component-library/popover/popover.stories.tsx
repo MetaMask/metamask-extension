@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box/box';
 import {
-  Color,
   AlignItems,
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { TextField } from '..';
 import README from './README.mdx';
 import { Popover, PopoverPosition } from '.';
 
@@ -68,23 +67,23 @@ export default {
   args: {
     children: 'Popover',
   },
-};
+} as ComponentMeta<typeof Popover>;
 
-export const DefaultStory = (args) => {
+const Template: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleClick = () => {
-    setIsOpen(!isOpen);
-  };
+  // const handleClick = () => {
+  //   setIsOpen(!isOpen);
+  // };
 
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
+  // const handleMouseEnter = () => {
+  //   setIsOpen(true);
+  // };
 
-  const handleMouseLeave = () => {
-    setIsOpen(false);
-  };
+  // const handleMouseLeave = () => {
+  //   setIsOpen(false);
+  // };
 
   const handleFocus = () => {
     setIsOpen(true);
@@ -136,10 +135,11 @@ export const DefaultStory = (args) => {
         position={PopoverPosition.bottomStart}
         referenceElement={referenceElement}
         isOpen={isOpen}
-        // hasArrow
-        matchWidth
+        hasArrow
+        // matchWidth
         onClose={handleClose}
         onBack={() => console.log('back')}
+        title="Popover Title"
         {...args}
       >
         write a description here about a popover
@@ -148,4 +148,5 @@ export const DefaultStory = (args) => {
   );
 };
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
