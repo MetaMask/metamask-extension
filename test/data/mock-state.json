@@ -76,7 +76,14 @@
     "provider": {
       "type": "rpc",
       "chainId": "0x5",
-      "ticker": "ETH"
+      "ticker": "ETH",
+      "id": "testNetworkConfigurationId"
+    },
+    "networkConfigurations": {
+      "testNetworkConfigurationId": {
+        "rpcUrl": "https://testrpc.com",
+        "chainId": "0x1"
+      }
     },
     "keyrings": [
       {
@@ -465,7 +472,14 @@
             "name": "MUNK #1",
             "description": null,
             "image": "ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL",
-            "standard": "ERC721"
+            "standard": "ERC721",
+            "lastSale": {
+              "total_price": "4900000000000000",
+              "event_timestamp": "2023-01-18T21:51:23",
+              "payment_token": {
+                "symbol": "ETH"
+              }
+            }
           },
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",

@@ -1,17 +1,18 @@
 export {
   AvatarAccount,
-  AVATAR_ACCOUNT_SIZES,
-  AVATAR_ACCOUNT_TYPES,
-  AVATAR_ACCOUNT_DIAMETERS,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+  AvatarAccountDiameter,
 } from './avatar-account';
 export { AvatarFavicon, AVATAR_FAVICON_SIZES } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
 export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
 export { AvatarToken } from './avatar-token';
 export {
-  AvatarWithBadge,
-  AVATAR_WITH_BADGE_POSTIONS,
-} from './avatar-with-badge';
+  BadgeWrapper,
+  BadgeWrapperPosition,
+  BadgeWrapperAnchorElementShape,
+} from './badge-wrapper';
 export { AvatarBase } from './avatar-base';
 export { Button, BUTTON_TYPES, BUTTON_SIZES } from './button';
 export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
@@ -34,3 +35,4 @@ export { TextFieldSearch } from './text-field-search';
 // Molecules
 export { BannerBase } from './banner-base';
 export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
+export { BannerTip, BannerTipLogoType } from './banner-tip';
