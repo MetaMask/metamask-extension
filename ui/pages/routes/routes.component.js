@@ -90,7 +90,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { AccountListMenu } from '../../components/multichain/account-list-menu/account-list-menu';
+import { AccountListMenu } from '../../components/multichain';
 
 export default class Routes extends Component {
   static propTypes = {
