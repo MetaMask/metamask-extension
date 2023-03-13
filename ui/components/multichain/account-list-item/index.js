@@ -4,6 +4,8 @@ import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getRpcPrefsForCurrentProvider } from '../../../selectors';
+import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
 import Box from '../../ui/box/box';
@@ -33,8 +35,6 @@ import {
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
-
-import { shortenAddress } from '../../../helpers/utils/util';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
@@ -71,6 +71,10 @@ export const AccountListItem = ({
     findKeyringForAddress(state, identity.address),
   );
   const label = getLabel(keyring, t);
+
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const { blockExplorerUrl } = rpcPrefs;
+  const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
   return (
     <Box
@@ -180,6 +184,7 @@ export const AccountListItem = ({
         {accountOptionsMenuOpen ? (
           <AccountListItemMenu
             anchorElement={ref.current}
+            blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}
             isRemovable={keyring?.type !== HardwareKeyringTypes.hdKeyTree}

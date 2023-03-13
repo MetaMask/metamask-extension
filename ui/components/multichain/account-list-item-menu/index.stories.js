@@ -33,6 +33,7 @@ export default {
       tokenBalance: '32.09 ETH',
     },
     isRemovable: true,
+    blockExplorerUrlSubTitle: 'etherscan.io',
   },
 };
 
