@@ -13,7 +13,6 @@ import {
   getTotalUnapprovedMessagesCount,
   getPreferences,
   getCurrentCurrency,
-  getCurrentChainId,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -36,7 +35,6 @@ function mapStateToProps(state, ownProps) {
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
-  const chainId = getCurrentChainId(state);
 
   return {
     requester: null,
@@ -55,7 +53,6 @@ function mapStateToProps(state, ownProps) {
     messagesList,
     messagesCount,
     provider,
-    chainId,
   };
 }
 

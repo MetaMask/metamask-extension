@@ -226,7 +226,6 @@ export default class SignatureRequest extends PureComponent {
               conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
             }
             accountAddress={address}
-            chainId={chainId}
           />
         </div>
         <div className="signature-request-content">

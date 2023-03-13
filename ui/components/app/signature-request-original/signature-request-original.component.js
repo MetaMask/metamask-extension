@@ -58,7 +58,6 @@ export default class SignatureRequestOriginal extends Component {
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
     provider: PropTypes.object,
-    chainId: PropTypes.string,
   };
 
   state = {
@@ -273,7 +272,6 @@ export default class SignatureRequestOriginal extends Component {
       fromAccount: { address, balance, name },
       conversionRate,
       provider,
-      chainId,
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
@@ -313,7 +311,6 @@ export default class SignatureRequestOriginal extends Component {
               conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
             }
             accountAddress={address}
-            chainId={chainId}
           />
         </div>
         {this.renderBody()}
