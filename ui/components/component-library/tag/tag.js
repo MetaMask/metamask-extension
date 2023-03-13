@@ -10,6 +10,7 @@ import {
   BorderRadius,
   DISPLAY,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export const Tag = ({ label, className, labelProps, ...props }) => {
@@ -27,7 +28,9 @@ export const Tag = ({ label, className, labelProps, ...props }) => {
       display={DISPLAY.INLINE_BLOCK}
       {...props}
     >
-      <Text {...labelProps}>{label}</Text>
+      <Text variant={TextVariant.bodySm} {...labelProps}>
+        {label}
+      </Text>
     </Box>
   );
 };
@@ -45,10 +48,6 @@ Tag.propTypes = {
    * Additional classNames to be added to the Tag component
    */
   className: PropTypes.string,
-  /**
-   * The size of the text in the Text component
-   */
-  variant: PropTypes.string,
   /**
    * Tag also accepts all props from Box
    */
