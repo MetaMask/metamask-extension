@@ -180,6 +180,7 @@ export const AccountListItem = ({
               setAccountOptionsMenuOpen(true);
             }
           }}
+          data-testid="account-list-item-menu-button"
         />
         {accountOptionsMenuOpen ? (
           <AccountListItemMenu

@@ -65,4 +65,27 @@ describe('AccountListItem', () => {
     fireEvent.click(item);
     expect(onClick).toHaveBeenCalled();
   });
+
+  it('clicking the three-dot menu opens up options', () => {
+    const onClick = jest.fn();
+    render({ onClick });
+    const item = document.querySelector(
+      '[data-testid="account-list-item-menu-button"]',
+    );
+    fireEvent.click(item);
+    console.log(document.body.innerHTML);
+    expect(
+      document.querySelector('[data-testid="account-list-menu-open-explorer"]'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders connected site icon', () => {
+    const connectedAvatarName = 'Uniswap';
+    const { getByAltText } = render({
+      connectedAvatar: 'https://uniswap.org/favicon.ico',
+      connectedAvatarName,
+    });
+
+    expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
+  });
 });

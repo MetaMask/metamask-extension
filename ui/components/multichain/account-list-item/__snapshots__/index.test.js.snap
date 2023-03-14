@@ -126,6 +126,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
       <div
         aria-label="Test Account Options"
         class="box mm-button-icon mm-button-icon--size-sm box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+        data-testid="account-list-item-menu-button"
         tabindex="0"
       >
         <span

@@ -7,6 +7,13 @@ import { AccountListMenu } from '.';
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
+    activeTab: {
+      id: 113,
+      title: 'E2E Test Dapp',
+      origin: 'https://metamask.github.io',
+      protocol: 'https:',
+      url: 'https://metamask.github.io/test-dapp/',
+    },
     metamask: {
       ...mockState.metamask,
     },
