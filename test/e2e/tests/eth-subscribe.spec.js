@@ -1,0 +1,76 @@
+const { convertToHexValue, withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
+
+describe('eth_subscribe', function () {
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: convertToHexValue(25000000000000000000),
+      },
+    ],
+  };
+
+  it('only broadcasts subscription notifications on the page that registered the subscription', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        dappOptions: { numberOfDapps: 2 },
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await driver.openNewPage('http://127.0.0.1:8080/');
+
+        const setupSubscriptionListener = `
+          const responseContainer = document.createElement('div');
+          responseContainer.setAttribute('id', 'eth-subscribe-responses');
+
+          const body = window.document.getElementsByTagName('body')[0];
+          body.appendChild(responseContainer);
+
+          window.ethereum.addListener('message', (message) => {
+            if (message.type === 'eth_subscription') {
+              const response = document.createElement('p');
+              response.setAttribute('data-testid', 'eth-subscribe-response');
+              response.append(JSON.stringify(message.data.result));
+
+              const responses = window.document.getElementById('eth-subscribe-responses');
+              responses.appendChild(response)
+            }
+          });
+        `;
+
+        await driver.executeScript(setupSubscriptionListener);
+        await driver.executeScript(`
+          window.ethereum.request({
+            method: 'eth_subscribe',
+            params: ['newHeads']
+          });
+        `);
+
+        // Verify that new block is seen on first dapp
+        await driver.findElement('[data-testid="eth-subscribe-response"]');
+
+        // switch to second dapp
+        await driver.openNewPage('http://127.0.0.1:8081/');
+
+        // setup subscription listener
+        await driver.executeScript(setupSubscriptionListener);
+
+        // Verify that new block is not seen on second dapp
+        await driver.assertElementNotPresent(
+          '[data-testid="eth-subscribe-response"]',
+        );
+      },
+    );
+  });
+});
