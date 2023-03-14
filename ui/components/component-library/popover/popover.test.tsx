@@ -207,21 +207,20 @@ describe('Popover', () => {
     expect(getByText(PopoverPosition.LeftEnd)).toBeDefined();
   });
 
-  // it('should render an arrow on popover', () => {
-  //   const { getByTestId } = render(
-  //     <Popover
-  //       data-testid="popover"
-  //       isOpen={true}
-  //       hasArrow
-  //       closeButtonProps={{ 'data-testid': 'close' }}
-  //     >
-  //       Popover
-  //     </Popover>,
-  //   );
+  it('should render an arrow on popover', () => {
+    const { getByTestId } = render(
+      <Popover
+        data-testid="popover"
+        isOpen={true}
+        hasArrow
+        closeButtonProps={{ 'data-testid': 'close' }}
+      >
+        Popover
+      </Popover>,
+    );
 
-  //   const closeButton = getByTestId('close');
-  //   fireEvent.click(closeButton);
-
-  //   expect(onCloseTest).toHaveBeenCalled();
-  // });
+    const arrowElement =
+      getByTestId('popover').querySelector('.mm-popover__arrow');
+    expect(arrowElement).toHaveClass('mm-popover__arrow');
+  });
 });
