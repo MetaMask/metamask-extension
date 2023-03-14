@@ -1,9 +1,9 @@
 import React from 'react';
-import { AddressSnippetButton } from '.';
+import { AddressCopyButton } from '.';
 
 export default {
-  title: 'Components/Multichain/AddressSnippetButton',
-  component: AddressSnippetButton,
+  title: 'Components/Multichain/AddressCopyButton',
+  component: AddressCopyButton,
   argTypes: {
     address: {
       control: 'text',
@@ -13,14 +13,12 @@ export default {
     },
   },
   args: {
-    address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   },
 };
 
-export const DefaultStory = (args) => <AddressSnippetButton {...args} />;
+export const DefaultStory = (args) => <AddressCopyButton {...args} />;
 DefaultStory.storyName = 'Default';
 
-export const ShortenedStory = (args) => (
-  <AddressSnippetButton shorten {...args} />
-);
-DefaultStory.storyName = 'Shortened';
+export const ShortenedStory = (args) => <AddressCopyButton shorten {...args} />;
+ShortenedStory.storyName = 'Shortened';
