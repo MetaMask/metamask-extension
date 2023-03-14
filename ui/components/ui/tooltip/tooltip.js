@@ -17,7 +17,6 @@ export default class Tooltip extends PureComponent {
     title: null,
     trigger: 'mouseenter focus',
     wrapperClassName: undefined,
-    theme: '',
     tag: 'div',
   };
 
@@ -37,7 +36,6 @@ export default class Tooltip extends PureComponent {
     trigger: PropTypes.any,
     wrapperClassName: PropTypes.string,
     style: PropTypes.object,
-    theme: PropTypes.string,
     tabIndex: PropTypes.number,
     tag: PropTypes.string,
   };
@@ -59,10 +57,11 @@ export default class Tooltip extends PureComponent {
       open,
       wrapperClassName,
       style,
-      theme,
       tabIndex,
       tag,
     } = this.props;
+
+    const dataTheme = document.documentElement.getAttribute('data-theme');
 
     if (!title && !html) {
       return <div className={wrapperClassName}>{children}</div>;
@@ -86,7 +85,7 @@ export default class Tooltip extends PureComponent {
         title={disabled ? '' : title}
         trigger={trigger}
         open={open}
-        theme={`tippy-tooltip--mm-custom ${theme}`} // Required for correct theming
+        theme={dataTheme === 'light' ? 'dark' : 'light'} // Required for correct theming
         tabIndex={tabIndex || 0}
         tag={tag}
       >
