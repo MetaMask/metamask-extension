@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
-import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Box from '../../../../components/ui/box/box';
@@ -21,6 +20,7 @@ import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
+import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
 
 export default function SnapResult({
   request,
@@ -54,15 +54,9 @@ export default function SnapResult({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <PermissionConnectHeader
-          icon={targetSubjectMetadata.iconUrl}
-          iconName={targetSubjectMetadata.name}
-          headerTitle={t('snapInstall')}
-          headerText={null} // TODO(ritave): Add header text when snaps support description
-          siteOrigin={targetSubjectMetadata.origin}
-          isSnapInstallOrUpdate
-          snapVersion={targetSubjectMetadata.version}
-          boxProps={{ alignItems: AlignItems.center }}
+        <SnapsAuthorshipPill
+          snapId={targetSubjectMetadata.origin}
+          version={targetSubjectMetadata.version}
         />
         {isLoading && (
           <Box
