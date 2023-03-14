@@ -1,4 +1,3 @@
-import { flatMap } from '@metamask/snaps-utils';
 import { coinTypeToProtocolName } from '../../../helpers/utils/util';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
@@ -15,7 +14,7 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
       .map(([, value]) => value);
 
   return [
-    ...flatMap(bip32EntropyPermissions, (permission, i) =>
+    ...bip32EntropyPermissions.flatMap((permission, i) =>
       permission.caveats[0].value.map(({ path, curve }) => ({
         id: `key-access-bip32-${path
           .join('-')
@@ -26,7 +25,7 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
         ]),
       })),
     ),
-    ...flatMap(bip44EntropyPermissions, (permission, i) =>
+    ...bip44EntropyPermissions.flatMap((permission, i) =>
       permission.caveats[0].value.map(({ coinType }) => ({
         id: `key-access-bip44-${coinType}-${i}`,
         message: t('snapInstallWarningKeyAccess', [

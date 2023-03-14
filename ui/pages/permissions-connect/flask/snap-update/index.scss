@@ -1,6 +1,13 @@
 .snap-update {
   box-shadow: none;
 
+  .headers {
+    flex: 1;
+
+  .loader-container {
+    height: 100%;
+  }
+
   .update-snap-permission-list {
     padding: 0 24px;
 
@@ -10,6 +17,7 @@
       padding: 8px 0;
     }
   }
+}
 
   .page-container__footer {
     width: 100%;

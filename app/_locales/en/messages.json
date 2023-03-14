@@ -3427,6 +3427,9 @@
   "snapInstall": {
     "message": "Install snap"
   },
+  "snapInstallError": {
+    "message": "Installation failed"
+  },
   "snapInstallWarningCheck": {
     "message": "To confirm that you understand, check the box."
   },
@@ -3437,8 +3440,14 @@
     "message": "You are granting $2 key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your $2 accounts and assets. Make sure you trust \"$1\" before proceeding.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
+  "snapInstalled": {
+    "message": "Installed"
+  },
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"
+  },
+  "snapResultSuccess": {
+    "message": "was successfully installed"
   },
   "snapUpdate": {
     "message": "Update snap"

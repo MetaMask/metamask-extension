@@ -17,9 +17,12 @@ import {
 import Typography from '../../../../components/ui/typography';
 import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
 import { getSnapInstallWarnings } from '../util';
+import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
+import InstallError from '../../../../components/app/flask/install-error/install-error';
 
 export default function SnapUpdate({
   request,
+  requestState,
   approveSnapUpdate,
   rejectSnapUpdate,
   targetSubjectMetadata,
@@ -41,11 +44,18 @@ export default function SnapUpdate({
   const approvedPermissions = request.approvedPermissions ?? {};
   const revokedPermissions = request.unusedPermissions ?? {};
   const newPermissions = request.newPermissions ?? {};
+
   const hasPermissions =
+    !requestState.loading &&
+    !requestState.error &&
     Object.keys(approvedPermissions).length +
       Object.keys(revokedPermissions).length +
       Object.keys(newPermissions).length >
-    0;
+      0;
+
+  const hasError = !requestState.loading && requestState.error;
+
+  const isLoading = requestState.loading;
 
   const warnings = getSnapInstallWarnings(
     newPermissions,
@@ -54,6 +64,16 @@ export default function SnapUpdate({
   );
 
   const shouldShowWarning = warnings.length > 0;
+
+  const handleSubmit = () => {
+    if (!hasError && shouldShowWarning) {
+      setIsShowingWarning(true);
+    } else if (hasError) {
+      onCancel();
+    } else {
+      onSubmit();
+    }
+  };
 
   return (
     <Box
@@ -85,8 +105,19 @@ export default function SnapUpdate({
           variant={TypographyVariant.H7}
           as="span"
         >
-          {t('snapUpdateExplanation', [`${request.metadata.dappOrigin}`])}
+          {t('snapUpdateExplanation', [`${request.metadata?.dappOrigin}`])}
         </Typography>
+        {isLoading && (
+          <Box
+            className="loader-container"
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
+            <PulseLoader />
+          </Box>
+        )}
+        {hasError && <InstallError error={requestState.error} />}
         {hasPermissions && (
           <>
             <Typography
@@ -116,12 +147,15 @@ export default function SnapUpdate({
         </Box>
         <PageContainerFooter
           cancelButtonType="default"
+          hideCancel={hasError}
+          disabled={isLoading}
           onCancel={onCancel}
           cancelText={t('cancel')}
-          onSubmit={
-            shouldShowWarning ? () => setIsShowingWarning(true) : onSubmit
-          }
-          submitText={t('approveAndUpdate')}
+          onSubmit={handleSubmit}
+          submitText={t(
+            // eslint-disable-next-line no-nested-ternary
+            hasError ? 'ok' : hasPermissions ? 'approveAndInstall' : 'install',
+          )}
         />
       </Box>
       {isShowingWarning && (
@@ -138,6 +172,7 @@ export default function SnapUpdate({
 
 SnapUpdate.propTypes = {
   request: PropTypes.object.isRequired,
+  requestState: PropTypes.object.isRequired,
   approveSnapUpdate: PropTypes.func.isRequired,
   rejectSnapUpdate: PropTypes.func.isRequired,
   targetSubjectMetadata: PropTypes.shape({

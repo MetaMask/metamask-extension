@@ -1,77 +1,49 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
-import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
+
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
+
 import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
   BLOCK_SIZES,
   BorderStyle,
   FLEX_DIRECTION,
+  FONT_WEIGHT,
   JustifyContent,
-  TypographyVariant,
+  TextVariant,
+  TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
-import Typography from '../../../../components/ui/typography';
-import { getSnapInstallWarnings } from '../util';
+import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
+import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
 
-export default function SnapInstall({
+export default function SnapResult({
   request,
   requestState,
-  approveSnapInstall,
-  rejectSnapInstall,
+  approveSnapResult,
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
 
-  const [isShowingWarning, setIsShowingWarning] = useState(false);
-
-  const onCancel = useCallback(
-    () => rejectSnapInstall(request.metadata.id),
-    [request, rejectSnapInstall],
-  );
-
   const onSubmit = useCallback(
-    () => approveSnapInstall(request.metadata.id),
-    [request, approveSnapInstall],
+    () => approveSnapResult(request.metadata.id),
+    [request, approveSnapResult],
   );
-
-  const hasPermissions =
-    !requestState.loading &&
-    !requestState.error &&
-    requestState?.permissions &&
-    Object.keys(requestState.permissions).length > 0;
 
   const hasError = !requestState.loading && requestState.error;
 
   const isLoading = requestState.loading;
 
-  const warnings = getSnapInstallWarnings(
-    requestState?.permissions ?? {},
-    targetSubjectMetadata,
-    t,
-  );
-
-  const shouldShowWarning = warnings.length > 0;
-
-  const handleSubmit = () => {
-    if (!hasError && shouldShowWarning) {
-      setIsShowingWarning(true);
-    } else if (hasError) {
-      onCancel();
-    } else {
-      onSubmit();
-    }
-  };
+  const friendlyName = SNAPS_METADATA[targetSubjectMetadata.origin]?.name;
 
   return (
     <Box
-      className="page-container snap-install"
+      className="page-container snap-result"
       justifyContent={JustifyContent.spaceBetween}
       height={BLOCK_SIZES.FULL}
       borderStyle={BorderStyle.none}
@@ -102,23 +74,24 @@ export default function SnapInstall({
             <PulseLoader />
           </Box>
         )}
-        {hasError && <InstallError error={requestState.error} />}
-        {hasPermissions && (
-          <>
-            <Typography
-              boxProps={{
-                padding: [4, 4, 0, 4],
-              }}
-              variant={TypographyVariant.H7}
-              as="span"
-            >
-              {t('snapRequestsPermission')}
-            </Typography>
-            <PermissionsConnectPermissionList
-              permissions={requestState.permissions || {}}
-            />
-          </>
+        {!isLoading && !hasError && (
+          <Box
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            height={BLOCK_SIZES.FULL}
+            padding={2}
+          >
+            <Text fontWeight={FONT_WEIGHT.BOLD} variant={TextVariant.headingLg}>
+              {t('snapInstalled')}
+            </Text>
+            <Text textAlign={TEXT_ALIGN.CENTER}>
+              <b>{friendlyName ?? targetSubjectMetadata.origin}</b>{' '}
+              {t('snapResultSuccess')}
+            </Text>
+          </Box>
         )}
+        {hasError && <InstallError error={requestState.error} />}
       </Box>
       <Box
         className="footers"
@@ -129,34 +102,20 @@ export default function SnapInstall({
           <PermissionsConnectFooter />
         </Box>
         <PageContainerFooter
-          cancelButtonType="default"
-          hideCancel={hasError}
+          hideCancel
           disabled={isLoading}
-          onCancel={onCancel}
-          cancelText={t('cancel')}
-          onSubmit={handleSubmit}
-          submitText={t(
-            // eslint-disable-next-line no-nested-ternary
-            hasError ? 'ok' : hasPermissions ? 'approveAndInstall' : 'install',
-          )}
+          onSubmit={onSubmit}
+          submitText={t('ok')}
         />
       </Box>
-      {isShowingWarning && (
-        <SnapInstallWarning
-          onCancel={() => setIsShowingWarning(false)}
-          onSubmit={onSubmit}
-          warnings={warnings}
-        />
-      )}
     </Box>
   );
 }
 
-SnapInstall.propTypes = {
+SnapResult.propTypes = {
   request: PropTypes.object.isRequired,
   requestState: PropTypes.object.isRequired,
-  approveSnapInstall: PropTypes.func.isRequired,
-  rejectSnapInstall: PropTypes.func.isRequired,
+  approveSnapResult: PropTypes.func.isRequired,
   targetSubjectMetadata: PropTypes.shape({
     iconUrl: PropTypes.string,
     name: PropTypes.string,
