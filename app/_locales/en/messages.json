@@ -168,6 +168,9 @@
   "addANetworkManually": {
     "message": "Add a network manually"
   },
+  "addNewToken": {
+    "message": "Add new token"
+  },
   "addANickname": {
     "message": "Add a nickname"
   },
@@ -1121,6 +1124,9 @@
   "dropped": {
     "message": "Dropped"
   },
+  "DropJwtHere": {
+    "message": "Drop your JWT file here."
+  },
   "edit": {
     "message": "Edit"
   },
@@ -1369,6 +1375,9 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileTooBig": {
+    "message": "The dropped file is too big."
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "See details",

@@ -1,0 +1,67 @@
+.jwt-url-form {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  margin-bottom: 34px;
+
+  &__jwt-container {
+    width: 100%;
+    margin: 0 0 24px 0;
+  }
+
+  &__jwt-apiUrlInput {
+    width: 100%;
+  }
+
+  &__btn__container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: 10px 0;
+    width: 100%;
+
+    & > span {
+      padding-bottom: 10px;
+    }
+  }
+
+  &__instruction {
+    @include Paragraph;
+
+    align-self: flex-start;
+    display: block;
+    font-size: 14px;
+  }
+
+  &__input {
+    @include Paragraph;
+
+    height: 54px;
+    width: 100%;
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    background-color: var(--color-background-default);
+    margin-top: 16px;
+    padding: 0 10px;
+  }
+
+  &__input-jwt-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  &__input-jwt {
+    @include Paragraph;
+
+    height: 154px;
+    width: 100%;
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    background-color: $white;
+    color: var(--scorpion);
+    padding: 10px;
+  }
+}
