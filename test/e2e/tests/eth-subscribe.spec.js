@@ -65,7 +65,7 @@ describe('eth_subscribe', function () {
         // Switch to the second dapp
         await driver.openNewPage('http://127.0.0.1:8081/');
 
-        // Setup the same subscrption listener as on the first dapp, but without registering a new subscription
+        // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
 
         // Verify that the new block is not seen on the second dapp
