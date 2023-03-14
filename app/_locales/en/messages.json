@@ -4395,6 +4395,9 @@
   "upArrow": {
     "message": "up arrow"
   },
+  "update": {
+    "message": "Update"
+  },
   "updatedWithDate": {
     "message": "Updated $1"
   },

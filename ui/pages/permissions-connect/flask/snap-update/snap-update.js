@@ -154,7 +154,7 @@ export default function SnapUpdate({
           onSubmit={handleSubmit}
           submitText={t(
             // eslint-disable-next-line no-nested-ternary
-            hasError ? 'ok' : hasPermissions ? 'approveAndInstall' : 'install',
+            hasError ? 'ok' : hasPermissions ? 'approveAndUpdate' : 'update',
           )}
         />
       </Box>
