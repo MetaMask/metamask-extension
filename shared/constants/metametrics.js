@@ -342,6 +342,7 @@ export const EVENT_NAMES = {
   PUBLIC_ADDRESS_COPIED: 'Public Address Copied',
   PROVIDER_METHOD_CALLED: 'Provider Method Called',
   SIGNATURE_APPROVED: 'Signature Approved',
+  SIGNATURE_FAILED: 'Signature Failed',
   SIGNATURE_REJECTED: 'Signature Rejected',
   SIGNATURE_REQUESTED: 'Signature Requested',
   TOKEN_IMPORT_BUTTON_CLICKED: 'Import Token Button Clicked',
