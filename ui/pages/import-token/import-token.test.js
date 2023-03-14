@@ -36,7 +36,7 @@ describe('Import Token', () => {
       metamask: {
         tokens: [],
         provider: { chainId: '0x1' },
-        frequentRpcListDetail: [],
+        networkConfigurations: {},
         identities: {},
         selectedAddress: '0x1231231',
         useTokenDetection: true,

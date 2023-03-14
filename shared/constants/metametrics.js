@@ -292,6 +292,7 @@ export const EVENT_NAMES = {
   APP_UNLOCKED: 'App Unlocked',
   APP_UNLOCKED_FAILED: 'App Unlocked Failed',
   APP_WINDOW_EXPANDED: 'App Window Expanded',
+  BRIDGE_LINK_CLICKED: 'Bridge Link Clicked',
   DECRYPTION_APPROVED: 'Decryption Approved',
   DECRYPTION_REJECTED: 'Decryption Rejected',
   DECRYPTION_REQUESTED: 'Decryption Requested',
@@ -425,6 +426,7 @@ export const EVENT = {
     NETWORK: {
       CUSTOM_NETWORK_FORM: 'custom_network_form',
       POPULAR_NETWORK_LIST: 'popular_network_list',
+      DAPP: 'dapp',
     },
     SWAPS: {
       MAIN_VIEW: 'Main View',

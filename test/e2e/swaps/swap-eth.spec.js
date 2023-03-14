@@ -1,64 +1,87 @@
-const { strict: assert } = require('assert');
-
 const { withFixtures } = require('../helpers');
-const { withFixturesOptions, loadSwaps, buildQuote } = require('./shared');
+const {
+  withFixturesOptions,
+  loadExtension,
+  buildQuote,
+  reviewQuote,
+  waitForTransactionToComplete,
+  checkActivityTransaction,
+} = require('./shared');
 
 describe('Swap Eth for another Token', function () {
-  it('Completes a Swap between Eth and Matic', async function () {
+  it('Completes second Swaps while first swap is processing', async function () {
+    withFixturesOptions.ganacheOptions.blockTime = 10;
+
+    await withFixtures(
+      {
+        ...withFixturesOptions,
+        failOnConsoleError: false,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await loadExtension(driver);
+        await buildQuote(driver, {
+          amount: 0.001,
+          swapTo: 'USDC',
+        });
+        await reviewQuote(driver, {
+          amount: '0.001',
+          swapFrom: 'TESTETH',
+          swapTo: 'USDC',
+        });
+        await driver.clickElement({ text: 'Swap', tag: 'button' });
+        await driver.clickElement({ text: 'View in activity', tag: 'button' });
+        await buildQuote(driver, {
+          amount: 0.003,
+          swapTo: 'DAI',
+        });
+        await reviewQuote(driver, {
+          amount: '0.003',
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
+        });
+        await driver.clickElement({ text: 'Swap', tag: 'button' });
+        await waitForTransactionToComplete(driver, 'DAI');
+        await checkActivityTransaction(driver, {
+          index: 0,
+          amount: '0.003',
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
+        });
+        await checkActivityTransaction(driver, {
+          index: 1,
+          amount: '0.001',
+          swapFrom: 'TESTETH',
+          swapTo: 'USDC',
+        });
+      },
+    );
+  });
+  it('Completes a Swap between Eth and Dai', async function () {
     await withFixtures(
       {
         ...withFixturesOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
-        await loadSwaps(driver);
+        await loadExtension(driver);
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'DAI',
         });
-        await driver.clickElement({ text: 'Review swap', tag: 'button' });
-        await driver.waitForSelector('[class*="box--align-items-center"]');
-        const estimatedEth = await driver.waitForSelector({
-          css: '[class*="box--align-items-center"]',
-          text: 'Estimated gas fee',
-        });
-        assert.equal(await estimatedEth.getText(), 'Estimated gas fee');
-        await driver.waitForSelector(
-          '[class="exchange-rate-display main-quote-summary__exchange-rate-display"]',
-        );
-        await driver.waitForSelector(
-          '[class="fee-card__info-tooltip-container"]',
-        );
-        await driver.waitForSelector({
-          css: '[class="countdown-timer__time"]',
-          text: '0:24',
+        await reviewQuote(driver, {
+          amount: '2',
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
         });
         await driver.clickElement({ text: 'Swap', tag: 'button' });
-        const sucessfulTransactionMessage = await driver.waitForSelector({
-          css: '[class="awaiting-swap__header"]',
-          text: 'Transaction complete',
+        await waitForTransactionToComplete(driver, 'DAI');
+        await checkActivityTransaction(driver, {
+          index: 0,
+          amount: '2',
+          swapFrom: 'TESTETH',
+          swapTo: 'DAI',
         });
-        assert.equal(
-          await sucessfulTransactionMessage.getText(),
-          'Transaction complete',
-        );
-        const sucessfulTransactionToken = await driver.waitForSelector({
-          css: '[class="awaiting-swap__amount-and-symbol"]',
-          text: 'DAI',
-        });
-        assert.equal(await sucessfulTransactionToken.getText(), 'DAI');
-        await driver.clickElement({ text: 'Close', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        const swaptotal = await driver.waitForSelector({
-          css: '[class="transaction-list-item__primary-currency"]',
-          text: '-2 TESTETH',
-        });
-        assert.equal(await swaptotal.getText(), '-2 TESTETH');
-        const swaptotaltext = await driver.waitForSelector({
-          css: '[class="list-item__title"]',
-          text: 'Swap TESTETH to DAI',
-        });
-        assert.equal(await swaptotaltext.getText(), 'Swap TESTETH to DAI');
       },
     );
   });
