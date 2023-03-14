@@ -50,6 +50,8 @@ describe('eth_subscribe', function () {
         `;
 
         await driver.executeScript(setupSubscriptionListener);
+        // A `newHeads` subscription will emit a notification for each new block
+        // See here for more information: https://docs.infura.io/infura/networks/ethereum/json-rpc-methods/subscription-methods/eth_subscribe
         await driver.executeScript(`
           window.ethereum.request({
             method: 'eth_subscribe',
@@ -57,16 +59,16 @@ describe('eth_subscribe', function () {
           });
         `);
 
-        // Verify that new block is seen on first dapp
+        // Verify that the new block is seen on the first dapp
         await driver.findElement('[data-testid="eth-subscribe-response"]');
 
-        // switch to second dapp
+        // Switch to the second dapp
         await driver.openNewPage('http://127.0.0.1:8081/');
 
-        // setup subscription listener
+        // Setup the same subscrption listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
 
-        // Verify that new block is not seen on second dapp
+        // Verify that the new block is not seen on the second dapp
         await driver.assertElementNotPresent(
           '[data-testid="eth-subscribe-response"]',
         );
