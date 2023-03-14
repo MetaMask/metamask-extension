@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Güvenlik ve Gizlilik ayarlarını göster"
   },
-  "notifications17Description": {
-    "message": "Bu güncelleme, kendi gizliliğinizi daha iyi kontrol edebilmeniz için daha fazla seçenek sunar. Verilerin nasıl toplandığı hakkında daha fazla şeffaflık ve paylaşımına yönelik daha açık seçenekler ekledik. Güvenlik ve Gizlilik ayarlarından tercihlerinizi değiştirin veya uzantı kullanım verilerinizi silin."
-  },
   "notifications17Title": {
     "message": "Güvenlik ve Gizlilik Ayarları"
   },
