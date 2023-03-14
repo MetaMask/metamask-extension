@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Box from '../../ui/box';
 
 const NoteToTrader = (props) => {
   const { placeholder, maxLength, onChange, noteText, labelText } = props;
 
   return (
     <>
-      <div className="note-header">
+      <Box className="note-header">
         <label htmlFor="transaction-note">{labelText}</label>
         <p className="note-header__counter">
           {noteText.length}/{maxLength}
         </p>
-      </div>
-      <div className="note-field">
+      </Box>
+      <Box className="note-field">
         <textarea
           id="transaction-note"
           data-testid="transaction-note"
@@ -22,7 +23,7 @@ const NoteToTrader = (props) => {
           placeholder={placeholder}
           value={noteText}
         />
-      </div>
+      </Box>
     </>
   );
 };

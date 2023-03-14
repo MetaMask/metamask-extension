@@ -3,7 +3,7 @@
 exports[`NoteToTrader should render the Note to trader component 1`] = `
 <div>
   <div
-    class="note-header"
+    class="box note-header box--flex-direction-row"
   >
     <label
       for="transaction-note"
@@ -19,7 +19,7 @@ exports[`NoteToTrader should render the Note to trader component 1`] = `
     </p>
   </div>
   <div
-    class="note-field"
+    class="box note-field box--flex-direction-row"
   >
     <textarea
       data-testid="transaction-note"
