@@ -94,7 +94,6 @@ async function defineAndRunBuildTasks() {
       'navigator',
       'harden',
       'console',
-      'location',
       // globals chrome driver needs to function (test env)
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
       'performance',
