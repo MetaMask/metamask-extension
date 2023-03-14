@@ -156,11 +156,9 @@ export function initializeDomainSlice() {
 
 export function lookupEnsName(domainName) {
   return async (dispatch, getState) => {
-    console.log('***lookupEnsName1', { domainName });
     const trimmedDomainName = domainName.trim();
     let state = getState();
     if (state[name].stage === 'UNINITIALIZED') {
-      console.log('***lookupEnsName2', { domainName });
       await dispatch(initializeDomainSlice());
     }
     state = getState();
@@ -172,25 +170,19 @@ export function lookupEnsName(domainName) {
       ) &&
       !isHexString(trimmedDomainName)
     ) {
-      console.log('***lookupEnsName3', { domainName });
       await dispatch(ensNotSupported());
     } else {
-      console.log('***lookupEnsName4', { domainName });
       const chainId = getCurrentChainId(state);
       const logMessage = `ENS attempting to resolve name: ${trimmedDomainName} for chainId ${chainId}`;
       log.info(logMessage);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-      console.log('***lookupEnsName4.1', { network });
       const ensAddress = networkMap[network];
-      console.log('***lookupEnsName4.2', { ensAddress });
       const networkIsSupported = Boolean(ensAddress);
-      console.log('***lookupEnsName4.3', { networkIsSupported });
       const address = await getEVMChainAddress(
         web3Provider,
         trimmedDomainName,
         networkIsSupported ? 1 : chainId,
       );
-      console.log('***lookupEnsName5', { address });
 
       await dispatch(
         domainLookup({

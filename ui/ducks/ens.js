@@ -16,34 +16,25 @@ export const convertEVMChainIdToCoinType = (chainId) => {
 export async function getEVMChainAddress(provider, name, chainId) {
   let address;
   let coinType;
-  console.log('***getMulticoinAddres1', { name });
   const resolver = await provider.getResolver(name);
-  console.log('***getMulticoinAddres2', { resolver });
   if (resolver) {
     const chainIdInt = parseInt(chainId, 16);
-    console.log('***getMulticoinAddres3');
     if (chainIdInt === 1) {
       coinType = 60;
     } else {
       coinType = convertEVMChainIdToCoinType(chainIdInt);
     }
-    console.log('***getMulticoinAddres4', { chainId, chainIdInt, coinType });
     const hexCoinType = BigNumber.from(coinType).toHexString();
-    console.log('***getMulticoinAddres5', { hexCoinType });
     const encodedCoinType = hexZeroPad(hexCoinType, 32);
-    console.log('***getMulticoinAddres6', { encodedCoinType });
     // 0xf1cb7e06 is address interface id
     // https://docs.ens.domains/contract-api-reference/publicresolver#get-blockchain-address
     const data = await resolver._fetchBytes('0xf1cb7e06', encodedCoinType);
-    console.log('***getMulticoinAddres7', { data });
     if ([emptyAddress, '0x', null].includes(data)) {
-      console.log('***getMulticoinAddres8');
       address = emptyAddress;
     }
     address = getAddress(data);
   } else {
     address = emptyAddress;
   }
-  console.log('***getMulticoinAddres10', { address });
   return address;
 }
