@@ -14,7 +14,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export const AddressSnippetButton = ({ address, shorten = false }) => {
+export const AddressCopyButton = ({ address, shorten = false }) => {
   const displayAddress = shorten ? shortenAddress(address) : address;
   const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
@@ -22,15 +22,19 @@ export const AddressSnippetButton = ({ address, shorten = false }) => {
   return (
     <Tooltip position="bottom" title={copied ? t('copiedExclamation') : null}>
       <ButtonBase
-        borderRadius={BorderRadius.XL}
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={handleCopy}
         padding={0}
-        paddingRight={2}
-        paddingLeft={2}
+        paddingRight={3}
+        paddingLeft={3}
         size={Size.SM}
+        style={{ borderRadius: '999px' }}
       >
-        <Text variant={TextVariant.bodyXs} color={TextColor.primaryDefault}>
+        <Text
+          variant={TextVariant.bodyXs}
+          color={TextColor.primaryDefault}
+          data-testid="address-copy-button-text"
+        >
           {displayAddress}
         </Text>
         <Icon
@@ -43,7 +47,7 @@ export const AddressSnippetButton = ({ address, shorten = false }) => {
   );
 };
 
-AddressSnippetButton.propTypes = {
+AddressCopyButton.propTypes = {
   address: PropTypes.string.isRequired,
   shorten: PropTypes.bool,
 };
