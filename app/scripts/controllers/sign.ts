@@ -1,11 +1,13 @@
 import EventEmitter from 'events';
-import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import {
+  Message,
   MessageManager,
   MessageParamsMetamask,
+  PersonalMessage,
   PersonalMessageManager,
   PersonalMessageParamsMetamask,
+  TypedMessage,
   TypedMessageManager,
   TypedMessageParamsMetamask,
 } from '@metamask/message-manager';
@@ -20,53 +22,105 @@ import {
   AbstractMessageParamsMetamask,
   OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
+import {
+  BaseControllerV2,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
+import { Patch } from 'immer';
 import PreferencesController from './preferences';
 
-const INITIAL_STATE = {
+const controllerName = 'SignController';
+
+const stateMetadata = {
+  unapprovedMsgs: { persist: false, anonymous: false },
+  unapprovedPersonalMsgs: { persist: false, anonymous: false },
+  unapprovedTypedMessages: { persist: false, anonymous: false },
+  unapprovedMsgCount: { persist: false, anonymous: false },
+  unapprovedPersonalMsgCount: { persist: false, anonymous: false },
+  unapprovedTypedMessagesCount: { persist: false, anonymous: false },
+};
+
+const getDefaultState = () => ({
   unapprovedMsgs: {},
   unapprovedPersonalMsgs: {},
   unapprovedTypedMessages: {},
   unapprovedMsgCount: 0,
   unapprovedPersonalMsgCount: 0,
   unapprovedTypedMessagesCount: 0,
+});
+
+// The BaseControllerV2 state template does not allow optional parameters
+type StateMessage<M extends AbstractMessage> = Required<
+  AbstractMessage | Exclude<M, AbstractMessage>
+> & { msgParams: any; securityProviderResponse: any };
+
+export type SignControllerState = {
+  unapprovedMsgs: Record<string, StateMessage<Message>>;
+  unapprovedPersonalMsgs: Record<string, StateMessage<PersonalMessage>>;
+  unapprovedTypedMessages: Record<string, StateMessage<TypedMessage>>;
+  unapprovedMsgCount: number;
+  unapprovedPersonalMsgCount: number;
+  unapprovedTypedMessagesCount: number;
 };
+
+export type GetSignState = {
+  type: `${typeof controllerName}:getState`;
+  handler: () => SignControllerState;
+};
+
+export type SignStateChange = {
+  type: `${typeof controllerName}:stateChange`;
+  payload: [SignControllerState, Patch[]];
+};
+
+export type SignControllerActions = GetSignState;
+
+export type SignControllerEvents = SignStateChange;
+
+export type SignControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  SignControllerActions,
+  SignControllerEvents,
+  never,
+  never
+>;
 
 interface CoreMessage extends AbstractMessage {
   messageParams: AbstractMessageParams;
 }
 
-interface FrontEndMessage extends AbstractMessage {
-  msgParams: AbstractMessageParams;
-  securityProviderResponse: any;
-}
+export default class SignController extends BaseControllerV2<
+  typeof controllerName,
+  SignControllerState,
+  SignControllerMessenger
+> {
+  hub: EventEmitter;
 
-export default class SignController extends EventEmitter {
-  private keyringController: KeyringController;
+  private _keyringController: KeyringController;
 
-  private preferencesController: PreferencesController;
+  private _preferencesController: PreferencesController;
 
-  private sendUpdate: () => void;
+  private _sendUpdate: () => void;
 
-  private showPopup: () => void;
+  private _showPopup: () => void;
 
-  private getState: () => any;
+  private _getState: () => any;
 
-  private memStore: ObservableStore;
+  private _messageManager: MessageManager;
 
-  private messageManager: MessageManager;
+  private _personalMessageManager: PersonalMessageManager;
 
-  private personalMessageManager: PersonalMessageManager;
+  private _typedMessageManager: TypedMessageManager;
 
-  private typedMessageManager: TypedMessageManager;
+  private _messageManagers: AbstractMessageManager<any, any, any>[];
 
-  private messageManagers: AbstractMessageManager<any, any, any>[];
-
-  private securityProviderRequest: (
+  private _securityProviderRequest: (
     requestData: any,
     methodName: string,
   ) => Promise<any>;
 
   constructor({
+    messenger,
     keyringController,
     preferencesController,
     sendUpdate,
@@ -74,6 +128,7 @@ export default class SignController extends EventEmitter {
     getState,
     securityProviderRequest,
   }: {
+    messenger: SignControllerMessenger;
     keyringController: KeyringController;
     preferencesController: PreferencesController;
     sendUpdate: () => void;
@@ -84,45 +139,60 @@ export default class SignController extends EventEmitter {
       methodName: string,
     ) => Promise<any>;
   }) {
-    super();
+    super({
+      name: controllerName,
+      metadata: stateMetadata,
+      messenger,
+      state: getDefaultState(),
+    });
 
-    this.keyringController = keyringController;
-    this.preferencesController = preferencesController;
-    this.sendUpdate = sendUpdate;
-    this.showPopup = showPopup;
-    this.getState = getState;
-    this.securityProviderRequest = securityProviderRequest;
+    this._keyringController = keyringController;
+    this._preferencesController = preferencesController;
+    this._sendUpdate = sendUpdate;
+    this._showPopup = showPopup;
+    this._getState = getState;
+    this._securityProviderRequest = securityProviderRequest;
 
-    this.memStore = new ObservableStore(INITIAL_STATE);
+    this._messageManager = new MessageManager();
+    this._personalMessageManager = new PersonalMessageManager();
+    this._typedMessageManager = new TypedMessageManager();
+    this.hub = new EventEmitter();
 
-    this.messageManager = new MessageManager();
-    this.personalMessageManager = new PersonalMessageManager();
-    this.typedMessageManager = new TypedMessageManager();
-
-    this.messageManagers = [
-      this.messageManager,
-      this.personalMessageManager,
-      this.typedMessageManager,
+    this._messageManagers = [
+      this._messageManager,
+      this._personalMessageManager,
+      this._typedMessageManager,
     ];
 
-    this.messageManagers.forEach((messageManager) =>
+    this._messageManagers.forEach((messageManager) =>
       this.bubbleEvents(messageManager),
     );
 
     this.subscribeToMessageState(
-      this.messageManager,
-      'unapprovedMsgs',
-      'unapprovedMsgCount',
+      this._messageManager,
+      (state) => state.unapprovedMsgs,
+      (state, newMessages, messageCount) => {
+        state.unapprovedMsgs = newMessages;
+        state.unapprovedMsgCount = messageCount;
+      },
     );
+
     this.subscribeToMessageState(
-      this.personalMessageManager,
-      'unapprovedPersonalMsgs',
-      'unapprovedPersonalMsgCount',
+      this._personalMessageManager,
+      (state) => state.unapprovedPersonalMsgs,
+      (state, newMessages, messageCount) => {
+        state.unapprovedPersonalMsgs = newMessages;
+        state.unapprovedPersonalMsgCount = messageCount;
+      },
     );
+
     this.subscribeToMessageState(
-      this.typedMessageManager,
-      'unapprovedTypedMessages',
-      'unapprovedTypedMessagesCount',
+      this._typedMessageManager,
+      (state) => state.unapprovedTypedMessages,
+      (state, newMessages, messageCount) => {
+        state.unapprovedTypedMessages = newMessages;
+        state.unapprovedTypedMessagesCount = messageCount;
+      },
     );
   }
 
@@ -132,7 +202,7 @@ export default class SignController extends EventEmitter {
    * @returns The number of 'unapproved' Messages in this.messages
    */
   get unapprovedMsgCount(): number {
-    return this.messageManager.getUnapprovedMessagesCount();
+    return this._messageManager.getUnapprovedMessagesCount();
   }
 
   /**
@@ -141,7 +211,7 @@ export default class SignController extends EventEmitter {
    * @returns The number of 'unapproved' PersonalMessages in this.messages
    */
   get unapprovedPersonalMessagesCount(): number {
-    return this.personalMessageManager.getUnapprovedMessagesCount();
+    return this._personalMessageManager.getUnapprovedMessagesCount();
   }
 
   /**
@@ -150,14 +220,21 @@ export default class SignController extends EventEmitter {
    * @returns The number of 'unapproved' TypedMessages in this.messages
    */
   get unapprovedTypedMessagesCount(): number {
-    return this.typedMessageManager.getUnapprovedMessagesCount();
+    return this._typedMessageManager.getUnapprovedMessagesCount();
   }
 
   /**
    * Reset the controller state to the initial state.
    */
   resetState() {
-    this.memStore.updateState(INITIAL_STATE);
+    this.update((draftState) => {
+      draftState.unapprovedMsgs = {};
+      draftState.unapprovedPersonalMsgs = {};
+      draftState.unapprovedTypedMessages = {};
+      draftState.unapprovedMsgCount = 0;
+      draftState.unapprovedPersonalMsgCount = 0;
+      draftState.unapprovedTypedMessagesCount = 0;
+    });
   }
 
   /**
@@ -176,7 +253,7 @@ export default class SignController extends EventEmitter {
     const {
       // eslint-disable-next-line camelcase
       disabledRpcMethodPreferences: { eth_sign },
-    } = this.preferencesController.store.getState() as any;
+    } = this._preferencesController.store.getState() as any;
 
     // eslint-disable-next-line camelcase
     if (!eth_sign) {
@@ -191,12 +268,12 @@ export default class SignController extends EventEmitter {
     // This is needed because Ethereum's EcSign works only on 32 byte numbers
     // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607
     if (data.length === 66 || data.length === 67) {
-      const promise = this.messageManager.addUnapprovedMessageAsync(
+      const promise = this._messageManager.addUnapprovedMessageAsync(
         msgParams,
         req,
       );
-      this.sendUpdate();
-      this.showPopup();
+      this._sendUpdate();
+      this._showPopup();
       return await promise;
     }
 
@@ -217,12 +294,12 @@ export default class SignController extends EventEmitter {
     msgParams: PersonalMessageParamsMetamask,
     req: OriginalRequest,
   ) {
-    const promise = this.personalMessageManager.addUnapprovedMessageAsync(
+    const promise = this._personalMessageManager.addUnapprovedMessageAsync(
       msgParams,
       req,
     );
-    this.sendUpdate();
-    this.showPopup();
+    this._sendUpdate();
+    this._showPopup();
     return promise;
   }
 
@@ -238,13 +315,13 @@ export default class SignController extends EventEmitter {
     req: OriginalRequest,
     version: string,
   ) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(
+    const promise = this._typedMessageManager.addUnapprovedMessageAsync(
       msgParams,
       version,
       req,
     );
-    this.sendUpdate();
-    this.showPopup();
+    this._sendUpdate();
+    this._showPopup();
     return promise;
   }
 
@@ -256,11 +333,11 @@ export default class SignController extends EventEmitter {
    */
   async signMessage(msgParams: MessageParamsMetamask) {
     return await this.signAbstractMessage(
-      this.messageManager,
+      this._messageManager,
       'signMessage',
       msgParams,
       async (cleanMsgParams) =>
-        await this.keyringController.signMessage(cleanMsgParams),
+        await this._keyringController.signMessage(cleanMsgParams),
     );
   }
 
@@ -273,11 +350,11 @@ export default class SignController extends EventEmitter {
    */
   async signPersonalMessage(msgParams: PersonalMessageParamsMetamask) {
     return await this.signAbstractMessage(
-      this.personalMessageManager,
+      this._personalMessageManager,
       'signPersonalMessage',
       msgParams,
       async (cleanMsgParams) =>
-        await this.keyringController.signPersonalMessage(cleanMsgParams),
+        await this._keyringController.signPersonalMessage(cleanMsgParams),
     );
   }
 
@@ -292,7 +369,7 @@ export default class SignController extends EventEmitter {
     const { version } = msgParams;
 
     return await this.signAbstractMessage(
-      this.typedMessageManager,
+      this._typedMessageManager,
       'eth_signTypedData',
       msgParams,
       async (cleanMsgParams) => {
@@ -304,7 +381,7 @@ export default class SignController extends EventEmitter {
           }
         }
 
-        return await this.keyringController.signTypedMessage(cleanMsgParams, {
+        return await this._keyringController.signTypedMessage(cleanMsgParams, {
           version,
         });
       },
@@ -317,7 +394,7 @@ export default class SignController extends EventEmitter {
    * @param msgId - The id of the message to cancel.
    */
   cancelMessage(msgId: string) {
-    this.cancelAbstractMessage(this.messageManager, msgId);
+    this.cancelAbstractMessage(this._messageManager, msgId);
   }
 
   /**
@@ -326,7 +403,7 @@ export default class SignController extends EventEmitter {
    * @param msgId - The ID of the message to cancel.
    */
   cancelPersonalMessage(msgId: string) {
-    this.cancelAbstractMessage(this.personalMessageManager, msgId);
+    this.cancelAbstractMessage(this._personalMessageManager, msgId);
   }
 
   /**
@@ -335,14 +412,14 @@ export default class SignController extends EventEmitter {
    * @param msgId - The ID of the message to cancel.
    */
   cancelTypedMessage(msgId: string) {
-    this.cancelAbstractMessage(this.typedMessageManager, msgId);
+    this.cancelAbstractMessage(this._typedMessageManager, msgId);
   }
 
   /**
    * Reject all unapproved messages of any type.
    */
   rejectUnapproved() {
-    this.messageManagers.forEach((messageManager) =>
+    this._messageManagers.forEach((messageManager) =>
       Object.keys(messageManager.getUnapprovedMessages()).forEach((messageId) =>
         messageManager.rejectMessage(messageId),
       ),
@@ -365,10 +442,10 @@ export default class SignController extends EventEmitter {
       const cleanMessageParams = await messageManager.approveMessage(msgParams);
       const signature = await getSignature(cleanMessageParams);
       messageManager.setMessageStatusSigned(messageId, signature);
-      return this.getState();
+      return this._getState();
     } catch (error) {
       log.info(`MetaMaskController - ${methodName} failed.`, error);
-      this.typedMessageManager.setMessageStatusErrored(
+      this._typedMessageManager.setMessageStatusErrored(
         messageId,
         String(error),
       );
@@ -382,7 +459,7 @@ export default class SignController extends EventEmitter {
     PM extends AbstractMessageParamsMetamask,
   >(messageManager: AbstractMessageManager<M, P, PM>, messageId: string) {
     messageManager.rejectMessage(messageId);
-    return this.getState();
+    return this._getState();
   }
 
   private bubbleEvents<
@@ -391,7 +468,7 @@ export default class SignController extends EventEmitter {
     PM extends AbstractMessageParamsMetamask,
   >(messageManager: AbstractMessageManager<M, P, PM>) {
     messageManager.hub.on('updateBadge', () => {
-      this.emit('updateBadge');
+      this.hub.emit('updateBadge');
     });
   }
 
@@ -401,55 +478,56 @@ export default class SignController extends EventEmitter {
     PM extends AbstractMessageParamsMetamask,
   >(
     messageManager: AbstractMessageManager<M, P, PM>,
-    messagesPropertyName: string,
-    countPropertyName: string,
+    getExistingMessages: (
+      state: SignControllerState,
+    ) => Record<string, StateMessage<M>>,
+    updateState: (
+      state: SignControllerState,
+      newMessages: Record<string, StateMessage<M>>,
+      messageCount: number,
+    ) => void,
   ) {
     messageManager.subscribe(async (state: MessageManagerState<M>) => {
-      const existingMessages = this.getState()[messagesPropertyName];
+      const existingMessages = getExistingMessages(this.state);
 
       const newMessages = await this.migrateMessages(
         state.unapprovedMessages as any,
         existingMessages,
       );
 
-      this.memStore.updateState({
-        [messagesPropertyName]: newMessages,
-        [countPropertyName]: state.unapprovedMessagesCount,
+      this.update((draftState) => {
+        updateState(draftState, newMessages, state.unapprovedMessagesCount);
       });
     });
   }
 
-  private async migrateMessages(
-    coreMessages: {
-      [messageId: string]: CoreMessage;
-    },
-    existingMessages: { [messageId: string]: FrontEndMessage },
-  ): Promise<{
-    [messageId: string]: FrontEndMessage;
-  }> {
-    const frontEndMessages: { [messageId: string]: FrontEndMessage } = {};
+  private async migrateMessages<M extends AbstractMessage>(
+    coreMessages: Record<string, CoreMessage>,
+    existingMessages: Record<string, StateMessage<M>>,
+  ): Promise<Record<string, StateMessage<M>>> {
+    const stateMessages: Record<string, StateMessage<M>> = {};
 
     for (const messageId of Object.keys(coreMessages)) {
       const coreMessage = coreMessages[messageId];
 
-      const frontEndMessage = await this.migrateMessage(
+      const stateMessage = await this.migrateMessage(
         coreMessage,
         existingMessages,
       );
 
-      frontEndMessages[messageId] = frontEndMessage;
+      stateMessages[messageId] = stateMessage;
     }
 
-    return frontEndMessages;
+    return stateMessages;
   }
 
-  private async migrateMessage(
+  private async migrateMessage<M extends AbstractMessage>(
     coreMessage: CoreMessage,
-    existingMessages: { [messageId: string]: FrontEndMessage },
-  ): Promise<any> {
+    existingMessages: Record<string, StateMessage<M>>,
+  ): Promise<StateMessage<M>> {
     const { messageParams, ...originalMessageData } = coreMessage;
 
-    // Core message managers use messageParams but frontend has lots of references to msgParams
+    // Core message managers use messageParams but frontend uses msgParams with lots of references
     const newMessage = {
       ...originalMessageData,
       msgParams: coreMessage.messageParams,
@@ -460,9 +538,12 @@ export default class SignController extends EventEmitter {
 
     const securityProviderResponse = existingMessage
       ? existingMessage.securityProviderResponse
-      : await this.securityProviderRequest(newMessage, newMessage.type);
+      : await this._securityProviderRequest(newMessage, newMessage.type);
 
-    return { ...newMessage, securityProviderResponse };
+    // rawSig is optional in the core message but BaseControllerV2 does not allow optional state
+    const rawSig = newMessage.rawSig as string;
+
+    return { ...newMessage, securityProviderResponse, rawSig };
   }
 
   private normalizeMsgData(data: string) {

@@ -1058,6 +1058,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.signController = new SignController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SignController',
+      }),
       keyringController: this.keyringController,
       preferencesController: this.preferencesController,
       sendUpdate: this.sendUpdate.bind(this),
@@ -1187,7 +1190,7 @@ export default class MetamaskController extends EventEmitter {
       TokenRatesController: this.tokenRatesController,
       DecryptMessageManager: this.decryptMessageManager.memStore,
       EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
-      SignController: this.signController.memStore,
+      SignController: this.signController,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
@@ -1267,7 +1270,7 @@ export default class MetamaskController extends EventEmitter {
       this.txController.resetState,
       this.decryptMessageManager.resetState,
       this.encryptionPublicKeyManager.resetState,
-      this.signController.resetState,
+      this.signController.resetState.bind(this.signController),
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
