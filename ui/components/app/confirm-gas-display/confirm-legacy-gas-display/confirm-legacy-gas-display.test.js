@@ -58,7 +58,7 @@ const render = ({ contextProps } = {}) => {
 
 describe('ConfirmLegacyGasDisplay', () => {
   it('should match snapshot', async () => {
-    const {container} = render();
+    const { container } = render();
     await waitFor(() => {
       expect(container).toMatchSnapshot();
     });

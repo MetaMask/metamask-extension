@@ -48,7 +48,7 @@ const render = ({ transactionProp = {}, contextProps = {} } = {}) => {
 
 describe('ConfirmGasDisplay', () => {
   it('should match snapshot', async () => {
-    const {container} = render();
+    const { container } = render();
     await waitFor(() => {
       expect(container).toMatchSnapshot();
     });
