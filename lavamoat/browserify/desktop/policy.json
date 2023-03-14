@@ -3310,27 +3310,36 @@
         "browserify>insert-module-globals>is-buffer": true
 =======
         "browserify>insert-module-globals>is-buffer": true,
+        "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz": true,
         "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": true,
-        "eth-lattice-keyring>@ethereumjs/util>async": true,
         "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz": {
+      "packages": {
+        "browserify>buffer": true,
+        "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz>@chainsafe/as-sha256": true,
+        "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": true,
+        "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz>case": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz>@chainsafe/as-sha256": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": {
+      "globals": {
+        "WeakRef": true
+      },
+      "packages": {
+        "eth-lattice-keyring>@ethereumjs/util>@chainsafe/ssz>@chainsafe/as-sha256": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
-      }
-    },
-    "eth-lattice-keyring>@ethereumjs/util>async": {
-      "globals": {
-        "clearTimeout": true,
-        "console": true,
-        "define": true,
-        "queueMicrotask": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>process": true,
-        "browserify>timers-browserify": true
       }
     },
     "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": {

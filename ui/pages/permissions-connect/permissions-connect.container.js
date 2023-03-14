@@ -5,11 +5,11 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getPermissionsRequests,
-  getRequestState,
-  getRequestType,
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   getSnapInstallOrUpdateRequests,
+  getRequestState,
+  getRequestType,
   ///: END:ONLY_INCLUDE_IN
   getTargetSubjectMetadata,
 } from '../../selectors';
