@@ -1,6 +1,5 @@
 import log from 'loglevel';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { ReactNode, useContext, useEffect, useState } from 'react';
 
 import copyToClipboard from 'copy-to-clipboard';
 import Button from '../../../ui/button';
@@ -13,91 +12,103 @@ import {
   EVENT,
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
+import HoldToRevealModal from '../hold-to-reveal-modal/hold-to-reveal-modal';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export default class ExportPrivateKeyModal extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
+interface ExportPrivateKeyModalProps {
+  exportAccount: (password: string, address: string) => string;
+  selectedIdentity: {
+    name: string;
+    address: string;
   };
+  warning?: ReactNode;
+  showAccountDetailModal: () => void;
+  hideModal: () => void;
+  hideWarning: () => void;
+  clearAccountDetails: () => void;
+  previousModalState?: string;
+}
 
-  static defaultProps = {
-    warning: null,
-    previousModalState: null,
-  };
+const ExportPrivateKeyModal = ({
+  clearAccountDetails,
+  hideWarning,
+  exportAccount,
+  selectedIdentity,
+  showAccountDetailModal,
+  hideModal,
+  warning = null,
+  previousModalState,
+}: ExportPrivateKeyModalProps) => {
+  const [password, setPassword] = useState<string>('');
+  const [privateKey, setPrivateKey] = useState<string | undefined>(undefined);
+  const [showWarning, setShowWarning] = useState<boolean>(false);
+  const [showHoldToReveal, setShowHoldToReveal] = useState<boolean>(false);
 
-  static propTypes = {
-    exportAccount: PropTypes.func.isRequired,
-    selectedIdentity: PropTypes.object.isRequired,
-    warning: PropTypes.node,
-    showAccountDetailModal: PropTypes.func.isRequired,
-    hideModal: PropTypes.func.isRequired,
-    hideWarning: PropTypes.func.isRequired,
-    clearAccountDetails: PropTypes.func.isRequired,
-    previousModalState: PropTypes.string,
-  };
+  const trackEvent = useContext(MetaMetricsContext);
+  const t = useI18nContext();
 
-  state = {
-    password: '',
-    privateKey: null,
-    showWarning: true,
-  };
+  useEffect(() => {
+    return () => {
+      clearAccountDetails();
+      hideWarning();
+    };
+  }, []);
 
-  componentWillUnmount() {
-    this.props.clearAccountDetails();
-    this.props.hideWarning();
-  }
-
-  exportAccountAndGetPrivateKey = (password, address) => {
-    const { exportAccount } = this.props;
-
-    exportAccount(password, address)
-      .then((privateKey) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_REVEALED,
-          properties: {
-            key_type: EVENT.KEY_TYPES.PKEY,
+  const exportAccountAndGetPrivateKey = (
+    passwordInput: string,
+    address: string,
+  ): void => {
+    exportAccount(passwordInput, address)
+      .then((privateKeyRetrieved: string) => {
+        trackEvent(
+          {
+            category: EVENT.CATEGORIES.KEYS,
+            event: EVENT_NAMES.KEY_EXPORT_REVEALED,
+            properties: {
+              key_type: EVENT.KEY_TYPES.PKEY,
+            },
           },
-        });
-
-        this.setState({
-          privateKey,
-          showWarning: false,
-        });
+          {},
+        );
+        setPrivateKey(privateKeyRetrieved);
+        setShowWarning(false);
+        setShowHoldToReveal(true);
       })
       .catch((e) => {
-        this.context.trackEvent({
-          category: EVENT.CATEGORIES.KEYS,
-          event: EVENT_NAMES.KEY_EXPORT_FAILED,
-          properties: {
-            key_type: EVENT.KEY_TYPES.PKEY,
-            reason: 'incorrect_password',
+        trackEvent(
+          {
+            category: EVENT.CATEGORIES.KEYS,
+            event: EVENT_NAMES.KEY_EXPORT_FAILED,
+            properties: {
+              key_type: EVENT.KEY_TYPES.PKEY,
+              reason: 'incorrect_password',
+            },
           },
-        });
+          {},
+        );
 
         log.error(e);
       });
   };
 
-  renderPasswordLabel(privateKey) {
+  const renderPasswordLabel = (privateKeyInput: string): ReactNode => {
     return (
       <span className="export-private-key-modal__password-label">
-        {privateKey
-          ? this.context.t('copyPrivateKey')
-          : this.context.t('typePassword')}
+        {privateKeyInput ? t('copyPrivateKey') : t('typePassword')}
       </span>
     );
-  }
+  };
 
-  renderPasswordInput(privateKey) {
-    const plainKey = privateKey && stripHexPrefix(privateKey);
+  const renderPasswordInput = (privateKeyInput: string): ReactNode => {
+    const plainKey = privateKeyInput && stripHexPrefix(privateKeyInput);
 
-    if (!privateKey) {
+    if (!privateKeyInput) {
       return (
         <input
           type="password"
           className="export-private-key-modal__password-input"
-          onChange={(event) => this.setState({ password: event.target.value })}
+          onChange={(event) => setPassword(event.target.value)}
         />
       );
     }
@@ -107,45 +118,58 @@ export default class ExportPrivateKeyModal extends Component {
         className="export-private-key-modal__private-key-display"
         onClick={() => {
           copyToClipboard(plainKey);
-          this.context.trackEvent({
-            category: EVENT.CATEGORIES.KEYS,
-            event: EVENT_NAMES.KEY_EXPORT_COPIED,
-            properties: {
-              key_type: EVENT.KEY_TYPES.PKEY,
-              copy_method: 'clipboard',
+          trackEvent(
+            {
+              category: EVENT.CATEGORIES.KEYS,
+              event: EVENT_NAMES.KEY_EXPORT_COPIED,
+              properties: {
+                key_type: EVENT.KEY_TYPES.PKEY,
+                copy_method: 'clipboard',
+              },
             },
-          });
+            {},
+          );
         }}
       >
         {plainKey}
       </div>
     );
-  }
+  };
 
-  renderButtons(privateKey, address, hideModal) {
+  const renderButtons = (
+    privateKeyInput: string,
+    address: string,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    hideModal: () => void,
+  ): ReactNode => {
     return (
       <div className="export-private-key-modal__buttons">
-        {!privateKey && (
+        {!privateKeyInput && (
           <Button
+            icon={null}
             type="secondary"
             large
             className="export-private-key-modal__button export-private-key-modal__button--cancel"
             onClick={() => {
-              this.context.trackEvent({
-                category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.KEY_EXPORT_CANCELED,
-                properties: {
-                  key_type: EVENT.KEY_TYPES.PKEY,
+              trackEvent(
+                {
+                  category: EVENT.CATEGORIES.KEYS,
+                  event: EVENT_NAMES.KEY_EXPORT_CANCELED,
+                  properties: {
+                    key_type: EVENT.KEY_TYPES.PKEY,
+                  },
                 },
-              });
+                {},
+              );
               hideModal();
             }}
           >
-            {this.context.t('cancel')}
+            {t('cancel')}
           </Button>
         )}
         {privateKey ? (
           <Button
+            icon={null}
             onClick={() => {
               hideModal();
             }}
@@ -153,74 +177,80 @@ export default class ExportPrivateKeyModal extends Component {
             large
             className="export-private-key-modal__button"
           >
-            {this.context.t('done')}
+            {t('done')}
           </Button>
         ) : (
           <Button
+            icon={null}
             onClick={() => {
-              this.context.trackEvent({
-                category: EVENT.CATEGORIES.KEYS,
-                event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
-                properties: {
-                  key_type: EVENT.KEY_TYPES.PKEY,
+              trackEvent(
+                {
+                  category: EVENT.CATEGORIES.KEYS,
+                  event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
+                  properties: {
+                    key_type: EVENT.KEY_TYPES.PKEY,
+                  },
                 },
-              });
+                {},
+              );
 
-              this.exportAccountAndGetPrivateKey(this.state.password, address);
+              exportAccountAndGetPrivateKey(password, address);
             }}
             type="primary"
             large
             className="export-private-key-modal__button"
-            disabled={!this.state.password}
+            disabled={!password}
           >
-            {this.context.t('confirm')}
+            {t('confirm')}
           </Button>
         )}
       </div>
     );
-  }
+  };
 
-  render() {
-    const {
-      selectedIdentity,
-      warning,
-      showAccountDetailModal,
-      hideModal,
-      previousModalState,
-    } = this.props;
-    const { name, address } = selectedIdentity;
+  const { name, address } = selectedIdentity;
 
-    const { privateKey, showWarning } = this.state;
+  return (
+    <AccountModalContainer
+      className="export-private-key-modal"
+      selectedIdentity={selectedIdentity}
+      showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
+      backButtonAction={() => showAccountDetailModal()}
+    >
+      {showHoldToReveal ? (
+        <HoldToRevealModal
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          onLongPressed={(): void => setShowHoldToReveal(false)}
+          willHide={false}
+        />
+      ) : (
+        <>
+          <span className="export-private-key-modal__account-name">{name}</span>
+          <div className="ellip-address-wrapper">
+            {toChecksumHexAddress(address)}
+          </div>
+          <div className="export-private-key-modal__divider" />
+          <span className="export-private-key-modal__body-title">
+            {t('showPrivateKeys')}
+          </span>
+          <div className="export-private-key-modal__password">
+            {renderPasswordLabel(privateKey as string)}
+            {renderPasswordInput(privateKey as string)}
+            {showWarning && warning ? (
+              <span className="export-private-key-modal__password--error">
+                {warning}
+              </span>
+            ) : null}
+          </div>
+          <div className="export-private-key-modal__password--warning">
+            {t('privateKeyWarning')}
+          </div>
+          {renderButtons(privateKey as string, address, hideModal)}
+        </>
+      )}
+    </AccountModalContainer>
+  );
+};
 
-    return (
-      <AccountModalContainer
-        className="export-private-key-modal"
-        selectedIdentity={selectedIdentity}
-        showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
-        backButtonAction={() => showAccountDetailModal()}
-      >
-        <span className="export-private-key-modal__account-name">{name}</span>
-        <div className="ellip-address-wrapper">
-          {toChecksumHexAddress(address)}
-        </div>
-        <div className="export-private-key-modal__divider" />
-        <span className="export-private-key-modal__body-title">
-          {this.context.t('showPrivateKeys')}
-        </span>
-        <div className="export-private-key-modal__password">
-          {this.renderPasswordLabel(privateKey)}
-          {this.renderPasswordInput(privateKey)}
-          {showWarning && warning ? (
-            <span className="export-private-key-modal__password--error">
-              {warning}
-            </span>
-          ) : null}
-        </div>
-        <div className="export-private-key-modal__password--warning">
-          {this.context.t('privateKeyWarning')}
-        </div>
-        {this.renderButtons(privateKey, address, hideModal)}
-      </AccountModalContainer>
-    );
-  }
-}
+export default ExportPrivateKeyModal;
