@@ -160,7 +160,7 @@ export default class Routes extends Component {
     const { theme } = this.props;
 
     if (theme !== prevProps.theme) {
-      if (theme === ThemeType.OS) {
+      if (theme === ThemeType.os) {
         this.handleOsTheme();
       } else {
         document.documentElement.setAttribute('data-theme', theme);
@@ -252,9 +252,7 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        {process.env.NFTS_V1 ? (
-          <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
-        ) : null}
+        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
