@@ -3,7 +3,8 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('ENS', function () {
-  const sampleAddress = '1111111111111111111111111111111111111111';
+  const sampleResolverAddress = '1111111111111111111111111111111111111111';
+  const sampleAddress = '1111111111111111111111111111111111111112';
   const sampleEnsDomain = 'test.eth';
   const infuraUrl =
     'https://mainnet.infura.io/v3/00000000000000000000000000000000';
@@ -15,7 +16,6 @@ describe('ENS', function () {
       .forPost(infuraUrl)
       .withJsonBodyIncluding({ method: 'eth_blockNumber' })
       .thenCallback(() => {
-        console.log('*** eth_blockNumber')
         return {
           statusCode: 200,
           json: {
@@ -28,15 +28,46 @@ describe('ENS', function () {
 
     await mockServer
       .forPost(infuraUrl)
-      .withJsonBodyIncluding({ method: 'eth_call' })
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [
+          {
+            to: '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e',
+            data: '0x0178b8bfeb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1',
+          },
+          '0x1',
+        ],
+      })
       .thenCallback(() => {
-        console.log('*** eth_call', sampleAddress)
         return {
           statusCode: 200,
           json: {
             jsonrpc: '2.0',
             id: '1111111111111111',
-            result: `0x000000000000000000000000${sampleAddress}`,
+            result: `0x000000000000000000000000${sampleResolverAddress}`,
+          },
+        };
+      });
+
+    await mockServer
+      .forPost(infuraUrl)
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [
+          {
+            to: `0x${sampleResolverAddress}`,
+            data: '0xf1cb7e06eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1000000000000000000000000000000000000000000000000000000000000003c',
+          },
+          '0x1',
+        ],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result: `0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000014${sampleAddress.toLowerCase()}000000000000000000000000`,
           },
         };
       });
@@ -52,7 +83,6 @@ describe('ENS', function () {
   };
 
   it('domain resolves to a correct address', async function () {
-    console.log('***1')
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -61,50 +91,36 @@ describe('ENS', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver }) => {
-        console.log('***2')
         await driver.navigate();
-        console.log('***3')
         await driver.fill('#password', 'correct horse battery staple');
-        console.log('***4')
         await driver.press('#password', driver.Key.ENTER);
-        console.log('***5')
         await driver.waitForElementNotPresent('.loading-overlay');
-        console.log('***6')
         await driver.clickElement('.network-display');
-        console.log('***7')
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
-        console.log('***8')
         await driver.clickElement('[data-testid="eth-overview-send"]');
-        console.log('***9', sampleEnsDomain)
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
           sampleEnsDomain,
         );
-        console.log('***10')
         await driver.clickElement(
           '.send__select-recipient-wrapper__group-item__title',
         );
-        console.log('***11')
         const currentEnsDomain = await driver.findElement(
           '.ens-input__selected-input__title',
         );
-        console.log('***12', await currentEnsDomain.getText())
         assert.equal(
           await currentEnsDomain.getText(),
           'test.eth',
           'Domain name not correct',
         );
-        console.log('***13')
         const resolvedAddress = await driver.findElement(
           '.ens-input__selected-input__subtitle',
         );
-        console.log('***14', await resolvedAddress.getText())
         assert.equal(
           await resolvedAddress.getText(),
           `0x${sampleAddress}`,
           'Resolved address not correct',
         );
-        console.log('***15')
       },
     );
   });
