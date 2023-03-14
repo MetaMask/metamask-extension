@@ -672,12 +672,6 @@
   "settings": {
     "message": "সেটিংস"
   },
-  "showAdvancedGasInline": {
-    "message": "উন্নত গ্যাস নিয়ন্ত্রণসমূহ"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "গ্যাসের মূল্য দেখাতে এটি নির্বাচন করুন এবং পাঠানোর এবং নিশ্চিতকরণের স্ক্রিনগুলিতে নিয়ন্ত্রণগুলি সরাসরি সীমিত করুন।"
-  },
   "showFiatConversionInTestnets": {
     "message": "Testnets এ রূপান্তর দেখান"
   },
