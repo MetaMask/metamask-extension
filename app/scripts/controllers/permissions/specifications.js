@@ -209,6 +209,29 @@ function validateCaveatAccounts(accounts, getIdentities) {
   });
 }
 
+// Environment variable injection does not work with destructuring
+// eslint-disable-next-line prefer-destructuring
+const IN_TEST = process.env.IN_TEST;
+
+/**
+ * These are methods supported by Ganache, for use in e2e tests.
+ *
+ * @see {@link https://ganache.dev/}
+ */
+const ganacheMethods = [
+  'evm_addAccount',
+  'evm_increaseTime',
+  'evm_mine',
+  'evm_removeAccount',
+  'evm_revert',
+  'evm_setAccountBalance',
+  'evm_setAccountCode',
+  'evm_setAccountNonce',
+  'evm_setAccountStorageAt',
+  'evm_setTime',
+  'evm_snapshot',
+];
+
 /**
  * All unrestricted methods recognized by the PermissionController.
  * Unrestricted methods are ignored by the permission system, but every
@@ -276,4 +299,5 @@ export const unrestrictedMethods = Object.freeze([
   'wallet_watchAsset',
   'web3_clientVersion',
   'web3_sha3',
+  ...(IN_TEST ? ganacheMethods : []),
 ]);
