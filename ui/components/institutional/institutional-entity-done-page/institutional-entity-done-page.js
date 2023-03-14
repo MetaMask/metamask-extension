@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Button from '../../ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Box from '../../ui/box';
 
 export default function InstitutionalEntityDonePage(props) {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -12,21 +13,30 @@ export default function InstitutionalEntityDonePage(props) {
   const { state } = location;
 
   return (
-    <div className="page-container institutional-entity__container">
-      <div className="page-container__content">
-        <div className="institutional-entity__form">
-          <div className="entity-connect__compliance-activated">
+    <Box className="page-container institutional-entity-done__container">
+      <Box className="page-container__content">
+        <Box
+          paddingBottom={6}
+          paddingLeft={6}
+          paddingRight={6}
+          className="institutional-entity-done__form"
+        >
+          <Box className="institutional-entity-done__entity-connect__compliance-activated">
             <img
-              className="entity-connect__compliance-activated__img"
+              className="institutional-entity-done__entity-connect__compliance-activated__img"
               src={state.imgSrc}
               alt="Entity image"
             />
-            <h4 className="entity-connect__header__title">{state.title}</h4>
-            <p className="entity-connect__header__msg">{state.description}</p>
-          </div>
-        </div>
-      </div>
-      <div className="page-container__footer">
+            <h4 className="institutional-entity-done__entity-connect__header__title">
+              {state.title}
+            </h4>
+            <p className="institutional-entity-done__entity-connect__header__msg">
+              {state.description}
+            </p>
+          </Box>
+        </Box>
+      </Box>
+      <Box className="page-container__footer">
         <footer>
           <Button
             type="primary"
@@ -38,8 +48,8 @@ export default function InstitutionalEntityDonePage(props) {
             {t('close')}
           </Button>
         </footer>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
