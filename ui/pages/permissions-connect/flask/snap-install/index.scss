@@ -2,21 +2,20 @@
   box-shadow: none;
 
   .headers {
-
     flex: 1;
 
-  .permissions-connect-permission-list {
-    padding: 0 24px;
+    .permissions-connect-permission-list {
+      padding: 0 24px;
 
-    .permission {
-      padding: 8px 0;
+      .permission {
+        padding: 8px 0;
+      }
+    }
+
+    .loader-container {
+      height: 100%;
     }
   }
-
-  .loader-container {
-    height: 100%;
-  }
-}
 
   .page-container__footer {
     width: 100%;

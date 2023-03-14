@@ -4,20 +4,20 @@
   .headers {
     flex: 1;
 
-  .loader-container {
-    height: 100%;
-  }
+    .loader-container {
+      height: 100%;
+    }
 
-  .update-snap-permission-list {
-    padding: 0 24px;
+    .update-snap-permission-list {
+      padding: 0 24px;
 
-    .new-permission,
-    .approved-permission,
-    .revoked-permission {
-      padding: 8px 0;
+      .new-permission,
+      .approved-permission,
+      .revoked-permission {
+        padding: 8px 0;
+      }
     }
   }
-}
 
   .page-container__footer {
     width: 100%;
