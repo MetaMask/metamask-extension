@@ -1060,9 +1060,10 @@ export default class MetamaskController extends EventEmitter {
     this.signController = new SignController({
       keyringController: this.keyringController,
       preferencesController: this.preferencesController,
-      sendUpdate: this.sendUpdate,
+      sendUpdate: this.sendUpdate.bind(this),
       showPopup: this.opts.showUserConfirmation,
-      getState: this.getState,
+      getState: this.getState.bind(this),
+      securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
     this.swapsController = new SwapsController({

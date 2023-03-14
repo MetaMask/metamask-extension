@@ -31,8 +31,13 @@ const INITIAL_STATE = {
   unapprovedTypedMessagesCount: 0,
 };
 
-interface Message<P extends AbstractMessageParams> extends AbstractMessage {
-  messageParams: P;
+interface CoreMessage extends AbstractMessage {
+  messageParams: AbstractMessageParams;
+}
+
+interface FrontEndMessage extends AbstractMessage {
+  msgParams: AbstractMessageParams;
+  securityProviderResponse: any;
 }
 
 export default class SignController extends EventEmitter {
@@ -56,18 +61,28 @@ export default class SignController extends EventEmitter {
 
   private messageManagers: AbstractMessageManager<any, any, any>[];
 
+  private securityProviderRequest: (
+    requestData: any,
+    methodName: string,
+  ) => Promise<any>;
+
   constructor({
     keyringController,
     preferencesController,
     sendUpdate,
     showPopup,
     getState,
+    securityProviderRequest,
   }: {
     keyringController: KeyringController;
     preferencesController: PreferencesController;
     sendUpdate: () => void;
     showPopup: () => void;
     getState: () => any;
+    securityProviderRequest: (
+      requestData: any,
+      methodName: string,
+    ) => Promise<any>;
   }) {
     super();
 
@@ -76,6 +91,7 @@ export default class SignController extends EventEmitter {
     this.sendUpdate = sendUpdate;
     this.showPopup = showPopup;
     this.getState = getState;
+    this.securityProviderRequest = securityProviderRequest;
 
     this.memStore = new ObservableStore(INITIAL_STATE);
 
@@ -353,33 +369,65 @@ export default class SignController extends EventEmitter {
     messagesPropertyName: string,
     countPropertyName: string,
   ) {
-    messageManager.subscribe((state: MessageManagerState<M>) => {
+    messageManager.subscribe(async (state: MessageManagerState<M>) => {
+      const existingMessages = this.getState()[messagesPropertyName];
+
+      const newMessages = await this.migrateMessages(
+        state.unapprovedMessages as any,
+        existingMessages,
+      );
+
       this.memStore.updateState({
-        [messagesPropertyName]: this.migrateMessages(
-          state.unapprovedMessages as any,
-        ),
+        [messagesPropertyName]: newMessages,
         [countPropertyName]: state.unapprovedMessagesCount,
       });
     });
   }
 
-  private migrateMessages<P extends AbstractMessageParams>(messages: {
-    [messageId: string]: Message<P>;
-  }): {
-    [messageId: string]: any;
-  } {
+  private async migrateMessages(
+    coreMessages: {
+      [messageId: string]: CoreMessage;
+    },
+    existingMessages: { [messageId: string]: FrontEndMessage },
+  ): Promise<{
+    [messageId: string]: FrontEndMessage;
+  }> {
+    const frontEndMessages: { [messageId: string]: FrontEndMessage } = {};
+
+    for (const messageId of Object.keys(coreMessages)) {
+      const coreMessage = coreMessages[messageId];
+
+      const frontEndMessage = await this.migrateMessage(
+        coreMessage,
+        existingMessages,
+      );
+
+      frontEndMessages[messageId] = frontEndMessage;
+    }
+
+    return frontEndMessages;
+  }
+
+  private async migrateMessage(
+    coreMessage: CoreMessage,
+    existingMessages: { [messageId: string]: FrontEndMessage },
+  ): Promise<any> {
+    const { messageParams, ...originalMessageData } = coreMessage;
+
     // Core message managers use messageParams but frontend has lots of references to msgParams
-    return Object.keys(messages).reduce(
-      (result: { [messageId: string]: any }, messageId) => {
-        const originalMessage = messages[messageId];
-        result[messageId] = {
-          ...originalMessage,
-          msgParams: originalMessage.messageParams,
-        };
-        return result;
-      },
-      {},
-    );
+    const newMessage = {
+      ...originalMessageData,
+      msgParams: coreMessage.messageParams,
+    };
+
+    const { id: messageId } = coreMessage;
+    const existingMessage = existingMessages[messageId];
+
+    const securityProviderResponse = existingMessage
+      ? existingMessage.securityProviderResponse
+      : await this.securityProviderRequest(newMessage, newMessage.type);
+
+    return { ...newMessage, securityProviderResponse };
   }
 
   private normalizeMsgData(data: string) {
