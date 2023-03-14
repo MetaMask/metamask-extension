@@ -133,6 +133,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '24.9977 ETH',
+        });
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
@@ -194,6 +198,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+        await driver.waitForSelector({
+          css: '[data-testid="eth-overview__primary-currency"]',
+          text: '24.9977 ETH',
+        });
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
