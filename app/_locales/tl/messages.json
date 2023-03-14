@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Ipakita ang mga setting ng Seguridad at Pagkapribado"
   },
-  "notifications17Description": {
-    "message": "Ang update na ito ay nagbibigay ng mas maraming opsyon para higit mong makontrol ang iyong pagkapribado. Nagdagdag kami ng higit pang paglilinaw tungkol sa kung paano kinokolekta ang datos at mas malinaw na mga opsyon sa pagbabahagi nito. Palitan ang iyong mga kagustuhan o tanggalin ang datos sa paggamit ng extension sa pamamagitan ng mga setting ng Seguridad at Pagkapribado."
-  },
   "notifications17Title": {
     "message": "Mga Setting ng Seguridad at Pagkapribado"
   },

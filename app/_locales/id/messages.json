@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Tampilkan pengaturan Keamanan & Privasi"
   },
-  "notifications17Description": {
-    "message": "Pembaruan ini memberikan lebih banyak opsi sehingga Anda dapat mengontrol privasi Anda sendiri dengan lebih baik. Kami telah menambahkan penjelasan seputar cara pengumpulan data dan opsi yang lebih mudah untuk membagikannya. Ubah preferensi Anda atau hapus data penggunaan ekstensi melalui pengaturan Keamanan & Privasi."
-  },
   "notifications17Title": {
     "message": "Pengaturan Keamanan & Privasi"
   },
