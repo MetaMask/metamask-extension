@@ -309,8 +309,7 @@ class ImportToken extends Component {
         });
 
         break;
-      case process.env.NFTS_V1 &&
-        (standard === 'ERC1155' || standard === 'ERC721'):
+      case standard === 'ERC1155' || standard === 'ERC721':
         this.setState({
           nftAddressError: this.context.t('nftAddressError', [
             <a
