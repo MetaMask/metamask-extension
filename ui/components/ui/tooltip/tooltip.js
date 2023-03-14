@@ -86,7 +86,7 @@ export default class Tooltip extends PureComponent {
         title={disabled ? '' : title}
         trigger={trigger}
         open={open}
-        theme={`tippy-tooltip--mm-custom ${theme}`} // Required for correct theming
+        theme={theme} // Required for correct theming
         tabIndex={tabIndex || 0}
         tag={tag}
       >

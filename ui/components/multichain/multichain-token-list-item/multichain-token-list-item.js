@@ -87,12 +87,9 @@ export const MultichainTokenListItem = ({
                 interactive
                 html={title}
                 containerClassName="multichain-token-list-item__tooltip"
+                disabled={title.length < 12}
                 tooltipInnerClassName="multichain-token-list-item__tooltip"
-                theme={
-                  dataTheme === 'light'
-                    ? 'multichain-dark'
-                    : 'multichain-light'
-                }
+                theme={dataTheme === 'light' ? 'dark' : 'light'}
               >
                 <Text
                   fontWeight={FONT_WEIGHT.MEDIUM}
