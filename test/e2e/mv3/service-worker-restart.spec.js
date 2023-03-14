@@ -92,7 +92,7 @@ describe('MV3 - Service worker restart', function () {
         // balance renders
         await driver.waitForSelector(
           {
-            css: '[data-testid="eth-overview__primary-currency"]',
+            css: '[class="eth-overview__primary-container"]',
             text: '0 ETH',
           },
           { timeout: 50_000 },
