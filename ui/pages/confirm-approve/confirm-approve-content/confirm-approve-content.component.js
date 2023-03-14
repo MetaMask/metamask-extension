@@ -538,6 +538,7 @@ export default class ConfirmApproveContent extends Component {
       tokenAddress,
       assetName,
       isSetApproveForAll,
+      isApprovalOrRejection,
       userAcknowledgedGasMissing,
       setUserAcknowledgedGasMissing,
       renderSimulationFailureWarning,
@@ -607,7 +608,7 @@ export default class ConfirmApproveContent extends Component {
             />
           )}
         </Box>
-        {isSetApproveForAll ? (
+        {isSetApproveForAll || isApprovalOrRejection === false ? (
           <Box padding={4} width={BLOCK_SIZES.FULL}>
             <NftInfoSetApprovalForAll
               assetName={assetName}
