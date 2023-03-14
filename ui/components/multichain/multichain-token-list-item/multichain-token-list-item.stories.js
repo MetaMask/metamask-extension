@@ -26,7 +26,7 @@ export default {
     primary: '0.006',
     tokenImage: './images/eth_logo.svg',
     tokenSymbol: 'ETH',
-    title: 'Ethereum'
+    title: 'Ethereum',
   },
 };
 const Template = (args) => {
