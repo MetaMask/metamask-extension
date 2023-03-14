@@ -1,5 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Popover } from './popover';
 import { PopoverPosition } from './popover.constants';
@@ -25,6 +25,44 @@ describe('Popover', () => {
     );
     expect(getByText('Popover test')).toBeDefined();
     expect(getByText('Popover test')).toHaveClass('mm-popover__header-title');
+  });
+
+  it('should render popover back button', () => {
+    const onBackTest = jest.fn();
+    const { getByTestId } = render(
+      <Popover
+        data-testid="popover"
+        isOpen={true}
+        onBack={onBackTest}
+        backButtonProps={{ 'data-testid': 'back' }}
+      >
+        Popover
+      </Popover>,
+    );
+
+    const backButton = getByTestId('back');
+    fireEvent.click(backButton);
+
+    expect(onBackTest).toHaveBeenCalled();
+  });
+
+  it('should render popover close button', () => {
+    const onCloseTest = jest.fn();
+    const { getByTestId } = render(
+      <Popover
+        data-testid="popover"
+        isOpen={true}
+        onClose={onCloseTest}
+        closeButtonProps={{ 'data-testid': 'close' }}
+      >
+        Popover
+      </Popover>,
+    );
+
+    const closeButton = getByTestId('close');
+    fireEvent.click(closeButton);
+
+    expect(onCloseTest).toHaveBeenCalled();
   });
 
   it('should render popover position', () => {
@@ -168,4 +206,22 @@ describe('Popover', () => {
     expect(getByText(PopoverPosition.LeftStart)).toBeDefined();
     expect(getByText(PopoverPosition.LeftEnd)).toBeDefined();
   });
+
+  // it('should render an arrow on popover', () => {
+  //   const { getByTestId } = render(
+  //     <Popover
+  //       data-testid="popover"
+  //       isOpen={true}
+  //       hasArrow
+  //       closeButtonProps={{ 'data-testid': 'close' }}
+  //     >
+  //       Popover
+  //     </Popover>,
+  //   );
+
+  //   const closeButton = getByTestId('close');
+  //   fireEvent.click(closeButton);
+
+  //   expect(onCloseTest).toHaveBeenCalled();
+  // });
 });
