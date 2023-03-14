@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Icon, ICON_NAMES, Text, ButtonBase } from '../../component-library';
 import {
   BackgroundColor,
-  BorderRadius,
   IconColor,
   TextVariant,
   TextColor,
