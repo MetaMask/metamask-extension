@@ -72,7 +72,7 @@ Use the `color` prop and the `COLOR` object from `./ui/helpers/constants/design-
 ```jsx
 // If importing from ui/components/app/[YOUR_COMPONENT]/ directory
 import Typography from '../../ui/typography';
-import { TextColor, Colors, BackgroundColor } from '../../../helpers/constants/design-system';
+import { TextColor, Color, BackgroundColor } from '../../../helpers/constants/design-system';
 
 <Typography color={TextColor.textDefault}>
   text-default
@@ -83,7 +83,7 @@ import { TextColor, Colors, BackgroundColor } from '../../../helpers/constants/d
 <Typography color={TextColor.textMuted}>
   text-muted
 </Typography>
-<Typography color={Colors.overlayInverse} boxProps={{backgroundColor:{BackgroundColor.overlayDefault}}}>
+<Typography color={Color.overlayInverse} boxProps={{backgroundColor:{BackgroundColor.overlayDefault}}}>
   overlay-inverse
 </Typography>
 <Typography color={TextColor.primaryDefault}>
@@ -302,22 +302,22 @@ import Typography from '../../ui/typography';
 Use the `boxProps` prop object to pass any valid [Box](/?path=/story/components-ui-box--default-story) component props to the Typography component. `boxProps` will overwrite the `margin` prop
 
 <Canvas>
-  <Story id="components-ui-typography--box-props" />
+  <Story id="components-ui-typography--box-props-story" />
 </Canvas>
 
 ```jsx
 // If importing from ui/components/app/[YOUR_COMPONENT]/ directory
 import Typography from '../../ui/typography';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { Color } from '../../../helpers/constants/design-system';
 
 <Typography
   boxProps={{
-    backgroundColor: COLORS.INFO_MUTED,
-    borderColor: COLORS.INFO_DEFAULT,
+    backgroundColor: Color.infoMuted,
+    borderColor: Color.infoDefault,
     padding: 4,
     borderRadius: 4,
   }}
-  color={COLORS.TEXT_DEFAULT}
+  color={Color.textDefault}
 >
   This uses the boxProps prop
 </Typography>;

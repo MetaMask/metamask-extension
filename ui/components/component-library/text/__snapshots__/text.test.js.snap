@@ -12,16 +12,16 @@ exports[`Text should render the Text with proper variant class name 1`] = `
   >
     heading-lg
   </h2>
-  <h2
+  <h3
     class="box mm-text mm-text--heading-md mm-text--color-text-default box--flex-direction-row"
   >
     heading-md
-  </h2>
-  <h2
+  </h3>
+  <h4
     class="box mm-text mm-text--heading-sm mm-text--color-text-default box--flex-direction-row"
   >
     heading-sm
-  </h2>
+  </h4>
   <p
     class="box mm-text mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
   >

@@ -5,6 +5,8 @@ const {
   piggybankAbi,
   collectiblesAbi,
   collectiblesBytecode,
+  erc1155Abi,
+  erc1155Bytecode,
   failingContractAbi,
   failingContractBytecode,
   multisigAbi,
@@ -20,9 +22,14 @@ const hstFactory = {
   abi: hstAbi,
 };
 
-const collectiblesFactory = {
+const nftsFactory = {
   bytecode: collectiblesBytecode,
   abi: collectiblesAbi,
+};
+
+const erc1155Factory = {
+  bytecode: erc1155Bytecode,
+  abi: erc1155Abi,
 };
 
 const piggybankFactory = {
@@ -42,7 +49,8 @@ const multisigFactory = {
 
 const SMART_CONTRACTS = {
   HST: 'hst',
-  COLLECTIBLES: 'collectibles',
+  NFTS: 'nfts',
+  ERC1155: 'erc1155',
   PIGGYBANK: 'piggybank',
   FAILING: 'failing',
   MULTISIG: 'multisig',
@@ -50,7 +58,8 @@ const SMART_CONTRACTS = {
 
 const contractConfiguration = {
   [SMART_CONTRACTS.HST]: hstFactory,
-  [SMART_CONTRACTS.COLLECTIBLES]: collectiblesFactory,
+  [SMART_CONTRACTS.NFTS]: nftsFactory,
+  [SMART_CONTRACTS.ERC1155]: erc1155Factory,
   [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
   [SMART_CONTRACTS.FAILING]: failingContract,
   [SMART_CONTRACTS.MULTISIG]: multisigFactory,

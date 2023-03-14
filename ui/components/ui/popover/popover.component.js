@@ -80,7 +80,7 @@ const Popover = ({
             size={Size.SM}
           />
         ) : null}
-        <Text ellipsis variant={TextVariant.headingSm}>
+        <Text ellipsis variant={TextVariant.headingSm} as="h2">
           {title}
         </Text>
         {onClose ? (

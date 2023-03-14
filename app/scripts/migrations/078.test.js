@@ -1,4 +1,4 @@
-import migration78 from './078';
+import { migrate, version } from './078';
 
 describe('migration #78', () => {
   it('updates the version metadata', async () => {
@@ -9,10 +9,10 @@ describe('migration #78', () => {
       data: {},
     };
 
-    const newStorage = await migration78.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.meta).toStrictEqual({
-      version: 78,
+      version,
     });
   });
 
@@ -24,7 +24,7 @@ describe('migration #78', () => {
       data: { test: '123' },
     };
 
-    const newStorage = await migration78.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
@@ -40,7 +40,7 @@ describe('migration #78', () => {
         data: { PhishingController: invalidState },
       };
 
-      const newStorage = await migration78.migrate(oldStorage);
+      const newStorage = await migrate(oldStorage);
 
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
@@ -54,7 +54,7 @@ describe('migration #78', () => {
       data: { PhishingController: { test: '123' } },
     };
 
-    const newStorage = await migration78.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
@@ -67,7 +67,7 @@ describe('migration #78', () => {
       data: { PhishingController: { test: '123', phishing: [] } },
     };
 
-    const newStorage = await migration78.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual({
       PhishingController: { test: '123' },
@@ -82,7 +82,7 @@ describe('migration #78', () => {
       data: { PhishingController: { test: '123', lastFetched: 100 } },
     };
 
-    const newStorage = await migration78.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual({
       PhishingController: { test: '123' },
@@ -99,7 +99,7 @@ describe('migration #78', () => {
       },
     };
 
-    const newStorage = await migration78.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual({
       PhishingController: { test: '123' },
