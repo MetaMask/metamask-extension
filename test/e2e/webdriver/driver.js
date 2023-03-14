@@ -482,20 +482,24 @@ class Driver {
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
     ];
+    console.log({ test: this });
     const { errors } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
     await this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
-        const eventDescription = event.args.filter(
+        const eventDescriptions = event.args.filter(
           (err) => err.description !== undefined,
         );
-        const [{ description }] = eventDescription;
+        console.log('eventDescriptions', { eventDescriptions });
+        const [eventDescription] = eventDescriptions;
+        // console.log()
         const ignore = ignoredErrorMessages.some((message) =>
-          description.includes(message),
+          eventDescription?.description.includes(message),
         );
         if (!ignore) {
-          errors.push(description);
-          logBrowserError(failOnConsoleError, description);
+          console.log({ errors });
+          errors.push(eventDescription?.description);
+          logBrowserError(failOnConsoleError, eventDescription?.description);
         }
       }
     });
