@@ -135,14 +135,27 @@ export default class SignController extends EventEmitter {
     return this.messageManager.getUnapprovedMessagesCount();
   }
 
+  /**
+   * A getter for the number of 'unapproved' PersonalMessages in this.messages
+   *
+   * @returns The number of 'unapproved' PersonalMessages in this.messages
+   */
   get unapprovedPersonalMessagesCount(): number {
     return this.personalMessageManager.getUnapprovedMessagesCount();
   }
 
+  /**
+   * A getter for the number of 'unapproved' TypedMessages in this.messages
+   *
+   * @returns The number of 'unapproved' TypedMessages in this.messages
+   */
   get unapprovedTypedMessagesCount(): number {
     return this.typedMessageManager.getUnapprovedMessagesCount();
   }
 
+  /**
+   * Reset the controller state to the initial state.
+   */
   resetState() {
     this.memStore.updateState(INITIAL_STATE);
   }
@@ -198,7 +211,7 @@ export default class SignController extends EventEmitter {
    * We currently define our eth_sign and personal_sign mostly for legacy Dapps.
    *
    * @param msgParams - The params of the message to sign & return to the Dapp.
-   * @param [req] - The original request, containing the origin.
+   * @param req - The original request, containing the origin.
    */
   async newUnsignedPersonalMessage(
     msgParams: PersonalMessageParamsMetamask,
@@ -213,6 +226,13 @@ export default class SignController extends EventEmitter {
     return promise;
   }
 
+  /**
+   * Called when a dapp uses the eth_signTypedData method, per EIP 712.
+   *
+   * @param msgParams - The params passed to eth_signTypedData.
+   * @param req - The original request, containing the origin.
+   * @param version
+   */
   async newUnsignedTypedMessage(
     msgParams: TypedMessageParamsMetamask,
     req: OriginalRequest,
@@ -261,6 +281,13 @@ export default class SignController extends EventEmitter {
     );
   }
 
+  /**
+   * The method for a user approving a call to eth_signTypedData, per EIP 712.
+   * Triggers the callback in newUnsignedTypedMessage.
+   *
+   * @param msgParams - The params passed to eth_signTypedData.
+   * @returns Full state update.
+   */
   async signTypedMessage(msgParams: TypedMessageParamsMetamask) {
     const { version } = msgParams;
 
@@ -302,10 +329,18 @@ export default class SignController extends EventEmitter {
     this.cancelAbstractMessage(this.personalMessageManager, msgId);
   }
 
+  /**
+   * Used to cancel a eth_signTypedData type message.
+   *
+   * @param msgId - The ID of the message to cancel.
+   */
   cancelTypedMessage(msgId: string) {
     this.cancelAbstractMessage(this.typedMessageManager, msgId);
   }
 
+  /**
+   * Reject all unapproved messages of any type.
+   */
   rejectUnapproved() {
     this.messageManagers.forEach((messageManager) =>
       Object.keys(messageManager.getUnapprovedMessages()).forEach((messageId) =>
