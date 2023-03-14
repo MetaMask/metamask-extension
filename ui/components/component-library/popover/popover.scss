@@ -1,6 +1,6 @@
 
 .mm-popover {
-  // TODO
+  // TODO: remove when using HeaderBase
 
   &__header {
     position: relative;
@@ -76,10 +76,14 @@
   &::before {
     transform: rotate(-45deg);
   }
-}
 
-/* Hide the popper when the reference is hidden */
-#tooltip[data-popper-reference-hidden] {
-  visibility: hidden;
-  pointer-events: none;
+  /* Hide the popper when the reference is hidden */
+  &--reference-hidden[data-popper-reference-hidden="true"] {
+    visibility: hidden;
+    pointer-events: none;
+
+    > .mm-popover__arrow::before {
+      visibility: hidden;
+    }
+  }
 }

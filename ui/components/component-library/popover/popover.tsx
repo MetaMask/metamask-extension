@@ -85,6 +85,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
     useImperativeHandle(ref, () => ({
       closePopover: () => {
         // Your close popover implementation here
+        console.log('closePopover called');
       },
     }));
 

@@ -73,9 +73,9 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
-  // const handleClick = () => {
-  //   setIsOpen(!isOpen);
-  // };
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
 
   // const handleMouseEnter = () => {
   //   setIsOpen(true);
@@ -85,9 +85,9 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   //   setIsOpen(false);
   // };
 
-  const handleFocus = () => {
-    setIsOpen(true);
-  };
+  // const handleFocus = () => {
+  //   setIsOpen(true);
+  // };
 
   const handleClose = () => {
     setIsOpen(false);
@@ -120,11 +120,11 @@ const Template: ComponentStory<typeof Popover> = (args) => {
     >
       <Box
         ref={setButtonRef}
-        // onClick={handleClick}
+        onClick={handleClick}
         // onMouseEnter={handleMouseEnter}
         // onMouseLeave={handleMouseLeave}
-        onFocus={handleFocus}
-        onBlur={handleClose}
+        // onFocus={handleFocus}
+        // onBlur={handleClose}
         // backgroundColor={Color.primaryDefault}
         // style={{ width: 200, height: 200 }}
         as="input"
