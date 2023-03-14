@@ -256,9 +256,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('consensyszkevm'),
-    descriptionMessage: (t) => t('consensyszkevm'),
-    route: `${NETWORKS_ROUTE}#networks-consensys-zkevm`,
+    sectionMessage: (t) => t('lineatestnet'),
+    descriptionMessage: (t) => t('lineatestnet'),
+    route: `${NETWORKS_ROUTE}#networks-lineatestnet`,
     icon: 'fa fa-plug',
   },
   {

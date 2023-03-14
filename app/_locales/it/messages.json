@@ -551,14 +551,14 @@
   "connectingToGoerli": {
     "message": "Connessione alla Rete di Test Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Connessione alla Rete di test Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Connessione alla Rete Ethereum Principale"
   },
   "connectingToSepolia": {
     "message": "Connessione alla Rete di test Sepolia"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "Connessione alla Rete di test ConsenSys zkEVM"
   },
   "contactUs": {
     "message": "Contattaci!"
@@ -995,9 +995,6 @@
   "goerli": {
     "message": "Rete di test Goerli"
   },
-  "consensyszkevm": {
-    "message": "Rete di test ConsenSys zkEVM"
-  },
   "hardware": {
     "message": "hardware"
   },
@@ -1130,6 +1127,9 @@
   },
   "likeToImportTokens": {
     "message": "Vorresti aggiungere questi token?"
+  },
+  "lineatestnet": {
+    "message": "Rete di test Linea Goerli"
   },
   "links": {
     "message": "Collegamenti"

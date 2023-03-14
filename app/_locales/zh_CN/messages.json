@@ -711,14 +711,14 @@
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
+  "connectingToLineaTestnet": {
+    "message": "正在连接Linea测试网络"
+  },
   "connectingToMainnet": {
     "message": "正在连接到以太坊主网"
   },
   "connectingToSepolia": {
     "message": "正在连接Sepolia测试网络"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "正在连接ConsenSys zkEVM测试网络"
   },
   "contactUs": {
     "message": "联系我们"
@@ -1897,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
+  },
+  "lineatestnet": {
+    "message": "Linea测试网络"
   },
   "link": {
     "message": "链接"
@@ -3243,9 +3246,6 @@
   },
   "sepolia": {
     "message": "Sepolia测试网络"
-  },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM测试网络"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask 使用这些可信的第三方服务来提高产品可用性和安全性。"

@@ -163,8 +163,8 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToConsensysZkevm": {
-    "message": "در حال اتصال به شبکه آزمایشی ConsenSys zkEVM"
+  "connectingToLineaTestnet": {
+    "message": "در حال اتصال به شبکه آزمایشی Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
@@ -324,9 +324,6 @@
   "goerli": {
     "message": "شبکه آزمایشی Goerli"
   },
-  "consensyszkevm": {
-    "message": "شبکه آزمایشی ConsenSys zkEVM"
-  },
   "hardware": {
     "message": "سخت افزار"
   },
@@ -417,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
+  },
+  "lineatestnet": {
+    "message": "شبکه آزمایشی Linea Goerli"
   },
   "links": {
     "message": "لینک ها"

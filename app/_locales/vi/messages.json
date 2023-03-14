@@ -711,14 +711,14 @@
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Đang kết nối với mạng thử nghiệm Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Đang kết nối với mạng chính thức của Ethereum"
   },
   "connectingToSepolia": {
     "message": "Đang kết nối với mạng thử nghiệm Sepolia"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "Đang kết nối với mạng thử nghiệm ConsenSys zkEVM"
   },
   "contactUs": {
     "message": "Liên hệ với chúng tôi"
@@ -1897,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "Bạn có muốn nhập những token này không?"
+  },
+  "lineatestnet": {
+    "message": "Mạng thử nghiệm Linea Goerli"
   },
   "link": {
     "message": "Liên kết"
@@ -3243,9 +3246,6 @@
   },
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"
-  },
-  "consensyszkevm": {
-    "message": "Mạng thử nghiệm ConsenSys zkEVM"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask sử dụng các dịch vụ của bên thứ ba đáng tin cậy này để nâng cao sự hữu ích và an toàn của sản phẩm."

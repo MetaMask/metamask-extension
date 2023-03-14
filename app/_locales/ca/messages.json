@@ -160,8 +160,8 @@
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Connectant a Xarxa de Prova ConsenSys zkEVM"
+  "connectingToLineaTestnet": {
+    "message": "Connectant a Xarxa de Prova Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
@@ -314,9 +314,6 @@
   "goerli": {
     "message": "Xarxa de test Goerli"
   },
-  "consensyszkevm": {
-    "message": "Xarxa de test ConsenSys zkEVM"
-  },
   "hardwareWalletConnected": {
     "message": "Moneder hardware connectat"
   },
@@ -404,6 +401,9 @@
   },
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
+  },
+  "lineatestnet": {
+    "message": "Xarxa de test Linea Goerli"
   },
   "links": {
     "message": "Enllaços"

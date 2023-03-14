@@ -157,8 +157,8 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa ConsenSys zkEVM"
+  "connectingToLineaTestnet": {
+    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
@@ -314,9 +314,6 @@
   "goerli": {
     "message": "Mtandao wa Majaribio wa Goerli"
   },
-  "consensyszkevm": {
-    "message": "Mtandao wa Majaribio wa ConsenSys zkEVM"
-  },
   "hardware": {
     "message": "programu maunzi"
   },
@@ -404,6 +401,9 @@
   },
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
+  },
+  "lineatestnet": {
+    "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
     "message": "Viungo"

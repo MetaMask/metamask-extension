@@ -451,8 +451,8 @@
   "connectingToGoerli": {
     "message": "Conectando à rede de testes Goerli"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Conectando à rede de testes ConsenSys zkEVM"
+  "connectingToLineaTestnet": {
+    "message": "Conectando à rede de testes Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Conectando à mainnet do Ethereum"
@@ -1027,9 +1027,6 @@
   "goerli": {
     "message": "Rede de testes Goerli"
   },
-  "consensyszkevm": {
-    "message": "Rede de testes ConsenSys zkEVM"
-  },
   "grantedToWithColon": {
     "message": "Concedido a:"
   },
@@ -1274,6 +1271,9 @@
   },
   "likeToImportTokens": {
     "message": "Você gostaria de importar esses tokens?"
+  },
+  "lineatestnet": {
+    "message": "Rede de testes Linea Goerli"
   },
   "link": {
     "message": "Link"

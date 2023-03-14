@@ -163,8 +163,8 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Ühendamine ConsenSys zkEVM testvõrguga"
+  "connectingToLineaTestnet": {
+    "message": "Ühendamine Linea Goerli testvõrguga"
   },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
@@ -320,9 +320,6 @@
   "goerli": {
     "message": "Goerli testvõrk"
   },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM testvõrk"
-  },
   "hardware": {
     "message": "riistvara"
   },
@@ -413,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testvõrk"
   },
   "links": {
     "message": "Lingid"

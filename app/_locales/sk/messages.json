@@ -157,8 +157,8 @@
   "connectingToGoerli": {
     "message": "Pripája sa k testovacej sieti Goerli"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Pripája sa k testovacej sieti ConsenSys zkEVM"
+  "connectingToLineaTestnet": {
+    "message": "Pripája sa k testovacej sieti Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
@@ -318,9 +318,6 @@
   "goerli": {
     "message": "Testovacia sieť Goerli"
   },
-  "consensyszkevm": {
-    "message": "Testovacia sieť ConsenSys zkEVM"
-  },
   "hardware": {
     "message": "hardvér"
   },
@@ -404,6 +401,9 @@
   },
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
+  },
+  "lineatestnet": {
+    "message": "Testovacia sieť Linea Goerli"
   },
   "links": {
     "message": "Odkazy"

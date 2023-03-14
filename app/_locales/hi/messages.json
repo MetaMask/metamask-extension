@@ -711,8 +711,8 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
-  "connectingToConsensysZkevm": {
-    "message": "ConsenSys zkEVM टेस्ट नेटवर्क से कनेक्ट हो रहा है"
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
@@ -1531,9 +1531,6 @@
   "goerli": {
     "message": "Goerli टेस्ट नेटवर्क"
   },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM टेस्ट नेटवर्क"
-  },
   "gotIt": {
     "message": "समझ आ गया!"
   },
@@ -1900,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क"
   },
   "link": {
     "message": "लिंक"

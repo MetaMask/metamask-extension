@@ -163,8 +163,8 @@
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Yhdistetään ConsenSys zkEVM testiverkostoon"
+  "connectingToLineaTestnet": {
+    "message": "Yhdistetään Linea Goerli testiverkostoon"
   },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
@@ -324,9 +324,6 @@
   "goerli": {
     "message": "Goerli-testiverkko"
   },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM-testiverkko"
-  },
   "hardware": {
     "message": "laitteisto"
   },
@@ -417,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
+  },
+  "lineatestnet": {
+    "message": "Linea-testiverkko"
   },
   "links": {
     "message": "Linkit"

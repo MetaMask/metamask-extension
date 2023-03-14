@@ -163,8 +163,8 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Povezovanje na testno omrežje ConsenSys zkEVM"
+  "connectingToLineaTestnet": {
+    "message": "Povezovanje na testno omrežje Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Povezovanje na glavno omrežje"
@@ -321,9 +321,6 @@
   "goerli": {
     "message": "Testno omrežje Goerli"
   },
-  "consensyszkevm": {
-    "message": "Testno omrežje ConsenSys zkEVM"
-  },
   "hardware": {
     "message": "strojna"
   },
@@ -411,6 +408,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
+  },
+  "lineatestnet": {
+    "message": "Testno omrežje Linea Goerli"
   },
   "links": {
     "message": "Povezave"

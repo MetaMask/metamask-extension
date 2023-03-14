@@ -163,8 +163,8 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Menyambung kepada Rangkaian Ujian ConsenSys zkEVM"
+  "connectingToLineaTestnet": {
+    "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
@@ -317,9 +317,6 @@
   "goerli": {
     "message": "Rangkaian Ujian Goerli"
   },
-  "consensyszkevm": {
-    "message": "Rangkaian Ujian ConsenSys zkEVM"
-  },
   "hardware": {
     "message": "perkakasan"
   },
@@ -406,6 +403,9 @@
   },
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
+  },
+  "lineatestnet": {
+    "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {
     "message": "Pautan"

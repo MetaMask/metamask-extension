@@ -313,14 +313,14 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
+  "connectingToLineaTestnet": {
+    "message": "連線到 Linea Goerli 測試網路"
+  },
   "connectingToMainnet": {
     "message": "連線到 Ethereum 主網路"
   },
   "connectingToSepolia": {
     "message": "連線到 Sepolia 測試網路"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "連線到 ConsenSys zkEVM 測試網路"
   },
   "contactUs": {
     "message": "聯絡我們"
@@ -659,9 +659,6 @@
   "goerli": {
     "message": "Goerli 測試網路"
   },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM 測試網路"
-  },
   "hardware": {
     "message": "硬體"
   },
@@ -817,6 +814,9 @@
   },
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli 測試網路"
   },
   "links": {
     "message": "連結"

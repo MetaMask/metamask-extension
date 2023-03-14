@@ -711,14 +711,14 @@
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
   },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli test ağına bağlanılıyor"
+  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet ağına bağlanıyor"
   },
   "connectingToSepolia": {
     "message": "Sepolia test ağına bağlanılıyor"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "ConsenSys zkEVM test ağına bağlanılıyor"
   },
   "contactUs": {
     "message": "Bize ulaşın"
@@ -1897,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "Bu tokenleri içe aktarmak ister misiniz?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli test ağı"
   },
   "link": {
     "message": "Bağlantı"
@@ -3243,9 +3246,6 @@
   },
   "sepolia": {
     "message": "Sepolia test ağı"
-  },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM test ağı"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."

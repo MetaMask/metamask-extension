@@ -711,14 +711,14 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Kumokonekta sa Linea Goerli test network"
+  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
   "connectingToSepolia": {
     "message": "Kumokonekta sa Sepolia test network"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "Kumokonekta sa ConsenSys zkEVM test network"
   },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
@@ -1897,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli test network"
   },
   "link": {
     "message": "Link"
@@ -3243,9 +3246,6 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
-  },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM test network"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Ginagamit ng MetaMask ang mga pinagkakatiwalaang serbisyo ng third-party na ito para mapahusay ang kakayahang magamit at kaligtasan ng produkto."

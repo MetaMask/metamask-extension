@@ -163,8 +163,8 @@
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Csatlakozás a ConsenSys zkEVM teszthálózathoz"
+  "connectingToLineaTestnet": {
+    "message": "Csatlakozás a Linea Goerli teszthálózathoz"
   },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
@@ -320,9 +320,6 @@
   "goerli": {
     "message": "Goerli teszthálózat"
   },
-  "consensyszkevm": {
-    "message": "ConsenSys zkEVM teszthálózat"
-  },
   "hardware": {
     "message": "hardver"
   },
@@ -413,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli teszthálózat"
   },
   "links": {
     "message": "Linkek"

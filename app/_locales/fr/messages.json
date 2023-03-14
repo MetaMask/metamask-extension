@@ -711,14 +711,14 @@
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Connexion au réseau de test Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
   },
   "connectingToSepolia": {
     "message": "Connexion au réseau de test Sepolia"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "Connexion au réseau de test ConsenSys zkEVM"
   },
   "contactUs": {
     "message": "Nous contacter"
@@ -1897,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
+  },
+  "lineatestnet": {
+    "message": "Réseau de test Linea Goerli"
   },
   "link": {
     "message": "Associer"
@@ -3243,9 +3246,6 @@
   },
   "sepolia": {
     "message": "Réseau de test Sepolia"
-  },
-  "consensyszkevm": {
-    "message": "Réseau de test ConsenSys zkEVM"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."

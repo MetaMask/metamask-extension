@@ -104,10 +104,10 @@ describe('Network Dropdown', () => {
     });
 
     it('checks background color for seventh ColorIndicator', () => {
-      const consensysZkevmColorIndicator = screen.queryByTestId(
-        'color-icon-consensyszkevm',
+      const lineaColorIndicator = screen.queryByTestId(
+        'color-icon-lineatestnet',
       );
-      expect(consensysZkevmColorIndicator).toBeInTheDocument();
+      expect(lineaColorIndicator).toBeInTheDocument();
     });
 
     it('checks that Add Network button is rendered', () => {

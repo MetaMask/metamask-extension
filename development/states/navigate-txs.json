@@ -305,7 +305,7 @@
       "mainnet": "ok",
       "goerli": "ok",
       "sepolia": "ok",
-      "consensyszkevm": "ok"
+      "lineatestnet": "ok"
     }
   },
   "send": {

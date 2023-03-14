@@ -711,14 +711,14 @@
   "connectingToGoerli": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Σύνδεση στο δίκτυο δοκιμών Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
   "connectingToSepolia": {
     "message": "Σύνδεση στο δίκτυο δοκιμών Sepolia"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "Σύνδεση στο δίκτυο δοκιμών ConsenSys zkEVM"
   },
   "contactUs": {
     "message": "Επικοινωνήστε μαζί μας"
@@ -1897,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
+  },
+  "lineatestnet": {
+    "message": "Δίκτυο δοκιμών Linea Goerli"
   },
   "link": {
     "message": "Σύνδεσμος"
@@ -3243,9 +3246,6 @@
   },
   "sepolia": {
     "message": "Δίκτυο δοκιμών Sepolia"
-  },
-  "consensyszkevm": {
-    "message": "Δίκτυο δοκιμών ConsenSys zkEVM"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "Το MetaMask χρησιμοποιεί αυτές τις αξιόπιστες υπηρεσίες τρίτων για να ενισχύσει τη χρηστικότητα και την ασφάλεια των προϊόντων."

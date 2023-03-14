@@ -3521,6 +3521,266 @@ describe('NetworkController', () => {
       });
     });
 
+    describe(`given a type of "lineatestnet"`, () => {
+      const networkType = 'lineatestnet';
+      const chainId = '0xe704';
+      const ticker = 'LineaETH';
+      const networkName = 'Linea Goerli';
+
+      it('captures the current provider configuration before overwriting it', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'http://example-custom-rpc.metamask.io',
+                chainId: '0x9999',
+                nickname: 'Test initial state',
+              },
+            },
+          },
+          async ({ controller }) => {
+            const network = new NetworkCommunications({
+              networkClientType: 'infura',
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
+            });
+            network.mockEssentialRpcCalls();
+
+            controller.setProviderType(networkType);
+
+            expect(
+              controller.store.getState().previousProviderStore,
+            ).toStrictEqual({
+              type: 'rpc',
+              rpcUrl: 'http://example-custom-rpc.metamask.io',
+              chainId: '0x9999',
+              nickname: 'Test initial state',
+            });
+          },
+        );
+      });
+
+      it(`overwrites the provider configuration using type: "${networkType}", chainId: "${chainId}", and ticker "${ticker}", clearing rpcUrl and nickname, and removing rpcPrefs`, async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'http://example-custom-rpc.metamask.io',
+                chainId: '0x9999',
+                nickname: 'Test initial state',
+              },
+            },
+          },
+          async ({ controller }) => {
+            const network = new NetworkCommunications({
+              networkClientType: 'infura',
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
+            });
+            network.mockEssentialRpcCalls();
+
+            controller.setProviderType(networkType);
+
+            expect(controller.store.getState().provider).toStrictEqual({
+              type: networkType,
+              rpcUrl: 'https://rpc.goerli.linea.build',
+              chainId,
+              ticker,
+              nickname: '',
+            });
+          },
+        );
+      });
+
+      it('emits networkWillChange', async () => {
+        await withController(async ({ controller }) => {
+          const network = new NetworkCommunications({
+            networkClientType: 'infura',
+            networkClientOptions: {
+              infuraNetwork: networkType,
+            },
+          });
+          network.mockEssentialRpcCalls();
+
+          const networkWillChange = await waitForEvent({
+            controller,
+            eventName: 'networkWillChange',
+            operation: () => {
+              controller.setProviderType(networkType);
+            },
+          });
+
+          expect(networkWillChange).toBe(true);
+        });
+      });
+
+      it('resets the network state to "loading" before emitting networkDidChange', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'http://mock-rpc-url',
+                chainId: '0xFF',
+              },
+            },
+          },
+          async ({ controller, network: network1 }) => {
+            network1.mockEssentialRpcCalls({
+              net_version: {
+                response: {
+                  result: '255',
+                },
+              },
+            });
+            const network2 = network1.with({
+              networkClientType: 'infura',
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
+            });
+            network2.mockEssentialRpcCalls();
+
+            await controller.initializeProvider();
+            expect(controller.store.getState().network).toBe('255');
+
+            await waitForStateChanges({
+              controller,
+              propertyPath: ['network'],
+              // We only care about the first state change, because it
+              // happens before networkDidChange
+              count: 1,
+              operation: () => {
+                controller.setProviderType(networkType);
+              },
+            });
+            expect(controller.store.getState().network).toBe('loading');
+          },
+        );
+      });
+
+      it('resets EIP support for the network before emitting networkDidChange', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'http://mock-rpc-url-1',
+                chainId: '0xFF',
+              },
+            },
+          },
+          async ({ controller, network: network1 }) => {
+            network1.mockEssentialRpcCalls({
+              latestBlock: POST_1559_BLOCK,
+            });
+            const network2 = network1.with({
+              networkClientType: 'infura',
+              networkClientOptions: {
+                infuraNetwork: networkType,
+              },
+            });
+            network2.mockEssentialRpcCalls({
+              latestBlock: PRE_1559_BLOCK,
+            });
+
+            await controller.initializeProvider();
+            expect(controller.store.getState().networkDetails).toStrictEqual({
+              EIPS: {
+                1559: true,
+              },
+            });
+
+            await waitForStateChanges({
+              controller,
+              propertyPath: ['networkDetails'],
+              // We only care about the first state change, because it
+              // happens before networkDidChange
+              count: 1,
+              operation: () => {
+                controller.setProviderType(networkType);
+              },
+            });
+            expect(controller.store.getState().networkDetails).toStrictEqual({
+              EIPS: {
+                1559: undefined,
+              },
+            });
+          },
+        );
+      });
+
+      it(`initializes a provider pointed to the ${networkName} Infura network (chainId: ${chainId})`, async () => {
+        await withController(async ({ controller }) => {
+          const network = new NetworkCommunications({
+            networkClientType: 'infura',
+            networkClientOptions: {
+              infuraNetwork: networkType,
+            },
+          });
+          network.mockEssentialRpcCalls();
+
+          controller.setProviderType(networkType);
+
+          const { provider } = controller.getProviderAndBlockTracker();
+          const promisifiedSendAsync = promisify(provider.sendAsync).bind(
+            provider,
+          );
+          const { result: chainIdResult } = await promisifiedSendAsync({
+            method: 'eth_chainId',
+          });
+          expect(chainIdResult).toBe(chainId);
+        });
+      });
+
+      it('replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself', async () => {
+        await withController(async ({ controller }) => {
+          const network = new NetworkCommunications({
+            networkClientType: 'infura',
+            networkClientOptions: {
+              infuraNetwork: networkType,
+            },
+          });
+          network.mockEssentialRpcCalls();
+          await controller.initializeProvider();
+
+          const { provider: providerBefore } =
+            controller.getProviderAndBlockTracker();
+          controller.setProviderType(networkType);
+          const { provider: providerAfter } =
+            controller.getProviderAndBlockTracker();
+
+          expect(providerBefore).toBe(providerAfter);
+        });
+      });
+
+      it('emits networkDidChange', async () => {
+        await withController(async ({ controller }) => {
+          const network = new NetworkCommunications({
+            networkClientType: 'infura',
+            networkClientOptions: {
+              infuraNetwork: networkType,
+            },
+          });
+          network.mockEssentialRpcCalls();
+
+          const networkDidChange = await waitForEvent({
+            controller,
+            eventName: 'networkDidChange',
+            operation: () => {
+              controller.setProviderType(networkType);
+            },
+          });
+
+          expect(networkDidChange).toBe(true);
+        });
+      });
+    });
+
     describe('given an invalid Infura network name', () => {
       it('throws', async () => {
         await withController(async ({ controller }) => {

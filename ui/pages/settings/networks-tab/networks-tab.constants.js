@@ -4,7 +4,7 @@ import {
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
   NETWORK_TYPES,
-  CONSENSYS_ZKEVM_RPC_URL,
+  LINEA_TESTNET_RPC_URL,
 } from '../../../../shared/constants/network';
 
 const defaultNetworksData = [
@@ -45,13 +45,13 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://sepolia.etherscan.io',
   },
   {
-    labelKey: NETWORK_TYPES.CONSENSYS_ZKEVM,
+    labelKey: NETWORK_TYPES.LINEA_TESTNET,
     iconColor: '#234FD5',
-    providerType: NETWORK_TYPES.CONSENSYS_ZKEVM,
-    rpcUrl: CONSENSYS_ZKEVM_RPC_URL,
-    chainId: CHAIN_IDS.CONSENSYS_ZKEVM,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.CONSENSYS_ZKEVM],
-    blockExplorerUrl: ' https://explorer.goerli.zkevm.consensys.net',
+    providerType: NETWORK_TYPES.LINEA_TESTNET,
+    rpcUrl: LINEA_TESTNET_RPC_URL,
+    chainId: CHAIN_IDS.LINEA_TESTNET,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
+    blockExplorerUrl: 'https://explorer.goerli.linea.build',
   },
 ];
 

@@ -711,14 +711,14 @@
   "connectingToGoerli": {
     "message": "Menghubungkan ke jaringan uji Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Menghubungkan ke jaringan uji Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Menghubungkan ke Ethereum Mainnet"
   },
   "connectingToSepolia": {
     "message": "Menghubungkan ke jaringan uji Sepolia"
-  },
-  "connectingToConsensysZkevm": {
-    "message": "Menghubungkan ke jaringan uji ConsenSys zkEVM"
   },
   "contactUs": {
     "message": "Hubungi kami"
@@ -1897,6 +1897,9 @@
   },
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
+  },
+  "lineatestnet": {
+    "message": "Jaringan uji Linea Goerli"
   },
   "link": {
     "message": "Tautan"
@@ -3243,9 +3246,6 @@
   },
   "sepolia": {
     "message": "Jaringan uji Sepolia"
-  },
-  "consensyszkevm": {
-    "message": "Jaringan uji ConsenSys zkEVM"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."

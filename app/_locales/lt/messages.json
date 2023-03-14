@@ -163,8 +163,8 @@
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToConsensysZkevm": {
-    "message": "Jungiamasi prie „ConsenSys zkEVM“ bandomojo tinklo"
+  "connectingToLineaTestnet": {
+    "message": "Jungiamasi prie „Linea“ bandomojo tinklo"
   },
   "connectingToMainnet": {
     "message": "Jungiamasi prie pagrindinio „Ethereum“ tinklo"
@@ -324,9 +324,6 @@
   "goerli": {
     "message": "„Goerli“ bandomasis tinklas"
   },
-  "consensyszkevm": {
-    "message": "„ConsenSys zkEVM“ bandomasis tinklas"
-  },
   "hardware": {
     "message": "aparatinė įranga"
   },
@@ -417,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
+  },
+  "lineatestnet": {
+    "message": "„Linea“ bandomasis tinklas"
   },
   "links": {
     "message": "Nuorodos"
