@@ -229,7 +229,9 @@ export default class PermissionConnect extends Component {
       Object.keys(permissionsRequest.permissions).includes('wallet_snap');
 
     const shouldRedirect = Boolean(!isSnap && !isRequestingSnap);
+    ///: END:ONLY_INCLUDE_IN
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.setState({
       redirecting: shouldRedirect,
       permissionsApproved: approved,
@@ -244,9 +246,17 @@ export default class PermissionConnect extends Component {
     ///: END:ONLY_INCLUDE_IN
     this.removeBeforeUnload();
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     if (shouldRedirect && approved) {
       setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
-    } else {
+    }
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+    if (approved) {
+      setTimeout(() => history.push(DEFAULT_ROUTE), APPROVE_TIMEOUT);
+    }
+    ///: END:ONLY_INCLUDE_IN
+    else {
       history.push(DEFAULT_ROUTE);
     }
   }
