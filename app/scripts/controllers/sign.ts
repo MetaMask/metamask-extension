@@ -27,6 +27,11 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Patch } from 'immer';
+import {
+  AcceptRequest,
+  AddApprovalRequest,
+  RejectRequest,
+} from '@metamask/approval-controller';
 import PreferencesController from './preferences';
 
 const controllerName = 'SignController';
@@ -77,11 +82,13 @@ export type SignControllerActions = GetSignState;
 
 export type SignControllerEvents = SignStateChange;
 
+type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
+
 export type SignControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  SignControllerActions,
+  SignControllerActions | AllowedActions,
   SignControllerEvents,
-  never,
+  AllowedActions['type'],
   never
 >;
 
@@ -101,8 +108,6 @@ export default class SignController extends BaseControllerV2<
   private _preferencesController: PreferencesController;
 
   private _sendUpdate: () => void;
-
-  private _showPopup: () => void;
 
   private _getState: () => any;
 
@@ -124,7 +129,6 @@ export default class SignController extends BaseControllerV2<
     keyringController,
     preferencesController,
     sendUpdate,
-    showPopup,
     getState,
     securityProviderRequest,
   }: {
@@ -132,7 +136,6 @@ export default class SignController extends BaseControllerV2<
     keyringController: KeyringController;
     preferencesController: PreferencesController;
     sendUpdate: () => void;
-    showPopup: () => void;
     getState: () => any;
     securityProviderRequest: (
       requestData: any,
@@ -149,14 +152,13 @@ export default class SignController extends BaseControllerV2<
     this._keyringController = keyringController;
     this._preferencesController = preferencesController;
     this._sendUpdate = sendUpdate;
-    this._showPopup = showPopup;
     this._getState = getState;
     this._securityProviderRequest = securityProviderRequest;
 
+    this.hub = new EventEmitter();
     this._messageManager = new MessageManager();
     this._personalMessageManager = new PersonalMessageManager();
     this._typedMessageManager = new TypedMessageManager();
-    this.hub = new EventEmitter();
 
     this._messageManagers = [
       this._messageManager,
@@ -273,7 +275,7 @@ export default class SignController extends BaseControllerV2<
         req,
       );
       this._sendUpdate();
-      this._showPopup();
+      this._requestApproval(msgParams, req, 'eth_sign');
       return await promise;
     }
 
@@ -299,7 +301,7 @@ export default class SignController extends BaseControllerV2<
       req,
     );
     this._sendUpdate();
-    this._showPopup();
+    this._requestApproval(msgParams, req, 'personal_sign');
     return promise;
   }
 
@@ -321,7 +323,7 @@ export default class SignController extends BaseControllerV2<
       req,
     );
     this._sendUpdate();
-    this._showPopup();
+    this._requestApproval(msgParams, req, 'eth_signTypedData');
     return promise;
   }
 
@@ -553,5 +555,24 @@ export default class SignController extends BaseControllerV2<
     }
     // data is unicode, convert to hex
     return bufferToHex(Buffer.from(data, 'utf8'));
+  }
+
+  private _requestApproval(
+    msgParams: AbstractMessageParamsMetamask,
+    req: OriginalRequest,
+    type: string,
+  ) {
+    const id = msgParams.metamaskId as string;
+    const origin = req.origin as string;
+
+    this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
+        id,
+        origin,
+        type,
+      },
+      true,
+    );
   }
 }

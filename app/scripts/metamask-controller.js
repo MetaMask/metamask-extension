@@ -1060,11 +1060,15 @@ export default class MetamaskController extends EventEmitter {
     this.signController = new SignController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
       }),
       keyringController: this.keyringController,
       preferencesController: this.preferencesController,
       sendUpdate: this.sendUpdate.bind(this),
-      showPopup: this.opts.showUserConfirmation,
       getState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
