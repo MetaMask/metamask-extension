@@ -8,9 +8,13 @@ export default {
     closeMenu: {
       action: 'closeMenu',
     },
+    anchorElement: {
+      control: 'func',
+    },
   },
   args: {
     closeMenu: () => console.log('Closing menu!'),
+    anchorElement: document.body,
   },
 };
 

@@ -67,6 +67,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           );
           closeMenu();
         }}
+        data-testid="global-menu-portfolio"
       >
         {t('portfolioView')}
       </MenuItem>
@@ -106,6 +107,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           );
           closeMenu();
         }}
+        data-testid="global-menu-support"
       >
         {t('support')}
       </MenuItem>
@@ -132,6 +134,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           history.push(DEFAULT_ROUTE);
           closeMenu();
         }}
+        data-testid="global-menu-lock"
       >
         {t('lockMetaMask')}
       </MenuItem>
