@@ -144,7 +144,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
             }
             disabled={!isBuyableChain}
             data-testid="eth-overview-buy"
