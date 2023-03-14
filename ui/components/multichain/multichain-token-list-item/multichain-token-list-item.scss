@@ -1,4 +1,6 @@
 .multichain-token-list-item {
+  $self: &;
+
   &__container-cell {
     &:hover,
     &:focus-within {

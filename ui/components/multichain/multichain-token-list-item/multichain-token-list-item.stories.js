@@ -37,7 +37,7 @@ export const DefaultStory = Template.bind({});
 
 export const ChaosStory = (args) => (
   <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+    style={{ width: '336px', border: '1px solid var(--color-border-muted)' }}
   >
     <MultichainTokenListItem {...args} />
   </div>
@@ -45,7 +45,7 @@ export const ChaosStory = (args) => (
 ChaosStory.storyName = 'ChaosStory';
 
 ChaosStory.args = {
-  title: 'Ethereum Ethereum Ethereum Ethereum Ethereum Ethereum',
-  secondary: '$945656666.80 USD',
+  title: 'long Long Nameeeee',
+  secondary: '$94556756776.80 USD',
   primary: '34449765768526.00',
 };

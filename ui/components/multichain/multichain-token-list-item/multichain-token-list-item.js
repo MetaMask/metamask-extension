@@ -22,6 +22,7 @@ import {
 import Box from '../../ui/box/box';
 import { getNativeCurrencyImage } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Tooltip from '../../ui/tooltip';
 
 export const MultichainTokenListItem = ({
   className,
@@ -34,6 +35,8 @@ export const MultichainTokenListItem = ({
 }) => {
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const t = useI18nContext();
+  const dataTheme = document.documentElement.getAttribute('data-theme');
+  console.log(dataTheme, "them")
   return (
     <Box
       className={classnames('multichain-token-list-item', className)}
@@ -76,20 +79,34 @@ export const MultichainTokenListItem = ({
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
-            gap={2}
+            gap={1}
           >
+            <Box width={[BLOCK_SIZES.ONE_THIRD]}>
+              <Tooltip
+                position="bottom"
+                interactive
+                html={title}
+                containerClassName="multichain-token-list-item__tooltip"
+                tooltipInnerClassName="multichain-token-list-item__tooltip"
+                theme={
+                  dataTheme === 'light'
+                    ? 'multichain-dark'
+                    : 'multichain-light'
+                }
+              >
+                <Text
+                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  variant={TextVariant.bodyMd}
+                  ellipsis
+                >
+                  {title}
+                </Text>
+              </Tooltip>
+            </Box>
             <Text
               fontWeight={FONT_WEIGHT.MEDIUM}
               variant={TextVariant.bodyMd}
-              ellipsis
-              width={[BLOCK_SIZES.HALF]}
-            >
-              {title}
-            </Text>
-            <Text
-              fontWeight={FONT_WEIGHT.MEDIUM}
-              variant={TextVariant.bodyMd}
-              width={[BLOCK_SIZES.HALF]}
+              width={[BLOCK_SIZES.TWO_THIRD]}
               textAlign={TEXT_ALIGN.END}
             >
               {secondary}
