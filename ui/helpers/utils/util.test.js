@@ -883,4 +883,28 @@ describe('util', () => {
       });
     });
   });
+
+  describe('sanitizeString', () => {
+    it('should return the passed value, unchanged, if it is falsy', () => {
+      expect(util.sanitizeString('')).toStrictEqual('');
+    });
+
+    it('should return the passed value, unchanged, if it is not a string', () => {
+      expect(util.sanitizeString(true)).toStrictEqual(true);
+    });
+
+    it('should return a truthy string that oes not match the sanitizeString regex, unchanged', () => {
+      expect(
+        util.sanitizeString('The Quick Brown Fox Jumps Over The Lazy Dog'),
+      ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
+    });
+
+    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
+      expect(
+        util.sanitizeString(
+          'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
+        ),
+      ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
+    });
+  });
 });
