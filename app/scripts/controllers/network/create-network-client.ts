@@ -19,9 +19,7 @@ import {
   providerFromMiddleware,
   SafeEventEmitterProvider,
 } from '@metamask/eth-json-rpc-provider';
-import createFilterMiddleware from 'eth-json-rpc-filters';
 import { createInfuraMiddleware } from '@metamask/eth-json-rpc-infura';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import type { Hex } from '@metamask/utils/dist';
 import { PollingBlockTracker } from 'eth-block-tracker/dist';
 import type { InfuraJsonRpcSupportedNetwork } from '@metamask/eth-json-rpc-infura/dist/types';
@@ -176,23 +174,8 @@ export function createNetworkClient(
           rpcApiMiddleware,
         });
 
-  const networkProvider = providerFromMiddleware(networkMiddleware);
-
-  const filterMiddleware = createFilterMiddleware({
-    provider: networkProvider,
-    blockTracker,
-  });
-  const subscriptionManager = createSubscriptionManager({
-    provider: networkProvider,
-    blockTracker,
-  });
-
   const engine = new JsonRpcEngine();
-  subscriptionManager.events.on('notification', (message: string) =>
-    engine.emit('notification', message),
-  );
-  engine.push(filterMiddleware);
-  engine.push(subscriptionManager.middleware);
+
   engine.push(networkMiddleware);
 
   const provider = providerFromEngine(engine);
