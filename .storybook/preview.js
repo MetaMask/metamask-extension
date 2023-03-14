@@ -38,6 +38,9 @@ addParameters({
       ],
     },
   },
+  controls: {
+    expanded: true,
+  },
 });
 
 export const globalTypes = {
