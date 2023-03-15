@@ -13,7 +13,11 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export const AddressCopyButton = ({ address, shorten = false }) => {
+export const AddressCopyButton = ({
+  address,
+  shorten = false,
+  wrap = false,
+}) => {
   const displayAddress = shorten ? shortenAddress(address) : address;
   const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
@@ -33,6 +37,7 @@ export const AddressCopyButton = ({ address, shorten = false }) => {
           variant={TextVariant.bodyXs}
           color={TextColor.primaryDefault}
           data-testid="address-copy-button-text"
+          style={wrap ? { wordBreak: 'break-word' } : {}}
         >
           {displayAddress}
         </Text>
@@ -49,4 +54,5 @@ export const AddressCopyButton = ({ address, shorten = false }) => {
 AddressCopyButton.propTypes = {
   address: PropTypes.string.isRequired,
   shorten: PropTypes.bool,
+  wrap: PropTypes.bool,
 };

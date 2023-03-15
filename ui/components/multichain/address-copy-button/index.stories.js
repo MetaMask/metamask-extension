@@ -11,6 +11,9 @@ export default {
     shorten: {
       control: 'boolean',
     },
+    wrap: {
+      control: 'boolean',
+    },
   },
   args: {
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -22,3 +25,10 @@ DefaultStory.storyName = 'Default';
 
 export const ShortenedStory = (args) => <AddressCopyButton shorten {...args} />;
 ShortenedStory.storyName = 'Shortened';
+
+export const WrappedStory = (args) => (
+  <div style={{ width: '200px' }}>
+    <AddressCopyButton wrap {...args} />
+  </div>
+);
+WrappedStory.storyName = 'Wrapped';
