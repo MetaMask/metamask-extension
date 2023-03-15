@@ -99,8 +99,6 @@ const ExportPrivateKeyModal = ({
 
   const renderPasswordLabel = (privateKeyInput) => {
     return (
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       <Text
         as="span"
         color={Color.textDefault}
@@ -135,8 +133,6 @@ const ExportPrivateKeyModal = ({
         borderWidth={1}
         padding={[2, 3, 2]}
         color={Color.errorDefault}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         onClick={() => {
           copyToClipboard(plainKey);
           trackEvent(
@@ -239,16 +235,11 @@ const ExportPrivateKeyModal = ({
     >
       {showHoldToReveal ? (
         <HoldToRevealModal
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           onLongPressed={() => setShowHoldToReveal(false)}
           willHide={false}
         />
       ) : (
         <>
-          {/* children issue on types */}
-          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-          {/* @ts-ignore */}
           <Text
             as="span"
             marginTop={2}
@@ -289,9 +280,6 @@ const ExportPrivateKeyModal = ({
             {renderPasswordLabel(privateKey)}
             {renderPasswordInput(privateKey)}
             {showWarning ? (
-              // children issue on types
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
               <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
                 {warning}
               </Text>
