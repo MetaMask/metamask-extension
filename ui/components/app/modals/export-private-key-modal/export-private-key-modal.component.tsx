@@ -2,7 +2,13 @@ import log from 'loglevel';
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
 
 import copyToClipboard from 'copy-to-clipboard';
-import Button from '../../../ui/button';
+import Box from '../../../ui/box';
+import {
+  BUTTON_SIZES,
+  BUTTON_TYPES,
+  Button,
+  Text,
+} from '../../../component-library';
 import AccountModalContainer from '../account-modal-container';
 import {
   toChecksumHexAddress,
@@ -15,6 +21,23 @@ import {
 import HoldToRevealModal from '../hold-to-reveal-modal/hold-to-reveal-modal';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  AlignItems,
+  BLOCK_SIZES,
+  BackgroundColor,
+  BorderColor,
+  BorderRadius,
+  BorderStyle,
+  Color,
+  DISPLAY,
+  FLEX_DIRECTION,
+  FONT_WEIGHT,
+  JustifyContent,
+  Size,
+  TEXT_ALIGN,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 interface ExportPrivateKeyModalProps {
   exportAccount: (password: string, address: string) => Promise<string>;
@@ -42,7 +65,7 @@ const ExportPrivateKeyModal = ({
 }: ExportPrivateKeyModalProps) => {
   const [password, setPassword] = useState<string>('');
   const [privateKey, setPrivateKey] = useState<string | undefined>(undefined);
-  const [showWarning, setShowWarning] = useState<boolean>(false);
+  const [showWarning, setShowWarning] = useState<boolean>(true);
   const [showHoldToReveal, setShowHoldToReveal] = useState<boolean>(false);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -92,11 +115,16 @@ const ExportPrivateKeyModal = ({
       });
   };
 
-  const renderPasswordLabel = (privateKeyInput: string): ReactNode => {
+  const renderPasswordLabel = (privateKeyInput: string) => {
     return (
-      <span className="export-private-key-modal__password-label">
+      <Text
+        as="span"
+        color={Color.textDefault}
+        marginBottom={2}
+        variant={TextVariant.bodySm}
+      >
         {privateKeyInput ? t('copyPrivateKey') : t('typePassword')}
-      </span>
+      </Text>
     );
   };
 
@@ -115,8 +143,14 @@ const ExportPrivateKeyModal = ({
     }
 
     return (
-      <div
+      <Box
         className="export-private-key-modal__private-key-display"
+        borderStyle={BorderStyle.solid}
+        borderColor={BorderColor.borderDefault}
+        borderRadius={BorderRadius.XS}
+        borderWidth={1}
+        padding={[2, 3, 2]}
+        color={Color.errorDefault}
         onClick={() => {
           copyToClipboard(plainKey);
           trackEvent(
@@ -133,7 +167,7 @@ const ExportPrivateKeyModal = ({
         }}
       >
         {plainKey}
-      </div>
+      </Box>
     );
   };
 
@@ -144,13 +178,19 @@ const ExportPrivateKeyModal = ({
     hideModal: () => void,
   ): ReactNode => {
     return (
-      <div className="export-private-key-modal__buttons">
+      <Box
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        width={BLOCK_SIZES.FULL}
+        justifyContent={JustifyContent.spaceBetween}
+        padding={[0, 5]}
+      >
         {!privateKeyInput && (
           <Button
-            icon={null}
-            type="secondary"
-            large
-            className="export-private-key-modal__button export-private-key-modal__button--cancel"
+            type={BUTTON_TYPES.SECONDARY}
+            size={BUTTON_SIZES.LG}
+            width={BLOCK_SIZES.HALF}
+            marginRight={4}
             onClick={() => {
               trackEvent(
                 {
@@ -170,19 +210,20 @@ const ExportPrivateKeyModal = ({
         )}
         {privateKey ? (
           <Button
-            icon={null}
+            type={BUTTON_TYPES.PRIMARY}
+            size={BUTTON_SIZES.LG}
+            width={BLOCK_SIZES.FULL}
             onClick={() => {
               hideModal();
             }}
-            type="primary"
-            large
-            className="export-private-key-modal__button"
           >
             {t('done')}
           </Button>
         ) : (
           <Button
-            icon={null}
+            type={BUTTON_TYPES.PRIMARY}
+            size={BUTTON_SIZES.LG}
+            width={BLOCK_SIZES.HALF}
             onClick={() => {
               trackEvent(
                 {
@@ -197,15 +238,12 @@ const ExportPrivateKeyModal = ({
 
               exportAccountAndGetPrivateKey(password, address);
             }}
-            type="primary"
-            large
-            className="export-private-key-modal__button"
             disabled={!password}
           >
             {t('confirm')}
           </Button>
         )}
-      </div>
+      </Box>
     );
   };
 
@@ -227,26 +265,67 @@ const ExportPrivateKeyModal = ({
         />
       ) : (
         <>
-          <span className="export-private-key-modal__account-name">{name}</span>
-          <div className="ellip-address-wrapper">
+          <Text
+            as="span"
+            marginTop={2}
+            variant={TextVariant.bodyLgMedium}
+            fontWeight={FONT_WEIGHT.NORMAL}
+          >
+            {name}
+          </Text>
+          <Box
+            className="ellip-address-wrapper"
+            borderStyle={BorderStyle.solid}
+            borderColor={BorderColor.borderDefault}
+            borderWidth={1}
+            marginTop={2}
+            padding={[1, 2, 1, 2]}
+          >
             {toChecksumHexAddress(address)}
-          </div>
-          <div className="export-private-key-modal__divider" />
-          <span className="export-private-key-modal__body-title">
+          </Box>
+          <Box
+            className="export-private-key-modal__divider"
+            width={BLOCK_SIZES.FULL}
+            margin={[5, 0, 3, 0]}
+            // backgroundColor={BackgroundColor.}
+          />
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            margin={[4, 0, 4, 0]}
+            fontWeight={FONT_WEIGHT.NORMAL}
+          >
             {t('showPrivateKeys')}
-          </span>
-          <div className="export-private-key-modal__password">
+          </Text>
+          <Box
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            alignItems={AlignItems.flexStart}
+          >
             {renderPasswordLabel(privateKey as string)}
             {renderPasswordInput(privateKey as string)}
-            {showWarning && warning ? (
-              <span className="export-private-key-modal__password--error">
+            {showWarning ? (
+              <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
                 {warning}
-              </span>
+              </Text>
             ) : null}
-          </div>
-          <div className="export-private-key-modal__password--warning">
-            {t('privateKeyWarning')}
-          </div>
+          </Box>
+          <Box
+            borderRadius={BorderRadius.MD}
+            borderWidth={1}
+            backgroundColor={BackgroundColor.errorMuted}
+            borderColor={BorderColor.errorDefault}
+            padding={[1, 3, 0, 3]}
+            marginLeft={5}
+            marginRight={5}
+            marginTop={4}
+          >
+            <Text
+              color={TextColor.textDefault}
+              fontWeight={FONT_WEIGHT.MEDIUM}
+              variant={TextVariant.bodyXs}
+            >
+              {t('privateKeyWarning')}
+            </Text>
+          </Box>
           {renderButtons(privateKey as string, address, hideModal)}
         </>
       )}
