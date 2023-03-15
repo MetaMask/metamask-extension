@@ -10,12 +10,22 @@ import {
   JustifyContent,
   AlignItems,
   TextColor,
+  Color,
+  Size,
+  TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import { disableSnap, enableSnap } from '../../../../store/actions';
 import { getSnaps } from '../../../../selectors';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
+import {
+  ButtonLink,
+  Icon,
+  ICON_NAMES,
+  ICON_SIZES,
+  Text,
+} from '../../../../components/component-library';
 
 const SnapListTab = () => {
   const t = useI18nContext();
@@ -85,12 +95,28 @@ const SnapListTab = () => {
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >
-          <Typography
-            variant={TypographyVariant.H4}
-            color={TextColor.textAlternative}
-          >
-            <span>{t('noSnaps')}</span>
-          </Typography>
+          <Box className="snap-list-tab__container--no-snaps_inner">
+            <Typography align={TEXT_ALIGN.CENTER}>
+              <Icon
+                name={ICON_NAMES.SNAPS}
+                color={Color.iconMuted}
+                className="no-snaps__icon"
+                size={ICON_SIZES.AUTO}
+              />
+            </Typography>
+            <Typography variant={TypographyVariant.H4}>
+              <Text>
+                {`${t('noSnaps')} `}
+                <ButtonLink
+                  size={Size.inherit}
+                  href="https://metamask.io/snaps/"
+                  target="_blank"
+                >
+                  {t('noSnapsLearnMoreLinkText')}
+                </ButtonLink>
+              </Text>
+            </Typography>
+          </Box>
         </Box>
       )}
     </div>
