@@ -85,8 +85,7 @@ export const MultichainTokenListItem = ({
                 position="bottom"
                 interactive
                 html={title}
-                containerClassName="multichain-token-list-item__tooltip"
-                disabled={title.length < 12}
+                disabled={title?.length < 12}
                 tooltipInnerClassName="multichain-token-list-item__tooltip"
                 theme={dataTheme === 'light' ? 'dark' : 'light'}
               >
