@@ -10,7 +10,9 @@ export default {
     noteText: '',
     labelText: 'Transaction note',
     maxLength: '280',
-    onChange: () => {/**/}
+    onChange: () => {
+      /**/
+    },
   },
 };
 
