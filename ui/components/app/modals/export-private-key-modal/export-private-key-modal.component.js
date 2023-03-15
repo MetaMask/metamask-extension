@@ -1,7 +1,8 @@
 import log from 'loglevel';
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
-
+import React, { useContext, useEffect, useState } from 'react';
 import copyToClipboard from 'copy-to-clipboard';
+import PropTypes from 'prop-types';
+import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
 import {
   BUTTON_SIZES,
@@ -37,20 +38,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-interface ExportPrivateKeyModalProps {
-  exportAccount: (password: string, address: string) => Promise<string>;
-  selectedIdentity: {
-    name: string;
-    address: string;
-  };
-  warning?: ReactNode;
-  showAccountDetailModal: () => void;
-  hideModal: () => void;
-  hideWarning: () => void;
-  clearAccountDetails: () => void;
-  previousModalState?: string;
-}
-
 const ExportPrivateKeyModal = ({
   clearAccountDetails,
   hideWarning,
@@ -60,11 +47,11 @@ const ExportPrivateKeyModal = ({
   hideModal,
   warning = null,
   previousModalState,
-}: ExportPrivateKeyModalProps) => {
-  const [password, setPassword] = useState<string>('');
-  const [privateKey, setPrivateKey] = useState<string | undefined>(undefined);
-  const [showWarning, setShowWarning] = useState<boolean>(true);
-  const [showHoldToReveal, setShowHoldToReveal] = useState<boolean>(false);
+}) => {
+  const [password, setPassword] = useState('');
+  const [privateKey, setPrivateKey] = useState(null);
+  const [showWarning, setShowWarning] = useState(true);
+  const [showHoldToReveal, setShowHoldToReveal] = useState(false);
 
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
@@ -76,12 +63,9 @@ const ExportPrivateKeyModal = ({
     };
   }, []);
 
-  const exportAccountAndGetPrivateKey = (
-    passwordInput: string,
-    address: string,
-  ): void => {
+  const exportAccountAndGetPrivateKey = (passwordInput, address) => {
     exportAccount(passwordInput, address)
-      .then((privateKeyRetrieved: string) => {
+      .then((privateKeyRetrieved) => {
         trackEvent(
           {
             category: EVENT.CATEGORIES.KEYS,
@@ -113,7 +97,7 @@ const ExportPrivateKeyModal = ({
       });
   };
 
-  const renderPasswordLabel = (privateKeyInput: string): JSX.Element => {
+  const renderPasswordLabel = (privateKeyInput) => {
     return (
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -128,7 +112,7 @@ const ExportPrivateKeyModal = ({
     );
   };
 
-  const renderPasswordInput = (privateKeyInput: string): ReactNode => {
+  const renderPasswordInput = (privateKeyInput) => {
     const plainKey = privateKeyInput && stripHexPrefix(privateKeyInput);
 
     if (!privateKeyInput) {
@@ -173,12 +157,7 @@ const ExportPrivateKeyModal = ({
     );
   };
 
-  const renderButtons = (
-    privateKeyInput: string,
-    address: string,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    hideModal: () => void,
-  ): ReactNode => {
+  const renderButtons = (privateKeyInput, address, hideModalFunc) => {
     return (
       <Box
         display={DISPLAY.FLEX}
@@ -216,7 +195,7 @@ const ExportPrivateKeyModal = ({
             size={BUTTON_SIZES.LG}
             width={BLOCK_SIZES.FULL}
             onClick={() => {
-              hideModal();
+              hideModalFunc();
             }}
           >
             {t('done')}
@@ -262,7 +241,7 @@ const ExportPrivateKeyModal = ({
         <HoldToRevealModal
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          onLongPressed={(): void => setShowHoldToReveal(false)}
+          onLongPressed={() => setShowHoldToReveal(false)}
           willHide={false}
         />
       ) : (
@@ -307,8 +286,8 @@ const ExportPrivateKeyModal = ({
             flexDirection={FLEX_DIRECTION.COLUMN}
             alignItems={AlignItems.flexStart}
           >
-            {renderPasswordLabel(privateKey as string)}
-            {renderPasswordInput(privateKey as string)}
+            {renderPasswordLabel(privateKey)}
+            {renderPasswordInput(privateKey)}
             {showWarning ? (
               // children issue on types
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -339,11 +318,22 @@ const ExportPrivateKeyModal = ({
               {t('privateKeyWarning')}
             </Text>
           </Box>
-          {renderButtons(privateKey as string, address, hideModal)}
+          {renderButtons(privateKey, address, hideModal)}
         </>
       )}
     </AccountModalContainer>
   );
 };
 
-export default ExportPrivateKeyModal;
+ExportPrivateKeyModal.propTypes = {
+  exportAccount: PropTypes.func.isRequired,
+  selectedIdentity: PropTypes.object.isRequired,
+  warning: PropTypes.node,
+  showAccountDetailModal: PropTypes.func.isRequired,
+  hideModal: PropTypes.func.isRequired,
+  hideWarning: PropTypes.func.isRequired,
+  clearAccountDetails: PropTypes.func.isRequired,
+  previousModalState: PropTypes.string,
+};
+
+export default withModalProps(ExportPrivateKeyModal);

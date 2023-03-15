@@ -84,7 +84,7 @@ describe('Export Private Key Modal', () => {
       target: { value: 'password' },
     });
 
-    fireEvent.click(nextButton as Element);
+    fireEvent.click(nextButton);
 
     await waitFor(() => {
       expect(mockExportAccount).toHaveBeenCalled();
@@ -106,7 +106,7 @@ describe('Export Private Key Modal', () => {
       target: { value: 'password' },
     });
 
-    fireEvent.click(nextButton as Element);
+    fireEvent.click(nextButton);
 
     await waitFor(() => {
       expect(mockExportAccount).toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe('Export Private Key Modal', () => {
     const holdButton = getByText('Hold to reveal SRP');
     expect(holdButton).toBeInTheDocument();
 
-    fireEvent.mouseDown(holdButton as Element);
+    fireEvent.mouseDown(holdButton);
 
     const circle = getByLabelText('hold-to-reveal-circle');
     fireEvent.transitionEnd(circle);
