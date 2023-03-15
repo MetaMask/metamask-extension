@@ -19,27 +19,18 @@ describe('Send NFT', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, _, contractRegistry }) => {
-        const contractAddress =
-          contractRegistry.getContractAddress(smartContract);
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // After login, go to NFTs tab and import an NFT
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
-
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '1');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
-
         // Fill the send NFT form and confirm the transaction
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.clickElement('.nfts-items__item-image');
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(

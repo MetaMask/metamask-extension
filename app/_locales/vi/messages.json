@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Hiển thị cài đặt Bảo mật và Quyền riêng tư"
   },
-  "notifications17Description": {
-    "message": "Bản cập nhật này cung cấp nhiều tùy chọn hơn để bạn có thể kiểm soát quyền riêng tư của mình tốt hơn. Chúng tôi đã minh bạch hơn về cách thu thập dữ liệu và cung cấp các tùy chọn chia sẻ dữ liệu rõ ràng hơn. Hãy thay đổi tùy chọn của bạn hoặc xóa dữ liệu sử dụng tiện ích mở rộng thông qua cài đặt Bảo mật và Quyền riêng tư."
-  },
   "notifications17Title": {
     "message": "Cài đặt Bảo mật và Quyền riêng tư"
   },
