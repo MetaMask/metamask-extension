@@ -135,9 +135,12 @@ export default function ApproveContentCard({
                       fontWeight={FONT_WEIGHT.NORMAL}
                       color={TextColor.textMuted}
                       as="h6"
+                      display={DISPLAY.FLEX}
+                      justifyContent={JustifyContent.spaceBetween}
+                      width={BLOCK_SIZES.FULL}
                     >
-                      <span>{t('transactionDetailLayer2GasHeading')}</span>
-                      {`${ethTransactionTotal} ${nativeCurrency}`}
+                      <Box>{t('transactionDetailLayer2GasHeading')}</Box>
+                      <Box>{`${ethTransactionTotal} ${nativeCurrency}`}</Box>
                     </Text>
                   </Box>
                   <MultiLayerFeeMessage

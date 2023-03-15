@@ -16,8 +16,9 @@ export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }): string {
 export function addEth(firstValue: string, ...otherValues: string[]): string {
   return otherValues
     .reduce((numericAcc, ethAmount) => {
-      return numericAcc.add(new Numeric(ethAmount, 10)).round(6);
+      return numericAcc.add(new Numeric(ethAmount, 10)).round(12);
     }, new Numeric(firstValue, 10))
+    .toFixed(12)
     .toString();
 }
 
@@ -49,7 +50,7 @@ export function getTransactionFee({
   if (fromCurrency !== toCurrency && conversionRate) {
     fee = fee.applyConversionRate(conversionRate);
   }
-  return fee.round(numberOfDecimals).toString();
+  return fee.toFixed(numberOfDecimals).toString();
 }
 
 export function formatCurrency(value: string, currencyCode: string): string {

@@ -361,7 +361,7 @@ export const transactionFeeSelector = function (state, txData) {
     value: hexMinimumTransactionFee,
     fromCurrency: nativeCurrency,
     toCurrency: nativeCurrency,
-    numberOfDecimals: 6,
+    numberOfDecimals: 12,
     conversionRate,
   });
 
