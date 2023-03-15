@@ -56,16 +56,16 @@ const getDefaultState = () => ({
   unapprovedTypedMessagesCount: 0,
 });
 
-interface CoreMessage extends AbstractMessage {
+export interface CoreMessage extends AbstractMessage {
   messageParams: AbstractMessageParams;
 }
 
-interface MessageParams extends AbstractMessageParams {
+export interface MessageParams extends AbstractMessageParams {
   siwe: any;
 }
 
 // The BaseControllerV2 state template does not allow optional parameters
-type StateMessage<M extends AbstractMessage> = Required<
+export type StateMessage<M extends AbstractMessage> = Required<
   AbstractMessage &
     Exclude<M, AbstractMessage> & {
       msgParams: MessageParams;
@@ -106,7 +106,7 @@ export type SignControllerMessenger = RestrictedControllerMessenger<
   never
 >;
 
-type SignControllerOptions = {
+export type SignControllerOptions = {
   messenger: SignControllerMessenger;
   keyringController: KeyringController;
   preferencesController: PreferencesController;
