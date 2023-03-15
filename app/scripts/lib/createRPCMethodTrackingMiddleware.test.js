@@ -242,7 +242,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         };
         const { next, executeMiddlewareStack } = getNext();
 
-        handler(req, res, next);
+        await handler(req, res, next);
         await executeMiddlewareStack();
 
         expect(trackEvent).toHaveBeenCalledTimes(2);
