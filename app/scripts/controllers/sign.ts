@@ -54,10 +54,18 @@ const getDefaultState = () => ({
   unapprovedTypedMessagesCount: 0,
 });
 
+interface CoreMessage extends AbstractMessage {
+  messageParams: AbstractMessageParams;
+}
+
 // The BaseControllerV2 state template does not allow optional parameters
 type StateMessage<M extends AbstractMessage> = Required<
-  AbstractMessage | Exclude<M, AbstractMessage>
-> & { msgParams: any; securityProviderResponse: any };
+  AbstractMessage &
+    Exclude<M, AbstractMessage> & {
+      msgParams: AbstractMessageParams;
+      securityProviderResponse: any;
+    }
+>;
 
 export type SignControllerState = {
   unapprovedMsgs: Record<string, StateMessage<Message>>;
@@ -92,10 +100,21 @@ export type SignControllerMessenger = RestrictedControllerMessenger<
   never
 >;
 
-interface CoreMessage extends AbstractMessage {
-  messageParams: AbstractMessageParams;
-}
+type SignControllerOptions = {
+  messenger: SignControllerMessenger;
+  keyringController: KeyringController;
+  preferencesController: PreferencesController;
+  sendUpdate: () => void;
+  getState: () => any;
+  securityProviderRequest: (
+    requestData: any,
+    methodName: string,
+  ) => Promise<any>;
+};
 
+/**
+ * Controller for creating signing requests requiring user approval.
+ */
 export default class SignController extends BaseControllerV2<
   typeof controllerName,
   SignControllerState,
@@ -106,8 +125,6 @@ export default class SignController extends BaseControllerV2<
   private _keyringController: KeyringController;
 
   private _preferencesController: PreferencesController;
-
-  private _sendUpdate: () => void;
 
   private _getState: () => any;
 
@@ -124,24 +141,23 @@ export default class SignController extends BaseControllerV2<
     methodName: string,
   ) => Promise<any>;
 
+  /**
+   * Construct a Sign controller.
+   *
+   * @param options - The controller options.
+   * @param options.messenger - The restricted controller messenger for the sign controller.
+   * @param options.keyringController - An instance of a keyring controller used to perform the signing operations.
+   * @param options.preferencesController - An instance of a preferences controller to limit operations based on user configuration.
+   * @param options.getState - Callback to retrieve all user state.
+   * @param options.securityProviderRequest - Callback to verify the given message data using a security provider.
+   */
   constructor({
     messenger,
     keyringController,
     preferencesController,
-    sendUpdate,
     getState,
     securityProviderRequest,
-  }: {
-    messenger: SignControllerMessenger;
-    keyringController: KeyringController;
-    preferencesController: PreferencesController;
-    sendUpdate: () => void;
-    getState: () => any;
-    securityProviderRequest: (
-      requestData: any,
-      methodName: string,
-    ) => Promise<any>;
-  }) {
+  }: SignControllerOptions) {
     super({
       name: controllerName,
       metadata: stateMetadata,
@@ -151,7 +167,6 @@ export default class SignController extends BaseControllerV2<
 
     this._keyringController = keyringController;
     this._preferencesController = preferencesController;
-    this._sendUpdate = sendUpdate;
     this._getState = getState;
     this._securityProviderRequest = securityProviderRequest;
 
@@ -166,11 +181,20 @@ export default class SignController extends BaseControllerV2<
       this._typedMessageManager,
     ];
 
-    this._messageManagers.forEach((messageManager) =>
-      this.bubbleEvents(messageManager),
-    );
+    const methodNames = ['eth_sign', 'personal_sign', 'eth_signTypedData'];
 
-    this.subscribeToMessageState(
+    this._messageManagers.forEach((messageManager, index) => {
+      this._bubbleEvents(messageManager);
+
+      messageManager.hub.on(
+        'unapprovedMessage',
+        (msgParams: AbstractMessageParamsMetamask) => {
+          this._requestApproval(msgParams, methodNames[index]);
+        },
+      );
+    });
+
+    this._subscribeToMessageState(
       this._messageManager,
       (state) => state.unapprovedMsgs,
       (state, newMessages, messageCount) => {
@@ -179,7 +203,7 @@ export default class SignController extends BaseControllerV2<
       },
     );
 
-    this.subscribeToMessageState(
+    this._subscribeToMessageState(
       this._personalMessageManager,
       (state) => state.unapprovedPersonalMsgs,
       (state, newMessages, messageCount) => {
@@ -188,7 +212,7 @@ export default class SignController extends BaseControllerV2<
       },
     );
 
-    this.subscribeToMessageState(
+    this._subscribeToMessageState(
       this._typedMessageManager,
       (state) => state.unapprovedTypedMessages,
       (state, newMessages, messageCount) => {
@@ -229,14 +253,7 @@ export default class SignController extends BaseControllerV2<
    * Reset the controller state to the initial state.
    */
   resetState() {
-    this.update((draftState) => {
-      draftState.unapprovedMsgs = {};
-      draftState.unapprovedPersonalMsgs = {};
-      draftState.unapprovedTypedMessages = {};
-      draftState.unapprovedMsgCount = 0;
-      draftState.unapprovedPersonalMsgCount = 0;
-      draftState.unapprovedTypedMessagesCount = 0;
-    });
+    this.update(() => getDefaultState());
   }
 
   /**
@@ -264,22 +281,18 @@ export default class SignController extends BaseControllerV2<
       );
     }
 
-    const data = this.normalizeMsgData(msgParams.data);
+    const data = this._normalizeMsgData(msgParams.data);
 
     // 64 hex + "0x" at the beginning
     // This is needed because Ethereum's EcSign works only on 32 byte numbers
     // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607
-    if (data.length === 66 || data.length === 67) {
-      const promise = this._messageManager.addUnapprovedMessageAsync(
-        msgParams,
-        req,
+    if (data.length !== 66 && data.length !== 67) {
+      throw ethErrors.rpc.invalidParams(
+        'eth_sign requires 32 byte message hash',
       );
-      this._sendUpdate();
-      this._requestApproval(msgParams, req, 'eth_sign');
-      return await promise;
     }
 
-    throw ethErrors.rpc.invalidParams('eth_sign requires 32 byte message hash');
+    return this._messageManager.addUnapprovedMessageAsync(msgParams, req);
   }
 
   /**
@@ -296,13 +309,10 @@ export default class SignController extends BaseControllerV2<
     msgParams: PersonalMessageParamsMetamask,
     req: OriginalRequest,
   ) {
-    const promise = this._personalMessageManager.addUnapprovedMessageAsync(
+    return this._personalMessageManager.addUnapprovedMessageAsync(
       msgParams,
       req,
     );
-    this._sendUpdate();
-    this._requestApproval(msgParams, req, 'personal_sign');
-    return promise;
   }
 
   /**
@@ -317,14 +327,11 @@ export default class SignController extends BaseControllerV2<
     req: OriginalRequest,
     version: string,
   ) {
-    const promise = this._typedMessageManager.addUnapprovedMessageAsync(
+    return this._typedMessageManager.addUnapprovedMessageAsync(
       msgParams,
       version,
       req,
     );
-    this._sendUpdate();
-    this._requestApproval(msgParams, req, 'eth_signTypedData');
-    return promise;
   }
 
   /**
@@ -334,7 +341,7 @@ export default class SignController extends BaseControllerV2<
    * @returns Full state update.
    */
   async signMessage(msgParams: MessageParamsMetamask) {
-    return await this.signAbstractMessage(
+    return await this._signAbstractMessage(
       this._messageManager,
       'signMessage',
       msgParams,
@@ -351,7 +358,7 @@ export default class SignController extends BaseControllerV2<
    * @returns A full state update.
    */
   async signPersonalMessage(msgParams: PersonalMessageParamsMetamask) {
-    return await this.signAbstractMessage(
+    return await this._signAbstractMessage(
       this._personalMessageManager,
       'signPersonalMessage',
       msgParams,
@@ -370,7 +377,7 @@ export default class SignController extends BaseControllerV2<
   async signTypedMessage(msgParams: TypedMessageParamsMetamask) {
     const { version } = msgParams;
 
-    return await this.signAbstractMessage(
+    return await this._signAbstractMessage(
       this._typedMessageManager,
       'eth_signTypedData',
       msgParams,
@@ -396,7 +403,7 @@ export default class SignController extends BaseControllerV2<
    * @param msgId - The id of the message to cancel.
    */
   cancelMessage(msgId: string) {
-    this.cancelAbstractMessage(this._messageManager, msgId);
+    this._cancelAbstractMessage(this._messageManager, msgId);
   }
 
   /**
@@ -405,7 +412,7 @@ export default class SignController extends BaseControllerV2<
    * @param msgId - The ID of the message to cancel.
    */
   cancelPersonalMessage(msgId: string) {
-    this.cancelAbstractMessage(this._personalMessageManager, msgId);
+    this._cancelAbstractMessage(this._personalMessageManager, msgId);
   }
 
   /**
@@ -414,7 +421,7 @@ export default class SignController extends BaseControllerV2<
    * @param msgId - The ID of the message to cancel.
    */
   cancelTypedMessage(msgId: string) {
-    this.cancelAbstractMessage(this._typedMessageManager, msgId);
+    this._cancelAbstractMessage(this._typedMessageManager, msgId);
   }
 
   /**
@@ -428,7 +435,7 @@ export default class SignController extends BaseControllerV2<
     );
   }
 
-  private async signAbstractMessage<
+  private async _signAbstractMessage<
     M extends AbstractMessage,
     P extends AbstractMessageParams,
     PM extends AbstractMessageParamsMetamask,
@@ -439,32 +446,41 @@ export default class SignController extends BaseControllerV2<
     getSignature: (cleanMessageParams: P) => any,
   ) {
     log.info(`MetaMaskController - ${methodName}`);
+
     const messageId = msgParams.metamaskId as string;
+
     try {
       const cleanMessageParams = await messageManager.approveMessage(msgParams);
       const signature = await getSignature(cleanMessageParams);
+
       messageManager.setMessageStatusSigned(messageId, signature);
+
+      this._acceptApproval(messageId);
+
       return this._getState();
     } catch (error) {
       log.info(`MetaMaskController - ${methodName} failed.`, error);
+
       this._typedMessageManager.setMessageStatusErrored(
         messageId,
         String(error),
       );
+
       throw error;
     }
   }
 
-  private cancelAbstractMessage<
+  private _cancelAbstractMessage<
     M extends AbstractMessage,
     P extends AbstractMessageParams,
     PM extends AbstractMessageParamsMetamask,
   >(messageManager: AbstractMessageManager<M, P, PM>, messageId: string) {
     messageManager.rejectMessage(messageId);
+    this._rejectApproval(messageId);
     return this._getState();
   }
 
-  private bubbleEvents<
+  private _bubbleEvents<
     M extends AbstractMessage,
     P extends AbstractMessageParams,
     PM extends AbstractMessageParamsMetamask,
@@ -474,7 +490,7 @@ export default class SignController extends BaseControllerV2<
     });
   }
 
-  private subscribeToMessageState<
+  private _subscribeToMessageState<
     M extends AbstractMessage,
     P extends AbstractMessageParams,
     PM extends AbstractMessageParamsMetamask,
@@ -492,7 +508,7 @@ export default class SignController extends BaseControllerV2<
     messageManager.subscribe(async (state: MessageManagerState<M>) => {
       const existingMessages = getExistingMessages(this.state);
 
-      const newMessages = await this.migrateMessages(
+      const newMessages = await this._migrateMessages<M>(
         state.unapprovedMessages as any,
         existingMessages,
       );
@@ -503,7 +519,7 @@ export default class SignController extends BaseControllerV2<
     });
   }
 
-  private async migrateMessages<M extends AbstractMessage>(
+  private async _migrateMessages<M extends AbstractMessage>(
     coreMessages: Record<string, CoreMessage>,
     existingMessages: Record<string, StateMessage<M>>,
   ): Promise<Record<string, StateMessage<M>>> {
@@ -512,7 +528,7 @@ export default class SignController extends BaseControllerV2<
     for (const messageId of Object.keys(coreMessages)) {
       const coreMessage = coreMessages[messageId];
 
-      const stateMessage = await this.migrateMessage(
+      const stateMessage = await this._migrateMessage<M>(
         coreMessage,
         existingMessages,
       );
@@ -523,7 +539,7 @@ export default class SignController extends BaseControllerV2<
     return stateMessages;
   }
 
-  private async migrateMessage<M extends AbstractMessage>(
+  private async _migrateMessage<M extends AbstractMessage>(
     coreMessage: CoreMessage,
     existingMessages: Record<string, StateMessage<M>>,
   ): Promise<StateMessage<M>> {
@@ -533,7 +549,7 @@ export default class SignController extends BaseControllerV2<
     const newMessage = {
       ...originalMessageData,
       msgParams: coreMessage.messageParams,
-    };
+    } as StateMessage<M>;
 
     const { id: messageId } = coreMessage;
     const existingMessage = existingMessages[messageId];
@@ -542,13 +558,10 @@ export default class SignController extends BaseControllerV2<
       ? existingMessage.securityProviderResponse
       : await this._securityProviderRequest(newMessage, newMessage.type);
 
-    // rawSig is optional in the core message but BaseControllerV2 does not allow optional state
-    const rawSig = newMessage.rawSig as string;
-
-    return { ...newMessage, securityProviderResponse, rawSig };
+    return { ...newMessage, securityProviderResponse };
   }
 
-  private normalizeMsgData(data: string) {
+  private _normalizeMsgData(data: string) {
     if (data.slice(0, 2) === '0x') {
       // data is already hex
       return data;
@@ -559,11 +572,10 @@ export default class SignController extends BaseControllerV2<
 
   private _requestApproval(
     msgParams: AbstractMessageParamsMetamask,
-    req: OriginalRequest,
     type: string,
   ) {
     const id = msgParams.metamaskId as string;
-    const origin = req.origin as string;
+    const origin = msgParams.origin || controllerName;
 
     this.messagingSystem.call(
       'ApprovalController:addRequest',
@@ -573,6 +585,18 @@ export default class SignController extends BaseControllerV2<
         type,
       },
       true,
+    );
+  }
+
+  private _acceptApproval(messageId: string) {
+    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+  }
+
+  private _rejectApproval(messageId: string) {
+    this.messagingSystem.call(
+      'ApprovalController:rejectRequest',
+      messageId,
+      'Cancel',
     );
   }
 }

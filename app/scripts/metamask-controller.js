@@ -1068,7 +1068,6 @@ export default class MetamaskController extends EventEmitter {
       }),
       keyringController: this.keyringController,
       preferencesController: this.preferencesController,
-      sendUpdate: this.sendUpdate.bind(this),
       getState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
