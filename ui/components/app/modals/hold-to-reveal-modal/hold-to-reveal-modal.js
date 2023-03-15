@@ -21,12 +21,14 @@ import HoldToRevealButton from '../../hold-to-reveal-button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
-const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
+const HoldToRevealModal = ({ onLongPressed, hideModal, willHide }) => {
   const t = useI18nContext();
 
   const unlock = () => {
     onLongPressed();
-    hideModal();
+    if (willHide) {
+      hideModal();
+    }
   };
 
   const handleCancel = () => {
@@ -49,13 +51,15 @@ const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
         marginBottom={6}
       >
         <Text variant={TextVariant.headingSm}>{t('holdToRevealTitle')}</Text>
-        <ButtonIcon
-          className="hold-to-reveal-modal__close"
-          iconName={ICON_NAMES.CLOSE}
-          size={Size.SM}
-          onClick={handleCancel}
-          ariaLabel={t('close')}
-        />
+        {willHide && (
+          <ButtonIcon
+            className="hold-to-reveal-modal__close"
+            iconName={ICON_NAMES.CLOSE}
+            size={Size.SM}
+            onClick={handleCancel}
+            ariaLabel={t('close')}
+          />
+        )}
       </Box>
       <Box
         display={DISPLAY.FLEX}
@@ -111,6 +115,7 @@ HoldToRevealModal.propTypes = {
   // The function to be executed after the hold to reveal long press has been completed
   onLongPressed: PropTypes.func.isRequired,
   hideModal: PropTypes.func,
+  willHide: PropTypes.bool,
 };
 
 export default withModalProps(HoldToRevealModal);
