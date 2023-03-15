@@ -33,6 +33,7 @@ import {
   RejectRequest,
 } from '@metamask/approval-controller';
 import { EVENT } from '../../../shared/constants/metametrics';
+import { detectSIWE } from '../../../shared/modules/siwe';
 import PreferencesController from './preferences';
 
 const controllerName = 'SignController';
@@ -59,11 +60,15 @@ interface CoreMessage extends AbstractMessage {
   messageParams: AbstractMessageParams;
 }
 
+interface MessageParams extends AbstractMessageParams {
+  siwe: any;
+}
+
 // The BaseControllerV2 state template does not allow optional parameters
 type StateMessage<M extends AbstractMessage> = Required<
   AbstractMessage &
     Exclude<M, AbstractMessage> & {
-      msgParams: AbstractMessageParams;
+      msgParams: MessageParams;
       securityProviderResponse: any;
     }
 >;
@@ -594,7 +599,12 @@ export default class SignController extends BaseControllerV2<
       ? existingMessage.securityProviderResponse
       : await this._securityProviderRequest(newMessage, newMessage.type);
 
-    return { ...newMessage, securityProviderResponse };
+    this._siwe(newMessage.msgParams);
+
+    return {
+      ...newMessage,
+      securityProviderResponse,
+    };
   }
 
   private _normalizeMsgData(data: string) {
@@ -612,6 +622,21 @@ export default class SignController extends BaseControllerV2<
       ...this.state.unapprovedPersonalMsgs,
       ...this.state.unapprovedTypedMessages,
     }[messageId];
+  }
+
+  private _siwe(msgParams: MessageParams) {
+    // check for SIWE message
+    const siwe = detectSIWE(msgParams);
+    msgParams.siwe = siwe;
+
+    if (siwe.isSIWEMessage && msgParams.origin) {
+      const { host } = new URL(msgParams.origin);
+      if (siwe.parsedMessage.domain !== host) {
+        throw new Error(
+          `SIWE domain is not valid: "${host}" !== "${siwe.parsedMessage.domain}"`,
+        );
+      }
+    }
   }
 
   private _requestApproval(
