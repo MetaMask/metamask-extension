@@ -3536,6 +3536,9 @@ describe('NetworkController', () => {
                 rpcUrl: 'http://example-custom-rpc.metamask.io',
                 chainId: '0x9999',
                 nickname: 'Test initial state',
+                rpcPrefs: {
+                  blockExplorerUrl: 'test-block-explorer.com',
+                },
               },
             },
           },
@@ -3557,6 +3560,9 @@ describe('NetworkController', () => {
               rpcUrl: 'http://example-custom-rpc.metamask.io',
               chainId: '0x9999',
               nickname: 'Test initial state',
+              rpcPrefs: {
+                blockExplorerUrl: 'test-block-explorer.com',
+              },
             });
           },
         );
@@ -3571,6 +3577,9 @@ describe('NetworkController', () => {
                 rpcUrl: 'http://example-custom-rpc.metamask.io',
                 chainId: '0x9999',
                 nickname: 'Test initial state',
+                rpcPrefs: {
+                  blockExplorerUrl: 'test-block-explorer.com',
+                },
               },
             },
           },
@@ -3591,6 +3600,9 @@ describe('NetworkController', () => {
               chainId,
               ticker,
               nickname: '',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://explorer.goerli.linea.build',
+              },
             });
           },
         );
