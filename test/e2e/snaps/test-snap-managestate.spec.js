@@ -67,14 +67,17 @@ describe('Test Snap manageState', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // fill and click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectManageState',
+          text: 'Reconnect to Manage State Snap',
+        });
+
         await driver.delay(1000);
-        await driver.fill('#dataManageState', '23');
+        await driver.pasteIntoField('#dataManageState', '23');
         const snapButton2 = await driver.findElement(
           '#retrieveManageStateResult',
         );

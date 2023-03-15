@@ -125,7 +125,7 @@ export default function SignatureRequestSIWE({
       </div>
       <Header
         fromAccount={fromAccount}
-        domain={parsedMessage.domain}
+        domain={origin}
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
