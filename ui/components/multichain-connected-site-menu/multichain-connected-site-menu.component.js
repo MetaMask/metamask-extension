@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import {
   BorderColor,
   BorderRadius,
@@ -10,10 +11,16 @@ import {
 import { BadgeWrapper, Icon, ICON_NAMES } from '../component-library';
 import Box from '../ui/box';
 
-export const MultichainConnectedSiteMenu = ({ connectedSubjects }) => {
+export const MultichainConnectedSiteMenu = ({
+  className,
+  connectedSubjects,
+}) => {
   return (
-    <Box>
-      {connectedSubjects.length ? (
+    <Box
+      className={classNames('multichain-connected-site-menu', className)}
+      data-testid="connection-menu"
+    >
+      {connectedSubjects?.length ? (
         <BadgeWrapper
           badge={
             <Box
@@ -55,4 +62,5 @@ export const MultichainConnectedSiteMenu = ({ connectedSubjects }) => {
 
 MultichainConnectedSiteMenu.propTypes = {
   connectedSubjects: PropTypes.arrayOf(PropTypes.object).isRequired,
+  className: PropTypes.string,
 };

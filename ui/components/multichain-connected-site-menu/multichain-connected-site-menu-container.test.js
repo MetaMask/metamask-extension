@@ -1,21 +1,39 @@
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/jest';
-import configureStore from '../../store/store';
-import mockState from '../../../test/data/mock-state.json';
 import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu.component';
 
 describe('Multichain Connected Site Menu', () => {
-  it('should match snapshot', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
+  const mockStore = {
+    metamask: {
+      connectedSubjects: [
+        {
+          extensionId: null,
+          origin: 'https://metamask.github.io',
+          name: 'MetaMask < = > Ledger Bridge',
+          iconUrl: null,
+        },
+      ],
+    },
+  };
+  const store = configureMockStore()(mockStore);
+  describe('render', () => {
+    const props = {
+      connectedSubjects: {
+        extensionId: null,
+        origin: 'https://metamask.github.io',
+        name: 'MetaMask < = > Ledger Bridge',
+        iconUrl: null,
       },
-    });
-    const { container } = renderWithProvider(
-      <MultichainConnectedSiteMenu />,
-      store,
-    );
+    };
 
-    expect(container).toMatchSnapshot();
+    it('should match snapshot', () => {
+      const { getByTestId, container } = renderWithProvider(
+        <MultichainConnectedSiteMenu {...props} />,
+        store,
+      );
+      expect(getByTestId('connection-menu')).toBeDefined();
+      expect(container).toMatchSnapshot();
+    });
   });
 });
