@@ -1125,6 +1125,7 @@ export default class MetamaskController extends EventEmitter {
       this.txController.txStateManager.clearUnapprovedTxs();
       this.encryptionPublicKeyManager.clearUnapproved();
       this.decryptMessageManager.clearUnapproved();
+      this.signController.clearUnapproved();
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({

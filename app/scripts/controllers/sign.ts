@@ -32,6 +32,7 @@ import {
   AddApprovalRequest,
   RejectRequest,
 } from '@metamask/approval-controller';
+import { EVENT } from '../../../shared/constants/metametrics';
 import PreferencesController from './preferences';
 
 const controllerName = 'SignController';
@@ -106,6 +107,7 @@ type SignControllerOptions = {
   preferencesController: PreferencesController;
   sendUpdate: () => void;
   getState: () => any;
+  metricsEvent: (payload: any, options?: any) => void;
   securityProviderRequest: (
     requestData: any,
     methodName: string,
@@ -136,6 +138,8 @@ export default class SignController extends BaseControllerV2<
 
   private _messageManagers: AbstractMessageManager<any, any, any>[];
 
+  private _metricsEvent: (payload: any, options?: any) => void;
+
   private _securityProviderRequest: (
     requestData: any,
     methodName: string,
@@ -149,13 +153,15 @@ export default class SignController extends BaseControllerV2<
    * @param options.keyringController - An instance of a keyring controller used to perform the signing operations.
    * @param options.preferencesController - An instance of a preferences controller to limit operations based on user configuration.
    * @param options.getState - Callback to retrieve all user state.
-   * @param options.securityProviderRequest - Callback to verify the given message data using a security provider.
+   * @param options.metricsEvent - A function for emitting a metric event.
+   * @param options.securityProviderRequest - A function for verifying a message, whether it is malicious or not.
    */
   constructor({
     messenger,
     keyringController,
     preferencesController,
     getState,
+    metricsEvent,
     securityProviderRequest,
   }: SignControllerOptions) {
     super({
@@ -168,6 +174,7 @@ export default class SignController extends BaseControllerV2<
     this._keyringController = keyringController;
     this._preferencesController = preferencesController;
     this._getState = getState;
+    this._metricsEvent = metricsEvent;
     this._securityProviderRequest = securityProviderRequest;
 
     this.hub = new EventEmitter();
@@ -426,13 +433,29 @@ export default class SignController extends BaseControllerV2<
 
   /**
    * Reject all unapproved messages of any type.
+   *
+   * @param reason - A message to indicate why.
    */
-  rejectUnapproved() {
-    this._messageManagers.forEach((messageManager) =>
-      Object.keys(messageManager.getUnapprovedMessages()).forEach((messageId) =>
-        messageManager.rejectMessage(messageId),
-      ),
-    );
+  rejectUnapproved(reason?: string) {
+    this._messageManagers.forEach((messageManager) => {
+      Object.keys(messageManager.getUnapprovedMessages()).forEach(
+        (messageId) => {
+          this._cancelAbstractMessage(messageManager, messageId, reason);
+        },
+      );
+    });
+  }
+
+  /**
+   * Clears all unapproved messages from memory.
+   */
+  clearUnapproved() {
+    this._messageManagers.forEach((messageManager) => {
+      messageManager.update({
+        unapprovedMessages: {},
+        unapprovedMessagesCount: 0,
+      });
+    });
   }
 
   private async _signAbstractMessage<
@@ -460,12 +483,7 @@ export default class SignController extends BaseControllerV2<
       return this._getState();
     } catch (error) {
       log.info(`MetaMaskController - ${methodName} failed.`, error);
-
-      this._typedMessageManager.setMessageStatusErrored(
-        messageId,
-        String(error),
-      );
-
+      this._cancelAbstractMessage(messageManager, messageId);
       throw error;
     }
   }
@@ -474,9 +492,27 @@ export default class SignController extends BaseControllerV2<
     M extends AbstractMessage,
     P extends AbstractMessageParams,
     PM extends AbstractMessageParamsMetamask,
-  >(messageManager: AbstractMessageManager<M, P, PM>, messageId: string) {
+  >(
+    messageManager: AbstractMessageManager<M, P, PM>,
+    messageId: string,
+    reason?: string,
+  ) {
+    if (reason) {
+      const message = this._getMessage(messageId);
+
+      this._metricsEvent({
+        event: reason,
+        category: EVENT.CATEGORIES.TRANSACTIONS,
+        properties: {
+          action: 'Sign Request',
+          type: message.type,
+        },
+      });
+    }
+
     messageManager.rejectMessage(messageId);
     this._rejectApproval(messageId);
+
     return this._getState();
   }
 
@@ -570,6 +606,14 @@ export default class SignController extends BaseControllerV2<
     return bufferToHex(Buffer.from(data, 'utf8'));
   }
 
+  private _getMessage(messageId: string): AbstractMessage {
+    return {
+      ...this.state.unapprovedMsgs,
+      ...this.state.unapprovedPersonalMsgs,
+      ...this.state.unapprovedTypedMessages,
+    }[messageId];
+  }
+
   private _requestApproval(
     msgParams: AbstractMessageParamsMetamask,
     type: string,
@@ -577,15 +621,19 @@ export default class SignController extends BaseControllerV2<
     const id = msgParams.metamaskId as string;
     const origin = msgParams.origin || controllerName;
 
-    this.messagingSystem.call(
-      'ApprovalController:addRequest',
-      {
-        id,
-        origin,
-        type,
-      },
-      true,
-    );
+    this.messagingSystem
+      .call(
+        'ApprovalController:addRequest',
+        {
+          id,
+          origin,
+          type,
+        },
+        true,
+      )
+      .catch(() => {
+        // Intentionally ignored
+      });
   }
 
   private _acceptApproval(messageId: string) {

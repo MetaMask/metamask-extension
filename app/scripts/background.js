@@ -25,6 +25,7 @@ import {
 import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTFICIATION_CLOSE,
+  REJECT_NOTFICIATION_CLOSE_SIG,
   EVENT,
   EVENT_NAMES,
   TRAITS,
@@ -740,7 +741,7 @@ export function setupController(initState, initLangCode, overrides) {
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.signController.rejectUnapproved();
+    controller.signController.rejectUnapproved(REJECT_NOTFICIATION_CLOSE_SIG);
     controller.decryptMessageManager.messages
       .filter((msg) => msg.status === 'unapproved')
       .forEach((tx) =>
