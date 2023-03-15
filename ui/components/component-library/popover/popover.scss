@@ -17,6 +17,16 @@
       right: 0;
     }
   }
+
+  /* Hide the popper when the reference is hidden */
+  &--reference-hidden[data-popper-reference-hidden="true"] {
+    visibility: hidden;
+    pointer-events: none;
+
+    > .mm-popover__arrow::before {
+      visibility: hidden;
+    }
+  }
 }
 
 .mm-popover__arrow,
@@ -75,15 +85,5 @@
 
   &::before {
     transform: rotate(-45deg);
-  }
-
-  /* Hide the popper when the reference is hidden */
-  &--reference-hidden[data-popper-reference-hidden="true"] {
-    visibility: hidden;
-    pointer-events: none;
-
-    > .mm-popover__arrow::before {
-      visibility: hidden;
-    }
   }
 }

@@ -3,7 +3,7 @@ import { Popover } from './popover';
 
 # Popover
 
-TODO: WRITE POPOVER DESCRIPTION
+A popover is a floating container that displays context or actions relevant to a specific area triggered by a user interaction, with a clear visual relationship, dismissible, consistent in look and feel, and accessible for all users.
 
 <Canvas>
   <Story id="components-componentlibrary-popover--default-story" />
@@ -14,3 +14,21 @@ TODO: WRITE POPOVER DESCRIPTION
 The `Popover` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={Popover} />
+
+{/* ### Title
+
+Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
+
+<Canvas style={{ background: 'var(--color-background-alternative)' }}>
+  <Story id="components-componentlibrary-popover--title" />
+</Canvas>
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover title="Popover title" {...args}>
+  <Text>
+    Title should be short and concise. It should be sentence case and no period.
+  </Text>
+</Popover>;
+``` */}

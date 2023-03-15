@@ -32,6 +32,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       matchWidth,
       preventOverflow = false,
       flip = false,
+      referenceHidden = false,
       referenceElement,
       isOpen,
       title,
@@ -100,13 +101,16 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
               padding={4}
               className={classnames(
                 'mm-popover',
-                { 'mm-popover--open': isOpen },
+                {
+                  'mm-popover--open': isOpen,
+                  'mm-popover--reference-hidden': referenceHidden,
+                },
                 className,
               )}
               ref={setPopperElement}
-              style={{ ...styles.popper, ...contentStyle }}
               {...attributes.popper}
               {...props}
+              style={{ ...styles.popper, ...contentStyle, ...props.style }}
             >
               {/* TODO: Replace with HeaderBase  Start */}
               <Box

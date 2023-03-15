@@ -37,6 +37,11 @@ export interface PopoverProps extends BoxProps {
    */
   flip?: boolean;
   /**
+   * Boolean to allow the Popover to hide fully if the reference element is hidden
+   * Default: false
+   */
+  referenceHidden?: boolean;
+  /**
    * Reference element to position the Popover
    */
   referenceElement?: HTMLElement | null;
@@ -48,9 +53,26 @@ export interface PopoverProps extends BoxProps {
    * Popover title
    */
   title?: string;
+  /**
+   * Popover title props to be passed to the Text component
+   */
   titleProps?: Text.propTypes;
-  onClose?: () => void;
+  /**
+   * The onClick handler for the close `ButtonIcon`
+   * When passed this will allow for the close `ButtonIcon` to show
+   */
+  onClose?: func;
+  /**
+   * The props to pass to the close `ButtonIcon`
+   */
   closeButtonProps?: ButtonIconProps;
-  onBack?: () => void;
+  /**
+   * The onClick handler for the back `ButtonIcon`
+   * When passed this will allow for the back `ButtonIcon` to show
+   */
+  onBack?: func;
+  /**
+   * The props to pass to the back `ButtonIcon`
+   */
   backButtonProps?: ButtonIconProps;
 }

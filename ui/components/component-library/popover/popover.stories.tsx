@@ -3,29 +3,15 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Box from '../../ui/box/box';
 import {
   AlignItems,
+  Color,
   DISPLAY,
   JustifyContent,
+  TextVariant,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
+import { Icon, ICON_NAMES, ICON_SIZES, Text } from '..';
 import README from './README.mdx';
 import { Popover, PopoverPosition } from '.';
-
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
 
 export default {
   title: 'Components/ComponentLibrary/Popover',
@@ -34,34 +20,18 @@ export default {
     docs: {
       page: README,
     },
-    controls: { sort: 'alpha' },
   },
   argTypes: {
     children: {
       control: 'text',
     },
+
+    position: {
+      options: PopoverPosition,
+      control: 'select',
+    },
     className: {
       control: 'text',
-    },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
     },
   },
   args: {
@@ -71,12 +41,13 @@ export default {
 
 const Template: ComponentStory<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
 
+  // Example of how to use mouse events to open and close popover
   // const handleMouseEnter = () => {
   //   setIsOpen(true);
   // };
@@ -85,6 +56,8 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   //   setIsOpen(false);
   // };
 
+  // Example of how open popover with focus
+  // pair with onBlur (example using handleClose) to close popover
   // const handleFocus = () => {
   //   setIsOpen(true);
   // };
@@ -99,6 +72,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
     }
   };
 
+  // Example of how to use keyboard events to close popover with escape key
   useEffect(() => {
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
@@ -107,6 +81,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
     }
   }, [isOpen]);
 
+  // Example of how to use ref to open popover
   const setButtonRef = (ref) => {
     setReferenceElement(ref);
   };
@@ -125,12 +100,13 @@ const Template: ComponentStory<typeof Popover> = (args) => {
         // onMouseLeave={handleMouseLeave}
         // onFocus={handleFocus}
         // onBlur={handleClose}
-        // backgroundColor={Color.primaryDefault}
-        // style={{ width: 200, height: 200 }}
-        as="input"
-        type="text"
-        placeholder="write a description here about a popover"
-      ></Box>
+        backgroundColor={Color.primaryAlternative}
+        style={{ width: 200, height: 200 }}
+        color={Color.primaryInverse}
+        as="button"
+      >
+        Click to toggle popover
+      </Box>
       <Popover
         position={PopoverPosition.bottomStart}
         referenceElement={referenceElement}
@@ -150,3 +126,602 @@ const Template: ComponentStory<typeof Popover> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
+
+export const ReferenceElement = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      ></Box>
+      <Popover
+        position={PopoverPosition.Bottom}
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        {...args}
+      >
+        <Text>Reference Element</Text>
+      </Popover>
+    </>
+  );
+};
+
+export const Children = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      ></Box>
+      <Popover
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        onClose={() => console.log('close')}
+        onBack={() => console.log('back')}
+        title="Popover children"
+        {...args}
+      >
+        <Text>
+          Demo of popover with children.{' '}
+          <Icon size={ICON_SIZES.AUTO} name={ICON_NAMES.INFO} />
+        </Text>
+        <Text variant={TextVariant.bodySm}>Control the content</Text>
+      </Popover>
+    </>
+  );
+};
+
+export const Title = ({ args }) => {
+  const [refTitleElement, setRefTitleElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setRefTitleElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      ></Box>
+      <Popover
+        referenceElement={refTitleElement}
+        isOpen={true}
+        hasArrow
+        // onClose={() => console.log('close')}
+        // onBack={() => console.log('back')}
+        title="Popover title"
+        {...args}
+      >
+        <Text>
+          Title should be short and concise. It should be sentence case and no
+          period.
+        </Text>
+      </Popover>
+    </>
+  );
+};
+
+export const OnBack = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      ></Box>
+      <Popover
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        // onClose={() => console.log('close')}
+        onBack={() => console.log('back')}
+        title="Popover onBack"
+        {...args}
+      >
+        <Text>
+          passing a function to the onBack prop will render a back button
+        </Text>
+      </Popover>
+    </>
+  );
+};
+
+export const OnClose = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      ></Box>
+      <Popover
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        onClose={() => console.log('close')}
+        title="Popover onClose"
+        {...args}
+      >
+        <Text>
+          passing a function to the onClose prop will render a close button
+        </Text>
+      </Popover>
+    </>
+  );
+};
+
+export const Position = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [referenceAutoElement, setReferenceAutoElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  const setRefAuto = (ref) => {
+    setReferenceAutoElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        style={{
+          width: '90vw',
+          minWidth: '650px',
+          height: '90vh',
+          minHeight: '400px',
+        }}
+        borderColor={Color.borderDefault}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        marginBottom={4}
+      >
+        <Box
+          ref={setButtonRef}
+          backgroundColor={Color.primaryMuted}
+          style={{ width: 400, height: 200 }}
+          display={DISPLAY.FLEX}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          textAlign={TEXT_ALIGN.CENTER}
+        >
+          Position
+        </Box>
+        <Popover
+          position={PopoverPosition.TopStart}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.TopStart}
+        </Popover>
+        <Popover
+          position={PopoverPosition.Top}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.Top}
+        </Popover>
+        <Popover
+          position={PopoverPosition.TopEnd}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.TopEnd}
+        </Popover>
+        <Popover
+          position={PopoverPosition.RightStart}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.RightStart}
+        </Popover>
+        <Popover
+          position={PopoverPosition.Right}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.Right}
+        </Popover>
+        <Popover
+          position={PopoverPosition.RightEnd}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.RightEnd}
+        </Popover>
+        <Popover
+          position={PopoverPosition.BottomStart}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.BottomStart}
+        </Popover>
+        <Popover
+          position={PopoverPosition.Bottom}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.Bottom}
+        </Popover>
+        <Popover
+          position={PopoverPosition.BottomEnd}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.BottomEnd}
+        </Popover>
+        <Popover
+          position={PopoverPosition.LeftStart}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.LeftStart}
+        </Popover>
+        <Popover
+          position={PopoverPosition.Left}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.Left}
+        </Popover>
+        <Popover
+          position={PopoverPosition.LeftEnd}
+          referenceElement={referenceElement}
+          isOpen={true}
+          hasArrow
+          {...args}
+        >
+          {PopoverPosition.LeftEnd}
+        </Popover>
+      </Box>
+      <Box
+        style={{
+          width: '90vw',
+          minWidth: '650px',
+          height: '90vh',
+          minHeight: '400px',
+          overflow: 'scroll',
+        }}
+        borderColor={Color.borderDefault}
+      >
+        <Box
+          style={{
+            width: '200vw',
+            height: '200vh',
+          }}
+          display={DISPLAY.FLEX}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+        >
+          <Box
+            ref={setRefAuto}
+            backgroundColor={Color.primaryMuted}
+            style={{ width: 400, height: 200 }}
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            textAlign={TEXT_ALIGN.CENTER}
+          >
+            Position
+          </Box>
+          <Popover
+            position={PopoverPosition.Auto}
+            referenceElement={referenceAutoElement}
+            isOpen={true}
+            hasArrow
+            {...args}
+          >
+            {PopoverPosition.Auto}
+          </Popover>
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+export const HasArrow = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      ></Box>
+      <Popover
+        position={PopoverPosition.RightStart}
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        {...args}
+      >
+        <Text>Popover with arrow</Text>
+      </Popover>
+      <Popover
+        position={PopoverPosition.RightEnd}
+        referenceElement={referenceElement}
+        isOpen={true}
+        {...args}
+      >
+        <Text>Popover with no arrow</Text>
+      </Popover>
+    </>
+  );
+};
+
+export const IsOpen = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(true);
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryMuted}
+        style={{ width: 200, height: 200 }}
+        onClick={handleClick}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
+        Click to toggle popover
+      </Box>
+      <Popover
+        position={PopoverPosition.RightStart}
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        {...args}
+      >
+        <Text>isOpen always true</Text>
+      </Popover>
+      <Popover
+        position={PopoverPosition.RightEnd}
+        referenceElement={referenceElement}
+        hasArrow
+        isOpen={isOpen}
+        {...args}
+      >
+        <Text>isOpen tied to boolean</Text>
+      </Popover>
+    </>
+  );
+};
+
+export const Flip = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <Box
+      style={{ height: '200vh' }}
+      display={DISPLAY.FLEX}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+    >
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryMuted}
+        style={{ width: 200, height: 200 }}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
+        Scroll to see popover flip
+      </Box>
+      <Popover
+        position={PopoverPosition.TopStart}
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        {...args}
+      >
+        false
+      </Popover>
+      <Popover
+        position={PopoverPosition.TopEnd}
+        referenceElement={referenceElement}
+        hasArrow
+        flip
+        isOpen={true}
+        {...args}
+      >
+        true
+      </Popover>
+    </Box>
+  );
+};
+
+export const PreventOverflow = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <Box
+      style={{ height: '200vh', width: '100vw' }}
+      display={DISPLAY.FLEX}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+    >
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryMuted}
+        style={{ width: 200, height: 200 }}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        textAlign={TEXT_ALIGN.CENTER}
+      >
+        Scroll to see popover preventOverflow
+      </Box>
+      <Popover
+        position={PopoverPosition.Left}
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        {...args}
+      >
+        false
+      </Popover>
+      <Popover
+        position={PopoverPosition.Right}
+        referenceElement={referenceElement}
+        hasArrow
+        preventOverflow
+        isOpen={true}
+        {...args}
+      >
+        true
+      </Popover>
+    </Box>
+  );
+};
+
+export const ReferenceHidden = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <Box
+      style={{ height: '200vh', width: '100vw' }}
+      display={DISPLAY.FLEX}
+      justifyContent={JustifyContent.center}
+    >
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryMuted}
+        style={{ width: 200, height: 200 }}
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        textAlign={TEXT_ALIGN.CENTER}
+      >
+        Scroll to see popover referenceHidden
+      </Box>
+      <Popover
+        position={PopoverPosition.BottomStart}
+        referenceElement={referenceElement}
+        isOpen={true}
+        hasArrow
+        {...args}
+      >
+        <Text>false</Text>
+      </Popover>
+      <Popover
+        position={PopoverPosition.BottomEnd}
+        referenceElement={referenceElement}
+        hasArrow
+        referenceHidden
+        isOpen={true}
+        {...args}
+      >
+        <Text>true</Text>
+      </Popover>
+    </Box>
+  );
+};
+
+export const MatchWidth = ({ args }) => {
+  const [referenceElement, setReferenceElement] = useState();
+
+  const setButtonRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setButtonRef}
+        backgroundColor={Color.primaryDefault}
+        style={{ width: 200, height: 200 }}
+      ></Box>
+      <Popover
+        position={PopoverPosition.Bottom}
+        referenceElement={referenceElement}
+        isOpen={true}
+        matchWidth
+        {...args}
+      >
+        <Text>
+          Setting matchWidth to true will make the popover match the width of
+          the reference element
+        </Text>
+      </Popover>
+    </>
+  );
+};

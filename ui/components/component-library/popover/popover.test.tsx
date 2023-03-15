@@ -27,6 +27,13 @@ describe('Popover', () => {
     expect(getByText('Popover test')).toHaveClass('mm-popover__header-title');
   });
 
+  it('should render popover children', () => {
+    const { getByText } = render(
+      <Popover isOpen={true}>Popover content goes here</Popover>,
+    );
+    expect(getByText('Popover content goes here')).toBeDefined();
+  });
+
   it('should render popover back button', () => {
     const onBackTest = jest.fn();
     const { getByTestId } = render(
