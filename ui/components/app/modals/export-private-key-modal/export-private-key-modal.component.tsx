@@ -33,8 +33,6 @@ import {
   FLEX_DIRECTION,
   FONT_WEIGHT,
   JustifyContent,
-  Size,
-  TEXT_ALIGN,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
