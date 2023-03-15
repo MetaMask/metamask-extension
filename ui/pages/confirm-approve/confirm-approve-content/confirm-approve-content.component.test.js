@@ -7,7 +7,34 @@ import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: { provider: { chainId: '0x0' } },
+    metamask: {
+      provider: { chainId: '0x0' },
+      tokenList: {
+        '0x514910771af9ca656af840dff83e8264ecf986ca': {
+          address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+          symbol: 'LINK',
+          decimals: 18,
+          name: 'ChainLink Token',
+          iconUrl:
+            'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+          aggregators: [
+            'Aave',
+            'Bancor',
+            'CMC',
+            'Crypto.com',
+            'CoinGecko',
+            '1inch',
+            'Paraswap',
+            'PMM',
+            'Zapper',
+            'Zerion',
+            '0x',
+          ],
+          occurrences: 12,
+          unlisted: false,
+        },
+      },
+    },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };
@@ -39,6 +66,7 @@ const props = {
   useCurrencyRateCheck: true,
   isSetApproveForAll: false,
   isApprovalOrRejection: true,
+  tokenAddress: '0x514910771af9ca656af840dff83e8264ecf986ca',
 };
 
 describe('ConfirmApproveContent Component', () => {
