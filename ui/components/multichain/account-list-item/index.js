@@ -118,7 +118,7 @@ export const AccountListItem = ({
             <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
               {connectedAvatar ? (
                 <AvatarFavicon
-                  size={Size.SM}
+                  size={Size.XS}
                   src={connectedAvatar}
                   name={connectedAvatarName}
                   marginInlineEnd={2}
