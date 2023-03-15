@@ -29,7 +29,6 @@ describe('AccountListItem', () => {
   it('locks MetaMask when item is clicked', () => {
     render();
     fireEvent.click(document.querySelector('[data-testid="global-menu-lock"]'));
-
     expect(mockLockMetaMask).toHaveBeenCalled();
   });
 
@@ -58,6 +57,18 @@ describe('AccountListItem', () => {
       expect(global.platform.openTab).toHaveBeenCalledWith({
         url: SUPPORT_LINK,
       });
+    });
+  });
+
+  it('expands metamask to tab when item is clicked', async () => {
+    global.platform = { openExtensionInBrowser: jest.fn() };
+
+    render();
+    fireEvent.click(
+      document.querySelector('[data-testid="global-menu-expand"]'),
+    );
+    await waitFor(() => {
+      expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
     });
   });
 });

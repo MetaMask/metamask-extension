@@ -14,7 +14,7 @@ export default {
   },
   args: {
     closeMenu: () => console.log('Closing menu!'),
-    anchorElement: document.body,
+    anchorElement: null,
   },
 };
 

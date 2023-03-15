@@ -85,6 +85,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             });
             closeMenu();
           }}
+          data-testid="global-menu-expand"
         >
           {t('expandView')}
         </MenuItem>
