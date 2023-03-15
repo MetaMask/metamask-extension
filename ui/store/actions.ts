@@ -86,6 +86,12 @@ import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-ma
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import {
+  checkForUnapprovedTypedMessages,
+  updateCustodyState,
+} from './institutional/institution-actions';
+///: END:ONLY_INCLUDE_IN
 import {
   generateActionId,
   callBackgroundMethod,
@@ -713,6 +719,11 @@ export function signPersonalMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -840,6 +851,11 @@ export function signTypedMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1848,6 +1864,10 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    updateCustodyState(dispatch, newState, getState());
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 

@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Sicherheits- und Datenschutzeinstellungen anzeigen"
   },
-  "notifications17Description": {
-    "message": "Dieses Update gibt Ihnen mehr Möglichkeiten zur Kontrolle Ihrer Privatsphäre. Wir haben mehr Transparenz in Hinsicht auf die Sammlung von Daten sowie deutlichere Optionen bezüglich des Teilens hinzugefügt. Ändern Sie Ihre Einstellungen oder löschen Sie die Erweiterungsnutzung über Sicherheits- und Datenschutzeinstellungen."
-  },
   "notifications17Title": {
     "message": "Sicherheits- und Datenschutzeinstellungen"
   },
