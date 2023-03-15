@@ -32,6 +32,7 @@ import {
   Icon,
   Text,
 } from '../../../components/component-library';
+import NftInfo from '../../../components/ui/nft-info';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -544,6 +545,7 @@ export default class ConfirmApproveContent extends Component {
       tokenId,
       tokenAddress,
       assetName,
+      isSetApproveForAll,
       userAcknowledgedGasMissing,
       setUserAcknowledgedGasMissing,
       renderSimulationFailureWarning,
@@ -613,6 +615,17 @@ export default class ConfirmApproveContent extends Component {
             />
           )}
         </Box>
+        {!isSetApproveForAll &&
+        (assetStandard === TokenStandard.ERC721 ||
+          assetStandard === TokenStandard.ERC1155) ? (
+          <Box padding={4} width={BLOCK_SIZES.FULL}>
+            <NftInfo
+              tokenAddress={tokenAddress}
+              assetName={assetName}
+              tokenId={tokenId}
+            />
+          </Box>
+        ) : null}
         <div className="confirm-approve-content__card-wrapper">
           {renderSimulationFailureWarning && (
             <Box
