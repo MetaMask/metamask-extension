@@ -70,19 +70,21 @@ describe('Test Snap bip-44', function () {
         // deal with permissions popover
         await driver.delay(1000);
         await driver.clickElement('#key-access-bip44-1-0');
-        await driver.delay(1000);
+        await driver.delay(1500);
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // click send inputs on test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectBip44Snap',
+          text: 'Reconnect to BIP-44 Snap',
+        });
+
         await driver.clickElement('#sendBip44Test');
 
         // check the results of the public key test
@@ -94,7 +96,7 @@ describe('Test Snap bip-44', function () {
         );
 
         // enter a message to sign
-        await driver.fill('#bip44Message', '1234');
+        await driver.pasteIntoField('#bip44Message', '1234');
         await driver.delay(1000);
         const snapButton3 = await driver.findElement('#signBip44Message');
         await driver.scrollToElement(snapButton3);
