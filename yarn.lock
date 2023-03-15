@@ -24407,7 +24407,6 @@ __metadata:
     jsdom: ^11.2.0
     json-rpc-engine: ^6.1.0
     json-rpc-middleware-stream: ^4.2.1
-    jsonschema: ^1.2.4
     junit-report-merger: ^4.0.0
     koa: ^2.7.0
     labeled-stream-splicer: ^2.0.2

@@ -25,7 +25,6 @@ import {
 import { SECOND } from '../../shared/constants/time';
 import {
   REJECT_NOTFICIATION_CLOSE,
-  REJECT_NOTFICIATION_CLOSE_SIG,
   EVENT,
   EVENT_NAMES,
   TRAITS,
