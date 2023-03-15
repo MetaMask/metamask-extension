@@ -31,7 +31,7 @@ export const AddressCopyButton = ({
         paddingRight={3}
         paddingLeft={3}
         size={Size.SM}
-        style={{ borderRadius: '999px' }}
+        style={{ borderRadius: '999px', ...(wrap ? { height: 'auto' } : {}) }}
       >
         <Text
           variant={TextVariant.bodyXs}
