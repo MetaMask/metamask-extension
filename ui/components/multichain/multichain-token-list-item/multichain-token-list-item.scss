@@ -1,5 +1,4 @@
 .multichain-token-list-item {
-  $self: &;
 
   &__container-cell {
     &:hover,
@@ -9,7 +8,6 @@
 
     &--text-container {
       width: 100%;
-      cursor: pointer;
     }
   }
 }
