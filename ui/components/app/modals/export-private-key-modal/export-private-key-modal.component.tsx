@@ -17,7 +17,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 interface ExportPrivateKeyModalProps {
-  exportAccount: (password: string, address: string) => string;
+  exportAccount: (password: string, address: string) => Promise<string>;
   selectedIdentity: {
     name: string;
     address: string;
@@ -106,6 +106,7 @@ const ExportPrivateKeyModal = ({
     if (!privateKeyInput) {
       return (
         <input
+          aria-label="input-password"
           type="password"
           className="export-private-key-modal__password-input"
           onChange={(event) => setPassword(event.target.value)}
