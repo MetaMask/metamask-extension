@@ -1,13 +1,6 @@
 .note-header {
-  display: flex;
-  justify-content: space-between;
   line-height: 100%;
   margin: 0 0 5px 0;
-
-  &__counter {
-    color: var(--color-text-alternative);
-    font-size: 14px;
-  }
 
   label {
     color: var(--black);
@@ -16,8 +9,6 @@
 }
 
 .note-field {
-  display: flex;
-  flex-direction: column;
 
   textarea {
     min-height: 90px;
