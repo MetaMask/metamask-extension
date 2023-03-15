@@ -25,4 +25,8 @@
   .currency-display-component {
     flex-wrap: nowrap;
   }
+
+  &__tooltip {
+    display: inline;
+  }
 }

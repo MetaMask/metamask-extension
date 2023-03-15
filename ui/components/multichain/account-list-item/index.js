@@ -35,6 +35,7 @@ import {
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
+import Tooltip from '../../ui/tooltip/tooltip';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
@@ -114,7 +115,15 @@ export const AccountListItem = ({
             justifyContent={JustifyContent.spaceBetween}
             gap={2}
           >
-            <Text ellipsis>{identity.name}</Text>
+            <Text ellipsis>
+              <Tooltip
+                title={identity.name}
+                position="bottom"
+                wrapperClassName="multichain-account-list-item__tooltip"
+              >
+                {identity.name}
+              </Tooltip>
+            </Text>
             <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
               {connectedAvatar ? (
                 <AvatarFavicon

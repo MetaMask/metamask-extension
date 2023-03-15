@@ -60,7 +60,20 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           <p
             class="box mm-text mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
           >
-            Test Account
+            <div
+              class="multichain-account-list-item__tooltip"
+            >
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="Test Account"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                Test Account
+              </div>
+            </div>
           </p>
           <div
             class="box box--display-flex box--flex-direction-row"
