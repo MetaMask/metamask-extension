@@ -113,8 +113,10 @@ const ExportPrivateKeyModal = ({
       });
   };
 
-  const renderPasswordLabel = (privateKeyInput: string) => {
+  const renderPasswordLabel = (privateKeyInput: string): JSX.Element => {
     return (
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       <Text
         as="span"
         color={Color.textDefault}
@@ -149,6 +151,8 @@ const ExportPrivateKeyModal = ({
         borderWidth={1}
         padding={[2, 3, 2]}
         color={Color.errorDefault}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         onClick={() => {
           copyToClipboard(plainKey);
           trackEvent(
@@ -263,6 +267,9 @@ const ExportPrivateKeyModal = ({
         />
       ) : (
         <>
+          {/* children issue on types */}
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           <Text
             as="span"
             marginTop={2}
@@ -285,8 +292,10 @@ const ExportPrivateKeyModal = ({
             className="export-private-key-modal__divider"
             width={BLOCK_SIZES.FULL}
             margin={[5, 0, 3, 0]}
-            // backgroundColor={BackgroundColor.}
           />
+          {/* children issue on types */}
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           <Text
             variant={TextVariant.bodyLgMedium}
             margin={[4, 0, 4, 0]}
@@ -301,6 +310,9 @@ const ExportPrivateKeyModal = ({
             {renderPasswordLabel(privateKey as string)}
             {renderPasswordInput(privateKey as string)}
             {showWarning ? (
+              // children issue on types
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               <Text color={Color.errorDefault} variant={TextVariant.bodySm}>
                 {warning}
               </Text>
@@ -316,6 +328,9 @@ const ExportPrivateKeyModal = ({
             marginRight={5}
             marginTop={4}
           >
+            {/* children issue on types */}
+            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+            {/* @ts-ignore */}
             <Text
               color={TextColor.textDefault}
               fontWeight={FONT_WEIGHT.MEDIUM}
