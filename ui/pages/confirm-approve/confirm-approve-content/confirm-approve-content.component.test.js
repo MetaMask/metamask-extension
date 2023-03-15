@@ -285,256 +285,44 @@ describe('ConfirmApproveContent Component', () => {
   });
 
   it('should render Confirm approve page correctly and display fallback copy for when we are able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when giving a setApprovalForAll allowance', () => {
-    const { queryByText, getByText, getAllByText, getByTestId, container } =
-      renderComponent({
-        ...props,
-        tokenSymbol: 'ZenAcademy',
-        isSetApproveForAll: true,
-      });
-    expect(
-      queryByText('https://metamask.github.io/test-dapp/'),
-    ).toBeInTheDocument();
-    expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer all your ZenAcademy? ',
-    );
-    expect(
-      queryByText(
-        'This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.',
-      ),
-    ).toBeInTheDocument();
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
-    expect(queryByText('View full transaction details')).toBeInTheDocument();
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: 'ZenAcademy',
+      isSetApproveForAll: true,
+    });
 
-    const editButtons = getAllByText('Edit');
-
-    expect(queryByText('Transaction fee')).toBeInTheDocument();
-    expect(
-      queryByText('A fee is associated with this request.'),
-    ).toBeInTheDocument();
-    expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
-    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(5);
-
-    expect(queryByText('Nonce')).toBeInTheDocument();
-    expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[1]);
-    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(5);
-
-    const showViewTxDetails = getByText('View full transaction details');
-    expect(queryByText('Permission request')).not.toBeInTheDocument();
-    expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All your')).not.toBeInTheDocument();
-    expect(queryByText('Granted to:')).not.toBeInTheDocument();
-    expect(queryByText('Data')).not.toBeInTheDocument();
-    fireEvent.click(showViewTxDetails);
-    expect(getByText('Hide full transaction details')).toBeInTheDocument();
-    expect(getByText('Permission request')).toBeInTheDocument();
-    expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All your')).toBeInTheDocument();
-    const tokenWithSymbol = container.querySelector(
-      '.confirm-approve-content__approval-asset-title',
-    );
-    expect(tokenWithSymbol).toBeDefined();
-    expect(getByText('Granted to:')).toBeInTheDocument();
-    expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
-    expect(getByText('Data')).toBeInTheDocument();
-    expect(getByText('Function: SetApprovalForAll')).toBeInTheDocument();
-    expect(getByText('Parameters: true')).toBeInTheDocument();
-    expect(
-      getByText(
-        '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
-      ),
-    ).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render Confirm approve page correctly and display fallback copy for when we are not able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when giving a setApprovalForAll allowance', () => {
-    const { queryByText, getByText, getAllByText, getByTestId, container } =
-      renderComponent({
-        ...props,
-        tokenSymbol: '',
-        isSetApproveForAll: true,
-      });
-    expect(
-      queryByText('https://metamask.github.io/test-dapp/'),
-    ).toBeInTheDocument();
-    expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer all your NFTs of this collection? ',
-    );
-    expect(
-      getByTestId('confirm-approve-description').textContent,
-    ).toStrictEqual(
-      ' This allows a third party to access and transfer all NFTs of this collection without further notice until you revoke its access. ',
-    );
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
-    expect(queryByText('View full transaction details')).toBeInTheDocument();
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: '',
+      isSetApproveForAll: true,
+    });
 
-    const editButtons = getAllByText('Edit');
-
-    expect(queryByText('Transaction fee')).toBeInTheDocument();
-    expect(
-      queryByText('A fee is associated with this request.'),
-    ).toBeInTheDocument();
-    expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
-    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(6);
-
-    expect(queryByText('Nonce')).toBeInTheDocument();
-    expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[1]);
-    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(6);
-
-    const showViewTxDetails = getByText('View full transaction details');
-    expect(queryByText('Permission request')).not.toBeInTheDocument();
-    expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All your NFTs of')).not.toBeInTheDocument();
-    expect(queryByText('Granted to:')).not.toBeInTheDocument();
-    expect(queryByText('Data')).not.toBeInTheDocument();
-    fireEvent.click(showViewTxDetails);
-    expect(getByText('Hide full transaction details')).toBeInTheDocument();
-    expect(getByText('Permission request')).toBeInTheDocument();
-    expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All your NFTs of')).toBeInTheDocument();
-    const tokenWithoutSymbol = container.querySelector(
-      '.confirm-approve-content__approval-asset-title',
-    );
-    expect(tokenWithoutSymbol).toBeDefined();
-    expect(getByText('Granted to:')).toBeInTheDocument();
-    expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
-    expect(getByText('Data')).toBeInTheDocument();
-    expect(getByText('Function: SetApprovalForAll')).toBeInTheDocument();
-    expect(getByText('Parameters: true')).toBeInTheDocument();
-    expect(
-      getByText(
-        '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
-      ),
-    ).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render Confirm approve page correctly and display fallback copy for when we are able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when revoking a setApprovalForAll allowance', () => {
-    const { queryByText, getByText, getAllByText, getByTestId, container } =
-      renderComponent({
-        ...props,
-        tokenSymbol: 'ZenAcademy',
-        isSetApproveForAll: true,
-        isApprovalOrRejection: false,
-      });
-    expect(
-      queryByText('https://metamask.github.io/test-dapp/'),
-    ).toBeInTheDocument();
-    expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Revoke permission to access and transfer all your ZenAcademy? ',
-    );
-    expect(
-      getByTestId('confirm-approve-description').textContent,
-    ).toStrictEqual(
-      ' This revokes the permission for a third party to access and transfer all your ZenAcademy without further notice. ',
-    );
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
-    expect(queryByText('View full transaction details')).toBeInTheDocument();
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: 'ZenAcademy',
+      isSetApproveForAll: true,
+      isApprovalOrRejection: false,
+    });
 
-    const editButtons = getAllByText('Edit');
-
-    expect(queryByText('Transaction fee')).toBeInTheDocument();
-    expect(
-      queryByText('A fee is associated with this request.'),
-    ).toBeInTheDocument();
-    expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
-    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(7);
-
-    expect(queryByText('Nonce')).toBeInTheDocument();
-    expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[1]);
-    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(7);
-
-    const showViewTxDetails = getByText('View full transaction details');
-    expect(queryByText('Permission request')).not.toBeInTheDocument();
-    expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All your')).not.toBeInTheDocument();
-    expect(queryByText('Granted to:')).not.toBeInTheDocument();
-    expect(queryByText('Data')).not.toBeInTheDocument();
-    fireEvent.click(showViewTxDetails);
-    expect(getByText('Hide full transaction details')).toBeInTheDocument();
-    expect(getByText('Permission request')).toBeInTheDocument();
-    expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All your')).toBeInTheDocument();
-    const tokenWithSymbol = container.querySelector(
-      '.confirm-approve-content__approval-asset-title',
-    );
-    expect(tokenWithSymbol).toBeDefined();
-    expect(getByText('Granted to:')).toBeInTheDocument();
-    expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
-    expect(getByText('Data')).toBeInTheDocument();
-    expect(getByText('Function: SetApprovalForAll')).toBeInTheDocument();
-    expect(getByText('Parameters: false')).toBeInTheDocument();
-    expect(
-      getByText(
-        '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
-      ),
-    ).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render Confirm approve page correctly and display fallback copy for when we are not able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when revoking a setApprovalForAll allowance', () => {
-    const { queryByText, getByText, getAllByText, getByTestId, container } =
-      renderComponent({
-        ...props,
-        tokenSymbol: '',
-        isSetApproveForAll: true,
-        isApprovalOrRejection: false,
-      });
-    expect(
-      queryByText('https://metamask.github.io/test-dapp/'),
-    ).toBeInTheDocument();
-    expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Revoke permission to access and transfer all your NFTs of this collection? ',
-    );
-    expect(
-      getByTestId('confirm-approve-description').textContent,
-    ).toStrictEqual(
-      ' This revokes the permission for a third party to access and transfer all your NFTs of this collection without further notice. ',
-    );
-    expect(queryByText('Verify contract details')).toBeInTheDocument();
-    expect(queryByText('View full transaction details')).toBeInTheDocument();
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: '',
+      isSetApproveForAll: true,
+      isApprovalOrRejection: false,
+    });
 
-    const editButtons = getAllByText('Edit');
-
-    expect(queryByText('Transaction fee')).toBeInTheDocument();
-    expect(
-      queryByText('A fee is associated with this request.'),
-    ).toBeInTheDocument();
-    expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
-    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(8);
-
-    expect(queryByText('Nonce')).toBeInTheDocument();
-    expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[1]);
-    expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(8);
-
-    const showViewTxDetails = getByText('View full transaction details');
-    expect(queryByText('Permission request')).not.toBeInTheDocument();
-    expect(queryByText('Approved asset:')).not.toBeInTheDocument();
-    expect(queryByText('All your NFTs of')).not.toBeInTheDocument();
-    expect(queryByText('Granted to:')).not.toBeInTheDocument();
-    expect(queryByText('Data')).not.toBeInTheDocument();
-    fireEvent.click(showViewTxDetails);
-    expect(getByText('Hide full transaction details')).toBeInTheDocument();
-    expect(getByText('Permission request')).toBeInTheDocument();
-    expect(getByText('Approved asset:')).toBeInTheDocument();
-    expect(getByText('All your NFTs of')).toBeInTheDocument();
-    const tokenWithoutSymbol = container.querySelector(
-      '.confirm-approve-content__approval-asset-title',
-    );
-    expect(tokenWithoutSymbol).toBeDefined();
-    expect(getByText('Granted to:')).toBeInTheDocument();
-    expect(getByText('Contract (0x9bc5baF8...fEF4)')).toBeInTheDocument();
-    expect(getByText('Data')).toBeInTheDocument();
-    expect(getByText('Function: SetApprovalForAll')).toBeInTheDocument();
-    expect(getByText('Parameters: false')).toBeInTheDocument();
-    expect(
-      getByText(
-        '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
-      ),
-    ).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 });

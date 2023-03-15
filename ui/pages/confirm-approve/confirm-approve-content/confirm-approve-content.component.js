@@ -588,10 +588,7 @@ export default class ConfirmApproveContent extends Component {
         >
           {this.renderTitle()}
         </div>
-        <div
-          className="confirm-approve-content__description"
-          data-testid="confirm-approve-description"
-        >
+        <div className="confirm-approve-content__description">
           {this.renderDescription()}
         </div>
         <Box marginBottom={4} marginTop={2}>
