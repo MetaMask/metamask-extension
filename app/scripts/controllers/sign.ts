@@ -1,14 +1,14 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import {
-  Message,
   MessageManager,
+  MessageParams,
   MessageParamsMetamask,
-  PersonalMessage,
   PersonalMessageManager,
+  PersonalMessageParams,
   PersonalMessageParamsMetamask,
-  TypedMessage,
   TypedMessageManager,
+  TypedMessageParams,
   TypedMessageParamsMetamask,
 } from '@metamask/message-manager';
 import { ethErrors } from 'eth-rpc-errors';
@@ -37,6 +37,9 @@ import { detectSIWE } from '../../../shared/modules/siwe';
 import PreferencesController from './preferences';
 
 const controllerName = 'SignController';
+const methodNameSign = 'eth_sign';
+const methodNamePersonalSign = 'personal_sign';
+const methodNameTypedSign = 'eth_signTypedData';
 
 const stateMetadata = {
   unapprovedMsgs: { persist: false, anonymous: false },
@@ -56,27 +59,19 @@ const getDefaultState = () => ({
   unapprovedTypedMessagesCount: 0,
 });
 
-export interface CoreMessage extends AbstractMessage {
+export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
-}
+};
 
-export interface MessageParams extends AbstractMessageParams {
-  siwe: any;
-}
-
-// The BaseControllerV2 state template does not allow optional parameters
-export type StateMessage<M extends AbstractMessage> = Required<
-  AbstractMessage &
-    Exclude<M, AbstractMessage> & {
-      msgParams: MessageParams;
-      securityProviderResponse: any;
-    }
->;
+export type StateMessage = Required<AbstractMessage> & {
+  msgParams: Required<AbstractMessageParams>;
+  securityProviderResponse: any;
+};
 
 export type SignControllerState = {
-  unapprovedMsgs: Record<string, StateMessage<Message>>;
-  unapprovedPersonalMsgs: Record<string, StateMessage<PersonalMessage>>;
-  unapprovedTypedMessages: Record<string, StateMessage<TypedMessage>>;
+  unapprovedMsgs: Record<string, StateMessage>;
+  unapprovedPersonalMsgs: Record<string, StateMessage>;
+  unapprovedTypedMessages: Record<string, StateMessage>;
   unapprovedMsgCount: number;
   unapprovedPersonalMsgCount: number;
   unapprovedTypedMessagesCount: number;
@@ -141,7 +136,11 @@ export default class SignController extends BaseControllerV2<
 
   private _typedMessageManager: TypedMessageManager;
 
-  private _messageManagers: AbstractMessageManager<any, any, any>[];
+  private _messageManagers: AbstractMessageManager<
+    AbstractMessage,
+    AbstractMessageParams,
+    AbstractMessageParamsMetamask
+  >[];
 
   private _metricsEvent: (payload: any, options?: any) => void;
 
@@ -193,7 +192,11 @@ export default class SignController extends BaseControllerV2<
       this._typedMessageManager,
     ];
 
-    const methodNames = ['eth_sign', 'personal_sign', 'eth_signTypedData'];
+    const methodNames = [
+      methodNameSign,
+      methodNamePersonalSign,
+      methodNameTypedSign,
+    ];
 
     this._messageManagers.forEach((messageManager, index) => {
       this._bubbleEvents(messageManager);
@@ -208,7 +211,6 @@ export default class SignController extends BaseControllerV2<
 
     this._subscribeToMessageState(
       this._messageManager,
-      (state) => state.unapprovedMsgs,
       (state, newMessages, messageCount) => {
         state.unapprovedMsgs = newMessages;
         state.unapprovedMsgCount = messageCount;
@@ -217,7 +219,6 @@ export default class SignController extends BaseControllerV2<
 
     this._subscribeToMessageState(
       this._personalMessageManager,
-      (state) => state.unapprovedPersonalMsgs,
       (state, newMessages, messageCount) => {
         state.unapprovedPersonalMsgs = newMessages;
         state.unapprovedPersonalMsgCount = messageCount;
@@ -226,7 +227,6 @@ export default class SignController extends BaseControllerV2<
 
     this._subscribeToMessageState(
       this._typedMessageManager,
-      (state) => state.unapprovedTypedMessages,
       (state, newMessages, messageCount) => {
         state.unapprovedTypedMessages = newMessages;
         state.unapprovedTypedMessagesCount = messageCount;
@@ -277,10 +277,7 @@ export default class SignController extends BaseControllerV2<
    * @param msgParams - The params passed to eth_sign.
    * @param [req] - The original request, containing the origin.
    */
-  async newUnsignedMessage(
-    msgParams: MessageParamsMetamask,
-    req: OriginalRequest,
-  ) {
+  async newUnsignedMessage(msgParams: MessageParams, req: OriginalRequest) {
     const {
       // eslint-disable-next-line camelcase
       disabledRpcMethodPreferences: { eth_sign },
@@ -318,11 +315,14 @@ export default class SignController extends BaseControllerV2<
    * @param req - The original request, containing the origin.
    */
   async newUnsignedPersonalMessage(
-    msgParams: PersonalMessageParamsMetamask,
+    msgParams: PersonalMessageParams,
     req: OriginalRequest,
   ) {
+    const ethereumSignInData = this._getEthereumSignInData(msgParams);
+    const finalMsgParams = { ...msgParams, siwe: ethereumSignInData };
+
     return this._personalMessageManager.addUnapprovedMessageAsync(
-      msgParams,
+      finalMsgParams,
       req,
     );
   }
@@ -335,7 +335,7 @@ export default class SignController extends BaseControllerV2<
    * @param version
    */
   async newUnsignedTypedMessage(
-    msgParams: TypedMessageParamsMetamask,
+    msgParams: TypedMessageParams,
     req: OriginalRequest,
     version: string,
   ) {
@@ -355,7 +355,7 @@ export default class SignController extends BaseControllerV2<
   async signMessage(msgParams: MessageParamsMetamask) {
     return await this._signAbstractMessage(
       this._messageManager,
-      'signMessage',
+      methodNameSign,
       msgParams,
       async (cleanMsgParams) =>
         await this._keyringController.signMessage(cleanMsgParams),
@@ -372,7 +372,7 @@ export default class SignController extends BaseControllerV2<
   async signPersonalMessage(msgParams: PersonalMessageParamsMetamask) {
     return await this._signAbstractMessage(
       this._personalMessageManager,
-      'signPersonalMessage',
+      methodNamePersonalSign,
       msgParams,
       async (cleanMsgParams) =>
         await this._keyringController.signPersonalMessage(cleanMsgParams),
@@ -391,7 +391,7 @@ export default class SignController extends BaseControllerV2<
 
     return await this._signAbstractMessage(
       this._typedMessageManager,
-      'eth_signTypedData',
+      methodNameTypedSign,
       msgParams,
       async (cleanMsgParams) => {
         // For some reason every version after V1 used stringified params.
@@ -463,14 +463,14 @@ export default class SignController extends BaseControllerV2<
     });
   }
 
-  private async _signAbstractMessage<
-    M extends AbstractMessage,
-    P extends AbstractMessageParams,
-    PM extends AbstractMessageParamsMetamask,
-  >(
-    messageManager: AbstractMessageManager<M, P, PM>,
+  private async _signAbstractMessage<P extends AbstractMessageParams>(
+    messageManager: AbstractMessageManager<
+      AbstractMessage,
+      P,
+      AbstractMessageParamsMetamask
+    >,
     methodName: string,
-    msgParams: PM,
+    msgParams: AbstractMessageParamsMetamask,
     getSignature: (cleanMessageParams: P) => any,
   ) {
     log.info(`MetaMaskController - ${methodName}`);
@@ -493,12 +493,12 @@ export default class SignController extends BaseControllerV2<
     }
   }
 
-  private _cancelAbstractMessage<
-    M extends AbstractMessage,
-    P extends AbstractMessageParams,
-    PM extends AbstractMessageParamsMetamask,
-  >(
-    messageManager: AbstractMessageManager<M, P, PM>,
+  private _cancelAbstractMessage(
+    messageManager: AbstractMessageManager<
+      AbstractMessage,
+      AbstractMessageParams,
+      AbstractMessageParamsMetamask
+    >,
     messageId: string,
     reason?: string,
   ) {
@@ -521,58 +521,51 @@ export default class SignController extends BaseControllerV2<
     return this._getState();
   }
 
-  private _bubbleEvents<
-    M extends AbstractMessage,
-    P extends AbstractMessageParams,
-    PM extends AbstractMessageParamsMetamask,
-  >(messageManager: AbstractMessageManager<M, P, PM>) {
+  private _bubbleEvents(
+    messageManager: AbstractMessageManager<
+      AbstractMessage,
+      AbstractMessageParams,
+      AbstractMessageParamsMetamask
+    >,
+  ) {
     messageManager.hub.on('updateBadge', () => {
       this.hub.emit('updateBadge');
     });
   }
 
-  private _subscribeToMessageState<
-    M extends AbstractMessage,
-    P extends AbstractMessageParams,
-    PM extends AbstractMessageParamsMetamask,
-  >(
-    messageManager: AbstractMessageManager<M, P, PM>,
-    getExistingMessages: (
-      state: SignControllerState,
-    ) => Record<string, StateMessage<M>>,
+  private _subscribeToMessageState(
+    messageManager: AbstractMessageManager<
+      AbstractMessage,
+      AbstractMessageParams,
+      AbstractMessageParamsMetamask
+    >,
     updateState: (
       state: SignControllerState,
-      newMessages: Record<string, StateMessage<M>>,
+      newMessages: Record<string, StateMessage>,
       messageCount: number,
     ) => void,
   ) {
-    messageManager.subscribe(async (state: MessageManagerState<M>) => {
-      const existingMessages = getExistingMessages(this.state);
+    messageManager.subscribe(
+      async (state: MessageManagerState<AbstractMessage>) => {
+        const newMessages = await this._migrateMessages(
+          state.unapprovedMessages as any,
+        );
 
-      const newMessages = await this._migrateMessages<M>(
-        state.unapprovedMessages as any,
-        existingMessages,
-      );
-
-      this.update((draftState) => {
-        updateState(draftState, newMessages, state.unapprovedMessagesCount);
-      });
-    });
+        this.update((draftState) => {
+          updateState(draftState, newMessages, state.unapprovedMessagesCount);
+        });
+      },
+    );
   }
 
-  private async _migrateMessages<M extends AbstractMessage>(
+  private async _migrateMessages(
     coreMessages: Record<string, CoreMessage>,
-    existingMessages: Record<string, StateMessage<M>>,
-  ): Promise<Record<string, StateMessage<M>>> {
-    const stateMessages: Record<string, StateMessage<M>> = {};
+  ): Promise<Record<string, StateMessage>> {
+    const stateMessages: Record<string, StateMessage> = {};
 
     for (const messageId of Object.keys(coreMessages)) {
       const coreMessage = coreMessages[messageId];
-
-      const stateMessage = await this._migrateMessage<M>(
-        coreMessage,
-        existingMessages,
-      );
+      const stateMessage = await this._migrateMessage(coreMessage);
 
       stateMessages[messageId] = stateMessage;
     }
@@ -580,31 +573,29 @@ export default class SignController extends BaseControllerV2<
     return stateMessages;
   }
 
-  private async _migrateMessage<M extends AbstractMessage>(
+  private async _migrateMessage(
     coreMessage: CoreMessage,
-    existingMessages: Record<string, StateMessage<M>>,
-  ): Promise<StateMessage<M>> {
-    const { messageParams, ...originalMessageData } = coreMessage;
+  ): Promise<StateMessage> {
+    const { messageParams, ...coreMessageData } = coreMessage;
 
     // Core message managers use messageParams but frontend uses msgParams with lots of references
-    const newMessage = {
-      ...originalMessageData,
-      msgParams: coreMessage.messageParams,
-    } as StateMessage<M>;
+    const stateMessage = {
+      ...coreMessageData,
+      rawSig: coreMessage.rawSig as string,
+      msgParams: {
+        ...messageParams,
+        origin: messageParams.origin as string,
+      },
+    };
 
-    const { id: messageId } = coreMessage;
-    const existingMessage = existingMessages[messageId];
+    const messageId = coreMessage.id;
+    const existingMessage = this._getMessage(messageId);
 
     const securityProviderResponse = existingMessage
       ? existingMessage.securityProviderResponse
-      : await this._securityProviderRequest(newMessage, newMessage.type);
+      : await this._securityProviderRequest(stateMessage, stateMessage.type);
 
-    this._siwe(newMessage.msgParams);
-
-    return {
-      ...newMessage,
-      securityProviderResponse,
-    };
+    return { ...stateMessage, securityProviderResponse };
   }
 
   private _normalizeMsgData(data: string) {
@@ -616,7 +607,7 @@ export default class SignController extends BaseControllerV2<
     return bufferToHex(Buffer.from(data, 'utf8'));
   }
 
-  private _getMessage(messageId: string): AbstractMessage {
+  private _getMessage(messageId: string): StateMessage {
     return {
       ...this.state.unapprovedMsgs,
       ...this.state.unapprovedPersonalMsgs,
@@ -624,19 +615,20 @@ export default class SignController extends BaseControllerV2<
     }[messageId];
   }
 
-  private _siwe(msgParams: MessageParams) {
-    // check for SIWE message
-    const siwe = detectSIWE(msgParams);
-    msgParams.siwe = siwe;
+  private _getEthereumSignInData(messgeParams: PersonalMessageParams): any {
+    const ethereumSignInData = detectSIWE(messgeParams);
 
-    if (siwe.isSIWEMessage && msgParams.origin) {
-      const { host } = new URL(msgParams.origin);
-      if (siwe.parsedMessage.domain !== host) {
+    if (ethereumSignInData.isSIWEMessage && messgeParams.origin) {
+      const { host } = new URL(messgeParams.origin);
+
+      if (ethereumSignInData.parsedMessage.domain !== host) {
         throw new Error(
-          `SIWE domain is not valid: "${host}" !== "${siwe.parsedMessage.domain}"`,
+          `SIWE domain is not valid: "${host}" !== "${ethereumSignInData.parsedMessage.domain}"`,
         );
       }
     }
+
+    return ethereumSignInData;
   }
 
   private _requestApproval(

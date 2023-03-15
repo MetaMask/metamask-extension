@@ -189,9 +189,13 @@ describe('SignController', () => {
       expect(
         personalMessageManagerMock.addUnapprovedMessageAsync,
       ).toHaveBeenCalledTimes(1);
+
       expect(
         personalMessageManagerMock.addUnapprovedMessageAsync,
-      ).toHaveBeenCalledWith(messageParamsMock, requestMock);
+      ).toHaveBeenCalledWith(
+        expect.objectContaining(messageParamsMock),
+        requestMock,
+      );
     });
   });
 
