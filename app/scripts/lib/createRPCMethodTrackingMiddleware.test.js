@@ -1,3 +1,4 @@
+import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
@@ -212,6 +213,35 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[0][0].properties.method).toBe('eth_chainId');
       expect(trackEvent.mock.calls[1][0].properties.method).toBe('eth_chainId');
+    });
+
+    describe(`when '${MESSAGE_TYPE.ETH_SIGN}' is disabled in advanced settings`, () => {
+      it(`should track ${EVENT_NAMES.SIGNATURE_FAILED} and include error property`, async () => {
+        const mockError = { code: errorCodes.rpc.methodNotFound };
+        const req = {
+          method: MESSAGE_TYPE.ETH_SIGN,
+          origin: 'some.dapp',
+        };
+        const res = {
+          error: mockError,
+        };
+        const { next, executeMiddlewareStack } = getNext();
+
+        handler(req, res, next);
+        await executeMiddlewareStack();
+
+        expect(trackEvent).toHaveBeenCalledTimes(2);
+
+        expect(trackEvent.mock.calls[1][0]).toMatchObject({
+          category: 'inpage_provider',
+          event: EVENT_NAMES.SIGNATURE_FAILED,
+          properties: {
+            signature_type: MESSAGE_TYPE.ETH_SIGN,
+            error: mockError,
+          },
+          referrer: { url: 'some.dapp' },
+        });
+      });
     });
   });
 });
