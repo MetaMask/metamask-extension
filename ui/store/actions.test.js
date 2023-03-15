@@ -2114,7 +2114,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.cancelMsgs(msgsList));
       const resultantActions = store.getActions();
-      console.log(resultantActions);
+
       const expectedActions = resultantActions.filter(
         (action) => action.type === 'COMPLETED_TX',
       );
