@@ -36,7 +36,6 @@ export const MultichainTokenListItem = ({
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const t = useI18nContext();
   const dataTheme = document.documentElement.getAttribute('data-theme');
-  console.log(dataTheme, "them")
   return (
     <Box
       className={classnames('multichain-token-list-item', className)}
