@@ -185,7 +185,6 @@ describe('MetaMask onboarding', function () {
         await driver.navigate();
 
         await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         // Verify site
         assert.equal(
           await driver.isElementPresent({
@@ -223,7 +222,6 @@ describe('MetaMask onboarding', function () {
         await driver.clickElement('[data-testid="create-password-terms"]');
         await driver.clickElement('[data-testid="create-password-wallet"]');
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         // Verify site
         assert.equal(
           await driver.isElementPresent({
