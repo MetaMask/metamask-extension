@@ -18,18 +18,9 @@ describe('Multichain Connected Site Menu', () => {
   };
   const store = configureMockStore()(mockStore);
   describe('render', () => {
-    const props = {
-      connectedSubjects: {
-        extensionId: null,
-        origin: 'https://metamask.github.io',
-        name: 'MetaMask < = > Ledger Bridge',
-        iconUrl: null,
-      },
-    };
-
     it('should match snapshot', () => {
       const { getByTestId, container } = renderWithProvider(
-        <MultichainConnectedSiteMenu {...props} />,
+        <MultichainConnectedSiteMenu />,
         store,
       );
       expect(getByTestId('connection-menu')).toBeDefined();

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 import {
   BorderColor,
   BorderRadius,
@@ -10,11 +11,11 @@ import {
 } from '../../helpers/constants/design-system';
 import { BadgeWrapper, Icon, ICON_NAMES } from '../component-library';
 import Box from '../ui/box';
+import { getConnectedSubjectsForSelectedAddress } from '../../selectors';
 
-export const MultichainConnectedSiteMenu = ({
-  className,
-  connectedSubjects,
-}) => {
+export const MultichainConnectedSiteMenu = ({ className }) => {
+  const connectedSubjects = useSelector(getConnectedSubjectsForSelectedAddress);
+
   return (
     <Box
       className={classNames('multichain-connected-site-menu', className)}
@@ -61,6 +62,5 @@ export const MultichainConnectedSiteMenu = ({
 };
 
 MultichainConnectedSiteMenu.propTypes = {
-  connectedSubjects: PropTypes.arrayOf(PropTypes.object).isRequired,
   className: PropTypes.string,
 };
