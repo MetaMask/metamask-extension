@@ -26,7 +26,7 @@ export const AddressCopyButton = ({
     <Tooltip position="bottom" title={copied ? t('copiedExclamation') : null}>
       <ButtonBase
         backgroundColor={BackgroundColor.primaryMuted}
-        onClick={handleCopy}
+        onClick={() => handleCopy(address)}
         padding={0}
         paddingRight={3}
         paddingLeft={3}
