@@ -15,9 +15,11 @@ import {
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
-  Icon,
-  ICON_NAMES,
   AvatarIcon,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Icon,
+  ///: END:ONLY_INCLUDE_IN
+  ICON_NAMES,
   ICON_SIZES,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -31,6 +33,7 @@ import {
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 const RIGHT_WARNING_ICON = (
   <Icon
     name={ICON_NAMES.DANGER}
@@ -46,6 +49,7 @@ const RIGHT_INFO_ICON = (
     color={IconColor.iconMuted}
   />
 );
+///: END:ONLY_INCLUDE_IN
 
 function getLeftIcon(iconName) {
   return (
