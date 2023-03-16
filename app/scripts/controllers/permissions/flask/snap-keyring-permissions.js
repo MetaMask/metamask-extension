@@ -1,22 +1,20 @@
-import {
-  PermissionType,
-} from '@metamask/permission-controller';
+import { PermissionType } from '@metamask/permission-controller';
 
 const NotificationType = {
   InApp: 'inApp',
   Native: 'native',
-}
+};
 
 const methodName = 'snap_manageAccounts';
 
 const methodHooks = {
   getSnapKeyring: true,
   saveSnapKeyring: true,
-}
+};
 
 const snapKeyringPermissionBuilder = {
   targetKey: methodName,
-  specificationBuilder: ({allowedCaveats = null, methodHooks}) => {
+  specificationBuilder: ({ allowedCaveats = null, methodHooks }) => {
     return {
       permissionType: PermissionType.RestrictedMethod,
       targetKey: methodName,
@@ -25,15 +23,10 @@ const snapKeyringPermissionBuilder = {
     };
   },
   methodHooks,
-}
+};
 
-function getImplementation({
-  getSnapKeyring,
-  saveSnapKeyring,
-}) {
-  return async function implementation(
-    request,
-  ) {
+function getImplementation({ getSnapKeyring, saveSnapKeyring }) {
+  return async function implementation(request) {
     const {
       params,
       context: { origin },
@@ -47,4 +40,4 @@ function getImplementation({
 
 export const snapKeyringPermissionBuilders = {
   [snapKeyringPermissionBuilder.targetKey]: snapKeyringPermissionBuilder,
-}
+};

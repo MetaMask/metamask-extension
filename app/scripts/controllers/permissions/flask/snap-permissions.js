@@ -1,15 +1,13 @@
-import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import {
   restrictedMethodPermissionBuilders,
   selectHooks,
 } from '@metamask/rpc-methods';
+import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/permissions';
-import {
-  snapKeyringPermissionBuilders,
-} from './snap-keyring-permissions';
+import { snapKeyringPermissionBuilders } from './snap-keyring-permissions';
 
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission

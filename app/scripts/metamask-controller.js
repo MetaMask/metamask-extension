@@ -63,7 +63,6 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
-import SnapKeyring from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 import browser from 'webextension-polyfill';
@@ -122,6 +121,7 @@ import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { isMain, isFlask } from '../../shared/constants/environment';
 // eslint-disable-next-line import/order
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
+import SnapKeyring from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
@@ -1381,9 +1381,8 @@ export default class MetamaskController extends EventEmitter {
   async getSnapKeyring() {
     if (!this.snapKeyring) {
       // perform lookup
-      let [snapKeyring] = this.keyringController.getKeyringsByType(
-        'Snap Keyring',
-      );
+      let [snapKeyring] =
+        this.keyringController.getKeyringsByType('Snap Keyring');
       // if still missing, create
       if (!snapKeyring) {
         snapKeyring = await this.keyringController.addNewKeyring(
