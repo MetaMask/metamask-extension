@@ -907,6 +907,9 @@ function setupBundlerDefaults(
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
+  // This dependency uses WASM which we cannot execute in accordance with our CSP
+  bundlerOpts.manualIgnore.push('@chainsafe/as-sha256');
+
   // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
