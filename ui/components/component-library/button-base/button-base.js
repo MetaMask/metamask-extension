@@ -71,21 +71,20 @@ export const ButtonBase = ({
     >
       <Text
         className="mm-button-base__content"
-        display={DISPLAY.INLINE_FLEX}
+        as="div"
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         gap={2}
         variant={TextVariant.bodyMd}
         color={TextColor.inherit}
         ellipsis={ellipsis}
-        as="div"
         {...textProps}
       >
         {startIconName && (
           <Icon name={startIconName} size={Size.SM} {...startIconProps} />
         )}
         <Text
-          as="span"
+          as="div"
           ellipsis={ellipsis}
           color={TextColor.inherit}
           variant={TextVariant.inherit}
