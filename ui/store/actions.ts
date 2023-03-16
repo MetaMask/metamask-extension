@@ -3697,6 +3697,7 @@ export function approvePermissionsRequest(
         dispatch(displayWarning(err));
       }
     });
+    forceUpdateMetamaskState(dispatch);
   };
 }
 
