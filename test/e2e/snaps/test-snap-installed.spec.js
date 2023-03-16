@@ -98,7 +98,6 @@ describe('Test Snap Installed', function () {
           tag: 'button',
         });
 
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.waitForSelector({ text: 'Ok' });
 
         await driver.clickElement({
