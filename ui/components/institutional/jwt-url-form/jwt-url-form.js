@@ -8,13 +8,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
-import DragAndDrop from '../drag-and-drop';
 import Button from '../../ui/button';
 import Box from '../../ui/box';
-
-// As a JWT is included in a HTTP header, we've an upper limit (SO: Maximum on http header values) of
-// 8K on the majority of current servers, with 7kb giving a reasonable amount of room for other headers
-const MAX_JWT_SIZE = 7000;
 
 const JwtUrlForm = (props) => {
   const t = useI18nContext();
@@ -69,37 +64,19 @@ const JwtUrlForm = (props) => {
                 <Text>{t('fileTooBig')}</Text>
               </span>
             )}
-            <DragAndDrop
-              className="jwt-url-form__input-jwt-container"
-              handleDrop={(files) => {
-                if (files[0].size > MAX_JWT_SIZE) {
-                  setFileTooBigError(true);
-                  return;
-                }
-                // eslint-disable-next-line no-undef
-                const reader = new FileReader();
-
-                reader.onload = (event) => {
-                  props.onJwtChange(event.target.result);
-                  setFileTooBigError(false);
-                };
-
-                reader.readAsText(files[0]);
+            <textarea
+              className="jwt-url-form__input-jwt"
+              data-testid="jwt-input"
+              borderColor={BorderColor.borderDefault}
+              id="jwt-box"
+              onChange={(e) => {
+                props.onJwtChange(e.target.value);
+                setFileTooBigError(false);
               }}
-            >
-              <textarea
-                className="jwt-url-form__input-jwt"
-                borderColor={BorderColor.borderDefault}
-                id="jwt-box"
-                onChange={(e) => {
-                  props.onJwtChange(e.target.value);
-                  setFileTooBigError(false);
-                }}
-                ref={inputRef.current}
-                value={props.currentJwt}
-                autoFocus
-              />
-            </DragAndDrop>
+              ref={inputRef.current}
+              value={props.currentJwt}
+              autoFocus
+            />
           </Box>
         )}
       </Box>

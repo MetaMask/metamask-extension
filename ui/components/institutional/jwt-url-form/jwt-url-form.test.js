@@ -60,7 +60,7 @@ describe('JwtUrlForm', function () {
     expect(apiUrlinput.value).toBe('url');
   });
 
-  it('shows JWT darg&drop area when no jwt token exists', () => {
+  it('shows JWT text area when no jwt token exists', () => {
     const customProps = {
       ...props,
       currentJwt: '',

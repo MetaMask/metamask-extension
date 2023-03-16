@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`JwtUrlForm shows JWT darg&drop area when no jwt token exists 1`] = `
+exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
 <div>
   <div
     class="box jwt-url-form box--margin-bottom-8 box--display-flex box--flex-direction-row box--align-items-flex-start"
@@ -16,15 +16,12 @@ exports[`JwtUrlForm shows JWT darg&drop area when no jwt token exists 1`] = `
         >
           input text
         </p>
-        <div
-          class="box drag-and-drop__container jwt-url-form__input-jwt-container box--flex-direction-row"
-        >
-          <textarea
-            bordercolor="border-default"
-            class="jwt-url-form__input-jwt"
-            id="jwt-box"
-          />
-        </div>
+        <textarea
+          bordercolor="border-default"
+          class="jwt-url-form__input-jwt"
+          data-testid="jwt-input"
+          id="jwt-box"
+        />
       </div>
     </div>
     <div
