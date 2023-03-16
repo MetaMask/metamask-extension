@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import Button from '../../ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Text } from '../../component-library';
 import Box from '../../ui/box';
 
 export default function InstitutionalEntityDonePage(props) {
@@ -27,12 +28,18 @@ export default function InstitutionalEntityDonePage(props) {
               src={state.imgSrc}
               alt="Entity image"
             />
-            <h4 className="institutional-entity-done__entity-connect__header__title">
+            <Text
+              as="h4"
+              className="institutional-entity-done__entity-connect__header__title"
+            >
               {state.title}
-            </h4>
-            <p className="institutional-entity-done__entity-connect__header__msg">
+            </Text>
+            <Text
+              as="p"
+              className="institutional-entity-done__entity-connect__header__msg"
+            >
               {state.description}
-            </p>
+            </Text>
           </Box>
         </Box>
       </Box>
@@ -45,7 +52,7 @@ export default function InstitutionalEntityDonePage(props) {
             data-testid="click-most-recent-overview-page"
             onClick={() => history.push(mostRecentOverviewPage)}
           >
-            {t('close')}
+            <Text>{t('close')}</Text>
           </Button>
         </footer>
       </Box>
