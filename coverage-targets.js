@@ -6,10 +6,10 @@
 // subset of files to check against these targets.
 module.exports = {
   global: {
-    lines: 64.55,
-    branches: 53.19,
-    statements: 63.81,
-    functions: 56.75,
+    lines: 65,
+    branches: 53.5,
+    statements: 64,
+    functions: 57.5,
   },
   transforms: {
     branches: 100,

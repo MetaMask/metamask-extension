@@ -39,9 +39,9 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           class="confirm-page-container-navigation__navtext"
         >
           0
-           
+
           of
-           
+
           1
         </div>
         <div
@@ -228,7 +228,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
     <div
       class="confirm-page-container-content"
     >
-      
+
       <div
         class="confirm-page-container-summary"
       >
@@ -392,7 +392,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     class="transaction-detail-item__row"
                   >
                     <div>
-                      
+
                     </div>
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
@@ -474,7 +474,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                         <strong>
                           Max amount:
                         </strong>
-                         
+
                         <div
                           class="currency-display-component"
                           title="0.000121"
