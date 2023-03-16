@@ -3,6 +3,7 @@ import {
   getIsEthGasPriceFetched,
   getNoGasPriceFetched,
   checkNetworkOrAccountNotSupports1559,
+  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
 import {
   getIsBalanceInsufficient,
@@ -29,6 +30,7 @@ function mapStateToProps(state) {
     assetError: getAssetError(state),
     recipient,
     recipientWarningAcknowledged,
+    isMultiLayerFeeNetwork: getIsMultiLayerFeeNetwork(state),
   };
 }
 

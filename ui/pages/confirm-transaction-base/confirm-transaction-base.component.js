@@ -450,7 +450,9 @@ export default class ConfirmTransactionBase extends Component {
           detailTitle={
             txData.dappSuggestedGasFees ? (
               <>
-                {t('transactionDetailGasHeading')}
+                {isMultiLayerFeeNetwork
+                  ? t('transactionDetailLayer2GasHeading')
+                  : t('transactionDetailGasHeading')}
                 <InfoTooltip
                   contentText={t('transactionDetailDappGasTooltip')}
                   position="top"
@@ -460,7 +462,9 @@ export default class ConfirmTransactionBase extends Component {
               </>
             ) : (
               <>
-                {t('transactionDetailGasHeading')}
+                {isMultiLayerFeeNetwork
+                  ? t('transactionDetailLayer2GasHeading')
+                  : t('transactionDetailGasHeading')}
                 <InfoTooltip
                   contentText={
                     <>
@@ -489,6 +493,7 @@ export default class ConfirmTransactionBase extends Component {
             )
           }
           detailText={
+            !isMultiLayerFeeNetwork &&
             useCurrencyRateCheck && (
               <div className="confirm-page-container-content__currency-container test">
                 {renderHeartBeatIfNotInTest()}
@@ -507,28 +512,30 @@ export default class ConfirmTransactionBase extends Component {
                 type={PRIMARY}
                 value={hexMinimumTransactionFee}
                 hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                numberOfDecimals={6}
+                numberOfDecimals={isMultiLayerFeeNetwork ? 18 : 6}
               />
             </div>
           }
           subText={
-            <>
-              <strong key="editGasSubTextFeeLabel">
-                {t('editGasSubTextFeeLabel')}
-              </strong>
-              <div
-                key="editGasSubTextFeeValue"
-                className="confirm-page-container-content__currency-container"
-              >
-                {renderHeartBeatIfNotInTest()}
-                <UserPreferencedCurrencyDisplay
-                  key="editGasSubTextFeeAmount"
-                  type={PRIMARY}
-                  value={hexMaximumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />
-              </div>
-            </>
+            !isMultiLayerFeeNetwork && (
+              <>
+                <strong key="editGasSubTextFeeLabel">
+                  {t('editGasSubTextFeeLabel')}
+                </strong>
+                <div
+                  key="editGasSubTextFeeValue"
+                  className="confirm-page-container-content__currency-container"
+                >
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    key="editGasSubTextFeeAmount"
+                    type={PRIMARY}
+                    value={hexMaximumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>
+              </>
+            )
           }
           subTitle={
             <>
@@ -587,15 +594,11 @@ export default class ConfirmTransactionBase extends Component {
           disabled={isDisabled()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           onEdit={
-            renderSimulationFailureWarning || isMultiLayerFeeNetwork
-              ? null
-              : () => this.handleEditGas()
+            renderSimulationFailureWarning ? null : () => this.handleEditGas()
           }
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
-            !renderSimulationFailureWarning &&
-              !isMultiLayerFeeNetwork &&
-              renderGasDetailsItem(),
+            !renderSimulationFailureWarning && renderGasDetailsItem(),
             !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
               <MultiLayerFeeMessage
                 transaction={txData}

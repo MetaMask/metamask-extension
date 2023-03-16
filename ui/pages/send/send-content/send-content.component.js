@@ -36,6 +36,7 @@ export default class SendContent extends Component {
     recipient: PropTypes.object,
     acknowledgeRecipientWarning: PropTypes.func,
     recipientWarningAcknowledged: PropTypes.bool,
+    isMultiLayerFeeNetwork: PropTypes.bool,
   };
 
   render() {
@@ -51,6 +52,7 @@ export default class SendContent extends Component {
       assetError,
       recipient,
       recipientWarningAcknowledged,
+      isMultiLayerFeeNetwork,
     } = this.props;
 
     let gasError;
@@ -85,7 +87,7 @@ export default class SendContent extends Component {
           <SendAmountRow />
           {networkOrAccountNotSupports1559 ? <SendGasRow /> : null}
           {showHexData ? <SendHexDataRow /> : null}
-          <GasDisplay gasError={gasError} />
+          {!isMultiLayerFeeNetwork && <GasDisplay gasError={gasError} />}
         </div>
       </PageContainerContent>
     );

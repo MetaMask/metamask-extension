@@ -21,19 +21,21 @@ export default function MultilayerFeeMessage({
   const [fetchedLayer1Total, setLayer1Total] = useState(null);
 
   let layer1Total = 'unknown';
-  let layer1TotalBN;
 
   if (fetchedLayer1Total !== null) {
-    layer1TotalBN = new Numeric(fetchedLayer1Total, 16, EtherDenomination.WEI);
+    const layer1TotalBN = new Numeric(
+      fetchedLayer1Total,
+      16,
+      EtherDenomination.WEI,
+    );
     layer1Total = `${layer1TotalBN
       .toDenomination(EtherDenomination.ETH)
       .toFixed(12)} ${nativeCurrency}`;
   }
 
-  const feeTotal = sumHexes(layer2fee || '0x0', fetchedLayer1Total || '0x0');
-
   const totalInWeiHex = sumHexes(
-    feeTotal || '0x0',
+    layer2fee || '0x0',
+    fetchedLayer1Total || '0x0',
     transaction.txParams.value || '0x0',
   );
 
@@ -57,7 +59,7 @@ export default function MultilayerFeeMessage({
   const feeTotalInFiat = (
     <UserPreferencedCurrencyDisplay
       type={SECONDARY}
-      value={feeTotal}
+      value={fetchedLayer1Total}
       showFiat
       hideLabel
     />
@@ -76,7 +78,7 @@ export default function MultilayerFeeMessage({
     <div className="multi-layer-fee-message">
       <TransactionDetailItem
         key="total-item"
-        detailTitle={t('gasFee')}
+        detailTitle={t('layer1Fees')}
         detailTotal={layer1Total}
         detailText={feeTotalInFiat}
         noBold={plainStyle}
