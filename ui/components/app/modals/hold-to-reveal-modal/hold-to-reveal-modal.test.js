@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockState from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, render } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -12,22 +12,24 @@ import {
   holdToRevealContent5,
   holdToRevealTitle,
 } from '../../../../../app/_locales/en/messages.json';
+import {
+  EVENT,
+  EVENT_NAMES,
+} from '../../../../../shared/constants/metametrics';
+// import MockProvider from './test-helper/mockProvider';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import HoldToRevealModal from '.';
-
-const mockShowModal = jest.fn();
-
-jest.mock('../../../../store/actions.ts', () => {
-  return {
-    showModal: () => mockShowModal,
-  };
-});
 
 describe('Hold to Reveal Modal', () => {
   const mockStore = configureMockState([thunk])(mockState);
-  const onLongPressStub = jest.fn().mockResolvedValue();
-  const hideModalStub = jest.fn().mockResolvedValue();
+  const onLongPressStub = jest.fn();
+  const hideModalStub = jest.fn();
 
   global.platform = { openTab: jest.fn() };
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
   it('should render the srp warning text and button', () => {
     const { getByText } = renderWithProvider(
@@ -72,7 +74,7 @@ describe('Hold to Reveal Modal', () => {
   });
 
   it('should should execute onLongPressed after long press', async () => {
-    const { getByText } = renderWithProvider(
+    const { getByText, queryByLabelText } = renderWithProvider(
       <HoldToRevealModal
         onLongPressed={onLongPressStub}
         hideModal={hideModalStub}
@@ -81,17 +83,24 @@ describe('Hold to Reveal Modal', () => {
     );
 
     const holdButton = getByText('Hold to reveal SRP');
-    waitFor(() => {
+    const circleLocked = queryByLabelText('circle-locked');
+
+    fireEvent.mouseDown(holdButton);
+    fireEvent.transitionEnd(circleLocked);
+
+    const circleUnlocked = queryByLabelText('circle-unlocked');
+    fireEvent.animationEnd(circleUnlocked);
+
+    await waitFor(() => {
       expect(holdButton.firstChild).toHaveClass(
-        'hold-to-reveal-button__unlock-icon-container',
+        'box hold-to-reveal-button__icon-container box--flex-direction-row',
       );
-      expect(onLongPressStub.callCount).toBe(1);
-      expect(hideModalStub.callCount).toBe(1);
+      expect(onLongPressStub).toHaveBeenCalled();
     });
   });
 
   it('should remain open if long pressed was not complete', async () => {
-    const { getByText } = renderWithProvider(
+    const { getByText, queryByLabelText } = renderWithProvider(
       <HoldToRevealModal
         onLongPressed={onLongPressStub}
         hideModal={hideModalStub}
@@ -100,15 +109,74 @@ describe('Hold to Reveal Modal', () => {
     );
 
     const holdButton = getByText('Hold to reveal SRP');
-    waitFor(
-      () => {
-        expect(holdButton.firstChild).toHaveClass(
-          'hold-to-reveal-button__unlock-icon-container',
-        );
-        expect(onLongPressStub.callCount).toBe(0);
-        expect(hideModalStub.callCount).toBe(0);
-      },
-      { interval: 100 },
+
+    fireEvent.click(holdButton);
+
+    const circleLocked = queryByLabelText('circle-locked');
+    const circleUnlocked = queryByLabelText('circle-unlocked');
+
+    await waitFor(() => {
+      expect(circleLocked).toBeInTheDocument();
+      expect(circleUnlocked).not.toBeInTheDocument();
+      expect(onLongPressStub).not.toHaveBeenCalled();
+      expect(hideModalStub).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should fire event when closing', async () => {
+    const mockTrackEvent = jest.fn();
+
+    const { queryByLabelText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <HoldToRevealModal
+          onLongPressed={onLongPressStub}
+          hideModal={hideModalStub}
+        />
+        ,
+      </MetaMetricsContext.Provider>,
+      mockStore,
     );
+
+    const closeButton = queryByLabelText('Close');
+
+    fireEvent.click(closeButton);
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: EVENT.CATEGORIES.KEYS,
+        event: EVENT_NAMES.SRP_HOLD_TO_REVEAL_CLOSE_CLICKED,
+        properties: {
+          key_type: EVENT.KEY_TYPES.SRP,
+        },
+      });
+    });
+  });
+
+  it('should not hide modal after completing long press if set to false', async () => {
+    const { getByText, queryByLabelText } = renderWithProvider(
+      <HoldToRevealModal
+        onLongPressed={onLongPressStub}
+        hideModal={hideModalStub}
+        willHide={false}
+      />,
+      mockStore,
+    );
+
+    const holdButton = getByText('Hold to reveal SRP');
+    const circleLocked = queryByLabelText('circle-locked');
+
+    fireEvent.mouseDown(holdButton);
+    fireEvent.transitionEnd(circleLocked);
+
+    const circleUnlocked = queryByLabelText('circle-unlocked');
+    fireEvent.animationEnd(circleUnlocked);
+
+    await waitFor(() => {
+      expect(holdButton.firstChild).toHaveClass(
+        'box hold-to-reveal-button__icon-container box--flex-direction-row',
+      );
+      expect(onLongPressStub).toHaveBeenCalled();
+      expect(hideModalStub).not.toHaveBeenCalled();
+    });
   });
 });
