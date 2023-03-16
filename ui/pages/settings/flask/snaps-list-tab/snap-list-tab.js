@@ -84,7 +84,7 @@ const SnapListTab = () => {
           <Box className="snap-list-tab__container--no-snaps_inner">
             <Typography
               align={TEXT_ALIGN.CENTER}
-              variant={TypographyVariant.H1}
+              className="snap-list-tab__container--no-snaps_icon"
             >
               <Icon
                 name={ICON_NAMES.SNAPS}
@@ -93,15 +93,18 @@ const SnapListTab = () => {
                 size={ICON_SIZES.AUTO}
               />
             </Typography>
-            <Typography variant={TypographyVariant.H4}>
+            <Typography
+              variant={TypographyVariant.H4}
+              align={TEXT_ALIGN.CENTER}
+            >
               <Text>
-                {`${t('noSnaps')} `}
+                {t('noSnaps')}
                 <ButtonLink
                   size={Size.inherit}
                   href="https://metamask.io/snaps/"
                   target="_blank"
                 >
-                  {t('learnMoreUpperCase')}
+                  {`${t('learnMoreUpperCase')}`}
                 </ButtonLink>
               </Text>
             </Typography>

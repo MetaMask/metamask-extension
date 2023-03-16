@@ -2279,7 +2279,7 @@
     "message": "No NFTs yet"
   },
   "noSnaps": {
-    "message": "You have no MetaMask Snaps installed."
+    "message": "You have no MetaMask Snaps installed. "
   },
   "noThanksVariant2": {
     "message": "No, thanks."
