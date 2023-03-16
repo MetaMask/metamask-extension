@@ -28,8 +28,8 @@ export const MultichainConnectedSiteMenu = ({ className }) => {
               backgroundColor={Color.successDefault}
               borderRadius={BorderRadius.full}
               borderColor={BorderColor.borderMuted}
-              borderWidth={2}
-              style={{ width: 12, height: 12 }}
+              borderWidth={4}
+              style={{ width: 14, height: 14 }}
             />
           }
         >
@@ -46,7 +46,8 @@ export const MultichainConnectedSiteMenu = ({ className }) => {
               backgroundColor={Color.backgroundDefault}
               borderRadius={BorderRadius.full}
               borderColor={BorderColor.borderMuted}
-              borderWidth={2}
+              borderWidth={4}
+              style={{ width: 14, height: 14 }}
             />
           }
         >
