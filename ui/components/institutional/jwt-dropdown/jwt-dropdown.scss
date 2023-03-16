@@ -1,0 +1,10 @@
+.custody-search-jwt__select {
+  height: 54px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  &-title {
+    @include Paragraph;
+  }
+}
