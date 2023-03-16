@@ -20,6 +20,7 @@ export const AccountPicker = ({ account, onClick }) => {
         marginLeft={1}
         marginRight={1}
         fontWeight={FONT_WEIGHT.BOLD}
+        ellipsis
         style={{
           textOverflow: 'ellipsis',
           overflow: 'hidden',
