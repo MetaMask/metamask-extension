@@ -1,12 +1,8 @@
 .jwt-url-form {
-  display: flex;
   flex-flow: column;
-  align-items: flex-start;
-  margin-bottom: 34px;
 
   &__jwt-container {
     width: 100%;
-    margin: 0 0 24px 0;
   }
 
   &__jwt-apiUrlInput {
@@ -14,10 +10,7 @@
   }
 
   &__btn__container {
-    display: flex;
     flex-flow: column;
-    align-items: center;
-    margin: 10px 0;
     width: 100%;
 
     & > span {
@@ -38,7 +31,6 @@
 
     height: 54px;
     width: 100%;
-    border: 1px solid var(--color-border-default);
     border-radius: 4px;
     background-color: var(--color-background-default);
     margin-top: 16px;
@@ -58,10 +50,9 @@
 
     height: 154px;
     width: 100%;
-    border: 1px solid var(--color-border-default);
     border-radius: 4px;
-    background-color: $white;
-    color: var(--scorpion);
+    background-color: var(--color-background-default);
+    color: var(--color-text-default);
     padding: 10px;
   }
 }

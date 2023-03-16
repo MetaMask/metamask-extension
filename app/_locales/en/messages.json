@@ -3269,6 +3269,9 @@
   "selectHdPath": {
     "message": "Select HD path"
   },
+  "selectJWT": {
+    "message": "Select token"
+  },
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
   },
@@ -3920,7 +3923,7 @@
     "message": "Select a quote"
   },
   "swapSelectAToken": {
-    "message": "Select a token"
+    "message": "Select token"
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."

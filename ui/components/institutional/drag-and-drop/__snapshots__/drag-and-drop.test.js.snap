@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DragAndDrop should render the DragAndDrop area 1`] = `
+<div>
+  <div
+    class="box drag-and-drop__container someClass box--flex-direction-row"
+  >
+    <div>
+      Drop area
+    </div>
+  </div>
+</div>
+`;

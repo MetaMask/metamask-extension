@@ -1,6 +1,11 @@
 import React, { useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  AlignItems,
+  DISPLAY,
+  BorderColor,
+} from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
 import DragAndDrop from '../drag-and-drop';
@@ -22,13 +27,11 @@ const JwtUrlForm = (props) => {
     const showJwtDropdown = props.jwtList.length >= 1;
 
     return (
-      <Box className="jwt-url-form__jwt-container">
+      <Box className="jwt-url-form__jwt-container" marginBottom={6}>
         {showJwtDropdown && (
           <JwtDropdown
             data-testid="jwt-dropdown"
-            currentJwt={
-              props.currentJwt ? props.currentJwt : props.jwtList[0]
-            }
+            currentJwt={props.currentJwt ? props.currentJwt : props.jwtList[0]}
             jwtList={props.jwtList}
             onChange={(value) => {
               props.onJwtChange(value);
@@ -37,7 +40,12 @@ const JwtUrlForm = (props) => {
           />
         )}
         {showJwtDropdown && !showAddNewToken && (
-          <Box className="jwt-url-form__btn__container">
+          <Box
+            className="jwt-url-form__btn__container"
+            display={DISPLAY.FLEX}
+            alignItems={AlignItems.center}
+            marginTop={2}
+          >
             <Text>{t('or')}</Text>
             <Button
               type="secondary"
@@ -81,6 +89,7 @@ const JwtUrlForm = (props) => {
             >
               <textarea
                 className="jwt-url-form__input-jwt"
+                borderColor={BorderColor.borderDefault}
                 id="jwt-box"
                 onChange={(e) => {
                   props.onJwtChange(e.target.value);
@@ -96,6 +105,7 @@ const JwtUrlForm = (props) => {
       </Box>
     );
   });
+
   const renderAPIURLInput = useCallback(() => {
     return (
       <Box className="jwt-url-form__jwt-apiUrlInput">
@@ -114,8 +124,14 @@ const JwtUrlForm = (props) => {
       </Box>
     );
   });
+
   return (
-    <Box className="jwt-url-form">
+    <Box
+      className="jwt-url-form"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.flexStart}
+      marginBottom={8}
+    >
       {renderJWTInput()}
       {renderAPIURLInput()}
     </Box>
