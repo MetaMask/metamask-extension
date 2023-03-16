@@ -82,7 +82,10 @@ const SnapListTab = () => {
           alignItems={AlignItems.center}
         >
           <Box className="snap-list-tab__container--no-snaps_inner">
-            <Typography align={TEXT_ALIGN.CENTER}>
+            <Typography
+              align={TEXT_ALIGN.CENTER}
+              variant={TypographyVariant.H1}
+            >
               <Icon
                 name={ICON_NAMES.SNAPS}
                 color={Color.iconMuted}
@@ -98,7 +101,7 @@ const SnapListTab = () => {
                   href="https://metamask.io/snaps/"
                   target="_blank"
                 >
-                  {t('noSnapsLearnMoreLinkText')}
+                  {t('learnMoreUpperCase')}
                 </ButtonLink>
               </Text>
             </Typography>
