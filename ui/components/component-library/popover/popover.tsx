@@ -40,6 +40,7 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       closeButtonProps,
       onBack,
       backButtonProps,
+      isPortal = false,
       ...props
     }: PopoverProps,
     ref: Ref<PopoverRef>,
@@ -90,81 +91,83 @@ export const Popover = forwardRef<PopoverRef, PopoverProps>(
       },
     }));
 
+    const PopoverContent = (
+      <Box
+        borderColor={Color.borderDefault}
+        borderRadius={BorderRadius.XL}
+        backgroundColor={Color.backgroundDefault}
+        padding={4}
+        className={classnames(
+          'mm-popover',
+          {
+            'mm-popover--open': isOpen,
+            'mm-popover--reference-hidden': referenceHidden,
+          },
+          className,
+        )}
+        ref={setPopperElement}
+        {...attributes.popper}
+        {...props}
+        style={{ ...styles.popper, ...contentStyle, ...props.style }}
+      >
+        {/* TODO: Replace with HeaderBase  Start */}
+        <Box
+          className="mm-popover__header"
+          paddingLeft={onBack || onClose ? 8 : 0}
+          paddingRight={onBack || onClose ? 8 : 0}
+        >
+          {onBack && (
+            <ButtonIcon
+              iconName={ICON_NAMES.ARROW_LEFT}
+              className="mm-popover__header-button-back"
+              size={Size.SM}
+              ariaLabel="back"
+              onClick={onBack}
+              {...backButtonProps}
+            />
+          )}
+
+          <Text
+            variant={TextVariant.headingSm}
+            className="mm-popover__header-title"
+            textAlign={TEXT_ALIGN.CENTER}
+          >
+            {title}
+          </Text>
+
+          {onClose && (
+            <ButtonIcon
+              iconName={ICON_NAMES.CLOSE}
+              className="mm-popover__header-button-close"
+              size={Size.SM}
+              ariaLabel="close"
+              onClick={onClose}
+              {...closeButtonProps}
+            />
+          )}
+        </Box>
+        {/* TODO: Replace with HeaderBase END */}
+        {children}
+        {hasArrow && (
+          <Box
+            borderColor={Color.borderDefault}
+            className={classnames('mm-popover__arrow')}
+            ref={setArrowElement}
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            style={styles.arrow}
+            {...attributes.arrow}
+          />
+        )}
+      </Box>
+    );
+
     return (
       <>
-        {isOpen &&
-          createPortal(
-            <Box
-              borderColor={Color.borderDefault}
-              borderRadius={BorderRadius.XL}
-              backgroundColor={Color.backgroundDefault}
-              padding={4}
-              className={classnames(
-                'mm-popover',
-                {
-                  'mm-popover--open': isOpen,
-                  'mm-popover--reference-hidden': referenceHidden,
-                },
-                className,
-              )}
-              ref={setPopperElement}
-              {...attributes.popper}
-              {...props}
-              style={{ ...styles.popper, ...contentStyle, ...props.style }}
-            >
-              {/* TODO: Replace with HeaderBase  Start */}
-              <Box
-                className="mm-popover__header"
-                paddingLeft={onBack || onClose ? 8 : 0}
-                paddingRight={onBack || onClose ? 8 : 0}
-              >
-                {onBack && (
-                  <ButtonIcon
-                    iconName={ICON_NAMES.ARROW_LEFT}
-                    className="mm-popover__header-button-back"
-                    size={Size.SM}
-                    ariaLabel="back"
-                    onClick={onBack}
-                    {...backButtonProps}
-                  />
-                )}
-
-                <Text
-                  variant={TextVariant.headingSm}
-                  className="mm-popover__header-title"
-                  textAlign={TEXT_ALIGN.CENTER}
-                >
-                  {title}
-                </Text>
-
-                {onClose && (
-                  <ButtonIcon
-                    iconName={ICON_NAMES.CLOSE}
-                    className="mm-popover__header-button-close"
-                    size={Size.SM}
-                    ariaLabel="close"
-                    onClick={onClose}
-                    {...closeButtonProps}
-                  />
-                )}
-              </Box>
-              {/* TODO: Replace with HeaderBase END */}
-              {children}
-              {hasArrow && (
-                <Box
-                  borderColor={Color.borderDefault}
-                  className={classnames('mm-popover__arrow')}
-                  ref={setArrowElement}
-                  display={DISPLAY.FLEX}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                  style={styles.arrow}
-                  {...attributes.arrow}
-                />
-              )}
-            </Box>,
-            document.body,
-          )}
+        {isOpen && isPortal
+          ? createPortal(PopoverContent, document.body)
+          : PopoverContent}
       </>
     );
   },

@@ -75,4 +75,8 @@ export interface PopoverProps extends BoxProps {
    * The props to pass to the back `ButtonIcon`
    */
   backButtonProps?: ButtonIconProps;
+  /**
+   * Boolean to allow the Popover to be rendered in a createPortal
+   */
+  isPortal?: boolean;
 }

@@ -172,9 +172,6 @@ export const Children = ({ args }) => {
         referenceElement={referenceElement}
         isOpen={true}
         hasArrow
-        onClose={() => console.log('close')}
-        onBack={() => console.log('back')}
-        title="Popover children"
         {...args}
       >
         <Text>
@@ -182,99 +179,6 @@ export const Children = ({ args }) => {
           <Icon size={ICON_SIZES.AUTO} name={ICON_NAMES.INFO} />
         </Text>
         <Text variant={TextVariant.bodySm}>Control the content</Text>
-      </Popover>
-    </>
-  );
-};
-
-export const Title = ({ args }) => {
-  const [refTitleElement, setRefTitleElement] = useState();
-
-  const setButtonRef = (ref) => {
-    setRefTitleElement(ref);
-  };
-
-  return (
-    <>
-      <Box
-        ref={setButtonRef}
-        backgroundColor={Color.primaryDefault}
-        style={{ width: 200, height: 200 }}
-      ></Box>
-      <Popover
-        referenceElement={refTitleElement}
-        isOpen={true}
-        hasArrow
-        // onClose={() => console.log('close')}
-        // onBack={() => console.log('back')}
-        title="Popover title"
-        {...args}
-      >
-        <Text>
-          Title should be short and concise. It should be sentence case and no
-          period.
-        </Text>
-      </Popover>
-    </>
-  );
-};
-
-export const OnBack = ({ args }) => {
-  const [referenceElement, setReferenceElement] = useState();
-
-  const setButtonRef = (ref) => {
-    setReferenceElement(ref);
-  };
-
-  return (
-    <>
-      <Box
-        ref={setButtonRef}
-        backgroundColor={Color.primaryDefault}
-        style={{ width: 200, height: 200 }}
-      ></Box>
-      <Popover
-        referenceElement={referenceElement}
-        isOpen={true}
-        hasArrow
-        // onClose={() => console.log('close')}
-        onBack={() => console.log('back')}
-        title="Popover onBack"
-        {...args}
-      >
-        <Text>
-          passing a function to the onBack prop will render a back button
-        </Text>
-      </Popover>
-    </>
-  );
-};
-
-export const OnClose = ({ args }) => {
-  const [referenceElement, setReferenceElement] = useState();
-
-  const setButtonRef = (ref) => {
-    setReferenceElement(ref);
-  };
-
-  return (
-    <>
-      <Box
-        ref={setButtonRef}
-        backgroundColor={Color.primaryDefault}
-        style={{ width: 200, height: 200 }}
-      ></Box>
-      <Popover
-        referenceElement={referenceElement}
-        isOpen={true}
-        hasArrow
-        onClose={() => console.log('close')}
-        title="Popover onClose"
-        {...args}
-      >
-        <Text>
-          passing a function to the onClose prop will render a close button
-        </Text>
       </Popover>
     </>
   );
@@ -725,3 +629,96 @@ export const MatchWidth = ({ args }) => {
     </>
   );
 };
+
+// export const Title = ({ args }) => {
+//   const [refTitleElement, setRefTitleElement] = useState();
+
+//   const setButtonRef = (ref) => {
+//     setRefTitleElement(ref);
+//   };
+
+//   return (
+//     <>
+//       <Box
+//         ref={setButtonRef}
+//         backgroundColor={Color.primaryDefault}
+//         style={{ width: 200, height: 200 }}
+//       ></Box>
+//       <Popover
+//         referenceElement={refTitleElement}
+//         isOpen={true}
+//         hasArrow
+//         // onClose={() => console.log('close')}
+//         // onBack={() => console.log('back')}
+//         title="Popover title"
+//         {...args}
+//       >
+//         <Text>
+//           Title should be short and concise. It should be sentence case and no
+//           period.
+//         </Text>
+//       </Popover>
+//     </>
+//   );
+// };
+
+// export const OnBack = ({ args }) => {
+//   const [referenceElement, setReferenceElement] = useState();
+
+//   const setButtonRef = (ref) => {
+//     setReferenceElement(ref);
+//   };
+
+//   return (
+//     <>
+//       <Box
+//         ref={setButtonRef}
+//         backgroundColor={Color.primaryDefault}
+//         style={{ width: 200, height: 200 }}
+//       ></Box>
+//       <Popover
+//         referenceElement={referenceElement}
+//         isOpen={true}
+//         hasArrow
+//         // onClose={() => console.log('close')}
+//         onBack={() => console.log('back')}
+//         title="Popover onBack"
+//         {...args}
+//       >
+//         <Text>
+//           passing a function to the onBack prop will render a back button
+//         </Text>
+//       </Popover>
+//     </>
+//   );
+// };
+
+// export const OnClose = ({ args }) => {
+//   const [referenceElement, setReferenceElement] = useState();
+
+//   const setButtonRef = (ref) => {
+//     setReferenceElement(ref);
+//   };
+
+//   return (
+//     <>
+//       <Box
+//         ref={setButtonRef}
+//         backgroundColor={Color.primaryDefault}
+//         style={{ width: 200, height: 200 }}
+//       ></Box>
+//       <Popover
+//         referenceElement={referenceElement}
+//         isOpen={true}
+//         hasArrow
+//         onClose={() => console.log('close')}
+//         title="Popover onClose"
+//         {...args}
+//       >
+//         <Text>
+//           passing a function to the onClose prop will render a close button
+//         </Text>
+//       </Popover>
+//     </>
+//   );
+// };
