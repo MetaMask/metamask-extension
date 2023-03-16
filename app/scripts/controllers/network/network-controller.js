@@ -189,7 +189,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   /**
-   * Determines whether the network supports EIP-1559 by looking whether the
+   * Determines whether the network supports EIP-1559 by checking whether the
    * latest block has a `baseFeePerGas` property, then updates state
    * appropriately.
    *
@@ -242,7 +242,7 @@ export default class NetworkController extends EventEmitter {
       return;
     }
 
-    console.log('ok we got here, great');
+    // console.log('lookupNetwork!');
 
     // TODO: Test this new code
 
@@ -258,21 +258,21 @@ export default class NetworkController extends EventEmitter {
       networkId = results[0];
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
-      // console.log('wait what?');
+      // console.log('great, the network seems to be available');
     } catch (error) {
-      console.log(
-        error,
-        'code',
-        error.code,
-        'data',
-        error.data,
-        'body',
-        error.body,
-        'message',
-        error.message,
-        'keys',
-        Object.keys(error),
-      );
+      // console.log(
+      // error,
+      // 'code',
+      // error.code,
+      // 'data',
+      // error.data,
+      // 'body',
+      // error.body,
+      // 'message',
+      // error.message,
+      // 'keys',
+      // Object.keys(error),
+      // );
 
       let data;
       if (hasProperty(error, 'data')) {
@@ -296,14 +296,14 @@ export default class NetworkController extends EventEmitter {
       }
     }
 
-    console.log(
-      'networkStatus',
-      networkStatus,
-      'networkId',
-      networkId,
-      'supportsEIP1559',
-      supportsEIP1559,
-    );
+    // console.log(
+    // 'networkStatus',
+    // networkStatus,
+    // 'networkId',
+    // networkId,
+    // 'supportsEIP1559',
+    // supportsEIP1559,
+    // );
 
     if (networkChanged) {
       // If the network has changed, then `lookupNetwork` either has been or is
@@ -396,16 +396,20 @@ export default class NetworkController extends EventEmitter {
    * @returns {object} Block header
    */
   _getLatestBlock() {
+    const { provider } = this.getProviderAndBlockTracker();
+    const ethQuery = new EthQuery(provider);
+
     return new Promise((resolve, reject) => {
-      const { provider } = this.getProviderAndBlockTracker();
-      const ethQuery = new EthQuery(provider);
+      // console.log('fetching eth_getBlockByNumber...');
       ethQuery.sendAsync(
         { method: 'eth_getBlockByNumber', params: ['latest', false] },
-        (err, block) => {
-          if (err) {
-            return reject(err);
+        (error, result) => {
+          // console.log('got eth_getBlockByNumber', error, result);
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
           }
-          return resolve(block);
         },
       );
     });
@@ -417,9 +421,13 @@ export default class NetworkController extends EventEmitter {
    * @returns {string} The network ID for the current network.
    */
   async _getNetworkId() {
-    const ethQuery = new EthQuery(this._provider);
+    const { provider } = this.getProviderAndBlockTracker();
+    const ethQuery = new EthQuery(provider);
+
     return await new Promise((resolve, reject) => {
+      // console.log('fetching net_version...');
       ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
+        // console.log('got net_version', error, result);
         if (error) {
           reject(error);
         } else {
@@ -497,7 +505,7 @@ export default class NetworkController extends EventEmitter {
    */
   async _determineEIP1559Compatibility() {
     const latestBlock = await this._getLatestBlock();
-    console.log('latestBlock', latestBlock);
+    // console.log('latestBlock', latestBlock);
     return latestBlock && latestBlock.baseFeePerGas !== undefined;
   }
 
