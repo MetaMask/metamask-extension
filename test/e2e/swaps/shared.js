@@ -83,7 +83,7 @@ const reviewQuote = async (driver, options) => {
     'Error: SwapFrom has wrong symbol',
   );
   const swapToSymbol = await driver.waitForSelector(
-    '.main-quote-summary__destination-row',
+    '.main-quote-summary__destination-row > span',
   );
   assert.equal(
     await swapToSymbol.getText(),
