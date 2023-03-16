@@ -4478,7 +4478,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.3.1, @metamask/utils@npm:^3.4.0, @metamask/utils@npm:^3.4.1":
+"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.3.0, @metamask/utils@npm:^3.3.1, @metamask/utils@npm:^3.4.1":
   version: 3.6.0
   resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
