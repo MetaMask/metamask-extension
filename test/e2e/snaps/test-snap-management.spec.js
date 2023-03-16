@@ -149,7 +149,7 @@ describe('Test Snap Management', function () {
         );
         assert.equal(
           await removeResult.getText(),
-          'You have no MetaMask Snaps installed.\\nLearn more',
+          'You have no MetaMask Snaps installed.\nLearn more',
         );
       },
     );
