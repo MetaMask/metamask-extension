@@ -4599,5 +4599,8 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "showMore": {
+    "message": "Show more"
   }
 }
