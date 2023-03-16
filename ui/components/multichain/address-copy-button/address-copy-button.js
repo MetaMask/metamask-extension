@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { Icon, ICON_NAMES, Text, ButtonBase } from '../../component-library';
 import {
   BackgroundColor,
@@ -31,13 +32,17 @@ export const AddressCopyButton = ({
         paddingRight={3}
         paddingLeft={3}
         size={Size.SM}
-        style={{ borderRadius: '999px', ...(wrap ? { height: 'auto' } : {}) }}
+        className={classnames('multichain-address-copy-button', {
+          'multichain-address-copy-button--wrap': wrap,
+        })}
       >
         <Text
           variant={TextVariant.bodyXs}
           color={TextColor.primaryDefault}
           data-testid="address-copy-button-text"
-          style={wrap ? { wordBreak: 'break-word' } : {}}
+          className={classnames({
+            'multichain-address-copy-button__address--wrap': wrap,
+          })}
         >
           {displayAddress}
         </Text>
