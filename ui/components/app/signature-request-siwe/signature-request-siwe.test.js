@@ -1,5 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest';
 import mockState from '../../../../test/data/mock-state.json';
 import SignatureRequestSIWE from './signature-request-siwe';
@@ -41,13 +43,22 @@ jest.mock('../../../selectors', () => ({
   unconfirmedTransactionsHashSelector: () => uncofirmedTransactions,
 }));
 
+const mockShowModal = jest.fn();
+
+jest.mock('../../../store/actions.ts', () => {
+  return {
+    showModal: () => mockShowModal,
+  };
+});
+
 const baseProps = {
   cancelPersonalMessage: jest.fn(),
   signPersonalMessage: jest.fn(),
 };
 
 describe('SignatureRequestSIWE', () => {
-  const store = configureMockStore()(mockState);
+  const middlewares = [thunk];
+  const store = configureMockStore(middlewares)(mockState);
   let messageData;
 
   beforeEach(() => {
@@ -118,6 +129,29 @@ describe('SignatureRequestSIWE', () => {
     );
     const cancelAll = getByText('Reject 5 requests');
     expect(cancelAll).toBeInTheDocument();
+  });
+
+  it('should show cancel all modal on Reject request button click', () => {
+    const msgParams = {
+      data: JSON.stringify(messageData),
+      version: 'V4',
+      origin: 'https://metamask.github.io',
+      from: 'test',
+      siwe: { parsedMessage: { address: 'test' } },
+    };
+
+    const { getByText } = renderWithProvider(
+      <SignatureRequestSIWE
+        {...baseProps}
+        txData={{
+          msgParams,
+        }}
+      />,
+      store,
+    );
+    const cancelAll = getByText('Reject 5 requests');
+    fireEvent.click(cancelAll);
+    expect(mockShowModal).toHaveBeenCalled();
   });
 
   it('should show multiple notifications header', () => {
