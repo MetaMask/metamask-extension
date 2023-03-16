@@ -5,7 +5,7 @@ export default {
   title: 'Components/Multichain/DetectedTokensBanner',
   component: DetectedTokensBanner,
   argTypes: {
-    setShowDetectedTokens: { action: 'setShowDetectedTokens' },
+    actionButtonOnClick: { action: 'setShowDetectedTokens' },
   },
 };
 

@@ -7,11 +7,12 @@ import { DetectedTokensBanner } from './detected-token-banner';
 
 describe('DetectedTokensBanner', () => {
   let setShowDetectedTokensSpy;
+
   const args = {};
 
   beforeEach(() => {
     setShowDetectedTokensSpy = jest.fn();
-    args.setShowDetectedTokens = setShowDetectedTokensSpy;
+    args.actionButtonOnClick = setShowDetectedTokensSpy;
   });
 
   it('should render correctly', () => {

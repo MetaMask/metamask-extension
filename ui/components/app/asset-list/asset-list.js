@@ -126,7 +126,7 @@ const AssetList = ({ onClickAsset }) => {
           <>
             {process.env.MULTICHAIN ? (
               <DetectedTokensBanner
-                setShowDetectedTokens={setShowDetectedTokens}
+                actionButtonOnClick={() => setShowDetectedTokens(true)}
                 margin={4}
               />
             ) : (

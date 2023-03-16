@@ -11,7 +11,7 @@ import { BannerAlert } from '../../component-library';
 
 export const DetectedTokensBanner = ({
   className,
-  setShowDetectedTokens,
+  actionButtonOnClick,
   ...props
 }) => {
   const t = useI18nContext();
@@ -23,7 +23,7 @@ export const DetectedTokensBanner = ({
   );
 
   const handleOnClick = () => {
-    setShowDetectedTokens(true);
+    actionButtonOnClick();
     trackEvent({
       event: EVENT_NAMES.TOKEN_IMPORT_CLICKED,
       category: EVENT.CATEGORIES.WALLET,
@@ -49,6 +49,6 @@ export const DetectedTokensBanner = ({
 };
 
 DetectedTokensBanner.propTypes = {
-  setShowDetectedTokens: PropTypes.func.isRequired,
+  actionButtonOnClick: PropTypes.func.isRequired,
   className: PropTypes.string,
 };
