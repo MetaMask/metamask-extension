@@ -291,7 +291,10 @@ export default class NetworkController extends EventEmitter {
           networkStatus = NetworkStatus.Unavailable;
         }
       } else {
-        console.error(error);
+        log.warn(
+          'NetworkContrller - could not determine network status',
+          error,
+        );
         networkStatus = NetworkStatus.Unknown;
       }
     }
@@ -308,8 +311,11 @@ export default class NetworkController extends EventEmitter {
     if (networkChanged) {
       // If the network has changed, then `lookupNetwork` either has been or is
       // in the process of being called, so we don't need to go further.
+      // console.log('network changed! skipping the rest');
       return;
     }
+
+    // console.log('network was not changed, so updating network status and such');
 
     this.networkStatusStore.putState(networkStatus);
 

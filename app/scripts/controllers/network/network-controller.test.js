@@ -119,15 +119,6 @@ const INFURA_NETWORKS = [
 ];
 
 /**
- * A response object for a successful request to `eth_blockNumber`. It is
- * assumed that the block number here is insignificant to the test.
- */
-const SUCCESSFUL_ETH_BLOCKNUMBER_RESPONSE = {
-  result: '0x42',
-  error: null,
-};
-
-/**
  * A response object for a successful request to `eth_getBlockByNumber`. It is
  * assumed that the block number here is insignificant to the test.
  */
@@ -137,7 +128,7 @@ const SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE = {
 };
 
 /**
- * A response object for a blocked request to `eth_blockNumber`.
+ * A response object for a request that has been geoblocked by Infura.
  */
 const BLOCKED_INFURA_RESPONSE = {
   result: null,
@@ -261,23 +252,6 @@ class NetworkCommunications {
     }
 
     const defaultMocksByRpcMethod = {
-      eth_blockNumber: {
-        request: {
-          method: 'eth_blockNumber',
-          params: [],
-        },
-        response: {
-          result: latestBlockNumber,
-        },
-        // When the provider is configured for an Infura network,
-        // NetworkController makes a sentinel request for `eth_blockNumber`, so
-        // we ensure that it is mocked by default. Conversely, when the provider
-        // is configured for a custom network, we don't mock `eth_blockNumber`
-        // at all unless specified. Admittedly, this is a bit magical, but it
-        // saves us from having to think about this in tests if we don't have
-        // to.
-        times: this.networkClientType === 'infura' ? 1 : 0,
-      },
       eth_getBlockByNumber: {
         request: {
           method: 'eth_getBlockByNumber',
@@ -286,6 +260,14 @@ class NetworkCommunications {
         response: {
           result: latestBlock,
         },
+        // When the provider is configured for an Infura network,
+        // NetworkController makes a sentinel request for
+        // `eth_getBlockByNumber`, so we ensure that it is mocked by default.
+        // Conversely, when the provider is configured for a custom network, we
+        // don't mock `eth_getBlockByNumber` at all unless specified.
+        // Admittedly, this is a bit magical, but it saves us from having to
+        // think about this in tests if we don't have to.
+        // times: this.networkClientType === 'infura' ? 1 : 0,
       },
       net_version: {
         request: {
@@ -298,16 +280,34 @@ class NetworkCommunications {
         // When the provider is configured for a custom network,
         // NetworkController makes a sentinel request for `net_version`, so we
         // ensure that it is mocked by default. Conversely, when the provider is
-        // configured for an Infura endpoint, we don't mock `net_version` at
-        // all unless specified. Admittedly, this is a bit magical, but it saves
-        // us from having to think about this in tests if we don't have to.
-        times: this.networkClientType === 'infura' ? 0 : 1,
+        // configured for an Infura endpoint, we don't mock `net_version` at all
+        // unless specified. Admittedly, this is a bit magical, but it saves us
+        // from having to think about this in tests if we don't have to.
+        // times: this.networkClientType === 'infura' ? 0 : 1,
+      },
+      // The request that the block tracker makes always occurs after any
+      // request that the network controller makes (because such a request goes
+      // through the block cache middleware and that is what spawns the block
+      // tracker).
+      eth_blockNumber: {
+        request: {
+          method: 'eth_blockNumber',
+          params: [],
+        },
+        response: {
+          result: latestBlockNumber,
+        },
+        // If there is no latest block number then the request that spawned the
+        // block tracker won't be cached inside of the block tracker, so the
+        // block tracker makes another request when it is asked for the latest
+        // block
+        times: latestBlock === null ? 2 : 1,
       },
     };
     const providedMocksByRpcMethod = {
-      eth_blockNumber: ethBlockNumberMocks,
       eth_getBlockByNumber: ethGetBlockByNumberMocks,
       net_version: netVersionMocks,
+      eth_blockNumber: ethBlockNumberMocks,
     };
 
     const allMocks = [];
@@ -333,6 +333,7 @@ class NetworkCommunications {
     // don't need to customize the block tracker request; we just need to ensure
     // that the block number it returns matches the same block number that
     // `eth_getBlockByNumber` uses.
+    /*
     allMocks.push({
       request: {
         method: 'eth_blockNumber',
@@ -341,8 +342,10 @@ class NetworkCommunications {
       response: {
         result: latestBlockNumber,
       },
-      times: latestBlock === null ? 2 : 1,
+      // TODO: Update this
+      // times: latestBlock === null ? 2 : 1,
     });
+    */
 
     allMocks.forEach((mock) => {
       this.mockRpcCall(mock);
@@ -582,9 +585,19 @@ describe('NetworkController', () => {
       await withController(async ({ controller, network }) => {
         network.mockEssentialRpcCalls({
           eth_blockNumber: {
-            times: 1,
+            times: 2,
           },
         });
+        /*
+        network.mockRpcCall({
+          request: {
+            method: 'eth_blockNumber'
+          },
+          response: {
+            result: '0x1'
+          }
+        })
+        */
         await controller.initializeProvider();
         const { blockTracker } = controller.getProviderAndBlockTracker();
         // The block tracker starts running after a listener is attached
@@ -970,25 +983,18 @@ describe('NetworkController', () => {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
-                  nickname: 'test-chain',
-                  ticker: 'TEST',
-                  rpcPrefs: {
-                    blockExplorerUrl: 'test-block-explorer.com',
-                  },
-                  id: 'testNetworkConfigurationId',
-                },
-                networkConfigurations: {
-                  testNetworkConfigurationId: {
-                    rpcUrl: 'https://mock-rpc-url',
-                    chainId: '0x1337',
-                    ticker: 'TEST',
-                    id: 'testNetworkConfigurationId',
-                  },
                 },
               },
             },
-            async ({ controller, network }) => {
-              network.mockEssentialRpcCalls();
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls();
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: networkType,
+                },
+              });
+              network2.mockEssentialRpcCalls();
               await controller.initializeProvider();
               const { provider } = controller.getProviderAndBlockTracker();
 
@@ -1025,15 +1031,21 @@ describe('NetworkController', () => {
               networkConfigurations: {
                 testNetworkConfigurationId: {
                   rpcUrl: 'https://mock-rpc-url',
-                  chainId: '0xtest',
-                  ticker: 'TEST',
+                  chainId: '0x1337',
                   id: 'testNetworkConfigurationId',
                 },
               },
             },
           },
-          async ({ controller, network }) => {
-            network.mockEssentialRpcCalls();
+          async ({ controller, network: network1 }) => {
+            network1.mockEssentialRpcCalls();
+            const network2 = new NetworkCommunications({
+              networkClientType: 'custom',
+              networkClientOptions: {
+                customRpcUrl: 'https://mock-rpc-url',
+              },
+            });
+            network2.mockEssentialRpcCalls();
             await controller.initializeProvider();
             const { provider } = controller.getProviderAndBlockTracker();
 
@@ -1052,7 +1064,7 @@ describe('NetworkController', () => {
             const { result: newChainIdResult } = await promisifiedSendAsync2({
               method: 'eth_chainId',
             });
-            expect(newChainIdResult).toBe('0xtest');
+            expect(newChainIdResult).toBe('0x1337');
           },
         );
       });
@@ -1765,6 +1777,20 @@ describe('NetworkController', () => {
               },
               async ({ controller, network }) => {
                 network.mockEssentialRpcCalls({
+                  eth_getBlockByNumber: [
+                    {
+                      request: {
+                        params: ['0x1', false],
+                      },
+                      response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+                    },
+                    {
+                      request: {
+                        params: ['0x2', false],
+                      },
+                      response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                    },
+                  ],
                   // Ensure that each call to eth_blockNumber returns a
                   // different block number, otherwise the first
                   // eth_getBlockByNumber response will get cached under the
@@ -1779,20 +1805,6 @@ describe('NetworkController', () => {
                       response: {
                         result: '0x2',
                       },
-                    },
-                  ],
-                  eth_getBlockByNumber: [
-                    {
-                      request: {
-                        params: ['0x1', false],
-                      },
-                      response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
-                    },
-                    {
-                      request: {
-                        params: ['0x2', false],
-                      },
-                      response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
                     },
                   ],
                 });
@@ -1974,8 +1986,7 @@ describe('NetworkController', () => {
               },
               async ({ controller, network: network1 }) => {
                 network1.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: SUCCESSFUL_ETH_BLOCKNUMBER_RESPONSE,
+                  eth_getBlockByNumber: {
                     beforeCompleting: async () => {
                       await waitForStateChanges({
                         controller,
@@ -2047,10 +2058,7 @@ describe('NetworkController', () => {
               async ({ controller, network: network1 }) => {
                 network1.mockEssentialRpcCalls({
                   latestBlock: POST_1559_BLOCK,
-                  eth_blockNumber: {
-                    response: {
-                      result: POST_1559_BLOCK.number,
-                    },
+                  eth_getBlockByNumber: {
                     beforeCompleting: async () => {
                       await waitForStateChanges({
                         controller,
@@ -2119,8 +2127,7 @@ describe('NetworkController', () => {
               },
               async ({ controller, network: network1 }) => {
                 network1.mockEssentialRpcCalls({
-                  eth_blockNumber: {
-                    response: SUCCESSFUL_ETH_BLOCKNUMBER_RESPONSE,
+                  eth_getBlockByNumber: {
                     beforeCompleting: async () => {
                       await waitForEvent({
                         controller,
@@ -2145,7 +2152,7 @@ describe('NetworkController', () => {
                   },
                 });
                 network2.mockEssentialRpcCalls({
-                  eth_blockNumber: {
+                  eth_getBlockByNumber: {
                     response: BLOCKED_INFURA_RESPONSE,
                   },
                 });
@@ -2179,7 +2186,7 @@ describe('NetworkController', () => {
     });
 
     describe('when the type in the provider configuration is "rpc"', () => {
-      describe('if both of the requests for net_version and eth_getBlockByNumber respond successfully', () => {
+      describe('if both net_version and eth_getBlockByNumber respond successfully', () => {
         it('stores the fact the network is available', async () => {
           await withController(
             {
@@ -2457,6 +2464,9 @@ describe('NetworkController', () => {
                     response: BLOCKED_INFURA_RESPONSE,
                   },
                 ],
+                eth_blockNumber: {
+                  times: 2,
+                },
               });
               await waitForStateChanges({
                 controller,
@@ -2679,6 +2689,9 @@ describe('NetworkController', () => {
                     response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
                   },
                 ],
+                eth_blockNumber: {
+                  times: 2
+                }
               });
               await waitForStateChanges({
                 controller,
@@ -3046,22 +3059,15 @@ describe('NetworkController', () => {
           state: {
             provider: {
               type: 'rpc',
-              rpcUrl: 'https://mock-rpc-url-2',
-              chainId: '0x9999',
-              ticker: 'RPC',
-              id: 'testNetworkConfigurationId2',
+              rpcUrl: 'https://mock-rpc-url-1',
+              chainId: '0x111',
+              ticker: 'TEST',
+              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
-              testNetworkConfigurationId1: {
-                rpcUrl: 'https://mock-rpc-url-1',
-                chainId: '0xtest',
-                ticker: 'TEST',
-                id: 'testNetworkConfigurationId1',
-              },
               testNetworkConfigurationId2: {
                 rpcUrl: 'https://mock-rpc-url-2',
-                chainId: '0x9999',
-                ticker: 'RPC',
+                chainId: '0x222',
                 id: 'testNetworkConfigurationId2',
               },
             },
@@ -3076,16 +3082,16 @@ describe('NetworkController', () => {
           });
           network.mockEssentialRpcCalls();
 
-          controller.setActiveNetwork('testNetworkConfigurationId1');
+          controller.setActiveNetwork('testNetworkConfigurationId2');
 
           expect(
             controller.store.getState().previousProviderStore,
           ).toStrictEqual({
             type: 'rpc',
-            rpcUrl: 'https://mock-rpc-url-2',
-            chainId: '0x9999',
-            ticker: 'RPC',
-            id: 'testNetworkConfigurationId2',
+            rpcUrl: 'https://mock-rpc-url-1',
+            chainId: '0x111',
+            ticker: 'TEST',
+            id: 'testNetworkConfigurationId1',
           });
         },
       );
@@ -3148,22 +3154,21 @@ describe('NetworkController', () => {
           state: {
             provider: {
               type: 'rpc',
-              rpcUrl: 'http://example-custom-rpc.metamask.io',
-              chainId: '0xtest2',
+              rpcUrl: 'https://mock-rpc-url-1',
+              chainId: '0x111',
               ticker: 'TEST2',
-              id: 'testNetworkConfigurationId2',
+              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
               testNetworkConfigurationId1: {
-                rpcUrl: 'https://mock-rpc-url',
-                chainId: '0xtest',
-                ticker: 'TEST',
-
+                rpcUrl: 'https://mock-rpc-url-1',
+                chainId: '0x111',
+                ticker: 'TEST1',
                 id: 'testNetworkConfigurationId1',
               },
               testNetworkConfigurationId2: {
-                rpcUrl: 'http://example-custom-rpc.metamask.io',
-                chainId: '0xtest2',
+                rpcUrl: 'https://mock-rpc-url-2',
+                chainId: '0x222',
                 ticker: 'TEST2',
                 id: 'testNetworkConfigurationId2',
               },
@@ -3178,7 +3183,7 @@ describe('NetworkController', () => {
           });
           const network2 = network1.with({
             networkClientOptions: {
-              customRpcUrl: 'https://mock-rpc-url',
+              customRpcUrl: 'https://mock-rpc-url-2',
             },
           });
           network2.mockEssentialRpcCalls({
@@ -3220,7 +3225,7 @@ describe('NetworkController', () => {
               rpcUrl: 'http://mock-rpc-url-2',
               chainId: '0xtest2',
               ticker: 'TEST2',
-              id: 'testNetworkConfigurationId2',
+              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
               testNetworkConfigurationId1: {
@@ -3280,21 +3285,21 @@ describe('NetworkController', () => {
           state: {
             provider: {
               type: 'rpc',
-              rpcUrl: 'http://mock-rpc-url-2',
-              chainId: '0xtest2',
-              ticker: 'TEST2',
-              id: 'testNetworkConfigurationId2',
+              rpcUrl: 'https://mock-rpc-url-1',
+              chainId: '0x111',
+              ticker: 'TEST1',
+              id: 'testNetworkConfigurationId1',
             },
             networkConfigurations: {
               testNetworkConfigurationId1: {
                 rpcUrl: 'https://mock-rpc-url-1',
-                chainId: '0xtest',
-                ticker: 'TEST',
+                chainId: '0x1111',
+                ticker: 'TEST1',
                 id: 'testNetworkConfigurationId1',
               },
               testNetworkConfigurationId2: {
-                rpcUrl: 'http://mock-rpc-url-2',
-                chainId: '0xtest2',
+                rpcUrl: 'https://mock-rpc-url-2',
+                chainId: '0x222',
                 ticker: 'TEST2',
                 id: 'testNetworkConfigurationId2',
               },
@@ -3329,7 +3334,7 @@ describe('NetworkController', () => {
             // before networkDidChange
             count: 1,
             operation: () => {
-              controller.setActiveNetwork('testNetworkConfigurationId1');
+              controller.setActiveNetwork('testNetworkConfigurationId2');
             },
           });
           expect(controller.store.getState().networkDetails).toStrictEqual({
@@ -3402,20 +3407,21 @@ describe('NetworkController', () => {
               testNetworkConfigurationId: {
                 id: 'testNetworkConfigurationId',
                 rpcUrl: 'https://mock-rpc-url',
-                chainId: '0xtest',
+                chainId: '0x1337',
                 ticker: 'TEST',
               },
             },
           },
         },
-        async ({ controller }) => {
-          const network = new NetworkCommunications({
+        async ({ controller, network: network1 }) => {
+          network1.mockEssentialRpcCalls();
+          const network2 = network1.with({
             networkClientType: 'custom',
             networkClientOptions: {
               customRpcUrl: 'https://mock-rpc-url',
             },
           });
-          network.mockEssentialRpcCalls();
+          network2.mockEssentialRpcCalls();
           await controller.initializeProvider();
 
           const { provider: providerBefore } =
@@ -3770,8 +3776,8 @@ describe('NetworkController', () => {
             },
             async ({ controller, network: network1 }) => {
               network1.mockEssentialRpcCalls({
-                eth_blockNumber: {
-                  response: SUCCESSFUL_ETH_BLOCKNUMBER_RESPONSE,
+                net_version: {
+                  response: SUCCESSFUL_NET_VERSION_RESPONSE,
                 },
               });
               const network2 = network1.with({
@@ -3887,14 +3893,15 @@ describe('NetworkController', () => {
         });
 
         it('replaces the provider object underlying the provider proxy without creating a new instance of the proxy itself', async () => {
-          await withController(async ({ controller }) => {
-            const network = new NetworkCommunications({
+          await withController(async ({ controller, network: network1 }) => {
+            network1.mockEssentialRpcCalls();
+            const network2 = network1.with({
               networkClientType: 'infura',
               networkClientOptions: {
                 infuraNetwork: networkType,
               },
             });
-            network.mockEssentialRpcCalls();
+            network2.mockEssentialRpcCalls();
             await controller.initializeProvider();
 
             const { provider: providerBefore } =
@@ -3967,9 +3974,9 @@ describe('NetworkController', () => {
               },
             });
             network.mockEssentialRpcCalls({
-              eth_blockNumber: {
-                response: SUCCESSFUL_ETH_BLOCKNUMBER_RESPONSE,
-              },
+              // This results in a successful call to eth_getBlockByNumber
+              // implicitly
+              latestBlock: BLOCK,
             });
 
             await waitForStateChanges({
@@ -4411,13 +4418,13 @@ describe('NetworkController', () => {
           },
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls({
-              eth_blockNumber: {
-                times: 2,
-              },
               net_version: {
                 response: SUCCESSFUL_NET_VERSION_RESPONSE,
                 times: 2,
               },
+              eth_blockNumber: {
+                times: 2
+              }
             });
 
             await controller.initializeProvider();
@@ -4463,8 +4470,8 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls({
               latestBlock: POST_1559_BLOCK,
               eth_blockNumber: {
-                times: 2,
-              },
+                times: 2
+              }
             });
 
             await controller.initializeProvider();
@@ -4553,7 +4560,11 @@ describe('NetworkController', () => {
             },
           },
           async ({ controller, network }) => {
-            network.mockEssentialRpcCalls();
+            network.mockEssentialRpcCalls({
+              eth_blockNumber: {
+                times: 2
+              }
+            });
             await controller.initializeProvider();
 
             const { provider: providerBefore } =
@@ -4744,39 +4755,36 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: networkType,
-                  rpcUrl: '',
-                  chainId: BUILT_IN_NETWORKS[networkType].chainId,
-                  nickname: '',
-                  ticker: BUILT_IN_NETWORKS[networkType].ticker,
+                  rpcUrl: 'https://mock-rpc-url-1',
+                  chainId: '0x111',
+                  nickname: 'network 1',
+                  ticker: 'TEST1',
                   rpcPrefs: {
-                    blockExplorerUrl:
-                      BUILT_IN_NETWORKS[networkType].blockExplorerUrl,
+                    blockExplorerUrl: 'https://test-block-explorer-1.com',
                   },
+                  id: 'testNetworkConfigurationId1',
                 },
                 networkConfigurations: {
                   testNetworkConfigurationId1: {
                     rpcUrl: 'https://mock-rpc-url-1',
-                    chainId: '0xtest',
-                    nickname: 'test-chain',
-                    ticker: 'TEST',
+                    chainId: '0x111',
+                    nickname: 'network 1',
+                    ticker: 'TEST1',
                     rpcPrefs: {
-                      blockExplorerUrl: 'test-block-explorer.com',
+                      blockExplorerUrl: 'https://test-block-explorer-1.com',
                     },
                     id: 'testNetworkConfigurationId1',
                   },
                   testNetworkConfigurationId2: {
-                    rpcUrl: 'http://mock-rpc-url-2',
-                    chainId: '0xtest2',
-                    nickname: 'test-chain-2',
+                    rpcUrl: 'https://mock-rpc-url-2',
+                    chainId: '0x222',
+                    nickname: 'network 2',
                     ticker: 'TEST2',
                     rpcPrefs: {
-                      blockExplorerUrl: 'test-block-explorer-2.com',
+                      blockExplorerUrl: 'https://test-block-explorer-2.com',
                     },
                     id: 'testNetworkConfigurationId2',
                   },
-                },
-                networkDetails: {
-                  EIPS: {},
                 },
               },
             },
@@ -4784,7 +4792,7 @@ describe('NetworkController', () => {
               const currentNetwork = new NetworkCommunications({
                 networkClientType: 'custom',
                 networkClientOptions: {
-                  customRpcUrl: 'https://mock-rpc-url',
+                  customRpcUrl: 'https://mock-rpc-url-2',
                 },
               });
               currentNetwork.mockEssentialRpcCalls();
@@ -4793,19 +4801,19 @@ describe('NetworkController', () => {
               await waitForLookupNetworkToComplete({
                 controller,
                 operation: () => {
-                  controller.setActiveNetwork('testNetworkConfigurationId1');
+                  controller.setActiveNetwork('testNetworkConfigurationId2');
                 },
               });
               expect(controller.store.getState().provider).toStrictEqual({
-                rpcUrl: 'https://mock-rpc-url-1',
-                chainId: '0xtest',
-                nickname: 'test-chain',
-                ticker: 'TEST',
-                rpcPrefs: {
-                  blockExplorerUrl: 'test-block-explorer.com',
-                },
-                id: 'testNetworkConfigurationId1',
                 type: 'rpc',
+                rpcUrl: 'https://mock-rpc-url-2',
+                chainId: '0x222',
+                nickname: 'network 2',
+                ticker: 'TEST2',
+                rpcPrefs: {
+                  blockExplorerUrl: 'https://test-block-explorer-2.com',
+                },
+                id: 'testNetworkConfigurationId2',
               });
 
               await waitForLookupNetworkToComplete({
@@ -4816,15 +4824,14 @@ describe('NetworkController', () => {
               });
               expect(controller.store.getState().provider).toStrictEqual({
                 type: networkType,
-                rpcUrl: '',
-                chainId: BUILT_IN_NETWORKS[networkType].chainId,
-                ticker: BUILT_IN_NETWORKS[networkType].ticker,
-                nickname: '',
-                id: 'testNetworkConfigurationId1',
+                rpcUrl: 'https://mock-rpc-url-1',
+                chainId: '0x111',
+                nickname: 'network 1',
+                ticker: 'TEST1',
                 rpcPrefs: {
-                  blockExplorerUrl:
-                    BUILT_IN_NETWORKS[networkType].blockExplorerUrl,
+                  blockExplorerUrl: 'https://test-block-explorer-1.com',
                 },
+                id: 'testNetworkConfigurationId1',
               });
             },
           );
@@ -5927,9 +5934,9 @@ describe('NetworkController', () => {
               },
             });
             currentNetwork.mockEssentialRpcCalls({
-              eth_blockNumber: {
-                response: SUCCESSFUL_ETH_BLOCKNUMBER_RESPONSE,
-              },
+              // This results in a successful call to eth_getBlockByNumber
+              // implicitly
+              latestBlock: BLOCK,
             });
             previousNetwork.mockEssentialRpcCalls({
               net_version: {
