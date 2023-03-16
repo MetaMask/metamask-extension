@@ -7,7 +7,6 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
 import { EVENT } from '../../../shared/constants/metametrics';
-import { detectSIWE } from '../../../shared/modules/siwe';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from './util';
 
@@ -148,19 +147,6 @@ export default class PersonalMessageManager extends EventEmitter {
       msgParams.origin = req.origin;
     }
     msgParams.data = this.normalizeMsgData(msgParams.data);
-
-    // check for SIWE message
-    const siwe = detectSIWE(msgParams);
-    msgParams.siwe = siwe;
-
-    if (siwe.isSIWEMessage && req.origin) {
-      const { host } = new URL(req.origin);
-      if (siwe.parsedMessage.domain !== host) {
-        throw new Error(
-          `SIWE domain is not valid: "${host}" !== "${siwe.parsedMessage.domain}"`,
-        );
-      }
-    }
 
     // create txData obj with parameters and meta data
     const time = new Date().getTime();

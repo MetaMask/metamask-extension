@@ -72,6 +72,7 @@ import {
   TransactionType,
   TokenStandard,
 } from '../../shared/constants/transaction';
+
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -117,6 +118,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { detectSIWE } from '../../shared/modules/siwe';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { isMain, isFlask } from '../../shared/constants/environment';
 // eslint-disable-next-line import/order
@@ -3213,6 +3215,19 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnsignedPersonalMessage(msgParams, req) {
+    // check for SIWE message
+    const siwe = detectSIWE(msgParams);
+    msgParams.siwe = siwe;
+
+    if (siwe.isSIWEMessage && req.origin) {
+      const { host } = new URL(req.origin);
+      if (siwe.parsedMessage.domain !== host) {
+        throw ethErrors.rpc.invalidParams(
+          `SIWE domain is not valid: "${host}" !== "${siwe.parsedMessage.domain}"`,
+        );
+      }
+    }
+
     const promise = this.personalMessageManager.addUnapprovedMessageAsync(
       msgParams,
       req,
