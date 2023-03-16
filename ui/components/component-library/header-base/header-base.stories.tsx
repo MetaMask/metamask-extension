@@ -157,7 +157,7 @@ export const EndAccessory = (args) => {
 
 export const UseCaseDemos = (args) => (
   <>
-    <Text>children only assigned </Text>
+    <Text>children only assigned</Text>
     <Box backgroundColor={BackgroundColor.warningAlternative}>
       <HeaderBase marginBottom={4} {...args}>
         <Text
