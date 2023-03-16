@@ -277,7 +277,10 @@ export default class SignController extends BaseControllerV2<
    * @param msgParams - The params passed to eth_sign.
    * @param [req] - The original request, containing the origin.
    */
-  async newUnsignedMessage(msgParams: MessageParams, req: OriginalRequest) {
+  async newUnsignedMessage(
+    msgParams: MessageParams,
+    req: OriginalRequest,
+  ): Promise<string> {
     const {
       // eslint-disable-next-line camelcase
       disabledRpcMethodPreferences: { eth_sign },
@@ -317,7 +320,7 @@ export default class SignController extends BaseControllerV2<
   async newUnsignedPersonalMessage(
     msgParams: PersonalMessageParams,
     req: OriginalRequest,
-  ) {
+  ): Promise<string> {
     const ethereumSignInData = this._getEthereumSignInData(msgParams);
     const finalMsgParams = { ...msgParams, siwe: ethereumSignInData };
 
@@ -338,7 +341,7 @@ export default class SignController extends BaseControllerV2<
     msgParams: TypedMessageParams,
     req: OriginalRequest,
     version: string,
-  ) {
+  ): Promise<string> {
     return this._typedMessageManager.addUnapprovedMessageAsync(
       msgParams,
       version,
@@ -471,7 +474,7 @@ export default class SignController extends BaseControllerV2<
     >,
     methodName: string,
     msgParams: AbstractMessageParamsMetamask,
-    getSignature: (cleanMessageParams: P) => any,
+    getSignature: (cleanMessageParams: P) => Promise<any>,
   ) {
     log.info(`MetaMaskController - ${methodName}`);
 
@@ -649,7 +652,7 @@ export default class SignController extends BaseControllerV2<
         true,
       )
       .catch(() => {
-        // Intentionally ignored
+        // Intentionally ignored as promise not currently used
       });
   }
 

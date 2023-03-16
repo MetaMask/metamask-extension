@@ -3,7 +3,7 @@ module.exports = {
     '<rootDir>/app/scripts/constants/error-utils.js',
     '<rootDir>/app/scripts/controllers/network/**/*.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
-    '<rootDir>/app/scripts/controllers/sign.test.ts',
+    '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/flask/**/*.js',
     '<rootDir>/app/scripts/lib/**/*.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.js',
