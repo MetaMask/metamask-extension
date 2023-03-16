@@ -15,7 +15,11 @@ import {
 
 export const AccountPicker = ({ account, onClick }) => {
   return (
-    <ButtonBase onClick={onClick} backgroundColor={Color.transparent}>
+    <ButtonBase
+      className="multichain-account-picker"
+      onClick={onClick}
+      backgroundColor={Color.transparent}
+    >
       <AvatarAccount address={account.address} size={Size.SM} />
       <Text
         marginLeft={1}
