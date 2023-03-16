@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AlignItems,
+  Color,
   DISPLAY,
   FLEX_DIRECTION,
   Size,
@@ -204,6 +205,15 @@ export const Rtl = (args) => (
       }}
     >
       Button Demo
+    </ButtonBase>
+  </Box>
+);
+
+export const Ellipsis = (args) => (
+  <Box backgroundColor={Color.iconMuted} style={{ width: 180 }}>
+    <ButtonBase {...args}>Example without ellipsis</ButtonBase>
+    <ButtonBase {...args} ellipsis>
+      Example with ellipsis
     </ButtonBase>
   </Box>
 );
