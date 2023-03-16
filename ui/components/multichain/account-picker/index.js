@@ -7,14 +7,15 @@ import {
   Icon,
   Text,
 } from '../../component-library';
-import { Color, FONT_WEIGHT, Size } from '../../../helpers/constants/design-system';
+import {
+  Color,
+  FONT_WEIGHT,
+  Size,
+} from '../../../helpers/constants/design-system';
 
 export const AccountPicker = ({ account, onClick }) => {
   return (
-    <ButtonBase
-      onClick={onClick}
-      backgroundColor={Color.transparent}
-    >
+    <ButtonBase onClick={onClick} backgroundColor={Color.transparent}>
       <AvatarAccount address={account.address} size={Size.SM} />
       <Text
         marginLeft={1}
@@ -22,7 +23,7 @@ export const AccountPicker = ({ account, onClick }) => {
         fontWeight={FONT_WEIGHT.BOLD}
         ellipsis
         style={{
-          width: '100px'
+          width: '100px',
         }}
       >
         {account.name}

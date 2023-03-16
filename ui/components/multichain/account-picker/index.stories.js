@@ -28,7 +28,7 @@ export const DefaultStory = (args) => <AccountPicker {...args} />;
 DefaultStory.storyName = 'Default';
 
 export const ChaosStory = (args) => (
-  <div style={{ maxWidth: '300px', background: 'pink' }}>
+  <div style={{ maxWidth: '300px' }}>
     <AccountPicker {...args} account={CHAOS_ACCOUNT} />
   </div>
 );
