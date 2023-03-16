@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "Snap aktualisieren"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 benötigt eine neuere Version Ihres Snaps.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snaps"
   },

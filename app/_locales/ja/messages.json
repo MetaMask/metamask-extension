@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "スナップを更新"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 に新しいバージョンのスナップが必要です。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "スナップ"
   },

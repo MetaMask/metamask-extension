@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "更新Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1需要更新版本的snap。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
   },

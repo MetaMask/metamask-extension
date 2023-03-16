@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "I-update ang snap"
   },
-  "snapUpdateExplanation": {
-    "message": "Kailangan ng $1 ng bagong bersyon ng iyong snap.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Mga Snap"
   },

@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "스냅 업데이트"
   },
-  "snapUpdateExplanation": {
-    "message": "$1에는 스냅의 새 버전이 필요합니다",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "스냅"
   },

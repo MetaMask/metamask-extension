@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "Cập nhật Snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 cần một phiên bản Snap mới hơn.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap"
   },

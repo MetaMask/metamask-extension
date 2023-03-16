@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "Actualizar complemento"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 necesita una versión más reciente de su complemento.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Complementos"
   },

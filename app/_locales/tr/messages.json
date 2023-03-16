@@ -3379,10 +3379,6 @@
   "snapUpdate": {
     "message": "Snap'i güncelle"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 için daha yeni bir snap sürümü gerekli.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
-  },
   "snaps": {
     "message": "Snap'ler"
   },
