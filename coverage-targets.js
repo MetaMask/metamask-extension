@@ -5,7 +5,7 @@
 // script, and the paths from the codecov.yml file are used to figure out which
 // subset of files to check against these targets.
 module.exports = {
-  global: {s
+  global: {
     lines: 65.2,
     branches: 54,
     statements: 64.4,
