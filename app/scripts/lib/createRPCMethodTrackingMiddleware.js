@@ -192,17 +192,26 @@ export default function createRPCMethodTrackingMiddleware({
             req.method,
           );
 
-          properties.ui_customizations =
-            securityProviderResponse?.flagAsDangerous === 1 && [
-              'flagged_as_malicious',
-            ];
+          if (securityProviderResponse?.flagAsDangerous === 1) {
+            properties.ui_customizations = ['flagged_as_malicious'];
+          } else if (securityProviderResponse?.flagAsDangerous === 2) {
+            properties.ui_customizations = ['flagged_as_safety_unknown'];
+          } else {
+            properties.ui_customizations = null;
+          }
 
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              properties.ui_customizations.push(
-                METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
-              );
+              properties.ui_customizations === null
+                ? (properties.ui_customizations = [
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ])
+                : properties.ui_customizations.push([
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ]);
             }
           }
         } catch (e) {
@@ -280,17 +289,26 @@ export default function createRPCMethodTrackingMiddleware({
             req.method,
           );
 
-          properties.ui_customizations =
-            securityProviderResponse?.flagAsDangerous === 1 && [
-              'flagged_as_malicious',
-            ];
+          if (securityProviderResponse?.flagAsDangerous === 1) {
+            properties.ui_customizations = ['flagged_as_malicious'];
+          } else if (securityProviderResponse?.flagAsDangerous === 2) {
+            properties.ui_customizations = ['flagged_as_safety_unknown'];
+          } else {
+            properties.ui_customizations = null;
+          }
 
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              properties.ui_customizations.push(
-                METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
-              );
+              properties.ui_customizations === null
+                ? (properties.ui_customizations = [
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ])
+                : properties.ui_customizations.push([
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ]);
             }
           }
         } catch (e) {

@@ -260,6 +260,35 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
   });
 
+  describe('participateInMetaMetrics is set to true with a request flagged as safe', () => {
+    beforeEach(() => {
+      metricsState.participateInMetaMetrics = true;
+    });
+
+    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as safe`, async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next } = getNext();
+      await handler(req, res, next);
+      expect(trackEvent).toHaveBeenCalledTimes(1);
+      expect(trackEvent.mock.calls[0][0]).toMatchObject({
+        category: 'inpage_provider',
+        event: EVENT_NAMES.SIGNATURE_REQUESTED,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN,
+          ui_customizations: null,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+  });
+
   describe('participateInMetaMetrics is set to true with a request flagged as malicious', () => {
     beforeEach(() => {
       metricsState.participateInMetaMetrics = true;
@@ -284,6 +313,36 @@ describe('createRPCMethodTrackingMiddleware', () => {
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
           ui_customizations: ['flagged_as_malicious'],
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+  });
+
+  describe('participateInMetaMetrics is set to true with a request flagged as safety unknown', () => {
+    beforeEach(() => {
+      metricsState.participateInMetaMetrics = true;
+      flagAsDangerous = 2;
+    });
+
+    it(`should immediately track a ${EVENT_NAMES.SIGNATURE_REQUESTED} event which is flagged as safety unknown`, async () => {
+      const req = {
+        method: MESSAGE_TYPE.ETH_SIGN,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next } = getNext();
+      await handler(req, res, next);
+      expect(trackEvent).toHaveBeenCalledTimes(1);
+      expect(trackEvent.mock.calls[0][0]).toMatchObject({
+        category: 'inpage_provider',
+        event: EVENT_NAMES.SIGNATURE_REQUESTED,
+        properties: {
+          signature_type: MESSAGE_TYPE.ETH_SIGN,
+          ui_customizations: ['flagged_as_safety_unknown'],
         },
         referrer: { url: 'some.dapp' },
       });

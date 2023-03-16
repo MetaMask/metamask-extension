@@ -1769,7 +1769,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
-            ui_customizations: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1856,7 +1856,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
-            ui_customizations: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1955,7 +1955,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
-            ui_customizations: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2044,7 +2044,7 @@ describe('Transaction Controller', function () {
             token_standard: TokenStandard.none,
             device_model: 'N/A',
             transaction_speed_up: false,
-            ui_customizations: false,
+            ui_customizations: null,
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2135,7 +2135,7 @@ describe('Transaction Controller', function () {
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
-          ui_customizations: false,
+          ui_customizations: null,
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -2207,7 +2207,7 @@ describe('Transaction Controller', function () {
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
-          ui_customizations: false,
+          ui_customizations: null,
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2289,7 +2289,7 @@ describe('Transaction Controller', function () {
           token_standard: TokenStandard.none,
           device_model: 'N/A',
           transaction_speed_up: false,
-          ui_customizations: false,
+          ui_customizations: null,
         },
         sensitiveProperties: {
           baz: 3.0,
