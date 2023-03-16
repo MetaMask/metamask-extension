@@ -99,9 +99,11 @@ export default function SnapUpdate({
           snapId={targetSubjectMetadata.origin}
           version={requestState.newVersion}
         />
-        <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
-          {t('snapUpdate')}
-        </Text>
+        {!hasError && (
+          <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
+            {t('snapUpdate')}
+          </Text>
+        )}
         {isLoading && (
           <Box
             className="loader-container"

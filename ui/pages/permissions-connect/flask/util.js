@@ -1,6 +1,10 @@
 import React from 'react';
 import { Text } from '../../../components/component-library';
-import { Color, FONT_WEIGHT } from '../../../helpers/constants/design-system';
+import {
+  Color,
+  FONT_WEIGHT,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 import {
   coinTypeToProtocolName,
@@ -32,6 +36,7 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
             key="1"
             color={Color.primaryDefault}
             fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
             as="span"
           >
             {getSnapName(targetSubjectMetadata.origin)}
@@ -51,6 +56,7 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
             key="1"
             color={Color.primaryDefault}
             fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
             as="span"
           >
             {getSnapName(targetSubjectMetadata.origin)}

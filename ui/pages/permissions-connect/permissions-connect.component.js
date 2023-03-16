@@ -395,14 +395,15 @@ export default class PermissionConnect extends Component {
                       permissions: requestState.permissions,
                       approvedAccounts: [...selectedAccountAddresses],
                     });
-                    this.redirect(false);
+                    this.setState({ permissionsApproved: true });
                   }}
                   rejectSnapInstall={(requestId) => {
                     rejectPendingApproval(
                       requestId,
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
-                    this.redirect(false);
+                    this.setState({ permissionsApproved: true });
+                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -427,14 +428,15 @@ export default class PermissionConnect extends Component {
                       permissions: requestState.permissions,
                       approvedAccounts: [...selectedAccountAddresses],
                     });
-                    this.redirect(false);
+                    this.setState({ permissionsApproved: true });
                   }}
                   rejectSnapUpdate={(requestId) => {
                     rejectPendingApproval(
                       requestId,
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
-                    this.redirect(false);
+                    this.setState({ permissionsApproved: false });
+                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -455,7 +457,8 @@ export default class PermissionConnect extends Component {
                   requestState={requestState || {}}
                   approveSnapResult={(requestId) => {
                     approvePendingApproval(requestId);
-                    this.redirect(false);
+                    this.setState({ permissionsApproved: true });
+                    this.removeBeforeUnload();
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />

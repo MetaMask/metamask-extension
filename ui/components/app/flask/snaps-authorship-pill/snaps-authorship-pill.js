@@ -18,7 +18,6 @@ import {
 } from '../../../../helpers/utils/util';
 
 const SnapsAuthorshipPill = ({ snapId, version, className }) => {
-  // @todo Use getSnapPrefix from snaps-monorepo when possible
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata

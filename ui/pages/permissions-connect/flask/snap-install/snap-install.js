@@ -93,9 +93,11 @@ export default function SnapInstall({
           snapId={targetSubjectMetadata.origin}
           version={targetSubjectMetadata.version}
         />
-        <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
-          {t('snapInstall')}
-        </Text>
+        {!hasError && (
+          <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
+            {t('snapInstall')}
+          </Text>
+        )}
         {isLoading && (
           <Box
             className="loader-container"
