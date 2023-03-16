@@ -22,9 +22,6 @@ export const AccountPicker = ({ account, onClick }) => {
         marginRight={1}
         fontWeight={FONT_WEIGHT.BOLD}
         ellipsis
-        style={{
-          width: '100px',
-        }}
       >
         {account.name}
       </Text>
