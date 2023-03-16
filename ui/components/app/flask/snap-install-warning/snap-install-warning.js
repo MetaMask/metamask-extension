@@ -4,11 +4,8 @@ import { produce } from 'immer';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box/check-box.component';
-import Typography from '../../../ui/typography/typography';
-import {
-  TEXT_ALIGN,
-  TypographyVariant,
-} from '../../../../helpers/constants/design-system';
+
+import { TEXT_ALIGN } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
 import { Text } from '../../../component-library';
