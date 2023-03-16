@@ -15,7 +15,7 @@ export interface HeaderBaseProps extends BoxProps {
    */
   childrenWrapperProps?: BoxProps;
   /**
-   * The start(defualt left) content area of HeaderBase
+   * The start(default left) content area of HeaderBase
    */
   startAccessory?: React.ReactNode;
   /**
