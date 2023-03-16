@@ -76,7 +76,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
       });
       trackEvent({
         category: EVENT.CATEGORIES.KEYS,
-        event: EVENT_NAMES.SRP_VIEWS_SRP,
+        event: EVENT_NAMES.SRP_REVEAL_VIEWED,
         properties: {
           key_type: EVENT.KEY_TYPES.SRP,
         },
@@ -117,6 +117,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         <Box className="hold-to-reveal-button__absolute-fill">
           <svg className="hold-to-reveal-button__circle-svg">
             <circle
+              aria-label="circle-locked"
               onTransitionEnd={onProgressComplete}
               className="hold-to-reveal-button__circle-foreground"
               cx={radius}
@@ -176,6 +177,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           </svg>
         </div>
         <div
+          aria-label="circle-unlocked"
           className="hold-to-reveal-button__unlock-icon-container"
           onAnimationEnd={triggerOnLongPressed}
         >
