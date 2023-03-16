@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Multichain Connected Site Menu render should match snapshot for connected state 1`] = `
+<div>
+  <div
+    class="box multichain-connected-site-menu box--flex-direction-row"
+    data-testid="connection-menu"
+  >
+    <div
+      class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+    >
+      <span
+        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+        style="mask-image: url('./images/icons/global.svg');"
+      />
+      <div
+        class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+      >
+        <div
+          class="box box--flex-direction-row box--background-color-success-default box--rounded-full box--border-color-border-muted box--border-width-4 box--border-style-solid"
+          style="width: 14px; height: 14px;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Multichain Connected Site Menu render should match snapshot for not connected state 1`] = `
+<div>
+  <div
+    class="box multichain-connected-site-menu box--flex-direction-row"
+    data-testid="connection-menu"
+  >
+    <div
+      class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+    >
+      <span
+        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+        style="mask-image: url('./images/icons/global.svg');"
+      />
+      <div
+        class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+      >
+        <div
+          class="box box--flex-direction-row box--background-color-background-default box--rounded-full box--border-color-border-muted box--border-width-4 box--border-style-solid"
+          style="width: 14px; height: 14px;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

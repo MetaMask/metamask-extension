@@ -1,1 +1,1 @@
-export { MultichainConnectedSiteMenu } from './multichain-connected-site-menu.component';
+export { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
