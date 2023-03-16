@@ -145,9 +145,9 @@ describe('Test Snap Management', function () {
         // check the results of the removal
         await driver.delay(2000);
         const removeResult = await driver.findElement(
-          '.snap-list-tab__container--no-snaps',
+          '.snap-list-tab__container--no-snaps_inner',
         );
-        assert.equal(await removeResult.getText(), 'No Snaps installed');
+        assert.equal(await removeResult.getText(), 'You have no MetaMask Snaps installed.\\nLearn more');
       },
     );
   });
