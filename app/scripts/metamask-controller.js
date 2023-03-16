@@ -3223,7 +3223,7 @@ export default class MetamaskController extends EventEmitter {
       const { host } = new URL(req.origin);
       if (siwe.parsedMessage.domain !== host) {
         throw ethErrors.rpc.invalidParams(
-          `SIWE domain is not valid: "${host}" !== "${siwe.parsedMessage.domain}"`,
+          `SIWE domain is not valid: "${host}" (host) !== "${siwe.parsedMessage.domain}" (SIWE domain)`,
         );
       }
     }
