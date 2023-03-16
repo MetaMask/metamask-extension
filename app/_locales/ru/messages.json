@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Показать настройки безопасности и конфиденциальности"
   },
-  "notifications17Description": {
-    "message": "Это обновление предоставляет больше возможностей, чтобы вы могли лучше контролировать свою собственную конфиденциальность. Мы добавили больше прозрачности в отношении того, как собираются данные, и более четкие варианты обмена ими. Измените свои предпочтения или удалите данные об использовании расширения в настройках безопасности и конфиденциальности."
-  },
   "notifications17Title": {
     "message": "Настройки безопасности и конфиденциальности"
   },
@@ -2713,7 +2710,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Подключиться к $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Доступ в Интернет.",
@@ -2721,7 +2718,7 @@
   },
   "permission_accessSnap": {
     "message": "Подключение к спапу $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Планируйте и выполняйте периодические действия.",

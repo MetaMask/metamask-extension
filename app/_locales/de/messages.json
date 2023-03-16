@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Sicherheits- und Datenschutzeinstellungen anzeigen"
   },
-  "notifications17Description": {
-    "message": "Dieses Update gibt Ihnen mehr Möglichkeiten zur Kontrolle Ihrer Privatsphäre. Wir haben mehr Transparenz in Hinsicht auf die Sammlung von Daten sowie deutlichere Optionen bezüglich des Teilens hinzugefügt. Ändern Sie Ihre Einstellungen oder löschen Sie die Erweiterungsnutzung über Sicherheits- und Datenschutzeinstellungen."
-  },
   "notifications17Title": {
     "message": "Sicherheits- und Datenschutzeinstellungen"
   },
@@ -2713,7 +2710,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Mit $1 verbinden.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Zugriff auf das Internet.",
@@ -2721,7 +2718,7 @@
   },
   "permission_accessSnap": {
     "message": "Verbinden Sie sich mit dem $1-Snap.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Regelmäßige Transaktionen planen und ausführen.",

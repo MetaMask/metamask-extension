@@ -75,7 +75,7 @@ async function withFixtures(options, testSuite) {
       });
     }
     await fixtureServer.start();
-    fixtureServer.loadJsonState(fixtures);
+    fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
     if (dapp) {
       if (dappOptions?.numberOfDapps) {

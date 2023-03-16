@@ -1,3 +1,6 @@
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { CaveatTypes } from '../../shared/constants/permissions';
 import {
   getMetaMaskAccountsOrdered,
@@ -117,6 +120,28 @@ export function getSubjectsWithPermission(state, permissionName) {
   });
   return connectedSubjects;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function getSubjectsWithSnapPermission(state, snapId) {
+  const subjects = getPermissionSubjects(state);
+
+  return Object.entries(subjects)
+    .filter(
+      ([_origin, { permissions }]) =>
+        permissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value[snapId],
+    )
+    .map(([origin, _subject]) => {
+      const { extensionId, name, iconUrl } =
+        getTargetSubjectMetadata(state, origin) || {};
+      return {
+        extensionId,
+        origin,
+        name,
+        iconUrl,
+      };
+    });
+}
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Returns an object mapping addresses to objects mapping origins to connected
