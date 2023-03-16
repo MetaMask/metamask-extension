@@ -10,6 +10,7 @@
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
     "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
+    "start:flask": "yarn start --build-type flask",
     "dist": "yarn build dist",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
