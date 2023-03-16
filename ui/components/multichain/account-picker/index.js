@@ -7,7 +7,7 @@ import {
   Icon,
   Text,
 } from '../../component-library';
-import { FONT_WEIGHT, Size } from '../../../helpers/constants/design-system';
+import { Color, FONT_WEIGHT, Size } from '../../../helpers/constants/design-system';
 
 export const AccountPicker = ({ account, onClick }) => {
   return (
