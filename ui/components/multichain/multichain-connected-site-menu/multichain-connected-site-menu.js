@@ -8,10 +8,10 @@ import {
   Color,
   IconColor,
   Size,
-} from '../../helpers/constants/design-system';
-import { BadgeWrapper, Icon, ICON_NAMES } from '../component-library';
-import Box from '../ui/box';
-import { getConnectedSubjectsForSelectedAddress } from '../../selectors';
+} from '../../../helpers/constants/design-system';
+import { BadgeWrapper, Icon, ICON_NAMES } from '../../component-library';
+import Box from '../../ui/box';
+import { getConnectedSubjectsForSelectedAddress } from '../../../selectors';
 
 export const MultichainConnectedSiteMenu = ({ className }) => {
   const connectedSubjects = useSelector(getConnectedSubjectsForSelectedAddress);

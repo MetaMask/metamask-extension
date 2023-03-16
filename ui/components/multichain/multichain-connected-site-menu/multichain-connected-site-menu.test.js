@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/jest';
+import { renderWithProvider } from '../../../../test/jest';
 import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
 
 describe('Multichain Connected Site Menu', () => {
