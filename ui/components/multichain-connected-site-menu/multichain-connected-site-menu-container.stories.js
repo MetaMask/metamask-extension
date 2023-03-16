@@ -12,15 +12,31 @@ export default {
 const customNetworkData = {
   ...testData,
   metamask: {
-    ...testData.metamask,
-    connectedSubjects: [
-      {
-        extensionId: null,
-        origin: 'https://metamask.github.io',
-        name: 'MetaMask < = > Ledger Bridge',
-        iconUrl: null,
+    selectedAddress: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+    subjectMetadata: {
+      'peepeth.com': {
+        iconUrl: 'https://peepeth.com/favicon-32x32.png',
+        name: 'Peepeth',
       },
-    ],
+    },
+    subjects: {
+      'peepeth.com': {
+        permissions: {
+          eth_accounts: {
+            caveats: [
+              {
+                type: 'restrictReturnedAccounts',
+                value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
+              },
+            ],
+            date: 1585676177970,
+            id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
+            invoker: 'peepeth.com',
+            parentCapability: 'eth_accounts',
+          },
+        },
+      },
+    },
   },
 };
 

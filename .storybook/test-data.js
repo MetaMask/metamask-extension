@@ -1452,7 +1452,6 @@ const state = {
     ensResolutionsByAddress: {},
     pendingApprovals: {},
     pendingApprovalCount: 0,
-    connectedSubjects: [],
     subjectMetadata: {
       'http://localhost:8080': {
         extensionId: null,
