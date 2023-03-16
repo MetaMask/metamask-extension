@@ -71,7 +71,7 @@ export const ButtonBase = ({
     >
       <Text
         className="mm-button-base__content"
-        as="div"
+        as="span"
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         gap={2}
@@ -84,7 +84,7 @@ export const ButtonBase = ({
           <Icon name={startIconName} size={Size.SM} {...startIconProps} />
         )}
         <Text
-          as="div"
+          as="span"
           ellipsis={ellipsis}
           color={TextColor.inherit}
           variant={TextVariant.inherit}
