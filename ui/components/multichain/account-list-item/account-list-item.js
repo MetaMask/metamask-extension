@@ -7,7 +7,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getRpcPrefsForCurrentProvider } from '../../../selectors';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu } from '../account-list-item-menu';
+import { AccountListItemMenu } from '..';
 import Box from '../../ui/box/box';
 import {
   AvatarAccount,
