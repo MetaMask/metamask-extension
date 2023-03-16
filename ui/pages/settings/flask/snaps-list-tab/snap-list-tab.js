@@ -6,10 +6,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../../components/ui/typography/typography';
 import {
   TypographyVariant,
-  FLEX_DIRECTION,
   JustifyContent,
   AlignItems,
-  TextColor,
   Color,
   Size,
   TEXT_ALIGN,
