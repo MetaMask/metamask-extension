@@ -19481,13 +19481,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"human-standard-token-abi@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "human-standard-token-abi@npm:2.0.0"
-  checksum: 80501595a470d4fc8866ab82311ccf3619023e36083f0656e5733be82870f2d0eecf8d24635159d760d87583ac0c5497ac460d1eb0813ac5e4c0df106c5a8ad6
-  languageName: node
-  linkType: hard
-
 "humanize-ms@npm:^1.2.1":
   version: 1.2.1
   resolution: "humanize-ms@npm:1.2.1"
@@ -24443,7 +24436,6 @@ __metadata:
     gulp-watch: ^5.0.1
     gulp-zip: ^5.1.0
     history: ^5.0.0
-    human-standard-token-abi: ^2.0.0
     husky: ^8.0.3
     immer: ^9.0.6
     improved-yarn-audit: ^3.0.0

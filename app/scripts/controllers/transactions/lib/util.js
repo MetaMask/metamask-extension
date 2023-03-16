@@ -1,6 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { Interface } from '@ethersproject/abi';
-import abi from 'human-standard-token-abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { addHexPrefix } from '../../../lib/util';
 import {
   TransactionEnvelopeType,
@@ -237,7 +237,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
 export function validateInputData(value) {
   if (value !== null) {
     // Validate the input data
-    const hstInterface = new Interface(abi);
+    const hstInterface = new Interface(abiERC20);
     try {
       hstInterface.parseTransaction({ data: value });
     } catch (e) {

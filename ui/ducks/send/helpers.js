@@ -1,5 +1,5 @@
 import { addHexPrefix } from 'ethereumjs-util';
-import abi from 'human-standard-token-abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import BigNumber from 'bignumber.js';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
@@ -268,7 +268,7 @@ export function getRoundedGasPrice(gasPriceEstimate) {
 }
 
 export async function getERC20Balance(token, accountAddress) {
-  const contract = global.eth.contract(abi).at(token.address);
+  const contract = global.eth.contract(abiERC20).at(token.address);
   const usersToken = (await contract.balanceOf(accountAddress)) ?? null;
   if (!usersToken) {
     return '0x0';

@@ -4,7 +4,7 @@ import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
-import abi from 'human-standard-token-abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   decGWEIToHexWEI,
   sumHexes,
@@ -892,7 +892,11 @@ export default class SwapsController {
   }
 
   async _getERC20Allowance(contractAddress, walletAddress, chainId) {
-    const contract = new Contract(contractAddress, abi, this.ethersProvider);
+    const contract = new Contract(
+      contractAddress,
+      abiERC20,
+      this.ethersProvider,
+    );
     return await contract.allowance(
       walletAddress,
       SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],

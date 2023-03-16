@@ -1,5 +1,5 @@
 import punycode from 'punycode/punycode';
-import abi from 'human-standard-token-abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
@@ -181,7 +181,7 @@ export function formatBalance(
 }
 
 export function getContractAtAddress(tokenAddress) {
-  return global.eth.contract(abi).at(tokenAddress);
+  return global.eth.contract(abiERC20).at(tokenAddress);
 }
 
 export function getRandomFileName() {
