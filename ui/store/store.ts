@@ -22,6 +22,10 @@ export interface TemporaryMessageDataType {
     metamaskId: number;
     data: string;
   };
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  custodyId?: string;
+  status?: string;
+  ///: END:ONLY_INCLUDE_IN
 }
 
 interface MessagesIndexedById {
@@ -68,11 +72,14 @@ interface TemporaryBackgroundState {
   };
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  custodyAccountDetails?: { [key: string]: any };
+  ///: END:ONLY_INCLUDE_IN
 }
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
-type CombinedBackgroundAndReduxState = RootReducerReturnType & {
+export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   activeTab: {
     origin: string;
   };
