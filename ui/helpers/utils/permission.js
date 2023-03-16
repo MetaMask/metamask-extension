@@ -14,11 +14,13 @@ import {
 } from '../../../shared/constants/permissions';
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import { Color } from '../constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
   getSnapName,
-} from './util'; // eslint-disable-line no-unused-vars
+} from './util';
+///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
