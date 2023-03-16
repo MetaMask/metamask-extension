@@ -7,7 +7,7 @@ const {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
-  testDropdownIterations,
+  testSRPDropdownIterations,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -40,11 +40,7 @@ describe('MetaMask onboarding', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        await completeCreateNewWalletOnboardingFlow(
-          driver,
-          testSeedPhrase,
-          testPassword,
-        );
+        await completeCreateNewWalletOnboardingFlow(driver, testPassword);
 
         const homePage = await driver.findElement('.home__main-view');
         const homePageDisplayed = await homePage.isDisplayed();
@@ -101,7 +97,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('Check if user select different type your secret recovery phrase', async function () {
+  it('Check if user select different type of secret recovery phrase', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -126,12 +122,12 @@ describe('MetaMask onboarding', function () {
 
         const iterations = options.length;
 
-        await testDropdownIterations(options, driver, iterations);
+        await testSRPDropdownIterations(options, driver, iterations);
 
         const finalFormFields = await driver.findElements(
           '.import-srp__srp-word-label',
         );
-        const expectedFinalNumFields = 24; // The last iteration will have 21 fields
+        const expectedFinalNumFields = 24; // The last iteration will have 24 fields
         const actualFinalNumFields = finalFormFields.length;
         assert.equal(actualFinalNumFields, expectedFinalNumFields);
       },

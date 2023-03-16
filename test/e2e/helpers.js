@@ -290,11 +290,7 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const completeCreateNewWalletOnboardingFlow = async (
-  driver,
-  seedPhrase,
-  password,
-) => {
+const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
@@ -317,9 +313,7 @@ const completeCreateNewWalletOnboardingFlow = async (
     '[data-testid="recovery-phrase-chips"]',
   );
 
-  let recoveryPhrase = seedPhrase;
-
-  recoveryPhrase = await revealedSeedPhrase.getText();
+  const recoveryPhrase = await revealedSeedPhrase.getText();
 
   await driver.clickElement('[data-testid="recovery-phrase-next"]');
 
@@ -369,7 +363,7 @@ const selectDropdownByNum = async (elements, index) => {
   await elements[index].click();
 };
 
-const testDropdownIterations = async (options, driver, iterations) => {
+const testSRPDropdownIterations = async (options, driver, iterations) => {
   for (let i = 0; i < iterations; i++) {
     await selectDropdownByNum(options, i);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -395,5 +389,5 @@ module.exports = {
   completeCreateNewWalletOnboardingFlow,
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
-  testDropdownIterations,
+  testSRPDropdownIterations,
 };
