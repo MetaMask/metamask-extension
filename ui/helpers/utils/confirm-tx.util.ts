@@ -18,7 +18,7 @@ export function addEth(firstValue: string, ...otherValues: string[]): string {
     .reduce((numericAcc, ethAmount) => {
       return numericAcc.add(new Numeric(ethAmount, 10)).round(12);
     }, new Numeric(firstValue, 10))
-    .toFixed(12)
+    .round(12)
     .toString();
 }
 
@@ -50,7 +50,7 @@ export function getTransactionFee({
   if (fromCurrency !== toCurrency && conversionRate) {
     fee = fee.applyConversionRate(conversionRate);
   }
-  return fee.toFixed(numberOfDecimals).toString();
+  return fee.round(numberOfDecimals).toString();
 }
 
 export function formatCurrency(value: string, currencyCode: string): string {
