@@ -542,7 +542,7 @@
     "wait-on": "^7.0.1",
     "watchify": "^4.0.0",
     "webextension-polyfill": "^0.8.0",
-    "webpack": "^5.75.0",
+    "webpack": "^5.76.2",
     "webpack-cli": "^5.0.1",
     "webpack-remove-code-blocks": "^0.1.5",
     "yargs": "^17.0.1"
