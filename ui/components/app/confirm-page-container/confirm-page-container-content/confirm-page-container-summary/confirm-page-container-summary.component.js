@@ -14,8 +14,8 @@ import { getIpfsGateway } from '../../../../../selectors';
 import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import NicknamePopovers from '../../../modals/nickname-popovers';
-import Typography from '../../../../ui/typography';
-import { TypographyVariant } from '../../../../../helpers/constants/design-system';
+import { Text } from '../../../../component-library';
+import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../ui/site-origin';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
@@ -131,17 +131,18 @@ const ConfirmPageContainerSummary = (props) => {
         <div className="confirm-page-container-summary__title">
           {renderImage()}
           {!hideTitle ? (
-            <Typography
+            <Text
               className="confirm-page-container-summary__title-text"
               variant={
                 title && title.length < 10
-                  ? TypographyVariant.H1
-                  : TypographyVariant.H3
+                  ? TextVariant.displayMd
+                  : TextVariant.headingMd
               }
+              as={title && title.length < 10 ? 'h1' : 'h3'}
               title={title}
             >
               {titleComponent || title}
-            </Typography>
+            </Text>
           ) : null}
         </div>
         {hideSubtitle ? null : (
