@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Etherscanで表示"
   },
-  "expandExperience": {
-    "message": "MetaMask Snaps で web3 エクスペリエンスを拡張"
-  },
   "expandView": {
     "message": "ビューを展開"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "不正な形式のデータ"
-  },
-  "manageSnaps": {
-    "message": "インストールされたスナップの管理"
   },
   "max": {
     "message": "最大"

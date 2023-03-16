@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Auf Etherscan anzeigen"
   },
-  "expandExperience": {
-    "message": "Erweitern Sie Ihre Web3-Erfahrung"
-  },
   "expandView": {
     "message": "Ansicht erweitern"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "Fehlerhafte Daten"
-  },
-  "manageSnaps": {
-    "message": "Verwalten Sie Ihre installierten Snaps"
   },
   "max": {
     "message": "Max."

@@ -52,18 +52,6 @@ const SnapListTab = () => {
     <div className="snap-list-tab" ref={settingsRef}>
       {Object.entries(snaps).length ? (
         <div className="snap-list-tab__body">
-          <Box display="flex" flexDirection={FLEX_DIRECTION.COLUMN}>
-            <Typography variant={TypographyVariant.H5} marginBottom={2}>
-              {t('expandExperience')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H6}
-              color={TextColor.textAlternative}
-              marginBottom={2}
-            >
-              {t('manageSnaps')}
-            </Typography>
-          </Box>
           <div className="snap-list-tab__wrapper">
             {Object.entries(snaps).map(([key, snap]) => {
               return (
