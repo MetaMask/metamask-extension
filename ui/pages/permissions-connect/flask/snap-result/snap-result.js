@@ -18,9 +18,9 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapResult({
   request,
@@ -39,11 +39,7 @@ export default function SnapResult({
 
   const isLoading = requestState.loading;
 
-  const snapName =
-    SNAPS_METADATA[targetSubjectMetadata.origin]?.name ??
-    targetSubjectMetadata.origin;
-
-  const isInstall = true;
+  const snapName = getSnapName(targetSubjectMetadata.origin);
 
   return (
     <Box
@@ -80,23 +76,22 @@ export default function SnapResult({
             height={BLOCK_SIZES.FULL}
             padding={2}
           >
-            <Text fontWeight={FONT_WEIGHT.BOLD} variant={TextVariant.headingLg}>
-              {t(isInstall ? 'snapInstalled' : 'snapUpdated')}
+            <Text
+              fontWeight={FONT_WEIGHT.BOLD}
+              variant={TextVariant.headingLg}
+              paddingBottom={2}
+            >
+              {t('snapResultSuccess')}
             </Text>
             <Text textAlign={TEXT_ALIGN.CENTER}>
-              {t(
-                isInstall
-                  ? 'snapResultInstallSuccess'
-                  : 'snapResultUpdateSuccess',
-                [<b key="1">{snapName}</b>],
-              )}
+              {t('snapResultSuccessDescription', [<b key="1">{snapName}</b>])}
             </Text>
           </Box>
         )}
         {hasError && (
           <InstallError
             error={requestState.error}
-            title={t(isInstall ? 'snapInstallError' : 'snapUpdateError')}
+            title={t('snapResultError')}
           />
         )}
       </Box>

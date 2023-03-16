@@ -20,8 +20,8 @@ import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
 import { Text } from '../../../../components/component-library';
-import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
-import { stripProtocol } from '../../../../helpers/utils/util';
+import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapInstall({
   request,
@@ -33,6 +33,7 @@ export default function SnapInstall({
   const t = useI18nContext();
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
+  const originMetadata = useOriginMetadata(request.metadata?.dappOrigin) || {};
 
   const onCancel = useCallback(
     () => rejectSnapInstall(request.metadata.id),
@@ -50,9 +51,10 @@ export default function SnapInstall({
 
   const hasPermissions =
     !hasError &&
-    !isLoading &&
     requestState?.permissions &&
     Object.keys(requestState.permissions).length > 0;
+
+  const isEmpty = !isLoading && !hasError && !hasPermissions;
 
   const warnings = getSnapInstallWarnings(
     requestState?.permissions ?? {},
@@ -62,9 +64,7 @@ export default function SnapInstall({
 
   const shouldShowWarning = warnings.length > 0;
 
-  const snapName =
-    SNAPS_METADATA[targetSubjectMetadata.origin]?.name ??
-    targetSubjectMetadata.origin;
+  const snapName = getSnapName(targetSubjectMetadata.origin);
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -112,15 +112,14 @@ export default function SnapInstall({
         {hasPermissions && (
           <>
             <Text
+              className="headers__permission-description"
               paddingLeft={4}
               paddingRight={4}
+              paddingBottom={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapInstallRequestsPermission', [
-                <b key="1">
-                  {request.metadata?.dappOrigin &&
-                    stripProtocol(request.metadata.dappOrigin)}
-                </b>,
+                <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,
               ])}
             </Text>
@@ -128,6 +127,25 @@ export default function SnapInstall({
               permissions={requestState.permissions || {}}
             />
           </>
+        )}
+        {isEmpty && (
+          <Box
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            height={BLOCK_SIZES.FULL}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
+            <Text
+              paddingLeft={4}
+              paddingRight={4}
+              textAlign={TEXT_ALIGN.CENTER}
+            >
+              {t('snapInstallRequest', [
+                <b key="1">{originMetadata?.hostname}</b>,
+                <b key="2">{snapName}</b>,
+              ])}
+            </Text>
+          </Box>
         )}
       </Box>
       <Box

@@ -7,6 +7,7 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
+import { getSnapPrefix } from '@metamask/snaps-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -20,7 +21,10 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
+import {
+  SNAPS_DERIVATION_PATHS,
+  SNAPS_METADATA,
+} from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
@@ -548,7 +552,11 @@ export function getSnapDerivationPathName(path, curve) {
   return pathMetadata?.name ?? null;
 }
 
-export const stripProtocol = (value) => value.replace(/(^\w+:|^)\/\//u, '');
+export const removeSnapIdPrefix = (snapId) =>
+  snapId.replace(getSnapPrefix(snapId), '');
+
+export const getSnapName = (snapId) =>
+  SNAPS_METADATA[snapId]?.name ?? removeSnapIdPrefix(snapId);
 ///: END:ONLY_INCLUDE_IN
 
 /**

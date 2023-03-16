@@ -21,8 +21,8 @@ import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
 import { Text } from '../../../../components/component-library';
-import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
-import { stripProtocol } from '../../../../helpers/utils/util';
+import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapUpdate({
   request,
@@ -34,6 +34,7 @@ export default function SnapUpdate({
   const t = useI18nContext();
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
+  const originMetadata = useOriginMetadata(request.metadata?.dappOrigin) || {};
 
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
@@ -49,17 +50,17 @@ export default function SnapUpdate({
   const revokedPermissions = requestState.unusedPermissions ?? {};
   const newPermissions = requestState.newPermissions ?? {};
 
-  const hasError = !requestState.loading && requestState.error;
-
   const isLoading = requestState.loading;
+  const hasError = !isLoading && requestState.error;
 
   const hasPermissions =
     !hasError &&
-    !isLoading &&
     Object.keys(approvedPermissions).length +
       Object.keys(revokedPermissions).length +
       Object.keys(newPermissions).length >
       0;
+
+  const isEmpty = !isLoading && !hasError && !hasPermissions;
 
   const warnings = getSnapInstallWarnings(
     newPermissions,
@@ -69,9 +70,7 @@ export default function SnapUpdate({
 
   const shouldShowWarning = warnings.length > 0;
 
-  const snapName =
-    SNAPS_METADATA[targetSubjectMetadata.origin]?.name ??
-    targetSubjectMetadata.origin;
+  const snapName = getSnapName(targetSubjectMetadata.origin);
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -98,18 +97,10 @@ export default function SnapUpdate({
       >
         <SnapsAuthorshipPill
           snapId={targetSubjectMetadata.origin}
-          version={requestState.newVersionn}
+          version={requestState.newVersion}
         />
         <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
           {t('snapUpdate')}
-        </Text>
-        <Text padding={[4, 4, 0, 4]} textAlign={TEXT_ALIGN.CENTER} as="span">
-          {t('snapUpdateExplanation', [
-            `${
-              request.metadata?.dappOrigin &&
-              stripProtocol(request.metadata.dappOrigin)
-            }`,
-          ])}
         </Text>
         {isLoading && (
           <Box
@@ -127,15 +118,14 @@ export default function SnapUpdate({
         {hasPermissions && (
           <>
             <Text
+              className="headers__permission-description"
               paddingLeft={4}
               paddingRight={4}
+              paddingBottom={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapUpdateRequestsPermission', [
-                <b key="1">
-                  {request.metadata?.dappOrigin &&
-                    stripProtocol(request.metadata.dappOrigin)}
-                </b>,
+                <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,
               ])}
             </Text>
@@ -145,6 +135,25 @@ export default function SnapUpdate({
               newPermissions={newPermissions}
             />
           </>
+        )}
+        {isEmpty && (
+          <Box
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            height={BLOCK_SIZES.FULL}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
+            <Text
+              paddingLeft={4}
+              paddingRight={4}
+              textAlign={TEXT_ALIGN.CENTER}
+            >
+              {t('snapUpdateRequest', [
+                <b key="1">{originMetadata?.hostname}</b>,
+                <b key="2">{snapName}</b>,
+              ])}
+            </Text>
+          </Box>
         )}
       </Box>
       <Box

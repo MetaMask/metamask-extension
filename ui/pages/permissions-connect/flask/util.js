@@ -1,4 +1,12 @@
-import { coinTypeToProtocolName } from '../../../helpers/utils/util';
+import React from 'react';
+import { Text } from '../../../components/component-library';
+import { Color, FONT_WEIGHT } from '../../../helpers/constants/design-system';
+
+import {
+  coinTypeToProtocolName,
+  getSnapName,
+  getSnapDerivationPathName,
+} from '../../../helpers/utils/util';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
   const bip32EntropyPermissions =
@@ -20,8 +28,18 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
           .join('-')
           .replace(/'/gu, 'h')}-${curve}-${i}`,
         message: t('snapInstallWarningKeyAccess', [
-          targetSubjectMetadata.name,
-          `${path.join('/')} (${curve})`,
+          <Text
+            key="1"
+            color={Color.primaryDefault}
+            fontWeight={FONT_WEIGHT.BOLD}
+            as="span"
+          >
+            {getSnapName(targetSubjectMetadata.origin)}
+          </Text>,
+          <b key="2">
+            {getSnapDerivationPathName(path, curve) ??
+              `${path.join('/')} (${curve})`}
+          </b>,
         ]),
       })),
     ),
@@ -29,9 +47,18 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
       permission.caveats[0].value.map(({ coinType }) => ({
         id: `key-access-bip44-${coinType}-${i}`,
         message: t('snapInstallWarningKeyAccess', [
-          targetSubjectMetadata.name,
-          coinTypeToProtocolName(coinType) ||
-            t('unrecognizedProtocol', [coinType]),
+          <Text
+            key="1"
+            color={Color.primaryDefault}
+            fontWeight={FONT_WEIGHT.BOLD}
+            as="span"
+          >
+            {getSnapName(targetSubjectMetadata.origin)}
+          </Text>,
+          <b key="2">
+            {coinTypeToProtocolName(coinType) ||
+              t('unrecognizedProtocol', [coinType])}
+          </b>,
         ]),
       })),
     ),

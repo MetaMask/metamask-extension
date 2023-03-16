@@ -227,9 +227,7 @@ export default class PermissionConnect extends Component {
       Object.keys(permissionsRequest.permissions).includes('wallet_snap');
 
     const shouldRedirect = !isRequestingSnap;
-    ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.setState({
       redirecting: shouldRedirect,
       permissionsApproved: approved,
@@ -396,12 +394,14 @@ export default class PermissionConnect extends Component {
                       permissions: requestState.permissions,
                       approvedAccounts: [...selectedAccountAddresses],
                     });
+                    this.redirect(false);
                   }}
                   rejectSnapInstall={(requestId) => {
                     rejectPendingApproval(
                       requestId,
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
+                    this.redirect(false);
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -426,7 +426,7 @@ export default class PermissionConnect extends Component {
                       permissions: requestState.permissions,
                       approvedAccounts: [...selectedAccountAddresses],
                     });
-                    this.redirect(true);
+                    this.redirect(false);
                   }}
                   rejectSnapUpdate={(requestId) => {
                     rejectPendingApproval(
@@ -454,6 +454,7 @@ export default class PermissionConnect extends Component {
                   requestState={requestState || {}}
                   approveSnapResult={(requestId) => {
                     approvePendingApproval(requestId);
+                    this.redirect(false);
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
