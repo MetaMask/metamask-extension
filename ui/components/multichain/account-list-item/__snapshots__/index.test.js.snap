@@ -57,7 +57,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         <div
           class="box box--display-flex box--gap-2 box--flex-direction-row box--justify-content-space-between"
         >
-          <p
+          <div
             class="box mm-text mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
           >
             <div
@@ -74,9 +74,9 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 Test Account
               </div>
             </div>
-          </p>
+          </div>
           <div
-            class="box box--display-flex box--flex-direction-row"
+            class="box box--display-flex box--flex-direction-row box--align-items-center"
           >
             <div
               class="box mm-text mm-text--body-md mm-text--text-align-end mm-text--color-text-default box--flex-direction-row"
