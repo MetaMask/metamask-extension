@@ -3376,9 +3376,6 @@
     "message": "Вы предоставляете ключ доступа $2 к привязке \"$1\". Это действие нельзя отменить, и оно предоставляет \"$1\" управление всеми счетами и активами $2. Перед тем как продолжить, убедитесь, что доверяете \"$1\".",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Этот снап запрашивает следующие разрешения:"
-  },
   "snapUpdate": {
     "message": "Обновить снап"
   },

@@ -131,7 +131,7 @@ export default function SnapUpdate({
               paddingRight={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
-              {t('snapInstallRequestsPermission', [
+              {t('snapUpdateRequestsPermission', [
                 <b key="1">
                   {request.metadata?.dappOrigin &&
                     stripProtocol(request.metadata.dappOrigin)}
