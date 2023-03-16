@@ -22,7 +22,6 @@ import {
 } from '../../component-library';
 import Box from '../../ui/box/box';
 import { getNativeCurrencyImage } from '../../../selectors';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
 
 export const MultichainTokenListItem = ({
@@ -35,7 +34,6 @@ export const MultichainTokenListItem = ({
   title,
 }) => {
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const t = useI18nContext();
   const dataTheme = document.documentElement.getAttribute('data-theme');
   return (
     <Box
