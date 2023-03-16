@@ -22,9 +22,6 @@ export const AccountPicker = ({ account, onClick }) => {
         fontWeight={FONT_WEIGHT.BOLD}
         ellipsis
         style={{
-          textOverflow: 'ellipsis',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
           width: '100px'
         }}
       >
