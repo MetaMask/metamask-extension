@@ -238,6 +238,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
               {friendlyName}
             </span>,
           ]),
+          description: t('permission_accessSnapDescription', [friendlyName]),
         };
       }
 
