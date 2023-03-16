@@ -59,4 +59,19 @@ describe('JwtUrlForm', function () {
     fireEvent.change(apiUrlinput, { target: { value: 'url' } });
     expect(apiUrlinput.value).toBe('url');
   });
+
+  it('shows JWT darg&drop area when no jwt token exists', () => {
+    const customProps = {
+      ...props,
+      currentJwt: '',
+      jwtList: [],
+    };
+
+    const { container } = renderWithProvider(
+      <JwtUrlForm {...customProps} />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
 });
