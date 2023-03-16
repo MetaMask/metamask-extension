@@ -23,7 +23,7 @@ export interface HeaderBaseProps extends BoxProps {
    */
   startAccessoryWrapperProps?: BoxProps;
   /**
-   * The end (defualt right) content area of HeaderBase
+   * The end (default right) content area of HeaderBase
    */
   endAccessory?: React.ReactNode;
   /**
