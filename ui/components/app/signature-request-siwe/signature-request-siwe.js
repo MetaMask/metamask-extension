@@ -18,6 +18,7 @@ import { IconColor } from '../../../helpers/constants/design-system';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import { ICON_NAMES } from '../../component-library';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -108,10 +109,10 @@ export default function SignatureRequestSIWE({
             parsedMessage.address,
             fromAccount.address,
           ])}
-          iconFillColor="var(--color-warning-default)"
           useIcon
-          withRightButton
-          icon={<Icon name="danger" color={IconColor.warningDefault} />}
+          icon={
+            <Icon name={ICON_NAMES.DANGER} color={IconColor.warningDefault} />
+          }
         />
       )}
       {!isSIWEDomainValid && (
@@ -129,9 +130,10 @@ export default function SignatureRequestSIWE({
               {t('SIWEDomainInvalidText')}
             </>
           }
-          iconFillColor="var(--color-error-default)"
           useIcon
-          icon={<Icon name="danger" color={IconColor.errorDefault} />}
+          icon={
+            <Icon name={ICON_NAMES.DANGER} color={IconColor.errorDefault} />
+          }
         />
       )}
       <PageContainerFooter
