@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Mostrar configuración de seguridad y privacidad"
   },
-  "notifications17Description": {
-    "message": "Esta actualización ofrece más opciones para que pueda controlar mejor su propia privacidad. Agregamos más transparencia sobre cómo se recopilan los datos y opciones más claras para compartirlos. Cambie sus preferencias o elimine los datos de uso de la extensión a través de la configuración de Seguridad y privacidad."
-  },
   "notifications17Title": {
     "message": "Configuración de Seguridad y privacidad"
   },
