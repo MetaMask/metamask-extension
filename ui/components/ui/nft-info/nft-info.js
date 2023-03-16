@@ -37,7 +37,7 @@ export default function NftInfo({ assetName, tokenAddress, tokenId }) {
             color={TextColor.textAlternative}
             as="h6"
           >
-            {t('tokenId')} #{tokenId}
+            {`${t('tokenId')} #${tokenId}`}
           </Text>
         </Box>
       </Box>
