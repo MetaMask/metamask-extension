@@ -21,6 +21,7 @@ import {
 import {
   Color,
   TEXT_ALIGN,
+  AlignItems,
   DISPLAY,
   TextVariant,
   FLEX_DIRECTION,
@@ -115,7 +116,7 @@ export const AccountListItem = ({
             justifyContent={JustifyContent.spaceBetween}
             gap={2}
           >
-            <Text ellipsis>
+            <Text ellipsis as="div">
               <Tooltip
                 title={identity.name}
                 position="bottom"
@@ -124,7 +125,11 @@ export const AccountListItem = ({
                 {identity.name}
               </Tooltip>
             </Text>
-            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+            <Box
+              display={DISPLAY.FLEX}
+              flexDirection={FLEX_DIRECTION.ROW}
+              alignItems={AlignItems.center}
+            >
               {connectedAvatar ? (
                 <AvatarFavicon
                   size={Size.XS}
