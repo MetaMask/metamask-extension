@@ -77,12 +77,14 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
-
         // switch back to test-snaps window
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectBip32',
+          text: 'Reconnect to BIP-32 Snap',
+        });
 
         // scroll to and click get public key
         await driver.delay(1000);
@@ -122,7 +124,7 @@ describe('Test Snap bip-32', function () {
 
         // wait then run SECP256K1 test
         await driver.delay(1000);
-        await driver.fill('#bip32Message-secp256k1', 'foo bar');
+        await driver.pasteIntoField('#bip32Message-secp256k1', 'foo bar');
         await driver.clickElement('#sendBip32-secp256k1');
 
         // hit 'approve' on the custom confirm
@@ -157,7 +159,7 @@ describe('Test Snap bip-32', function () {
 
         // wait then run ed25519 test
         await driver.delay(1000);
-        await driver.fill('#bip32Message-ed25519', 'foo bar');
+        await driver.pasteIntoField('#bip32Message-ed25519', 'foo bar');
         await driver.clickElement('#sendBip32-ed25519');
 
         // hit 'approve' on the custom confirm
