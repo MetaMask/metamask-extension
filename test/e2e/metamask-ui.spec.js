@@ -314,7 +314,7 @@ describe('MetaMask', function () {
       });
 
       await driver.findElement({
-        tag: 'h3',
+        tag: 'h1',
         text: '1 TST',
       });
 
@@ -419,7 +419,7 @@ describe('MetaMask', function () {
 
     it('submits the transaction', async function () {
       await driver.findElement({
-        tag: 'h3',
+        tag: 'h1',
         text: '1.5 TST',
       });
 
