@@ -1,0 +1,11 @@
+.multichain-address-copy-button {
+  border-radius: 999px;
+
+  &--wrap {
+    height: auto;
+  }
+
+  &__address--wrap {
+    word-break: break-word;
+  }
+}
