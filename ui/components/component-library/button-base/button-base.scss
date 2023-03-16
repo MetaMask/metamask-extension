@@ -6,7 +6,6 @@
   vertical-align: middle;
   user-select: none;
 
-
   &:active,
   &:hover {
     color: var(--color-text-default);
@@ -17,18 +16,16 @@
     width: 100%;
   }
 
-
   &__content {
     height: 100%;
   }
 
   &--ellipsis {
-    width: 100%;
+    max-width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-
 
   &--size-sm {
     height: 32px;
