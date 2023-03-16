@@ -367,6 +367,7 @@ export default class PermissionConnect extends Component {
                   request={permissionsRequest || {}}
                   approvePermissionsRequest={(...args) => {
                     approvePermissionsRequest(...args);
+                    this.redirect(true);
                   }}
                   rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
