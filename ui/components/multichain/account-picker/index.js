@@ -13,7 +13,7 @@ export const AccountPicker = ({ account, onClick }) => {
   return (
     <ButtonBase
       onClick={onClick}
-      style={{ background: 'transparent' }}
+      backgroundColor={Color.transparent}
     >
       <AvatarAccount address={account.address} size={Size.SM} />
       <Text
