@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -22,7 +22,7 @@ const JwtUrlForm = (props) => {
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [fileTooBigError, setFileTooBigError] = useState();
 
-  const renderJWTInput = useCallback(() => {
+  const renderJWTInput = () => {
     const showAddNewToken = addNewTokenClicked;
     const showJwtDropdown = props.jwtList.length >= 1;
 
@@ -76,7 +76,7 @@ const JwtUrlForm = (props) => {
                   setFileTooBigError(true);
                   return;
                 }
-
+                // eslint-disable-next-line no-undef
                 const reader = new FileReader();
 
                 reader.onload = (event) => {
@@ -104,9 +104,9 @@ const JwtUrlForm = (props) => {
         )}
       </Box>
     );
-  });
+  };
 
-  const renderAPIURLInput = useCallback(() => {
+  const renderAPIURLInput = () => {
     return (
       <Box className="jwt-url-form__jwt-apiUrlInput">
         <Text className="jwt-url-form__instruction">{props.urlInputText}</Text>
@@ -123,7 +123,7 @@ const JwtUrlForm = (props) => {
         </Box>
       </Box>
     );
-  });
+  };
 
   return (
     <Box

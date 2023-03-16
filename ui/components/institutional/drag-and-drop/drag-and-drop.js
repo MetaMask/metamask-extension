@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -17,28 +17,12 @@ const DragAndDrop = (props) => {
   const dropRef = useRef(React.createRef());
   const dragCounter = useRef();
 
-  useEffect(() => {
-    dragCounter.current = 0;
-    const div = dropRef.current;
-    div.current.addEventListener('dragenter', handleDragIn);
-    div.current.addEventListener('dragleave', handleDragOut);
-    div.current.addEventListener('dragover', handleDrag);
-    div.current.addEventListener('drop', handleDrop);
-    return () => {
-      const div = dropRef.current;
-      div.current.removeEventListener('dragenter', handleDragIn);
-      div.current.removeEventListener('dragleave', handleDragOut);
-      div.current.removeEventListener('dragover', handleDrag);
-      div.current.removeEventListener('drop', handleDrop);
-    };
-  }, []);
-
-  const handleDrag = useCallback(() => {
+  const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-  });
+  };
 
-  const handleDragIn = useCallback(() => {
+  const handleDragIn = (e) => {
     e.preventDefault();
     e.stopPropagation();
     dragCounter.current += 1;
@@ -46,9 +30,9 @@ const DragAndDrop = (props) => {
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
       setDragging(true);
     }
-  });
+  };
 
-  const handleDragOut = useCallback(() => {
+  const handleDragOut = (e) => {
     e.preventDefault();
     e.stopPropagation();
     dragCounter.current -= 1;
@@ -56,9 +40,9 @@ const DragAndDrop = (props) => {
     if (dragCounter.current === 0) {
       setDragging(false);
     }
-  });
+  };
 
-  const handleDrop = useCallback(() => {
+  const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragging(false);
@@ -68,7 +52,22 @@ const DragAndDrop = (props) => {
       e.dataTransfer.clearData();
       dragCounter.current = 0;
     }
-  });
+  };
+
+  useEffect(() => {
+    dragCounter.current = 0;
+    const div = dropRef.current;
+    div.current.addEventListener('dragenter', handleDragIn);
+    div.current.addEventListener('dragleave', handleDragOut);
+    div.current.addEventListener('dragover', handleDrag);
+    div.current.addEventListener('drop', handleDrop);
+    return () => {
+      div.current.removeEventListener('dragenter', handleDragIn);
+      div.current.removeEventListener('dragleave', handleDragOut);
+      div.current.removeEventListener('dragover', handleDrag);
+      div.current.removeEventListener('drop', handleDrop);
+    };
+  }, []);
 
   return (
     <Box
