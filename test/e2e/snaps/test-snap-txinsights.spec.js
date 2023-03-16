@@ -53,14 +53,14 @@ describe('Test Snap TxInsights', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' })
+        await driver.waitForSelector({ text: 'Approve & install' });
 
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' })
+        await driver.waitForSelector({ text: 'Ok' });
 
         await driver.clickElement({
           text: 'Ok',
