@@ -9,7 +9,11 @@ exports[`Button should render button element correctly 1`] = `
     <span
       class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
-      Button
+      <span
+        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
+      >
+        Button
+      </span>
     </span>
   </button>
 </div>
@@ -24,7 +28,11 @@ exports[`Button should render with different button types 1`] = `
     <span
       class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
-      Button
+      <span
+        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
+      >
+        Button
+      </span>
     </span>
   </button>
   <button
@@ -34,7 +42,11 @@ exports[`Button should render with different button types 1`] = `
     <span
       class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
-      Button
+      <span
+        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
+      >
+        Button
+      </span>
     </span>
   </button>
   <button
@@ -44,7 +56,11 @@ exports[`Button should render with different button types 1`] = `
     <span
       class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
-      Button
+      <span
+        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
+      >
+        Button
+      </span>
     </span>
   </button>
 </div>

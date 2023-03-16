@@ -9,7 +9,11 @@ exports[`ButtonPrimary should render button element correctly 1`] = `
     <span
       class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
-      Button Primary
+      <span
+        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
+      >
+        Button Primary
+      </span>
     </span>
   </button>
 </div>

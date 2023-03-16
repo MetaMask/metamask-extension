@@ -12,7 +12,11 @@ exports[`ButtonBase should render anchor element correctly by href and externalL
     <span
       class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
-      Button Base
+      <span
+        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
+      >
+        Button Base
+      </span>
     </span>
   </a>
 </div>
@@ -27,7 +31,11 @@ exports[`ButtonBase should render button element correctly and match snapshot 1`
     <span
       class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
     >
-      Button base
+      <span
+        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
+      >
+        Button base
+      </span>
     </span>
   </button>
 </div>
