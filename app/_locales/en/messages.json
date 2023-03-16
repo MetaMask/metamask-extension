@@ -1,7 +1,4 @@
 {
-  "DropJwtHere": {
-    "message": "Drop your JWT file here."
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
