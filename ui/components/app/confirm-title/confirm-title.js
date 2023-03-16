@@ -25,11 +25,13 @@ const ConfirmTitle = ({ title, hexTransactionAmount, txData }) => {
   if (title) {
     return (
       <Text
-        as="h3"
+        as={title && title.length < 10 ? 'h1' : 'h3'}
         ellipsis
         title={title}
         variant={
-          title.length < 10 ? TextVariant.headingLg : TextVariant.headingMd
+          title && title.length < 10
+            ? TextVariant.displayMd
+            : TextVariant.headingMd
         }
         fontWeight={FONT_WEIGHT.NORMAL}
       >
