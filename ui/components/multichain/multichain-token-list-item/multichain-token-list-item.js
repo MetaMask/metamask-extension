@@ -62,7 +62,7 @@ export const MultichainTokenListItem = ({
           badge={
             <AvatarNetwork
               size={Size.XS}
-              name={t('networkNameEthereum')}
+              name={tokenSymbol}
               src={primaryTokenImage}
               borderColor={
                 primaryTokenImage
