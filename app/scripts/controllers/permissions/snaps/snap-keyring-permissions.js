@@ -1,8 +1,3 @@
-import {
-  errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
 import { PermissionType } from '@metamask/permission-controller';
 
 const NotificationType = {

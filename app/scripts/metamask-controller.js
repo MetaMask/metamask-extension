@@ -61,8 +61,6 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
-import SnapKeyring from './lib/snap-keyring';
-///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -1680,9 +1678,8 @@ export default class MetamaskController extends EventEmitter {
   async getSnapKeyring() {
     if (!this.snapKeyring) {
       // perform lookup
-      let [snapKeyring] = this.keyringController.getKeyringsByType(
-        'Snap Keyring',
-      );
+      let [snapKeyring] =
+        this.keyringController.getKeyringsByType('Snap Keyring');
       // if still missing, create
       if (!snapKeyring) {
         snapKeyring = await this.keyringController.addNewKeyring(
