@@ -16,13 +16,11 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import Typography from '../../ui/typography/typography';
 import Box from '../../ui/box/box';
 import {
   Color,
-  TypographyVariant,
-  FONT_WEIGHT,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -33,6 +31,7 @@ import {
   MultichainTokenListItem,
   MultichainImportTokenLink,
 } from '../../multichain';
+import { Text } from '../../component-library';
 import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
 
 const AssetList = ({ onClickAsset }) => {
@@ -143,13 +142,13 @@ const AssetList = ({ onClickAsset }) => {
         ) : (
           <>
             <Box justifyContent={JustifyContent.center}>
-              <Typography
+              <Text
                 color={Color.textAlternative}
-                variant={TypographyVariant.H6}
-                fontWeight={FONT_WEIGHT.NORMAL}
+                variant={TextVariant.bodySm}
+                as="h6"
               >
                 {t('missingToken')}
-              </Typography>
+              </Text>
             </Box>
 
             <ImportTokenLink />

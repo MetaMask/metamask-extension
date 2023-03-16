@@ -7,6 +7,8 @@ import { getSelectedAddress, getTokenList } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { MultichainTokenListItem } from '../../multichain';
+import { ButtonLink, Text } from '../../component-library';
+import { TextColor } from '../../../helpers/constants/design-system';
 
 export default function TokenCell({
   address,
@@ -27,34 +29,30 @@ export default function TokenCell({
   const title = tokenData?.name || symbol;
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
   const warning = balanceError ? (
-    <span>
+    <Text as="span">
       {t('troubleTokenBalances')}
-      <a
+      <ButtonLink
         href={`https://ethplorer.io/address/${userAddress}`}
-        rel="noopener noreferrer"
-        target="_blank"
+        externalLink
         onClick={(event) => event.stopPropagation()}
-        style={{ color: 'var(--color-warning-default)' }}
+        textProps={{
+          color: TextColor.warningDefault,
+        }}
       >
         {t('here')}
-      </a>
-    </span>
+      </ButtonLink>
+    </Text>
   ) : null;
 
   return (
     <>
       {process.env.MULTICHAIN ? (
         <MultichainTokenListItem
-          iconClassName="token-cell__icon"
-          onClick={onClick.bind(null, address)}
-          tokenAddress={address}
+          onClick={() => onClick(address)}
           tokenSymbol={symbol}
-          tokenDecimals={decimals}
           tokenImage={image}
-          warning={warning}
           primary={`${string || 0}`}
           secondary={formattedFiat}
-          isERC721={isERC721}
           title={title}
         />
       ) : (
@@ -63,7 +61,7 @@ export default function TokenCell({
             'token-cell--outdated': Boolean(balanceError),
           })}
           iconClassName="token-cell__icon"
-          onClick={onClick.bind(null, address)}
+          onClick={() => onClick(address)}
           tokenAddress={address}
           tokenSymbol={symbol}
           tokenDecimals={decimals}

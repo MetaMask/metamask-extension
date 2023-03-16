@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
   BLOCK_SIZES,
+  BorderColor,
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
@@ -63,11 +64,23 @@ export const MultichainTokenListItem = ({
               size={Size.XS}
               name={t('networkNameEthereum')}
               src={primaryTokenImage}
+              borderColor={
+                primaryTokenImage
+                  ? BorderColor.borderMuted
+                  : BorderColor.borderDefault
+              }
             />
           }
           marginRight={3}
         >
-          <AvatarToken name={tokenSymbol} src={tokenImage} showHalo />
+          <AvatarToken
+            name={tokenSymbol}
+            src={tokenImage}
+            showHalo
+            borderColor={
+              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
+            }
+          />
         </BadgeWrapper>
         <Box
           className="multichain-token-list-item__container-cell--text-container"
@@ -120,7 +133,6 @@ MultichainTokenListItem.propTypes = {
   /**
    * An additional className to apply to the TokenList.
    */
-
   className: PropTypes.string,
   /**
    * The onClick handler to be passed to the MultichainTokenListItem component

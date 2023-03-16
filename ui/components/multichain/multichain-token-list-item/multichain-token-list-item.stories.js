@@ -1,4 +1,7 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import testData from '../../../../.storybook/test-data';
+import configureStore from '../../../store/store';
 import { MultichainTokenListItem } from './multichain-token-list-item';
 
 export default {
@@ -20,6 +23,9 @@ export default {
     title: {
       control: 'text',
     },
+    onClick: {
+      action: 'onClick',
+    },
   },
   args: {
     secondary: '$9.80 USD',
@@ -29,6 +35,13 @@ export default {
     title: 'Ethereum',
   },
 };
+
+const customNetworkData = {
+  ...testData,
+  metamask: { ...testData.metamask, nativeCurrency: '' },
+};
+const customNetworkStore = configureStore(customNetworkData);
+
 const Template = (args) => {
   return <MultichainTokenListItem {...args} />;
 };
@@ -45,7 +58,21 @@ export const ChaosStory = (args) => (
 ChaosStory.storyName = 'ChaosStory';
 
 ChaosStory.args = {
-  title: 'long Long Nameeeee',
+  title: 'Really long, long name',
   secondary: '$94556756776.80 USD',
   primary: '34449765768526.00',
+};
+
+export const NoImagesStory = Template.bind({});
+
+NoImagesStory.decorators = [
+  (Story) => (
+    <Provider store={customNetworkStore}>
+      <Story />
+    </Provider>
+  ),
+];
+
+NoImagesStory.args = {
+  tokenImage: '',
 };
