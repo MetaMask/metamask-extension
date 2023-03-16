@@ -102,7 +102,9 @@ import { ButtonBase } from '../../component-library';
 
 When an `externalLink` prop is passed it will change the element to an anchor(`a`) tag and add the `target="_blank"` and `rel="noopener noreferrer"` attributes.
 
-  <Story id="components-componentlibrary-buttonbase--external-link" />
+{' '}
+
+<Story id="components-componentlibrary-buttonbase--external-link" />
 
 ```jsx
 import { ButtonBase } from '../../component-library';
@@ -194,4 +196,21 @@ import { ButtonBase, ICON_NAMES } from '../../component-library';
     Button Demo
   </ButtonBase>
 </>;
+```
+
+### Ellipsis
+
+Use the boolean `ellipsis` prop to change the if the `ButtonBase` component to have an ellipsis.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonbase--ellipsis" />
+</Canvas>
+
+```jsx
+import { ButtonBase } from '../../component-library';
+
+<Box style={{ width: 180 }}>
+  <ButtonBase>This is long text example without ellipsis</ButtonBase>
+  <ButtonBase ellipsis>This is long text example with ellipsis</ButtonBase>
+</Box>;
 ```

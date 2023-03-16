@@ -24,6 +24,7 @@ export const ButtonBase = ({
   children,
   className,
   href,
+  ellipsis = false,
   externalLink,
   size = BUTTON_BASE_SIZES.MD,
   startIconName,
@@ -57,6 +58,7 @@ export const ButtonBase = ({
           'mm-button-base--loading': loading,
           'mm-button-base--disabled': disabled,
           'mm-button-base--block': block,
+          'mm-button-base--ellipsis': ellipsis,
         },
         className,
       )}
@@ -68,19 +70,28 @@ export const ButtonBase = ({
       {...props}
     >
       <Text
-        as="span"
         className="mm-button-base__content"
+        display={DISPLAY.INLINE_FLEX}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         gap={2}
         variant={TextVariant.bodyMd}
         color={TextColor.inherit}
+        ellipsis={ellipsis}
+        as="div"
         {...textProps}
       >
         {startIconName && (
           <Icon name={startIconName} size={Size.SM} {...startIconProps} />
         )}
-        {children}
+        <Text
+          as="span"
+          ellipsis={ellipsis}
+          color={TextColor.inherit}
+          variant={TextVariant.inherit}
+        >
+          {children}
+        </Text>
         {endIconName && (
           <Icon name={endIconName} size={Size.SM} {...endIconProps} />
         )}
@@ -126,6 +137,10 @@ ButtonBase.propTypes = {
    * When an `href` prop is passed, ButtonBase will automatically change the root element to be an `a` (anchor) tag
    */
   href: PropTypes.string,
+  /**
+   * Used for long strings that can be cut off...
+   */
+  ellipsis: PropTypes.bool,
   /**
    * Boolean indicating if the link targets external content, it will cause the link to open in a new tab
    */
