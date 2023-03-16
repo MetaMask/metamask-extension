@@ -48,7 +48,6 @@ export default class PermissionConnect extends Component {
     snapResultPath: PropTypes.string.isRequired,
     requestType: PropTypes.string.isRequired,
     requestState: PropTypes.object.isRequired,
-    isSnap: PropTypes.bool.isRequired,
     approvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
     ///: END:ONLY_INCLUDE_IN
@@ -218,7 +217,6 @@ export default class PermissionConnect extends Component {
     const {
       history,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      isSnap,
       permissionsRequest,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -228,7 +226,7 @@ export default class PermissionConnect extends Component {
       permissionsRequest?.permissions &&
       Object.keys(permissionsRequest.permissions).includes('wallet_snap');
 
-    const shouldRedirect = Boolean(!isSnap && !isRequestingSnap);
+    const shouldRedirect = !isRequestingSnap;
     ///: END:ONLY_INCLUDE_IN
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -371,7 +369,6 @@ export default class PermissionConnect extends Component {
                   request={permissionsRequest || {}}
                   approvePermissionsRequest={(...args) => {
                     approvePermissionsRequest(...args);
-                    this.redirect(true);
                   }}
                   rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
@@ -399,14 +396,12 @@ export default class PermissionConnect extends Component {
                       permissions: requestState.permissions,
                       approvedAccounts: [...selectedAccountAddresses],
                     });
-                    this.redirect(true);
                   }}
                   rejectSnapInstall={(requestId) => {
                     rejectPendingApproval(
                       requestId,
                       serializeError(ethErrors.provider.userRejectedRequest()),
                     );
-                    this.redirect(false);
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
@@ -459,7 +454,6 @@ export default class PermissionConnect extends Component {
                   requestState={requestState || {}}
                   approveSnapResult={(requestId) => {
                     approvePendingApproval(requestId);
-                    this.redirect(true);
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
                 />

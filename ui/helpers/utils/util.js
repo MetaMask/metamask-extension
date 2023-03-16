@@ -547,6 +547,8 @@ export function getSnapDerivationPathName(path, curve) {
 
   return pathMetadata?.name ?? null;
 }
+
+export const stripProtocol = (value) => value.replace(/(^\w+:|^)\/\//u, '');
 ///: END:ONLY_INCLUDE_IN
 
 /**

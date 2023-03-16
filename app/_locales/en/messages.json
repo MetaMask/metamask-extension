@@ -3028,6 +3028,9 @@
   "replace": {
     "message": "replace"
   },
+  "requestFailed": {
+    "message": "Request failed"
+  },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
   },
@@ -3430,6 +3433,10 @@
   "snapInstallError": {
     "message": "Installation failed"
   },
+  "snapInstallRequestsPermission": {
+    "message": "$1 wants to install $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
+    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  },
   "snapInstallWarningCheck": {
     "message": "To confirm that you understand, check the box."
   },
@@ -3443,18 +3450,30 @@
   "snapInstalled": {
     "message": "Installed"
   },
-  "snapRequestsPermission": {
-    "message": "This snap is requesting the following permissions:"
+  "snapResultInstallSuccess": {
+    "message": "$1 was successfully installed",
+    "description": "$1 is the snap name that was installed."
   },
-  "snapResultSuccess": {
-    "message": "was successfully installed"
+  "snapResultUpdateSuccess": {
+    "message": "$1 was successfully updated",
+    "description": "$1 is the snap name that was installed."
   },
   "snapUpdate": {
     "message": "Update snap"
   },
+  "snapUpdateError": {
+    "message": "Update failed"
+  },
   "snapUpdateExplanation": {
     "message": "$1 needs a newer version of your snap.",
     "description": "$1 is the dapp that is requesting an update to the snap."
+  },
+  "snapUpdateRequestsPermission": {
+    "message": "$1 wants to update $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
+    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  },
+  "snapUpdated": {
+    "message": "Updated"
   },
   "snaps": {
     "message": "Snaps"

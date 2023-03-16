@@ -11,10 +11,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { Text } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const InstallError = ({ error }) => {
-  const t = useI18nContext();
+const InstallError = ({ title, error }) => {
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -24,7 +22,7 @@ const InstallError = ({ error }) => {
       padding={2}
     >
       <Text fontWeight={FONT_WEIGHT.BOLD} variant={TextVariant.headingLg}>
-        {t('snapInstallError')}
+        {title}
       </Text>
       <Box padding={2}>
         <ActionableMessage type="danger" message={error} />
@@ -34,6 +32,7 @@ const InstallError = ({ error }) => {
 };
 
 InstallError.propTypes = {
+  title: PropTypes.node.isRequired,
   error: PropTypes.string.isRequired,
 };
 

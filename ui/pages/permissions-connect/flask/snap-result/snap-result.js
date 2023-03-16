@@ -39,7 +39,11 @@ export default function SnapResult({
 
   const isLoading = requestState.loading;
 
-  const friendlyName = SNAPS_METADATA[targetSubjectMetadata.origin]?.name;
+  const snapName =
+    SNAPS_METADATA[targetSubjectMetadata.origin]?.name ??
+    targetSubjectMetadata.origin;
+
+  const isInstall = true;
 
   return (
     <Box
@@ -77,15 +81,24 @@ export default function SnapResult({
             padding={2}
           >
             <Text fontWeight={FONT_WEIGHT.BOLD} variant={TextVariant.headingLg}>
-              {t('snapInstalled')}
+              {t(isInstall ? 'snapInstalled' : 'snapUpdated')}
             </Text>
             <Text textAlign={TEXT_ALIGN.CENTER}>
-              <b>{friendlyName ?? targetSubjectMetadata.origin}</b>{' '}
-              {t('snapResultSuccess')}
+              {t(
+                isInstall
+                  ? 'snapResultInstallSuccess'
+                  : 'snapResultUpdateSuccess',
+                [<b key="1">{snapName}</b>],
+              )}
             </Text>
           </Box>
         )}
-        {hasError && <InstallError error={requestState.error} />}
+        {hasError && (
+          <InstallError
+            error={requestState.error}
+            title={t(isInstall ? 'snapInstallError' : 'snapUpdateError')}
+          />
+        )}
       </Box>
       <Box
         className="footers"

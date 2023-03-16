@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
-import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
 import Box from '../../../../components/ui/box/box';
@@ -12,13 +11,18 @@ import {
   BorderStyle,
   FLEX_DIRECTION,
   JustifyContent,
-  TypographyVariant,
+  TextVariant,
+  TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
-import Typography from '../../../../components/ui/typography';
+
 import UpdateSnapPermissionList from '../../../../components/app/flask/update-snap-permission-list';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
+import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
+import { Text } from '../../../../components/component-library';
+import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
+import { stripProtocol } from '../../../../helpers/utils/util';
 
 export default function SnapUpdate({
   request,
@@ -41,21 +45,21 @@ export default function SnapUpdate({
     [request, approveSnapUpdate],
   );
 
-  const approvedPermissions = request.approvedPermissions ?? {};
-  const revokedPermissions = request.unusedPermissions ?? {};
-  const newPermissions = request.newPermissions ?? {};
-
-  const hasPermissions =
-    !requestState.loading &&
-    !requestState.error &&
-    Object.keys(approvedPermissions).length +
-      Object.keys(revokedPermissions).length +
-      Object.keys(newPermissions).length >
-      0;
+  const approvedPermissions = requestState.approvedPermissions ?? {};
+  const revokedPermissions = requestState.unusedPermissions ?? {};
+  const newPermissions = requestState.newPermissions ?? {};
 
   const hasError = !requestState.loading && requestState.error;
 
   const isLoading = requestState.loading;
+
+  const hasPermissions =
+    !hasError &&
+    !isLoading &&
+    Object.keys(approvedPermissions).length +
+      Object.keys(revokedPermissions).length +
+      Object.keys(newPermissions).length >
+      0;
 
   const warnings = getSnapInstallWarnings(
     newPermissions,
@@ -64,6 +68,10 @@ export default function SnapUpdate({
   );
 
   const shouldShowWarning = warnings.length > 0;
+
+  const snapName =
+    SNAPS_METADATA[targetSubjectMetadata.origin]?.name ??
+    targetSubjectMetadata.origin;
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -88,25 +96,21 @@ export default function SnapUpdate({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <PermissionConnectHeader
-          icon={targetSubjectMetadata.iconUrl}
-          iconName={targetSubjectMetadata.name}
-          headerTitle={t('snapUpdate')}
-          headerText={null} // TODO(ritave): Add header text when snaps support description
-          siteOrigin={request.snapId}
-          isSnapInstallOrUpdate
-          snapVersion={request.newVersion}
-          boxProps={{ alignItems: AlignItems.center }}
+        <SnapsAuthorshipPill
+          snapId={targetSubjectMetadata.origin}
+          version={requestState.newVersionn}
         />
-        <Typography
-          boxProps={{
-            padding: [4, 4, 0, 4],
-          }}
-          variant={TypographyVariant.H7}
-          as="span"
-        >
-          {t('snapUpdateExplanation', [`${request.metadata?.dappOrigin}`])}
-        </Typography>
+        <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
+          {t('snapUpdate')}
+        </Text>
+        <Text padding={[4, 4, 0, 4]} textAlign={TEXT_ALIGN.CENTER} as="span">
+          {t('snapUpdateExplanation', [
+            `${
+              request.metadata?.dappOrigin &&
+              stripProtocol(request.metadata.dappOrigin)
+            }`,
+          ])}
+        </Text>
         {isLoading && (
           <Box
             className="loader-container"
@@ -117,18 +121,24 @@ export default function SnapUpdate({
             <PulseLoader />
           </Box>
         )}
-        {hasError && <InstallError error={requestState.error} />}
+        {hasError && (
+          <InstallError error={requestState.error} title={t('requestFailed')} />
+        )}
         {hasPermissions && (
           <>
-            <Typography
-              boxProps={{
-                padding: [2, 4, 0, 4],
-              }}
-              variant={TypographyVariant.H7}
-              as="span"
+            <Text
+              paddingLeft={4}
+              paddingRight={4}
+              textAlign={TEXT_ALIGN.CENTER}
             >
-              {t('snapRequestsPermission')}
-            </Typography>
+              {t('snapInstallRequestsPermission', [
+                <b key="1">
+                  {request.metadata?.dappOrigin &&
+                    stripProtocol(request.metadata.dappOrigin)}
+                </b>,
+                <b key="2">{snapName}</b>,
+              ])}
+            </Text>
             <UpdateSnapPermissionList
               approvedPermissions={approvedPermissions}
               revokedPermissions={revokedPermissions}
