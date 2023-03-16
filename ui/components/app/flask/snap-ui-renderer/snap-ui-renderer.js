@@ -9,6 +9,7 @@ import {
   FONT_WEIGHT,
   DISPLAY,
   FLEX_DIRECTION,
+  OVERFLOW_WRAP,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -33,6 +34,7 @@ export const UI_MAPPING = {
     props: {
       variant: TypographyVariant.H3,
       fontWeight: FONT_WEIGHT.BOLD,
+      overflowWrap: OVERFLOW_WRAP.BREAK_WORD,
     },
   }),
   text: (props) => ({
