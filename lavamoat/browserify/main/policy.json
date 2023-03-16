@@ -1238,6 +1238,28 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
+    "@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@metamask/utils": true,
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/scure-bip39": true
+      }
+    },
+    "@metamask/key-tree>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>superstruct": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true
+      }
+    },
     "@metamask/key-tree>@noble/ed25519": {
       "globals": {
         "crypto": true
@@ -1368,8 +1390,8 @@
     },
     "@metamask/rpc-methods": {
       "packages": {
+        "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/key-tree": true,
         "@metamask/utils": true,
         "@metamask/utils>superstruct": true
       }
@@ -1386,28 +1408,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree": {
-      "packages": {
-        "@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/rpc-methods>@metamask/key-tree>@metamask/utils": true,
-        "@metamask/scure-bip39": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/key-tree>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/rpc-methods>nanoid": {
@@ -1528,15 +1528,7 @@
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true,
-        "@metamask/utils>@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/secp256k1": true
-      }
-    },
-    "@metamask/utils>@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "@metamask/utils>@ethereumjs/tx>ethereum-cryptography>@noble/secp256k1": true
       }
     },
     "@ngraveio/bc-ur": {

@@ -4002,20 +4002,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/key-tree@npm:^6.2.1":
-  version: 6.2.1
-  resolution: "@metamask/key-tree@npm:6.2.1"
-  dependencies:
-    "@metamask/scure-bip39": ^2.1.0
-    "@metamask/utils": ^3.3.0
-    "@noble/ed25519": ^1.6.0
-    "@noble/hashes": ^1.0.0
-    "@noble/secp256k1": ^1.5.5
-    "@scure/base": ^1.0.0
-  checksum: 78931e20a2c933535c17d21e092dbc66e3e96f3c171a6814af51830b7774dd3b4059326180a3b1f52e48a258254a7ea70a31d0c335bf24a8c4250f8d196bc7ba
-  languageName: node
-  linkType: hard
-
 "@metamask/key-tree@npm:^7.0.0":
   version: 7.0.0
   resolution: "@metamask/key-tree@npm:7.0.0"
@@ -24294,7 +24280,7 @@ __metadata:
     "@metamask/forwarder": ^1.1.0
     "@metamask/gas-fee-controller": ^1.0.0
     "@metamask/jazzicon": ^2.0.0
-    "@metamask/key-tree": ^6.2.1
+    "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
