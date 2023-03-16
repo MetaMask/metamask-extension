@@ -7,7 +7,9 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getSnapPrefix } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
