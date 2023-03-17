@@ -170,7 +170,7 @@ import { ICON_NAMES } from '../icon';
 
 ### RTL
 
-For RTL language support use the `textProps` prop to pass a `textDirection` prop.
+For RTL language support use the `textDirection` prop.
 
 <Canvas>
   <Story id="components-componentlibrary-buttonbase--rtl" />
@@ -189,9 +189,7 @@ import { ButtonBase, ICON_NAMES } from '../../component-library';
   <ButtonBase
     startIconName={ICON_NAMES.ADD_SQUARE}
     endIconName={ICON_NAMES.ARROW_2_RIGHT}
-    textProps={{
-      textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
-    }}
+    textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}
   >
     Button Demo
   </ButtonBase>

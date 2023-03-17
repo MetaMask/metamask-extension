@@ -200,9 +200,7 @@ export const Rtl = (args) => (
       {...args}
       startIconName={ICON_NAMES.ADD_SQUARE}
       endIconName={ICON_NAMES.ARROW_2_RIGHT}
-      textProps={{
-        textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
-      }}
+      textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}
     >
       Button Demo
     </ButtonBase>
