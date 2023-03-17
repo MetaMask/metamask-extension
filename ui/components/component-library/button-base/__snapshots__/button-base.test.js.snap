@@ -3,21 +3,13 @@
 exports[`ButtonBase should render anchor element correctly by href and externalLink, href target and rel exist 1`] = `
 <div>
   <a
-    class="box mm-button-base mm-button-base--size-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-pill"
+    class="box mm-text mm-button-base mm-button-base--size-md mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-pill"
     data-testid="button-base"
     href="https://www.test.com/"
     rel="noopener noreferrer"
     target="_blank"
   >
-    <span
-      class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-    >
-      <span
-        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
-      >
-        Button Base
-      </span>
-    </span>
+    Button Base
   </a>
 </div>
 `;
@@ -25,18 +17,10 @@ exports[`ButtonBase should render anchor element correctly by href and externalL
 exports[`ButtonBase should render button element correctly and match snapshot 1`] = `
 <div>
   <button
-    class="box mm-button-base mm-button-base--size-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-pill"
+    class="box mm-text mm-button-base mm-button-base--size-md mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-pill"
     data-testid="button-base"
   >
-    <span
-      class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-    >
-      <span
-        class="box mm-text mm-text--inherit mm-text--color-inherit box--flex-direction-row"
-      >
-        Button base
-      </span>
-    </span>
+    Button base
   </button>
 </div>
 `;

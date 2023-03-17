@@ -210,7 +210,7 @@ export const Rtl = (args) => (
 );
 
 export const Ellipsis = (args) => (
-  <Box backgroundColor={Color.iconMuted} style={{ width: 180 }}>
+  <Box backgroundColor={Color.iconMuted} style={{ width: 150 }}>
     <ButtonBase {...args}>Example without ellipsis</ButtonBase>
     <ButtonBase {...args} ellipsis>
       Example with ellipsis

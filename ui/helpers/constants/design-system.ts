@@ -124,6 +124,7 @@ export enum TextColor {
   sepolia = 'sepolia',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
+  transparent = 'transparent',
 }
 
 export enum IconColor {
