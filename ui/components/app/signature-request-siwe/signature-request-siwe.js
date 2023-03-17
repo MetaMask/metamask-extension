@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
-import ActionableMessage from '../../ui/actionable-message';
+import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
 import { I18nContext } from '../../../contexts/i18n';
@@ -13,12 +13,13 @@ import {
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
-import { Icon } from '../../component-library/icon/icon';
-import { IconColor } from '../../../helpers/constants/design-system';
+import {
+  SEVERITIES,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
-import { ICON_NAMES } from '../../component-library';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -102,39 +103,27 @@ export default function SignatureRequestSIWE({
       ) : null}
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
-        <ActionableMessage
-          className="signature-request-siwe__actionable-message"
-          type="warning"
-          message={t('SIWEAddressInvalid', [
+        <BannerAlert severity={SEVERITIES.WARNING}>
+          {t('SIWEAddressInvalid', [
             parsedMessage.address,
             fromAccount.address,
           ])}
-          useIcon
-          icon={
-            <Icon name={ICON_NAMES.DANGER} color={IconColor.warningDefault} />
-          }
-        />
+        </BannerAlert>
       )}
       {!isSIWEDomainValid && (
-        <ActionableMessage
-          className="signature-request-siwe__actionable-message"
-          type="danger"
-          message={
-            <>
-              <p
-                className="typography--weight-bold"
-                style={{ display: 'inline' }}
-              >
-                {t('SIWEDomainInvalidTitle')}
-              </p>{' '}
-              {t('SIWEDomainInvalidText')}
-            </>
-          }
-          useIcon
-          icon={
-            <Icon name={ICON_NAMES.DANGER} color={IconColor.errorDefault} />
-          }
-        />
+        <BannerAlert
+          severity={SEVERITIES.DANGER}
+          marginLeft={4}
+          marginRight={4}
+          marginBottom={4}
+        >
+          <Text variant={TextVariant.bodyMd}>
+            <Text variant={TextVariant.bodyMdBold}>
+              {t('SIWEDomainInvalidTitle')}
+            </Text>{' '}
+            {t('SIWEDomainInvalidText')}
+          </Text>
+        </BannerAlert>
       )}
       <PageContainerFooter
         footerClassName="signature-request-siwe__page-container-footer"
