@@ -33,7 +33,7 @@ describe('eth_call', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // eth_call
-        await driver.openNewPage(`http://127.0.0.1:8080/?contract=${contract}`);
+        await driver.openNewPage(`http://127.0.0.1:8080`);
         const balanceOf = `0x${keccak256('balanceOf(address)').toString(
           'hex',
         )}`;
