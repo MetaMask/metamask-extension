@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
-import configureStore from '../../../store/store';
-import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/jest';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
 import ConfirmRemoveJwt from '.';
 
 const props = {
