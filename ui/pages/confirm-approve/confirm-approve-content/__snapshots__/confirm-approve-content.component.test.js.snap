@@ -33,7 +33,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
     >
       <span>
          
-        Allow access to and transfer all your 
+        Allow access to and transfer of all your 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
@@ -209,7 +209,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
     >
       <span>
          
-        Revoke permission to access and transfer all your 
+        Revoke permission to access and transfer all of your 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
@@ -225,7 +225,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
     >
       <span>
          
-        This revokes the permission for a third party to access and transfer all your 
+        This revokes the permission for a third party to access and transfer all of your 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
@@ -396,7 +396,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
     >
       <span>
          
-        Allow access to and transfer all your NFTs of 
+        Allow access to and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
@@ -412,7 +412,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
     >
       <span>
          
-        This allows a third party to access and transfer all NFTs of 
+        This allows a third party to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
@@ -583,7 +583,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
     >
       <span>
          
-        Revoke permission to access and transfer all your NFTs of 
+        Revoke permission to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
@@ -599,7 +599,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
     >
       <span>
          
-        This revokes the permission for a third party to access and transfer all your NFTs of 
+        This revokes the permission for a third party to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >

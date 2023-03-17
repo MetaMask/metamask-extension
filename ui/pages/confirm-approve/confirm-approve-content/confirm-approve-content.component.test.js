@@ -49,7 +49,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
@@ -112,7 +112,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
@@ -174,7 +174,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
@@ -232,7 +232,7 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('https://metamask.github.io/test-dapp/'),
     ).toBeInTheDocument();
     expect(getByTestId('confirm-approve-title').textContent).toStrictEqual(
-      ' Allow access to and transfer your TestDappCollectibles (#1)? ',
+      ' Allow access to and transfer of your TestDappCollectibles (#1)? ',
     );
     expect(
       queryByText(
