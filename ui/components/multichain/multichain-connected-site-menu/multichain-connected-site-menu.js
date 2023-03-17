@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
+  BackgroundColor,
   BorderColor,
   BorderRadius,
   Color,
@@ -27,9 +28,9 @@ export const MultichainConnectedSiteMenu = ({ className }) => {
             <Box
               backgroundColor={Color.successDefault}
               borderRadius={BorderRadius.full}
-              borderColor={BorderColor.borderMuted}
-              borderWidth={4}
-              style={{ width: 14, height: 14 }}
+              borderColor={BackgroundColor.backgroundDefault}
+              borderWidth={3}
+              style={{ width: 12, height: 12 }}
             />
           }
         >
@@ -43,11 +44,11 @@ export const MultichainConnectedSiteMenu = ({ className }) => {
         <BadgeWrapper
           badge={
             <Box
-              backgroundColor={Color.backgroundDefault}
+              backgroundColor={Color.iconAlternative}
               borderRadius={BorderRadius.full}
-              borderColor={BorderColor.borderMuted}
-              borderWidth={4}
-              style={{ width: 14, height: 14 }}
+              borderColor={BackgroundColor.backgroundDefault}
+              borderWidth={3}
+              style={{ width: 12, height: 12 }}
             />
           }
         >
