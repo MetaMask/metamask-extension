@@ -178,15 +178,5 @@ describe('Personal Message Manager', () => {
       const result2 = messageManager.getMsg(msgId2);
       expect(result2.msgParams.siwe.isSIWEMessage).toStrictEqual(false);
     });
-
-    it("should throw an error if the SIWE message's domain doesn't match", async () => {
-      const request = { origin: 'https://mismatched-domain.com' };
-      const { host: siweDomain } = new URL(origin);
-      const { host: browserDomain } = new URL(request.origin);
-      const expectedError = `SIWE domain is not valid: "${browserDomain}" !== "${siweDomain}"`;
-      await expect(async () => {
-        await messageManager.addUnapprovedMessage(msgParams, request);
-      }).rejects.toThrow(expectedError);
-    });
   });
 });

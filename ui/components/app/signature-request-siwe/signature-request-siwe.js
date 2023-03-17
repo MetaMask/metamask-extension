@@ -120,7 +120,6 @@ export default function SignatureRequestSIWE({
           }
           iconFillColor="var(--color-error-default)"
           useIcon
-          withRightButton
           icon={<Icon name="danger" color={IconColor.errorDefault} />}
         />
       )}
