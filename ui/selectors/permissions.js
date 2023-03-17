@@ -310,7 +310,9 @@ export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
       ({ type }) =>
-        type === 'wallet_installSnap' || type === 'wallet_updateSnap',
+        type === 'wallet_installSnap' ||
+        type === 'wallet_updateSnap' ||
+        type === 'wallet_installSnapResult',
     )
     .map(({ requestData }) => requestData);
 }
@@ -333,4 +335,12 @@ export function getFirstPermissionRequest(state) {
 
 export function getPermissions(state, origin) {
   return getPermissionSubjects(state)[origin]?.permissions;
+}
+
+export function getRequestState(state, id) {
+  return state.metamask.pendingApprovals[id]?.requestState;
+}
+
+export function getRequestType(state, id) {
+  return state.metamask.pendingApprovals[id]?.type;
 }
