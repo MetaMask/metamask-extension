@@ -2033,7 +2033,79 @@ describe('NetworkController', () => {
             );
           });
 
-          it.todo('stores the network ID of the second network, not the first');
+          it('stores the ID of the second network, not the first', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                  networkConfigurations: {
+                    testNetworkConfigurationId: {
+                      id: 'testNetworkConfigurationId',
+                      type: 'rpc',
+                      rpcUrl: 'https://mock-rpc-url',
+                      chainId: '0x1337',
+                    },
+                  },
+                },
+              },
+              async ({ controller, network: network1 }) => {
+                network1.mockEssentialRpcCalls({
+                  eth_getBlockByNumber: {
+                    beforeCompleting: async () => {
+                      await waitForStateChanges({
+                        controller,
+                        propertyPath: ['networkStatus'],
+                        operation: () => {
+                          controller.setActiveNetwork(
+                            'testNetworkConfigurationId',
+                          );
+                        },
+                      });
+                    },
+                    net_version: {
+                      response: {
+                        result: '111',
+                      },
+                    },
+                  },
+                });
+                const network2 = new NetworkCommunications({
+                  networkClientType: 'custom',
+                  networkClientOptions: {
+                    customRpcUrl: 'https://mock-rpc-url',
+                  },
+                });
+                network2.mockEssentialRpcCalls({
+                  net_version: {
+                    response: {
+                      result: '222',
+                    },
+                  },
+                });
+                await withoutCallingLookupNetwork({
+                  controller,
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkId'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+
+                expect(controller.store.getState().networkId).toBe('222');
+              },
+            );
+          });
 
           it('stores the EIP-1559 support of the second network, not the first', async () => {
             await withController(
@@ -2104,16 +2176,6 @@ describe('NetworkController', () => {
           });
 
           it('emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not', async () => {
-            const anotherNetwork = INFURA_NETWORKS.find(
-              (network) => network.networkType !== networkType,
-            );
-            /* eslint-disable-next-line jest/no-if */
-            if (!anotherNetwork) {
-              throw new Error(
-                "Could not find another network to use. You've probably commented out all INFURA_NETWORKS but one. Please uncomment another one.",
-              );
-            }
-
             await withController(
               {
                 state: {
@@ -2122,6 +2184,14 @@ describe('NetworkController', () => {
                     // NOTE: This doesn't need to match the logical chain ID
                     // of the network selected, it just needs to exist
                     chainId: '0x9999999',
+                  },
+                  networkConfigurations: {
+                    testNetworkConfigurationId: {
+                      id: 'testNetworkConfigurationId',
+                      type: 'rpc',
+                      rpcUrl: 'https://mock-rpc-url',
+                      chainId: '0x1337',
+                    },
                   },
                 },
               },
@@ -2133,11 +2203,12 @@ describe('NetworkController', () => {
                         controller,
                         eventName: 'networkDidChange',
                         operation: async () => {
-                          await withoutCallingLookupNetwork({
+                          await waitForStateChanges({
                             controller,
+                            propertyPath: ['networkStatus'],
                             operation: () => {
-                              controller.setProviderType(
-                                anotherNetwork.networkType,
+                              controller.setActiveNetwork(
+                                'testNetworkConfigurationId',
                               );
                             },
                           });
@@ -2147,8 +2218,9 @@ describe('NetworkController', () => {
                   },
                 });
                 const network2 = network1.with({
+                  networkClientType: 'custom',
                   networkClientOptions: {
-                    infuraNetwork: anotherNetwork.networkType,
+                    customRpcUrl: 'https://mock-rpc-url',
                   },
                 });
                 network2.mockEssentialRpcCalls({
@@ -2162,22 +2234,19 @@ describe('NetworkController', () => {
                     await controller.initializeProvider();
                   },
                 });
-
-                waitForEvent({
+                const promiseForInfuraIsUnblocked = waitForEvent({
+                  controller,
+                  eventName: 'infuraIsUnblocked',
+                });
+                const promiseForInfuraIsBlocked = waitForEvent({
                   controller,
                   eventName: 'infuraIsBlocked',
-                  operation: async () => {
-                    const promiseForInfuraIsUnblocked = waitForEvent({
-                      controller,
-                      eventName: 'infuraIsUnblocked',
-                      operation: async () => {
-                        await controller.lookupNetwork();
-                      },
-                    });
-
-                    await expect(promiseForInfuraIsUnblocked).toNeverResolve();
-                  },
                 });
+
+                await controller.lookupNetwork();
+
+                await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+                expect(await promiseForInfuraIsBlocked).toBe(true);
               },
             );
           });
@@ -2243,7 +2312,8 @@ describe('NetworkController', () => {
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls({
-                // NOTE: This covers eth_getBlockByNumber implicitly
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
                 latestBlock: POST_1559_BLOCK,
                 net_version: {
                   response: {
@@ -2457,7 +2527,7 @@ describe('NetworkController', () => {
                 net_version: [
                   {
                     response: {
-                      result: '0x42',
+                      result: '42',
                     },
                   },
                   {
@@ -2475,7 +2545,7 @@ describe('NetworkController', () => {
                   await controller.initializeProvider();
                 },
               });
-              expect(controller.store.getState().networkId).toBe('0x42');
+              expect(controller.store.getState().networkId).toBe('42');
 
               // Advance block tracker loop to force a fresh call to
               // eth_getBlockByNumber
@@ -2682,7 +2752,7 @@ describe('NetworkController', () => {
                 net_version: [
                   {
                     response: {
-                      result: '0x42',
+                      result: '42',
                     },
                   },
                   {
@@ -2690,8 +2760,8 @@ describe('NetworkController', () => {
                   },
                 ],
                 eth_blockNumber: {
-                  times: 2
-                }
+                  times: 2,
+                },
               });
               await waitForStateChanges({
                 controller,
@@ -2700,7 +2770,7 @@ describe('NetworkController', () => {
                   await controller.initializeProvider();
                 },
               });
-              expect(controller.store.getState().networkId).toBe('0x42');
+              expect(controller.store.getState().networkId).toBe('42');
 
               // Advance block tracker loop to force a fresh call to
               // eth_getBlockByNumber
@@ -2846,27 +2916,431 @@ describe('NetworkController', () => {
       });
 
       describe('if the request for net_version responds successfully, but the request for eth_getBlockByNumber responds with a "countryBlocked" error', () => {
-        it.todo('stores the fact that the network is blocked');
+        it('stores the fact that the network is blocked', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
 
-        it.todo('clears the ID of the network from state');
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkStatus'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
 
-        it.todo('clears whether the network supports EIP-1559 from state');
+              expect(controller.store.getState().networkStatus).toBe('blocked');
+            },
+          );
+        });
 
-        it.todo('emits infuraIsBlocked');
+        it('clears the ID of the network from state', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                latestBlock: BLOCK,
+                net_version: {
+                  response: {
+                    result: '42',
+                  },
+                },
+                eth_getBlockByNumber: [
+                  {
+                    response: {
+                      result: BLOCK,
+                    },
+                  },
+                  {
+                    response: BLOCKED_INFURA_RESPONSE,
+                  },
+                ],
+                eth_blockNumber: {
+                  times: 2,
+                },
+              });
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+              expect(controller.store.getState().networkId).toBe('42');
 
-        it.todo('does not emit infuraIsUnblocked');
+              // Advance block tracker loop to force a fresh call to
+              // eth_getBlockByNumber
+              clock.runAll();
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+              expect(controller.store.getState().networkId).toBeNull();
+            },
+          );
+        });
+
+        it('clears whether the network supports EIP-1559 from state', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+                networkDetails: {
+                  EIPS: {
+                    1559: true,
+                  },
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkDetails'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+              expect(
+                controller.store.getState().networkDetails.EIPS['1559'],
+              ).toBeUndefined();
+            },
+          );
+        });
+
+        it('emits infuraIsBlocked', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              const infuraIsBlocked = await waitForEvent({
+                controller,
+                eventName: 'infuraIsBlocked',
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(infuraIsBlocked).toBe(true);
+            },
+          );
+        });
+
+        it('does not emit infuraIsUnblocked', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              const promiseForInfuraIsUnblocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsUnblocked',
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+            },
+          );
+        });
       });
 
       describe('if the request for net_version responds successfully, but the request for eth_getBlockByNumber responds with a generic error', () => {
-        it.todo('stores the fact that the network is unavailable');
+        it('stores the fact that the network is unavailable', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
 
-        it.todo('clears the ID of the network from state');
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkStatus'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
 
-        it.todo('clears whether the network supports EIP-1559 from state');
+              expect(controller.store.getState().networkStatus).toBe('unavailable');
+            },
+          );
+        });
 
-        it.todo('does not emit infuraIsBlocked');
+        it('clears the ID of the network from state', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                latestBlock: BLOCK,
+                net_version: {
+                  response: {
+                    result: '42',
+                  },
+                },
+                eth_getBlockByNumber: [
+                  {
+                    response: {
+                      result: BLOCK,
+                    },
+                  },
+                  {
+                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  },
+                ],
+                eth_blockNumber: {
+                  times: 2,
+                },
+              });
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+              expect(controller.store.getState().networkId).toBe('42');
 
-        it.todo('does not emit infuraIsUnblocked');
+              // Advance block tracker loop to force a fresh call to
+              // eth_getBlockByNumber
+              clock.runAll();
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+              expect(controller.store.getState().networkId).toBeNull();
+            },
+          );
+        });
+
+        it('clears whether the network supports EIP-1559 from state', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+                networkDetails: {
+                  EIPS: {
+                    1559: true,
+                  },
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkDetails'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+              expect(
+                controller.store.getState().networkDetails.EIPS['1559'],
+              ).toBeUndefined();
+            },
+          );
+        });
+
+        it('does not emit infuraIsBlocked', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              const promiseForInfuraIsBlocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsBlocked',
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              await expect(promiseForInfuraIsBlocked).toNeverResolve();
+            },
+          );
+        });
+
+        it('does not emit infuraIsUnblocked', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              const promiseForInfuraIsUnblocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsUnblocked',
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+            },
+          );
+        });
       });
 
       describe('if the network was switched after the net_version request started but before it completed', () => {
@@ -2934,7 +3408,62 @@ describe('NetworkController', () => {
           );
         });
 
-        it.todo('stores the network ID of the second network, not the first');
+        it('stores the ID of the second network, not the first', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url-2',
+                  chainId: '0x1337',
+                  ticker: 'RPC',
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                net_version: {
+                  response: {
+                    result: '111',
+                  },
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['networkStatus'],
+                      operation: () => {
+                        controller.setProviderType('goerli');
+                      },
+                    });
+                  },
+                },
+              });
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: 'goerli',
+                },
+              });
+              network2.mockEssentialRpcCalls();
+
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(controller.store.getState().networkId).toBe('5');
+            },
+          );
+        });
 
         it('stores the EIP-1559 support of the second network, not the first', async () => {
           await withController(
@@ -3001,25 +3530,316 @@ describe('NetworkController', () => {
           );
         });
 
-        it.todo(
-          'emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not',
-        );
+        it('emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                  ticker: 'RPC',
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                net_version: {
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['networkDetails'],
+                      operation: () => {
+                        controller.setProviderType('goerli');
+                      },
+                    });
+                  },
+                },
+              });
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: 'goerli',
+                },
+              });
+              network2.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+              const promiseForInfuraIsUnblocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsUnblocked',
+              });
+              const promiseForInfuraIsBlocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsBlocked',
+              });
+
+              await controller.lookupNetwork();
+
+              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+              expect(await promiseForInfuraIsBlocked).toBe(true);
+            },
+          );
+        });
       });
 
       describe('if the network was switched after the eth_getBlockByNumber request started but before it completed', () => {
-        it.todo(
-          'stores the network status of the second network, not the first',
-        );
+        it('stores the network status of the second network, not the first', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url-2',
+                  chainId: '0x1337',
+                  ticker: 'RPC',
+                },
+                networkDetails: {
+                  EIPS: {},
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                // This results in a successful call to eth_getBlockByNumber
+                // implicitly
+                latestBlock: BLOCK,
+                eth_getBlockByNumber: {
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['networkStatus'],
+                      operation: () => {
+                        controller.setProviderType('goerli');
+                      },
+                    });
+                  },
+                },
+              });
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: 'goerli',
+                },
+              });
+              network2.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                },
+              });
 
-        it.todo('stores the network ID of the second network, not the first');
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
 
-        it.todo(
-          'stores the EIP-1559 support of the second network, not the first',
-        );
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkStatus'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
 
-        it.todo(
-          'emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not',
-        );
+              expect(controller.store.getState().networkStatus).toBe(
+                'unavailable',
+              );
+            },
+          );
+        });
+
+        it('stores the network ID of the second network, not the first', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url-2',
+                  chainId: '0x1337',
+                  ticker: 'RPC',
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['networkStatus'],
+                      operation: () => {
+                        controller.setProviderType('goerli');
+                      },
+                    });
+                  },
+                },
+                net_version: {
+                  response: {
+                    result: '111'
+                  }
+                }
+              });
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: 'goerli',
+                },
+              });
+              network2.mockEssentialRpcCalls();
+
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkId'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(controller.store.getState().networkId).toBe('5');
+            },
+          );
+        });
+
+        it('stores the EIP-1559 support of the second network, not the first', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                  ticker: 'RPC',
+                },
+                networkDetails: {
+                  EIPS: {},
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                latestBlock: POST_1559_BLOCK,
+                eth_getBlockByNumber: {
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['networkDetails'],
+                      operation: () => {
+                        controller.setProviderType('goerli');
+                      },
+                    });
+                  },
+                },
+              });
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: 'goerli',
+                },
+              });
+              network2.mockEssentialRpcCalls({
+                latestBlock: PRE_1559_BLOCK,
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkDetails'],
+                // setProviderType clears networkDetails first, and then updates
+                // it to what we expect it to be
+                count: 2,
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+
+              expect(
+                controller.store.getState().networkDetails.EIPS['1559'],
+              ).toBe(false);
+            },
+          );
+        });
+
+        it('emits infuraIsBlocked, not infuraIsUnblocked, if the second network is blocked, even if the first one is not', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                  ticker: 'RPC',
+                },
+              },
+            },
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  beforeCompleting: async () => {
+                    await waitForStateChanges({
+                      controller,
+                      propertyPath: ['networkDetails'],
+                      operation: () => {
+                        controller.setProviderType('goerli');
+                      },
+                    });
+                  },
+                },
+              });
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: 'goerli',
+                },
+              });
+              network2.mockEssentialRpcCalls({
+                eth_getBlockByNumber: {
+                  response: BLOCKED_INFURA_RESPONSE,
+                },
+              });
+              await withoutCallingLookupNetwork({
+                controller,
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+              const promiseForInfuraIsUnblocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsUnblocked',
+              });
+              const promiseForInfuraIsBlocked = waitForEvent({
+                controller,
+                eventName: 'infuraIsBlocked',
+              });
+
+              await controller.lookupNetwork();
+
+              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+              expect(await promiseForInfuraIsBlocked).toBe(true);
+            },
+          );
+        });
       });
     });
   });
@@ -4423,8 +5243,8 @@ describe('NetworkController', () => {
                 times: 2,
               },
               eth_blockNumber: {
-                times: 2
-              }
+                times: 2,
+              },
             });
 
             await controller.initializeProvider();
