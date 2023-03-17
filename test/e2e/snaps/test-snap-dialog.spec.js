@@ -52,25 +52,28 @@ describe('Test Snap Dialog', function () {
           tag: 'button',
         });
 
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // switch to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectDialogSnap',
+          text: 'Reconnect to Dialog Snap',
+        });
 
         // click on alert dialog
         await driver.clickElement('#sendAlertButton');
@@ -199,7 +202,7 @@ describe('Test Snap Dialog', function () {
         await driver.delay(1000);
 
         // fill '2323' in form field
-        await driver.fill('.MuiInput-input', '2323');
+        await driver.pasteIntoField('.MuiInput-input', '2323');
 
         // click submit button
         await driver.clickElement({

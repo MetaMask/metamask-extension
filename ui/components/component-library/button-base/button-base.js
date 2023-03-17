@@ -24,6 +24,7 @@ export const ButtonBase = ({
   children,
   className,
   href,
+  externalLink,
   size = BUTTON_BASE_SIZES.MD,
   startIconName,
   startIconProps,
@@ -36,6 +37,10 @@ export const ButtonBase = ({
   ...props
 }) => {
   const Tag = href ? 'a' : as;
+  if (Tag === 'a' && externalLink) {
+    props.target = '_blank';
+    props.rel = 'noopener noreferrer';
+  }
   return (
     <Box
       as={Tag}
@@ -121,6 +126,10 @@ ButtonBase.propTypes = {
    * When an `href` prop is passed, ButtonBase will automatically change the root element to be an `a` (anchor) tag
    */
   href: PropTypes.string,
+  /**
+   * Boolean indicating if the link targets external content, it will cause the link to open in a new tab
+   */
+  externalLink: PropTypes.bool,
   /**
    * Add icon to start (left side) of button text passing icon name
    * The name of the icon to display. Should be one of ICON_NAMES

@@ -3,7 +3,7 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('NFTs', function () {
+describe('ERC721 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [
@@ -14,7 +14,8 @@ describe('NFTs', function () {
       },
     ],
   };
-  it('should transfer a single NFT from one account to another', async function () {
+
+  it('should transfer a single ERC721 NFT from one account to another', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -68,7 +69,8 @@ describe('NFTs', function () {
       },
     );
   });
-  it('should approve an address to transfer a single NFT', async function () {
+
+  it('should approve an address to transfer a single ERC721 NFT', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -91,8 +93,11 @@ describe('NFTs', function () {
         await driver.findClickableElement('#deployButton');
 
         // Click Approve
-        await driver.fill('#approveTokenInput', '1');
+        const approveInput = await driver.findElement('#approveTokenInput');
+        await approveInput.clear();
+        await approveInput.sendKeys('1');
         await driver.clickElement('#approveButton');
+
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
@@ -129,13 +134,16 @@ describe('NFTs', function () {
         );
 
         // Verify transaction
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve TDC spending cap');
+        const completedTx = await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Approve TDC spending cap',
+        });
+        assert.equal(await completedTx.isDisplayed(), true);
       },
     );
   });
-  it('should enable approval for a third party address to manage all NFTs', async function () {
+
+  it('should enable approval for a third party address to manage all ERC721 NFTs', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -198,13 +206,16 @@ describe('NFTs', function () {
         );
 
         // Verify transaction
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve TDC with no spend limit');
+        const completedTx = await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Approve TDC with no spend limit',
+        });
+        assert.equal(await completedTx.isDisplayed(), true);
       },
     );
   });
-  it('should disable approval for a third party address to manage all NFTs', async function () {
+
+  it('should disable approval for a third party address to manage all ERC721 NFTs', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -270,9 +281,11 @@ describe('NFTs', function () {
         );
 
         // Verify transaction
-        const completedTx = await driver.findElement('.list-item__title');
-        const completedTxText = await completedTx.getText();
-        assert.equal(completedTxText, 'Approve TDC with no spend limit');
+        const completedTx = await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Approve TDC with no spend limit',
+        });
+        assert.equal(await completedTx.isDisplayed(), true);
       },
     );
   });

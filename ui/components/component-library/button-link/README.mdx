@@ -101,6 +101,24 @@ import { ButtonLink } from '../../component-library';
 <ButtonLink href="/">Href example</ButtonLink>;
 ```
 
+### External Link
+
+When an `externalLink` prop is passed it adds the `target="_blank"` and `rel="noopener noreferrer"` attributes. 
+
+`rel="noreferrer noopener"` is used in links to prevent security vulnerabilities that can be exploited by malicious websites. It disables the window.opener property and prevents the new page from sending the referrer information, providing an additional layer of security.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--external-link" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../component-library';
+
+<ButtonLink href="https://metamask.io" externalLink>
+  Anchor element with external link
+</ButtonLink>;
+```
+
 ### Hit area
 
 The default hit area for `ButtonLink` is the width of the text and height based on the `size` prop which is set to `Size.auto` by default. There may be times when you want to increase the hit area of the `ButtonLink`. To do this you can use the `Box` props `paddingLeft` and `paddingRight`. Or alternatively you can use the `block` prop which sets the width to 100%.
