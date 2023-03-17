@@ -63,7 +63,6 @@ export default function setupIpfsResolver({
     let url = `http://unstoppabledomains.com/search?searchTerm=${domainName}`;
     try {
       const ipfsHash = await resolveUnsToIpfsContentId(domainName);
-      console.log(ipfsHash);
       if (ipfsHash) {
         url = `https://${ipfsGateway}/ipfs/${ipfsHash}`;
       }

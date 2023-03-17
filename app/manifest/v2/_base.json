@@ -84,6 +84,7 @@
     "*://*.zil/",
     "*://*.hi/",
     "*://*.kresus/",
+    "*://*.polygon/",
     "notifications"
   ],
   "short_name": "__MSG_appName__"

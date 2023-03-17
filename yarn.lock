@@ -8202,10 +8202,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unstoppabledomains/tldsresolverkeys@npm:^2.2.3":
-  version: 2.2.3
-  resolution: "@unstoppabledomains/tldsresolverkeys@npm:2.2.3"
-  checksum: 070eda8ba29193a46f729c94d826b84b26332d69312d68f37c66a61f1e595d9ca2832f4856b599c3878efdc7b2e2210a38961607e34f437e8ade111cfde63b45
+"@unstoppabledomains/tldsresolverkeys@npm:^2.3.4":
+  version: 2.3.4
+  resolution: "@unstoppabledomains/tldsresolverkeys@npm:2.3.4"
+  checksum: eb710f735c189155ac3bbc00da4d0dc7b60ad4a670e39efd4b90a24e5a056b1139c5525fb5ff2eef06a25563bdbd75921878ef2bfcd929905d7eceaf457718f7
   languageName: node
   linkType: hard
 
@@ -24384,6 +24384,8 @@ __metadata:
     "@types/yargs": ^17.0.8
     "@typescript-eslint/eslint-plugin": ^5.30.7
     "@typescript-eslint/parser": ^5.30.7
+    "@unstoppabledomains/resolution": ^8.5.0
+    "@unstoppabledomains/tldsresolverkeys": ^2.3.4
     "@whitespace/storybook-addon-html": ^5.1.1
     "@zxing/browser": ^0.0.10
     "@zxing/library": 0.8.0
