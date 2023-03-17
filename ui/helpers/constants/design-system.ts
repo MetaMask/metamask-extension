@@ -108,6 +108,7 @@ export enum TextColor {
   textDefault = 'text-default',
   textAlternative = 'text-alternative',
   textMuted = 'text-muted',
+  overlayInverse = 'overlay-inverse',
   primaryDefault = 'primary-default',
   primaryInverse = 'primary-inverse',
   errorDefault = 'error-default',

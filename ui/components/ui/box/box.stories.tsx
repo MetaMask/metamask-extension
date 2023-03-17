@@ -1,4 +1,6 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
+
 import {
   BLOCK_SIZES,
   BorderStyle,
@@ -12,10 +14,9 @@ import {
   TEXT_ALIGN,
   FLEX_DIRECTION,
   FLEX_WRAP,
-  Color,
 } from '../../../helpers/constants/design-system';
 
-import Typography from '../typography';
+import { Text } from '../../component-library';
 
 import Box from './box';
 
@@ -41,7 +42,6 @@ const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
 export default {
   title: 'Components/UI/Box',
-
   component: Box,
   parameters: {
     docs: {
@@ -50,14 +50,6 @@ export default {
   },
   argTypes: {
     children: {
-      table: { category: 'children' },
-    },
-    size: {
-      control: { type: 'range', min: 50, max: 500, step: 10 },
-      table: { category: 'children' },
-    },
-    items: {
-      control: 'number',
       table: { category: 'children' },
     },
     display: {
@@ -223,45 +215,26 @@ export default {
       table: { category: 'as (root html element)' },
     },
   },
-  args: {
-    size: 100,
-    items: 1,
-    display: DISPLAY.BLOCK,
-    width: BLOCK_SIZES.HALF,
-    height: BLOCK_SIZES.HALF,
-    borderStyle: BorderStyle.dashed,
-    borderColor: BorderColor.borderDefault,
-    justifyContent: JustifyContent.flexStart,
-    alignItems: AlignItems.flexStart,
-    textAlign: TEXT_ALIGN.LEFT,
-  },
-};
+} as ComponentMeta<typeof Box>;
 
-export const DefaultStory = (args) => {
-  const { items, size, ...rest } = args;
-  const children = [];
-  for (let $i = 0; $i < items; $i++) {
-    children.push(
-      <Box
-        as="img"
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        borderColor={BorderColor.borderMuted}
-        key={$i}
-        style={{ width: size, height: size }}
-        src="./images/eth_logo.svg"
-      />,
-    );
-  }
-  return (
-    <Box {...rest} borderColor={BorderColor.borderMuted}>
-      {children}
-    </Box>
-  );
+export const DefaultStory: ComponentStory<typeof Box> = (args) => (
+  <Box {...args} />
+);
+
+DefaultStory.args = {
+  children: 'Box component',
+  display: DISPLAY.FLEX,
+  justifyContent: JustifyContent.center,
+  alignItems: AlignItems.center,
+  width: BLOCK_SIZES.HALF,
+  height: BLOCK_SIZES.HALF,
+  borderColor: BorderColor.borderDefault,
+  padding: 4,
 };
 
 DefaultStory.storyName = 'Default';
 
-export const Margin = (args) => {
+export const Margin: ComponentStory<typeof Box> = (args) => {
   return (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
@@ -286,7 +259,7 @@ export const Margin = (args) => {
   );
 };
 
-export const Padding = (args) => {
+export const Padding: ComponentStory<typeof Box> = (args) => {
   return (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
@@ -309,91 +282,91 @@ export const Padding = (args) => {
   );
 };
 
-export const ColorStory = (args) => {
+export const ColorStory: ComponentStory<typeof Box> = (args) => {
   return (
     <>
-      <Box {...args} padding={3} color={Color.textDefault}>
-        Color.textDefault
+      <Box {...args} padding={3} color={TextColor.textDefault}>
+        TextColor.textDefault
       </Box>
-      <Box {...args} padding={3} color={Color.textAlternative}>
-        Color.textAlternative
+      <Box {...args} padding={3} color={TextColor.textAlternative}>
+        TextColor.textAlternative
       </Box>
-      <Box {...args} padding={3} color={Color.textMuted}>
-        Color.textMuted
+      <Box {...args} padding={3} color={TextColor.textMuted}>
+        TextColor.textMuted
       </Box>
-      <Box {...args} padding={3} color={Color.primaryDefault}>
-        Color.primaryDefault
+      <Box {...args} padding={3} color={TextColor.primaryDefault}>
+        TextColor.primaryDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         backgroundColor={BackgroundColor.primaryDefault}
       >
-        Color.primaryInverse
+        TextColor.primaryInverse
       </Box>
-      <Box {...args} padding={3} color={Color.errorDefault}>
-        Color.errorDefault
+      <Box {...args} padding={3} color={TextColor.errorDefault}>
+        TextColor.errorDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={Color.errorInverse}
+        color={TextColor.errorInverse}
         backgroundColor={BackgroundColor.errorDefault}
       >
-        Color.errorInverse
+        TextColor.errorInverse
       </Box>
-      <Box {...args} padding={3} color={Color.successDefault}>
-        Color.successDefault
+      <Box {...args} padding={3} color={TextColor.successDefault}>
+        TextColor.successDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={Color.successInverse}
+        color={TextColor.successInverse}
         backgroundColor={BackgroundColor.successDefault}
       >
-        Color.successInverse
+        TextColor.successInverse
       </Box>
-      <Box {...args} padding={3} color={Color.warningDefault}>
-        Color.warningDefault
+      <Box {...args} padding={3} color={TextColor.warningDefault}>
+        TextColor.warningDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={Color.warningInverse}
+        color={TextColor.warningInverse}
         backgroundColor={BackgroundColor.warningDefault}
       >
-        Color.warningInverse
+        TextColor.warningInverse
       </Box>
-      <Box {...args} padding={3} color={Color.infoDefault}>
-        Color.infoDefault
+      <Box {...args} padding={3} color={TextColor.infoDefault}>
+        TextColor.infoDefault
       </Box>
       <Box
         {...args}
         padding={3}
-        color={Color.infoInverse}
+        color={TextColor.infoInverse}
         backgroundColor={BackgroundColor.infoDefault}
       >
-        Color.infoInverse
+        TextColor.infoInverse
       </Box>
-      <Box {...args} padding={3} color={Color.inherit}>
-        Color.inherit
-      </Box>
-      <Box
-        {...args}
-        padding={3}
-        backgroundColor={Color.sepolia}
-        color={Color.sepoliaInverse}
-      >
-        Color.sepoliaInverse
+      <Box {...args} padding={3} color={TextColor.inherit}>
+        TextColor.inherit
       </Box>
       <Box
         {...args}
         padding={3}
-        backgroundColor={Color.goerli}
-        color={Color.goerliInverse}
+        backgroundColor={BackgroundColor.sepolia}
+        color={TextColor.sepoliaInverse}
       >
-        Color.goerliInverse
+        TextColor.sepoliaInverse
+      </Box>
+      <Box
+        {...args}
+        padding={3}
+        backgroundColor={BackgroundColor.goerli}
+        color={TextColor.goerliInverse}
+      >
+        TextColor.goerliInverse
       </Box>
     </>
   );
@@ -404,69 +377,55 @@ export const BackgroundColorStory = () => {
   return (
     <>
       <Box padding={3} backgroundColor={BackgroundColor.backgroundDefault}>
-        <Typography color={TextColor.textDefault}>
+        <Text color={TextColor.textDefault}>
           BackgroundColor.backgroundDefault
-        </Typography>
+        </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.backgroundAlternative}>
-        <Typography color={TextColor.textDefault}>
+        <Text color={TextColor.textDefault}>
           BackgroundColor.backgroundAlternative
-        </Typography>
+        </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.overlayDefault}>
-        <Typography color={TextColor.overlayInverse}>
+        <Text color={TextColor.overlayInverse}>
           BackgroundColor.overlayDefault
-        </Typography>
+        </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.primaryDefault}>
-        <Typography color={Color.primaryInverse}>
+        <Text color={TextColor.primaryInverse}>
           BackgroundColor.primaryDefault
-        </Typography>
+        </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.primaryMuted}>
-        <Typography color={TextColor.textDefault}>
-          BackgroundColor.primaryMuted
-        </Typography>
+        <Text color={TextColor.textDefault}>BackgroundColor.primaryMuted</Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.errorDefault}>
-        <Typography color={TextColor.errorInverse}>
-          BackgroundColor.errorDefault
-        </Typography>
+        <Text color={TextColor.errorInverse}>BackgroundColor.errorDefault</Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.errorMuted}>
-        <Typography color={TextColor.textDefault}>
-          BackgroundColor.errorMuted
-        </Typography>
+        <Text color={TextColor.textDefault}>BackgroundColor.errorMuted</Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.successDefault}>
-        <Typography color={TextColor.successInverse}>
+        <Text color={TextColor.successInverse}>
           BackgroundColor.successDefault
-        </Typography>
+        </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.successMuted}>
-        <Typography color={TextColor.textDefault}>
-          BackgroundColor.successMuted
-        </Typography>
+        <Text color={TextColor.textDefault}>BackgroundColor.successMuted</Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.warningDefault}>
-        <Typography color={TextColor.warningInverse}>
+        <Text color={TextColor.warningInverse}>
           BackgroundColor.warningDefault
-        </Typography>
+        </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.warningMuted}>
-        <Typography color={TextColor.textDefault}>
-          BackgroundColor.warningMuted
-        </Typography>
+        <Text color={TextColor.textDefault}>BackgroundColor.warningMuted</Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.sepolia}>
-        <Typography color={TextColor.sepoliaInverse}>
-          BackgroundColor.sepolia
-        </Typography>
+        <Text color={TextColor.sepoliaInverse}>BackgroundColor.sepolia</Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.goerli}>
-        <Typography color={TextColor.goerliInverse}>
-          BackgroundColor.goerli
-        </Typography>
+        <Text color={TextColor.goerliInverse}>BackgroundColor.goerli</Text>
       </Box>
     </>
   );
@@ -483,9 +442,7 @@ export const BorderColorStory = () => {
         borderWidth={2}
         marginBottom={1}
       >
-        <Typography color={TextColor.textDefault}>
-          BorderColor.borderDefault
-        </Typography>
+        <Text color={TextColor.textDefault}>BorderColor.borderDefault</Text>
       </Box>
       <Box
         padding={3}
@@ -494,9 +451,7 @@ export const BorderColorStory = () => {
         borderWidth={2}
         marginBottom={1}
       >
-        <Typography color={TextColor.textDefault}>
-          BorderColor.borderMuted
-        </Typography>
+        <Text color={TextColor.textDefault}>BorderColor.borderMuted</Text>
       </Box>
       <Box
         padding={3}
@@ -505,9 +460,7 @@ export const BorderColorStory = () => {
         marginBottom={1}
         backgroundColor={BackgroundColor.primaryMuted}
       >
-        <Typography color={TextColor.textDefault}>
-          BorderColor.primaryDefault
-        </Typography>
+        <Text color={TextColor.textDefault}>BorderColor.primaryDefault</Text>
       </Box>
       <Box
         padding={3}
@@ -516,9 +469,7 @@ export const BorderColorStory = () => {
         borderWidth={2}
         marginBottom={1}
       >
-        <Typography color={TextColor.textDefault}>
-          BorderColor.errorDefault
-        </Typography>
+        <Text color={TextColor.textDefault}>BorderColor.errorDefault</Text>
       </Box>
       <Box
         padding={3}
@@ -527,9 +478,7 @@ export const BorderColorStory = () => {
         borderWidth={2}
         marginBottom={1}
       >
-        <Typography color={TextColor.textDefault}>
-          BorderColor.successDefault
-        </Typography>
+        <Text color={TextColor.textDefault}>BorderColor.successDefault</Text>
       </Box>
       <Box
         padding={3}
@@ -537,9 +486,7 @@ export const BorderColorStory = () => {
         borderColor={BorderColor.warningDefault}
         borderWidth={2}
       >
-        <Typography color={TextColor.textDefault}>
-          BorderColor.warningDefault
-        </Typography>
+        <Text color={TextColor.textDefault}>BorderColor.warningDefault</Text>
       </Box>
     </>
   );
@@ -639,11 +586,11 @@ BorderRadiusStory.storyName = 'BorderRadius';
 export const ResponsiveProps = () => {
   return (
     <>
-      <Typography boxProps={{ marginBottom: 4 }}>
+      <Text marginBottom={4}>
         Responsive props example. Stacks vertically on small screens and aligns
         horizontally on large screens. Padding is also adjusted between small
         and large screens
-      </Typography>
+      </Text>
       <Box
         marginTop="auto"
         marginBottom={[0]}
@@ -695,7 +642,7 @@ export const ResponsiveProps = () => {
           padding={[4, 8]}
           borderRadius={[
             BorderRadius.XL,
-            BorderRadius.PILL,
+            BorderRadius.pill,
             BorderRadius.none,
             BorderRadius.full,
           ]}
@@ -709,13 +656,13 @@ export const ResponsiveProps = () => {
   );
 };
 
-export const As = (args) => {
+export const As: ComponentStory<typeof Box> = (args) => {
   return (
     <>
-      <Typography marginBottom={4}>
+      <Text marginBottom={4}>
         You can change the root element of the Box component using the as prop.
         Inspect the below elements to see the underlying HTML elements
-      </Typography>
+      </Text>
       <Box {...args}>div(default)</Box>
       <Box as="ul">ul</Box>
       <Box as="li">li</Box>
@@ -725,9 +672,9 @@ export const As = (args) => {
   );
 };
 
-export const Width = (args) => {
-  const getColumns = () => {
-    const content = [];
+export const Width: ComponentStory<typeof Box> = () => {
+  const getColumns = (): JSX.Element[] => {
+    const content: JSX.Element[] = [];
     for (let i = 0; i < 12; i++) {
       content.push(
         <Box
@@ -747,29 +694,11 @@ export const Width = (args) => {
   return (
     <>
       <p>
-        <b>Working demo</b>
-      </p>
-
-      <Box
-        borderColor={BorderColor.borderMuted}
-        borderWidth={6}
-        marginBottom={6}
-        display={DISPLAY.FLEX}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        {...args}
-      >
-        {args.width.map((item, i) => {
-          return `${item} ${args.width.length === i + 1 ? '' : ', '}`;
-        })}
-      </Box>
-
-      <p>
         <b>Static widths</b>
       </p>
       <Box
         display={DISPLAY.FLEX}
-        borderColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderMuted}
         style={{
           height: '100vh',
           position: 'relative',
@@ -903,7 +832,7 @@ export const Width = (args) => {
       </p>
       <Box
         display={DISPLAY.FLEX}
-        borderColor={BackgroundColor.backgroundAlternative}
+        borderColor={BorderColor.borderMuted}
         style={{ height: '100vh', position: 'relative', textAlign: 'center' }}
       >
         {getColumns()}

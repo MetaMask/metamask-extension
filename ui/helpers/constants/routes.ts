@@ -36,6 +36,7 @@ const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
+const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
@@ -211,6 +212,7 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
+  CONNECT_SNAP_RESULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
