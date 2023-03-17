@@ -15,6 +15,7 @@ import {
   Size,
   BorderRadius,
   BackgroundColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -35,6 +36,7 @@ export const ButtonBase = ({
   disabled,
   iconLoadingProps,
   textProps,
+  color = TextColor.textDefault,
   ...props
 }) => {
   const Tag = href ? 'a' : as;
@@ -43,13 +45,14 @@ export const ButtonBase = ({
     props.rel = 'noopener noreferrer';
   }
   return (
-    <Box
+    <Text
       as={Tag}
       backgroundColor={BackgroundColor.backgroundAlternative}
-      color={TextColor.textDefault}
+      color={loading ? TextColor.transparent : color}
       href={href}
       paddingLeft={4}
       paddingRight={4}
+      ellipsis={ellipsis}
       className={classnames(
         'mm-button-base',
         {
@@ -69,41 +72,52 @@ export const ButtonBase = ({
       borderRadius={BorderRadius.pill}
       {...props}
     >
-      <Text
-        className="mm-button-base__content"
-        as="span"
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        gap={2}
-        variant={TextVariant.bodyMd}
-        color={TextColor.inherit}
-        ellipsis={ellipsis}
-        {...textProps}
-      >
-        {startIconName && (
-          <Icon name={startIconName} size={Size.SM} {...startIconProps} />
-        )}
+      {startIconName && (
+        <Icon
+          name={startIconName}
+          size={Size.SM}
+          marginInlineEnd={1}
+          {...startIconProps}
+          color={loading ? IconColor.transparent : startIconProps?.color}
+        />
+      )}
+      {/*
+       * If children is a string and doesn't need truncation or loading
+       * prevent html bloat by rendering just the string
+       * otherwise render with wrapper to allow truncation or loading
+       */}
+      {typeof children === 'string' && !ellipsis && !loading ? (
+        children
+      ) : (
         <Text
           as="span"
           ellipsis={ellipsis}
-          color={TextColor.inherit}
           variant={TextVariant.inherit}
+          color={loading ? TextColor.transparent : color}
+          {...textProps}
         >
           {children}
         </Text>
-        {endIconName && (
-          <Icon name={endIconName} size={Size.SM} {...endIconProps} />
-        )}
-      </Text>
+      )}
+      {endIconName && (
+        <Icon
+          name={endIconName}
+          size={Size.SM}
+          marginInlineStart={1}
+          {...endIconProps}
+          color={loading ? IconColor.transparent : endIconProps?.color}
+        />
+      )}
       {loading && (
         <Icon
           className="mm-button-base__icon-loading"
           name={ICON_NAMES.LOADING}
+          color={color}
           size={Size.MD}
           {...iconLoadingProps}
         />
       )}
-    </Box>
+    </Text>
   );
 };
 
