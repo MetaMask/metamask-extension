@@ -260,7 +260,7 @@ describe('MetaMask onboarding', function () {
         title: this.test.title,
       },
 
-      async ({ driver, ganacheServer }) => {
+      async ({ driver, secondaryGanacheServer }) => {
         await driver.navigate();
         await importSRPOnboardingFlow(driver, testSeedPhrase, testPassword);
 
@@ -300,7 +300,7 @@ describe('MetaMask onboarding', function () {
         );
         assert.equal(await networkDisplay.getText(), networkName);
 
-        const balance = await ganacheServer.getBalance();
+        const balance = await secondaryGanacheServer.getBalance();
         const balanceElement = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );

@@ -146,6 +146,7 @@ async function withFixtures(options, testSuite) {
       mockServer,
       contractRegistry,
       ganacheServer,
+      secondaryGanacheServer,
     });
   } catch (error) {
     failed = true;
