@@ -66,7 +66,7 @@ function getLeftIcon(iconName) {
 const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: (t) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: getLeftIcon(ICON_NAMES.ETHEREUM),
+    leftIcon: getLeftIcon(ICON_NAMES.EYE),
     rightIcon: null,
     weight: 2,
   }),
