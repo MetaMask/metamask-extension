@@ -14,6 +14,9 @@ export default {
     onClick: {
       action: 'onClick',
     },
+    onDeleteClick: {
+      action: 'onClick',
+    },
     iconSrc: {
       action: 'text',
     },
@@ -34,6 +37,18 @@ export const DefaultStory = (args) => (
   </div>
 );
 
+export const IconStory = (args) => (
+  <div
+    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
+  >
+    <NetworkListItem
+      {...args}
+      iconSrc="./images/matic-token.png"
+      name="Polygon"
+    />
+  </div>
+);
+
 export const SelectedStory = (args) => (
   <div
     style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
@@ -48,7 +63,7 @@ export const ChaosStory = (args) => (
   >
     <NetworkListItem
       {...args}
-      name="This is a super long network name"
+      name="This is a super long network name that should be ellipsized"
       selected
     />
   </div>

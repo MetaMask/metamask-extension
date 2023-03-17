@@ -9,10 +9,19 @@
     }
   }
 
-  &:hover, &:focus, &:focus-within {
-    &__delete {
-      display: block;
+  &:hover,
+  &:focus,
+  &:focus-within {
+    .network-list-item__delete {
+      visibility: visible;
     }
+  }
+
+  &__network-name {
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    text-align: start;
   }
 
   &__selected-indicator {
@@ -24,6 +33,6 @@
   }
 
   &__delete {
-    display: none;
+    visibility: hidden;
   }
 }

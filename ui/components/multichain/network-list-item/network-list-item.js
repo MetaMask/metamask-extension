@@ -7,6 +7,8 @@ import {
   IconColor,
   BorderRadius,
   Color,
+  Size,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -21,16 +23,21 @@ export const NetworkListItem = ({
   iconSrc,
   selected = false,
   onClick,
+  onDeleteClick,
 }) => {
   const t = useI18nContext();
   return (
     <Box
       onClick={onClick}
       padding={4}
+      gap={2}
+      backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('network-list-item', {
         'network-list-item--selected': selected,
       })}
+      as="button"
       alignItems={AlignItems.center}
+      justifyContent={JustifyContent.spaceBetween}
     >
       {selected && (
         <Box
@@ -40,22 +47,30 @@ export const NetworkListItem = ({
         />
       )}
       <AvatarNetwork name={name} src={iconSrc} />
-      <Box style={{width: '100%', display: 'flex'}}>
-        <Text ellipsis>{name}</Text>
+      <Box className="network-list-item__network-name">
+        <Text as="div" ellipsis>
+          {name}
+        </Text>
       </Box>
-      <ButtonIcon
-        className="network-list-item__delete"
-        color={IconColor.errorDefault}
-        iconName={ICON_NAMES.TRASH}
-        ariaLabel={t('deleteNetwork')}
-      />
+      {onDeleteClick ? (
+        <ButtonIcon
+          className="network-list-item__delete"
+          color={IconColor.errorDefault}
+          iconName={ICON_NAMES.TRASH}
+          ariaLabel={t('deleteNetwork')}
+          size={Size.SM}
+          as="div"
+          onClick={onDeleteClick}
+        />
+      ) : null}
     </Box>
   );
 };
 
 NetworkListItem.propTypes = {
-  networkName: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  iconSrc: PropTypes.string.isRequired,
   selected: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func,
 };
