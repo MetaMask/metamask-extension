@@ -338,6 +338,9 @@
   "amount": {
     "message": "Amount"
   },
+  "apiUrl": {
+    "message": "API URL"
+  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
@@ -856,6 +859,12 @@
   },
   "curveMediumGasEstimate": {
     "message": "Market gas estimate graph"
+  },
+  "custodian": {
+    "message": "Custodian"
+  },
+  "custodianAccount": {
+    "message": "Custodian Account"
   },
   "custom": {
     "message": "Advanced"
@@ -2056,6 +2065,9 @@
   },
   "missingToken": {
     "message": "Don't see your token?"
+  },
+  "mmiAddToken": {
+    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
@@ -3362,6 +3374,9 @@
   "showIncomingTransactionsDescription": {
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
+  },
+  "ShowMore": {
+    "message": "Show more"
   },
   "showPermissions": {
     "message": "Show permissions"
