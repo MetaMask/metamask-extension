@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { getSnapPrefix } from '@metamask/snaps-utils';
 import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
@@ -11,20 +12,18 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SNAPS_METADATA } from '../../../../../shared/constants/snaps';
-
-const snapIdPrefixes = ['npm:', 'local:'];
+import {
+  getSnapName,
+  removeSnapIdPrefix,
+} from '../../../../helpers/utils/util';
 
 const SnapsAuthorshipPill = ({ snapId, version, className }) => {
-  // @todo Use getSnapPrefix from snaps-monorepo when possible
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata
   // like it is done with snap install
-  const snapPrefix = snapIdPrefixes.find((prefix) =>
-    snapId?.startsWith(prefix),
-  );
-  const packageName = snapId?.replace(snapPrefix, '');
+  const snapPrefix = snapId && getSnapPrefix(snapId);
+  const packageName = snapId && removeSnapIdPrefix(snapId);
   const isNPM = snapPrefix === 'npm:';
   const url = isNPM
     ? `https://www.npmjs.com/package/${packageName}`
@@ -32,7 +31,7 @@ const SnapsAuthorshipPill = ({ snapId, version, className }) => {
   const icon = isNPM ? 'fab fa-npm fa-lg' : 'fas fa-code';
   const t = useI18nContext();
 
-  const friendlyName = SNAPS_METADATA[snapId]?.name ?? packageName;
+  const friendlyName = getSnapName(snapId);
 
   return (
     <a
