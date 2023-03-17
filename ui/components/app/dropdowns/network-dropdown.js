@@ -380,6 +380,7 @@ class NetworkDropdown extends Component {
 
     const isOpen = this.props.networkDropdownOpen;
     const { t } = this.context;
+    const shouldShowZKEVM = new Date().getTime() > Date.UTC(2023, 2, 28);
 
     return (
       <Dropdown
@@ -454,9 +455,13 @@ class NetworkDropdown extends Component {
             <>
               {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
               {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
-              {this.renderNonInfuraDefaultNetwork(
-                networkConfigurations,
-                NETWORK_TYPES.LINEA_TESTNET,
+              {shouldShowZKEVM && (
+                <>
+                  {this.renderNonInfuraDefaultNetwork(
+                    networkConfigurations,
+                    NETWORK_TYPES.LINEA_TESTNET,
+                  )}
+                </>
               )}
               {this.renderCustomRpcList(
                 rpcListDetailForLocalHost,

@@ -107,7 +107,15 @@ describe('Network Dropdown', () => {
       const lineaColorIndicator = screen.queryByTestId(
         'color-icon-lineatestnet',
       );
-      expect(lineaColorIndicator).toBeInTheDocument();
+      const isLineaNetworkReleased =
+        new Date().getTime() > Date.UTC(2023, 2, 28);
+      if (isLineaNetworkReleased) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(lineaColorIndicator).toBeInTheDocument();
+      } else {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(lineaColorIndicator).not.toBeInTheDocument();
+      }
     });
 
     it('checks that Add Network button is rendered', () => {
@@ -117,8 +125,10 @@ describe('Network Dropdown', () => {
 
     it('shows test networks in the dropdown', () => {
       const networkItems = screen.queryAllByTestId(/network-item/u);
-
-      expect(networkItems).toHaveLength(7);
+      const isLineaNetworkReleased =
+        new Date().getTime() > Date.UTC(2023, 2, 28);
+      const nbItems = isLineaNetworkReleased ? 7 : 6;
+      expect(networkItems).toHaveLength(nbItems);
     });
   });
 

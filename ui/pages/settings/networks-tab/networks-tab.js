@@ -70,7 +70,14 @@ const NetworksTab = ({ addNewNetwork }) => {
     })
     .filter((network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET);
 
-  const networksToRender = [...defaultNetworks, ...networkConfigurationsList];
+  const shouldShowZKEVM = new Date().getTime() > Date.UTC(2023, 2, 28);
+
+  let networksToRender = [...defaultNetworks, ...networkConfigurationsList];
+  if (!shouldShowZKEVM) {
+    networksToRender = networksToRender.filter(
+      (network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET,
+    );
+  }
   let selectedNetwork =
     networksToRender.find(
       (network) =>
