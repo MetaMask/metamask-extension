@@ -20,6 +20,7 @@ import {
   getProvider,
 } from '../../../selectors';
 import {
+  CHAIN_IDS,
   NETWORK_TYPES,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
@@ -53,8 +54,8 @@ const NetworksTab = ({ addNewNetwork }) => {
     getNetworksTabSelectedNetworkConfigurationId,
   );
 
-  const networkConfigurationsList = Object.entries(networkConfigurations).map(
-    ([networkConfigurationId, networkConfiguration]) => {
+  const networkConfigurationsList = Object.entries(networkConfigurations)
+    .map(([networkConfigurationId, networkConfiguration]) => {
       return {
         label: networkConfiguration.nickname,
         iconColor: 'var(--color-icon-alternative)',
@@ -66,8 +67,8 @@ const NetworksTab = ({ addNewNetwork }) => {
         isATestNetwork: TEST_CHAINS.includes(networkConfiguration.chainId),
         networkConfigurationId,
       };
-    },
-  );
+    })
+    .filter((network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET);
 
   const networksToRender = [...defaultNetworks, ...networkConfigurationsList];
   let selectedNetwork =

@@ -166,7 +166,6 @@ function defaultFixture() {
           [CHAIN_IDS.MAINNET]: null,
           [CHAIN_IDS.GOERLI]: null,
           [CHAIN_IDS.SEPOLIA]: null,
-          [CHAIN_IDS.LINEA_TESTNET]: null,
         },
       },
       KeyringController: {

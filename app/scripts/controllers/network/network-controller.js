@@ -17,7 +17,6 @@ import {
   TEST_NETWORK_TICKER_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
-  LINEA_TESTNET_RPC_URL,
 } from '../../../../shared/constants/network';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
@@ -269,20 +268,14 @@ export default class NetworkController extends EventEmitter {
       NETWORK_TYPES.RPC,
       `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPES.RPC}". Use "setActiveNetwork"`,
     );
-    if (type !== NETWORK_TYPES.LINEA_TESTNET) {
-      assert.ok(
-        INFURA_PROVIDER_TYPES.includes(type),
-        `Unknown Infura provider type "${type}".`,
-      );
-    }
-
+    assert.ok(
+      INFURA_PROVIDER_TYPES.includes(type),
+      `Unknown Infura provider type "${type}".`,
+    );
     const { chainId, ticker, blockExplorerUrl } = BUILT_IN_NETWORKS[type];
-    const rpcUrl =
-      type === NETWORK_TYPES.LINEA_TESTNET ? LINEA_TESTNET_RPC_URL : '';
-
     this._setProviderConfig({
       type,
-      rpcUrl,
+      rpcUrl: '',
       chainId,
       ticker: ticker ?? 'ETH',
       nickname: '',
@@ -434,14 +427,11 @@ export default class NetworkController extends EventEmitter {
   _configureProvider({ type, rpcUrl, chainId }) {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
-
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId);
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPES.RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
-    } else if (type === NETWORK_TYPES.LINEA_TESTNET) {
-      this._configureStandardProvider(LINEA_TESTNET_RPC_URL, chainId);
     } else {
       throw new Error(
         `NetworkController - _configureProvider - unknown type "${type}"`,
