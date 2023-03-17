@@ -1839,14 +1839,14 @@
   "lastConnected": {
     "message": "Last connected"
   },
-  "layer1Fees": {
-    "message": "Layer 1 fees"
-  },
   "lastPriceSold": {
     "message": "Last price sold"
   },
   "lastSold": {
     "message": "Last sold"
+  },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
