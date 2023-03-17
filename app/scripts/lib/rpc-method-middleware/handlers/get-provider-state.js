@@ -19,6 +19,7 @@ export default getProviderState;
  * @typedef {object} ProviderStateHandlerResult
  * @property {string} chainId - The current chain ID.
  * @property {boolean} isUnlocked - Whether the extension is unlocked or not.
+ * @property {boolean} networkVersion - The current network ID.
  */
 
 /**

@@ -1,4 +1,4 @@
-import { CHAIN_IDS, NetworkStatus } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionType } from '../../shared/constants/transaction';
 import {
   unconfirmedTransactionsCountSelector,
@@ -22,7 +22,7 @@ describe('Confirm Transaction Selector', () => {
       metamask: {
         unapprovedTxs: {
           1: {
-            chainId: CHAIN_IDS.GOERLI,
+            metamaskNetworkId: '5',
           },
           2: {
             chainId: CHAIN_IDS.MAINNET,
@@ -31,9 +31,9 @@ describe('Confirm Transaction Selector', () => {
         unapprovedMsgCount: 1,
         unapprovedPersonalMsgCount: 1,
         unapprovedTypedMessagesCount: 1,
-        networkStatus: NetworkStatus.Available,
+        network: '5',
         provider: {
-          chainId: CHAIN_IDS.GOERLI,
+          chainId: '0x5',
         },
       },
     };

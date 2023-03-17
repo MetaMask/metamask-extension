@@ -63,6 +63,7 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
+    network,
     blockGasLimit,
     provider: { chainId },
   } = useSelector((state) => state.metamask);
@@ -70,7 +71,14 @@ const ConfirmTxScreen = ({ match }) => {
   const [prevValue, setPrevValues] = useState();
 
   useEffect(() => {
-    const unconfTxList = txHelper(unapprovedTxs || {}, {}, {}, {}, chainId);
+    const unconfTxList = txHelper(
+      unapprovedTxs || {},
+      {},
+      {},
+      {},
+      network,
+      chainId,
+    );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
@@ -88,13 +96,27 @@ const ConfirmTxScreen = ({ match }) => {
       prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId);
     } else {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevValue;
-      const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, chainId);
+      const prevUnconfTxList = txHelper(
+        prevUnapprovedTxs,
+        {},
+        {},
+        {},
+        network,
+        chainId,
+      );
       const prevTxData = prevUnconfTxList[prevIndex] || {};
       prevTx =
         currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
     }
 
-    const unconfTxList = txHelper(unapprovedTxs || {}, {}, {}, {}, chainId);
+    const unconfTxList = txHelper(
+      unapprovedTxs || {},
+      {},
+      {},
+      {},
+      network,
+      chainId,
+    );
 
     if (prevTx && prevTx.status === TransactionStatus.dropped) {
       dispatch(
@@ -115,6 +137,7 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     currentNetworkTxList,
     match,
+    network,
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
@@ -128,6 +151,7 @@ const ConfirmTxScreen = ({ match }) => {
       unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
+      network,
       chainId,
     );
 

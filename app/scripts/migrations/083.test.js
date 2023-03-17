@@ -1,30 +1,26 @@
-import { migrate } from './081';
+import { migrate } from './083';
 
-describe('migration #81', () => {
+describe('migration #83', () => {
   it('updates the version metadata', async () => {
-    const originalVersionedData = {
+    const originalVersionedData = buildOriginalVersionedData({
       meta: {
-        version: 80,
+        version: 9999999,
       },
-      data: {},
-    };
+    });
 
     const newVersionedData = await migrate(originalVersionedData);
 
     expect(newVersionedData.meta).toStrictEqual({
-      version: 81,
+      version: 83,
     });
   });
 
   it('does not change the state if the network controller state does not exist', async () => {
-    const originalVersionedData = {
-      meta: {
-        version: 80,
-      },
+    const originalVersionedData = buildOriginalVersionedData({
       data: {
         test: '123',
       },
-    };
+    });
 
     const newVersionedData = await migrate(originalVersionedData);
 
@@ -34,14 +30,11 @@ describe('migration #81', () => {
   const nonObjects = [undefined, null, 'test', 1, ['test']];
   for (const invalidState of nonObjects) {
     it(`does not change the state if the network controller state is ${invalidState}`, async () => {
-      const originalVersionedData = {
-        meta: {
-          version: 80,
-        },
+      const originalVersionedData = buildOriginalVersionedData({
         data: {
           NetworkController: invalidState,
         },
-      };
+      });
 
       const newVersionedData = await migrate(originalVersionedData);
 
@@ -50,61 +43,61 @@ describe('migration #81', () => {
   }
 
   it('does not change the state if the network controller state does not include "network"', async () => {
-    const originalVersionedData = {
-      meta: {
-        version: 80,
-      },
+    const originalVersionedData = buildOriginalVersionedData({
       data: {
         NetworkController: {
           test: '123',
         },
       },
-    };
+    });
 
     const newVersionedData = await migrate(originalVersionedData);
 
     expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
   });
 
-  it('replaces "network" in the network controller state with "networkStatus": "unknown" if it is "loading"', async () => {
-    const originalVersionedData = {
-      meta: {
-        version: 80,
-      },
+  it('replaces "network" in the network controller state with "networkId": null, "networkStatus": "unknown" if it is "loading"', async () => {
+    const originalVersionedData = buildOriginalVersionedData({
       data: {
         NetworkController: {
           network: 'loading',
         },
       },
-    };
+    });
 
     const newVersionedData = await migrate(originalVersionedData);
 
     expect(newVersionedData.data).toStrictEqual({
       NetworkController: {
+        networkId: null,
         networkStatus: 'unknown',
       },
     });
   });
 
-  it('replaces "network" in the network controller state with "networkStatus": "available" if it is not "loading"', async () => {
-    const originalVersionedData = {
-      meta: {
-        version: 80,
-      },
+  it('replaces "network" in the network controller state with "networkId": network, "networkStatus": "available" if it is not "loading"', async () => {
+    const originalVersionedData = buildOriginalVersionedData({
       data: {
         NetworkController: {
           network: '12345',
         },
       },
-    };
+    });
 
     const newVersionedData = await migrate(originalVersionedData);
 
     expect(newVersionedData.data).toStrictEqual({
       NetworkController: {
+        networkId: '12345',
         networkStatus: 'available',
       },
     });
   });
 });
+
+function buildOriginalVersionedData({ meta = {}, data = {} } = {}) {
+  return {
+    meta: { version: 999999, ...meta },
+    data: { ...data },
+  };
+}

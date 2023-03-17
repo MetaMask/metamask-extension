@@ -41,6 +41,7 @@ describe('MetaMask Reducers', () => {
         conversionRate: 1200.88200327,
         nativeCurrency: 'ETH',
         useCurrencyRateCheck: true,
+        networkId: '5',
         networkStatus: 'available',
         provider: {
           type: 'testnet',

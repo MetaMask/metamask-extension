@@ -66,6 +66,7 @@ interface TemporaryBackgroundState {
   unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
+  networkId: string | null;
   networkStatus: NetworkStatus;
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   knownMethodData?: {

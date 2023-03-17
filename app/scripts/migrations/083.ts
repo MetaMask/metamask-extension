@@ -4,7 +4,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 export const version = 83;
 
 /**
- * The `network` property in state was removed in favor of `networkStatus`.
+ * The `network` property in state was replaced with `networkId` and `networkStatus`.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -34,8 +34,10 @@ function transformState(state: Record<string, unknown>) {
   const NetworkController = { ...state.NetworkController };
 
   if (NetworkController.network === 'loading') {
+    NetworkController.networkId = null;
     NetworkController.networkStatus = 'unknown';
   } else {
+    NetworkController.networkId = NetworkController.network;
     NetworkController.networkStatus = 'available';
   }
 

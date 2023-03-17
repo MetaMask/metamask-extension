@@ -5,7 +5,7 @@ import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
 import createId from '../../../../shared/modules/random-id';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import { transactionMatchesChain } from '../../../../shared/modules/transaction.utils';
+import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
 import { hexToBn } from '../../lib/util';
@@ -56,12 +56,14 @@ export const ERROR_SUBMITTING =
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
  *  transactions can hang around in state
+ * @param {Function} opts.getNetworkId - Get the current network Id.
  * @param {Function} opts.getNetworkStatus - Get the current network status.
  */
 export default class TransactionStateManager extends EventEmitter {
   constructor({
     initState,
     txHistoryLimit,
+    getNetworkId,
     getNetworkStatus,
     getCurrentChainId,
   }) {
@@ -72,6 +74,7 @@ export default class TransactionStateManager extends EventEmitter {
       ...initState,
     });
     this.txHistoryLimit = txHistoryLimit;
+    this.getNetworkId = getNetworkId;
     this.getNetworkStatus = getNetworkStatus;
     this.getCurrentChainId = getCurrentChainId;
   }
@@ -88,6 +91,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @returns {TransactionMeta} the default txMeta object
    */
   generateTxMeta(opts = {}) {
+    const networkId = this.getNetworkId();
     const networkStatus = this.getNetworkStatus();
     const chainId = this.getCurrentChainId();
     if (networkStatus !== NetworkStatus.Available) {
@@ -130,7 +134,7 @@ export default class TransactionStateManager extends EventEmitter {
       id: createId(),
       time: new Date().getTime(),
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: hexToBn(chainId).toString(10),
+      metamaskNetworkId: networkId,
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
       chainId,
@@ -151,11 +155,12 @@ export default class TransactionStateManager extends EventEmitter {
    */
   getUnapprovedTxList() {
     const chainId = this.getCurrentChainId();
+    const networkId = this.getNetworkId();
     return pickBy(
       this.store.getState().transactions,
       (transaction) =>
         transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesChain(transaction, chainId),
+        transactionMatchesNetwork(transaction, chainId, networkId),
     );
   }
 
@@ -414,6 +419,7 @@ export default class TransactionStateManager extends EventEmitter {
     limit,
   } = {}) {
     const chainId = this.getCurrentChainId();
+    const networkId = this.getNetworkId();
     // searchCriteria is an object that might have values that aren't predicate
     // methods. When providing any other value type (string, number, etc), we
     // consider this shorthand for "check the value at key for strict equality
@@ -442,7 +448,7 @@ export default class TransactionStateManager extends EventEmitter {
         // when filterToCurrentNetwork is true.
         if (
           filterToCurrentNetwork &&
-          transactionMatchesChain(transaction, chainId) === false
+          transactionMatchesNetwork(transaction, chainId, networkId) === false
         ) {
           return false;
         }
@@ -605,6 +611,7 @@ export default class TransactionStateManager extends EventEmitter {
     // network only tx
     const { transactions } = this.store.getState();
     const chainId = this.getCurrentChainId();
+    const networkId = this.getNetworkId();
 
     // Update state
     this.store.updateState({
@@ -612,7 +619,7 @@ export default class TransactionStateManager extends EventEmitter {
         transactions,
         (transaction) =>
           transaction.txParams.from === address &&
-          transactionMatchesChain(transaction, chainId),
+          transactionMatchesNetwork(transaction, chainId, networkId),
       ),
     });
   }

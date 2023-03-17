@@ -180,6 +180,7 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
+        networkId: '1337',
         networkStatus: 'available',
         provider: {
           chainId: CHAIN_IDS.LOCALHOST,

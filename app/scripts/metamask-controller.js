@@ -925,8 +925,10 @@ export default class MetamaskController extends EventEmitter {
         this.getCurrentAccountEIP1559Compatibility.bind(this),
       getNetworkStatus: () =>
         this.networkController.store.getState().networkStatus,
+      // TODO: This option should probably listen for networkDidChange
+      // rather than networkIdStore
       onNetworkStateChange: (listener) =>
-        this.networkController.networkStatusStore.subscribe(listener),
+        this.networkController.networkIdStore.subscribe(listener),
       getCurrentChainId: () =>
         this.networkController.store.getState().provider.chainId,
       preferencesStore: this.preferencesController.store,
@@ -1116,6 +1118,7 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           });
         },
+        getNetwork: () => this.networkController.store.getState().networkId,
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
@@ -1644,7 +1647,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets relevant state for the provider of an external origin.
    *
    * @param {string} origin - The origin to get the provider state for.
-   * @returns {Promise<{ isUnlocked: boolean, chainId: string, accounts: string[] }>} An object with relevant state properties.
+   * @returns {Promise<{ isUnlocked: boolean, networkVersion: string, chainId: string, accounts: string[] }>} An object with relevant state properties.
    */
   async getProviderState(origin) {
     return {
@@ -1657,16 +1660,17 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Gets network state relevant for external providers.
    *
+   * @param {object} [memState] - The MetaMask memState. If not provided,
+   * this function will retrieve the most recent state.
    * @returns {object} An object with relevant network state properties.
    */
-  getProviderNetworkState() {
-    const { provider, networkStatus } = this.networkController.store.getState();
+  getProviderNetworkState(memState) {
+    const { networkId } = memState || this.getState();
     return {
-      chainId: provider.chainId,
+      chainId: this.networkController.store.getState().provider.chainId,
       // NOTE: For compatibility with providers, this must return "loading" if
-      // the network is unavailable
-      networkVersion:
-        networkStatus === NetworkStatus.Available ? 'available' : 'loading',
+      // there is no network ID
+      networkVersion: networkId === null ? 'loading' : networkId,
     };
   }
 
@@ -4313,7 +4317,7 @@ export default class MetamaskController extends EventEmitter {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.chainChanged,
-      params: this.getProviderNetworkState(),
+      params: this.getProviderNetworkState(newState),
     });
   }
 

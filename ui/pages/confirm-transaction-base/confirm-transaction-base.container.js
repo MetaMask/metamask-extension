@@ -51,7 +51,7 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 
 import {
   parseStandardTokenTransactionData,
-  transactionMatchesChain,
+  transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
@@ -102,6 +102,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
+    network,
     unapprovedTxs,
     nextNonce,
     allNftContracts,
@@ -161,7 +162,9 @@ const mapStateToProps = (state, ownProps) => {
   } = transactionFeeSelector(state, transaction);
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) => transactionMatchesChain(unapprovedTxs[key], chainId))
+    .filter((key) =>
+      transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
+    )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 

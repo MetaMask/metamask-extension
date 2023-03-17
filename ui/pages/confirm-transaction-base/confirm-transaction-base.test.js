@@ -33,7 +33,6 @@ const baseStore = {
     unapprovedTxs: {
       1: {
         id: 1,
-        chainId: CHAIN_IDS.GOERLI,
         txParams: {
           from: '0x0',
           to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
@@ -94,9 +93,10 @@ const baseStore = {
       id: 1,
       time: 1675012496170,
       status: 'unapproved',
+      metamaskNetworkId: '5',
       originalGasEstimate: '0x5208',
       userEditedGasLimit: false,
-      chainId: CHAIN_IDS.GOERLI,
+      chainId: '0x5',
       loadingDefaults: false,
       dappSuggestedGasFees: null,
       sendFlowHistory: [],

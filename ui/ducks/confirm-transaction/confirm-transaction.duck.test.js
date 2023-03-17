@@ -343,6 +343,7 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
+          networkId: '5',
           networkStatus: 'available',
           provider: {
             chainId: '0x5',
@@ -353,7 +354,6 @@ describe('Confirm Transaction Duck', () => {
               id: 2603411941761054,
               loadingDefaults: false,
               metamaskNetworkId: '5',
-              chainId: '0x5',
               origin: 'faucet.metamask.io',
               status: TransactionStatus.unapproved,
               time: 1530838113716,

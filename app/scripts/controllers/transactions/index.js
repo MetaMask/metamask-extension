@@ -116,6 +116,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  *
  * @param {object} opts
  * @param {object} opts.initState - initial transaction list default is an empty array
+ * @param {Function} opts.getNetworkId - Get the current network ID.
  * @param {Function} opts.getNetworkStatus - Get the current network status.
  * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
@@ -130,6 +131,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
 export default class TransactionController extends EventEmitter {
   constructor(opts) {
     super();
+    this.getNetworkId = opts.getNetworkId;
     this.getNetworkStatus = opts.getNetworkStatus;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
@@ -168,6 +170,7 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
+      getNetworkId: this.getNetworkId,
       getNetworkStatus: this.getNetworkStatus,
       getCurrentChainId: opts.getCurrentChainId,
     });
@@ -281,7 +284,24 @@ export default class TransactionController extends EventEmitter {
     // chainId properties. This is done using the `forCustomChain` static method
     // on the Common class.
     const chainId = parseInt(this._getCurrentChainId(), 16);
-    const customChainParams = { name, chainId };
+    const networkStatus = this.getNetworkStatus();
+    const networkId = this.getNetworkId();
+
+    const customChainParams = {
+      name,
+      chainId,
+      // It is improbable for a transaction to be signed while the network
+      // is loading for two reasons.
+      // 1. Pending, unconfirmed transactions are wiped on network change
+      // 2. The UI is unusable (loading indicator) when network is loading.
+      // setting the networkId to 0 is for type safety and to explicity lead
+      // the transaction to failing if a user is able to get to this branch
+      // on a custom network that requires valid network id. I have not ran
+      // into this limitation on any network I have attempted, even when
+      // hardcoding networkId to 'loading'.
+      networkId:
+        networkStatus === NetworkStatus.Available ? parseInt(networkId, 10) : 0,
+    };
 
     return Common.forCustomChain(
       NETWORK_TYPES.MAINNET,
