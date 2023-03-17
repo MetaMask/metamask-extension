@@ -61,6 +61,7 @@ const ExportPrivateKeyModal = ({
       clearAccountDetails();
       hideWarning();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const exportAccountAndGetPrivateKey = (passwordInput, address) => {
@@ -263,9 +264,6 @@ const ExportPrivateKeyModal = ({
             width={BLOCK_SIZES.FULL}
             margin={[5, 0, 3, 0]}
           />
-          {/* children issue on types */}
-          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-          {/* @ts-ignore */}
           <Text
             variant={TextVariant.bodyLgMedium}
             margin={[4, 0, 4, 0]}
@@ -295,9 +293,6 @@ const ExportPrivateKeyModal = ({
             marginRight={5}
             marginTop={4}
           >
-            {/* children issue on types */}
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-ignore */}
             <Text
               color={TextColor.textDefault}
               fontWeight={FONT_WEIGHT.MEDIUM}
