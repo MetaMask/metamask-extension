@@ -3376,15 +3376,8 @@
     "message": "Anda memberikan $2 akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset $2 Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Snap ini meminta izin berikut:"
-  },
   "snapUpdate": {
     "message": "Perbarui Snap"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1 memerlukan versi snap yang lebih baru.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snap"
