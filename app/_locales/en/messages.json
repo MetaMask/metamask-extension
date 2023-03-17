@@ -2821,6 +2821,10 @@
     "message": "Store and manage its data on your device.",
     "description": "The description for the `snap_manageState` permission"
   },
+  "permission_manageAccounts": {
+    "message": "Control accounts handled by snaps",
+    "description": "The description for `snap_manageAccounts` permission"
+  },
   "permission_notifications": {
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
