@@ -18,9 +18,7 @@ describe('Send ERC20 token to contract address', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -33,26 +31,6 @@ describe('Send ERC20 token to contract address', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
-        // Create TST
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
-        let windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-
-        // Add token
-        await driver.findClickableElement('#deployButton');
-        await driver.clickElement('#watchAsset');
-        await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.clickElement({ text: 'Add token', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
