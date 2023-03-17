@@ -280,9 +280,9 @@ export default class TransactionController extends EventEmitter {
     }
 
     // For 'rpc' we need to use the same basic configuration as mainnet, since
-    // we only support EVM compatible chains, and then override the name and
-    // chainId properties. This is done using the `forCustomChain` static method
-    // on the Common class.
+    // we only support EVM compatible chains, and then override the
+    // name, chainId and networkId properties. This is done using the
+    // `forCustomChain` static method on the Common class.
     const chainId = parseInt(this._getCurrentChainId(), 16);
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
