@@ -23,6 +23,22 @@ export const typeHash = {
  * {@see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-banneralert--default-story#banneralert}}
  *
  * Help to replace `ActionableMessage` with `BannerAlert` by submitting a PR
+ * @param options
+ * @param options.message
+ * @param options.primaryAction
+ * @param options.primaryActionV2
+ * @param options.secondaryAction
+ * @param options.className
+ * @param options.infoTooltipText
+ * @param options.withRightButton
+ * @param options.type
+ * @param options.useIcon
+ * @param options.icon
+ * @param options.iconFillColor
+ * @param options.roundedButtons
+ * @param options.dataTestId
+ * @param options.autoHideTime
+ * @param options.onAutoHide
  */
 export default function ActionableMessage({
   message = '',
