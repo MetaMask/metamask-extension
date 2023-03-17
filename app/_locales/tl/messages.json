@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Ipakita ang mga setting ng Seguridad at Pagkapribado"
   },
-  "notifications17Description": {
-    "message": "Ang update na ito ay nagbibigay ng mas maraming opsyon para higit mong makontrol ang iyong pagkapribado. Nagdagdag kami ng higit pang paglilinaw tungkol sa kung paano kinokolekta ang datos at mas malinaw na mga opsyon sa pagbabahagi nito. Palitan ang iyong mga kagustuhan o tanggalin ang datos sa paggamit ng extension sa pamamagitan ng mga setting ng Seguridad at Pagkapribado."
-  },
   "notifications17Title": {
     "message": "Mga Setting ng Seguridad at Pagkapribado"
   },
@@ -2713,7 +2710,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Kumonekta sa $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "I-access ang Internet.",
@@ -2721,7 +2718,7 @@
   },
   "permission_accessSnap": {
     "message": "Kumonekta sa $1 snap.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Mag-iskedyul at magsagawa ng mga pana-panahong mga aksyon.",

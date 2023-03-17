@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Güvenlik ve Gizlilik ayarlarını göster"
   },
-  "notifications17Description": {
-    "message": "Bu güncelleme, kendi gizliliğinizi daha iyi kontrol edebilmeniz için daha fazla seçenek sunar. Verilerin nasıl toplandığı hakkında daha fazla şeffaflık ve paylaşımına yönelik daha açık seçenekler ekledik. Güvenlik ve Gizlilik ayarlarından tercihlerinizi değiştirin veya uzantı kullanım verilerinizi silin."
-  },
   "notifications17Title": {
     "message": "Güvenlik ve Gizlilik Ayarları"
   },
@@ -2713,7 +2710,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "$1 alanına bağlanın.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "İnternete erişim sağla.",
@@ -2721,7 +2718,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 snap'e bağlan.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Periyodik eylemleri planla ve gerçekleştir.",

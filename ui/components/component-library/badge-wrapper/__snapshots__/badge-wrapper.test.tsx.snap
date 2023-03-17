@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BadgeWrapper should render correctly 1`] = `
+<div>
+  <div
+    class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+  >
+    content
+    <div
+      class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+    >
+      <div
+        data-testid="badge"
+      >
+        badge
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Mostrar configuración de seguridad y privacidad"
   },
-  "notifications17Description": {
-    "message": "Esta actualización ofrece más opciones para que pueda controlar mejor su propia privacidad. Agregamos más transparencia sobre cómo se recopilan los datos y opciones más claras para compartirlos. Cambie sus preferencias o elimine los datos de uso de la extensión a través de la configuración de Seguridad y privacidad."
-  },
   "notifications17Title": {
     "message": "Configuración de Seguridad y privacidad"
   },
@@ -2713,7 +2710,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Conectarse a $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Acceso a internet.",
@@ -2721,7 +2718,7 @@
   },
   "permission_accessSnap": {
     "message": "Conéctese al complemento de $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Programar y ejecutar acciones periódicas.",

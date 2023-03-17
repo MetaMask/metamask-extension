@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "Tampilkan pengaturan Keamanan & Privasi"
   },
-  "notifications17Description": {
-    "message": "Pembaruan ini memberikan lebih banyak opsi sehingga Anda dapat mengontrol privasi Anda sendiri dengan lebih baik. Kami telah menambahkan penjelasan seputar cara pengumpulan data dan opsi yang lebih mudah untuk membagikannya. Ubah preferensi Anda atau hapus data penggunaan ekstensi melalui pengaturan Keamanan & Privasi."
-  },
   "notifications17Title": {
     "message": "Pengaturan Keamanan & Privasi"
   },
@@ -2713,7 +2710,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "Hubungkan ke $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "Akses internet.",
@@ -2721,7 +2718,7 @@
   },
   "permission_accessSnap": {
     "message": "Hubungkan ke Snap $1.",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "Jadwalkan dan lakukan tindakan berkala.",

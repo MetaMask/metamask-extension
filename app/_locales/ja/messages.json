@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "セキュリティおよびプライバシー設定を表示"
   },
-  "notifications17Description": {
-    "message": "このアップデートでは、自らのプライバシーをより適切に管理できるよう、より多くのオプションが提供されています。データの収集方法に関する透明性が高まり、共有オプションがより明確になりました。セキュリティおよびプライバシー設定で設定を変更するか、拡張機能の使用データを削除してください。"
-  },
   "notifications17Title": {
     "message": "セキュリティおよびプライバシー設定"
   },
@@ -2713,7 +2710,7 @@
   },
   "permission_accessNamedSnap": {
     "message": "$1 に接続。",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the human-readable name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
     "message": "インターネットにアクセスします。",
@@ -2721,7 +2718,7 @@
   },
   "permission_accessSnap": {
     "message": "$1 スナップに接続します。",
-    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the snap."
+    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
   },
   "permission_cronjob": {
     "message": "定期的なアクションのスケジュール設定と実行。",
