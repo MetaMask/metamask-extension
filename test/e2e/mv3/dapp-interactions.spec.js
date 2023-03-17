@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe.skip('MV3 - Dapp interactions', function () {
+describe('MV3 - Dapp interactions', function () {
   let windowHandles;
   const ganacheOptions = {
     accounts: [
@@ -14,7 +14,7 @@ describe.skip('MV3 - Dapp interactions', function () {
     ],
     concurrent: { port: 8546, chainId: 1338 },
   };
-  it.skip('should continue to support dapp interactions after service worker re-start', async function () {
+  it('should continue to support dapp interactions after service worker re-start', async function () {
     await withFixtures(
       {
         dapp: true,
