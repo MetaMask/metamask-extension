@@ -8,7 +8,6 @@ import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import { transactionMatchesNetwork } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { NetworkStatus } from '../../../../shared/constants/network';
-import { hexToBn } from '../../lib/util';
 import {
   generateHistoryEntry,
   replayHistory,
