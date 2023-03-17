@@ -1,0 +1,52 @@
+.terms-of-use {
+  &__terms {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  &__content {
+    &:last-child {
+      border-bottom: none;
+    }
+    &:first-child {
+      margin-top: 0px;
+    }
+  }
+
+  &__button {
+    margin-right: auto;
+    position:absolute;
+    bottom:16px;
+  }
+
+  // &__button,
+  // &__link {
+  //   margin-bottom: 24px;
+  // }
+
+  &__link {
+    @include H6;
+
+    color: var(--color-primary-default);
+    cursor: pointer;
+  }
+
+  &__intersection-observable {
+    bottom: 22px;
+    position: absolute;
+    height: 1px;
+    width: 100%;
+  }
+}
+
+.popover-wrap.terms-of-use__popover {
+  @include screen-sm-min {
+    max-height: 575px;
+    width: 312px;
+  }
+
+  @include screen-sm-max {
+    max-height: 312px;
+  }
+}

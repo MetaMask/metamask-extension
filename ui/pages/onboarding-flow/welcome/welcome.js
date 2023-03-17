@@ -6,10 +6,13 @@ import { Carousel } from 'react-responsive-carousel';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
+import CheckBox from '../../../components/ui/check-box';
+import Box from '../../../components/ui/box';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -33,6 +36,7 @@ export default function OnboardingWelcome() {
   const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const [termsChecked, setTermsChecked] = useState(false);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -58,6 +62,20 @@ export default function OnboardingWelcome() {
     });
     history.push(ONBOARDING_METAMETRICS);
   };
+  const toggleTermsCheck = () => {
+    setTermsChecked((currentTermsChecked) => !currentTermsChecked);
+  };
+  const termsOfUse = t('agreeTermsOfUse', [
+    <a
+      className="create-new-vault__terms-link"
+      key="create-new-vault__link-text"
+      href="https://metamask.io/terms.html"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {t('terms')}
+    </a>,
+  ]);
 
   const onImportClick = () => {
     dispatch(setFirstTimeFlowType('import'));
@@ -147,6 +165,28 @@ export default function OnboardingWelcome() {
         </div>
       </Carousel>
       <ul className="onboarding-welcome__buttons">
+        <li>
+          <Box
+            alignItems={AlignItems.center}
+            className="onboarding__terms-of-use"
+          >
+            <CheckBox
+              id="onboarding__terms-checkbox"
+              dataTestId="onboarding__terms-checkbox"
+              checked={termsChecked}
+              onClick={toggleTermsCheck}
+            />
+            <label
+              className="onboarding__terms-label"
+              htmlFor="onboarding__terms-checkbox"
+            >
+              <Text variant={TextVariant.bodyMd} as="span">
+                {termsOfUse}
+              </Text>
+            </label>
+          </Box>
+        </li>
+
         <li>
           <Button
             data-testid="onboarding-create-wallet"

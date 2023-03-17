@@ -113,6 +113,43 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
+  "accept": {
+    "message": "Accept"
+  },
+  "agreeTermsOfUse":{
+    "message": "I agree to Metamask's $1",
+    "description": "$1 is the `terms` link"
+  },
+  "termsOfUseTitle":{
+    "message": "Our Terms of Use have updated"
+  },
+  "termsOfUse1:":{
+    "message": "IMPORTANT NOTICE: THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION AND A WAIVER OF CLASS ACTION RIGHTS AS DETAILED IN SECTION 11. PLEASE READ THE AGREEMENT CAREFULLY."
+  },
+  "termsOfUse2":{
+    "message":"ConsenSys Software Inc. (“ConsenSys,” “we,” “us,” or “our”) is the leading blockchain software development company. With a focus on utilizing decentralized technologies, such as Ethereum, our software is powering a revolution in commerce and finance and helping to optimize business processes. ConsenSys hosts a top level domain website, www.consensys.net, that serves information regarding ConsenSys and our Offerings, as defined below, as well as sub-domains for our products or services (the top level domain with the sub-domains collectively referred to as the “Site”), which include text, images, audio, code and other materials or third party information."
+  },
+  "termsOfUse3":{
+    "message":"These Terms of Use (the “Terms,” “Terms of Use” or “Agreement”) contain the terms and conditions that govern your access to and use of the Site and Offerings provided by us and is an agreement between us and you or the entity you represent (“you” or “your”). Please read these Terms of Use carefully before using the Site or Offerings. By using the Site, clicking a button or checkbox to accept or agree to these Terms where that option is made available, clicking a button to use or access any of the Offerings, completing an Order, or,  if earlier, using or otherwise accessing the Offerings (the date on which any of the events listed above occur being the “Effective Date”), you (1) accept and agree to these Terms and any additional terms, rules and conditions of participation issued by ConsenSys from time to time and (2) consent to the collection, use, disclosure and other handling of information as described in our Privacy Policy. If you do not agree to the Terms or perform any and all obligations you accept under the Terms, then you may not access or use the Offerings."
+  },
+  "termsOfUse4":{
+    "message":"13. Definitions"
+  },
+  "termsOfUse5":{
+    "message":"“Service Offerings” means the Services (including associated APIs), Our Content, Our Marks, and any other product or service provided by us under this Agreement. Service Offerings do not include Third-Party Content or Third-Party Services."
+  },
+  "termsOfUse6":{
+    "message":"“Suggestions” means all suggested improvements to the Service Offerings that you provide to us.."
+  },
+  "termsOfUse7":{
+    "message":"“Termination Date” means the effective date of termination provided in accordance with Section 6, in a notice from one party to the other."
+  },
+  "termsOfUse8":{
+    "message":"“Third-Party Content” means Content made available to you by any third party on the Site or in conjunction with the Offerings."
+  },
+  "termsOfUse9":{
+    "message":"“Your Content” means content that you or any End User transfers to us, storage or hosting by the Offerings in connection with account and any computational results that you or any End User derive from the foregoing through their use of the Offerings, excluding however any information submitted to a blockchain protocol for processing."
+  },
   "accessAndSpendNoticeNFT": {
     "message": "$1 may access and spend this asset",
     "description": "$1 is the url of the site requesting ability to spend"
