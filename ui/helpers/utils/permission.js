@@ -195,7 +195,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       label: t('permission_manageBip44Keys', [
         <span className="permission-label-item" key={`coin-type-${coinType}`}>
           {coinTypeToProtocolName(coinType) ||
-            `${coinType} (Unrecognized protocol)`}
+            t('unrecognizedProtocol', [coinType])}
         </span>,
       ]),
       description: t('permission_manageBip44KeysDescription', [
@@ -204,7 +204,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           key={`description-coin-type-${coinType}`}
         >
           {coinTypeToProtocolName(coinType) ||
-            `${coinType} (Unrecognized protocol)`}
+            t('unrecognizedProtocol', [coinType])}
         </span>,
       ]),
       leftIcon: getLeftIcon(ICON_NAMES.KEY),
