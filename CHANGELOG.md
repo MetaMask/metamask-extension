@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.26.2]
-### Uncategorized
+### Changed
 - Sign in with Ethereum: re-enable warning UI for mismatched domains / disable domain binding ([#18200](https://github.com/MetaMask/metamask-extension/pull/18200))
 
 ## [10.26.1]
