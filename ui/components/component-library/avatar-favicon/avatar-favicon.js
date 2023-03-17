@@ -76,7 +76,7 @@ AvatarFavicon.propTypes = {
    * The border color of the AvatarFavicon
    * Defaults to Color.transparent
    */
-  borderColor: Box.propTypes.borderColor,
+  borderColor: PropTypes.oneOf(Object.values(BorderColor)),
   /**
    * Additional classNames to be added to the AvatarFavicon
    */
