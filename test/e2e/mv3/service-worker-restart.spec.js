@@ -24,7 +24,7 @@ describe('MV3 - Service worker restart', function () {
   // );
 
   it('should continue to add new a account when service worker can not restart immediately', async function () {
-    const numberOfSegmentRequests = 1;
+    const numberOfSegmentRequests = 2;
 
     async function mockSegment(mockServer) {
       mockServer.reset();
@@ -130,6 +130,29 @@ describe('MV3 - Service worker restart', function () {
             environment_type: 'background',
             locale: 'en',
           },
+        );
+
+        assert.equal(mockedRequests[1].url, 'https://api.segment.io/v1/batch');
+
+        assert.equal(mockedRequests[1].body.json.batch.length, 1);
+        assert.equal(
+          mockedRequests[1].body.json.batch[1].event,
+          EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+        );
+
+        const serviceWorkerRestartTimeRequestProperties =
+          mockedRequests[1].body.json.batch[1].properties;
+        assert.equal(
+          serviceWorkerRestartTimeRequestProperties.category,
+          EVENT.SOURCE.SERVICE_WORKERS,
+        );
+        assert(
+          typeof serviceWorkerRestartTimeRequestProperties.service_worker_action_queue_methods ===
+            'number',
+        );
+        assert(
+          serviceWorkerRestartTimeRequestProperties.service_worker_action_queue_methods >
+            0,
         );
       },
     );
