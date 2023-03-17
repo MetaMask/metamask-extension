@@ -37,6 +37,7 @@
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:chrome:mv3": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mv3",
+    "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --rpc",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
     "test:e2e:firefox:snaps": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js --snaps",
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
