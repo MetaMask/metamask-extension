@@ -1912,7 +1912,7 @@ export function lockMetamask(): ThunkAction<
   };
 }
 
-async function _setSelectedAddress(address: string): Promise<void> {
+export async function _setSelectedAddress(address: string): Promise<void> {
   log.debug(`background.setSelectedAddress`);
   await submitRequestToBackground('setSelectedAddress', [address]);
 }

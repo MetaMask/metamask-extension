@@ -1438,3 +1438,9 @@ export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
 ///: END:ONLY_INCLUDE_IN
+
+export function getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown(
+  state,
+) {
+  return state.metamask.openSeaTransactionSecurityProviderPopoverHasBeenShown;
+}

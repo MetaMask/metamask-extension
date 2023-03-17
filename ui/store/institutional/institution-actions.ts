@@ -1,16 +1,30 @@
+import log from 'loglevel';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { SHOW_ACCOUNT_DETAIL } from '../actionConstants';
 import {
   closeCurrentNotificationWindow,
   hideModal,
   showModal,
+  showLoadingIndication,
+  hideLoadingIndication,
+  setUnconnectedAccountAlertShown,
+  displayWarning,
+  forceUpdateMetamaskState,
+  _setSelectedAddress,
 } from '../actions';
 import {
   CombinedBackgroundAndReduxState,
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from '../store';
+import { getUnconnectedAccountAlertEnabledness } from '../../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  getPermittedAccountsForCurrentTab,
+  getSelectedAddress,
+} from '../../selectors';
+import { switchedToUnconnectedAccount } from '../../ducks/alerts/unconnected-account';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -127,4 +141,57 @@ export function checkForUnapprovedTypedMessages(
   }
 
   return msgData;
+}
+
+export function showAccountDetail(address: string) {
+  return async (
+    dispatch: ThunkDispatch<
+      CombinedBackgroundAndReduxState,
+      unknown,
+      AnyAction
+    >,
+    getState: CombinedBackgroundAndReduxState & any,
+  ) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setSelectedAddress`);
+
+    const state = getState();
+    const unconnectedAccountAccountAlertIsEnabled =
+      getUnconnectedAccountAlertEnabledness(state);
+    const activeTabOrigin = state.activeTab.origin;
+    const selectedAddress = getSelectedAddress(state);
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(state);
+    const currentTabIsConnectedToPreviousAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(selectedAddress);
+    const currentTabIsConnectedToNextAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(address);
+    const switchingToUnconnectedAddress =
+      currentTabIsConnectedToPreviousAddress &&
+      !currentTabIsConnectedToNextAddress;
+
+    try {
+      await _setSelectedAddress(address);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error: any) {
+      dispatch(displayWarning(error.message));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    dispatch({
+      type: SHOW_ACCOUNT_DETAIL,
+      value: address,
+    });
+    if (
+      unconnectedAccountAccountAlertIsEnabled &&
+      switchingToUnconnectedAddress
+    ) {
+      dispatch(switchedToUnconnectedAccount());
+      await setUnconnectedAccountAlertShown(activeTabOrigin);
+    }
+  };
 }

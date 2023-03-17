@@ -62,3 +62,14 @@ export function getIsCustodianSupportedChain(state) {
       )
     : true;
 }
+
+export function getMMIAddressFromModalOrAddress(state) {
+  return (
+    state.appState.modal.modalState.props.address ||
+    state.metamask.selectedAddress
+  );
+}
+
+export function getMMIConfiguration(state) {
+  return state.metamask.mmiConfiguration;
+}

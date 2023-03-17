@@ -1,0 +1,47 @@
+.custody-confirm-link {
+  width: 100%;
+  height: auto;
+  background-color: #fff;
+  display: flex;
+  flex-flow: column;
+  border-radius: 16px;
+
+  &__title {
+    @include H4;
+
+    font-weight: 700;
+    padding-top: 16px;
+    text-align: center;
+  }
+
+  &__description {
+    padding: 0 20px;
+    padding-top: 16px;
+    text-align: center;
+    padding-bottom: 40px;
+    color: #454545;
+    font-size: 14px;
+    border-bottom: 1px solid lightgray;
+  }
+
+  &__img-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+
+  &__img {
+    margin: 0 20px;
+    display: block;
+    padding: 20px 0;
+    width: 45px;
+    text-align: center;
+  }
+
+  &__btn {
+    width: 300px !important;
+    margin: 20px auto;
+  }
+}
