@@ -88,6 +88,9 @@ import { TransactionMeta } from '../../app/scripts/controllers/incoming-transact
 import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { whiteListedKeyManagementSnaps } from '../../app/scripts/lib/snap-keyring';
+///: END:ONLY_INCLUDE_IN
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -105,6 +108,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { HandlerType } from '@metamask/snaps-utils';
 
 export function goHome() {
   return {
@@ -1275,8 +1279,54 @@ export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('removeSnap', [snapId]);
-    await forceUpdateMetamaskState(dispatch);
+    dispatch(showLoadingIndication());
+
+    // find out if key management snap
+    const isKeyManagementSnap = whiteListedKeyManagementSnaps.includes(snapId);
+
+    try {
+      if (isKeyManagementSnap) {
+        // find out origin of key management snap
+        const addressesInSnap: string[] = await submitRequestToBackground(
+          'handleSnapRequest',
+          [
+            {
+              snapId,
+              origin: 'metamask',
+              handler: HandlerType.OnRpcRequest,
+              request: {
+                jsonrpc: '2.0',
+                method: 'snap_manageAccounts',
+                params: ['read'],
+              },
+            },
+          ],
+        );
+        for (const address of addressesInSnap) {
+          // remove accounts if key management snap
+          // TODO: create removeAccounts method
+          await submitRequestToBackground('handleSnapRequest', [
+            {
+              snapId,
+              origin: 'metamask',
+              handler: HandlerType.OnRpcRequest,
+              request: {
+                jsonrpc: '2.0',
+                method: 'snap_manageAccounts',
+                params: ['delete', address],
+              },
+            },
+          ]);
+        }
+      }
+      await submitRequestToBackground('removeSnap', [snapId]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 

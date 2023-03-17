@@ -38,6 +38,10 @@ export type SerializedWallets = {
   [key: string]: string;
 };
 
+export const whiteListedKeyManagementSnaps = Object.freeze([
+  'local:http://localhost:8080',
+]);
+
 class SnapKeyring {
   static type: string;
 
@@ -285,7 +289,11 @@ class SnapKeyring {
    * @param address
    */
   removeAccount(address: Address): boolean {
-    throw new Error('snap-keyring: "removeAccount" not supported');
+    if (this._addressToOrigin.get(address)) {
+      this._addressToOrigin.delete(address);
+      return true;
+    }
+    return false;
   }
 
   /* SNAP RPC METHODS */
