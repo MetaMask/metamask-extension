@@ -3094,6 +3094,10 @@
     "message": "Allow the snap to store, update, and retrieve data securely with encryption. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_manageState` permission"
   },
+  "permission_manageAccounts": {
+    "message": "Control accounts handled by snaps",
+    "description": "The description for `snap_manageAccounts` permission"
+  },
   "permission_notifications": {
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
