@@ -4971,7 +4971,11 @@ describe('NetworkController', () => {
               },
             },
             async ({ controller, network }) => {
-              network.mockEssentialRpcCalls();
+              network.mockEssentialRpcCalls({
+                eth_blockNumber: {
+                  times: 2,
+                },
+              });
               await controller.initializeProvider();
 
               const { provider: providerBefore } =
@@ -7215,6 +7219,13 @@ describe('NetworkController', () => {
           },
         },
         async ({ controller }) => {
+          const network = new NetworkCommunications({
+            networkClientType: 'custom',
+            networkClientOptions: {
+              customRpcUrl: 'https://test-rpc-url',
+            },
+          });
+          network.mockEssentialRpcCalls();
           const rpcUrlNetwork = {
             chainId: '0x1',
             rpcUrl: 'https://test-rpc-url',
