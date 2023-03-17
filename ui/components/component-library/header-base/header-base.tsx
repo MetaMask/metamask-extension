@@ -7,12 +7,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 
-import { HeaderBaseProps, CustomBoxProps } from './header-base.types';
+import { HeaderBaseProps } from './header-base.types';
 
 export const HeaderBase: React.FC<HeaderBaseProps> = ({
   startAccessory,
   endAccessory,
-  className,
+  className = '',
   children,
   childrenWrapperProps,
   startAccessoryWrapperProps,
@@ -63,7 +63,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
 
   return (
     <Box
-      className={classnames('mm-header-base', className || '')}
+      className={classnames('mm-header-base', className)}
       display={DISPLAY.FLEX}
       justifyContent={JustifyContent.spaceBetween}
       {...props}
@@ -79,7 +79,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
                 }
               : undefined
           }
-          {...(startAccessoryWrapperProps as CustomBoxProps)}
+          {...startAccessoryWrapperProps}
         >
           {startAccessory}
         </Box>
@@ -107,7 +107,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
                 }
               : undefined
           }
-          {...(endAccessoryWrapperProps as CustomBoxProps)}
+          {...endAccessoryWrapperProps}
         >
           {endAccessory}
         </Box>

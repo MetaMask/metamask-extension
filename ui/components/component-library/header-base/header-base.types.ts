@@ -1,9 +1,5 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import type { BoxProps } from '../../ui/box/box.d';
-
-export interface CustomBoxProps extends BoxProps {
-  ref?: RefObject<HTMLDivElement>;
-}
 
 export interface HeaderBaseProps extends BoxProps {
   /**
