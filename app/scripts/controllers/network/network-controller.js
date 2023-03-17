@@ -242,10 +242,6 @@ export default class NetworkController extends EventEmitter {
       return;
     }
 
-    // console.log('lookupNetwork!');
-
-    // TODO: Test this new code
-
     this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       networkChanged = true;
     });
@@ -258,22 +254,7 @@ export default class NetworkController extends EventEmitter {
       networkId = results[0];
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
-      // console.log('great, the network seems to be available');
     } catch (error) {
-      // console.log(
-      // error,
-      // 'code',
-      // error.code,
-      // 'data',
-      // error.data,
-      // 'body',
-      // error.body,
-      // 'message',
-      // error.message,
-      // 'keys',
-      // Object.keys(error),
-      // );
-
       let data;
       if (hasProperty(error, 'data')) {
         data = error.data;
@@ -292,30 +273,18 @@ export default class NetworkController extends EventEmitter {
         }
       } else {
         log.warn(
-          'NetworkContrller - could not determine network status',
+          'NetworkController - could not determine network status',
           error,
         );
         networkStatus = NetworkStatus.Unknown;
       }
     }
 
-    // console.log(
-    // 'networkStatus',
-    // networkStatus,
-    // 'networkId',
-    // networkId,
-    // 'supportsEIP1559',
-    // supportsEIP1559,
-    // );
-
     if (networkChanged) {
       // If the network has changed, then `lookupNetwork` either has been or is
       // in the process of being called, so we don't need to go further.
-      // console.log('network changed! skipping the rest');
       return;
     }
-
-    // console.log('network was not changed, so updating network status and such');
 
     this.networkStatusStore.putState(networkStatus);
 
@@ -406,11 +375,9 @@ export default class NetworkController extends EventEmitter {
     const ethQuery = new EthQuery(provider);
 
     return new Promise((resolve, reject) => {
-      // console.log('fetching eth_getBlockByNumber...');
       ethQuery.sendAsync(
         { method: 'eth_getBlockByNumber', params: ['latest', false] },
         (error, result) => {
-          // console.log('got eth_getBlockByNumber', error, result);
           if (error) {
             reject(error);
           } else {
@@ -431,9 +398,7 @@ export default class NetworkController extends EventEmitter {
     const ethQuery = new EthQuery(provider);
 
     return await new Promise((resolve, reject) => {
-      // console.log('fetching net_version...');
       ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
-        // console.log('got net_version', error, result);
         if (error) {
           reject(error);
         } else {
@@ -476,32 +441,6 @@ export default class NetworkController extends EventEmitter {
   }
 
   /**
-   * Retrieves the latest block on the currently selected network and, at the
-   * same time, uses the request to determine the status of the network. If the
-   * request is successful, the network is assumed to be available; if the
-   * request returns a response body that includes a "countryBlocked" error, the
-   * status is blocked; if the request is otherwise unsuccessful, the status is
-   * unavailable; and if some other error is encountered, the status is unknown.
-   *
-   * @returns {{networkStatus: NetworkStatus, supportsEIP1559?: boolean}} The
-   * network status as described above, along with a boolean that indicates
-   * whether the network supports EIP-1559.
-   */
-  /*
-  async _determineNetworkStatus() {
-    try {
-      console.log('fetching net_version');
-      const supportsEIP1559 = await this._determineEIP1559Compatibility();
-      console.log('supportsEIP1559', supportsEIP1559);
-      return {
-        networkStatus: NetworkStatus.Available,
-        supportsEIP1559,
-      };
-    } catch (error) {}
-  }
-  */
-
-  /**
    * Retrieves the latest block from the currently selected network; if the
    * block has a `baseFeePerGas` property, then we know that the network
    * supports EIP-1559; otherwise it doesn't.
@@ -511,7 +450,6 @@ export default class NetworkController extends EventEmitter {
    */
   async _determineEIP1559Compatibility() {
     const latestBlock = await this._getLatestBlock();
-    // console.log('latestBlock', latestBlock);
     return latestBlock && latestBlock.baseFeePerGas !== undefined;
   }
 

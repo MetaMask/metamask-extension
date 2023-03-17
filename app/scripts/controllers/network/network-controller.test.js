@@ -260,14 +260,6 @@ class NetworkCommunications {
         response: {
           result: latestBlock,
         },
-        // When the provider is configured for an Infura network,
-        // NetworkController makes a sentinel request for
-        // `eth_getBlockByNumber`, so we ensure that it is mocked by default.
-        // Conversely, when the provider is configured for a custom network, we
-        // don't mock `eth_getBlockByNumber` at all unless specified.
-        // Admittedly, this is a bit magical, but it saves us from having to
-        // think about this in tests if we don't have to.
-        // times: this.networkClientType === 'infura' ? 1 : 0,
       },
       net_version: {
         request: {
@@ -277,13 +269,6 @@ class NetworkCommunications {
         response: {
           result: '1',
         },
-        // When the provider is configured for a custom network,
-        // NetworkController makes a sentinel request for `net_version`, so we
-        // ensure that it is mocked by default. Conversely, when the provider is
-        // configured for an Infura endpoint, we don't mock `net_version` at all
-        // unless specified. Admittedly, this is a bit magical, but it saves us
-        // from having to think about this in tests if we don't have to.
-        // times: this.networkClientType === 'infura' ? 0 : 1,
       },
       // The request that the block tracker makes always occurs after any
       // request that the network controller makes (because such a request goes
@@ -300,7 +285,7 @@ class NetworkCommunications {
         // If there is no latest block number then the request that spawned the
         // block tracker won't be cached inside of the block tracker, so the
         // block tracker makes another request when it is asked for the latest
-        // block
+        // block.
         times: latestBlock === null ? 2 : 1,
       },
     };
@@ -326,26 +311,6 @@ class NetworkCommunications {
         allMocks.push(defaultMock);
       }
     });
-
-    // The request that the block tracker makes always occurs after any request
-    // that the network controller makes (because such a request goes through
-    // the block cache middleware and that is what spawns the block tracker). We
-    // don't need to customize the block tracker request; we just need to ensure
-    // that the block number it returns matches the same block number that
-    // `eth_getBlockByNumber` uses.
-    /*
-    allMocks.push({
-      request: {
-        method: 'eth_blockNumber',
-        params: [],
-      },
-      response: {
-        result: latestBlockNumber,
-      },
-      // TODO: Update this
-      // times: latestBlock === null ? 2 : 1,
-    });
-    */
 
     allMocks.forEach((mock) => {
       this.mockRpcCall(mock);
@@ -379,14 +344,6 @@ class NetworkCommunications {
    * the mocks for the network, or null if `times` is 0.
    */
   mockRpcCall({ request, response, error, delay, times, beforeCompleting }) {
-    // console.log(
-    // '(mockRpcCall) defining request mock',
-    // 'request',
-    // request,
-    // 'response',
-    // response,
-    // );
-
     if (times === 0) {
       return null;
     }
@@ -430,15 +387,6 @@ class NetworkCommunications {
           ...(requestBody.id === undefined ? {} : { id: requestBody.id }),
           ...partialResponseBody,
         };
-
-        // console.log(
-        // '(mockRpcCall) sending back response for request',
-        // requestBody,
-        // 'response',
-        // completeResponseBody,
-        // 'httpStatus',
-        // httpStatus,
-        // );
 
         return [httpStatus, completeResponseBody];
       });
@@ -588,16 +536,6 @@ describe('NetworkController', () => {
             times: 2,
           },
         });
-        /*
-        network.mockRpcCall({
-          request: {
-            method: 'eth_blockNumber'
-          },
-          response: {
-            result: '0x1'
-          }
-        })
-        */
         await controller.initializeProvider();
         const { blockTracker } = controller.getProviderAndBlockTracker();
         // The block tracker starts running after a listener is attached
@@ -3162,7 +3100,9 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(controller.store.getState().networkStatus).toBe('unavailable');
+              expect(controller.store.getState().networkStatus).toBe(
+                'unavailable',
+              );
             },
           );
         });
@@ -3685,9 +3625,9 @@ describe('NetworkController', () => {
                 },
                 net_version: {
                   response: {
-                    result: '111'
-                  }
-                }
+                    result: '111',
+                  },
+                },
               });
               const network2 = new NetworkCommunications({
                 networkClientType: 'infura',
@@ -5290,8 +5230,8 @@ describe('NetworkController', () => {
             network.mockEssentialRpcCalls({
               latestBlock: POST_1559_BLOCK,
               eth_blockNumber: {
-                times: 2
-              }
+                times: 2,
+              },
             });
 
             await controller.initializeProvider();
@@ -5382,8 +5322,8 @@ describe('NetworkController', () => {
           async ({ controller, network }) => {
             network.mockEssentialRpcCalls({
               eth_blockNumber: {
-                times: 2
-              }
+                times: 2,
+              },
             });
             await controller.initializeProvider();
 
