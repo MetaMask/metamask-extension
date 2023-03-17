@@ -33,6 +33,8 @@ const baseStore = {
     unapprovedTxs: {
       1: {
         id: 1,
+        // TODO: This needed to be added. Why?
+        chainId: '0x5',
         txParams: {
           from: '0x0',
           to: '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e',
