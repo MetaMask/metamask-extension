@@ -16,6 +16,14 @@ export const typeHash = {
   default: '',
 };
 
+/**
+ * @deprecated `<ActionableMessage />` has been deprecated in favour of the `<BannerAlert />`
+ * component in ./ui/components/component-library/banner-alert/banner-alert.js.
+ * See storybook documentation for Text here:
+ * {@see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-banneralert--default-story#banneralert}}
+ *
+ * Help to replace `ActionableMessage` with `BannerAlert` by submitting a PR
+ */
 export default function ActionableMessage({
   message = '',
   primaryAction = null,
