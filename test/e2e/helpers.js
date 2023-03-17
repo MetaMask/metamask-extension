@@ -145,6 +145,7 @@ async function withFixtures(options, testSuite) {
       driver: driverProxy ?? driver,
       mockServer,
       contractRegistry,
+      ganacheServer,
     });
   } catch (error) {
     failed = true;
