@@ -1,0 +1,21 @@
+.mm-modal-content {
+  --modal-content-size: var(--size, 420px);
+
+  &--size-sm {
+    --size: 420px;
+  }
+
+  &--size-md {
+    --size: 600px;
+  }
+
+  &--size-lg {
+    --size: 800px;
+  }
+
+  position: relative;
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  max-height: calc(100% - 32px);
+  overflow: auto;
+  max-width: var(--modal-content-size);
+}
