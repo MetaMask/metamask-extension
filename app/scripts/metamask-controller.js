@@ -10,6 +10,8 @@ import {
   KeyringController,
   keyringBuilderFactory,
 } from '@metamask/eth-keyring-controller';
+import createFilterMiddleware from 'eth-json-rpc-filters';
+import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import {
   errorCodes as rpcErrorCodes,
   EthereumRpcError,
@@ -405,32 +407,30 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
-    process.env.NFTS_V1 &&
-      (this.nftDetectionController = new NftDetectionController({
-        onNftsStateChange: (listener) => this.nftController.subscribe(listener),
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
-          ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.provider,
-                chainId: hexToDecimal(networkState.provider.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
-        getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
-        getBalancesInSingleCall:
-          this.assetsContractController.getBalancesInSingleCall.bind(
-            this.assetsContractController,
-          ),
-        addNft: this.nftController.addNft.bind(this.nftController),
-        getNftState: () => this.nftController.state,
-      }));
+    this.nftDetectionController = new NftDetectionController({
+      onNftsStateChange: (listener) => this.nftController.subscribe(listener),
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      onNetworkStateChange: (cb) =>
+        this.networkController.store.subscribe((networkState) => {
+          const modifiedNetworkState = {
+            ...networkState,
+            providerConfig: {
+              ...networkState.provider,
+              chainId: hexToDecimal(networkState.provider.chainId),
+            },
+          };
+          return cb(modifiedNetworkState);
+        }),
+      getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
+      getBalancesInSingleCall:
+        this.assetsContractController.getBalancesInSingleCall.bind(
+          this.assetsContractController,
+        ),
+      addNft: this.nftController.addNft.bind(this.nftController),
+      getNftState: () => this.nftController.state,
+    });
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
@@ -787,6 +787,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:getSubjectNames`,
         `${this.permissionController.name}:updateCaveat`,
         `${this.approvalController.name}:addRequest`,
+        `${this.approvalController.name}:updateRequestState`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
         'ExecutionService:executeSnap',
@@ -2183,10 +2184,10 @@ export default class MetamaskController extends EventEmitter {
         detectTokensController,
       ),
 
-      // DetectNftController
-      detectNfts: process.env.NFTS_V1
-        ? nftDetectionController.detectNfts.bind(nftDetectionController)
-        : null,
+      // DetectCollectibleController
+      detectNfts: nftDetectionController.detectNfts.bind(
+        nftDetectionController,
+      ),
 
       /** Token Detection V2 */
       addDetectedTokens:
@@ -3900,19 +3901,21 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
-    const { provider } = this;
-
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
+    const { blockTracker, provider } = this;
 
-    // forward notifications from network provider
-    provider.on('data', (error, message) => {
-      if (error) {
-        // This should never happen, this error parameter is never set
-        throw error;
-      }
-      engine.emit('notification', message);
+    // create filter polyfill middleware
+    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
+
+    // create subscription polyfill middleware
+    const subscriptionManager = createSubscriptionManager({
+      provider,
+      blockTracker,
     });
+    subscriptionManager.events.on('notification', (message) =>
+      engine.emit('notification', message),
+    );
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
@@ -3977,7 +3980,6 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
-
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
@@ -4065,6 +4067,9 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
+    // filter and subscription polyfills
+    engine.push(filterMiddleware);
+    engine.push(subscriptionManager.middleware);
     if (subjectType !== SubjectType.Internal) {
       // permissions
       engine.push(
