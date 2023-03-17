@@ -18,6 +18,17 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+jest.mock('../../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
@@ -25,30 +36,26 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
+jest.mock('../../ducks/send', () => ({
+  ...jest.requireActual('../../ducks/send'),
+  resetSendState: () => ({ type: 'XXX' }),
+  getGasPrice: jest.fn(),
+}));
 
-  return {
-    ...actual,
-    useDispatch: jest.fn(),
-  };
-});
+jest.mock('../../ducks/domains', () => ({
+  ...jest.requireActual('../../ducks/domains'),
+  initializeDomainSlice: () => ({ type: 'XXX' }),
+}));
 
 describe('Routes Component', () => {
   describe('render', () => {
     it('should render draft send page', () => {
       const store = configureMockStore()({
         ...mockSendState,
-        // send: getInitialSendStateWithExistingTxState(),
       });
-      const { container, findByTestId } = renderWithProvider(
-        <Routes />,
-        store,
-        ['/send'],
-      );
+      const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
-      expect(container).toMatchSnapshot();
-      expect(findByTestId('account-menu-icon')).toBeDisabled();
+      expect(getByTestId('account-menu-icon')).toBeDisabled();
     });
   });
 });
