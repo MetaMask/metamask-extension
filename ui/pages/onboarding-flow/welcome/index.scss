@@ -52,8 +52,8 @@
     }
   }
 
-  &__terms-of-use{
-    display:flex;
-    align-content: center;
+  &__terms-checkbox {
+    margin: 0;
+    align-self: flex-start;
   }
 }

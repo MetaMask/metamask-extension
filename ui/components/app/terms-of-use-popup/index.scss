@@ -9,15 +9,16 @@
     &:last-child {
       border-bottom: none;
     }
+
     &:first-child {
-      margin-top: 0px;
+      margin-top: 0;
     }
   }
 
   &__button {
     margin-right: auto;
-    position:absolute;
-    bottom:16px;
+    position: absolute;
+    bottom: 16px;
   }
 
   // &__button,
