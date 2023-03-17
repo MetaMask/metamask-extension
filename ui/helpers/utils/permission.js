@@ -12,12 +12,15 @@ import {
   EndowmentPermissions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAPS_METADATA } from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IN
 import { Icon, ICON_NAMES } from '../../components/component-library';
 import { Color } from '../constants/design-system';
-import { coinTypeToProtocolName, getSnapDerivationPathName } from './util'; // eslint-disable-line no-unused-vars
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import {
+  coinTypeToProtocolName,
+  getSnapDerivationPathName,
+  getSnapName,
+} from './util';
+///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
@@ -148,7 +151,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       rightIcon: null,
     };
     return Object.keys(snaps).map((snapId) => {
-      const friendlyName = SNAPS_METADATA[snapId]?.name;
+      const friendlyName = getSnapName(snapId);
       if (friendlyName) {
         return {
           ...baseDescription,

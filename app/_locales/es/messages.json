@@ -3376,15 +3376,8 @@
     "message": "Está otorgando acceso clave de $2 al complemento \"$1\". Esto es irrevocable y le otorga a \"$1\" el control de sus cuentas y activos de $2. Asegúrese de que confía en \"$1\" antes de continuar.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Este complemento solicita los siguientes permisos:"
-  },
   "snapUpdate": {
     "message": "Actualizar complemento"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1 necesita una versión más reciente de su complemento.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Complementos"
