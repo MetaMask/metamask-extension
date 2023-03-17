@@ -7,3 +7,4 @@ export { GlobalMenu } from './global-menu';
 export { MultichainImportTokenLink } from './multichain-import-token-link';
 export { MultichainTokenListItem } from './multichain-token-list-item';
 export { AddressCopyButton } from './address-copy-button';
+export { NetworkListItem } from './network-list-item';
