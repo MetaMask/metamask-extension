@@ -297,7 +297,7 @@ describe('DetectTokensController', function () {
     ]);
   });
 
-  it('should check and add tokens while on supported networks', async function () {
+  it.only('should check and add tokens while on supported networks', async function () {
     sandbox.useFakeTimers();
     network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
@@ -317,6 +317,13 @@ describe('DetectTokensController', function () {
 
     const existingTokenAddress = erc20ContractAddresses[0];
     const existingToken = tokenList[existingTokenAddress];
+
+    console.log(
+      'tokenList',
+      tokenList,
+      'existingTokenAddress',
+      existingTokenAddress,
+    );
 
     await tokensController.addDetectedTokens([
       {

@@ -923,6 +923,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
+      getNetworkId: () => this.networkController.store.getState().networkId,
       getNetworkStatus: () =>
         this.networkController.store.getState().networkStatus,
       // TODO: This option should probably listen for networkDidChange
@@ -1670,7 +1671,7 @@ export default class MetamaskController extends EventEmitter {
     const { networkId } = memState || this.getState();
     return {
       chainId: this.networkController.store.getState().provider.chainId,
-      networkVersion: networkId ?? 'loading'
+      networkVersion: networkId ?? 'loading',
     };
   }
 
