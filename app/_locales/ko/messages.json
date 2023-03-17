@@ -2345,9 +2345,6 @@
   "notifications17ActionText": {
     "message": "보안 및 개인정보 설정 표시"
   },
-  "notifications17Description": {
-    "message": "이 업데이트에는 자신의 개인정보 보호를 위해 행사할 수 있는 옵션이 더욱 많습니다. 데이터 수집 방법을 더욱 투명하게 하였고, 데이터 공유에 관련하여 명확한 옵션을 추가했습니다. 보안 및 개인 정보 설정을 통해 기본 설정을 변경하거나 확장 프로그램 사용 데이터를 삭제하세요."
-  },
   "notifications17Title": {
     "message": "보안 및 개인정보 설정 표시"
   },

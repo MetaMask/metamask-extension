@@ -2369,14 +2369,41 @@
   "notifications15Title": {
     "message": "The Ethereum Merge is here!"
   },
-  "notifications17ActionText": {
-    "message": "Show Security & Privacy settings"
+  "notifications16ActionText": {
+    "message": "Enable security provider"
   },
-  "notifications17Description": {
-    "message": "This update provides more options so you can better control your own privacy. We've added more transparency about how data is collected and clearer options for sharing it. Change your preferences or delete extension usage data via Security & Privacy settings."
+  "notifications16DescriptionOne": {
+    "message": "Get warnings from OpenSea whenever you receive a known malicious request.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
+  },
+  "notifications16DescriptionThree": {
+    "message": "Always be sure to do your own due diligence before approving any requests.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
+  },
+  "notifications16DescriptionTwo": {
+    "message": "OpenSea is the first security provider for this feature. More providers coming soon!",
+    "description": "Description of a notification in the 'See What's New' popup. Describes Opensea Security Provider feature."
+  },
+  "notifications16Title": {
+    "message": "Stay safe with OpenSea"
+  },
+  "notifications17ActionText": {
+    "message": "Enable NFT autodetection"
+  },
+  "notifications17DescriptionOne": {
+    "message": "Two ways you can get started:",
+    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
+  },
+  "notifications17DescriptionThree": {
+    "message": "We only support ERC-721 at the moment.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
+  },
+  "notifications17DescriptionTwo": {
+    "message": "Manually add your NFTs, or turn on NFT autodetection in Settings > Experimental.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
   },
   "notifications17Title": {
-    "message": "Security & Privacy Settings"
+    "message": "See your NFTs like never before"
   },
   "notifications1Description": {
     "message": "MetaMask Mobile users can now swap tokens inside their mobile wallet. Scan the QR code to get the mobile app and start swapping.",

@@ -3218,7 +3218,6 @@ describe('NetworkController', () => {
                   blockExplorerUrl:
                     BUILT_IN_NETWORKS[networkType].blockExplorerUrl,
                 },
-                id: 'testNetworkConfigurationId2',
               });
             },
           );
@@ -4213,7 +4212,7 @@ describe('NetworkController', () => {
       networkVersion,
     } of INFURA_NETWORKS) {
       describe(`if the previous provider configuration had a type of "${networkType}"`, () => {
-        it('merges the previous configuration into the current provider configuration', async () => {
+        it('overwrites the the current provider configuration with the previous provider configuration', async () => {
           await withController(
             {
               state: {
@@ -4295,7 +4294,6 @@ describe('NetworkController', () => {
                 chainId: BUILT_IN_NETWORKS[networkType].chainId,
                 ticker: BUILT_IN_NETWORKS[networkType].ticker,
                 nickname: '',
-                id: 'testNetworkConfigurationId1',
                 rpcPrefs: {
                   blockExplorerUrl:
                     BUILT_IN_NETWORKS[networkType].blockExplorerUrl,
@@ -4871,7 +4869,7 @@ describe('NetworkController', () => {
     }
 
     describe(`if the previous provider configuration had a type of "rpc"`, () => {
-      it('merges the previous configuration into the current provider configuration', async () => {
+      it('overwrites the the current provider configuration with the previous provider configuration', async () => {
         await withController(
           {
             state: {
@@ -4940,7 +4938,6 @@ describe('NetworkController', () => {
               rpcPrefs: {
                 blockExplorerUrl: 'https://goerli.etherscan.io',
               },
-              id: 'testNetworkConfigurationId2',
             });
 
             await waitForLookupNetworkToComplete({
@@ -4953,8 +4950,8 @@ describe('NetworkController', () => {
               type: 'rpc',
               rpcUrl: 'https://mock-rpc-url-2',
               chainId: '0x1337',
-              ticker: 'TEST2',
               nickname: 'test-chain-2',
+              ticker: 'TEST2',
               rpcPrefs: {
                 blockExplorerUrl: 'test-block-explorer-2.com',
               },
