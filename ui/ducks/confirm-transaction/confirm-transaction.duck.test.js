@@ -372,15 +372,20 @@ describe('Confirm Transaction Duck', () => {
       const middlewares = [thunk];
       const mockStore = configureMockStore(middlewares);
       const store = mockStore(mockState);
-
-      store.dispatch(actions.setTransactionToConfirm(2603411941761054));
-
-      expect(store.getActions().map((action) => action.type)).toStrictEqual([
+      const expectedActions = [
         'metamask/confirm-transaction/UPDATE_TX_DATA',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_AMOUNTS',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_FEES',
         'metamask/confirm-transaction/UPDATE_TRANSACTION_TOTALS',
-      ]);
+      ];
+
+      store.dispatch(actions.setTransactionToConfirm(2603411941761054));
+      const storeActions = store.getActions();
+      expect(storeActions).toHaveLength(expectedActions.length);
+
+      storeActions.forEach((action, index) =>
+        expect(action.type).toStrictEqual(expectedActions[index]),
+      );
     });
   });
 });

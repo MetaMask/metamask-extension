@@ -52,7 +52,6 @@ describe('TransactionStateManager', function () {
   const currentNetworkStatus = NetworkStatus.Available;
   const currentChainId = CHAIN_IDS.MAINNET;
   const otherNetworkId = '2';
-  const otherChainId = CHAIN_IDS.GOERLI;
 
   beforeEach(function () {
     txStateManager = new TxStateManager({

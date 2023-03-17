@@ -5,5 +5,3 @@ require('./helpers/setup-helper');
 
 window.SVGPathElement = window.SVGPathElement || { prototype: {} };
 global.indexedDB = {};
-
-//require('loglevel').enableAll();

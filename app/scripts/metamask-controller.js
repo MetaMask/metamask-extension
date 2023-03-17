@@ -1097,6 +1097,7 @@ export default class MetamaskController extends EventEmitter {
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
         this.txController.txGasUtil,
       ),
+      networkController: this.networkController,
       provider: this.provider,
       getProviderConfig: () => this.networkController.store.getState().provider,
       getTokenRatesState: () => this.tokenRatesController.state,
@@ -1118,7 +1119,8 @@ export default class MetamaskController extends EventEmitter {
             return cb(modifiedNetworkState);
           });
         },
-        getNetwork: () => this.networkController.store.getState().networkId,
+        getNetwork: () =>
+          this.networkController.store.getState().networkId ?? 'loading',
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
@@ -1668,9 +1670,7 @@ export default class MetamaskController extends EventEmitter {
     const { networkId } = memState || this.getState();
     return {
       chainId: this.networkController.store.getState().provider.chainId,
-      // NOTE: For compatibility with providers, this must return "loading" if
-      // there is no network ID
-      networkVersion: networkId === null ? 'loading' : networkId,
+      networkVersion: networkId ?? 'loading'
     };
   }
 
