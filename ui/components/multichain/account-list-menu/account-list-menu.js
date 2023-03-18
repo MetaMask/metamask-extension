@@ -75,7 +75,12 @@ export const AccountListMenu = ({ onClose }) => {
         {/* Account list block */}
         <Box className="multichain-account-menu__list">
           {searchResults.length === 0 && searchQuery !== '' ? (
-            <Text paddingLeft={4} paddingRight={4} color={TextColor.textMuted}>
+            <Text
+              paddingLeft={4}
+              paddingRight={4}
+              color={TextColor.textMuted}
+              data-testid="multichain-account-menu-no-results"
+            >
               {t('noAccountsFound')}
             </Text>
           ) : null}

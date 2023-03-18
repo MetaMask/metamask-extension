@@ -31,7 +31,7 @@ const CONTAINER_STYLES = {
   style: {
     width: '328px',
     border: '1px solid var(--color-border-muted)',
-  }
+  },
 };
 
 const onClick = () => console.log('Clicked account!');
