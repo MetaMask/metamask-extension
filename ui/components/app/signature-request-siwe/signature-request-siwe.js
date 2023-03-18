@@ -124,7 +124,7 @@ export default function SignatureRequestSIWE({
           <Text variant={TextVariant.bodyMdBold}>
             {t('SIWEDomainInvalidTitle')}
           </Text>{' '}
-          <Text variant={TextVariant.bodyMd}>{t('SIWEDomainInvalidText')}</Text>
+          <Text>{t('SIWEDomainInvalidText')}</Text>
         </BannerAlert>
       )}
       <PageContainerFooter
