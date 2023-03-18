@@ -54,8 +54,8 @@ export default function MenuBar() {
           }}
         />
       </span>
-      {accountOptionsMenuOpen ? (
-        process.env.MULTICHAIN ? (
+      {accountOptionsMenuOpen &&
+        (process.env.MULTICHAIN ? (
           <GlobalMenu
             anchorElement={ref.current}
             closeMenu={() => setAccountOptionsMenuOpen(false)}
@@ -65,8 +65,7 @@ export default function MenuBar() {
             anchorElement={ref.current}
             onClose={() => setAccountOptionsMenuOpen(false)}
           />
-        )
-      ) : null}
+        ))}
     </div>
   );
 }
