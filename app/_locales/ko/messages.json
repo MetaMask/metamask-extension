@@ -3376,15 +3376,8 @@
     "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "이 스냅이 다음 권한을 요청하고 있습니다."
-  },
   "snapUpdate": {
     "message": "스냅 업데이트"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1에는 스냅의 새 버전이 필요합니다",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "스냅"
