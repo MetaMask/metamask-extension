@@ -60,7 +60,10 @@ export const NetworkListItem = ({
           ariaLabel={t('deleteNetwork')}
           size={Size.SM}
           as="div"
-          onClick={onDeleteClick}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteClick();
+          }}
         />
       ) : null}
     </Box>
@@ -69,7 +72,7 @@ export const NetworkListItem = ({
 
 NetworkListItem.propTypes = {
   name: PropTypes.string.isRequired,
-  iconSrc: PropTypes.string.isRequired,
+  iconSrc: PropTypes.string,
   selected: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func,
