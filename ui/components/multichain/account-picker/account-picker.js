@@ -8,7 +8,7 @@ import {
   Text,
 } from '../../component-library';
 import {
-  Color,
+  BackgroundColor,
   FONT_WEIGHT,
   Size,
 } from '../../../helpers/constants/design-system';
@@ -18,7 +18,7 @@ export const AccountPicker = ({ account, onClick }) => {
     <ButtonBase
       className="multichain-account-picker"
       onClick={onClick}
-      backgroundColor={Color.transparent}
+      backgroundColor={BackgroundColor.transparent}
     >
       <AvatarAccount address={account.address} size={Size.SM} />
       <Text
