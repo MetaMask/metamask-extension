@@ -57,7 +57,16 @@ export const AddressCopyButton = ({
 };
 
 AddressCopyButton.propTypes = {
+  /**
+   * Address to be copied
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Represents if the address should be shortened
+   */
   shorten: PropTypes.bool,
+  /**
+   * Represents if the element should wrap to multiple lines
+   */
   wrap: PropTypes.bool,
 };
