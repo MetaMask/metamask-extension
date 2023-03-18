@@ -35,6 +35,16 @@ export const AccountPicker = ({ account, onClick }) => {
 };
 
 AccountPicker.propTypes = {
-  account: PropTypes.object.isRequired,
+  /**
+   * Account object
+   */
+  account: PropTypes.shape({
+    address: PropTypes.string,
+    name: PropTypes.string,
+    balance: PropTypes.string,
+  }).isRequired,
+  /**
+   * Action to perform when the account picker is clicked
+   */
   onClick: PropTypes.func.isRequired,
 };
