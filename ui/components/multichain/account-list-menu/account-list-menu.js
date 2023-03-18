@@ -182,5 +182,8 @@ export const AccountListMenu = ({ onClose }) => {
 };
 
 AccountListMenu.propTypes = {
+  /**
+   * Function that executes when the menu closes
+   */
   onClose: PropTypes.func.isRequired,
 };

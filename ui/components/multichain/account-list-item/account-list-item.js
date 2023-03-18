@@ -212,11 +212,33 @@ export const AccountListItem = ({
 };
 
 AccountListItem.propTypes = {
-  identity: PropTypes.object.isRequired,
+  /**
+   * Identity of the account
+   */
+  identity: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    balance: PropTypes.string.isRequired,
+  }).isRequired,
+  /**
+   * Represents if this account is currently selected
+   */
   selected: PropTypes.bool,
+  /**
+   * Function to execute when the item is clicked
+   */
   onClick: PropTypes.func.isRequired,
+  /**
+   * Function that closes the menu
+   */
   closeMenu: PropTypes.func,
+  /**
+   * File location of the avatar icon
+   */
   connectedAvatar: PropTypes.string,
+  /**
+   * Text used as the avatar alt text
+   */
   connectedAvatarName: PropTypes.string,
 };
 

@@ -113,10 +113,35 @@ export const AccountListItemMenu = ({
 };
 
 AccountListItemMenu.propTypes = {
+  /**
+   * Element that the menu should display next to
+   */
   anchorElement: PropTypes.instanceOf(window.Element),
+  /**
+   * Function that executes when the menu is closed
+   */
   onClose: PropTypes.func.isRequired,
+  /**
+   * Function that closes the menu
+   */
   closeMenu: PropTypes.func,
+  /**
+   * Domain of the block explorer
+   */
   blockExplorerUrlSubTitle: PropTypes.string,
+  /**
+   * Represents if the account should be removable
+   */
   isRemovable: PropTypes.bool.isRequired,
-  identity: PropTypes.object.isRequired,
+  /**
+   * Identity of the account
+   */
+  /**
+   * Identity of the account
+   */
+  identity: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    balance: PropTypes.string.isRequired,
+  }).isRequired,
 };

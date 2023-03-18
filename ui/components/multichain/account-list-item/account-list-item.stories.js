@@ -12,19 +12,26 @@ const [chaosAddress, simpleAddress, hardwareAddress] = Object.keys(
   testData.metamask.identities,
 );
 
-const SimpleIdentity = {
+const SIMPLE_IDENTITY = {
   ...testData.metamask.identities[simpleAddress],
   balance: '0x152387ad22c3f0',
 };
 
-const HardwareIdentity = {
+const HARDWARE_IDENTITY = {
   ...testData.metamask.identities[hardwareAddress],
   balance: '0x152387ad22c3f0',
 };
 
-const ChaosIdentity = {
+const CHAOS_IDENTITY = {
   ...testData.metamask.identities[chaosAddress],
   balance: '0x152387ad22c3f0',
+};
+
+const CONTAINER_STYLES = {
+  style: {
+    width: '328px',
+    border: '1px solid var(--color-border-muted)',
+  }
 };
 
 const onClick = () => console.log('Clicked account!');
@@ -53,80 +60,70 @@ export default {
     },
   },
   args: {
-    identity: SimpleIdentity,
+    identity: SIMPLE_IDENTITY,
     onClick,
   },
 };
 
 export const DefaultStory = (args) => (
-  <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
-  >
+  <div {...CONTAINER_STYLES}>
     <AccountListItem {...args} />
   </div>
 );
 
 export const SelectedItem = (args) => (
-  <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
-  >
-    <AccountListItem {...args} selected />
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
   </div>
 );
+SelectedItem.args = { selected: true };
 
 export const HardwareItem = (args) => (
-  <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
-  >
-    <AccountListItem {...args} identity={HardwareIdentity} />
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
   </div>
 );
+HardwareItem.args = { identity: HARDWARE_IDENTITY };
 HardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
 
 export const SelectedHardwareItem = (args) => (
-  <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
-  >
-    <AccountListItem {...args} identity={HardwareIdentity} selected />
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
   </div>
 );
-HardwareItem.decorators = [
+SelectedHardwareItem.args = { identity: HARDWARE_IDENTITY, selected: true };
+SelectedHardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
 
 export const ChaosDataItem = (args) => (
-  <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
-  >
-    <AccountListItem {...args} identity={ChaosIdentity} />
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
   </div>
 );
+ChaosDataItem.args = { identity: CHAOS_IDENTITY };
 
 export const ConnectedSiteItem = (args) => (
-  <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
-  >
-    <AccountListItem
-      {...args}
-      connectedAvatar="https://uniswap.org/favicon.ico"
-      connectedAvatarName="Uniswap"
-    />
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
   </div>
 );
+ConnectedSiteItem.args = {
+  connectedAvatar: 'https://uniswap.org/favicon.ico',
+  connectedAvatarName: 'Uniswap',
+};
 
 export const ConnectedSiteChaosItem = (args) => (
-  <div
-    style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
-  >
-    <AccountListItem
-      {...args}
-      identity={ChaosIdentity}
-      connectedAvatar="https://uniswap.org/favicon.ico"
-      connectedAvatarName="Uniswap"
-    />
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
   </div>
 );
+ConnectedSiteChaosItem.args = {
+  identity: CHAOS_IDENTITY,
+  connectedAvatar: 'https://uniswap.org/favicon.ico',
+  connectedAvatarName: 'Uniswap',
+};
 
 DefaultStory.storyName = 'Default';
