@@ -22,7 +22,7 @@ const mockStoreInitialState = {
 };
 
 const mockProps = {
-  cancecancelPersonalMessagelMessage: jest.fn(),
+  cancelPersonalMessage: jest.fn(),
   signPersonalMessage: jest.fn(),
   txData: {
     msgParams: {
