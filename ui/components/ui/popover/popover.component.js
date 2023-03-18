@@ -79,7 +79,9 @@ const Popover = ({
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
         justifyContent={centerTitle ? null : JustifyContent.spaceBetween}
-        style={centerTitle ? { flex: 1 } : {}}
+        className={classnames('popover-header__title', {
+          'popover-header__title--center': centerTitle,
+        })}
         marginBottom={2}
       >
         {onBack ? (
