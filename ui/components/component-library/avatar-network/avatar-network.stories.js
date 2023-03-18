@@ -12,12 +12,12 @@ import {
 import Box from '../../ui/box/box';
 
 import README from './README.mdx';
+
 import { AvatarNetwork } from './avatar-network';
 import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork',
-
   component: AvatarNetwork,
   parameters: {
     docs: {
@@ -67,13 +67,27 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const SizeStory = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
-    <AvatarNetwork {...args} size={Size.XS} />
-    <AvatarNetwork {...args} size={Size.SM} />
-    <AvatarNetwork {...args} size={Size.MD} />
-    <AvatarNetwork {...args} size={Size.LG} />
-    <AvatarNetwork {...args} size={Size.XL} />
-  </Box>
+  <>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.flexEnd}
+      gap={1}
+      marginBottom={4}
+    >
+      <AvatarNetwork {...args} size={Size.XS} />
+      <AvatarNetwork {...args} size={Size.SM} />
+      <AvatarNetwork {...args} size={Size.MD} />
+      <AvatarNetwork {...args} size={Size.LG} />
+      <AvatarNetwork {...args} size={Size.XL} />
+    </Box>
+    <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={1}>
+      <AvatarNetwork {...args} src="" size={Size.XS} />
+      <AvatarNetwork {...args} src="" size={Size.SM} />
+      <AvatarNetwork {...args} src="" size={Size.MD} />
+      <AvatarNetwork {...args} src="" size={Size.LG} />
+      <AvatarNetwork {...args} src="" size={Size.XL} />
+    </Box>
+  </>
 );
 SizeStory.storyName = 'Size';
 

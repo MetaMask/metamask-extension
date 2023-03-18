@@ -1,13 +1,25 @@
 .snap-update {
   box-shadow: none;
 
-  .update-snap-permission-list {
-    padding: 0 24px;
+  .headers {
+    flex: 1;
 
-    .new-permission,
-    .approved-permission,
-    .revoked-permission {
-      padding: 8px 0;
+    .loader-container {
+      height: 100%;
+    }
+
+    .update-snap-permission-list {
+      padding: 0 24px;
+
+      .new-permission,
+      .approved-permission,
+      .revoked-permission {
+        padding: 8px 0;
+      }
+    }
+
+    &__permission-description {
+      border-bottom: 1px solid var(--color-border-default);
     }
   }
 
