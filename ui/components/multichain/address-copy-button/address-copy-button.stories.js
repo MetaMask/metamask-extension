@@ -23,12 +23,14 @@ export default {
 export const DefaultStory = (args) => <AddressCopyButton {...args} />;
 DefaultStory.storyName = 'Default';
 
-export const ShortenedStory = (args) => <AddressCopyButton shorten {...args} />;
+export const ShortenedStory = (args) => <AddressCopyButton {...args} />;
 ShortenedStory.storyName = 'Shortened';
+ShortenedStory.args = { shorten: true };
 
 export const WrappedStory = (args) => (
   <div style={{ width: '200px' }}>
-    <AddressCopyButton wrap {...args} />
+    <AddressCopyButton {...args} />
   </div>
 );
 WrappedStory.storyName = 'Wrapped';
+WrappedStory.args = { wrap: true };
