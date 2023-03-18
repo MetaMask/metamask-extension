@@ -21,6 +21,7 @@ export default {
       name: 'Account 1',
       balance: '0x152387ad22c3f0',
     },
+    onClick: () => undefined,
   },
 };
 
@@ -31,7 +32,8 @@ export const ChaosStory = (args) => (
   <div
     style={{ maxWidth: '300px', border: '1px solid var(--color-border-muted)' }}
   >
-    <AccountPicker {...args} account={CHAOS_ACCOUNT} />
+    <AccountPicker {...args} />
   </div>
 );
-DefaultStory.storyName = 'Default';
+ChaosStory.storyName = 'Chaos';
+ChaosStory.args = { account: CHAOS_ACCOUNT };
