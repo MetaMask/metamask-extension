@@ -144,6 +144,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 };
 
 GlobalMenu.propTypes = {
+  /**
+   * The element that the menu should display next to
+   */
   anchorElement: PropTypes.instanceOf(window.Element),
+  /**
+   * Function that closes this menu
+   */
   closeMenu: PropTypes.func.isRequired,
 };
