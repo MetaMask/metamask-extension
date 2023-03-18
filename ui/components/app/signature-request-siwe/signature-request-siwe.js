@@ -103,7 +103,11 @@ export default function SignatureRequestSIWE({
       ) : null}
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
-        <BannerAlert severity={SEVERITIES.WARNING}>
+        <BannerAlert severity={SEVERITIES.WARNING}
+          marginLeft={4}
+          marginRight={4}
+          marginBottom={4}
+        >
           {t('SIWEAddressInvalid', [
             parsedMessage.address,
             fromAccount.address,
