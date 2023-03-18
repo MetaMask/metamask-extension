@@ -60,8 +60,10 @@ export const NetworkListItem = ({
           ariaLabel={t('deleteNetwork')}
           size={Size.SM}
           as="div"
+          tabIndex={0}
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
             onDeleteClick();
           }}
         />

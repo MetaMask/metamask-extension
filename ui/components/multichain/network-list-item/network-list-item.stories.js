@@ -26,6 +26,7 @@ export default {
     iconSrc: '',
     selected: false,
     onClick: () => console.log('Network click!'),
+    onDeleteClick: () => console.log('Network delete!'),
   },
 };
 
