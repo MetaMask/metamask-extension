@@ -13,7 +13,7 @@ module.exports = {
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage',
-  coveragePathIgnorePatterns: ['.stories.js', '.snap'],
+  coveragePathIgnorePatterns: ['.stories.*', '.snap'],
   coverageReporters: ['json'],
   reporters: [
     'default',
