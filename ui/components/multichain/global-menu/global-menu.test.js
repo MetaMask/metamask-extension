@@ -27,18 +27,16 @@ describe('AccountListItem', () => {
   }));
 
   it('locks MetaMask when item is clicked', () => {
-    render();
-    fireEvent.click(document.querySelector('[data-testid="global-menu-lock"]'));
+    const { getByTestId } = render();
+    fireEvent.click(getByTestId('global-menu-lock'));
     expect(mockLockMetaMask).toHaveBeenCalled();
   });
 
   it('opens the portfolio site when item is clicked', async () => {
     global.platform = { openTab: jest.fn() };
 
-    render();
-    fireEvent.click(
-      document.querySelector('[data-testid="global-menu-portfolio"]'),
-    );
+    const { getByTestId } = render();
+    fireEvent.click(getByTestId('global-menu-portfolio'));
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalledWith({
         url: `${process.env.PORTFOLIO_URL}?metamaskEntry=ext`,
@@ -49,10 +47,8 @@ describe('AccountListItem', () => {
   it('opens the support site when item is clicked', async () => {
     global.platform = { openTab: jest.fn() };
 
-    render();
-    fireEvent.click(
-      document.querySelector('[data-testid="global-menu-support"]'),
-    );
+    const { getByTestId } = render();
+    fireEvent.click(getByTestId('global-menu-support'));
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalledWith({
         url: SUPPORT_LINK,
