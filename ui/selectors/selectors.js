@@ -27,6 +27,7 @@ import {
   NetworkStatus,
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
+  ETH_TOKEN_IMAGE_URL,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1119,17 +1120,21 @@ export function getNetworkConfigurations(state) {
 }
 
 export function getAllNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state);
   const networks = [];
   // Mainnet always first
   networks.push({
     chainId: CHAIN_IDS.MAINNET,
     nickname: MAINNET_DISPLAY_NAME,
     rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+    rpcPrefs: {
+      imageUrl: ETH_TOKEN_IMAGE_URL
+    },
     providerType: NETWORK_TYPES.MAINNET,
   });
   // Custom networks added
   networks.push(
-    ...Object.entries(getNetworkConfigurations(state))
+    ...Object.entries(networkConfigurations)
       .filter(
         ([, network]) => !network.nickname?.toLowerCase().includes('localhost'),
       )
@@ -1156,7 +1161,7 @@ export function getAllNetworks(state) {
   }
   // Localhosts
   networks.push(
-    ...Object.entries(getNetworkConfigurations(state))
+    ...Object.entries(networkConfigurations)
       .filter(([, network]) =>
         network.nickname?.toLowerCase().includes('localhost'),
       )
