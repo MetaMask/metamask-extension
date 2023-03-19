@@ -25,6 +25,8 @@ import {
   CHAIN_IDS,
   NETWORK_TYPES,
   NetworkStatus,
+  SEPOLIA_DISPLAY_NAME,
+  GOERLI_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1114,6 +1116,54 @@ export function getProvider(state) {
 
 export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
+}
+
+export function getAllNetworks(state) {
+  const networks = [];
+  // Mainnet always first
+  networks.push({
+    chainId: CHAIN_IDS.MAINNET,
+    nickname: MAINNET_DISPLAY_NAME,
+    rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+    providerType: NETWORK_TYPES.MAINNET,
+  });
+  // Custom networks added
+  networks.push(
+    ...Object.entries(getNetworkConfigurations(state))
+      .filter(
+        ([, network]) => !network.nickname?.toLowerCase().includes('localhost'),
+      )
+      .map(([, network]) => network),
+  );
+  // Test networks if flag is on
+  if (getShowTestNetworks(state)) {
+    networks.push(
+      ...[
+        {
+          chainId: CHAIN_IDS.GOERLI,
+          nickname: GOERLI_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+          providerType: NETWORK_TYPES.GOERLI,
+        },
+        {
+          chainId: CHAIN_IDS.SEPOLIA,
+          nickname: SEPOLIA_DISPLAY_NAME,
+          rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+          providerType: NETWORK_TYPES.SEPOLIA,
+        },
+      ],
+    );
+  }
+  // Localhosts
+  networks.push(
+    ...Object.entries(getNetworkConfigurations(state))
+      .filter(([, network]) =>
+        network.nickname?.toLowerCase().includes('localhost'),
+      )
+      .map(([, network]) => network),
+  );
+
+  return networks;
 }
 
 export function getIsOptimism(state) {
