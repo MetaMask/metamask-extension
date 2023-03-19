@@ -1392,7 +1392,7 @@
       "packages": {
         "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
-        "@metamask/rpc-methods>@metamask/utils": true,
+        "@metamask/utils": true,
         "@metamask/utils>superstruct": true
       }
     },
@@ -1408,18 +1408,6 @@
       },
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "@metamask/rpc-methods>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>superstruct": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true
       }
     },
     "@metamask/rpc-methods>nanoid": {

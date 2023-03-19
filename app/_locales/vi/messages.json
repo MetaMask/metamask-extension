@@ -3376,15 +3376,8 @@
     "message": "Bạn đang cấp quyền truy cập khóa $2 cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản $2 của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Snap này đang yêu cầu các quyền sau:"
-  },
   "snapUpdate": {
     "message": "Cập nhật Snap"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1 cần một phiên bản Snap mới hơn.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snap"

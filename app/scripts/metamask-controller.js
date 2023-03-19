@@ -787,6 +787,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:getSubjectNames`,
         `${this.permissionController.name}:updateCaveat`,
         `${this.approvalController.name}:addRequest`,
+        `${this.approvalController.name}:updateRequestState`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
         'ExecutionService:executeSnap',
@@ -4008,7 +4009,6 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
-
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
