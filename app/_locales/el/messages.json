@@ -3376,15 +3376,8 @@
     "message": "Εκχωρείτε στο $2 βασική πρόσβαση στο snap \"$1\". Αυτό είναι αμετάκλητο και παρέχει στο \"$1\" τον έλεγχο των λογαριασμών και των περιουσιακών σας στοιχείων $2. Βεβαιωθείτε ότι εμπιστεύεστε το \"$1\" προτού συνεχίσετε.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Αυτό το snap αιτείται τις παρακάτω άδειες:"
-  },
   "snapUpdate": {
     "message": "Ενημέρωση Snap"
-  },
-  "snapUpdateExplanation": {
-    "message": "Το $1 χρειάζεται μια νεότερη έκδοση του snap σας.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snaps"

@@ -3028,6 +3028,9 @@
   "replace": {
     "message": "replace"
   },
+  "requestFailed": {
+    "message": "Request failed"
+  },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
   },
@@ -3427,25 +3430,46 @@
   "snapInstall": {
     "message": "Install snap"
   },
+  "snapInstallRequest": {
+    "message": "$1 wants to install $2. Make sure you trust the authors before you proceed.",
+    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  },
+  "snapInstallRequestsPermission": {
+    "message": "$1 wants to install $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
+    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  },
   "snapInstallWarningCheck": {
-    "message": "To confirm that you understand, check the box."
+    "message": "Ensure that the permission below align with your intended actions. Only proceed with authors you trust."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "To confirm that you understand, check all the boxes."
+    "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
+  },
+  "snapInstallWarningHeading": {
+    "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "You are granting $2 key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your $2 accounts and assets. Make sure you trust \"$1\" before proceeding.",
+    "message": "Grant $2 key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "This snap is requesting the following permissions:"
+  "snapResultError": {
+    "message": "Error"
+  },
+  "snapResultSuccess": {
+    "message": "Success"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1 is now available to use."
   },
   "snapUpdate": {
     "message": "Update snap"
   },
-  "snapUpdateExplanation": {
-    "message": "$1 needs a newer version of your snap.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
+  "snapUpdateRequest": {
+    "message": "$1 wants to update $2. Make sure you trust the authors before you proceed.",
+    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  },
+  "snapUpdateRequestsPermission": {
+    "message": "$1 wants to update $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
+    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
   },
   "snaps": {
     "message": "Snaps"
@@ -4385,6 +4409,9 @@
   },
   "upArrow": {
     "message": "up arrow"
+  },
+  "update": {
+    "message": "Update"
   },
   "updatedWithDate": {
     "message": "Updated $1"
