@@ -6,4 +6,8 @@ export { DetectedTokensBanner } from './detected-token-banner';
 export { GlobalMenu } from './global-menu';
 export { MultichainImportTokenLink } from './multichain-import-token-link';
 export { MultichainTokenListItem } from './multichain-token-list-item';
+<<<<<<< HEAD
 export { AddressCopyButton } from './address-copy-button';
+=======
+export { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
+>>>>>>> 281d3e636 (added multichain connection to menu bar)

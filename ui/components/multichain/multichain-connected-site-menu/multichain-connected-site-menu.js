@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
   Color,
   IconColor,
@@ -64,5 +63,8 @@ export const MultichainConnectedSiteMenu = ({ className }) => {
 };
 
 MultichainConnectedSiteMenu.propTypes = {
+  /**
+   * Additional classNames to be added to the MultichainConnectedSiteMenu
+   */
   className: PropTypes.string,
 };
