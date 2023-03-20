@@ -233,7 +233,7 @@ async function start() {
               // checking test file coverage is redundant.
               '!**/*.test.js',
               '!**/__mocks__/**/*.js',
-              '!**/*.stories.js',
+              '!**/*.stories.*',
             ]),
             coverageMap,
           );
