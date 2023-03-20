@@ -4,6 +4,13 @@ import { useHistory } from 'react-router-dom';
 import Button from '../../ui/button';
 import PulseLoader from '../../ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  AlignItems,
+  DISPLAY,
+  TextColor,
+  TEXT_ALIGN,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -24,11 +31,12 @@ const ConfirmAddCustodianToken = () => {
   const connectRequests = useSelector(
     (state) => state.metamask.institutionalFeatures?.connectRequests,
   );
-
+  const complianceActivated = useSelector((state) =>
+    Boolean(state.metamask.institutionalFeatures?.complianceProjectId),
+  );
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
-  const [complianceActivated] = useState();
 
   const handleConnectError = (e) => {
     let errorMessage = e.message;
@@ -45,14 +53,20 @@ const ConfirmAddCustodianToken = () => {
     const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
     return (
-      <div className="selected-token-wrapper">
-        <span>
+      <Box
+        paddingTop={2}
+        paddingBottom={2}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
+        alignItems={AlignItems.center}
+      >
+        <Text>
           {showMore && connectRequest?.token
             ? connectRequest?.token
             : `...${connectRequest?.token.slice(-9)}`}
-        </span>
+        </Text>
         {!showMore && (
-          <div className="confirm-action-jwt__show-more">
+          <Box paddingLeft={2}>
             <a
               rel="noopener noreferrer"
               onClick={() => {
@@ -61,9 +75,9 @@ const ConfirmAddCustodianToken = () => {
             >
               {t('ShowMore')}
             </a>
-          </div>
+          </Box>
         )}
-      </div>
+      </Box>
     );
   };
 
@@ -98,47 +112,62 @@ const ConfirmAddCustodianToken = () => {
   return (
     <Box className="page-container">
       <Box className="page-container__header">
-        <div className="page-container__title">{t('custodianAccount')}</div>
-        <div className="page-container__subtitle">
+        <Text className="page-container__title">{t('custodianAccount')}</Text>
+        <Text className="page-container__subtitle">
           {t('mmiAddToken', [connectRequest.origin])}
-        </div>
+        </Text>
       </Box>
-      <Box className="page-container__content">
+      <Box padding={4} className="page-container__content">
         {custodianLabel && (
           <>
-            <span className="add_custodian_token_spacing">{t('custodian')}</span>
-            <Label className="add_custodian_token_confirm__url">
+            <Text padding={4} color={TextColor.textDefault}>
+              {t('custodian')}
+            </Text>
+            <Label
+              marginRight={4}
+              marginLeft={4}
+              className="add_custodian_token_confirm__url"
+            >
               {custodianLabel}
             </Label>
           </>
         )}
 
-        <div className="add_custodian_token_spacing">{t('token')}</div>
-        <div className="add_custodian_token_confirm__token">
+        <Text padding={4} color={TextColor.textDefault}>
+          {t('token')}
+        </Text>
+        <Box
+          marginRight={4}
+          marginLeft={4}
+          className="add_custodian_token_confirm__token"
+        >
           {renderSelectedToken()}
-        </div>
+        </Box>
         {connectRequest.apiUrl && (
-          <>
-            <div className="add_custodian_token_spacing">{t('apiUrl')}</div>
-            <div className="add_custodian_token_confirm__url">
+          <Box>
+            <Text padding={4} color={TextColor.textDefault}>
+              {t('apiUrl')}
+            </Text>
+            <Text
+              marginRight={4}
+              marginLeft={4}
+              className="add_custodian_token_confirm__url"
+            >
               {connectRequest.apiUrl}
-            </div>
-          </>
+            </Text>
+          </Box>
         )}
       </Box>
 
       {!complianceActivated && (
-        <Box
-          className="add_custodian_token_confirm__error"
-          data-testid="connect-custodian-token-error"
-        >
-          <Text data-testid="error-message" className="error">
+        <Box marginTop={4} data-testid="connect-custodian-token-error">
+          <Text data-testid="error-message" textAlign={TEXT_ALIGN.CENTER}>
             {connectError}
           </Text>
         </Box>
       )}
 
-      <Box className="page-container__footer">
+      <Box padding={4} className="page-container__footer">
         {isLoading ? (
           <footer>
             <PulseLoader />

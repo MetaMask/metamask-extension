@@ -3,22 +3,8 @@
   &__url {
     font-size: 14px;
     height: auto;
-    margin: 0 32px;
     overflow-wrap: break-word;
     color: var(--color-background-alternative);
     opacity: 0.8;
-  }
-}
-
-.add_custodian_token_spacing {
-  color: var(--black);
-  font-size: 14px;
-  padding: 24px 32px 8px 32px;
-}
-
-.add_custodian_token_confirm__error {
-  .error {
-    text-align: center;
-    margin-top: 15px;
   }
 }

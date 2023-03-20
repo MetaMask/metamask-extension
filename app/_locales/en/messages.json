@@ -103,6 +103,9 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
+  "ShowMore": {
+    "message": "Show more"
+  },
   "about": {
     "message": "About"
   },
@@ -3451,9 +3454,6 @@
   "showIncomingTransactionsDescription": {
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
-  "ShowMore": {
-    "message": "Show more"
   },
   "showPermissions": {
     "message": "Show permissions"

@@ -5,6 +5,8 @@ import {
   AlignItems,
   DISPLAY,
   BorderColor,
+  BLOCK_SIZES,
+  FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
@@ -28,7 +30,9 @@ const JwtUrlForm = (props) => {
         flexDirection={FLEX_DIRECTION.COLUMN}
         marginTop={4}
         alignItems={AlignItems.center}
-        className="jwt-url-form__jwt-container" marginBottom={6}>
+        className="jwt-url-form__jwt-container"
+        marginBottom={6}
+      >
         {showJwtDropdown && (
           <JwtDropdown
             data-testid="jwt-dropdown"
@@ -93,7 +97,9 @@ const JwtUrlForm = (props) => {
   const renderAPIURLInput = () => {
     return (
       <Box width={BLOCK_SIZES.FULL}>
-        <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>{props.urlInputText}</Text>
+        <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>
+          {props.urlInputText}
+        </Text>
         <Box>
           <input
             className="jwt-url-form__input"
