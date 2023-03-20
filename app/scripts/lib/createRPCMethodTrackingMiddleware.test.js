@@ -153,7 +153,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       };
 
       const res = {
-        error: { code: 4001 },
+        error: { code: errorCodes.provider.userRejectedRequest },
       };
       const { next, executeMiddlewareStack } = getNext();
       await handler(req, res, next);

@@ -255,7 +255,7 @@ export default function createRPCMethodTrackingMiddleware({
       if (isDisabledRPCMethod) {
         event = eventType.FAILED;
         properties.error = res.error;
-      } else if (res.error?.code === 4001) {
+      } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else {
         event = eventType.APPROVED;
