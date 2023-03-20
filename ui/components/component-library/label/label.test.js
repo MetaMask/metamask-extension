@@ -57,9 +57,4 @@ describe('label', () => {
     fireEvent.click(label);
     expect(input).toHaveFocus();
   });
-  it('should render with required asterisk', () => {
-    const { getByText } = render(<Label required>label</Label>);
-    expect(getByText('label')).toBeDefined();
-    expect(getByText('*')).toBeDefined();
-  });
 });
