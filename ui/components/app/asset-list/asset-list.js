@@ -19,8 +19,8 @@ import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Box from '../../ui/box/box';
 import {
   Color,
-  JustifyContent,
   TextVariant,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -85,14 +85,12 @@ const AssetList = ({ onClickAsset }) => {
         <MultichainTokenListItem
           onClick={() => onClickAsset(nativeCurrency)}
           title={title}
-          data-testid="wallet-balance"
           primary={
             primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
           }
           tokenSymbol={primaryCurrencyProperties.suffix}
           secondary={showFiat ? secondaryCurrencyDisplay : undefined}
           tokenImage={balanceIsLoading ? null : primaryTokenImage}
-          identiconBorder
         />
       ) : (
         <AssetListItem
@@ -141,15 +139,14 @@ const AssetList = ({ onClickAsset }) => {
           <MultichainImportTokenLink margin={4} />
         ) : (
           <>
-            <Box justifyContent={JustifyContent.center}>
-              <Text
-                color={Color.textAlternative}
-                variant={TextVariant.bodySm}
-                as="h6"
-              >
-                {t('missingToken')}
-              </Text>
-            </Box>
+            <Text
+              color={Color.textAlternative}
+              variant={TextVariant.bodySm}
+              as="h6"
+              textAlign={TEXT_ALIGN.CENTER}
+            >
+              {t('missingToken')}
+            </Text>
 
             <ImportTokenLink />
           </>

@@ -84,6 +84,7 @@ export const MultichainTokenListItem = ({
           className="multichain-token-list-item__container-cell--text-container"
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
+          width={BLOCK_SIZES.FULL}
           style={{ flexGrow: 1, overflow: 'hidden' }}
         >
           <Box
