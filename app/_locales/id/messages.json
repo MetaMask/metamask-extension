@@ -2191,9 +2191,6 @@
     "message": "Nonce lebih tinggi dari nonce $1 yang disarankan",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "NFT tidak dapat ditambahkan karena detail kepemilikan tidak cocok. Pastikan Anda telah memasukkan informasi yang benar."
   },

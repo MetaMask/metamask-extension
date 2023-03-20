@@ -12,11 +12,7 @@ import {
 } from '@metamask/eth-keyring-controller';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
-import {
-  errorCodes as rpcErrorCodes,
-  EthereumRpcError,
-  ethErrors,
-} from 'eth-rpc-errors';
+import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
@@ -149,11 +145,8 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import BackupController from './controllers/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
-import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
-import PersonalMessageManager from './lib/personal-message-manager';
-import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
@@ -164,6 +157,7 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import SignController from './controllers/sign';
 
 import {
   CaveatMutatorFactories,
@@ -1053,18 +1047,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.networkController.lookupNetwork();
-    this.messageManager = new MessageManager({
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-    });
-    this.personalMessageManager = new PersonalMessageManager({
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-    });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1075,12 +1057,19 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
     });
-    this.typedMessageManager = new TypedMessageManager({
-      getCurrentChainId: () =>
-        this.networkController.store.getState().provider.chainId,
-      metricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
+
+    this.signController = new SignController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SignController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:acceptRequest`,
+          `${this.approvalController.name}:rejectRequest`,
+        ],
+      }),
+      keyringController: this.keyringController,
+      preferencesController: this.preferencesController,
+      getState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
     });
 
@@ -1136,10 +1125,8 @@ export default class MetamaskController extends EventEmitter {
     this.networkController.on(NETWORK_EVENTS.NETWORK_WILL_CHANGE, () => {
       this.txController.txStateManager.clearUnapprovedTxs();
       this.encryptionPublicKeyManager.clearUnapproved();
-      this.personalMessageManager.clearUnapproved();
-      this.typedMessageManager.clearUnapproved();
       this.decryptMessageManager.clearUnapproved();
-      this.messageManager.clearUnapproved();
+      this.signController.clearUnapproved();
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
@@ -1167,11 +1154,22 @@ export default class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
-      processEthSignMessage: this.newUnsignedMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV3: this.newUnsignedTypedMessage.bind(this),
-      processTypedMessageV4: this.newUnsignedTypedMessage.bind(this),
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processEthSignMessage: this.signController.newUnsignedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessage: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessageV3: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processTypedMessageV4: this.signController.newUnsignedTypedMessage.bind(
+        this.signController,
+      ),
+      processPersonalMessage:
+        this.signController.newUnsignedPersonalMessage.bind(
+          this.signController,
+        ),
       processDecryptMessage: this.newRequestDecryptMessage.bind(this),
       processEncryptionPublicKey: this.newRequestEncryptionPublicKey.bind(this),
       getPendingNonce: this.getPendingNonce.bind(this),
@@ -1195,11 +1193,9 @@ export default class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       TokenRatesController: this.tokenRatesController,
-      MessageManager: this.messageManager.memStore,
-      PersonalMessageManager: this.personalMessageManager.memStore,
       DecryptMessageManager: this.decryptMessageManager.memStore,
       EncryptionPublicKeyManager: this.encryptionPublicKeyManager.memStore,
-      TypesMessageManager: this.typedMessageManager.memStore,
+      SignController: this.signController,
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
@@ -1277,11 +1273,9 @@ export default class MetamaskController extends EventEmitter {
     const resetMethods = [
       this.accountTracker.resetState,
       this.txController.resetState,
-      this.messageManager.resetState,
-      this.personalMessageManager.resetState,
       this.decryptMessageManager.resetState,
       this.encryptionPublicKeyManager.resetState,
-      this.typedMessageManager.resetState,
+      this.signController.resetState.bind(this.signController),
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
@@ -1975,17 +1969,24 @@ export default class MetamaskController extends EventEmitter {
 
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
-      // messageManager
-      signMessage: this.signMessage.bind(this),
-      cancelMessage: this.cancelMessage.bind(this),
 
-      // personalMessageManager
-      signPersonalMessage: this.signPersonalMessage.bind(this),
-      cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
-
-      // typedMessageManager
-      signTypedMessage: this.signTypedMessage.bind(this),
-      cancelTypedMessage: this.cancelTypedMessage.bind(this),
+      // signController
+      signMessage: this.signController.signMessage.bind(this.signController),
+      cancelMessage: this.signController.cancelMessage.bind(
+        this.signController,
+      ),
+      signPersonalMessage: this.signController.signPersonalMessage.bind(
+        this.signController,
+      ),
+      cancelPersonalMessage: this.signController.cancelPersonalMessage.bind(
+        this.signController,
+      ),
+      signTypedMessage: this.signController.signTypedMessage.bind(
+        this.signController,
+      ),
+      cancelTypedMessage: this.signController.cancelTypedMessage.bind(
+        this.signController,
+      ),
 
       // decryptMessageManager
       decryptMessage: this.decryptMessage.bind(this),
@@ -3099,46 +3100,6 @@ export default class MetamaskController extends EventEmitter {
     return await this.txController.newUnapprovedTransaction(txParams, req);
   }
 
-  // eth_sign methods:
-
-  /**
-   * Called when a Dapp uses the eth_sign method, to request user approval.
-   * eth_sign is a pure signature of arbitrary data. It is on a deprecation
-   * path, since this data can be a transaction, or can leak private key
-   * information.
-   *
-   * @param {object} msgParams - The params passed to eth_sign.
-   * @param {object} [req] - The original request, containing the origin.
-   */
-  async newUnsignedMessage(msgParams, req) {
-    const { disabledRpcMethodPreferences } =
-      this.preferencesController.store.getState();
-    const { eth_sign } = disabledRpcMethodPreferences; // eslint-disable-line camelcase
-    const data = normalizeMsgData(msgParams.data);
-    let promise;
-
-    // eslint-disable-next-line camelcase
-    if (!eth_sign) {
-      throw ethErrors.rpc.methodNotFound(
-        'eth_sign has been disabled. You must enable it in the advanced settings',
-      );
-    }
-
-    // 64 hex + "0x" at the beginning
-    // This is needed because Ethereum's EcSign works only on 32 byte numbers
-    // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607
-    if (data.length === 66 || data.length === 67) {
-      promise = this.messageManager.addUnapprovedMessageAsync(msgParams, req);
-      this.sendUpdate();
-      this.opts.showUserConfirmation();
-    } else {
-      throw ethErrors.rpc.invalidParams(
-        'eth_sign requires 32 byte message hash',
-      );
-    }
-    return await promise;
-  }
-
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * Gets an "app key" corresponding to an Ethereum address. An app key is more
@@ -3164,105 +3125,6 @@ export default class MetamaskController extends EventEmitter {
     return this.keyringController.exportAppKeyForAddress(account, subject);
   }
   ///: END:ONLY_INCLUDE_IN
-
-  /**
-   * Signifies user intent to complete an eth_sign method.
-   *
-   * @param {object} msgParams - The params passed to eth_call.
-   * @returns {Promise<object>} Full state update.
-   */
-  async signMessage(msgParams) {
-    log.info('MetaMaskController - signMessage');
-    const msgId = msgParams.metamaskId;
-    try {
-      // sets the status op the message to 'approved'
-      // and removes the metamaskId for signing
-      const cleanMsgParams = await this.messageManager.approveMessage(
-        msgParams,
-      );
-      const rawSig = await this.keyringController.signMessage(cleanMsgParams);
-      this.messageManager.setMsgStatusSigned(msgId, rawSig);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_sign failed', error);
-      this.messageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a message submitted via eth_sign.
-   *
-   * @param {string} msgId - The id of the message to cancel.
-   */
-  cancelMessage(msgId) {
-    const { messageManager } = this;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
-
-  // personal_sign methods:
-
-  /**
-   * Called when a dapp uses the personal_sign method.
-   * This is identical to the Geth eth_sign method, and may eventually replace
-   * eth_sign.
-   *
-   * We currently define our eth_sign and personal_sign mostly for legacy Dapps.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @param {object} [req] - The original request, containing the origin.
-   */
-  async newUnsignedPersonalMessage(msgParams, req) {
-    const promise = this.personalMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
-
-  /**
-   * Signifies a user's approval to sign a personal_sign message in queue.
-   * Triggers signing, and the callback function from newUnsignedPersonalMessage.
-   *
-   * @param {object} msgParams - The params of the message to sign & return to the Dapp.
-   * @returns {Promise<object>} A full state update.
-   */
-  async signPersonalMessage(msgParams) {
-    log.info('MetaMaskController - signPersonalMessage');
-    const msgId = msgParams.metamaskId;
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    try {
-      const cleanMsgParams = await this.personalMessageManager.approveMessage(
-        msgParams,
-      );
-      const rawSig = await this.keyringController.signPersonalMessage(
-        cleanMsgParams,
-      );
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_personalSign failed', error);
-      this.personalMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a personal_sign type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelPersonalMessage(msgId) {
-    const messageManager = this.personalMessageManager;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
 
   // eth_decrypt methods
 
@@ -3452,74 +3314,6 @@ export default class MetamaskController extends EventEmitter {
    */
   cancelEncryptionPublicKey(msgId) {
     const messageManager = this.encryptionPublicKeyManager;
-    messageManager.rejectMsg(msgId);
-    return this.getState();
-  }
-
-  // eth_signTypedData methods
-
-  /**
-   * Called when a dapp uses the eth_signTypedData method, per EIP 712.
-   *
-   * @param {object} msgParams - The params passed to eth_signTypedData.
-   * @param {object} [req] - The original request, containing the origin.
-   * @param version
-   */
-  async newUnsignedTypedMessage(msgParams, req, version) {
-    const promise = this.typedMessageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-      version,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
-  }
-
-  /**
-   * The method for a user approving a call to eth_signTypedData, per EIP 712.
-   * Triggers the callback in newUnsignedTypedMessage.
-   *
-   * @param {object} msgParams - The params passed to eth_signTypedData.
-   * @returns {object} Full state update.
-   */
-  async signTypedMessage(msgParams) {
-    log.info('MetaMaskController - eth_signTypedData');
-    const msgId = msgParams.metamaskId;
-    const { version } = msgParams;
-    try {
-      const cleanMsgParams = await this.typedMessageManager.approveMessage(
-        msgParams,
-      );
-
-      // For some reason every version after V1 used stringified params.
-      if (version !== 'V1') {
-        // But we don't have to require that. We can stop suggesting it now:
-        if (typeof cleanMsgParams.data === 'string') {
-          cleanMsgParams.data = JSON.parse(cleanMsgParams.data);
-        }
-      }
-
-      const signature = await this.keyringController.signTypedMessage(
-        cleanMsgParams,
-        { version },
-      );
-      this.typedMessageManager.setMsgStatusSigned(msgId, signature);
-      return this.getState();
-    } catch (error) {
-      log.info('MetaMaskController - eth_signTypedData failed.', error);
-      this.typedMessageManager.errorMessage(msgId, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Used to cancel a eth_signTypedData type message.
-   *
-   * @param {string} msgId - The ID of the message to cancel.
-   */
-  cancelTypedMessage(msgId) {
-    const messageManager = this.typedMessageManager;
     messageManager.rejectMsg(msgId);
     return this.getState();
   }

@@ -153,15 +153,6 @@ export default class PersonalMessageManager extends EventEmitter {
     const siwe = detectSIWE(msgParams);
     msgParams.siwe = siwe;
 
-    if (siwe.isSIWEMessage && req.origin) {
-      const { host } = new URL(req.origin);
-      if (siwe.parsedMessage.domain !== host) {
-        throw new Error(
-          `SIWE domain is not valid: "${host}" !== "${siwe.parsedMessage.domain}"`,
-        );
-      }
-    }
-
     // create txData obj with parameters and meta data
     const time = new Date().getTime();
     const msgId = createId();
