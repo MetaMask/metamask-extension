@@ -14,7 +14,7 @@ const render = () => {
   return renderWithProvider(
     <GlobalMenu
       anchorElement={document.body}
-      closeMenu={() => console.log('Close menu!')}
+      closeMenu={() => undefined}
     />,
     store,
   );
