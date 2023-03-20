@@ -262,6 +262,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   }),
   [EndowmentPermissions['endowment:webassembly']]: (t) => ({
     label: t('permission_webAssembly'),
+    description: t('permission_webAssemblyDescription'),
     leftIcon: 'fas fa-microchip',
     rightIcon: null,
     weight: 2,
