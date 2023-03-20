@@ -20,16 +20,18 @@ const render = () => {
   );
 };
 
-describe('AccountListItem', () => {
-  const mockLockMetaMask = jest.fn();
-  jest.mock('../../../store/actions', () => ({
-    lockMetaMask: mockLockMetaMask,
-  }));
+const mockLockMetaMask = jest.fn();
+jest.mock('../../../store/actions', () => ({
+  lockMetamask: () => mockLockMetaMask,
+}));
 
-  it('locks MetaMask when item is clicked', () => {
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('global-menu-lock'));
-    expect(mockLockMetaMask).toHaveBeenCalled();
+describe('AccountListItem', () => {
+  it('locks MetaMask when item is clicked', async () => {
+    render();
+    fireEvent.click(document.querySelector('[data-testid="global-menu-lock"]'));
+    await waitFor(() => {
+      expect(mockLockMetaMask).toHaveBeenCalled();
+    });
   });
 
   it('opens the portfolio site when item is clicked', async () => {
