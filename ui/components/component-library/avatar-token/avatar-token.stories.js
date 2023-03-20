@@ -10,7 +10,16 @@ import {
 
 import Box from '../../ui/box/box';
 
+import {
+  AvatarNetwork,
+  BUTTON_LINK_SIZES,
+  BadgeWrapper,
+  ButtonLink,
+  Text,
+} from '..';
+
 import README from './README.mdx';
+
 import { AvatarToken } from './avatar-token';
 import { AVATAR_TOKEN_SIZES } from './avatar-token.constants';
 
@@ -66,13 +75,218 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const SizeStory = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
-    <AvatarToken {...args} size={Size.XS} />
-    <AvatarToken {...args} size={Size.SM} />
-    <AvatarToken {...args} size={Size.MD} />
-    <AvatarToken {...args} size={Size.LG} />
-    <AvatarToken {...args} size={Size.XL} />
-  </Box>
+  <>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.baseline}
+      gap={2}
+      marginBottom={4}
+    >
+      <AvatarToken {...args} size={Size.XS} />
+      <AvatarToken {...args} size={Size.SM} />
+      <AvatarToken {...args} size={Size.MD} />
+      <AvatarToken {...args} size={Size.LG} />
+      <AvatarToken {...args} size={Size.XL} />
+    </Box>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.flexEnd}
+      gap={2}
+      marginBottom={4}
+    >
+      <AvatarToken {...args} src="" size={Size.XS} />
+      <AvatarToken {...args} src="" size={Size.SM} />
+      <AvatarToken {...args} src="" size={Size.MD} />
+      <AvatarToken {...args} src="" size={Size.LG} />
+      <AvatarToken {...args} src="" size={Size.XL} />
+    </Box>
+    <Text marginBottom={4}>
+      Sizes with{' '}
+      <ButtonLink
+        size={BUTTON_LINK_SIZES.INHERIT}
+        href="/docs/components-componentlibrary-buttonlink--default-story"
+      >
+        AvatarNetwork
+      </ButtonLink>{' '}
+      and{' '}
+      <ButtonLink
+        size={BUTTON_LINK_SIZES.INHERIT}
+        href="/docs/components-componentlibrary-badgewrapper--default-story"
+      >
+        BadgeWrapper
+      </ButtonLink>{' '}
+      components
+    </Text>
+    <Box
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.flexEnd}
+      gap={2}
+      marginBottom={4}
+    >
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.XS} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.SM} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.MD} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.LG} />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            src="./images/eth_logo.svg"
+            name="ETH"
+            size={Size.SM}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken {...args} name="ETH" size={Size.XL} />
+      </BadgeWrapper>
+    </Box>
+    <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={2}>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          src=""
+          name="ETH"
+          size={Size.XS}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.SM}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.MD}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.LG}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            name="ETH"
+            size={Size.SM}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+          />
+        }
+      >
+        <AvatarToken
+          {...args}
+          name="ETH"
+          src=""
+          size={Size.XL}
+          borderColor={BorderColor.borderDefault}
+          borderSize={2}
+        />
+      </BadgeWrapper>
+    </Box>
+  </>
 );
 SizeStory.storyName = 'Size';
 

@@ -53,14 +53,9 @@ describe('Test Snap update', function () {
           text: 'Connect',
           tag: 'button',
         });
-        await driver.delay(2000);
 
-        // approve install of snap
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.waitForSelector({ text: 'Approve & install' });
+
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
@@ -75,13 +70,21 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // navigate to test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
-        await driver.delay(1000);
+
+        // wait for npm installation success
+        await driver.waitForSelector({
+          css: '#connectUpdate',
+          text: 'Reconnect to Update Snap',
+        });
 
         // find and scroll to the correct card and click first
         const snapButton2 = await driver.findElement('#connectUpdateNew');
@@ -100,16 +103,22 @@ describe('Test Snap update', function () {
           'MetaMask Notification',
           windowHandles,
         );
+
+        await driver.waitForSelector({ text: 'Approve & update' });
+
         await driver.clickElement({
           text: 'Approve & update',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // navigate to test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // look for the correct version text

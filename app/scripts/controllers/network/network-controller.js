@@ -2,18 +2,13 @@ import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import {
-  providerFromEngine,
-  providerFromMiddleware,
-} from '@metamask/eth-json-rpc-middleware';
+import { providerFromEngine } from '@metamask/eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
   createEventEmitterProxy,
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
-import createFilterMiddleware from 'eth-json-rpc-filters';
-import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { v4 as random } from 'uuid';
 import {
   INFURA_PROVIDER_TYPES,
@@ -294,7 +289,7 @@ export default class NetworkController extends EventEmitter {
 
   rollbackToPreviousProvider() {
     const config = this.previousProviderStore.getState();
-    this.providerStore.updateState(config);
+    this.providerStore.putState(config);
     this._switchNetwork(config);
   }
 
@@ -352,7 +347,7 @@ export default class NetworkController extends EventEmitter {
    * @param {boolean} isSupported - True if the EIP is supported
    */
   _setNetworkEIPSupport(EIPNumber, isSupported) {
-    this.networkDetails.updateState({
+    this.networkDetails.putState({
       EIPS: {
         [EIPNumber]: isSupported,
       },
@@ -372,8 +367,8 @@ export default class NetworkController extends EventEmitter {
    * @param config
    */
   _setProviderConfig(config) {
-    this.previousProviderStore.updateState(this.providerStore.getState());
-    this.providerStore.updateState(config);
+    this.previousProviderStore.putState(this.providerStore.getState());
+    this.providerStore.putState(config);
     this._switchNetwork(config);
   }
 
@@ -460,26 +455,9 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setNetworkClient({ networkMiddleware, blockTracker }) {
-    const networkProvider = providerFromMiddleware(networkMiddleware);
-    const filterMiddleware = createFilterMiddleware({
-      provider: networkProvider,
-      blockTracker,
-    });
-    const subscriptionManager = createSubscriptionManager({
-      provider: networkProvider,
-      blockTracker,
-    });
-
     const engine = new JsonRpcEngine();
-    subscriptionManager.events.on('notification', (message) =>
-      engine.emit('notification', message),
-    );
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
     engine.push(networkMiddleware);
-
     const provider = providerFromEngine(engine);
-
     this._setProviderAndBlockTracker({ provider, blockTracker });
   }
 
@@ -572,7 +550,7 @@ export default class NetworkController extends EventEmitter {
     )?.id;
 
     const newNetworkConfigurationId = oldNetworkConfigurationId || random();
-    this.networkConfigurationsStore.updateState({
+    this.networkConfigurationsStore.putState({
       ...networkConfigurations,
       [newNetworkConfigurationId]: {
         ...newNetworkConfiguration,

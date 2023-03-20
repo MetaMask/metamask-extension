@@ -1,5 +1,16 @@
-import { flatMap } from '@metamask/snaps-utils';
-import { coinTypeToProtocolName } from '../../../helpers/utils/util';
+import React from 'react';
+import { Text } from '../../../components/component-library';
+import {
+  Color,
+  FONT_WEIGHT,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+
+import {
+  coinTypeToProtocolName,
+  getSnapName,
+  getSnapDerivationPathName,
+} from '../../../helpers/utils/util';
 
 export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
   const bip32EntropyPermissions =
@@ -15,24 +26,45 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
       .map(([, value]) => value);
 
   return [
-    ...flatMap(bip32EntropyPermissions, (permission, i) =>
+    ...bip32EntropyPermissions.flatMap((permission, i) =>
       permission.caveats[0].value.map(({ path, curve }) => ({
         id: `key-access-bip32-${path
           .join('-')
           .replace(/'/gu, 'h')}-${curve}-${i}`,
         message: t('snapInstallWarningKeyAccess', [
-          targetSubjectMetadata.name,
-          `${path.join('/')} (${curve})`,
+          <Text
+            key="1"
+            color={Color.primaryDefault}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
+            as="span"
+          >
+            {getSnapName(targetSubjectMetadata.origin)}
+          </Text>,
+          <b key="2">
+            {getSnapDerivationPathName(path, curve) ??
+              `${path.join('/')} (${curve})`}
+          </b>,
         ]),
       })),
     ),
-    ...flatMap(bip44EntropyPermissions, (permission, i) =>
+    ...bip44EntropyPermissions.flatMap((permission, i) =>
       permission.caveats[0].value.map(({ coinType }) => ({
         id: `key-access-bip44-${coinType}-${i}`,
         message: t('snapInstallWarningKeyAccess', [
-          targetSubjectMetadata.name,
-          coinTypeToProtocolName(coinType) ||
-            t('unrecognizedProtocol', [coinType]),
+          <Text
+            key="1"
+            color={Color.primaryDefault}
+            fontWeight={FONT_WEIGHT.BOLD}
+            variant={TextVariant.bodySm}
+            as="span"
+          >
+            {getSnapName(targetSubjectMetadata.origin)}
+          </Text>,
+          <b key="2">
+            {coinTypeToProtocolName(coinType) ||
+              t('unrecognizedProtocol', [coinType])}
+          </b>,
         ]),
       })),
     ),
