@@ -5,6 +5,11 @@ import Button from '../../ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Text } from '../../component-library';
+import {
+  TextColor,
+  BorderRadius,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
 
 export default function InstitutionalEntityDonePage(props) {
@@ -14,7 +19,10 @@ export default function InstitutionalEntityDonePage(props) {
   const { state } = location;
 
   return (
-    <Box className="page-container institutional-entity-done__container">
+    <Box
+      className="page-container institutional-entity-done__container"
+      borderRadius={BorderRadius.none}
+    >
       <Box className="page-container__content">
         <Box
           paddingBottom={6}
@@ -22,21 +30,30 @@ export default function InstitutionalEntityDonePage(props) {
           paddingRight={6}
           className="institutional-entity-done__form"
         >
-          <Box className="institutional-entity-done__entity-connect__compliance-activated">
+          <Box
+            display={['flex']}
+            flexDirection={['column']}
+            alignItems={['center']}
+          >
             <img
-              className="institutional-entity-done__entity-connect__compliance-activated__img"
+              className="institutional-entity-done__img"
               src={state.imgSrc}
               alt="Entity image"
             />
             <Text
               as="h4"
-              className="institutional-entity-done__entity-connect__header__title"
+              marginTop={4}
+              marginBottom={4}
+              color={TextColor.textDefault}
             >
               {state.title}
             </Text>
             <Text
               as="p"
-              className="institutional-entity-done__entity-connect__header__msg"
+              color={TextColor.textAlternative}
+              marginTop={2}
+              marginBottom={5}
+              variant={TypographyVariant.headingSm}
             >
               {state.description}
             </Text>
