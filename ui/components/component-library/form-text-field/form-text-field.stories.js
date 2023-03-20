@@ -405,9 +405,7 @@ export const CustomLabelOrHelpText = () => (
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
-        <Label htmlFor="custom-spending-cap" required>
-          Custom spending cap
-        </Label>
+        <Label htmlFor="custom-spending-cap">Custom spending cap</Label>
         <Icon
           name={ICON_NAMES.INFO}
           size={Size.SM}
