@@ -36,7 +36,7 @@ export const MultichainConnectedSiteMenu = ({ className }) => {
           <Icon
             name={ICON_NAMES.GLOBAL}
             size={Size.XL}
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
           />
         </BadgeWrapper>
       ) : (
@@ -54,7 +54,7 @@ export const MultichainConnectedSiteMenu = ({ className }) => {
           <Icon
             name={ICON_NAMES.GLOBAL}
             size={Size.XL}
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
           />
         </BadgeWrapper>
       )}

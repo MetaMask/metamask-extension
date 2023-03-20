@@ -10,7 +10,7 @@ exports[`Multichain Connected Site Menu render should match snapshot for connect
       class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
     >
       <span
-        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-default"
         style="mask-image: url('./images/icons/global.svg');"
       />
       <div
@@ -36,7 +36,7 @@ exports[`Multichain Connected Site Menu render should match snapshot for not con
       class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
     >
       <span
-        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-default"
         style="mask-image: url('./images/icons/global.svg');"
       />
       <div
