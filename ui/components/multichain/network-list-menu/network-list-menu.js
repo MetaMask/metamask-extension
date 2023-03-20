@@ -91,7 +91,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
           <Text>{t('showTestnetNetworks')}</Text>
           <ToggleButton
             value={showTestNetworks}
-            onToggle={(value) => setShowTestNetworks(!value)}
+            onToggle={(value) => dispatch(setShowTestNetworks(!value))}
           />
         </Box>
         <Box padding={4}>
