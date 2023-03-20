@@ -86,7 +86,7 @@ export default function SignatureRequestSIWE({
     <div className="signature-request-siwe">
       <Header
         fromAccount={fromAccount}
-        domain={parsedMessage.domain}
+        domain={origin}
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
@@ -131,7 +131,6 @@ export default function SignatureRequestSIWE({
           }
           iconFillColor="var(--color-error-default)"
           useIcon
-          withRightButton
           icon={<Icon name="danger" color={IconColor.errorDefault} />}
         />
       )}

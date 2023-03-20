@@ -12,6 +12,7 @@ module.exports = {
   features: { buildStoriesJson: true },
   stories: [
     '../ui/**/*.stories.js',
+    '../ui/**/*.stories.tsx',
     '../ui/**/*.stories.mdx',
     './*.stories.mdx',
   ],
@@ -22,6 +23,7 @@ module.exports = {
     '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
     'storybook-dark-mode',
+    '@whitespace/storybook-addon-html'
   ],
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error

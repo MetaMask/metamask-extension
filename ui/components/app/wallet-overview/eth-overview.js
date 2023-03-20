@@ -35,7 +35,12 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { Icon, ICON_NAMES } from '../../component-library';
+import {
+  ButtonIcon,
+  BUTTON_ICON_SIZES,
+  Icon,
+  ICON_NAMES,
+} from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import WalletOverview from './wallet-overview';
@@ -70,6 +75,7 @@ const EthOverview = ({ className }) => {
             <div className="eth-overview__primary-container">
               {balance ? (
                 <UserPreferencedCurrencyDisplay
+                  style={{ display: 'contents' }}
                   className={classnames('eth-overview__primary-balance', {
                     'eth-overview__cached-balance': balanceIsCached,
                   })}
@@ -88,6 +94,34 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
+              <ButtonIcon
+                className="eth-overview__portfolio-button"
+                data-testid="home__portfolio-site"
+                color={IconColor.primaryDefault}
+                iconName={ICON_NAMES.DIAGRAM}
+                ariaLabel={t('portfolio')}
+                size={BUTTON_ICON_SIZES.LG}
+                onClick={() => {
+                  const portfolioUrl = process.env.PORTFOLIO_URL;
+                  global.platform.openTab({
+                    url: `${portfolioUrl}?metamaskEntry=ext`,
+                  });
+                  trackEvent(
+                    {
+                      category: EVENT.CATEGORIES.HOME,
+                      event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
+                      properties: {
+                        url: portfolioUrl,
+                      },
+                    },
+                    {
+                      contextPropsIntoEventProperties: [
+                        CONTEXT_PROPS.PAGE_TITLE,
+                      ],
+                    },
+                  );
+                }}
+              />
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -110,7 +144,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
             }
             disabled={!isBuyableChain}
             data-testid="eth-overview-buy"
@@ -198,31 +232,25 @@ const EthOverview = ({ className }) => {
           />
           <IconButton
             className="eth-overview__button"
-            data-testid="home__portfolio-site"
+            data-testid="eth-overview-bridge"
             Icon={
-              <Icon
-                name={ICON_NAMES.DIAGRAM}
-                color={IconColor.primaryInverse}
-              />
+              <Icon name={ICON_NAMES.BRIDGE} color={IconColor.primaryInverse} />
             }
-            label={t('portfolio')}
+            label={t('bridge')}
             onClick={() => {
               const portfolioUrl = process.env.PORTFOLIO_URL;
+              const bridgeUrl = `${portfolioUrl}/bridge`;
               global.platform.openTab({
-                url: `${portfolioUrl}?metamaskEntry=ext`,
+                url: `${bridgeUrl}?metamaskEntry=ext`,
               });
-              trackEvent(
-                {
-                  category: EVENT.CATEGORIES.HOME,
-                  event: EVENT_NAMES.PORTFOLIO_LINK_CLICKED,
-                  properties: {
-                    url: portfolioUrl,
-                  },
+              trackEvent({
+                category: EVENT.CATEGORIES.NAVIGATION,
+                event: EVENT_NAMES.BRIDGE_LINK_CLICKED,
+                properties: {
+                  location: 'Home',
+                  text: 'Bridge',
                 },
-                {
-                  contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
-                },
-              );
+              });
             }}
           />
         </>

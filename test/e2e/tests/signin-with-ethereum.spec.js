@@ -51,7 +51,7 @@ describe('Sign in with ethereum', function () {
         );
         const origin = await driver.findElement('.site-origin');
         assert.equal(await title.getText(), 'Sign-in request');
-        assert.equal(await origin.getText(), '127.0.0.1:8080');
+        assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
 
         const displayedMessageTitle = await driver.findElement(
           '.permissions-connect-header__subtitle',
