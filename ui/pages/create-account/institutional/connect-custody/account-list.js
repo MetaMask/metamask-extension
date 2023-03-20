@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect, useRef } from 'react';
 import copy from 'copy-to-clipboard';
 import Button from '../../../../components/ui/button';
-import CustodyLabels from '../../../../components/app/institutional/custody-labels';
+import CustodyLabels from '../../../../components/institutional/custody-labels';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { SECOND } from '../../../../../shared/constants/time';

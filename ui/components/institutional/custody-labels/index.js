@@ -1,1 +1,1 @@
-export { default } from './custody-labels.component';
+export { default } from './custody-labels';

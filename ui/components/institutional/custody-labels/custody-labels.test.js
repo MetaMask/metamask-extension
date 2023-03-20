@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import CustodyLabels from './custody-labels.component';
+import CustodyLabels from './custody-labels';
 
 describe('CustodyLabels Component', () => {
   it('should render correctly', () => {
