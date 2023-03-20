@@ -2191,9 +2191,6 @@
     "message": "Το Nonce είναι υψηλότερο από το προτεινόμενο nonce του $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
   },
