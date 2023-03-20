@@ -121,7 +121,7 @@ export async function getErrorHtml(
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-const MMD_DOWNLOAD_LINK =
+export const MMD_DOWNLOAD_LINK =
   'https://github.com/MetaMask/metamask-desktop/releases';
 
 function disableDesktop(backgroundConnection) {
