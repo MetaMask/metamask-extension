@@ -26,12 +26,10 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
   useLayoutEffect(() => {
     function handleResize() {
       if (startAccessoryRef.current && endAccessoryRef.current) {
-        const startAccessoryWidth = startAccessoryRef.current.scrollWidth;
-        const endAccessoryWidth = endAccessoryRef.current.scrollWidth;
-        const accMinWidth =
-          startAccessoryWidth > endAccessoryWidth
-            ? startAccessoryWidth
-            : endAccessoryWidth;
+        const accMinWidth = Math.max(
+          startAccessoryRef.current.scrollWidth,
+          endAccessoryRef.current.scrollWidth,
+        );
         setAccessoryMinWidth(accMinWidth);
       } else if (startAccessoryRef.current && !endAccessoryRef.current) {
         setAccessoryMinWidth(startAccessoryRef.current.scrollWidth);
