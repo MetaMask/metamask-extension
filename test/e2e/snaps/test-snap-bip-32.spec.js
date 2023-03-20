@@ -61,7 +61,7 @@ describe('Test Snap bip-32', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
         await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-0');
         await driver.clickElement({
@@ -70,7 +70,6 @@ describe('Test Snap bip-32', function () {
         });
 
         await driver.waitForSelector({ text: 'Ok' });
-
         await driver.clickElement({
           text: 'Ok',
           tag: 'button',
@@ -79,21 +78,13 @@ describe('Test Snap bip-32', function () {
         // switch back to test-snaps window
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
-        // wait for npm installation success
-        await driver.waitForSelector({
-          css: '#connectBip32',
-          text: 'Reconnect to BIP-32 Snap',
-        });
-
         // scroll to and click get public key
         await driver.delay(1000);
-        const snapButton2 = await driver.findElement('#bip32GetPublic');
-        await driver.scrollToElement(snapButton2);
-        await driver.delay(1000);
+        await driver.waitForSelector({ text: 'Get Public Key' });
         await driver.clickElement('#bip32GetPublic');
 
         // check for proper public key response
-        await driver.delay(1000);
+        await driver.delay(500);
         const retrievePublicKeyResult1 = await driver.findElement(
           '#bip32PublicKeyResult',
         );
@@ -103,16 +94,12 @@ describe('Test Snap bip-32', function () {
         );
 
         // scroll to and click get compressed public key
-        await driver.delay(1000);
-        const snapButton3 = await driver.findElement(
-          '#bip32GetCompressedPublic',
-        );
-        await driver.scrollToElement(snapButton3);
-        await driver.delay(1000);
+        await driver.delay(500);
+        await driver.waitForSelector({ text: 'Get Compressed Public Key' });
         await driver.clickElement('#bip32GetCompressedPublic');
 
         // check for proper public key response
-        await driver.delay(1000);
+        await driver.delay(500);
         const retrievePublicKeyResult2 = await driver.findElement(
           '#bip32PublicKeyResult',
         );
@@ -122,8 +109,8 @@ describe('Test Snap bip-32', function () {
         );
 
         // wait then run SECP256K1 test
-        await driver.delay(1000);
-        await driver.pasteIntoField('#bip32Message-secp256k1', 'foo bar');
+        await driver.delay(500);
+        await driver.fill('#bip32Message-secp256k1', 'foo bar');
         await driver.clickElement('#sendBip32-secp256k1');
 
         // hit 'approve' on the custom confirm
@@ -141,7 +128,7 @@ describe('Test Snap bip-32', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result
-        await driver.delay(1000);
+        await driver.delay(500);
         const secp256k1Result = await driver.findElement(
           '#bip32MessageResult-secp256k1',
         );
@@ -151,14 +138,13 @@ describe('Test Snap bip-32', function () {
         );
 
         // scroll further into messages section
-        await driver.delay(1000);
+        await driver.delay(500);
         const snapButton4 = await driver.findElement('#bip32Message-ed25519');
         await driver.scrollToElement(snapButton4);
-        await driver.delay(1000);
 
         // wait then run ed25519 test
-        await driver.delay(1000);
-        await driver.pasteIntoField('#bip32Message-ed25519', 'foo bar');
+        await driver.delay(500);
+        await driver.fill('#bip32Message-ed25519', 'foo bar');
         await driver.clickElement('#sendBip32-ed25519');
 
         // hit 'approve' on the custom confirm
@@ -176,7 +162,7 @@ describe('Test Snap bip-32', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result
-        await driver.delay(1000);
+        await driver.delay(500);
         const ed25519Result = await driver.findElement(
           '#bip32MessageResult-ed25519',
         );
