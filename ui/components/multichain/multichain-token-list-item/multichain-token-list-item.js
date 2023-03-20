@@ -23,6 +23,7 @@ import {
 import Box from '../../ui/box/box';
 import { getNativeCurrencyImage } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const MultichainTokenListItem = ({
   className,
@@ -33,6 +34,7 @@ export const MultichainTokenListItem = ({
   secondary,
   title,
 }) => {
+  const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const dataTheme = document.documentElement.getAttribute('data-theme');
   return (
@@ -106,7 +108,7 @@ export const MultichainTokenListItem = ({
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-                  {title}
+                  {title === 'ETH' ? t('networkNameEthereum') : title}
                 </Text>
               </Tooltip>
             </Box>
@@ -120,7 +122,7 @@ export const MultichainTokenListItem = ({
             </Text>
           </Box>
           <Text color={TextColor.textAlternative}>
-            {primary} {tokenSymbol}
+            {Number(primary).toFixed(3)} {tokenSymbol}{' '}
           </Text>
         </Box>
       </Box>

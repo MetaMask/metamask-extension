@@ -49,6 +49,12 @@ export const DetectedTokensBanner = ({
 };
 
 DetectedTokensBanner.propTypes = {
+  /**
+   * Handler to be passed to the DetectedTokenBanner component
+   */
   actionButtonOnClick: PropTypes.func.isRequired,
+  /**
+   * An additional className to the DetectedTokenBanner component
+   */
   className: PropTypes.string,
 };

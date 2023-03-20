@@ -27,6 +27,7 @@ export default function TokenCell({
     (token) => token.symbol === symbol,
   );
   const title = tokenData?.name || symbol;
+  const tokenImage = tokenData?.iconUrl || image;
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
   const warning = balanceError ? (
     <Text as="span">
@@ -50,7 +51,7 @@ export default function TokenCell({
         <MultichainTokenListItem
           onClick={() => onClick(address)}
           tokenSymbol={symbol}
-          tokenImage={image}
+          tokenImage={tokenImage}
           primary={`${string || 0}`}
           secondary={formattedFiat}
           title={title}
