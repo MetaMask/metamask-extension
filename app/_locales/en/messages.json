@@ -1353,6 +1353,9 @@
   "exportPrivateKey": {
     "message": "Export private key"
   },
+  "extendWalletWithSnaps": {
+    "message": "Extend the wallet experience."
+  },
   "externalExtension": {
     "message": "External extension"
   },
@@ -1860,6 +1863,9 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "learnAboutSnaps": {
+    "message": "Learn about MetaMask Snaps"
+  },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
@@ -2280,12 +2286,6 @@
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
-  },
-  "learnAboutSnaps": {
-    "message": "Learn about MetaMask Snaps"
-  },
-  "extendWalletWithSnaps": {
-    "message": "Extend the wallet experience."
   },
   "noThanksVariant2": {
     "message": "No, thanks."
