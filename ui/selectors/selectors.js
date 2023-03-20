@@ -1128,7 +1128,7 @@ export function getAllNetworks(state) {
     nickname: MAINNET_DISPLAY_NAME,
     rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
     rpcPrefs: {
-      imageUrl: ETH_TOKEN_IMAGE_URL
+      imageUrl: ETH_TOKEN_IMAGE_URL,
     },
     providerType: NETWORK_TYPES.MAINNET,
   });
@@ -1156,17 +1156,14 @@ export function getAllNetworks(state) {
           rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
           providerType: NETWORK_TYPES.SEPOLIA,
         },
-      ],
+      ], // Localhosts
+      ...Object.entries(networkConfigurations)
+        .filter(([, network]) =>
+          network.nickname?.toLowerCase().includes('localhost'),
+        )
+        .map(([, network]) => network),
     );
   }
-  // Localhosts
-  networks.push(
-    ...Object.entries(networkConfigurations)
-      .filter(([, network]) =>
-        network.nickname?.toLowerCase().includes('localhost'),
-      )
-      .map(([, network]) => network),
-  );
 
   return networks;
 }
