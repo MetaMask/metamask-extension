@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import Modal from '../../modal';
-import CustodyAccountList from '../../../pages/create-account/institutional/connect-custody/account-list';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { removeAccount } from '../../../../store/actions';
-import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
-import { Text } from '../../../component-library';
-import Box from '../../../ui/box';
+import Modal from '../../../modal';
+import CustodyAccountList from '../../../../pages/create-account/institutional/connect-custody/account-list';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { removeAccount } from '../../../../../store/actions';
+import withModalProps from '../../../../../helpers/higher-order-components/with-modal-props';
+import { Text } from '../../../../component-library';
+import Box from '../../../../ui/box';
 
 const ConfirmRemoveJWT = ({
   custodyAccountDetails,
