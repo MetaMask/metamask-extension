@@ -1356,6 +1356,42 @@
         "@metamask/logo>gl-vec3": true
       }
     },
+    "@metamask/message-manager": {
+      "packages": {
+        "@metamask/message-manager>@metamask/base-controller": true,
+        "@metamask/message-manager>@metamask/controller-utils": true,
+        "@metamask/message-manager>jsonschema": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "eth-sig-util": true,
+        "ethereumjs-util": true,
+        "uuid": true
+      }
+    },
+    "@metamask/message-manager>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/message-manager>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/message-manager>jsonschema": {
+      "packages": {
+        "browserify>url": true
+      }
+    },
     "@metamask/notification-controller": {
       "packages": {
         "@metamask/controller-utils": true,
@@ -4027,11 +4063,6 @@
       "packages": {
         "json-rpc-engine>@metamask/safe-event-emitter": true,
         "readable-stream": true
-      }
-    },
-    "jsonschema": {
-      "packages": {
-        "browserify>url": true
       }
     },
     "koa>is-generator-function>has-tostringtag": {
