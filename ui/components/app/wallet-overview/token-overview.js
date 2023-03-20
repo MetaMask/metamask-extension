@@ -60,7 +60,7 @@ const TokenOverview = ({ className, token }) => {
   const { openBuyCryptoInPdapp } = useRamps();
 
   useEffect(() => {
-    if (token.isERC721 && process.env.NFTS_V1) {
+    if (token.isERC721) {
       dispatch(
         showModal({
           name: 'CONVERT_TOKEN_TO_NFT',
@@ -93,7 +93,7 @@ const TokenOverview = ({ className, token }) => {
           <IconButton
             className="token-overview__button"
             Icon={
-              <Icon name={ICON_NAMES.CARD} color={IconColor.primaryInverse} />
+              <Icon name={ICON_NAMES.ADD} color={IconColor.primaryInverse} />
             }
             label={t('buy')}
             data-testid="token-overview-buy"

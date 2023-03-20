@@ -2100,7 +2100,7 @@ export function updateSendAsset(
         details.standard === TokenStandard.ERC1155 ||
         details.standard === TokenStandard.ERC721
       ) {
-        if (type === AssetType.token && process.env.NFTS_V1) {
+        if (type === AssetType.token) {
           dispatch(
             showModal({
               name: 'CONVERT_TOKEN_TO_NFT',

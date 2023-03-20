@@ -20,7 +20,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
       <span
         class="asset-breadcrumb__asset"
       >
-        MUNK #1
+        Munk Generator
       </span>
     </button>
     <div>
@@ -84,6 +84,42 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     <div
       class="box box--margin-bottom-2 box--flex-direction-row"
     >
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+        >
+          Last sold
+        </h6>
+        <div
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
+        >
+          <h6
+            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            1/18/2023
+          </h6>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box box--margin-top-1 box--margin-right-2 box--margin-bottom-4 box--flex-direction-row typography nft-details__link-title typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+        >
+          Last price sold
+        </h6>
+        <div
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
+        >
+          <h6
+            class="box box--margin-top-1 box--margin-bottom-4 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
+          >
+            0.0049 ETH
+          </h6>
+        </div>
+      </div>
       <div
         class="box box--display-flex box--flex-direction-row"
       >
