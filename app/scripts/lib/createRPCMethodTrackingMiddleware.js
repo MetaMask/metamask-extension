@@ -41,7 +41,7 @@ const RATE_LIMIT_MAP = {
 
 /**
  * For events with user interaction (approve / reject | cancel) this map will
- * return an object with APPROVED, REJECTED and REQUESTED keys that map to the
+ * return an object with APPROVED, REJECTED, REQUESTED, and FAILED keys that map to the
  * appropriate event names.
  */
 const EVENT_NAME_MAP = {
