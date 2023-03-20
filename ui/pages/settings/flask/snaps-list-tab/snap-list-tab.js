@@ -11,6 +11,7 @@ import {
   Color,
   Size,
   TEXT_ALIGN,
+  FLEX_DIRECTION,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
@@ -18,6 +19,8 @@ import { disableSnap, enableSnap } from '../../../../store/actions';
 import { getSnaps } from '../../../../selectors';
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
+  BannerTip,
+  BannerTipLogoType,
   ButtonLink,
   Icon,
   ICON_NAMES,
@@ -78,10 +81,17 @@ const SnapListTab = () => {
           className="snap-list-tab__container--no-snaps"
           width="full"
           height="full"
-          justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
+          flexDirection={FLEX_DIRECTION.COLUMN}
         >
-          <Box className="snap-list-tab__container--no-snaps_inner">
+          <Box
+            className="snap-list-tab__container--no-snaps_inner"
+            width="full"
+            height="full"
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+          >
             <Typography
               align={TEXT_ALIGN.CENTER}
               className="snap-list-tab__container--no-snaps_icon"
@@ -97,17 +107,31 @@ const SnapListTab = () => {
               variant={TypographyVariant.H4}
               align={TEXT_ALIGN.CENTER}
             >
-              <Text>
-                {t('noSnaps')}
-                <ButtonLink
-                  size={Size.inherit}
-                  href="https://metamask.io/snaps/"
-                  target="_blank"
-                >
-                  {`${t('learnMoreUpperCase')}`}
-                </ButtonLink>
-              </Text>
+              <Text color={Color.textMuted}>{t('noSnaps')}</Text>
             </Typography>
+          </Box>
+          <Box
+            className="snap-list-tab__container--no-snaps_banner-tip"
+            width="full"
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.flexEnd}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+          >
+            <BannerTip
+              logoType={BannerTipLogoType.Greeting}
+              title={t('learnAboutSnaps')}
+              description={t('extendWalletWithSnaps')}
+            >
+              <ButtonLink
+                size={Size.inherit}
+                href="https://metamask.io/snaps/"
+                target="_blank"
+              >
+                {`${t('learnMoreUpperCase')}`}
+              </ButtonLink>
+            </BannerTip>
           </Box>
         </Box>
       )}
