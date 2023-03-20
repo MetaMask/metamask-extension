@@ -257,6 +257,9 @@
     "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
     "description": "$1 is Learn more link"
   },
+  "addNewToken": {
+    "message": "Add new token"
+  },
   "addSuggestedTokens": {
     "message": "Add suggested tokens"
   },
@@ -1369,6 +1372,9 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileTooBig": {
+    "message": "The dropped file is too big."
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "See details",
@@ -3331,6 +3337,9 @@
   "selectHdPath": {
     "message": "Select HD path"
   },
+  "selectJWT": {
+    "message": "Select token"
+  },
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
   },
@@ -4003,7 +4012,7 @@
     "message": "Select a quote"
   },
   "swapSelectAToken": {
-    "message": "Select a token"
+    "message": "Select token"
   },
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
