@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
-import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
 import Box from '../../../../components/ui/box/box';
@@ -155,9 +154,6 @@ export default function SnapInstall({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <Box className="snap-install__footer--no-source-code" paddingTop={4}>
-          <PermissionsConnectFooter />
-        </Box>
         <PageContainerFooter
           cancelButtonType="default"
           hideCancel={hasError}

@@ -45,6 +45,10 @@ describe('Actions', () => {
     background = sinon.createStubInstance(MetaMaskController, {
       getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
     });
+
+    background.signMessage = sinon.stub();
+    background.signPersonalMessage = sinon.stub();
+    background.signTypedMessage = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
