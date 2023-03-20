@@ -54,21 +54,19 @@ describe('Test Snap Management', function () {
           tag: 'button',
         });
 
-        await driver.delay(1000);
+        await driver.waitForSelector({ text: 'Approve & install' });
 
-        // approve install of snap
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
           text: 'Approve & install',
           tag: 'button',
         });
 
-        // delay for npm installation
-        await driver.delay(2000);
+        await driver.waitForSelector({ text: 'Ok' });
+
+        await driver.clickElement({
+          text: 'Ok',
+          tag: 'button',
+        });
 
         // switch to the original MM tab
         const extensionPage = windowHandles[0];

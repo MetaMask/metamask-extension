@@ -619,19 +619,7 @@ export default class SignController extends BaseControllerV2<
   }
 
   private _getEthereumSignInData(messgeParams: PersonalMessageParams): any {
-    const ethereumSignInData = detectSIWE(messgeParams);
-
-    if (ethereumSignInData.isSIWEMessage && messgeParams.origin) {
-      const { host } = new URL(messgeParams.origin);
-
-      if (ethereumSignInData.parsedMessage.domain !== host) {
-        throw new Error(
-          `SIWE domain is not valid: "${host}" !== "${ethereumSignInData.parsedMessage.domain}"`,
-        );
-      }
-    }
-
-    return ethereumSignInData;
+    return detectSIWE(messgeParams);
   }
 
   private _requestApproval(

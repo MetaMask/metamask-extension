@@ -377,20 +377,6 @@ describe('SignController', () => {
         requestMock,
       );
     });
-
-    it('throws if Ethereum sign in data domain does not match origin host', async () => {
-      detectSIWEMock.mockReturnValueOnce(siweMockFound);
-
-      await expect(
-        signController.newUnsignedPersonalMessage(
-          { ...messageParamsMock, origin: 'http://test3.com' },
-          requestMock,
-        ),
-      ).rejects.toHaveProperty(
-        'message',
-        'SIWE domain is not valid: "test3.com" !== "test.com"',
-      );
-    });
   });
 
   describe('newUnsignedTypedMessage', () => {
