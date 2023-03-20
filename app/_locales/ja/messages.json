@@ -3376,15 +3376,8 @@
     "message": "スナップ「$1」に $2 へのキーアクセスを許可しようとしています。この操作は取り消し不能であり、$2 アカウントとアセットのコントロールを「$1」に許可することになります。続行する前に、必ず「$1」が信頼できることを確認してください。",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "このスナップが次のパーミッションをリクエストしています:"
-  },
   "snapUpdate": {
     "message": "スナップを更新"
-  },
-  "snapUpdateExplanation": {
-    "message": "$1 に新しいバージョンのスナップが必要です。",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "スナップ"

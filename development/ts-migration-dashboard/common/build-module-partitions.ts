@@ -9,22 +9,40 @@ import {
 } from './constants';
 
 /**
- * Represents a module that has been imported somewhere in the codebase.
+ * Represents a module that has been imported somewhere in the codebase, whether
+ * it is local to the project or an NPM package.
  *
- * @property id - The name of a file or NPM module.
+ * @property id - If an NPM package, then the name of the package; otherwise the
+ * path to a file within the project.
  * @property dependents - The modules which are imported by this module.
  * @property level - How many modules it takes to import this module (from the
  * root of the dependency tree).
- * @property isExternal - Whether the module refers to a NPM module.
+ * @property isExternal - Whether the module refers to a NPM package.
  * @property hasBeenConverted - Whether the module was one of the files we
  * wanted to convert to TypeScript and has been converted.
  */
 type Module = {
   id: string;
   dependents: Module[];
+  dependencies: Module[];
   level: number;
   isExternal: boolean;
   hasBeenConverted: boolean;
+};
+
+/**
+ * Represents a module that belongs to a certain level within the dependency
+ * graph, displayed as a box in the UI.
+ *
+ * @property id - The id of the module.
+ * @property hasBeenConverted - Whether or not the module has been converted to
+ * TypeScript.
+ */
+export type ModulePartitionChild = {
+  id: string;
+  hasBeenConverted: boolean;
+  dependentIds: string[];
+  dependencyIds: string[];
 };
 
 /**
@@ -34,16 +52,10 @@ type Module = {
  * @property level - How many modules it takes to import this module (from the
  * root of the dependency tree).
  * @property children - The modules that share this same level.
- * @property children[].name - The name of the item being imported.
- * @property children[].hasBeenConverted - Whether or not the module (assuming
- * that it is a file in our codebase) has been converted to TypeScript.
  */
 export type ModulePartition = {
   level: number;
-  children: {
-    name: string;
-    hasBeenConverted: boolean;
-  }[];
+  children: ModulePartitionChild[];
 };
 
 /**
@@ -196,10 +208,11 @@ function buildModulesWithLevels(
   // includes `foo.js`, so we say `foo.js` is a circular dependency of `baz.js`,
   // and we don't need to follow it.
 
-  const modulesToFill: Module[] = entryModuleIds.map((moduleId) => {
+  let modulesToFill: Module[] = entryModuleIds.map((moduleId) => {
     return {
       id: moduleId,
       dependents: [],
+      dependencies: [],
       level: 0,
       isExternal: false,
       hasBeenConverted: /\.tsx?$/u.test(moduleId),
@@ -208,76 +221,101 @@ function buildModulesWithLevels(
   const modulesById: Record<string, Module> = {};
 
   while (modulesToFill.length > 0) {
-    const currentModule = modulesToFill.shift() as Module;
-    const childModulesToFill: Module[] = [];
-    (dependenciesByModuleId[currentModule.id] ?? []).forEach(
-      (givenChildModuleId) => {
-        const npmPackageMatch = givenChildModuleId.match(
-          /^node_modules\/(?:(@[^/]+)\/)?([^/]+)\/.+$/u,
-        );
+    const currentModule = modulesToFill[0];
 
-        let childModuleId;
-        if (npmPackageMatch) {
-          childModuleId =
-            npmPackageMatch[1] === undefined
-              ? `${npmPackageMatch[2]}`
-              : `${npmPackageMatch[1]}/${npmPackageMatch[2]}`;
-        } else {
-          childModuleId = givenChildModuleId;
-        }
-
-        // Skip circular dependencies
-        if (
-          findDirectAndIndirectDependentIdsOf(currentModule).has(childModuleId)
-        ) {
-          return;
-        }
-
-        // Skip files that weren't on the original list of JavaScript files to
-        // convert, as we don't want them to show up on the status dashboard
-        if (
-          !npmPackageMatch &&
-          !allowedFilePaths.includes(childModuleId.replace(/\.tsx?$/u, '.js'))
-        ) {
-          return;
-        }
-
-        const existingChildModule = modulesById[childModuleId];
-
-        if (existingChildModule === undefined) {
-          const childModule: Module = {
-            id: childModuleId,
-            dependents: [currentModule],
-            level: currentModule.level + 1,
-            isExternal: Boolean(npmPackageMatch),
-            hasBeenConverted: /\.tsx?$/u.test(childModuleId),
-          };
-          childModulesToFill.push(childModule);
-        } else {
-          if (currentModule.level + 1 > existingChildModule.level) {
-            existingChildModule.level = currentModule.level + 1;
-            // Update descendant modules' levels
-            childModulesToFill.push(existingChildModule);
-          } else {
-            // There is no point in descending into dependencies of this module
-            // if the new level of the module would be <= the existing level,
-            // because all of the dependencies from this point on are guaranteed
-            // to have a higher level and are therefore already at the right
-            // level.
-          }
-
-          if (!existingChildModule.dependents.includes(currentModule)) {
-            existingChildModule.dependents.push(currentModule);
-          }
-        }
-      },
-    );
-    if (childModulesToFill.length > 0) {
-      modulesToFill.push(...childModulesToFill);
+    if (currentModule.level > 100) {
+      throw new Error(
+        "Can't build module partitions, as the dependency graph is being traversed ad infinitum.",
+      );
     }
+
+    const dependencyModulesToFill: Module[] = [];
+    for (const nonCanonicalDependencyModuleId of dependenciesByModuleId[
+      currentModule.id
+    ]) {
+      // If the file path of the module is located in `node_modules`, use the
+      // name of the package as the ID
+      let dependencyModuleId;
+      const npmPackageMatch = nonCanonicalDependencyModuleId.match(
+        /^node_modules\/(?:(@[^/]+)\/)?([^/]+)\/.+$/u,
+      );
+      if (npmPackageMatch) {
+        dependencyModuleId =
+          npmPackageMatch[1] === undefined
+            ? `${npmPackageMatch[2]}`
+            : `${npmPackageMatch[1]}/${npmPackageMatch[2]}`;
+      } else {
+        dependencyModuleId = nonCanonicalDependencyModuleId;
+      }
+
+      // Skip circular dependencies
+      if (
+        findDirectAndIndirectDependentIdsOf(currentModule).has(
+          dependencyModuleId,
+        )
+      ) {
+        continue;
+      }
+
+      // Skip files that weren't on the original list of JavaScript files to
+      // convert, as we don't want them to show up on the status dashboard
+      if (
+        !npmPackageMatch &&
+        !allowedFilePaths.includes(
+          dependencyModuleId.replace(/\.tsx?$/u, '.js'),
+        )
+      ) {
+        continue;
+      }
+
+      let existingDependencyModule = modulesById[dependencyModuleId];
+
+      if (existingDependencyModule === undefined) {
+        existingDependencyModule = {
+          id: dependencyModuleId,
+          dependents: [currentModule],
+          dependencies: [],
+          level: currentModule.level + 1,
+          isExternal: Boolean(npmPackageMatch),
+          hasBeenConverted: /\.tsx?$/u.test(dependencyModuleId),
+        };
+        dependencyModulesToFill.push(existingDependencyModule);
+      } else if (currentModule.level + 1 > existingDependencyModule.level) {
+        existingDependencyModule.level = currentModule.level + 1;
+        // Update descendant modules' levels
+        dependencyModulesToFill.push(existingDependencyModule);
+      } else {
+        // There is no point in descending into dependencies of this module
+        // if the new level of the module would be <= the existing level,
+        // because all of the dependencies from this point on are guaranteed
+        // to have a higher level and are therefore already at the right
+        // level.
+      }
+
+      if (
+        !existingDependencyModule.dependents.some(
+          (m) => m.id === currentModule.id,
+        )
+      ) {
+        existingDependencyModule.dependents.push(currentModule);
+      }
+
+      if (
+        !currentModule.dependencies.some(
+          (m) => m.id === existingDependencyModule.id,
+        )
+      ) {
+        currentModule.dependencies.push(existingDependencyModule);
+      }
+    }
+    if (dependencyModulesToFill.length > 0) {
+      modulesToFill.push(...dependencyModulesToFill);
+    }
+
     if (!(currentModule.id in modulesById)) {
       modulesById[currentModule.id] = currentModule;
     }
+    modulesToFill = modulesToFill.slice(1);
   }
 
   return modulesById;
@@ -288,20 +326,21 @@ function buildModulesWithLevels(
  * which import that file directly or through some other file.
  *
  * @param module - A module in the graph.
- * @returns The ids of the modules which are incoming connections to
+ * @returns The ids of the modules which are direct and indirect dependents of
  * the module.
  */
 function findDirectAndIndirectDependentIdsOf(module: Module): Set<string> {
-  const modulesToProcess = [module];
+  let modulesToProcess = [module];
   const allDependentIds = new Set<string>();
   while (modulesToProcess.length > 0) {
-    const currentModule = modulesToProcess.shift() as Module;
-    currentModule.dependents.forEach((dependent) => {
+    const currentModule = modulesToProcess[0];
+    for (const dependent of currentModule.dependents) {
       if (!allDependentIds.has(dependent.id)) {
         allDependentIds.add(dependent.id);
         modulesToProcess.push(dependent);
       }
-    });
+    }
+    modulesToProcess = modulesToProcess.slice(1);
   }
   return allDependentIds;
 }
@@ -328,8 +367,22 @@ function partitionModulesByLevel(
   }
   Object.values(modulesById).forEach((module) => {
     modulePartitions[module.level].children.push({
-      name: module.id,
+      id: module.id,
       hasBeenConverted: module.hasBeenConverted,
+      dependentIds: module.dependents.map((dependent) => dependent.id).sort(),
+      dependencyIds: module.dependencies
+        .map((dependency) => dependency.id)
+        .sort(),
+    });
+  });
+  Object.values(modulePartitions).forEach((partition) => {
+    partition.children.sort((a, b) => {
+      if (a.id < b.id) {
+        return -1;
+      } else if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
     });
   });
   return modulePartitions.reverse();
