@@ -14,6 +14,7 @@ import {
   LOCALHOST_RPC_URL,
   NETWORK_TO_NAME_MAP,
   NETWORK_TYPES,
+  SHOULD_SHOW_LINEA_TESTNET_NETWORK,
 } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
@@ -380,7 +381,6 @@ class NetworkDropdown extends Component {
 
     const isOpen = this.props.networkDropdownOpen;
     const { t } = this.context;
-    const shouldShowZKEVM = new Date().getTime() > Date.UTC(2023, 2, 28);
 
     return (
       <Dropdown
@@ -455,7 +455,7 @@ class NetworkDropdown extends Component {
             <>
               {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
               {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
-              {shouldShowZKEVM && (
+              {SHOULD_SHOW_LINEA_TESTNET_NETWORK && (
                 <>
                   {this.renderNonInfuraDefaultNetwork(
                     networkConfigurations,

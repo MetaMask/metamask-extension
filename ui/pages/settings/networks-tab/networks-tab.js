@@ -22,6 +22,7 @@ import {
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
+  SHOULD_SHOW_LINEA_TESTNET_NETWORK,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
@@ -70,10 +71,8 @@ const NetworksTab = ({ addNewNetwork }) => {
     })
     .filter((network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET);
 
-  const shouldShowZKEVM = new Date().getTime() > Date.UTC(2023, 2, 28);
-
   let networksToRender = [...defaultNetworks, ...networkConfigurationsList];
-  if (!shouldShowZKEVM) {
+  if (!SHOULD_SHOW_LINEA_TESTNET_NETWORK) {
     networksToRender = networksToRender.filter(
       (network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET,
     );

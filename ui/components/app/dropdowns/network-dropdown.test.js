@@ -6,6 +6,15 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { LOCALHOST_RPC_URL } from '../../../../shared/constants/network';
 import NetworkDropdown from './network-dropdown';
 
+// Mock linea test network feature toggle
+jest.mock('../../../../shared/constants/network', () => {
+  const constants = jest.requireActual('../../../../shared/constants/network');
+  return {
+    ...constants,
+    SHOULD_SHOW_LINEA_TESTNET_NETWORK: true,
+  };
+});
+
 describe('Network Dropdown', () => {
   const createMockStore = configureMockStore([thunk]);
 
@@ -107,15 +116,7 @@ describe('Network Dropdown', () => {
       const lineaColorIndicator = screen.queryByTestId(
         'color-icon-lineatestnet',
       );
-      const isLineaNetworkReleased =
-        new Date().getTime() > Date.UTC(2023, 2, 28);
-      if (isLineaNetworkReleased) {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(lineaColorIndicator).toBeInTheDocument();
-      } else {
-        // eslint-disable-next-line jest/no-conditional-expect
-        expect(lineaColorIndicator).not.toBeInTheDocument();
-      }
+      expect(lineaColorIndicator).toBeInTheDocument();
     });
 
     it('checks that Add Network button is rendered', () => {
@@ -125,10 +126,7 @@ describe('Network Dropdown', () => {
 
     it('shows test networks in the dropdown', () => {
       const networkItems = screen.queryAllByTestId(/network-item/u);
-      const isLineaNetworkReleased =
-        new Date().getTime() > Date.UTC(2023, 2, 28);
-      const nbItems = isLineaNetworkReleased ? 7 : 6;
-      expect(networkItems).toHaveLength(nbItems);
+      expect(networkItems).toHaveLength(7);
     });
   });
 

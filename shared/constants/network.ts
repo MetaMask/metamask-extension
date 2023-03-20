@@ -679,3 +679,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
 ];
+
+export const SHOULD_SHOW_LINEA_TESTNET_NETWORK =
+  new Date().getTime() > Date.UTC(2023, 2, 28);
