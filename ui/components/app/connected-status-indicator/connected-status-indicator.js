@@ -15,6 +15,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedAddress,
 } from '../../../selectors';
+import { MultichainConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
@@ -38,12 +39,15 @@ export default function ConnectedStatusIndicator({ onClick }) {
 
   let indicatorType = ColorIndicator.TYPES.OUTLINE;
   let indicatorColor = Color.iconDefault;
+  let globalMenuColor = Color.iconAlternative;
 
   if (status === STATUS_CONNECTED) {
     indicatorColor = Color.successDefault;
     indicatorType = ColorIndicator.TYPES.PARTIAL;
+    globalMenuColor = Color.successDefault;
   } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
     indicatorColor = Color.errorDefault;
+    globalMenuColor = Color.warningDefault;
   }
 
   const text =
@@ -53,7 +57,11 @@ export default function ConnectedStatusIndicator({ onClick }) {
 
   return (
     <button className="connected-status-indicator" onClick={onClick}>
-      <ColorIndicator color={indicatorColor} type={indicatorType} />
+      {process.env.MULTICHAIN ? (
+        <MultichainConnectedSiteMenu globalMenuColor={globalMenuColor} />
+      ) : (
+        <ColorIndicator color={indicatorColor} type={indicatorType} />
+      )}
       <div className="connected-status-indicator__text">{text}</div>
     </button>
   );
