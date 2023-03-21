@@ -9,7 +9,7 @@ import Box from '../../ui/box';
 
 import { HeaderBaseProps } from './header-base.types';
 
-export const HeaderBase: React.FC<HeaderBaseProps> = ({
+export const HeaderBase = ({
   startAccessory,
   endAccessory,
   className = '',
@@ -18,7 +18,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
   startAccessoryWrapperProps,
   endAccessoryWrapperProps,
   ...props
-}) => {
+}: HeaderBaseProps) => {
   const startAccessoryRef = useRef<HTMLDivElement>(null);
   const endAccessoryRef = useRef<HTMLDivElement>(null);
   const [accessoryMinWidth, setAccessoryMinWidth] = useState<number>();
