@@ -711,6 +711,9 @@
   "connectingToGoerli": {
     "message": "Đang kết nối với mạng thử nghiệm Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Đang kết nối với mạng thử nghiệm Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Đang kết nối với mạng chính thức của Ethereum"
   },
@@ -1891,6 +1894,9 @@
   },
   "likeToImportTokens": {
     "message": "Bạn có muốn nhập những token này không?"
+  },
+  "lineatestnet": {
+    "message": "Mạng thử nghiệm Linea Goerli"
   },
   "link": {
     "message": "Liên kết"

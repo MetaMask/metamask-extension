@@ -313,6 +313,9 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
+  "connectingToLineaTestnet": {
+    "message": "連線到 Linea Goerli 測試網路"
+  },
   "connectingToMainnet": {
     "message": "連線到 Ethereum 主網路"
   },
@@ -811,6 +814,9 @@
   },
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli 測試網路"
   },
   "links": {
     "message": "連結"
