@@ -243,10 +243,10 @@ describe('TokenAllowancePage', () => {
       store,
     );
 
-    const verifyThirdPartyDetails = getByText('Verify third party details');
+    const verifyThirdPartyDetails = getByText('Verify third-party details');
     fireEvent.click(verifyThirdPartyDetails);
 
-    expect(getByText('Third party details')).toBeInTheDocument();
+    expect(getByText('Third-party details')).toBeInTheDocument();
 
     const gotIt = getByText('Got it');
     fireEvent.click(gotIt);

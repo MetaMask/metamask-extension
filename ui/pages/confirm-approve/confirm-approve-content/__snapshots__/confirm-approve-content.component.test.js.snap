@@ -57,7 +57,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
@@ -244,7 +244,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
@@ -431,7 +431,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
@@ -618,7 +618,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         role="button"
         tabindex="0"
       >
-        Verify contract details
+        Verify third-party details
       </a>
     </div>
     <div
