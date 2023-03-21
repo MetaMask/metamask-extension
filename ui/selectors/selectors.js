@@ -41,6 +41,8 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+
 import {
   shortenAddress,
   getAccountByAddress,
@@ -748,6 +750,11 @@ export function getIsSwapsChain(state) {
   return isNotDevelopment
     ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
     : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
+}
+
+export function getIsBridgeChain(state) {
+  const chainId = getCurrentChainId(state);
+  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
 export function getIsBuyableChain(state) {
