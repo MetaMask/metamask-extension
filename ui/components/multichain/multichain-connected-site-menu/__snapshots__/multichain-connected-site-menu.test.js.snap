@@ -1,51 +1,110 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Multichain Connected Site Menu render should match snapshot for connected state 1`] = `
+exports[`Multichain Connected Site Menu should render the site menu in connected state 1`] = `
 <div>
   <div
     class="box multichain-connected-site-menu box--flex-direction-row"
     data-testid="connection-menu"
   >
-    <div
-      class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
-    >
-      <span
-        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-default"
-        style="mask-image: url('./images/icons/global.svg');"
-      />
+    <div>
       <div
-        class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+        aria-describedby="tippy-tooltip-1"
+        class=""
+        data-original-title="Account 2 connected"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
       >
         <div
-          class="box box--flex-direction-row box--background-color-success-default box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
-          style="width: 12px; height: 12px;"
-        />
+          class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+        >
+          <span
+            class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
+          <div
+            class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+          >
+            <div
+              class="box box--flex-direction-row box--background-color-success-default box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
+              style="width: 12px; height: 12px;"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 `;
 
-exports[`Multichain Connected Site Menu render should match snapshot for not connected state 1`] = `
+exports[`Multichain Connected Site Menu should render the site menu in not connected state 1`] = `
 <div>
   <div
     class="box multichain-connected-site-menu box--flex-direction-row"
     data-testid="connection-menu"
   >
-    <div
-      class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
-    >
-      <span
-        class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-default"
-        style="mask-image: url('./images/icons/global.svg');"
-      />
+    <div>
       <div
-        class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+        aria-describedby="tippy-tooltip-2"
+        class=""
+        data-original-title="Account 2 not connected"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
       >
         <div
-          class="box box--flex-direction-row box--background-color-icon-alternative box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
-          style="width: 12px; height: 12px;"
-        />
+          class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+        >
+          <span
+            class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
+          <div
+            class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+          >
+            <div
+              class="box box--flex-direction-row box--background-color-icon-alternative box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
+              style="width: 12px; height: 12px;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Multichain Connected Site Menu should render the site menu in not connected to current account state 1`] = `
+<div>
+  <div
+    class="box multichain-connected-site-menu box--flex-direction-row"
+    data-testid="connection-menu"
+  >
+    <div>
+      <div
+        aria-describedby="tippy-tooltip-3"
+        class=""
+        data-original-title="Not Connected"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <div
+          class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+        >
+          <span
+            class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
+          <div
+            class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+          >
+            <div
+              class="box box--flex-direction-row box--background-color-warning-default box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
+              style="width: 12px; height: 12px;"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>

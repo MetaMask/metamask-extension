@@ -1,62 +1,78 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest';
+import { Color } from '../../../helpers/constants/design-system';
 import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
 
 describe('Multichain Connected Site Menu', () => {
-  const mockStore = {
-    metamask: {
-      selectedAddress: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+  const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+
+  const identities = {
+    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      name: 'Account 1',
+    },
+    '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+      address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+      name: 'Account 2',
     },
   };
-  describe('render', () => {
-    it('should match snapshot for not connected state', () => {
-      const store = configureMockStore()(mockStore);
-      const { getByTestId, container } = renderWithProvider(
-        <MultichainConnectedSiteMenu />,
-        store,
-      );
-      expect(getByTestId('connection-menu')).toBeDefined();
-      expect(container).toMatchSnapshot();
-    });
 
-    it('should match snapshot for connected state', () => {
-      const connectedState = {
-        metamask: {
-          ...mockStore.metamask,
-          subjectMetadata: {
-            'peepeth.com': {
-              iconUrl: 'https://peepeth.com/favicon-32x32.png',
-              name: 'Peepeth',
-            },
-          },
-          subjects: {
-            'peepeth.com': {
-              permissions: {
-                eth_accounts: {
-                  caveats: [
-                    {
-                      type: 'restrictReturnedAccounts',
-                      value: ['0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5'],
-                    },
-                  ],
-                  date: 1585676177970,
-                  id: '840d72a0-925f-449f-830a-1aa1dd5ce151',
-                  invoker: 'peepeth.com',
-                  parentCapability: 'eth_accounts',
-                },
-              },
-            },
-          },
-        },
-      };
-      const store = configureMockStore()(connectedState);
-      const { getByTestId, container } = renderWithProvider(
-        <MultichainConnectedSiteMenu />,
-        store,
-      );
-      expect(getByTestId('connection-menu')).toBeDefined();
-      expect(container).toMatchSnapshot();
-    });
+  const accounts = {
+    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      balance: '0x0',
+    },
+    '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+      address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+      balance: '0x0',
+    },
+  };
+  const mockStore = {
+    metamask: {
+      selectedAddress,
+      identities,
+      accounts,
+    },
+  };
+  it('should render the site menu in connected state', () => {
+    const props = {
+      globalMenuColor: Color.successDefault,
+      text: 'Connected',
+    };
+    const store = configureMockStore()(mockStore);
+    const { getByTestId, container } = renderWithProvider(
+      <MultichainConnectedSiteMenu {...props} />,
+      store,
+    );
+    expect(getByTestId('connection-menu')).toBeDefined();
+    expect(container).toMatchSnapshot();
+  });
+  it('should render the site menu in not connected state', () => {
+    const props = {
+      globalMenuColor: Color.iconAlternative,
+      text: 'Not Connected',
+    };
+    const store = configureMockStore()(mockStore);
+    const { getByTestId, container } = renderWithProvider(
+      <MultichainConnectedSiteMenu {...props} />,
+      store,
+    );
+    expect(getByTestId('connection-menu')).toBeDefined();
+    expect(container).toMatchSnapshot();
+  });
+  it('should render the site menu in not connected to current account state', () => {
+    const props = {
+      globalMenuColor: Color.warningDefault,
+      text: 'Not Connected',
+      status: 'STATUS_NOT_CONNECTED',
+    };
+    const store = configureMockStore()(mockStore);
+    const { getByTestId, container } = renderWithProvider(
+      <MultichainConnectedSiteMenu {...props} />,
+      store,
+    );
+    expect(getByTestId('connection-menu')).toBeDefined();
+    expect(container).toMatchSnapshot();
   });
 });
