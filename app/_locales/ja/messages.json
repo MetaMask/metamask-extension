@@ -2191,9 +2191,6 @@
     "message": "ナンスが提案され$1よりも大きいです",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "所有者情報が一致していないため、NFT を追加できません。入力された情報が正しいことを確認してください。"
   },
