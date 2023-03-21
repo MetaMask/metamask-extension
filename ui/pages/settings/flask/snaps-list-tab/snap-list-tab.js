@@ -121,7 +121,7 @@ const SnapListTab = () => {
           >
             <BannerTip
               logoType={BannerTipLogoType.Greeting}
-              title={t('learnAboutSnaps')}
+              title={t('exploreMetaMaskSnaps')}
               description={t('extendWalletWithSnaps')}
             >
               <ButtonLink

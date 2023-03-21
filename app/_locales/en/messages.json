@@ -1350,6 +1350,9 @@
   "experimental": {
     "message": "Experimental"
   },
+  "exploreMetaMaskSnaps": {
+    "message": "Explore MetaMask Snaps"
+  },
   "exportPrivateKey": {
     "message": "Export private key"
   },
@@ -1862,9 +1865,6 @@
   },
   "lastSold": {
     "message": "Last sold"
-  },
-  "learnAboutSnaps": {
-    "message": "Learn about MetaMask Snaps"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
