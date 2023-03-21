@@ -1,0 +1,22 @@
+.institutional-feature {
+  &__footer {
+    border-top: 1px solid var(--color-text-muted);
+    padding: 16px 30px;
+    flex: 0 0 auto;
+
+    button {
+      min-width: 0;
+    }
+  }
+
+  &__content {
+    @include H6;
+
+    line-height: 22px;
+
+    ol {
+      list-style: decimal;
+      list-style-position: inside;
+    }
+  }
+}
