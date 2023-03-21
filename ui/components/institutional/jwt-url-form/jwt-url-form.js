@@ -54,6 +54,7 @@ const JwtUrlForm = (props) => {
           >
             <Text>{t('or')}</Text>
             <Button
+              data-testid="addNewToken-btn"
               type="secondary"
               medium="true"
               onClick={() => {

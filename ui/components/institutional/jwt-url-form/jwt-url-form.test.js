@@ -27,24 +27,19 @@ describe('JwtUrlForm', function () {
   };
 
   it('opens JWT Url Form without input for new JWT', () => {
-    const { container, getByText } = renderWithProvider(
+    const { getAllByTestId, getByText } = renderWithProvider(
       <JwtUrlForm {...props} />,
       store,
     );
 
-    const btn = container.querySelector(
-      '.jwt-url-form__btn__container .btn-secondary',
-    );
-    expect(btn).toHaveClass('button');
+    expect(getAllByTestId('addNewToken-btn')[0]).toHaveAttribute('role', 'button');
     expect(getByText('Add new token')).toBeInTheDocument();
   });
 
   it('shows JWT textarea with provided input text', () => {
-    const { container } = renderWithProvider(<JwtUrlForm {...props} />, store);
+    const { getAllByTestId } = renderWithProvider(<JwtUrlForm {...props} />, store);
 
-    const btn = container.querySelector(
-      '.jwt-url-form__btn__container .btn-secondary',
-    );
+    const btn = getAllByTestId('addNewToken-btn')[0];
     fireEvent.click(btn);
     expect(screen.getByText('input text')).toBeInTheDocument();
   });
