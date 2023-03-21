@@ -9,9 +9,9 @@ import {
   JustifyContent,
   AlignItems,
   Color,
-  Size,
   TEXT_ALIGN,
   FLEX_DIRECTION,
+  Size,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
@@ -125,7 +125,7 @@ const SnapListTab = () => {
               description={t('extendWalletWithSnaps')}
             >
               <ButtonLink
-                size={Size.inherit}
+                size={Size.auto}
                 href="https://metamask.io/snaps/"
                 target="_blank"
               >
