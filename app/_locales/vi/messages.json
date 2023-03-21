@@ -2191,9 +2191,6 @@
     "message": "Số chỉ dùng một lần lớn hơn số chỉ dùng một lần gợi ý là $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Không thể thêm NFT vì thông tin quyền sở hữu không trùng khớp. Đảm bảo bạn đã nhập đúng thông tin."
   },

@@ -2191,9 +2191,6 @@
     "message": "임시값이 권장 임시값인 $1보다 큽니다.",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT\n"
-  },
   "nftAddFailedMessage": {
     "message": "소유권 정보가 일치하지 않아 NFT를 추가할 수 없습니다. 올바른 정보를 입력했는지 확인하세요."
   },
