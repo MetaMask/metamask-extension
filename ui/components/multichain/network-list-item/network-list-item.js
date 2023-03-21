@@ -73,9 +73,24 @@ export const NetworkListItem = ({
 };
 
 NetworkListItem.propTypes = {
+  /**
+   * The name of the network
+   */
   name: PropTypes.string.isRequired,
+  /**
+   * Path to the Icon image
+   */
   iconSrc: PropTypes.string,
+  /**
+   * Represents if the network item is selected
+   */
   selected: PropTypes.bool,
+  /**
+   * Executes when the item is clicked
+   */
   onClick: PropTypes.func.isRequired,
+  /**
+   * Executes when the delete icon is clicked
+   */
   onDeleteClick: PropTypes.func,
 };
