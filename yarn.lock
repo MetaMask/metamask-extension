@@ -4026,6 +4026,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/message-manager@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/message-manager@npm:2.0.0"
+  dependencies:
+    "@metamask/base-controller": ^2.0.0
+    "@metamask/controller-utils": ^3.0.0
+    "@types/uuid": ^8.3.0
+    eth-sig-util: ^3.0.0
+    ethereumjs-util: ^7.0.10
+    jsonschema: ^1.2.4
+    uuid: ^8.3.2
+  checksum: f130b5c58fbbb5ccd69da32cfa43839a09dec906974c6d0f6e2d46f15d1a872c564b0c880aac2979b7ffc8d00bcf328bf1989cb133cc41bc612e1e6e16ef9ef5
+  languageName: node
+  linkType: hard
+
 "@metamask/metamask-eth-abis@npm:3.0.0, @metamask/metamask-eth-abis@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/metamask-eth-abis@npm:3.0.0"
@@ -24282,6 +24297,7 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
+    "@metamask/message-manager": ^2.0.0
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/notification-controller": ^1.0.0
     "@metamask/obs-store": ^5.0.0
@@ -24460,7 +24476,6 @@ __metadata:
     jsdom: ^11.2.0
     json-rpc-engine: ^6.1.0
     json-rpc-middleware-stream: ^4.2.1
-    jsonschema: ^1.2.4
     junit-report-merger: ^4.0.0
     koa: ^2.7.0
     labeled-stream-splicer: ^2.0.2
