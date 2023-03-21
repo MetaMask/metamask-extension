@@ -1344,17 +1344,20 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
-  "expandExperience": {
-    "message": "Expand your web3 experience with MetaMask Snaps"
-  },
   "expandView": {
     "message": "Expand view"
   },
   "experimental": {
     "message": "Experimental"
   },
+  "exploreMetaMaskSnaps": {
+    "message": "Explore MetaMask Snaps"
+  },
   "exportPrivateKey": {
     "message": "Export private key"
+  },
+  "extendWalletWithSnaps": {
+    "message": "Extend the wallet experience."
   },
   "externalExtension": {
     "message": "External extension"
@@ -1997,9 +2000,6 @@
   "malformedData": {
     "message": "Malformed data"
   },
-  "manageSnaps": {
-    "message": "Manage your installed snaps"
-  },
   "max": {
     "message": "Max"
   },
@@ -2285,7 +2285,7 @@
     "message": "No NFTs yet"
   },
   "noSnaps": {
-    "message": "No Snaps installed"
+    "message": "You don't have any snaps installed."
   },
   "noThanksVariant2": {
     "message": "No, thanks."

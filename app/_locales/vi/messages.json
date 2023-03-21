@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Xem trên Etherscan"
   },
-  "expandExperience": {
-    "message": "Mở rộng trải nghiệm web3 của bạn với MetaMask Snap"
-  },
   "expandView": {
     "message": "Mở rộng cửa sổ xem"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "Dữ liệu không đúng định dạng"
-  },
-  "manageSnaps": {
-    "message": "Quản lý các Snap đã cài đặt"
   },
   "max": {
     "message": "Tối đa"

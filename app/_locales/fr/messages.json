@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Afficher sur Etherscan"
   },
-  "expandExperience": {
-    "message": "Développez votre expérience web3 avec les Snaps MetaMask"
-  },
   "expandView": {
     "message": "Agrandir la vue"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "Données malformées"
-  },
-  "manageSnaps": {
-    "message": "Gérez vos Snaps installés"
   },
   "max": {
     "message": "Max."

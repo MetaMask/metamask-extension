@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Tingnan sa Etherscan"
   },
-  "expandExperience": {
-    "message": "Palawakin ang iyong karanasan sa web3 gamit ang MetaMask Snaps"
-  },
   "expandView": {
     "message": "I-expand ang view"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "Pangit na datos"
-  },
-  "manageSnaps": {
-    "message": "Pamahalaan ang iyong mga naka-install na snap"
   },
   "max": {
     "message": "Max"

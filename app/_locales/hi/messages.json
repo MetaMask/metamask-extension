@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Etherscan पर देखें"
   },
-  "expandExperience": {
-    "message": "MetaMask स्नैप्स के साथ अपने web3 अनुभव का विस्तार करें"
-  },
   "expandView": {
     "message": "दृश्य का विस्तार करें"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "विकृत डेटा"
-  },
-  "manageSnaps": {
-    "message": "अपने इंस्टाल किए गए स्नैप्स मैनेज करें"
   },
   "max": {
     "message": "अधिकतम"

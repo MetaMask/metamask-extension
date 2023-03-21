@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Etherscan'de görüntüle"
   },
-  "expandExperience": {
-    "message": "MetaMask Snap'leri ile web3 deneyimini genişlet"
-  },
   "expandView": {
     "message": "Görünümü genişlet"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "Hatalı biçimlendirilmiş veri"
-  },
-  "manageSnaps": {
-    "message": "Yüklü snap'lerini yönet"
   },
   "max": {
     "message": "Maksimum"
