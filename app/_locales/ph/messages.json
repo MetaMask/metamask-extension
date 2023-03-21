@@ -314,6 +314,9 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Kumokonekta sa Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
@@ -803,6 +806,9 @@
   },
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli Test Network"
   },
   "links": {
     "message": "Mga Link"

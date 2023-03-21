@@ -708,6 +708,9 @@
   "connectingToGoerli": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Σύνδεση στο δίκτυο δοκιμών Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
@@ -1885,6 +1888,9 @@
   },
   "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
+  },
+  "lineatestnet": {
+    "message": "Δίκτυο δοκιμών Linea Goerli"
   },
   "link": {
     "message": "Σύνδεσμος"

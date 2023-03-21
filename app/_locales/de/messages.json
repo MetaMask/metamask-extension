@@ -708,6 +708,9 @@
   "connectingToGoerli": {
     "message": "Verbindungsaufbau zum Goerli-Testnetzwerk"
   },
+  "connectingToLineaTestnet": {
+    "message": "Verbindungsaufbau zum Linea-Testnetzwerk"
+  },
   "connectingToMainnet": {
     "message": "Verbinde zum Ethereum Mainnet"
   },
@@ -1885,6 +1888,9 @@
   },
   "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
+  },
+  "lineatestnet": {
+    "message": "Linea-Testnetzwerk"
   },
   "link": {
     "message": "Link"

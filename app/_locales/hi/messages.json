@@ -708,6 +708,9 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
+  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
   },
@@ -1885,6 +1888,9 @@
   },
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क"
   },
   "link": {
     "message": "लिंक"

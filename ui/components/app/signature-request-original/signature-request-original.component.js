@@ -73,6 +73,8 @@ export default class SignatureRequestOriginal extends Component {
         return t('goerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('sepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('lineatestnet');
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:

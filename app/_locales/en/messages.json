@@ -714,6 +714,9 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Connecting to Linea Goerli test network"
+  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
@@ -1909,6 +1912,9 @@
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli test network"
   },
   "link": {
     "message": "Link"

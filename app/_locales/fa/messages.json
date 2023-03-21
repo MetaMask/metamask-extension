@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
+  "connectingToLineaTestnet": {
+    "message": "در حال اتصال به شبکه آزمایشی Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "در حال اتصال به شبکه اصلی ایتریم"
   },
@@ -411,6 +414,9 @@
   },
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
+  },
+  "lineatestnet": {
+    "message": "شبکه آزمایشی Linea Goerli"
   },
   "links": {
     "message": "لینک ها"

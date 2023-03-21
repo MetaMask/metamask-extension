@@ -256,6 +256,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineatestnet'),
+    descriptionMessage: (t) => t('lineatestnet'),
+    route: `${NETWORKS_ROUTE}#networks-lineatestnet`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('localhost'),
     descriptionMessage: (t) => t('localhost'),
     route: `${NETWORKS_ROUTE}#networks-localhost`,

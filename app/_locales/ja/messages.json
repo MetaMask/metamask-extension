@@ -708,6 +708,9 @@
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli テストネットワークに接続中"
+  },
   "connectingToMainnet": {
     "message": "イーサリアムメインネットに接続中"
   },
@@ -1885,6 +1888,9 @@
   },
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli テストネットワーク"
   },
   "link": {
     "message": "リンク"
