@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Account List render should match snapshot 1`] = `
+<div>
+  <div
+    class="new-external-account-form account-list"
+  >
+    <div
+      class="hw-connect"
+    >
+      <h3
+        class="hw-connect__unlock-title"
+      >
+        Select an account
+      </h3>
+      <div>
+        <h3
+          class="hw-connect__hdPath__title"
+        >
+          Select HD path
+        </h3>
+        <p
+          class="hw-connect__msg"
+        >
+          If you don't see the accounts you expect, try switching the HD path.
+        </p>
+        <div
+          class="hw-connect__hdPath"
+        >
+          <div
+            class="dropdown hw-connect__hdPath__select"
+          >
+            <select
+              class="dropdown__select"
+            >
+              <option
+                value="m/44'/60'/0'/0/0"
+              >
+                Ledger Live
+              </option>
+              <option
+                value="m/44'/60'/0'"
+              >
+                Legacy (MEW / MyCrypto)
+              </option>
+              <option
+                value="m/44'/60'/0'/0"
+              >
+                BIP44 Standard (e.g. MetaMask, Trezor)
+              </option>
+            </select>
+            <span
+              class="box dropdown__icon-caret-down mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-down.svg');"
+            />
+          </div>
+        </div>
+      </div>
+      <h3
+        class="hw-connect__hdPath__title"
+      >
+        Select an account
+      </h3>
+    </div>
+    <div
+      class="hw-account-list"
+    >
+      <div
+        class="hw-account-list__item"
+        title=""
+      >
+        <div
+          class="hw-account-list__item__checkbox"
+        >
+          <input
+            class="check-box far fa-square"
+            id="address-0"
+            readonly=""
+            type="checkbox"
+          />
+          <label
+            class="hw-account-list__item__label"
+            for="address-0"
+          >
+            <span
+              class="hw-account-list__item__index"
+            >
+              1
+            </span>
+            0x8e...3d12
+            <span
+              class="hw-account-list__item__balance"
+            >
+              9.107407 ETH
+            </span>
+          </label>
+        </div>
+        <a
+          class="hw-account-list__item__link"
+          rel="noopener noreferrer"
+          target="_blank"
+          title="View account on Etherscan"
+        >
+          <i
+            class="fa fa-share-square"
+          />
+        </a>
+      </div>
+    </div>
+    <div
+      class="hw-list-pagination"
+    >
+      <button
+        class="hw-list-pagination__button"
+      >
+        &lt; Prev
+      </button>
+      <button
+        class="hw-list-pagination__button"
+      >
+        Next &gt;
+      </button>
+    </div>
+    <div
+      class="new-external-account-form__buttons"
+    >
+      <button
+        class="button btn--rounded btn-secondary btn--large new-external-account-form__button"
+        role="button"
+        tabindex="0"
+      >
+        Cancel
+      </button>
+      <button
+        class="button btn--rounded btn-primary btn--large new-external-account-form__button unlock"
+        role="button"
+        tabindex="0"
+      >
+        Unlock
+      </button>
+    </div>
+    <div
+      class="hw-forget-device-container"
+    >
+      <a>
+        Forget this device
+      </a>
+    </div>
+  </div>
+</div>
+`;
