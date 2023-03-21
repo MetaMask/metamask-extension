@@ -1,6 +1,7 @@
 @import 'choose-account/index';
 @import 'flask/snap-install/index';
 @import 'flask/snap-update/index';
+@import 'flask/snap-result/index';
 @import 'redirect/index';
 
 .permissions-connect {
@@ -31,10 +32,6 @@
     color: var(--color-icon-default);
     font-weight: bold;
     cursor: pointer;
-
-    i {
-      margin-right: 10px;
-    }
   }
 
   &__page-count {

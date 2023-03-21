@@ -10,8 +10,11 @@ import {
   Color as ColorEnum,
   TextColor,
   BorderColor,
+  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 import Box from '../box';
+
+import { BannerAlert } from '../../component-library/banner-alert';
 
 import { ValidColors, ValidTags } from './typography';
 
@@ -104,12 +107,23 @@ function renderBackgroundColor(color) {
 }
 
 export const DefaultStory = (args) => (
-  <Typography
-    boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
-    {...args}
-  >
-    {args.children}
-  </Typography>
+  <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
+    <Typography
+      boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
+      {...args}
+    >
+      {args.children}
+    </Typography>
+  </>
 );
 
 DefaultStory.storyName = 'Default';
@@ -120,6 +134,15 @@ DefaultStory.args = {
 
 export const Variant = (args) => (
   <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
     {Object.values(TypographyVariant).map((variant) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
@@ -138,6 +161,15 @@ export const Color = (args) => {
   const LAST_VALID_COLORS_ARRAY_INDEX = 16;
   return (
     <>
+      <BannerAlert
+        severity={SEVERITIES.WARNING}
+        title="Deprecated"
+        description="<Typography/> has been deprecated in favour of the <Text /> component"
+        actionButtonLabel="See details"
+        actionButtonProps={{
+          href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+        }}
+      />
       {Object.values(ValidColors).map((color, index) => {
         if (index === LAST_VALID_COLORS_ARRAY_INDEX) {
           return (
@@ -191,6 +223,15 @@ export const Color = (args) => {
 
 export const FontWeight = (args) => (
   <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
     {Object.values(FONT_WEIGHT).map((weight) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
@@ -206,6 +247,15 @@ export const FontWeight = (args) => (
 
 export const FontStyle = (args) => (
   <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
     {Object.values(FONT_STYLE).map((style) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
@@ -221,6 +271,15 @@ export const FontStyle = (args) => (
 
 export const Align = (args) => (
   <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
     {Object.values(TEXT_ALIGN).map((align) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
@@ -235,24 +294,44 @@ export const Align = (args) => (
 );
 
 export const OverflowWrap = (args) => (
-  <div
-    style={{
-      width: 250,
-      border: '1px solid var(--color-error-default)',
-      display: 'block',
-    }}
-  >
-    <Typography {...args} overflowWrap={OVERFLOW_WRAP.NORMAL}>
-      {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
-    </Typography>
-    <Typography {...args} overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>
-      {OVERFLOW_WRAP.BREAK_WORD}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
-    </Typography>
-  </div>
+  <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
+    <div
+      style={{
+        width: 250,
+        border: '1px solid var(--color-error-default)',
+        display: 'block',
+      }}
+    >
+      <Typography {...args} overflowWrap={OVERFLOW_WRAP.NORMAL}>
+        {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+      </Typography>
+      <Typography {...args} overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>
+        {OVERFLOW_WRAP.BREAK_WORD}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+      </Typography>
+    </div>
+  </>
 );
 
 export const As = (args) => (
   <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
     <Typography boxProps={{ display: DISPLAY.BLOCK }} marginBottom={4}>
       You can change the root element of the Typography component using the as
       prop. Inspect the below elements to see the underlying HTML elements
@@ -276,20 +355,42 @@ export const As = (args) => (
 );
 
 export const Margin = (args) => (
-  <Typography {...args}>
-    This Typography component has a margin of {args.margin * 4}px
-  </Typography>
+  <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
+    <Typography {...args}>
+      This Typography component has a margin of {args.margin * 4}px
+    </Typography>
+  </>
 );
 
 Margin.args = {
   margin: 4,
 };
 
-export const BoxProps = (args) => (
-  <Typography {...args}>This uses the boxProps prop</Typography>
+export const BoxPropsStory = (args) => (
+  <>
+    <BannerAlert
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
+      }}
+    />
+    <Typography {...args}>This uses the boxProps prop</Typography>
+  </>
 );
 
-BoxProps.args = {
+BoxPropsStory.args = {
   color: TextColor.textDefault,
   boxProps: {
     backgroundColor: BackgroundColor.infoMuted,
@@ -298,3 +399,5 @@ BoxProps.args = {
     borderRadius: 4,
   },
 };
+
+BoxPropsStory.storyName = 'BoxProps';

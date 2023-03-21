@@ -5,7 +5,7 @@ import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { getURLHostName } from '../../../helpers/utils/util';
+import { getURLHostName, sanitizeString } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
@@ -22,6 +22,10 @@ import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -45,6 +49,8 @@ export default class SignatureRequestOriginal extends Component {
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
     nativeCurrency: PropTypes.string.isRequired,
+    currentCurrency: PropTypes.string.isRequired,
+    conversionRate: PropTypes.number,
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
@@ -135,6 +141,15 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
+        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+          txData?.securityProviderResponse?.flagAsDangerous !==
+            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        (txData?.securityProviderResponse &&
+          Object.keys(txData.securityProviderResponse).length === 0) ? (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        ) : null}
         <div className="request-signature__origin">
           <SiteOrigin
             siteOrigin={txData.msgParams.origin}
@@ -177,8 +192,12 @@ export default class SignatureRequestOriginal extends Component {
                 className="request-signature__row"
                 key={`request-signature-row-${index}`}
               >
-                <div className="request-signature__row-title">{`${name}:`}</div>
-                <div className="request-signature__row-value">{value}</div>
+                <div className="request-signature__row-title">
+                  {sanitizeString(`${name}:`)}
+                </div>
+                <div className="request-signature__row-value">
+                  {sanitizeString(value)}
+                </div>
               </div>
             );
           })}
@@ -265,7 +284,9 @@ export default class SignatureRequestOriginal extends Component {
     const {
       messagesCount,
       nativeCurrency,
+      currentCurrency,
       fromAccount: { address, balance, name },
+      conversionRate,
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
@@ -273,11 +294,23 @@ export default class SignatureRequestOriginal extends Component {
     const rejectNText = t('rejectRequestsN', [messagesCount]);
     const currentNetwork = this.getNetworkName();
 
-    const balanceInBaseAsset = new Numeric(balance, 16, EtherDenomination.WEI)
-      .toDenomination(EtherDenomination.ETH)
-      .toBase(10)
-      .round(6)
-      .toString();
+    const balanceInBaseAsset = conversionRate
+      ? formatCurrency(
+          getValueFromWeiHex({
+            value: balance,
+            fromCurrency: nativeCurrency,
+            toCurrency: currentCurrency,
+            conversionRate,
+            numberOfDecimals: 6,
+            toDenomination: EtherDenomination.ETH,
+          }),
+          currentCurrency,
+        )
+      : new Numeric(balance, 16, EtherDenomination.WEI)
+          .toDenomination(EtherDenomination.ETH)
+          .round(6)
+          .toBase(10)
+          .toString();
 
     return (
       <div className="request-signature__container">
@@ -289,7 +322,9 @@ export default class SignatureRequestOriginal extends Component {
             networkName={currentNetwork}
             accountName={name}
             accountBalance={balanceInBaseAsset}
-            tokenName={nativeCurrency}
+            tokenName={
+              conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
+            }
             accountAddress={address}
           />
         </div>

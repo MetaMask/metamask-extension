@@ -1711,7 +1711,6 @@ describe('Send Slice', () => {
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
-        process.env.NFTS_V1 = true;
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({ standard: 'ERC1155', balance: '0x1' }),
         );
@@ -1740,7 +1739,6 @@ describe('Send Slice', () => {
           },
           type: 'UI_MODAL_OPEN',
         });
-        process.env.NFTS_V1 = false;
       });
     });
 
@@ -2497,12 +2495,12 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should set up the appropriate state for editing a collectible asset transaction', async () => {
+      it('should set up the appropriate state for editing an NFT asset transaction', async () => {
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({
             standard: 'ERC721',
             balance: '0x1',
-            address: '0xCollectibleAddress',
+            address: '0xNftAddress',
           }),
         );
         const editTransactionState = {
@@ -2539,7 +2537,7 @@ describe('Send Slice', () => {
                     tokenId: BigNumber.from(15000).toString(),
                   }),
                   from: '0xAddress',
-                  to: '0xCollectibleAddress',
+                  to: '0xNftAddress',
                   gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
                   gasPrice: '0x3b9aca00', // 1000000000
                   value: '0x0',
@@ -2621,7 +2619,7 @@ describe('Send Slice', () => {
         expect(actionResult[4]).toStrictEqual({
           type: 'send/addHistoryEntry',
           payload:
-            'sendFlow - user set asset to NFT with tokenId 15000 and address 0xCollectibleAddress',
+            'sendFlow - user set asset to NFT with tokenId 15000 and address 0xNftAddress',
         });
         expect(actionResult[5]).toStrictEqual({
           type: 'send/updateAsset',
@@ -2629,7 +2627,7 @@ describe('Send Slice', () => {
             asset: {
               balance: '0x1',
               details: {
-                address: '0xCollectibleAddress',
+                address: '0xNftAddress',
                 balance: '0x1',
                 standard: TokenStandard.ERC721,
                 tokenId: '15000',

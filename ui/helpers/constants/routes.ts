@@ -36,6 +36,7 @@ const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
+const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
@@ -49,7 +50,7 @@ const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
-const ADD_COLLECTIBLE_ROUTE = '/add-collectible';
+const ADD_NFT_ROUTE = '/add-nft';
 
 const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -70,6 +71,8 @@ const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+const DESKTOP_ERROR_ROUTE = '/desktop/error';
+const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -209,6 +212,7 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
+  CONNECT_SNAP_RESULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
@@ -223,7 +227,7 @@ export {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  ADD_COLLECTIBLE_ROUTE,
+  ADD_NFT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -241,5 +245,7 @@ export {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
+  DESKTOP_ERROR_ROUTE,
+  DESKTOP_PAIRING_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 };

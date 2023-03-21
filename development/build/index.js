@@ -11,7 +11,7 @@ const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
 const { getVersion } = require('../lib/get-version');
-const { BuildType } = require('../lib/build-type');
+const { BuildType, BuildTypeInheritance } = require('../lib/build-type');
 const { TASKS, ENVIRONMENT } = require('./constants');
 const {
   createTask,
@@ -73,9 +73,17 @@ async function defineAndRunBuildTasks() {
     version,
   } = await parseArgv();
 
+  // scuttle on production/tests environment only
+  const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
+
+  console.log(
+    `Building lavamoat runtime file`,
+    `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
+  );
+
   // build lavamoat runtime file
   await lavapack.buildRuntime({
-    scuttleGlobalThis: true,
+    scuttleGlobalThis: applyLavaMoat && shouldScuttle,
     scuttleGlobalThisExceptions: [
       // globals used by different mm deps outside of lm compartment
       'toString',
@@ -364,13 +372,16 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
  * build, or `null` if no files are to be ignored.
  */
 function getIgnoredFiles(currentBuildType) {
+  const inheritedBuildTypes = BuildTypeInheritance[currentBuildType] || [];
   const excludedFiles = Object.values(BuildType)
     // This filter removes "main" and the current build type. The files of any
     // build types that remain in the array will be excluded. "main" is the
     // default build type, and has no files that are excluded from other builds.
     .filter(
       (buildType) =>
-        buildType !== BuildType.main && buildType !== currentBuildType,
+        buildType !== BuildType.main &&
+        buildType !== currentBuildType &&
+        !inheritedBuildTypes.includes(buildType),
     )
     // Compute globs targeting files for exclusion for each excluded build
     // type.

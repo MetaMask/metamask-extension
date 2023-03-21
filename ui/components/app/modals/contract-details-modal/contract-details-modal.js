@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
 import Box from '../../../ui/box';
-import IconBlockExplorer from '../../../ui/icon/icon-block-explorer';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -16,15 +14,14 @@ import {
   FONT_WEIGHT,
   TypographyVariant,
   DISPLAY,
-  JustifyContent,
   Size,
   BorderStyle,
   BorderColor,
   TextColor,
   Color,
+  AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import UrlIcon from '../../../ui/url-icon/url-icon';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
@@ -37,8 +34,6 @@ export default function ContractDetailsModal({
   toAddress,
   chainId,
   rpcPrefs,
-  origin,
-  siteImage,
   tokenId,
   assetName,
   assetStandard,
@@ -135,56 +130,56 @@ export default function ContractDetailsModal({
                 )}
               </Box>
               <Box
-                justifyContent={JustifyContent.flexEnd}
-                className="contract-details-modal__content__contract__buttons"
+                alignItems={AlignItems.center}
+                marginLeft="auto"
+                marginRight={4}
+                gap={2}
               >
-                <Box marginTop={4} marginRight={5}>
-                  <Tooltip
-                    position="top"
-                    title={
+                <Tooltip
+                  position="top"
+                  title={
+                    copiedTokenAddress
+                      ? t('copiedExclamation')
+                      : t('copyToClipboard')
+                  }
+                >
+                  <ButtonIcon
+                    display={DISPLAY.FLEX}
+                    iconName={
+                      copiedTokenAddress
+                        ? ICON_NAMES.COPY_SUCCESS
+                        : ICON_NAMES.COPY
+                    }
+                    onClick={() => handleCopyTokenAddress(tokenAddress)}
+                    color={Color.iconMuted}
+                    ariaLabel={
                       copiedTokenAddress
                         ? t('copiedExclamation')
                         : t('copyToClipboard')
                     }
-                  >
-                    <ButtonIcon
-                      iconName={
-                        copiedTokenAddress
-                          ? ICON_NAMES.COPY_SUCCESS
-                          : ICON_NAMES.COPY
-                      }
-                      onClick={() => handleCopyTokenAddress(tokenAddress)}
-                      color={Color.iconMuted}
-                    />
-                  </Tooltip>
-                </Box>
-                <Box marginTop={5} marginRight={5}>
-                  <Tooltip position="top" title={t('openInBlockExplorer')}>
-                    <Button
-                      className="contract-details-modal__content__contract__buttons__block-explorer"
-                      type="link"
-                      onClick={() => {
-                        const blockExplorerTokenLink = getAccountLink(
-                          tokenAddress,
-                          chainId,
-                          {
-                            blockExplorerUrl:
-                              rpcPrefs?.blockExplorerUrl ?? null,
-                          },
-                          null,
-                        );
-                        global.platform.openTab({
-                          url: blockExplorerTokenLink,
-                        });
-                      }}
-                    >
-                      <IconBlockExplorer
-                        size={16}
-                        color="var(--color-icon-muted)"
-                      />
-                    </Button>
-                  </Tooltip>
-                </Box>
+                  />
+                </Tooltip>
+                <Tooltip position="top" title={t('openInBlockExplorer')}>
+                  <ButtonIcon
+                    display={DISPLAY.FLEX}
+                    iconName={ICON_NAMES.EXPORT}
+                    color={Color.iconMuted}
+                    onClick={() => {
+                      const blockExplorerTokenLink = getAccountLink(
+                        tokenAddress,
+                        chainId,
+                        {
+                          blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                        },
+                        null,
+                      );
+                      global.platform.openTab({
+                        url: blockExplorerTokenLink,
+                      });
+                    }}
+                    ariaLabel={t('openInBlockExplorer')}
+                  />
+                </Tooltip>
               </Box>
             </Box>
           </>
@@ -208,30 +203,11 @@ export default function ContractDetailsModal({
           borderColor={BorderColor.borderDefault}
           className="contract-details-modal__content__contract"
         >
-          {nft ? (
-            <Identicon
-              className="contract-details-modal__content__contract__identicon"
-              diameter={24}
-              address={toAddress}
-            />
-          ) : (
-            <UrlIcon
-              className={classnames({
-                'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                  addressBookEntry?.data?.name === undefined,
-                'contract-details-modal__content__contract__identicon':
-                  addressBookEntry?.data?.name !== undefined,
-              })}
-              fallbackClassName={classnames({
-                'contract-details-modal__content__contract__identicon-for-unknown-contact':
-                  addressBookEntry?.data?.name === undefined,
-                'contract-details-modal__content__contract__identicon':
-                  addressBookEntry?.data?.name !== undefined,
-              })}
-              name={origin}
-              url={siteImage}
-            />
-          )}
+          <Identicon
+            className="contract-details-modal__content__contract__identicon"
+            diameter={24}
+            address={toAddress}
+          />
           <Box data-testid="recipient">
             <Typography
               fontWeight={FONT_WEIGHT.BOLD}
@@ -253,53 +229,52 @@ export default function ContractDetailsModal({
             )}
           </Box>
           <Box
-            justifyContent={JustifyContent.flexEnd}
-            className="contract-details-modal__content__contract__buttons"
+            alignItems={AlignItems.center}
+            marginLeft="auto"
+            marginRight={4}
+            gap={2}
           >
-            <Box marginTop={4} marginRight={5}>
-              <Tooltip
-                position="top"
-                title={
-                  copiedToAddress
+            <Tooltip
+              position="top"
+              title={
+                copiedToAddress ? t('copiedExclamation') : t('copyToClipboard')
+              }
+            >
+              <ButtonIcon
+                display={DISPLAY.FLEX}
+                iconName={
+                  copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                }
+                onClick={() => handleCopyToAddress(toAddress)}
+                color={Color.iconMuted}
+                ariaLabel={
+                  copiedTokenAddress
                     ? t('copiedExclamation')
                     : t('copyToClipboard')
                 }
-              >
-                <ButtonIcon
-                  iconName={
-                    copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
-                  }
-                  onClick={() => handleCopyToAddress(toAddress)}
-                  color={Color.iconMuted}
-                />
-              </Tooltip>
-            </Box>
-            <Box marginTop={5} marginRight={5}>
-              <Tooltip position="top" title={t('openInBlockExplorer')}>
-                <Button
-                  className="contract-details-modal__content__contract__buttons__block-explorer"
-                  type="link"
-                  onClick={() => {
-                    const blockExplorerTokenLink = getAccountLink(
-                      toAddress,
-                      chainId,
-                      {
-                        blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
-                      },
-                      null,
-                    );
-                    global.platform.openTab({
-                      url: blockExplorerTokenLink,
-                    });
-                  }}
-                >
-                  <IconBlockExplorer
-                    size={16}
-                    color="var(--color-icon-muted)"
-                  />
-                </Button>
-              </Tooltip>
-            </Box>
+              />
+            </Tooltip>
+            <Tooltip position="top" title={t('openInBlockExplorer')}>
+              <ButtonIcon
+                display={DISPLAY.FLEX}
+                iconName={ICON_NAMES.EXPORT}
+                color={Color.iconMuted}
+                onClick={() => {
+                  const blockExplorerTokenLink = getAccountLink(
+                    toAddress,
+                    chainId,
+                    {
+                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                    },
+                    null,
+                  );
+                  global.platform.openTab({
+                    url: blockExplorerTokenLink,
+                  });
+                }}
+                ariaLabel={t('openInBlockExplorer')}
+              />
+            </Tooltip>
           </Box>
         </Box>
       </Box>
@@ -344,15 +319,7 @@ ContractDetailsModal.propTypes = {
    */
   rpcPrefs: PropTypes.object,
   /**
-   * Dapp URL
-   */
-  origin: PropTypes.string,
-  /**
-   * Dapp image
-   */
-  siteImage: PropTypes.string,
-  /**
-   * The token id of the collectible
+   * The token id of the NFT
    */
   tokenId: PropTypes.string,
   /**

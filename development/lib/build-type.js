@@ -5,8 +5,14 @@
  */
 const BuildType = {
   beta: 'beta',
+  desktop: 'desktop',
   flask: 'flask',
   main: 'main',
+  mmi: 'mmi',
 };
 
-module.exports = { BuildType };
+const BuildTypeInheritance = {
+  [BuildType.desktop]: [BuildType.flask],
+};
+
+module.exports = { BuildType, BuildTypeInheritance };

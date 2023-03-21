@@ -19,13 +19,14 @@ import {
   TypographyVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { sanitizeString } from '../../../../helpers/utils/util';
 
 function SignatureRequestData({ data }) {
   const identities = useSelector(getMemoizedMetaMaskIdentities);
 
   return (
     <Box className="signature-request-data__node">
-      {Object.entries(data).map(([label, value], i) => (
+      {Object.entries(data).map(([label, { value, type }], i) => (
         <Box
           className="signature-request-data__node"
           key={`${label}-${i}`}
@@ -42,7 +43,7 @@ function SignatureRequestData({ data }) {
               typeof value === 'object' ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL
             }
           >
-            {label.charAt(0).toUpperCase() + label.slice(1)}:{' '}
+            {sanitizeString(label.charAt(0).toUpperCase() + label.slice(1))}:{' '}
           </Typography>
           {typeof value === 'object' && value !== null ? (
             <SignatureRequestData data={value} />
@@ -53,7 +54,8 @@ function SignatureRequestData({ data }) {
               marginLeft={4}
               className="signature-request-data__node__value"
             >
-              {isValidHexAddress(value, {
+              {type === 'address' &&
+              isValidHexAddress(value, {
                 mixedCaseUseChecksum: true,
               }) ? (
                 <Typography
@@ -68,7 +70,7 @@ function SignatureRequestData({ data }) {
                   />
                 </Typography>
               ) : (
-                `${value}`
+                sanitizeString(`${value}`)
               )}
             </Typography>
           )}

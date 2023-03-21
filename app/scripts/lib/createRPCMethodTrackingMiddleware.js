@@ -1,6 +1,13 @@
+import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
-import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { detectSIWE } from '../../../shared/modules/siwe';
+import {
+  EVENT,
+  EVENT_NAMES,
+  METAMETRIC_KEY_OPTIONS,
+  METAMETRIC_KEY,
+} from '../../../shared/constants/metametrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -40,6 +47,7 @@ const RATE_LIMIT_MAP = {
 const EVENT_NAME_MAP = {
   [MESSAGE_TYPE.ETH_SIGN]: {
     APPROVED: EVENT_NAMES.SIGNATURE_APPROVED,
+    FAILED: EVENT_NAMES.SIGNATURE_FAILED,
     REJECTED: EVENT_NAMES.SIGNATURE_REJECTED,
     REQUESTED: EVENT_NAMES.SIGNATURE_REQUESTED,
   },
@@ -160,6 +168,16 @@ export default function createRPCMethodTrackingMiddleware({
         properties.method = method;
       }
 
+      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+        const data = req?.params?.[0];
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          properties.ui_customizations = [
+            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+          ];
+        }
+      }
+
       trackEvent({
         event,
         category: EVENT.CATEGORIES.INPAGE_PROVIDER,
@@ -179,17 +197,39 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      // An error code of 4001 means the user rejected the request, which we
-      // can use here to determine which event to track.
-      const event =
-        res.error?.code === 4001 ? eventType.REJECTED : eventType.APPROVED;
-
       const properties = {};
+
+      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
+      const isDisabledEthSignAdvancedSetting =
+        method === MESSAGE_TYPE.ETH_SIGN &&
+        res.error?.code === errorCodes.rpc.methodNotFound;
+
+      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
+
+      let event;
+      if (isDisabledRPCMethod) {
+        event = eventType.FAILED;
+        properties.error = res.error;
+      } else if (res.error?.code === 4001) {
+        event = eventType.REJECTED;
+      } else {
+        event = eventType.APPROVED;
+      }
 
       if (eventType.REQUESTED === EVENT_NAMES.SIGNATURE_REQUESTED) {
         properties.signature_type = method;
       } else {
         properties.method = method;
+      }
+
+      if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+        const data = req?.params?.[0];
+        const { isSIWEMessage } = detectSIWE({ data });
+        if (isSIWEMessage) {
+          properties.ui_customizations = [
+            METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+          ];
+        }
       }
 
       trackEvent({
@@ -200,6 +240,7 @@ export default function createRPCMethodTrackingMiddleware({
         },
         properties,
       });
+
       return callback();
     });
   };

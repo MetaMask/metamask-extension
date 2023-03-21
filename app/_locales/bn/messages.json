@@ -75,12 +75,6 @@
   "asset": {
     "message": "সম্পদ"
   },
-  "attemptToCancel": {
-    "message": "বাতিল করার চেষ্টা করছেন?"
-  },
-  "attemptToCancelDescription": {
-    "message": "এই প্রচেষ্টাটি জমা দেওয়া আপনার প্রকৃত লেনদেনটি বাতিল হয়ে যাবে এমন নিশ্চয়তা দেয় না। বাতিল করার প্রচেষ্টাটি সফল হলে, আপনাকে উপরের লেনদেন ফী চার্জ করা হবে।"
-  },
   "attemptingConnect": {
     "message": "ব্লকচেনে সংযোগ করার চেষ্টা করছে।"
   },
@@ -130,20 +124,11 @@
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
-  "buyWithWyre": {
-    "message": "Wyre দিয়ে $1 ক্রয় করুন"
-  },
-  "buyWithWyreDescription": {
-    "message": "Wyre আপনার MetaMask অ্যাকাউন্টে সরাসরি $1 জমা করতে আপনাকে একটি ক্রেডিট কার্ড ব্যবহার করতে দেয়।"
-  },
   "bytes": {
     "message": "বাইটস"
   },
   "cancel": {
     "message": "বাতিল করুন"
-  },
-  "cancellationGasFee": {
-    "message": "বাতিল করার গ্যাস ফী"
   },
   "cancelled": {
     "message": "বাতিল করা হয়েছে"
@@ -180,9 +165,6 @@
   },
   "connectingToMainnet": {
     "message": "মুখ্য Ethereum নেটওয়ার্কের সাথে সংযোগ করছে"
-  },
-  "continueToWyre": {
-    "message": "Wyre এ অবিরত রাখুন"
   },
   "contractDeployment": {
     "message": "কন্ট্র্যাক্ট নিয়োজন"
@@ -335,13 +317,6 @@
   },
   "general": {
     "message": "সাধারণ"
-  },
-  "getEther": {
-    "message": "ইথার পান"
-  },
-  "getEtherFromFaucet": {
-    "message": "$1 এর জন্য একটি ফসেট থেকে ইথার পান",
-    "description": "Displays network name for Ether faucet"
   },
   "goerli": {
     "message": "গোয়েরলি টেস্ট নেটওয়ার্ক"
@@ -639,35 +614,21 @@
   "reset": {
     "message": "রিসেট করুন"
   },
-  "resetAccount": {
-    "message": "অ্যাকাউন্ট রিসেট করুন"
-  },
-  "resetAccountDescription": {
-    "message": "আপনার অ্যাকাউন্ট রিসেট করা আপনার লেনদেনের ইতিহাসকে মুছে পরিস্কার করবে।"
-  },
   "restore": {
     "message": "পুনরুদ্ধার করুন"
   },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
-  "revealSeedWordsDescription": {
-    "message": "আপনি কখনও ব্রাউজার পরিবর্তন করলে বা এক কম্পিউটার থেকে অন্য কম্পিউটারে গেলে, আপনাকে আপনার অ্যাকাউন্ট অ্যাক্সেস করার জন্য এই সীড ফ্রেজটি লাগবে। সেগুলি নিরাপদ ও গোপনীয় কোনো স্থানে সংরক্ষণ করুন।  "
-  },
   "revealSeedWordsWarning": {
-    "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।"
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "এই ফ্রেজটি কারোর সাথে শেয়ার করবেন না!"
+    "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।",
+    "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "rpcUrl": {
     "message": "নতুন RPC URL"
   },
   "save": {
     "message": "সেভ করুন"
-  },
-  "saveAsCsvFile": {
-    "message": "CSV ফাইল হিসাবে সংরক্ষণ করুন"
   },
   "scanInstructions": {
     "message": "QR কোডটি আপনার ক্যামেরার সামনে ধরুন"
@@ -804,9 +765,6 @@
   "terms": {
     "message": "ব্যবহারের শর্তাবলী"
   },
-  "testFaucet": {
-    "message": "টেস্ট ফসেট"
-  },
   "tips": {
     "message": "অর্থসাহায্য এবং পরামর্শ"
   },
@@ -925,9 +883,6 @@
   "userName": {
     "message": "ইউজারনেম"
   },
-  "viewAccount": {
-    "message": "আ্যাকাউন্ট দেখুন"
-  },
   "viewContact": {
     "message": "পরিচিতি দেখুন"
   },
@@ -936,9 +891,6 @@
   },
   "welcomeBack": {
     "message": "পুনরায় স্বাগত!"
-  },
-  "yesLetsTry": {
-    "message": "হ্যাঁ, চেষ্টা করা যাক"
   },
   "youNeedToAllowCameraAccess": {
     "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"

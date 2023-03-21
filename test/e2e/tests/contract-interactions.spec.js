@@ -25,7 +25,7 @@ describe('Deploy contract and call contract methods', function () {
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
@@ -99,15 +99,15 @@ describe('Deploy contract and call contract methods', function () {
 
         // renders the correct ETH balance
         await driver.switchToWindow(extension);
-        const balance = await driver.waitForSelector(
+        const balance = await ganacheServer.getBalance();
+        const balanceElement = await driver.waitForSelector(
           {
             css: '[data-testid="eth-overview__primary-currency"]',
-            text: '21.',
+            text: balance,
           },
           { timeout: 10000 },
         );
-        const tokenAmount = await balance.getText();
-        assert.ok(/^21.*\s*ETH.*$/u.test(tokenAmount));
+        assert.equal(`${balance}\nETH`, await balanceElement.getText());
       },
     );
   });

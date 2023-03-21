@@ -49,7 +49,6 @@ import {
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
 import {
   getNativeCurrency,
@@ -65,7 +64,6 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
@@ -175,10 +173,6 @@ export function getCurrentKeyring(state) {
   const keyring = findKeyringForAddress(state, identity.address);
 
   return keyring;
-}
-
-export function getParticipateInMetaMetrics(state) {
-  return Boolean(state.metamask.participateInMetaMetrics);
 }
 
 export function isEIP1559Account() {
@@ -398,7 +392,7 @@ export function getEnsResolutionByAddress(state, address) {
   const entry =
     getAddressBookEntry(state, address) ||
     Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, address),
     );
 
   return entry?.name || '';
@@ -407,7 +401,7 @@ export function getEnsResolutionByAddress(state, address) {
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
-    isEqualCaseInsensitive(contact.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(contact.address, address),
   );
   return entry;
 }
@@ -416,14 +410,14 @@ export function getAddressBookEntryOrAccountName(state, address) {
   const entry =
     getAddressBookEntry(state, address) ||
     Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+      isEqualCaseInsensitive(identity.address, address),
     );
   return entry && entry.name !== '' ? entry.name : address;
 }
 
 export function getAccountName(identities, address) {
   const entry = Object.values(identities).find((identity) =>
-    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(identity.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -431,7 +425,7 @@ export function getAccountName(identities, address) {
 export function getMetadataContractName(state, address) {
   const tokenList = getTokenList(state);
   const entry = Object.values(tokenList).find((identity) =>
-    isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    isEqualCaseInsensitive(identity.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -655,11 +649,7 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { frequentRpcListDetail, provider } = state.metamask;
-  const selectRpcInfo = frequentRpcListDetail.find(
-    (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  );
-  const { rpcPrefs = {} } = selectRpcInfo || {};
+  const { provider: { rpcPrefs = {} } = {} } = state.metamask;
   return rpcPrefs;
 }
 
@@ -764,57 +754,6 @@ export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
-
-export function getIsBuyableTransakChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
-}
-
-export function getIsBuyableTransakToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies?.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonpayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  const _symbol = formatMoonpaySymbol(symbol, chainId);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay?.showOnlyCurrencies?.includes(
-      _symbol,
-    ),
-  );
-}
-
-export function getIsBuyableWyreToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.wyre?.currencies.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonPayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
-}
-
-export function getIsBuyableWyreChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
-}
-export function getIsBuyableCoinbasePayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
-}
-
-export function getIsBuyableCoinbasePayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies?.includes(symbol),
-  );
-}
-
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -844,9 +783,8 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   getTokenList,
   (_tokenList, address) => address,
   (tokenList, address) => {
-    const checksumHexAddress = toChecksumHexAddress(address);
     const entry = Object.values(tokenList).find((identity) =>
-      isEqualCaseInsensitive(identity.address, checksumHexAddress),
+      isEqualCaseInsensitive(identity.address, address),
     );
     return entry && entry.name !== '' ? entry.name : '';
   },
@@ -1075,10 +1013,6 @@ export function getShowOutdatedBrowserWarning(state) {
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
 }
 
-export function getShowPortfolioTooltip(state) {
-  return state.metamask.showPortfolioTooltip;
-}
-
 export function getShowBetaHeader(state) {
   return state.metamask.showBetaHeader;
 }
@@ -1156,12 +1090,12 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
-export function getNewCollectibleAddedMessage(state) {
-  return state.appState.newCollectibleAddedMessage;
+export function getNewNftAddedMessage(state) {
+  return state.appState.newNftAddedMessage;
 }
 
-export function getRemoveCollectibleMessage(state) {
-  return state.appState.removeCollectibleMessage;
+export function getRemoveNftMessage(state) {
+  return state.appState.removeNftMessage;
 }
 
 /**
@@ -1171,19 +1105,19 @@ export function getRemoveCollectibleMessage(state) {
  * @returns string
  */
 export function getNewNetworkAdded(state) {
-  return state.appState.newNetworkAdded;
+  return state.appState.newNetworkAddedName;
 }
 
-export function getNetworksTabSelectedRpcUrl(state) {
-  return state.appState.networksTabSelectedRpcUrl;
+export function getNetworksTabSelectedNetworkConfigurationId(state) {
+  return state.appState.selectedNetworkConfigurationId;
 }
 
 export function getProvider(state) {
   return state.metamask.provider;
 }
 
-export function getFrequentRpcListDetail(state) {
-  return state.metamask.frequentRpcListDetail;
+export function getNetworkConfigurations(state) {
+  return state.metamask.networkConfigurations;
 }
 
 export function getIsOptimism(state) {
@@ -1417,4 +1351,22 @@ export function getCustomTokenAmount(state) {
  */
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
+}
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * To get the `desktopEnabled` value which determines whether we use the desktop app
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsDesktopEnabled(state) {
+  return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
+export function getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown(
+  state,
+) {
+  return state.metamask.openSeaTransactionSecurityProviderPopoverHasBeenShown;
 }

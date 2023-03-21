@@ -12,6 +12,7 @@ import {
   BackgroundColor,
   BorderColor,
   Color,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
@@ -179,7 +180,7 @@ export const DefaultStory = (args) => {
                     textAlign: TEXT_ALIGN.CENTER,
                   }}
                   backgroundColor={BackgroundColor.backgroundAlternative}
-                  rightAccessory={
+                  endAccessory={
                     <ButtonIcon
                       iconName={ICON_NAMES.COPY}
                       size={Size.SM}
@@ -224,7 +225,6 @@ export const Name = (args) => (
   <>
     <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={2}>
       {Object.keys(ICON_NAMES).map((item) => {
-        console.log('item:', item);
         return (
           <Box
             borderColor={BorderColor.borderMuted}
@@ -252,16 +252,43 @@ export const SizeStory = (args) => (
       gap={1}
       marginBottom={4}
     >
-      <Icon {...args} size={Size.XXS} />
       <Icon {...args} size={Size.XS} />
       <Icon {...args} size={Size.SM} />
       <Icon {...args} size={Size.MD} />
       <Icon {...args} size={Size.LG} />
       <Icon {...args} size={Size.XL} />
     </Box>
-    <Text as="p" variant={TextVariant.bodySm}>
-      <Icon {...args} size={Size.inherit} /> inherits the font-size of the
-      parent element.
+    <Text variant={TextVariant.displayMd}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.headingLg}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.headingMd}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.headingSm}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodyLgMedium}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodyMd}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodySm}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
+    </Text>
+    <Text variant={TextVariant.bodyXs}>
+      inherits the font-size of the parent element.{' '}
+      <Icon {...args} size={Size.inherit} />
     </Text>
   </>
 );
@@ -347,3 +374,63 @@ export const ColorStory = (args) => (
   </Box>
 );
 ColorStory.storyName = 'Color';
+
+export const LayoutAndSpacing = () => (
+  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
+    <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Icon
+        name={ICON_NAMES.CHECK}
+        color={IconColor.successDefault}
+        marginRight={1}
+      />
+      <Text>Always allow you to opt-out via Settings</Text>
+    </Box>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.pill}
+      backgroundColor={BackgroundColor.primaryMuted}
+      marginRight="auto"
+    >
+      <Text color={Color.primaryDefault}>
+        0x79fAaFe7B6D5DB5D8c63FE88DFF0AF1Fe53358db
+      </Text>
+      <Icon
+        name={ICON_NAMES.COPY}
+        color={IconColor.primaryDefault}
+        marginLeft={1}
+      />
+    </Box>
+    <Box
+      as="button"
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      padding={4}
+      borderColor={BorderColor.borderMuted}
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
+      <Icon
+        name={ICON_NAMES.ADD}
+        color={IconColor.iconDefault}
+        marginRight={2}
+      />
+      <Text>Create account</Text>
+    </Box>
+    <Label>
+      Custom spending cap{' '}
+      <Icon name={ICON_NAMES.INFO} size={ICON_SIZES.AUTO} marginLeft={1} />
+    </Label>
+    <div>
+      <Text>
+        <Icon
+          name={ICON_NAMES.WARNING}
+          size={ICON_SIZES.AUTO}
+          marginLeft={1}
+          color={IconColor.warningDefault}
+        />{' '}
+        Warning
+      </Text>
+    </div>
+  </Box>
+);

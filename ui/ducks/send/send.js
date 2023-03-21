@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
-import { debounce } from 'lodash';
+import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
   decimalToHex,
@@ -2100,7 +2100,7 @@ export function updateSendAsset(
         details.standard === TokenStandard.ERC1155 ||
         details.standard === TokenStandard.ERC721
       ) {
-        if (type === AssetType.token && process.env.NFTS_V1) {
+        if (type === AssetType.token) {
           dispatch(
             showModal({
               name: 'CONVERT_TOKEN_TO_NFT',
@@ -2120,7 +2120,7 @@ export function updateSendAsset(
           } catch (err) {
             if (err.message.includes('Unable to verify ownership.')) {
               // this would indicate that either our attempts to verify ownership failed because of network issues,
-              // or, somehow a token has been added to collectibles state with an incorrect chainId.
+              // or, somehow a token has been added to NFTs state with an incorrect chainId.
             } else {
               // Any other error is unexpected and should be surfaced.
               dispatch(displayWarning(err.message));
@@ -2132,7 +2132,7 @@ export function updateSendAsset(
             asset.balance = '0x1';
           } else {
             throw new Error(
-              'Send slice initialized as collectible send with a collectible not currently owned by the select account',
+              'Send slice initialized as NFT send with an NFT not currently owned by the select account',
             );
           }
           await dispatch(
@@ -2270,7 +2270,7 @@ export function signTransaction() {
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
       const unapprovedTxs = getUnapprovedTxs(state);
-      const unapprovedTx = unapprovedTxs[draftTransaction.id];
+      const unapprovedTx = cloneDeep(unapprovedTxs[draftTransaction.id]);
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
         data: txParams.data,
