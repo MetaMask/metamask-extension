@@ -48,6 +48,19 @@ describe('AccountListItem', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the account name tooltip for long names', () => {
+    render({
+      selected: true,
+      identity: {
+        ...identity,
+        name: 'This is a super long name that requires tooltip',
+      },
+    });
+    expect(
+      document.querySelector('.multichain-account-list-item__tooltip'),
+    ).toBeInTheDocument();
+  });
+
   it('renders the tree-dot menu to lauch the details menu', () => {
     render();
     const optionsButton = document.querySelector(
@@ -73,7 +86,6 @@ describe('AccountListItem', () => {
       '[data-testid="account-list-item-menu-button"]',
     );
     fireEvent.click(item);
-    console.log(document.body.innerHTML);
     expect(
       document.querySelector('[data-testid="account-list-menu-open-explorer"]'),
     ).toBeInTheDocument();
