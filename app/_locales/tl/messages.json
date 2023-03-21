@@ -711,6 +711,9 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Kumokonekta sa Linea Goerli test network"
+  },
   "connectingToMainnet": {
     "message": "Kumokonekta sa Ethereum Mainnet"
   },
@@ -1320,9 +1323,6 @@
   "etherscanViewOn": {
     "message": "Tingnan sa Etherscan"
   },
-  "expandExperience": {
-    "message": "Palawakin ang iyong karanasan sa web3 gamit ang MetaMask Snaps"
-  },
   "expandView": {
     "message": "I-expand ang view"
   },
@@ -1895,6 +1895,9 @@
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli test network"
+  },
   "link": {
     "message": "Link"
   },
@@ -1954,9 +1957,6 @@
   },
   "malformedData": {
     "message": "Pangit na datos"
-  },
-  "manageSnaps": {
-    "message": "Pamahalaan ang iyong mga naka-install na snap"
   },
   "max": {
     "message": "Max"
