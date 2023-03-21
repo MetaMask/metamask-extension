@@ -51,7 +51,7 @@ describe('Account List', () => {
           onForgetDevice={noOp}
           onPathChange={noOp}
           onUnlockAccounts={noOp}
-        ></AccountList>
+        />
       );
       const { container } = renderWithProvider(render(), store);
       expect(container).toMatchSnapshot();
