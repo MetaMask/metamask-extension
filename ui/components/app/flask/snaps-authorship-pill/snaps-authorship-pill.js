@@ -73,8 +73,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
       paddingRight={4}
       borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
-      width="100%"
-      style={{ maxWidth: 'fit-content' }}
+      style={{ maxWidth: 'fit-content', width: '100%' }}
     >
       <Box>
         <BadgeWrapper
