@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { getSnapPrefix } from '@metamask/snaps-utils';
+import { useSelector } from 'react-redux';
 import Box from '../../../ui/box';
 import {
   BackgroundColor,
@@ -28,6 +29,7 @@ import {
   Text,
   ButtonIcon,
 } from '../../../component-library';
+import { getTargetSubjectMetadata } from '../../../../selectors';
 
 const SnapsAuthorshipPill = ({ snapId, className }) => {
   // We're using optional chaining with snapId, because with the current implementation
@@ -41,7 +43,17 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
     ? `https://www.npmjs.com/package/${packageName}`
     : packageName;
 
-  const friendlyName = getSnapName(snapId);
+  const subjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, snapId),
+  );
+
+  const subjectName = subjectMetadata?.name ?? packageName;
+
+  const snapName = getSnapName(snapId);
+
+  const friendlyName = snapName === packageName ? subjectName : snapName;
+
+  const iconUrl = subjectMetadata?.iconUrl;
 
   return (
     <Box
@@ -56,6 +68,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
       paddingRight={4}
       borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
+      width="100%"
     >
       <Box>
         <BadgeWrapper
@@ -72,7 +85,11 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
           }
           position={BadgeWrapperPosition.bottomRight}
         >
-          <AvatarFavicon />
+          {iconUrl ? (
+            <AvatarFavicon src={iconUrl} />
+          ) : (
+            <AvatarIcon name={ICON_NAMES.QUESTION} />
+          )}
         </BadgeWrapper>
       </Box>
       <Box
@@ -80,9 +97,14 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
         marginRight={2}
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        style={{ overflow: 'hidden' }}
       >
-        <Text>{friendlyName}</Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text ellipsis>{friendlyName}</Text>
+        <Text
+          ellipsis
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+        >
           {snapId}
         </Text>
       </Box>
