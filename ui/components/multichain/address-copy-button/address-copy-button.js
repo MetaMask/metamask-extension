@@ -8,6 +8,7 @@ import {
   TextVariant,
   TextColor,
   Size,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -35,6 +36,7 @@ export const AddressCopyButton = ({
         className={classnames('multichain-address-copy-button', {
           'multichain-address-copy-button--wrap': wrap,
         })}
+        borderRadius={BorderRadius.pill}
       >
         <Text
           variant={TextVariant.bodyXs}
