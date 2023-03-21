@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
 import {
   ButtonLink,
-  AvatarIcon,
   ICON_NAMES,
   TextFieldSearch,
   Text,
@@ -117,6 +116,7 @@ export const AccountListMenu = ({ onClose }) => {
           <Box marginBottom={4}>
             <ButtonLink
               size={Size.SM}
+              startIconName={ICON_NAMES.ADD}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -130,13 +130,13 @@ export const AccountListMenu = ({ onClose }) => {
                 history.push(NEW_ACCOUNT_ROUTE);
               }}
             >
-              <AvatarIcon iconName={ICON_NAMES.ADD} size={Size.SM} />{' '}
               {t('addAccount')}
             </ButtonLink>
           </Box>
           <Box marginBottom={4}>
             <ButtonLink
               size={Size.SM}
+              startIconName={ICON_NAMES.IMPORT}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -150,13 +150,13 @@ export const AccountListMenu = ({ onClose }) => {
                 history.push(IMPORT_ACCOUNT_ROUTE);
               }}
             >
-              <AvatarIcon iconName={ICON_NAMES.IMPORT} size={Size.SM} />{' '}
               {t('importAccount')}
             </ButtonLink>
           </Box>
           <Box>
             <ButtonLink
               size={Size.SM}
+              startIconName={ICON_NAMES.HARDWARE}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -176,7 +176,6 @@ export const AccountListMenu = ({ onClose }) => {
                 }
               }}
             >
-              <AvatarIcon iconName={ICON_NAMES.HARDWARE} size={Size.SM} />{' '}
               {t('hardwareWallet')}
             </ButtonLink>
           </Box>
