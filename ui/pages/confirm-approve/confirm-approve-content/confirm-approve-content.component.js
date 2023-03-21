@@ -213,9 +213,13 @@ export default class ConfirmApproveContent extends Component {
 
   renderERC721OrERC1155PermissionContent() {
     const { t } = this.context;
-    const { origin, toAddress, isContract, isSetApproveForAll } = this.props;
+    const { origin, toAddress, isContract, isSetApproveForAll, tokenSymbol } =
+      this.props;
 
     const titleTokenDescription = this.getTitleTokenDescription();
+    const approvedAssetText = tokenSymbol
+      ? t('allOfYour', [titleTokenDescription])
+      : t('allYourNFTsOf', [titleTokenDescription]);
 
     const displayedAddress = isContract
       ? `${t('contract')} (${addressSummary(toAddress)})`
@@ -230,9 +234,7 @@ export default class ConfirmApproveContent extends Component {
             {t('approvedAsset')}:
           </div>
           <div className="confirm-approve-content__medium-text">
-            {isSetApproveForAll
-              ? t('allOfYour', [titleTokenDescription])
-              : titleTokenDescription}
+            {isSetApproveForAll ? approvedAssetText : titleTokenDescription}
           </div>
         </div>
         <div className="flex-row">
@@ -379,7 +381,7 @@ export default class ConfirmApproveContent extends Component {
       if (assetName || tokenSymbol) {
         titleTokenDescription = `${assetName ?? tokenSymbol}`;
       } else {
-        titleTokenDescription = t('nft');
+        titleTokenDescription = t('thisCollection');
       }
     }
 
@@ -454,9 +456,20 @@ export default class ConfirmApproveContent extends Component {
     let title;
 
     if (isSetApproveForAll) {
-      title = t('approveAllTokensTitle', [titleTokenDescription]);
-      if (isApprovalOrRejection === false) {
-        title = t('revokeAllTokensTitle', [titleTokenDescription]);
+      if (tokenSymbol) {
+        title = t('approveAllTokensTitle', [titleTokenDescription]);
+        if (isApprovalOrRejection === false) {
+          title = t('revokeAllTokensTitle', [titleTokenDescription]);
+        }
+      } else {
+        title = t('approveAllTokensTitleWithoutSymbol', [
+          titleTokenDescription,
+        ]);
+        if (isApprovalOrRejection === false) {
+          title = t('revokeAllTokensTitleWithoutSymbol', [
+            titleTokenDescription,
+          ]);
+        }
       }
     } else if (
       assetStandard === TokenStandard.ERC721 ||
@@ -488,9 +501,15 @@ export default class ConfirmApproveContent extends Component {
     let description = t('trustSiteApprovePermission', [grantee]);
 
     if (isSetApproveForAll && isApprovalOrRejection === false) {
-      description = t('revokeApproveForAllDescription', [
-        this.getTitleTokenDescription(),
-      ]);
+      if (tokenSymbol) {
+        description = t('revokeApproveForAllDescription', [
+          this.getTitleTokenDescription(),
+        ]);
+      } else {
+        description = t('revokeApproveForAllDescriptionWithoutSymbol', [
+          this.getTitleTokenDescription(),
+        ]);
+      }
     } else if (
       isSetApproveForAll ||
       assetStandard === TokenStandard.ERC721 ||
@@ -499,7 +518,13 @@ export default class ConfirmApproveContent extends Component {
       (assetName && tokenId) ||
       (tokenSymbol && tokenId)
     ) {
-      description = t('approveTokenDescription');
+      if (tokenSymbol) {
+        description = t('approveTokenDescription');
+      } else {
+        description = t('approveTokenDescriptionWithoutSymbol', [
+          this.getTitleTokenDescription(),
+        ]);
+      }
     }
     return description;
   }

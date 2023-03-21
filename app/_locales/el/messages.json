@@ -2191,9 +2191,6 @@
     "message": "Το Nonce είναι υψηλότερο από το προτεινόμενο nonce του $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "Τα NFT δεν μπορούν να προστεθούν, διότι τα στοιχεία της κυριότητας δεν ταυτίζονται. Σιγουρευτείτε ότι έχετε εισαγάγει τα σωστά στοιχεία."
   },
@@ -2344,9 +2341,6 @@
   },
   "notifications17ActionText": {
     "message": "Εμφάνιση ρυθμίσεων Ασφάλειας & Απορρήτου"
-  },
-  "notifications17Description": {
-    "message": "Αυτή η ενημέρωση παρέχει περισσότερες επιλογές ώστε να μπορείτε να ελέγχετε καλύτερα το απόρρητό σας. Προσθέσαμε μεγαλύτερη διαφάνεια σχετικά με τον τρόπο συλλογής δεδομένων και πιο σαφείς επιλογές για την κοινοποίησή τους. Αλλάξτε τις προτιμήσεις σας ή διαγράψτε τα δεδομένα χρήσης της επέκτασης μέσω των ρυθμίσεων Ασφάλειας & Απορρήτου."
   },
   "notifications17Title": {
     "message": "Ρυθμίσεις Ασφάλειας & Απορρήτου"
@@ -3379,15 +3373,8 @@
     "message": "Εκχωρείτε στο $2 βασική πρόσβαση στο snap \"$1\". Αυτό είναι αμετάκλητο και παρέχει στο \"$1\" τον έλεγχο των λογαριασμών και των περιουσιακών σας στοιχείων $2. Βεβαιωθείτε ότι εμπιστεύεστε το \"$1\" προτού συνεχίσετε.",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
-  "snapRequestsPermission": {
-    "message": "Αυτό το snap αιτείται τις παρακάτω άδειες:"
-  },
   "snapUpdate": {
     "message": "Ενημέρωση Snap"
-  },
-  "snapUpdateExplanation": {
-    "message": "Το $1 χρειάζεται μια νεότερη έκδοση του snap σας.",
-    "description": "$1 is the dapp that is requesting an update to the snap."
   },
   "snaps": {
     "message": "Snaps"
