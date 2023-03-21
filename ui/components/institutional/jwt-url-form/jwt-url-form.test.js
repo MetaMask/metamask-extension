@@ -32,12 +32,18 @@ describe('JwtUrlForm', function () {
       store,
     );
 
-    expect(getAllByTestId('addNewToken-btn')[0]).toHaveAttribute('role', 'button');
+    expect(getAllByTestId('addNewToken-btn')[0]).toHaveAttribute(
+      'role',
+      'button',
+    );
     expect(getByText('Add new token')).toBeInTheDocument();
   });
 
   it('shows JWT textarea with provided input text', () => {
-    const { getAllByTestId } = renderWithProvider(<JwtUrlForm {...props} />, store);
+    const { getAllByTestId } = renderWithProvider(
+      <JwtUrlForm {...props} />,
+      store,
+    );
 
     const btn = getAllByTestId('addNewToken-btn')[0];
     fireEvent.click(btn);
