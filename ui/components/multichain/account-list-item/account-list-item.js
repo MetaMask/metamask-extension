@@ -40,6 +40,7 @@ import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
+const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
 function getLabel(keyring = {}, t) {
   const { type } = keyring;
@@ -122,13 +123,17 @@ export const AccountListItem = ({
             gap={2}
           >
             <Text ellipsis as="div">
-              <Tooltip
-                title={identity.name}
-                position="bottom"
-                wrapperClassName="multichain-account-list-item__tooltip"
-              >
-                {identity.name}
-              </Tooltip>
+              {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                <Tooltip
+                  title={identity.name}
+                  position="bottom"
+                  wrapperClassName="multichain-account-list-item__tooltip"
+                >
+                  {identity.name}
+                </Tooltip>
+              ) : (
+                identity.name
+              )}
             </Text>
             <Box
               display={DISPLAY.FLEX}
