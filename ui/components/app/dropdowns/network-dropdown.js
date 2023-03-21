@@ -7,8 +7,13 @@ import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
 import {
+  BUILT_IN_NETWORKS,
+  CHAIN_ID_TO_RPC_URL_MAP,
+  LINEA_TESTNET_RPC_URL,
   LOCALHOST_RPC_URL,
+  NETWORK_TO_NAME_MAP,
   NETWORK_TYPES,
+  SHOULD_SHOW_LINEA_TESTNET_NETWORK,
 } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
@@ -57,8 +62,12 @@ function mapDispatchToProps(dispatch) {
     setProviderType: (type) => {
       dispatch(actions.setProviderType(type));
     },
-    setRpcTarget: (target, chainId, ticker, nickname) => {
-      dispatch(actions.setRpcTarget(target, chainId, ticker, nickname));
+    setRpcTarget: (target, chainId, ticker, nickname, { blockExplorerUrl }) => {
+      dispatch(
+        actions.setRpcTarget(target, chainId, ticker, nickname, {
+          blockExplorerUrl,
+        }),
+      );
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     displayInvalidCustomNetworkAlert: (networkName) => {
@@ -224,6 +233,8 @@ class NetworkDropdown extends Component {
         return t('goerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('sepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('lineatestnet');
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
@@ -268,6 +279,55 @@ class NetworkDropdown extends Component {
     );
   }
 
+  renderNonInfuraDefaultNetwork(network) {
+    const {
+      provider: { type: providerType },
+      setRpcTarget,
+    } = this.props;
+
+    const isCurrentRpcTarget = providerType === NETWORK_TYPES.RPC;
+    return (
+      <DropdownMenuItem
+        key={network}
+        closeMenu={this.props.hideNetworkDropdown}
+        onClick={async () => {
+          const { chainId, ticker, blockExplorerUrl } =
+            BUILT_IN_NETWORKS[network];
+          const networkName = NETWORK_TO_NAME_MAP[network];
+
+          const rpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
+          await setRpcTarget(rpcUrl, chainId, ticker, networkName, {
+            blockExplorerUrl,
+          });
+        }}
+        style={DROP_DOWN_MENU_ITEM_STYLE}
+      >
+        {isCurrentRpcTarget ? (
+          <IconCheck color="var(--color-success-default)" />
+        ) : (
+          <div className="network-check__transparent">✓</div>
+        )}
+        <ColorIndicator
+          color={network}
+          size={Size.LG}
+          type={ColorIndicator.TYPES.FILLED}
+        />
+        <span
+          className="network-name-item"
+          data-testid={`${network}-network-item`}
+          style={{
+            color:
+              providerType === network
+                ? 'var(--color-text-default)'
+                : 'var(--color-text-alternative)',
+          }}
+        >
+          {this.context.t(network)}
+        </span>
+      </DropdownMenuItem>
+    );
+  }
+
   render() {
     const {
       history,
@@ -277,9 +337,12 @@ class NetworkDropdown extends Component {
       showTestnetMessageInDropdown,
       hideTestNetMessage,
     } = this.props;
+
     const rpcListDetail = this.props.frequentRpcListDetail;
-    const rpcListDetailWithoutLocalHost = rpcListDetail.filter(
-      (rpc) => rpc.rpcUrl !== LOCALHOST_RPC_URL,
+    const rpcListDetailWithoutLocalHostAndLinea = rpcListDetail.filter(
+      (rpc) =>
+        rpc.rpcUrl !== LOCALHOST_RPC_URL &&
+        rpc.rpcUrl !== LINEA_TESTNET_RPC_URL,
     );
     const rpcListDetailForLocalHost = rpcListDetail.filter(
       (rpc) => rpc.rpcUrl === LOCALHOST_RPC_URL,
@@ -352,7 +415,7 @@ class NetworkDropdown extends Component {
           {this.renderNetworkEntry(NETWORK_TYPES.MAINNET)}
 
           {this.renderCustomRpcList(
-            rpcListDetailWithoutLocalHost,
+            rpcListDetailWithoutLocalHostAndLinea,
             this.props.provider,
           )}
 
@@ -360,6 +423,13 @@ class NetworkDropdown extends Component {
             <>
               {this.renderNetworkEntry(NETWORK_TYPES.GOERLI)}
               {this.renderNetworkEntry(NETWORK_TYPES.SEPOLIA)}
+              {SHOULD_SHOW_LINEA_TESTNET_NETWORK && (
+                <>
+                  {this.renderNonInfuraDefaultNetwork(
+                    NETWORK_TYPES.LINEA_TESTNET,
+                  )}
+                </>
+              )}
               {this.renderCustomRpcList(
                 rpcListDetailForLocalHost,
                 this.props.provider,

@@ -178,6 +178,9 @@
   "connectingToGoerli": {
     "message": "Povezivanje na testnu mrežu Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Povezivanje na testnu mrežu Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Povezivanje na glavnu mrežu Ethereum"
   },
@@ -432,6 +435,9 @@
   },
   "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
+  },
+  "lineatestnet": {
+    "message": "Testna mreža Linea Goerli"
   },
   "links": {
     "message": "Poveznice"

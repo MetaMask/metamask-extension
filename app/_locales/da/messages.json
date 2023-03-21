@@ -178,6 +178,9 @@
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
   },
+  "connectingToLineaTestnet": {
+    "message": "Opretter forbindelse til Linea Goerli Testnetværk"
+  },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Ethereum Netværk"
   },
@@ -429,6 +432,9 @@
   },
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
+  },
+  "lineatestnet": {
+    "message": "Linea-testnetværk"
   },
   "loadMore": {
     "message": "Indlæs Mere"

@@ -182,6 +182,9 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "الاتصال بشبكة اختبار Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
   },
@@ -436,6 +439,9 @@
   },
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
+  },
+  "lineatestnet": {
+    "message": "شبكة اختبار Linea Goerli"
   },
   "links": {
     "message": "الروابط"

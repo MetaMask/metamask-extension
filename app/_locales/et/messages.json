@@ -178,6 +178,9 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
+  "connectingToLineaTestnet": {
+    "message": "Ühendamine Linea Goerli testvõrguga"
+  },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
   },
@@ -432,6 +435,9 @@
   },
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testvõrk"
   },
   "links": {
     "message": "Lingid"
