@@ -4553,7 +4553,7 @@
     "message": "Username"
   },
   "verifyContractDetails": {
-    "message": "Verify third party details"
+    "message": "Verify third-party details"
   },
   "verifyThisTokenDecimalOn": {
     "message": "Token decimal can be found on $1",
