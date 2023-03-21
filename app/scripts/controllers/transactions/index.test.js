@@ -1741,7 +1741,7 @@ describe('Transaction Controller', function () {
             gasPrice: '0x77359400',
           },
           securityProviderResponse: {
-            flagAsDangerous: '0',
+            flagAsDangerous: 0,
           },
         };
       });
@@ -1927,7 +1927,7 @@ describe('Transaction Controller', function () {
             gasPrice: '0x77359400',
           },
           securityProviderResponse: {
-            flagAsDangerous: '0',
+            flagAsDangerous: 0,
           },
         };
       });
@@ -2110,7 +2110,7 @@ describe('Transaction Controller', function () {
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
-          flagAsDangerous: '0',
+          flagAsDangerous: 0,
         },
       };
 
@@ -2182,7 +2182,7 @@ describe('Transaction Controller', function () {
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
-          flagAsDangerous: '0',
+          flagAsDangerous: 0,
         },
       };
       const expectedPayload = {
@@ -2412,7 +2412,7 @@ describe('Transaction Controller', function () {
           maxPriorityFeePerGas: '0x77359400',
         },
         securityProviderResponse: {
-          flagAsDangerous: '0',
+          flagAsDangerous: 0,
         },
       };
       const expectedPayload = {
