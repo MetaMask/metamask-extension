@@ -3,9 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Typography from '../../../../components/ui/typography/typography';
 import {
-  TypographyVariant,
   JustifyContent,
   AlignItems,
   Color,
@@ -92,23 +90,19 @@ const SnapListTab = () => {
             justifyContent={JustifyContent.center}
             alignItems={AlignItems.center}
           >
-            <Typography
+            <Icon
+              name={ICON_NAMES.SNAPS}
+              color={Color.iconMuted}
+              className="snap-list-tab__no-snaps_icon"
+              size={ICON_SIZES.AUTO}
+            />
+            <Text
+              color={Color.textMuted}
               align={TEXT_ALIGN.CENTER}
-              className="snap-list-tab__container--no-snaps_icon"
+              marginTop={4}
             >
-              <Icon
-                name={ICON_NAMES.SNAPS}
-                color={Color.iconMuted}
-                className="no-snaps__icon"
-                size={ICON_SIZES.AUTO}
-              />
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H4}
-              align={TEXT_ALIGN.CENTER}
-            >
-              <Text color={Color.textMuted}>{t('noSnaps')}</Text>
-            </Typography>
+              {t('noSnaps')}
+            </Text>
           </Box>
           <Box
             className="snap-list-tab__container--no-snaps_banner-tip"
