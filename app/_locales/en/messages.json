@@ -3215,7 +3215,7 @@
     "message": "Reveal seed phrase"
   },
   "reviewSpendingCap": {
-    "message": "Review your spending cap"
+    "message": "Review the spending cap for your"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
