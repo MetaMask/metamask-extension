@@ -117,12 +117,12 @@ exports[`Desktop Pairing page should render otp component 1`] = `
           style="display: inline;"
           tabindex="0"
         >
-          <p
+          <h1
             align="center"
-            class="box mm-text desktop-pairing__otp mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+            class="box mm-text desktop-pairing__otp mm-text--display-md mm-text--color-text-default box--flex-direction-row"
           >
             123456
-          </p>
+          </h1>
         </div>
       </div>
       <div
@@ -130,7 +130,7 @@ exports[`Desktop Pairing page should render otp component 1`] = `
       >
         <p
           align="center"
-          class="box mm-text desktop-pairing__countdown-timer mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+          class="box mm-text desktop-pairing__countdown-timer mm-text--body-md mm-text--color-text-default box--padding-2 box--flex-direction-row box--background-color-background-default box--rounded-xl"
         >
           <span>
              
@@ -153,12 +153,10 @@ exports[`Desktop Pairing page should render otp component 1`] = `
       </p>
     </div>
     <div
-      class="box box--flex-direction-row box--width-1/2"
+      class="box box--flex-direction-row"
     >
       <button
-        class="button btn--rounded btn-primary"
-        role="button"
-        tabindex="0"
+        class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md mm-text--color-primary-inverse box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-primary-default box--rounded-pill"
       >
         Done
       </button>

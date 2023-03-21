@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Button from '../../components/ui/button';
 import { SECOND } from '../../../shared/constants/time';
 import { I18nContext } from '../../contexts/i18n';
 import IconDesktopPairing from '../../components/ui/icon/icon-desktop-pairing';
@@ -10,13 +9,14 @@ import {
   TextVariant,
   DISPLAY,
   AlignItems,
-  BLOCK_SIZES,
   JustifyContent,
+  BackgroundColor,
+  BorderRadius,
 } from '../../helpers/constants/design-system';
 import Box from '../../components/ui/box/box';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import Tooltip from '../../components/ui/tooltip';
-import { Text } from '../../components/component-library';
+import { Text, Button } from '../../components/component-library';
 
 export default function DesktopPairingPage({
   generateDesktopOtp,
@@ -104,11 +104,7 @@ export default function DesktopPairingPage({
         <Text variant={TextVariant.headingMd} align={TEXT_ALIGN.CENTER}>
           {t('desktopPageTitle')}
         </Text>
-        <Text
-          marginTop={2}
-          variant={TextVariant.bodyMd}
-          align={TEXT_ALIGN.CENTER}
-        >
+        <Text marginTop={2} align={TEXT_ALIGN.CENTER}>
           {t('desktopPageSubTitle')}
         </Text>
         <Box
@@ -125,7 +121,11 @@ export default function DesktopPairingPage({
             position="top"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
-            <Text align={TEXT_ALIGN.CENTER} className="desktop-pairing__otp">
+            <Text
+              align={TEXT_ALIGN.CENTER}
+              variant={TextVariant.displayMd}
+              className="desktop-pairing__otp"
+            >
               {otp}
             </Text>
           </Tooltip>
@@ -137,9 +137,12 @@ export default function DesktopPairingPage({
             marginBottom={6}
           >
             <Text
+              className="desktop-pairing__countdown-timer"
               variant={TextVariant.paragraph}
               align={TEXT_ALIGN.CENTER}
-              className="desktop-pairing__countdown-timer"
+              backgroundColor={BackgroundColor.backgroundDefault}
+              borderRadius={BorderRadius.XL}
+              padding={2}
             >
               {t('desktopPairingExpireMessage', [
                 <span
@@ -161,10 +164,8 @@ export default function DesktopPairingPage({
 
   const renderFooter = () => {
     return (
-      <Box width={BLOCK_SIZES.HALF}>
+      <Box>
         <Button
-          type="primary"
-          rounded
           onClick={() => {
             goBack();
           }}

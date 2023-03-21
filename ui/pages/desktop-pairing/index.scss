@@ -1,27 +1,14 @@
 .desktop-pairing {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  padding: 0 30px 0;
-  max-width: 640px;
-
   &__countdown-timer {
-    background: var(--color-background-default);
-    border-radius: 16px;
-    padding: 8px 0;
     font-size: 12px;
-    width: 240px;
   }
 
   &__countdown-timer-seconds {
     color: var(--color-primary-default);
+    min-width: 180px;
   }
 
   &__otp {
-    font-style: normal;
-    font-weight: 500;
-    font-size: 48px;
-    line-height: 48px;
     letter-spacing: 10px;
   }
 
@@ -35,7 +22,7 @@
 
   &__icon {
     path {
-      fill: var(--color-text-default);
+      fill: var(--color-icon-default);
     }
   }
 }
