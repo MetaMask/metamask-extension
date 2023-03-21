@@ -28,6 +28,7 @@ import {
   BorderRadius,
   JustifyContent,
   Size,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
   HardwareKeyringTypes,
@@ -104,7 +105,11 @@ export const AccountListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      <AvatarAccount size={Size.SM} address={identity.address}></AvatarAccount>
+      <AvatarAccount
+        borderColor={BorderColor.transparent}
+        size={Size.SM}
+        address={identity.address}
+      ></AvatarAccount>
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.COLUMN}

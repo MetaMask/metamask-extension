@@ -6,7 +6,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
     class="box multichain-account-list-item box--padding-4 box--display-flex box--gap-2 box--flex-direction-row box--background-color-transparent"
   >
     <div
-      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-border-default box--border-style-solid box--border-width-1"
+      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <div
         class="mm-avatar-account__jazzicon"
