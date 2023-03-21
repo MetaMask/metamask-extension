@@ -237,7 +237,7 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Set a spending cap for your')).toBeInTheDocument();
   });
 
-  it('should click Verify third party details and show popup Third party details, then close popup', () => {
+  it('should click Verify third-party details and show popup Third-party details, then close popup', () => {
     const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
