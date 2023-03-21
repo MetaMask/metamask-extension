@@ -4,49 +4,16 @@ import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
 import { getMetaMaskAccountsConnected } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+import {
+  HD_PATHS,
+  MEW_PATH,
+  U2F_ERROR,
+} from '../../../../shared/constants/hardware-wallets';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
-
-const U2F_ERROR = 'U2F';
-
-const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
-const MEW_PATH = `m/44'/60'/0'`;
-const BIP44_PATH = `m/44'/60'/0'/0`;
-const LEDGER_HD_PATHS = [
-  { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
-  { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
-  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
-];
-
-const LATTICE_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
-const LATTICE_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
-const LATTICE_MEW_PATH = `m/44'/60'/0'/x`;
-const LATTICE_HD_PATHS = [
-  {
-    name: `Standard (${LATTICE_STANDARD_BIP44_PATH})`,
-    value: LATTICE_STANDARD_BIP44_PATH,
-  },
-  {
-    name: `Ledger Live (${LATTICE_LEDGER_LIVE_PATH})`,
-    value: LATTICE_LEDGER_LIVE_PATH,
-  },
-  { name: `Ledger Legacy (${LATTICE_MEW_PATH})`, value: LATTICE_MEW_PATH },
-];
-
-const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
-const TREZOR_HD_PATHS = [
-  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
-  { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
-];
-
-const HD_PATHS = {
-  ledger: LEDGER_HD_PATHS,
-  lattice: LATTICE_HD_PATHS,
-  trezor: TREZOR_HD_PATHS,
-};
 
 class ConnectHardwareForm extends Component {
   static contextTypes = {
