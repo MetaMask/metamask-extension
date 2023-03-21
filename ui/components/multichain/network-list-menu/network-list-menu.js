@@ -115,5 +115,8 @@ export const NetworkListMenu = ({ closeMenu }) => {
 };
 
 NetworkListMenu.propTypes = {
+  /**
+   * Executes when the menu should be closed
+   */
   closeMenu: PropTypes.func.isRequired,
 };

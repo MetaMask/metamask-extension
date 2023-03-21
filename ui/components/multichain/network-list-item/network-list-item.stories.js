@@ -15,7 +15,7 @@ export default {
       action: 'onClick',
     },
     onDeleteClick: {
-      action: 'onClick',
+      action: 'onDeleteClick',
     },
     iconSrc: {
       action: 'text',
@@ -25,8 +25,8 @@ export default {
     name: 'Ethereum',
     iconSrc: '',
     selected: false,
-    onClick: () => console.log('Network click!'),
-    onDeleteClick: () => console.log('Network delete!'),
+    onClick: () => undefined,
+    onDeleteClick: () => undefined,
   },
 };
 
@@ -42,30 +42,28 @@ export const IconStory = (args) => (
   <div
     style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
   >
-    <NetworkListItem
-      {...args}
-      iconSrc="./images/matic-token.png"
-      name="Polygon"
-    />
+    <NetworkListItem {...args} />
   </div>
 );
+IconStory.args = { iconSrc: './images/matic-token.png', name: 'Polygon' };
 
 export const SelectedStory = (args) => (
   <div
     style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
   >
-    <NetworkListItem {...args} selected />
+    <NetworkListItem {...args} />
   </div>
 );
+SelectedStory.args = { selected: true };
 
 export const ChaosStory = (args) => (
   <div
     style={{ width: '328px', border: '1px solid var(--color-border-muted)' }}
   >
-    <NetworkListItem
-      {...args}
-      name="This is a super long network name that should be ellipsized"
-      selected
-    />
+    <NetworkListItem {...args} />
   </div>
 );
+ChaosStory.args = {
+  name: 'This is a super long network name that should be ellipsized',
+  selected: true,
+};
