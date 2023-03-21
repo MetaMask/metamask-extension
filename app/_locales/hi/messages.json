@@ -2191,9 +2191,6 @@
     "message": "नॉन्स $1 के सुझाए गए नॉन्स से अधिक है",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "एनएफटी"
-  },
   "nftAddFailedMessage": {
     "message": "एनएफटी जोड़ा नहीं जा सकता क्योंकि स्वामित्व विवरण मेल नहीं खा रहे हैं। सुनिश्चित करें कि आपने सही जानकारी दर्ज की है।"
   },
