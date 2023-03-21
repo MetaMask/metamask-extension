@@ -47,16 +47,19 @@ export const AccountListMenu = ({ onClose }) => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const searchResults = searchQuery
-    ? new Fuse(accounts, {
-        threshold: 0.2,
-        location: 0,
-        distance: 100,
-        maxPatternLength: 32,
-        minMatchCharLength: 1,
-        keys: ['name', 'address'],
-      }).search(searchQuery)
-    : accounts;
+  let searchResults = accounts;
+  if (searchQuery) {
+    const fuse = new Fuse(accounts, {
+      threshold: 0.2,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      keys: ['name', 'address'],
+    });
+    fuse.setCollection(accounts);
+    searchResults = fuse.search(searchQuery);
+  }
 
   return (
     <Popover title={t('selectAnAccount')} centerTitle onClose={onClose}>
