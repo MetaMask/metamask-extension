@@ -14,6 +14,9 @@ export default {
     account: {
       control: 'object',
     },
+    onClick: {
+      action: 'onClick',
+    },
   },
   args: {
     account: {
@@ -21,7 +24,6 @@ export default {
       name: 'Account 1',
       balance: '0x152387ad22c3f0',
     },
-    onClick: () => undefined,
   },
 };
 
