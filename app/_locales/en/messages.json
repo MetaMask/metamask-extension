@@ -767,7 +767,7 @@
     "message": "Contract deployment"
   },
   "contractDescription": {
-    "message": "To protect yourself against scammers, take a moment to verify third party details."
+    "message": "To protect yourself against scammers, take a moment to verify third-party details."
   },
   "contractInteraction": {
     "message": "Contract interaction"
