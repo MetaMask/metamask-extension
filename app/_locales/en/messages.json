@@ -785,7 +785,7 @@
     "message": "Third party requesting spending cap"
   },
   "contractTitle": {
-    "message": "Third party details"
+    "message": "Third-party details"
   },
   "contractToken": {
     "message": "Token contract"
