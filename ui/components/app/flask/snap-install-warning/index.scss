@@ -1,4 +1,14 @@
 .snap-install-warning {
+  .popover-header {
+    .mm-text {
+      margin-left: auto;
+    }
+
+    .mm-button-icon {
+      margin-left: auto;
+    }
+  }
+
   .checkbox-label {
     @include H7;
 
