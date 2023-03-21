@@ -67,12 +67,11 @@ export function testsForProviderType(providerType) {
         // This list is presented in the same order as in the network client
         // tests on the core side.
 
-        // TODO: Methods to add back when we add testing for filter middleware
-        // { name: 'eth_newFilter', numberOfParameters: 1 },
-        // { name: 'eth_getFilterChanges', numberOfParameters: 1 },
-        // { name: 'eth_newBlockFilter', numberOfParameters: 0 },
-        // { name: 'eth_newPendingTransactionFilter', numberOfParameters: 0 },
-        // { name: 'eth_uninstallFilter', numberOfParameters: 1 },
+        { name: 'eth_newFilter', numberOfParameters: 1 },
+        { name: 'eth_getFilterChanges', numberOfParameters: 1 },
+        { name: 'eth_newBlockFilter', numberOfParameters: 0 },
+        { name: 'eth_newPendingTransactionFilter', numberOfParameters: 0 },
+        { name: 'eth_uninstallFilter', numberOfParameters: 1 },
 
         { name: 'eth_sendRawTransaction', numberOfParameters: 1 },
         { name: 'eth_sendTransaction', numberOfParameters: 1 },
