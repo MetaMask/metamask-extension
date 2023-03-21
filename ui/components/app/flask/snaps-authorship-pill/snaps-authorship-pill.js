@@ -14,6 +14,8 @@ import {
   AlignItems,
   DISPLAY,
   BorderRadius,
+  JustifyContent,
+  Size,
 } from '../../../../helpers/constants/design-system';
 import {
   getSnapName,
@@ -28,6 +30,7 @@ import {
   AvatarIcon,
   Text,
   ButtonIcon,
+  AvatarBase,
 } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 
@@ -55,9 +58,11 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
 
   const iconUrl = subjectMetadata?.iconUrl;
 
+  const fallbackIcon = friendlyName && friendlyName[0] ? friendlyName[0] : '?';
+
   return (
     <Box
-      className={classnames('mm-tag-url', className)}
+      className={classnames('snaps-authorship-pill', className)}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
@@ -69,6 +74,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
       borderRadius={BorderRadius.pill}
       display={DISPLAY.FLEX}
       width="100%"
+      style={{ maxWidth: 'fit-content' }}
     >
       <Box>
         <BadgeWrapper
@@ -86,9 +92,18 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
           position={BadgeWrapperPosition.bottomRight}
         >
           {iconUrl ? (
-            <AvatarFavicon src={iconUrl} />
+            <AvatarFavicon size={Size.LG} src={iconUrl} />
           ) : (
-            <AvatarIcon name={ICON_NAMES.QUESTION} />
+            <AvatarBase
+              size={Size.LG}
+              display={DISPLAY.FLEX}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              color={TextColor.textAlternative}
+              style={{ borderWidth: '0px' }}
+            >
+              {fallbackIcon}
+            </AvatarBase>
           )}
         </BadgeWrapper>
       </Box>
@@ -105,7 +120,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
           variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
         >
-          {snapId}
+          {packageName}
         </Text>
       </Box>
       <ButtonIcon
