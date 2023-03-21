@@ -1320,9 +1320,6 @@
   "etherscanViewOn": {
     "message": "Etherscan에서 보기"
   },
-  "expandExperience": {
-    "message": "MetaMask 스냅으로 web3 경험을 확대하세요"
-  },
   "expandView": {
     "message": "보기 확장"
   },
@@ -1954,9 +1951,6 @@
   },
   "malformedData": {
     "message": "잘못된 데이터"
-  },
-  "manageSnaps": {
-    "message": "설치된 스냅을 관리하세요"
   },
   "max": {
     "message": "최대"
