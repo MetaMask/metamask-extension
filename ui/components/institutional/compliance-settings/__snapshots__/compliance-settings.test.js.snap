@@ -16,7 +16,6 @@ exports[`Compliance Settings shows disconnect when Compliance is activated 1`] =
       <button
         class="button btn--rounded btn-default btn--large"
         data-testid="disconnect-compliance"
-        marginright="4"
         role="button"
         tabindex="0"
       >
@@ -25,7 +24,6 @@ exports[`Compliance Settings shows disconnect when Compliance is activated 1`] =
       <button
         class="button btn--rounded btn-primary"
         data-testid="start-compliance"
-        marginright="0"
         role="button"
         tabindex="0"
       >
@@ -78,23 +76,23 @@ exports[`Compliance Settings shows start btn when Compliance its not activated 1
         </li>
       </ol>
     </div>
-    <footer
-      class="institutional-feature__footer"
-      display="flex"
-      flexdirection="row"
-      justifycontent="center"
-      padding="4,6"
+    <div
+      class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
-      <button
-        class="button btn--rounded btn-primary"
-        data-testid="start-compliance"
-        marginright="0"
-        role="button"
-        tabindex="0"
+      <footer
+        class="institutional-feature__footer"
+        padding="4,6"
       >
-        Open Codefi Compliance
-      </button>
-    </footer>
+        <button
+          class="button btn--rounded btn-primary"
+          data-testid="start-compliance"
+          role="button"
+          tabindex="0"
+        >
+          Open Codefi Compliance
+        </button>
+      </footer>
+    </div>
   </div>
 </div>
 `;

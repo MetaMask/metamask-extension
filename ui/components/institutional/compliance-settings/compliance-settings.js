@@ -28,7 +28,6 @@ const ComplianceSettings = () => {
   const renderDisconnect = () => {
     return (
       <Button
-        marginRight={4}
         type="default"
         large
         onClick={disconnectFromCompliance}
@@ -42,7 +41,6 @@ const ComplianceSettings = () => {
   const renderLinkButton = () => {
     return (
       <Button
-        marginRight={0}
         type="primary"
         data-testid="start-compliance"
         onClick={() => {
@@ -55,7 +53,7 @@ const ComplianceSettings = () => {
       </Button>
     );
   };
-  console.log(complianceActivated);
+
   return complianceActivated ? (
     <Box>
       <Box className="institutional-feature__content">
@@ -84,15 +82,15 @@ const ComplianceSettings = () => {
           <li>{t('complianceBlurbStep5')}</li>
         </ol>
       </Box>
-      <footer
+      <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
-        padding={[4, 6]}
         justifyContent={JustifyContent.center}
-        className="institutional-feature__footer"
       >
-        {renderLinkButton()}
-      </footer>
+        <footer padding={[4, 6]} className="institutional-feature__footer">
+          {renderLinkButton()}
+        </footer>
+      </Box>
     </Box>
   );
 };
