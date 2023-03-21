@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { I18nContext } from '../../../contexts/i18n';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
@@ -11,20 +11,24 @@ import { Text } from '../../component-library';
 import Box from '../../ui/box';
 import CheckBox from '../../ui/check-box/check-box.component';
 
-const onAcceptTerms = () => {
-  console.log('clicked accept');
-};
-
-const handleScrollDownClick = () => {
-  console.log('clicked scrollDown');
-};
-
 export default function TermsOfUsePopup() {
   const t = useContext(I18nContext);
   // TODO - add state onAccept to track if user has agreed to terms of use
   // const [lastAgreedTermsOfUse, setLastAgreedTermsOfUse] = useState({});
+  const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
 
   const popoverRef = useRef();
+  const bottomRef = React.createRef();
+
+  const handleScrollDownClick = (e) => {
+    e.stopPropagation();
+    bottomRef.current.scrollIntoView({
+      behavior: 'smooth',
+    });
+  };
+  const onAcceptTerms = () => {
+    console.log('clicked accept');
+  };
 
   return (
     <Popover
@@ -40,6 +44,7 @@ export default function TermsOfUsePopup() {
             className="terms-of-use__button"
             onClick={onAcceptTerms}
             marginBottom={3}
+            disabled={!isTermsOfUseChecked}
             // onClick={setLastAgreedTermsOfUse(null)}
           >
             {t('accept')}
@@ -771,8 +776,10 @@ export default function TermsOfUsePopup() {
               id="terms-of-use__checkbox"
               className="terms-of-use__checkbox"
               dataTestId="terms-of-use__checkbox"
-              checked
-              onClick={console.log('click')}
+              checked={isTermsOfUseChecked}
+              onClick={() => {
+                setIsTermsOfUseChecked(!isTermsOfUseChecked);
+              }}
             />
             <label
               className="terms-of-use__checkbox-label"
@@ -785,12 +792,10 @@ export default function TermsOfUsePopup() {
             </label>
           </Box>
         </div>
-        {/*
-          <div
-            className="terms-of-use__intersection-observable"
-            ref={idRefMap[id]}
-          /> */}
-        {/* TODO - research ref creation */}
+        <div
+          className="terms-of-use__intersection-observable"
+          ref={bottomRef}
+        />
       </div>
     </Popover>
   );
