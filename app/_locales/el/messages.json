@@ -711,6 +711,9 @@
   "connectingToGoerli": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Σύνδεση στο δίκτυο δοκιμών Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Σύνδεση στο Κύριο Δίκτυο Ethereum"
   },
@@ -1320,9 +1323,6 @@
   "etherscanViewOn": {
     "message": "Προβολή στην Etherscan"
   },
-  "expandExperience": {
-    "message": "Επεκτείνετε την εμπειρία σας στο web3 με τα Snap του MetaMask"
-  },
   "expandView": {
     "message": "Ανάπτυξη Προβολής"
   },
@@ -1895,6 +1895,9 @@
   "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
+  "lineatestnet": {
+    "message": "Δίκτυο δοκιμών Linea Goerli"
+  },
   "link": {
     "message": "Σύνδεσμος"
   },
@@ -1954,9 +1957,6 @@
   },
   "malformedData": {
     "message": "Παραμορφωμένα δεδομένα"
-  },
-  "manageSnaps": {
-    "message": "Διαχειριστείτε τα εγκατεστημένα Snap σας"
   },
   "max": {
     "message": "Μέγ."
