@@ -4,7 +4,6 @@ import {
   ButtonBase,
   ICON_NAMES,
   AvatarAccount,
-  Icon,
   Text,
 } from '../../component-library';
 import Box from '../../ui/box/box';
