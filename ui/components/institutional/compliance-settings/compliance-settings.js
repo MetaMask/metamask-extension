@@ -5,6 +5,10 @@ import {
   DISPLAY,
   TextColor,
   FLEX_DIRECTION,
+  TextVariant,
+  BorderStyle,
+  BorderColor,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
@@ -25,7 +29,7 @@ const ComplianceSettings = () => {
     await dispatch(mmiActions.deleteComplianceAuthData());
   };
 
-  const renderLinkButton = (
+  const linkButton = (
     <Button
       type="primary"
       data-testid="start-compliance"
@@ -41,10 +45,20 @@ const ComplianceSettings = () => {
 
   return complianceActivated ? (
     <Box>
-      <Text className="institutional-feature__content">
+      <Text
+        variant={TextVariant.bodySm}
+        as="h6"
+        className="institutional-feature__content"
+      >
         {t('complianceSettingsExplanation')}
       </Text>
-      <Box padding={[4, 6]} className="institutional-feature__footer">
+      <Box
+        padding={[4, 6]}
+        borderWidth={1}
+        borderStyle={BorderStyle.solid}
+        borderColor={BorderColor.borderMuted}
+        className="institutional-feature__footer"
+      >
         <Button
           type="default"
           large
@@ -53,7 +67,7 @@ const ComplianceSettings = () => {
         >
           {t('disconnect')}
         </Button>
-        {renderLinkButton}
+        {linkButton}
       </Box>
     </Box>
   ) : (
@@ -62,7 +76,10 @@ const ComplianceSettings = () => {
       color={TextColor.textAlternative}
       data-testid="institutional-content"
     >
-      <Box className="institutional-feature__content">
+      <Box
+        variant={TextVariant.bodySm}
+        className="institutional-feature__content"
+      >
         <Text paddingBottom={3}>{t('complianceBlurb0')}</Text>
         <Text paddingBottom={3}>{t('complianceBlurb1')}</Text>
         <Text paddingBottom={3}>{t('complianceBlurpStep0')}</Text>
@@ -79,8 +96,14 @@ const ComplianceSettings = () => {
         flexDirection={FLEX_DIRECTION.ROW}
         justifyContent={JustifyContent.center}
       >
-        <Box padding={[4, 6]} className="institutional-feature__footer">
-          {renderLinkButton}
+        <Box
+          padding={[4, 6]}
+          borderWidth={1}
+          borderStyle={BorderStyle.solid}
+          borderColor={BorderColor.borderMuted}
+          className="institutional-feature__footer"
+        >
+          {linkButton}
         </Box>
       </Box>
     </Box>
