@@ -71,7 +71,7 @@ export default function ConfirmTokenTransactionBase({
         collection.address.toLowerCase() === tokenAddress.toLowerCase(),
     );
     const titleTokenDescription =
-      tokenSymbol || nftCollection?.name || t('unkownCollection');
+      tokenSymbol || nftCollection?.name || t('unknownCollection');
 
     if (renderType === 'text') {
       return titleTokenDescription;
