@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Icon, ICON_SIZES } from '../../component-library';
+import { Text, Icon, ICON_SIZES } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 
 const MenuItem = ({
   children,
@@ -22,7 +23,7 @@ const MenuItem = ({
     ) : null}
     <div>
       <div>{children}</div>
-      {subtitle ? <div>{subtitle}</div> : null}
+      {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
     </div>
   </button>
 );
