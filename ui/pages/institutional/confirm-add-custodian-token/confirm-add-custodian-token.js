@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Button from '../../ui/button';
-import PulseLoader from '../../ui/pulse-loader';
+import Button from '../../../components/ui/button';
+import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
@@ -17,8 +17,8 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { Label, Text } from '../../component-library';
-import Box from '../../ui/box';
+import { Label, Text } from '../../../components/component-library';
+import Box from '../../../components/ui/box';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -126,6 +126,8 @@ const ConfirmAddCustodianToken = () => {
             <Label
               marginRight={4}
               marginLeft={4}
+              color={TextColor.textAlternative}
+              fontSize="14"
               className="add_custodian_token_confirm__url"
             >
               {custodianLabel}
@@ -151,6 +153,8 @@ const ConfirmAddCustodianToken = () => {
             <Text
               marginRight={4}
               marginLeft={4}
+              color={TextColor.textAlternative}
+              fontSize="14"
               className="add_custodian_token_confirm__url"
             >
               {connectRequest.apiUrl}
