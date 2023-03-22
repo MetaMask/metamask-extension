@@ -100,3 +100,14 @@ export const Size: ComponentStory<typeof ModalContent> = (args) => (
     </ModalContent>
   </>
 );
+
+export const Ref: ComponentStory<typeof ModalContent> = (args) => {
+  const modalContentRef = React.useRef<HTMLDivElement>(null);
+  return (
+    <>
+      <ModalContent {...args} boxRef={modalContentRef}>
+        Modal with ref
+      </ModalContent>
+    </>
+  );
+};

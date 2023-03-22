@@ -9,7 +9,7 @@ export enum ModalContentSize {
 }
 
 export interface ModalContentProps extends BoxProps {
-  ref?: React.RefObject<HTMLElement>;
+  modalContentRef?: React.RefObject<HTMLElement>;
   className?: string;
   children?: React.ReactNode;
   size?: ModalContentSize;
