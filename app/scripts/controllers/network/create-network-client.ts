@@ -54,9 +54,6 @@ type InfuraNetworkConfiguration = {
 export function createNetworkClient(
   networkConfig: CustomNetworkConfiguration | InfuraNetworkConfiguration,
 ): { provider: SafeEventEmitterProvider; blockTracker: PollingBlockTracker } {
-  /* eslint-disable @typescript-eslint/no-require-imports,@typescript-eslint/no-shadow */
-  const fetch = global.fetch || require('node-fetch');
-
   const rpcApiMiddleware =
     networkConfig.type === NetworkClientType.Infura
       ? createInfuraMiddleware({
@@ -67,7 +64,7 @@ export function createNetworkClient(
         })
       : createFetchMiddleware({
           btoa: global.btoa,
-          fetch,
+          fetch: global.fetch,
           rpcUrl: networkConfig.rpcUrl,
         });
 
