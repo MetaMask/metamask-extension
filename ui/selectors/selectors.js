@@ -26,7 +26,7 @@ import {
   NETWORK_TYPES,
 } from '../../shared/constants/network';
 import {
-  HardwareKeyringTypes,
+  HardwareKeyringType,
   HardwareDeviceNames,
   WebHIDConnectedStatuses,
   LedgerTransportTypes,
@@ -238,13 +238,13 @@ export function getHardwareWalletType(state) {
 export function getHardwareWalletDevice(state) {
   const type = getHardwareWalletType(state);
   switch (type) {
-    case HardwareKeyringTypes.trezor:
+    case HardwareKeyringType.trezor:
       return HardwareDeviceNames.trezor;
-    case HardwareKeyringTypes.ledger:
+    case HardwareKeyringType.ledger:
       return HardwareDeviceNames.ledger;
-    case HardwareKeyringTypes.lattice:
+    case HardwareKeyringType.lattice:
       return HardwareDeviceNames.lattice;
-    case HardwareKeyringTypes.qr:
+    case HardwareKeyringType.qr:
       return HardwareDeviceNames.qr;
     default:
       return undefined;
