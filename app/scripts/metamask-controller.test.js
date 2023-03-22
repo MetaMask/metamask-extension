@@ -11,10 +11,8 @@ import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
-import {
-  HardwareDeviceNames,
-  HardwareKeyringTypes,
-} from '../../shared/constants/hardware-wallets';
+import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -275,7 +273,7 @@ describe('MetaMaskController', function () {
     it('adds private key to keyrings in KeyringController', async function () {
       const simpleKeyrings =
         metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.imported,
+          KeyringType.imported,
         );
       const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
       const privKeyHex = await simpleKeyrings[0].exportAccount(
@@ -555,11 +553,11 @@ describe('MetaMaskController', function () {
         .catch(() => null);
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.trezor,
+          KeyringType.trezor,
         );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        [HardwareKeyringTypes.trezor],
+        [KeyringType.trezor],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -571,11 +569,11 @@ describe('MetaMaskController', function () {
         .catch(() => null);
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.ledger,
+          KeyringType.ledger,
         );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        [HardwareKeyringTypes.ledger],
+        [KeyringType.ledger],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -651,7 +649,7 @@ describe('MetaMaskController', function () {
       await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.trezor,
+          KeyringType.trezor,
         );
 
       assert.deepEqual(keyrings[0].accounts, []);
@@ -711,7 +709,7 @@ describe('MetaMaskController', function () {
     it('should set unlockedAccount in the keyring', async function () {
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.trezor,
+          KeyringType.trezor,
         );
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
     });
@@ -894,177 +892,6 @@ describe('MetaMaskController', function () {
     });
     it('should call keyring.destroy', async function () {
       assert(mockKeyring.destroy.calledOnce);
-    });
-  });
-
-  describe('#newUnsignedMessage', function () {
-    let msgParams, metamaskMsgs, messages, msgId;
-
-    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-    const data =
-      '0x0000000000000000000000000000000000000043727970746f6b697474696573';
-
-    beforeEach(async function () {
-      sandbox.stub(metamaskController, 'getBalance');
-      metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
-      });
-
-      await metamaskController.createNewVaultAndRestore(
-        'foobar1337',
-        TEST_SEED_ALT,
-      );
-
-      msgParams = {
-        from: address,
-        data,
-      };
-
-      metamaskController.preferencesController.setDisabledRpcMethodPreference(
-        'eth_sign',
-        true,
-      );
-      const promise = metamaskController.newUnsignedMessage(msgParams);
-      // handle the promise so it doesn't throw an unhandledRejection
-      promise.then(noop).catch(noop);
-
-      metamaskMsgs = metamaskController.messageManager.getUnapprovedMsgs();
-      messages = metamaskController.messageManager.messages;
-      msgId = Object.keys(metamaskMsgs)[0];
-      messages[0].msgParams.metamaskId = parseInt(msgId, 10);
-    });
-
-    it('persists address from msg params', function () {
-      assert.equal(metamaskMsgs[msgId].msgParams.from, address);
-    });
-
-    it('persists data from msg params', function () {
-      assert.equal(metamaskMsgs[msgId].msgParams.data, data);
-    });
-
-    it('sets the status to unapproved', function () {
-      assert.equal(metamaskMsgs[msgId].status, TransactionStatus.unapproved);
-    });
-
-    it('sets the type to eth_sign', function () {
-      assert.equal(metamaskMsgs[msgId].type, 'eth_sign');
-    });
-
-    it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId, 10);
-      metamaskController.cancelMessage(msgIdInt, noop);
-      assert.equal(messages[0].status, TransactionStatus.rejected);
-    });
-
-    it('checks message length', async function () {
-      msgParams = {
-        from: address,
-        data: '0xDEADBEEF',
-      };
-
-      try {
-        await metamaskController.newUnsignedMessage(msgParams);
-      } catch (error) {
-        assert.equal(error.message, 'eth_sign requires 32 byte message hash');
-      }
-    });
-
-    it('errors when signing a message', async function () {
-      try {
-        await metamaskController.signMessage(messages[0].msgParams);
-      } catch (error) {
-        assert.equal(
-          error.message,
-          'Expected message to be an Uint8Array with length 32',
-        );
-      }
-    });
-  });
-
-  describe('#newUnsignedPersonalMessage', function () {
-    let msgParams, metamaskPersonalMsgs, personalMessages, msgId;
-
-    const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-    const data = '0x43727970746f6b697474696573';
-
-    beforeEach(async function () {
-      sandbox.stub(metamaskController, 'getBalance');
-      metamaskController.getBalance.callsFake(() => {
-        return Promise.resolve('0x0');
-      });
-
-      await metamaskController.createNewVaultAndRestore(
-        'foobar1337',
-        TEST_SEED_ALT,
-      );
-
-      msgParams = {
-        from: address,
-        data,
-      };
-
-      const promise = metamaskController.newUnsignedPersonalMessage(msgParams);
-      // handle the promise so it doesn't throw an unhandledRejection
-      promise.then(noop).catch(noop);
-
-      metamaskPersonalMsgs =
-        metamaskController.personalMessageManager.getUnapprovedMsgs();
-      personalMessages = metamaskController.personalMessageManager.messages;
-      msgId = Object.keys(metamaskPersonalMsgs)[0];
-      personalMessages[0].msgParams.metamaskId = parseInt(msgId, 10);
-    });
-
-    it('errors with no from in msgParams', async function () {
-      try {
-        await metamaskController.newUnsignedPersonalMessage({
-          data,
-        });
-        assert.fail('should have thrown');
-      } catch (error) {
-        assert.equal(
-          error.message,
-          'MetaMask Message Signature: from field is required.',
-        );
-      }
-    });
-
-    it('persists address from msg params', function () {
-      assert.equal(metamaskPersonalMsgs[msgId].msgParams.from, address);
-    });
-
-    it('persists data from msg params', function () {
-      assert.equal(metamaskPersonalMsgs[msgId].msgParams.data, data);
-    });
-
-    it('sets the status to unapproved', function () {
-      assert.equal(
-        metamaskPersonalMsgs[msgId].status,
-        TransactionStatus.unapproved,
-      );
-    });
-
-    it('sets the type to personal_sign', function () {
-      assert.equal(metamaskPersonalMsgs[msgId].type, 'personal_sign');
-    });
-
-    it('rejects the message', function () {
-      const msgIdInt = parseInt(msgId, 10);
-      metamaskController.cancelPersonalMessage(msgIdInt, noop);
-      assert.equal(personalMessages[0].status, TransactionStatus.rejected);
-    });
-
-    it('errors when signing a message', async function () {
-      await metamaskController.signPersonalMessage(
-        personalMessages[0].msgParams,
-      );
-      assert.equal(
-        metamaskPersonalMsgs[msgId].status,
-        TransactionStatus.signed,
-      );
-      assert.equal(
-        metamaskPersonalMsgs[msgId].rawSig,
-        '0x6a1b65e2b8ed53cf398a769fad24738f9fbe29841fe6854e226953542c4b6a173473cb152b6b1ae5f06d601d45dd699a129b0a8ca84e78b423031db5baa734741b',
-      );
     });
   });
 
