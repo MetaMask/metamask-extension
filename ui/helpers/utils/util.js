@@ -7,6 +7,9 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { getSnapPrefix } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
@@ -20,7 +23,10 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
+import {
+  SNAPS_DERIVATION_PATHS,
+  SNAPS_METADATA,
+} from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
@@ -56,6 +62,7 @@ export function isDefaultMetaMaskChain(chainId) {
     chainId === CHAIN_IDS.MAINNET ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
+    chainId === CHAIN_IDS.LINEA_TESTNET ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -444,11 +451,14 @@ export const sanitizeMessage = (msg, primaryType, types) => {
   // Primary type can be an array.
   const isArray = primaryType && isArrayType(primaryType);
   if (isArray) {
-    return msg.map((value) =>
-      sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
-    );
+    return {
+      value: msg.map((value) =>
+        sanitizeMessage(value, stripOneLayerofNesting(primaryType), types),
+      ),
+      type: primaryType,
+    };
   } else if (isSolidityType(primaryType)) {
-    return msg;
+    return { value: msg, type: primaryType };
   }
 
   // If not, assume to be struct
@@ -459,7 +469,7 @@ export const sanitizeMessage = (msg, primaryType, types) => {
     throw new Error(`Invalid primary type definition`);
   }
 
-  const sanitizedMessage = {};
+  const sanitizedStruct = {};
   const msgKeys = Object.keys(msg);
   msgKeys.forEach((msgKey) => {
     const definedType = Object.values(baseTypeDefinitions).find(
@@ -470,13 +480,13 @@ export const sanitizeMessage = (msg, primaryType, types) => {
       return;
     }
 
-    sanitizedMessage[msgKey] = sanitizeMessage(
+    sanitizedStruct[msgKey] = sanitizeMessage(
       msg[msgKey],
       definedType.type,
       types,
     );
   });
-  return sanitizedMessage;
+  return { value: sanitizedStruct, type: primaryType };
 };
 
 export function getAssetImageURL(image, ipfsGateway) {
@@ -544,6 +554,12 @@ export function getSnapDerivationPathName(path, curve) {
 
   return pathMetadata?.name ?? null;
 }
+
+export const removeSnapIdPrefix = (snapId) =>
+  snapId.replace(getSnapPrefix(snapId), '');
+
+export const getSnapName = (snapId) =>
+  SNAPS_METADATA[snapId]?.name ?? removeSnapIdPrefix(snapId);
 ///: END:ONLY_INCLUDE_IN
 
 /**

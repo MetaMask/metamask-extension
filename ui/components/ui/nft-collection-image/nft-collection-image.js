@@ -5,10 +5,10 @@ import Box from '../box';
 import { Color, TEXT_ALIGN } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
-import { useCollectiblesCollections } from '../../../hooks/useNftsCollections';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
 
 export default function NftCollectionImage({ assetName, tokenAddress }) {
-  const { collections } = useCollectiblesCollections();
+  const { collections } = useNftsCollections();
   const tokenList = useSelector(getTokenList);
   const nftTokenListImage = tokenList[tokenAddress.toLowerCase()]?.iconUrl;
 

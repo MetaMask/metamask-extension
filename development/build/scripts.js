@@ -109,6 +109,8 @@ function getInfuraProjectId({ buildType, config, environment, testing }) {
     return config.INFURA_BETA_PROJECT_ID;
   } else if (buildType === BuildType.flask) {
     return config.INFURA_FLASK_PROJECT_ID;
+  } else if (buildType === BuildType.mmi) {
+    return config.INFURA_MMI_PROJECT_ID;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -132,6 +134,8 @@ function getSegmentWriteKey({ buildType, config, environment }) {
     return config.SEGMENT_BETA_WRITE_KEY;
   } else if (buildType === BuildType.flask) {
     return config.SEGMENT_FLASK_WRITE_KEY;
+  } else if (buildType === BuildType.mmi) {
+    return config.SEGMENT_MMI_WRITE_KEY;
   }
   throw new Error(`Invalid build type: '${buildType}'`);
 }
@@ -685,6 +689,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              isMMI: buildType === 'mmi',
             });
             break;
           }
@@ -902,6 +907,9 @@ function setupBundlerDefaults(
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
+  // This dependency uses WASM which we cannot execute in accordance with our CSP
+  bundlerOpts.manualIgnore.push('@chainsafe/as-sha256');
+
   // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
@@ -1101,7 +1109,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
   const iconNames = await generateIconNames();
   return {
     ICON_NAMES: iconNames,
-    NFTS_V1: config.NFTS_V1 === '1',
+    MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
@@ -1110,7 +1118,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
       environment,
       testing,
     }),
-    METAMASK_DEBUG: devMode,
+    METAMASK_DEBUG: devMode || config.METAMASK_DEBUG === '1',
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
@@ -1126,6 +1134,10 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     SWAPS_USE_DEV_APIS: config.SWAPS_USE_DEV_APIS === '1',
     TOKEN_ALLOWANCE_IMPROVEMENTS: config.TOKEN_ALLOWANCE_IMPROVEMENTS === '1',
     TRANSACTION_SECURITY_PROVIDER: config.TRANSACTION_SECURITY_PROVIDER === '1',
+    // Desktop
+    COMPATIBILITY_VERSION_EXTENSION: config.COMPATIBILITY_VERSION_EXTENSION,
+    DISABLE_WEB_SOCKET_ENCRYPTION: config.DISABLE_WEB_SOCKET_ENCRYPTION === '1',
+    SKIP_OTP_PAIRING_FLOW: config.SKIP_OTP_PAIRING_FLOW === '1',
   };
 }
 
@@ -1135,6 +1147,7 @@ function renderHtmlFile({
   commonSet,
   browserPlatforms,
   applyLavaMoat,
+  isMMI,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1146,7 +1159,11 @@ function renderHtmlFile({
   const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
     (label) => `./${label}.js`,
   );
-  const htmlOutput = Sqrl.render(htmlTemplate, { jsBundles, applyLavaMoat });
+  const htmlOutput = Sqrl.render(htmlTemplate, {
+    jsBundles,
+    applyLavaMoat,
+    isMMI,
+  });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

@@ -4,7 +4,6 @@ import {
   WebHIDConnectedStatuses,
   HardwareTransportStates,
 } from '../../../shared/constants/hardware-wallets';
-import { RPCDefinition } from '../../../shared/constants/network';
 import * as actionConstants from '../../store/actionConstants';
 
 interface AppState {
@@ -56,13 +55,13 @@ interface AppState {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
-  newNetworkAdded: string;
-  newCollectibleAddedMessage: string;
-  removeCollectibleMessage: string;
-  portfolioTooltipWasShownInThisSession: boolean;
+  newNftAddedMessage: string;
+  removeNftMessage: string;
+  newNetworkAddedName: string;
+  newNetworkAddedConfigurationId: string;
+  selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
-  newCustomNetworkAdded: RPCDefinition | Record<string, any>;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: number | null;
@@ -118,13 +117,13 @@ const initialState: AppState = {
   smartTransactionsErrorMessageDismissed: false,
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
-  newNetworkAdded: '',
-  newCollectibleAddedMessage: '',
-  removeCollectibleMessage: '',
-  portfolioTooltipWasShownInThisSession: false,
+  newNftAddedMessage: '',
+  removeNftMessage: '',
+  newNetworkAddedName: '',
+  newNetworkAddedConfigurationId: '',
+  selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
-  newCustomNetworkAdded: {},
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
@@ -332,40 +331,36 @@ export default function reduceApp(
         isMouseUser: action.payload,
       };
 
-    case actionConstants.SET_SELECTED_SETTINGS_RPC_URL:
+    case actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID:
       return {
         ...appState,
-        networksTabSelectedRpcUrl: action.payload,
+        selectedNetworkConfigurationId: action.payload,
       };
 
-    case actionConstants.SET_NEW_NETWORK_ADDED:
+    case actionConstants.SET_NEW_NETWORK_ADDED: {
+      const { networkConfigurationId, nickname } = action.payload;
       return {
         ...appState,
-        newNetworkAdded: action.payload,
+        newNetworkAddedName: nickname,
+        newNetworkAddedConfigurationId: networkConfigurationId,
       };
-
+    }
     case actionConstants.SET_NEW_TOKENS_IMPORTED:
       return {
         ...appState,
         newTokensImported: action.payload,
       };
 
-    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
+    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
       return {
         ...appState,
-        newCollectibleAddedMessage: action.payload,
+        newNftAddedMessage: action.payload,
       };
 
-    case actionConstants.SET_REMOVE_COLLECTIBLE_MESSAGE:
+    case actionConstants.SET_REMOVE_NFT_MESSAGE:
       return {
         ...appState,
-        removeCollectibleMessage: action.payload,
-      };
-
-    case actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION:
-      return {
-        ...appState,
-        portfolioTooltipWasShownInThisSession: true,
+        removeNftMessage: action.payload,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
@@ -417,11 +412,6 @@ export default function reduceApp(
         ...appState,
         sendInputCurrencySwitched: !appState.sendInputCurrencySwitched,
       };
-    case actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED:
-      return {
-        ...appState,
-        newCustomNetworkAdded: action.payload,
-      };
     case actionConstants.ONBOARDED_IN_THIS_UI_SESSION:
       return {
         ...appState,
@@ -441,12 +431,6 @@ export default function reduceApp(
 export function hideWhatsNewPopup(): Action {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
-  };
-}
-
-export function setPortfolioTooltipWasShownInThisSession(): Action {
-  return {
-    type: actionConstants.PORTFOLIO_TOOLTIP_WAS_SHOWN_IN_THIS_SESSION,
   };
 }
 
@@ -470,13 +454,6 @@ export function setLedgerTransportStatus(
 
 export function toggleCurrencySwitch(): Action {
   return { type: actionConstants.TOGGLE_CURRENCY_INPUT_SWITCH };
-}
-
-export function setNewCustomNetworkAdded(
-  // can pass in a valid network or empty one
-  payload: RPCDefinition | Record<string, never>,
-): PayloadAction<RPCDefinition | Record<string, never>> {
-  return { type: actionConstants.SET_NEW_CUSTOM_NETWORK_ADDED, payload };
 }
 
 export function setOnBoardedInThisUISession(
@@ -509,10 +486,4 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
-}
-
-export function getPortfolioTooltipWasShownInThisSession(
-  state: AppSliceState,
-): boolean {
-  return state.appState.portfolioTooltipWasShownInThisSession;
 }

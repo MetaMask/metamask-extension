@@ -28,12 +28,6 @@ export default {
     htmlFor: {
       control: 'text',
     },
-    required: {
-      control: 'boolean',
-    },
-    disabled: {
-      control: 'boolean',
-    },
     children: {
       control: 'text',
     },
@@ -98,14 +92,4 @@ export const HtmlFor = (args) => {
 HtmlFor.args = {
   children: 'Network name',
   htmlFor: 'add-network',
-};
-
-export const Required = Template.bind({});
-Required.args = {
-  required: true,
-};
-
-export const Disabled = Template.bind({});
-Disabled.args = {
-  disabled: true,
 };

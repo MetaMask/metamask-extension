@@ -26,11 +26,11 @@ import {
   NETWORK_TYPES,
 } from '../../shared/constants/network';
 import {
-  HardwareKeyringTypes,
   WebHIDConnectedStatuses,
   LedgerTransportTypes,
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
@@ -64,7 +64,6 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { formatMoonpaySymbol } from '../helpers/utils/moonpay';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
@@ -128,7 +127,7 @@ export function hasUnsignedQRHardwareTransaction(state) {
   }
   const { from } = txParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -146,7 +145,7 @@ export function hasUnsignedQRHardwareMessage(state) {
   }
   const { from } = msgParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -174,10 +173,6 @@ export function getCurrentKeyring(state) {
   const keyring = findKeyringForAddress(state, identity.address);
 
   return keyring;
-}
-
-export function getParticipateInMetaMetrics(state) {
-  return Boolean(state.metamask.participateInMetaMetrics);
 }
 
 export function isEIP1559Account() {
@@ -237,11 +232,11 @@ export function getAccountType(state) {
   const type = currentKeyring && currentKeyring.type;
 
   switch (type) {
-    case HardwareKeyringTypes.trezor:
-    case HardwareKeyringTypes.ledger:
-    case HardwareKeyringTypes.lattice:
+    case KeyringType.trezor:
+    case KeyringType.ledger:
+    case KeyringType.lattice:
       return 'hardware';
-    case HardwareKeyringTypes.imported:
+    case KeyringType.imported:
       return 'imported';
     default:
       return 'default';
@@ -654,11 +649,7 @@ export function getTargetSubjectMetadata(state, origin) {
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
-  const { frequentRpcListDetail, provider } = state.metamask;
-  const selectRpcInfo = frequentRpcListDetail.find(
-    (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  );
-  const { rpcPrefs = {} } = selectRpcInfo || {};
+  const { provider: { rpcPrefs = {} } = {} } = state.metamask;
   return rpcPrefs;
 }
 
@@ -763,57 +754,6 @@ export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
-
-export function getIsBuyableTransakChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
-}
-
-export function getIsBuyableTransakToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies?.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonpayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  const _symbol = formatMoonpaySymbol(symbol, chainId);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.moonPay?.showOnlyCurrencies?.includes(
-      _symbol,
-    ),
-  );
-}
-
-export function getIsBuyableWyreToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.wyre?.currencies.includes(symbol),
-  );
-}
-
-export function getIsBuyableMoonPayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.moonPay);
-}
-
-export function getIsBuyableWyreChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.wyre);
-}
-export function getIsBuyableCoinbasePayChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies);
-}
-
-export function getIsBuyableCoinbasePayToken(state, symbol) {
-  const chainId = getCurrentChainId(state);
-  return Boolean(
-    BUYABLE_CHAINS_MAP?.[chainId]?.coinbasePayCurrencies?.includes(symbol),
-  );
-}
-
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -994,8 +934,7 @@ export const getUnreadNotificationsCount = createSelector(
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger =
-    currentKeyring?.type === HardwareKeyringTypes.ledger;
+  const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
@@ -1071,10 +1010,6 @@ export function getShowOutdatedBrowserWarning(state) {
   }
   const currentTime = new Date().getTime();
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
-}
-
-export function getShowPortfolioTooltip(state) {
-  return state.metamask.showPortfolioTooltip;
 }
 
 export function getShowBetaHeader(state) {
@@ -1154,12 +1089,12 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
-export function getNewCollectibleAddedMessage(state) {
-  return state.appState.newCollectibleAddedMessage;
+export function getNewNftAddedMessage(state) {
+  return state.appState.newNftAddedMessage;
 }
 
-export function getRemoveCollectibleMessage(state) {
-  return state.appState.removeCollectibleMessage;
+export function getRemoveNftMessage(state) {
+  return state.appState.removeNftMessage;
 }
 
 /**
@@ -1169,19 +1104,19 @@ export function getRemoveCollectibleMessage(state) {
  * @returns string
  */
 export function getNewNetworkAdded(state) {
-  return state.appState.newNetworkAdded;
+  return state.appState.newNetworkAddedName;
 }
 
-export function getNetworksTabSelectedRpcUrl(state) {
-  return state.appState.networksTabSelectedRpcUrl;
+export function getNetworksTabSelectedNetworkConfigurationId(state) {
+  return state.appState.selectedNetworkConfigurationId;
 }
 
 export function getProvider(state) {
   return state.metamask.provider;
 }
 
-export function getFrequentRpcListDetail(state) {
-  return state.metamask.frequentRpcListDetail;
+export function getNetworkConfigurations(state) {
+  return state.metamask.networkConfigurations;
 }
 
 export function getIsOptimism(state) {
@@ -1415,4 +1350,22 @@ export function getCustomTokenAmount(state) {
  */
 export function getUseCurrencyRateCheck(state) {
   return Boolean(state.metamask.useCurrencyRateCheck);
+}
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * To get the `desktopEnabled` value which determines whether we use the desktop app
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsDesktopEnabled(state) {
+  return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
+export function getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown(
+  state,
+) {
+  return state.metamask.openSeaTransactionSecurityProviderPopoverHasBeenShown;
 }

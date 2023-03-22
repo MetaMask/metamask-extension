@@ -68,16 +68,24 @@ export default {
     href: {
       control: 'text',
     },
-    iconName: {
+    externalLink: {
+      control: 'boolean',
+    },
+    startIconName: {
       control: 'select',
       options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconPositionRight: {
-      control: 'boolean',
+    endIconName: {
+      control: 'select',
+      options: Object.values(ICON_NAMES),
       table: { category: 'button base props' },
     },
-    iconProps: {
+    startIconProps: {
+      control: 'object',
+      table: { category: 'button base props' },
+    },
+    endIconProps: {
       control: 'object',
       table: { category: 'button base props' },
     },
@@ -154,12 +162,12 @@ export const SizeStory = (args) => (
       </ButtonLink>
     </Text>
     <Text variant={TextVariant.bodyXs}>
-      Inherits the font-size of the parent element and example with textProps
-      override for a success color.{' '}
+      Inherits the font-size of the parent element and example with override for
+      a success color.{' '}
       <ButtonLink
         {...args}
         size={Size.inherit}
-        textProps={{ color: TextColor.successDefault }}
+        color={TextColor.successDefault}
       >
         Learn more
       </ButtonLink>
@@ -182,6 +190,15 @@ export const Href = (args) => <ButtonLink {...args}>Href example</ButtonLink>;
 
 Href.args = {
   href: '/metamask',
+};
+
+export const ExternalLink = (args) => (
+  <ButtonLink {...args}>Anchor element with external link</ButtonLink>
+);
+
+ExternalLink.args = {
+  href: 'https://metamask.io/',
+  externalLink: true,
 };
 
 export const HitArea = (args) => (

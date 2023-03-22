@@ -30,6 +30,9 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ledgerTransportType,
     dismissSeedBackUpReminder,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    desktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
   } = metamask;
   const {
     showFiatInTestnets,
@@ -51,6 +54,9 @@ export const mapStateToProps = (state) => {
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
     disabledRpcMethodPreferences,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    desktopEnabled,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

@@ -4,7 +4,7 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Send NFT', function () {
-  const smartContract = SMART_CONTRACTS.COLLECTIBLES;
+  const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [
       {
@@ -19,37 +19,49 @@ describe('Send NFT', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, _, contractRegistry }) => {
-        const contractAddress =
-          contractRegistry.getContractAddress(smartContract);
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // After login, go to NFTs tab and import an NFT
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
-
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '1');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
-
         // Fill the send NFT form and confirm the transaction
-        await driver.clickElement('.collectibles-items__item-image');
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('.nfts-items__item-image');
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
         await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        // Edit the NFT, ensure same address, and move forward
+        await driver.isElementPresentAndVisible(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="confirm-page-back-edit-button"]',
+        );
+
+        const recipient = await driver.findElement(
+          '.ens-input__selected-input__title',
+        );
+
+        assert.equal(
+          await recipient.getText(),
+          '0xc427d562164062a23a5cff596a4a3208e72acd28',
+        );
+
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        // When transaction complete, check the send nft item is displayed in activity tab
+        // When transaction complete, check the send NFT is displayed in activity tab
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-list__completed-transactions .transaction-list-item',

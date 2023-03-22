@@ -8,6 +8,7 @@ const BuildType = {
   desktop: 'desktop',
   flask: 'flask',
   main: 'main',
+  mmi: 'mmi',
 };
 
 const BuildTypeInheritance = {

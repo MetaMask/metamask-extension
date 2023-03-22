@@ -2,7 +2,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { Icon, ICON_NAMES } from '../icon';
-import { TextFieldBase } from '../text-field-base';
+import { TextField } from '../text-field';
 
 import { Label } from './label';
 
@@ -31,7 +31,7 @@ describe('label', () => {
     const { getByText, getByRole } = render(
       <>
         <Label htmlFor="input">label</Label>
-        <TextFieldBase id="input" />
+        <TextField id="input" />
       </>,
     );
     const input = getByRole('textbox');
@@ -46,7 +46,7 @@ describe('label', () => {
       <>
         <Label>
           Label text
-          <TextFieldBase />
+          <TextField />
         </Label>
       </>,
     );
@@ -56,14 +56,5 @@ describe('label', () => {
     expect(input).not.toHaveFocus();
     fireEvent.click(label);
     expect(input).toHaveFocus();
-  });
-  it('should render with required asterisk', () => {
-    const { getByText } = render(<Label required>label</Label>);
-    expect(getByText('label')).toBeDefined();
-    expect(getByText('*')).toBeDefined();
-  });
-  it('should render with disabled state and have disabled class', () => {
-    const { getByText } = render(<Label disabled>label</Label>);
-    expect(getByText('label')).toHaveClass('mm-label--disabled');
   });
 });

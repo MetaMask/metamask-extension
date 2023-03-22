@@ -1,56 +1,102 @@
 import deepFreeze from 'deep-freeze-strict';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
 import React from 'react';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
+import classnames from 'classnames';
 import {
   RestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   EndowmentPermissions,
-  PermissionNamespaces,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/permissions';
+import Tooltip from '../../components/ui/tooltip';
+import {
+  AvatarIcon,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Icon,
+  ///: END:ONLY_INCLUDE_IN
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAPS_METADATA } from '../../../shared/constants/snaps';
-import { Icon, ICON_NAMES } from '../../components/component-library';
-import { coinTypeToProtocolName, getSnapDerivationPathName } from './util';
+import { IconColor } from '../constants/design-system';
+import {
+  coinTypeToProtocolName,
+  getSnapDerivationPathName,
+  getSnapName,
+} from './util';
 ///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const RIGHT_WARNING_ICON = (
+  <Icon
+    name={ICON_NAMES.DANGER}
+    size={ICON_SIZES.SM}
+    color={IconColor.warningDefault}
+  />
+);
+
+const RIGHT_INFO_ICON = (
+  <Icon
+    name={ICON_NAMES.INFO}
+    size={ICON_SIZES.SM}
+    color={IconColor.iconMuted}
+  />
+);
+///: END:ONLY_INCLUDE_IN
+
+function getLeftIcon(iconName) {
+  return (
+    <AvatarIcon
+      iconName={iconName}
+      size={ICON_SIZES.SM}
+      iconProps={{
+        size: ICON_SIZES.XS,
+      }}
+    />
+  );
+}
+
 const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: (t) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: 'fas fa-eye',
+    leftIcon: getLeftIcon(ICON_NAMES.EYE),
     rightIcon: null,
     weight: 2,
   }),
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   [RestrictedMethods.snap_confirm]: (t) => ({
     label: t('permission_customConfirmation'),
-    leftIcon: 'fas fa-user-check',
-    rightIcon: null,
+    description: t('permission_customConfirmationDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.SECURITY_TICK),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_dialog]: (t) => ({
     label: t('permission_dialog'),
-    leftIcon: 'fas fa-user-check',
-    rightIcon: null,
+    description: t('permission_dialogDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.MESSAGES),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_notify]: (t) => ({
-    leftIcon: <Icon name={ICON_NAMES.NOTIFICATION} />,
     label: t('permission_notifications'),
-    rightIcon: null,
+    description: t('permission_notificationsDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.NOTIFICATION),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_getBip32PublicKey]: (t, _, permissionValue) =>
     permissionValue.caveats[0].value.map(({ path, curve }) => {
       const baseDescription = {
-        leftIcon: 'fas fa-eye',
-        rightIcon: null,
+        leftIcon: getLeftIcon(ICON_NAMES.SECURITY_SEARCH),
+        rightIcon: RIGHT_WARNING_ICON,
         weight: 1,
       };
 
@@ -60,6 +106,15 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           ...baseDescription,
           label: t('permission_viewNamedBip32PublicKeys', [
             <span className="permission-label-item" key={path.join('/')}>
+              {friendlyName}
+            </span>,
+            path.join('/'),
+          ]),
+          description: t('permission_viewBip32PublicKeysDescription', [
+            <span
+              className="tooltip-label-item"
+              key={`description-${path.join('/')}`}
+            >
               {friendlyName}
             </span>,
             path.join('/'),
@@ -75,13 +130,22 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           </span>,
           curve,
         ]),
+        description: t('permission_viewBip32PublicKeysDescription', [
+          <span
+            className="tooltip-label-item"
+            key={`description-${path.join('/')}`}
+          >
+            {path.join('/')}
+          </span>,
+          path.join('/'),
+        ]),
       };
     }),
   [RestrictedMethods.snap_getBip32Entropy]: (t, _, permissionValue) =>
     permissionValue.caveats[0].value.map(({ path, curve }) => {
       const baseDescription = {
-        leftIcon: 'fas fa-door-open',
-        rightIcon: null,
+        leftIcon: getLeftIcon(ICON_NAMES.KEY),
+        rightIcon: RIGHT_WARNING_ICON,
         weight: 1,
       };
 
@@ -95,6 +159,15 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
             </span>,
             path.join('/'),
           ]),
+          description: t('permission_manageBip32KeysDescription', [
+            <span
+              className="tooltip-label-item"
+              key={`description-${path.join('/')}`}
+            >
+              {friendlyName}
+            </span>,
+            curve,
+          ]),
         };
       }
 
@@ -106,6 +179,15 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
           </span>,
           curve,
         ]),
+        description: t('permission_manageBip32KeysDescription', [
+          <span
+            className="tooltip-label-item"
+            key={`description-${path.join('/')}`}
+          >
+            {path.join('/')}
+          </span>,
+          curve,
+        ]),
       };
     }),
   [RestrictedMethods.snap_getBip44Entropy]: (t, _, permissionValue) =>
@@ -113,60 +195,83 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       label: t('permission_manageBip44Keys', [
         <span className="permission-label-item" key={`coin-type-${coinType}`}>
           {coinTypeToProtocolName(coinType) ||
-            `${coinType} (Unrecognized protocol)`}
+            t('unrecognizedProtocol', [coinType])}
         </span>,
       ]),
-      leftIcon: 'fas fa-door-open',
-      rightIcon: null,
+      description: t('permission_manageBip44KeysDescription', [
+        <span
+          className="tooltip-label-item"
+          key={`description-coin-type-${coinType}`}
+        >
+          {coinTypeToProtocolName(coinType) ||
+            t('unrecognizedProtocol', [coinType])}
+        </span>,
+      ]),
+      leftIcon: getLeftIcon(ICON_NAMES.KEY),
+      rightIcon: RIGHT_WARNING_ICON,
       weight: 1,
     })),
   [RestrictedMethods.snap_getEntropy]: (t) => ({
     label: t('permission_getEntropy'),
-    leftIcon: 'fas fa-key',
-    rightIcon: null,
+    description: t('permission_getEntropyDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.SECURITY_KEY),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [RestrictedMethods.snap_manageState]: (t) => ({
     label: t('permission_manageState'),
-    leftIcon: 'fas fa-download',
-    rightIcon: null,
+    description: t('permission_manageStateDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.ADD_SQUARE),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
-  [RestrictedMethods['wallet_snap_*']]: (t, permissionName) => {
+  [RestrictedMethods.wallet_snap]: (t, _, permissionValue) => {
+    const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
-      leftIcon: 'fas fa-bolt',
-      rightIcon: null,
+      leftIcon: getLeftIcon(ICON_NAMES.FLASH),
+      rightIcon: RIGHT_INFO_ICON,
     };
 
-    const snapId = permissionName.split('_').slice(-1);
-    const friendlyName = SNAPS_METADATA[snapId]?.name;
+    return Object.keys(snaps).map((snapId) => {
+      const friendlyName = getSnapName(snapId);
+      if (friendlyName) {
+        return {
+          ...baseDescription,
+          label: t('permission_accessNamedSnap', [
+            <span className="permission-label-item" key={snapId}>
+              {friendlyName}
+            </span>,
+          ]),
+          description: t('permission_accessSnapDescription', [friendlyName]),
+        };
+      }
 
-    if (friendlyName) {
       return {
         ...baseDescription,
-        label: t('permission_accessNamedSnap', [
-          <span className="permission-label-item" key={snapId}>
-            {friendlyName}
-          </span>,
-        ]),
+        label: t('permission_accessSnap', [snapId]),
+        description: t('permission_accessSnapDescription', [snapId]),
       };
-    }
-
-    return {
-      ...baseDescription,
-      label: t('permission_accessSnap', [snapId]),
-    };
+    });
   },
   [EndowmentPermissions['endowment:network-access']]: (t) => ({
     label: t('permission_accessNetwork'),
-    leftIcon: 'fas fa-wifi',
+    description: t('permission_accessNetworkDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.GLOBAL),
+    rightIcon: RIGHT_INFO_ICON,
+    weight: 2,
+  }),
+  [EndowmentPermissions['endowment:webassembly']]: (t) => ({
+    label: t('permission_webAssembly'),
+    description: t('permission_webAssemblyDescription'),
+    leftIcon: 'fas fa-microchip',
     rightIcon: null,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:long-running']]: (t) => ({
     label: t('permission_longRunning'),
-    leftIcon: 'fas fa-infinity',
-    rightIcon: null,
+    description: t('permission_longRunningDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.LINK),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 3,
   }),
   [EndowmentPermissions['endowment:transaction-insight']]: (
@@ -175,14 +280,16 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     permissionValue,
   ) => {
     const baseDescription = {
-      leftIcon: 'fas fa-info',
-      rightIcon: null,
+      leftIcon: getLeftIcon(ICON_NAMES.SPEEDOMETER),
+      rightIcon: RIGHT_INFO_ICON,
+      weight: 3,
     };
 
     const result = [
       {
         ...baseDescription,
         label: t('permission_transactionInsight'),
+        description: t('permission_transactionInsightDescription'),
       },
     ];
 
@@ -194,7 +301,8 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
       result.push({
         ...baseDescription,
         label: t('permission_transactionInsightOrigin'),
-        leftIcon: 'fas fa-compass',
+        description: t('permission_transactionInsightOriginDescription'),
+        leftIcon: getLeftIcon(ICON_NAMES.EXPLORE),
       });
     }
 
@@ -202,39 +310,50 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
   },
   [EndowmentPermissions['endowment:cronjob']]: (t) => ({
     label: t('permission_cronjob'),
-    leftIcon: 'fas fa-clock',
-    rightIcon: null,
+    description: t('permission_cronjobDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.CLOCK),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:ethereum-provider']]: (t) => ({
     label: t('permission_ethereumProvider'),
-    leftIcon: 'fab fa-ethereum',
-    rightIcon: null,
+    description: t('permission_ethereumProviderDescription'),
+    leftIcon: getLeftIcon(ICON_NAMES.ETHEREUM),
+    rightIcon: RIGHT_INFO_ICON,
     weight: 1,
   }),
   [EndowmentPermissions['endowment:rpc']]: (t, _, permissionValue) => {
+    const baseDescription = {
+      leftIcon: getLeftIcon(ICON_NAMES.HIERARCHY),
+      rightIcon: RIGHT_INFO_ICON,
+      weight: 2,
+    };
+
     const { snaps, dapps } = getRpcCaveatOrigins(permissionValue);
 
-    const labels = [];
+    const results = [];
     if (snaps) {
-      labels.push(t('permission_rpc', [t('otherSnaps')]));
+      results.push({
+        ...baseDescription,
+        label: t('permission_rpc', [t('otherSnaps')]),
+        description: t('permission_rpcDescription', [t('otherSnaps')]),
+      });
     }
 
     if (dapps) {
-      labels.push(t('permission_rpc', [t('websites')]));
+      results.push({
+        ...baseDescription,
+        label: t('permission_rpc', [t('websites')]),
+        description: t('permission_rpcDescription', [t('websites')]),
+      });
     }
 
-    return labels.map((label) => ({
-      label,
-      leftIcon: 'fas fa-plug',
-      rightIcon: null,
-      weight: 2,
-    }));
+    return results;
   },
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: (t, permissionName) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
-    leftIcon: 'fas fa-times-circle',
+    leftIcon: getLeftIcon(ICON_NAMES.QUESTION),
     rightIcon: null,
     weight: 4,
   }),
@@ -243,6 +362,8 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 /**
  * @typedef {object} PermissionLabelObject
  * @property {string} label - The text label.
+ * @property {string} [description] - An optional description, shown when the
+ * `rightIcon` is hovered.
  * @property {string} leftIcon - The left icon.
  * @property {string} rightIcon - The right icon.
  * @property {number} weight - The weight of the permission.
@@ -266,13 +387,6 @@ export const getPermissionDescription = (
   if (Object.hasOwnProperty.call(PERMISSION_DESCRIPTIONS, permissionName)) {
     value = PERMISSION_DESCRIPTIONS[permissionName];
   }
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  for (const namespace of Object.keys(PermissionNamespaces)) {
-    if (permissionName.startsWith(namespace)) {
-      value = PERMISSION_DESCRIPTIONS[PermissionNamespaces[namespace]];
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   const result = value(t, permissionName, permissionValue);
   if (!Array.isArray(result)) {
@@ -304,4 +418,51 @@ export function getWeightedPermissions(t, permissions) {
       [],
     )
     .sort((left, right) => left.weight - right.weight);
+}
+
+/**
+ * Get the right icon for a permission. If a description is provided, the icon
+ * will be wrapped in a tooltip. Otherwise, the icon will be rendered as-is. If
+ * there's no right icon, this function will return null.
+ *
+ * If the weight is 1, the icon will be rendered with a warning color.
+ *
+ * @param {PermissionLabelObject} permission - The permission object.
+ * @param {JSX.Element | string} permission.rightIcon - The right icon.
+ * @param {string} permission.description - The description.
+ * @param {number} permission.weight - The weight.
+ * @returns {JSX.Element | null} The right icon, or null if there's no
+ * right icon.
+ */
+export function getRightIcon({ rightIcon, description, weight }) {
+  if (rightIcon && description) {
+    return (
+      <Tooltip
+        wrapperClassName={classnames(
+          'permission__tooltip-icon',
+          weight === 1 && 'permission__tooltip-icon__warning',
+        )}
+        html={<div>{description}</div>}
+        position="bottom"
+      >
+        {typeof rightIcon === 'string' ? (
+          <i className={rightIcon} />
+        ) : (
+          rightIcon
+        )}
+      </Tooltip>
+    );
+  }
+
+  if (rightIcon) {
+    if (typeof rightIcon === 'string') {
+      return (
+        <i className={classnames(rightIcon, 'permission__tooltip-icon')} />
+      );
+    }
+
+    return rightIcon;
+  }
+
+  return null;
 }

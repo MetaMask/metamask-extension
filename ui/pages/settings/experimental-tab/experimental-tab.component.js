@@ -13,6 +13,9 @@ import {
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import DesktopEnableButton from '../../../components/app/desktop-enable-button';
+///: END:ONLY_INCLUDE_IN
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -95,18 +98,18 @@ export default class ExperimentalTab extends PureComponent {
         </div>
         <div ref={this.settingsRefs[1]} className="settings-page__content-row">
           <div className="settings-page__content-item">
-            <span>{t('useCollectibleDetection')}</span>
+            <span>{t('useNftDetection')}</span>
             <div className="settings-page__content-description">
               <Text color={TextColor.textAlternative}>
-                {t('useCollectibleDetectionDescription')}
+                {t('useNftDetectionDescription')}
               </Text>
               <ul className="settings-page__content-unordered-list">
-                <li>{t('useCollectibleDetectionDescriptionLine2')}</li>
-                <li>{t('useCollectibleDetectionDescriptionLine3')}</li>
-                <li>{t('useCollectibleDetectionDescriptionLine4')}</li>
+                <li>{t('useNftDetectionDescriptionLine2')}</li>
+                <li>{t('useNftDetectionDescriptionLine3')}</li>
+                <li>{t('useNftDetectionDescriptionLine4')}</li>
               </ul>
               <Text color={TextColor.textAlternative} paddingTop={4}>
-                {t('useCollectibleDetectionDescriptionLine5')}
+                {t('useNftDetectionDescriptionLine5')}
               </Text>
             </div>
           </div>
@@ -223,12 +226,39 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  renderDesktopEnableButton() {
+    const { t } = this.context;
+
+    return (
+      <div
+        ref={this.settingsRefs[6]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-desktop-pairing"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('desktopEnableButtonDescription')}</span>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <DesktopEnableButton />
+          </div>
+        </div>
+      </div>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   render() {
     return (
       <div className="settings-page__body">
-        {process.env.TRANSACTION_SECURITY_PROVIDER &&
-          this.renderTransactionSecurityCheckToggle()}
-        {process.env.NFTS_V1 && this.renderOpenSeaEnabledToggle()}
+        {this.renderTransactionSecurityCheckToggle()}
+        {this.renderOpenSeaEnabledToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          this.renderDesktopEnableButton()
+          ///: END:ONLY_INCLUDE_IN
+        }
       </div>
     );
   }

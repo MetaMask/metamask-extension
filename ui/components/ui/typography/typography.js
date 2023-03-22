@@ -23,6 +23,7 @@ export const ValidColors = [
   Color.errorDefault,
   Color.errorInverse,
   Color.successDefault,
+  Color.successInverse,
   Color.sepoliaInverse,
   Color.warningDefault,
   Color.warningInverse,
@@ -30,8 +31,10 @@ export const ValidColors = [
   Color.infoInverse,
   Color.goerli,
   Color.sepolia,
-  Color.goerli,
+  Color.goerliInverse,
   Color.sepoliaInverse,
+  Color.lineaTestnet,
+  Color.lineaTestnetInverse,
 ];
 
 export const ValidTags = [

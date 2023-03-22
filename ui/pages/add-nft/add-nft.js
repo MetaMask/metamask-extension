@@ -18,8 +18,8 @@ import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,
   ignoreTokens,
-  setNewCollectibleAddedMessage,
-  updateCollectibleDropDownState,
+  setNewNftAddedMessage,
+  updateNftDropDownState,
 } from '../../store/actions';
 import FormField from '../../components/ui/form-field';
 import {
@@ -28,69 +28,74 @@ import {
   getSelectedAddress,
   getUseNftDetection,
 } from '../../selectors';
-import { getCollectiblesDropdownState } from '../../ducks/metamask/metamask';
-import CollectiblesDetectionNotice from '../../components/app/nfts-detection-notice';
+import { getNftsDropdownState } from '../../ducks/metamask/metamask';
+import NftsDetectionNotice from '../../components/app/nfts-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  ButtonIcon,
+  ICON_NAMES,
+  ICON_SIZES,
+} from '../../components/component-library';
 
-export default function AddCollectible() {
+export default function AddNft() {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
+  const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
   const addressEnteredOnImportTokensPage =
     history?.location?.state?.addressEnteredOnImportTokensPage;
-  const contractAddressToConvertFromTokenToCollectible =
+  const contractAddressToConvertFromTokenToNft =
     history?.location?.state?.tokenAddress;
 
-  const [collectibleAddress, setCollectibleAddress] = useState(
+  const [nftAddress, setNftAddress] = useState(
     addressEnteredOnImportTokensPage ??
-      contractAddressToConvertFromTokenToCollectible ??
+      contractAddressToConvertFromTokenToNft ??
       '',
   );
   const [tokenId, setTokenId] = useState('');
   const [disabled, setDisabled] = useState(true);
-  const [collectibleAddFailed, setCollectibleAddFailed] = useState(false);
+  const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const handleAddCollectible = async () => {
+  const handleAddNft = async () => {
     try {
-      await dispatch(addNftVerifyOwnership(collectibleAddress, tokenId));
-      const newCollectibleDropdownState = {
-        ...collectiblesDropdownState,
+      await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
+      const newNftDropdownState = {
+        ...nftsDropdownState,
         [selectedAddress]: {
-          ...collectiblesDropdownState?.[selectedAddress],
+          ...nftsDropdownState?.[selectedAddress],
           [chainId]: {
-            ...collectiblesDropdownState?.[selectedAddress]?.[chainId],
-            [collectibleAddress]: true,
+            ...nftsDropdownState?.[selectedAddress]?.[chainId],
+            [nftAddress]: true,
           },
         },
       };
 
-      dispatch(updateCollectibleDropDownState(newCollectibleDropdownState));
+      dispatch(updateNftDropDownState(newNftDropdownState));
     } catch (error) {
       const { message } = error;
-      dispatch(setNewCollectibleAddedMessage(message));
-      setCollectibleAddFailed(true);
+      dispatch(setNewNftAddedMessage(message));
+      setNftAddFailed(true);
       return;
     }
-    if (contractAddressToConvertFromTokenToCollectible) {
+    if (contractAddressToConvertFromTokenToNft) {
       await dispatch(
         ignoreTokens({
-          tokensToIgnore: contractAddressToConvertFromTokenToCollectible,
+          tokensToIgnore: contractAddressToConvertFromTokenToNft,
           dontShowLoadingIndicator: true,
         }),
       );
     }
-    dispatch(setNewCollectibleAddedMessage('success'));
+    dispatch(setNewNftAddedMessage('success'));
 
     const tokenDetails = await getTokenStandardAndDetails(
-      collectibleAddress,
+      nftAddress,
       null,
       tokenId.toString(),
     );
@@ -99,7 +104,7 @@ export default function AddCollectible() {
       event: EVENT_NAMES.TOKEN_ADDED,
       category: 'Wallet',
       sensitiveProperties: {
-        token_contract_address: collectibleAddress,
+        token_contract_address: nftAddress,
         token_symbol: tokenDetails?.symbol,
         tokenId: tokenId.toString(),
         asset_type: AssetType.NFT,
@@ -113,13 +118,11 @@ export default function AddCollectible() {
 
   const validateAndSetAddress = (val) => {
     setDisabled(!isValidHexAddress(val) || !tokenId);
-    setCollectibleAddress(val);
+    setNftAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(
-      !isValidHexAddress(collectibleAddress) || !val || isNaN(Number(val)),
-    );
+    setDisabled(!isValidHexAddress(nftAddress) || !val || isNaN(Number(val)));
     setTokenId(val);
   };
 
@@ -127,7 +130,7 @@ export default function AddCollectible() {
     <PageContainer
       title={t('importNFT')}
       onSubmit={() => {
-        handleAddCollectible();
+        handleAddNft();
       }}
       submitText={t('add')}
       onCancel={() => {
@@ -139,10 +142,8 @@ export default function AddCollectible() {
       disabled={disabled}
       contentComponent={
         <Box>
-          {isMainnet && !useNftDetection ? (
-            <CollectiblesDetectionNotice />
-          ) : null}
-          {collectibleAddFailed && (
+          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}
+          {nftAddFailed && (
             <Box marginLeft={4} marginRight={4}>
               <ActionableMessage
                 type="danger"
@@ -153,14 +154,17 @@ export default function AddCollectible() {
                     <Typography
                       variant={TypographyVariant.H7}
                       fontWeight={FONT_WEIGHT.NORMAL}
-                      margin={0}
+                      marginTop={0}
                     >
-                      {t('collectibleAddFailedMessage')}
+                      {t('nftAddFailedMessage')}
                     </Typography>
-                    <button
-                      className="fas fa-times add-collectible__close"
-                      title={t('close')}
-                      onClick={() => setCollectibleAddFailed(false)}
+                    <ButtonIcon
+                      className="add-nft__close"
+                      iconName={ICON_NAMES.CLOSE}
+                      size={ICON_SIZES.SM}
+                      ariaLabel={t('close')}
+                      data-testid="add-nft-error-close"
+                      onClick={() => setNftAddFailed(false)}
                     />
                   </Box>
                 }
@@ -172,10 +176,10 @@ export default function AddCollectible() {
               dataTestId="address"
               titleText={t('address')}
               placeholder="0x..."
-              value={collectibleAddress}
+              value={nftAddress}
               onChange={(val) => {
                 validateAndSetAddress(val);
-                setCollectibleAddFailed(false);
+                setNftAddFailed(false);
               }}
               tooltipText={t('importNFTAddressToolTip')}
               autoFocus
@@ -187,7 +191,7 @@ export default function AddCollectible() {
               value={tokenId}
               onChange={(val) => {
                 validateAndSetTokenId(val);
-                setCollectibleAddFailed(false);
+                setNftAddFailed(false);
               }}
               tooltipText={t('importNFTTokenIdToolTip')}
             />

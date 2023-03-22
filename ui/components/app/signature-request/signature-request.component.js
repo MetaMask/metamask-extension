@@ -19,9 +19,10 @@ import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -63,10 +64,6 @@ export default class SignatureRequest extends PureComponent {
      * RPC prefs of the current network
      */
     rpcPrefs: PropTypes.object,
-    /**
-     * Dapp image
-     */
-    siteImage: PropTypes.string,
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
     conversionRate: PropTypes.number,
@@ -113,6 +110,8 @@ export default class SignatureRequest extends PureComponent {
         return t('goerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('sepolia');
+      case NETWORK_TYPES.LINEA_TESTNET:
+        return t('lineatestnet');
       case NETWORK_TYPES.LOCALHOST:
         return t('localhost');
       default:
@@ -159,7 +158,6 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
       chainId,
       rpcPrefs,
-      siteImage,
       txData,
       subjectMetadata,
       nativeCurrency,
@@ -248,6 +246,15 @@ export default class SignatureRequest extends PureComponent {
           />
         </div>
         <div className="signature-request-content">
+          {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
+            txData?.securityProviderResponse?.flagAsDangerous !==
+              SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+          (txData?.securityProviderResponse &&
+            Object.keys(txData.securityProviderResponse).length === 0) ? (
+            <SecurityProviderBannerMessage
+              securityProviderResponse={txData.securityProviderResponse}
+            />
+          ) : null}
           <div className="signature-request__origin">
             <SiteOrigin
               siteOrigin={origin}
@@ -321,8 +328,6 @@ export default class SignatureRequest extends PureComponent {
             toAddress={verifyingContract}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
-            origin={origin}
-            siteImage={siteImage}
             onClose={() => this.setState({ showContractDetails: false })}
             isContractRequestingSignature
           />

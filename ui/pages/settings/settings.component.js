@@ -77,9 +77,6 @@ class SettingsPage extends PureComponent {
     searchText: '',
   };
 
-  shouldRenderExperimentalTab =
-    process.env.TRANSACTION_SECURITY_PROVIDER || process.env.NFTS_V1;
-
   componentDidMount() {
     this.handleConversionDate();
   }
@@ -266,7 +263,7 @@ class SettingsPage extends PureComponent {
     const tabs = [
       {
         content: t('general'),
-        icon: <i className="fa fa-cog" />,
+        icon: <Icon name={ICON_NAMES.SETTING} />,
         key: GENERAL_ROUTE,
       },
       {
@@ -303,21 +300,17 @@ class SettingsPage extends PureComponent {
         icon: <i className="fa fa-plug" />,
         key: NETWORKS_ROUTE,
       },
-    ];
-
-    if (this.shouldRenderExperimentalTab) {
-      tabs.push({
+      {
         content: t('experimental'),
         icon: <i className="fa fa-flask" />,
         key: EXPERIMENTAL_ROUTE,
-      });
-    }
-
-    tabs.push({
-      content: t('about'),
-      icon: <i className="fa fa-info-circle" />,
-      key: ABOUT_US_ROUTE,
-    });
+      },
+      {
+        content: t('about'),
+        icon: <i className="fa fa-info-circle" />,
+        key: ABOUT_US_ROUTE,
+      },
+    ];
 
     return (
       <TabBar
@@ -365,9 +358,7 @@ class SettingsPage extends PureComponent {
           render={() => <AddNetwork />}
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
-        {this.shouldRenderExperimentalTab ? (
-          <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
-        ) : null}
+        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
