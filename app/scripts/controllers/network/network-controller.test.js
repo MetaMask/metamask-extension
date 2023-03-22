@@ -2985,7 +2985,7 @@ describe('NetworkController', () => {
           });
 
           expect(networkDidChange).toBe(true);
-        }
+        },
       );
     });
 

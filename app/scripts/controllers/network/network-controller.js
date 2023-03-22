@@ -112,7 +112,12 @@ export default class NetworkController extends EventEmitter {
    * @param {string} [options.infuraProjectId] - The Infura project ID.
    * @param {string} [options.trackMetaMetricsEvent] - A method to forward events to the MetaMetricsController
    */
-  constructor({ messenger, state = {}, infuraProjectId, trackMetaMetricsEvent } = {}) {
+  constructor({
+    messenger,
+    state = {},
+    infuraProjectId,
+    trackMetaMetricsEvent,
+  } = {}) {
     super();
 
     this.messenger = messenger;
