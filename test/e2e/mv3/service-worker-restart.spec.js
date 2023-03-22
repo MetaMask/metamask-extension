@@ -14,32 +14,42 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
 };
 
+const numberOfSegmentRequests = 1;
+
+async function mockSegment(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [
+        {
+          event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
+        },
+      ],
+    })
+    .times(numberOfSegmentRequests)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
+async function mockPostToSentryEnvelope(mockServer) {
+  await mockServer
+    .forPost('https://sentry.io/api/0000000/envelope/')
+    .withQuery({ sentry_key: 'fake', sentry_version: '7' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {},
+      };
+    });
+}
+
 describe('MV3 - Service worker restart', function () {
   let windowHandles;
 
   it('should continue to add new a account when service worker can not restart immediately', async function () {
-    const numberOfSegmentRequests = 1;
-
-    async function mockSegment(mockServer) {
-      mockServer.reset();
-      await mockServer.forAnyRequest().thenPassThrough();
-      return await mockServer
-        .forPost('https://api.segment.io/v1/batch')
-        .withJsonBodyIncluding({
-          batch: [
-            {
-              event: EVENT_NAMES.SERVICE_WORKER_RESTARTED,
-            },
-          ],
-        })
-        .times(numberOfSegmentRequests)
-        .thenCallback(() => {
-          return {
-            statusCode: 200,
-          };
-        });
-    }
-
     await withFixtures(
       {
         dapp: true,
@@ -56,6 +66,7 @@ describe('MV3 - Service worker restart', function () {
         title: this.test.title,
         // because of segment
         failOnConsoleError: false,
+        testSpecificMock: mockPostToSentryEnvelope,
       },
       async ({ driver, mockServer }) => {
         const mockedSegmentEndpoints = await mockSegment(mockServer);
@@ -93,6 +104,7 @@ describe('MV3 - Service worker restart', function () {
         await driver.waitForSelector(
           {
             css: '[class="eth-overview__primary-container"]',
+            // balance is 0 because we switched to an empty account
             text: '0 ETH',
           },
           { timeout: 50_000 },
@@ -143,6 +155,8 @@ describe('MV3 - Service worker restart', function () {
           mockedRequests[0].body.json.batch[0].properties.locale,
           'en',
         );
+
+        await new Promise((resolve) => setTimeout(resolve, 20_000));
       },
     );
   });
