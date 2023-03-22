@@ -36,10 +36,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         Allow access to and transfer of all your 
         <span
           class="confirm-approve-content__approval-asset-title"
+          title="0x514910771af9ca656af840dff83e8264ecf986ca"
         >
-          ZenAcademy
+          TestDappCollectibles
         </span>
-        
+        <span>
+           (#1)
+        </span>
         ?
          
       </span>
@@ -212,10 +215,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         Revoke permission to access and transfer all of your 
         <span
           class="confirm-approve-content__approval-asset-title"
+          title="0x514910771af9ca656af840dff83e8264ecf986ca"
         >
-          ZenAcademy
+          TestDappCollectibles
         </span>
-        
+        <span>
+           (#1)
+        </span>
         ?
          
       </span>
@@ -228,10 +234,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         This revokes the permission for a third party to access and transfer all of your 
         <span
           class="confirm-approve-content__approval-asset-title"
+          title="0x514910771af9ca656af840dff83e8264ecf986ca"
         >
-          ZenAcademy
+          TestDappCollectibles
         </span>
-        
+        <span>
+           (#1)
+        </span>
          without further notice.
          
       </span>
@@ -399,10 +408,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         Allow access to and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
+          title="0x514910771af9ca656af840dff83e8264ecf986ca"
         >
-          this collection
+          TestDappCollectibles
         </span>
-        
+        <span>
+           (#1)
+        </span>
         ?
          
       </span>
@@ -415,10 +427,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         This allows a third party to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
+          title="0x514910771af9ca656af840dff83e8264ecf986ca"
         >
-          this collection
+          TestDappCollectibles
         </span>
-        
+        <span>
+           (#1)
+        </span>
          without further notice until you revoke its access.
          
       </span>
@@ -586,10 +601,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         Revoke permission to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
+          title="0x514910771af9ca656af840dff83e8264ecf986ca"
         >
-          this collection
+          TestDappCollectibles
         </span>
-        
+        <span>
+           (#1)
+        </span>
         ?
          
       </span>
@@ -602,10 +620,13 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
         This revokes the permission for a third party to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
+          title="0x514910771af9ca656af840dff83e8264ecf986ca"
         >
-          this collection
+          TestDappCollectibles
         </span>
-        
+        <span>
+           (#1)
+        </span>
          without further notice.
          
       </span>
