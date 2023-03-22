@@ -171,6 +171,9 @@
   "addANickname": {
     "message": "Add a nickname"
   },
+  "addAccount": {
+    "message": "Add account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -1572,6 +1575,9 @@
   },
   "hardware": {
     "message": "Hardware"
+  },
+  "hardwareWallet": {
+    "message": "Hardware wallet"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
@@ -4610,6 +4616,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnExplorer": {
+    "message": "View on explorer"
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
