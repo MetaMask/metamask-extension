@@ -1868,10 +1868,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
-      setOpenSeaTransactionSecurityProviderPopoverHasBeenShown:
-        preferencesController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown.bind(
-          preferencesController,
-        ),
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 

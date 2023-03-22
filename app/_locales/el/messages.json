@@ -329,9 +329,6 @@
     "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Φροντίστε πάντα να κάνετε τη δική σας επιμελή έρευνα προτού εγκρίνετε οποιαδήποτε αιτήματα."
-  },
   "amount": {
     "message": "Ποσό"
   },
@@ -1222,9 +1219,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Ενεργοποίηση παρόχου ασφάλειας"
-  },
   "enableSmartTransactions": {
     "message": "Ενεργοποίηση Έξυπνων Συναλλαγών"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Γενικά"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Λάβετε προειδοποιήσεις από το OpenSea όποτε λαβαίνετε ένα αναγνωρισμένο κακόβουλο αίτημα."
   },
   "goBack": {
     "message": "Μετάβαση Πίσω"
@@ -2278,9 +2269,6 @@
   "notEnoughGas": {
     "message": "Δεν Υπάρχει Αρκετό τέλος συναλλαγής"
   },
-  "notNow": {
-    "message": "Όχι τώρα"
-  },
   "notifications": {
     "message": "Ειδοποιήσεις"
   },
@@ -2610,12 +2598,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Πάροχος ασφάλειας OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "Το OpenSea είναι ο πρώτος πάροχος ασφάλειας για αυτή τη λειτουργία. Σύντομα θα προστεθούν και άλλοι πάροχοι!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3517,9 +3499,6 @@
   },
   "statusNotConnected": {
     "message": "Δεν έχει συνδεθεί"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Μείνετε ασφαλείς με το OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Συνδέστε το Lattice1 σας"

@@ -329,9 +329,6 @@
     "message": "Payagan ang $1 na mag-withdraw at gastusin ang sumusunod na halaga:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Laging siguraduhin na gawin ang iyong sariling angkop na pagsusumikap bago aprubahan ang anumang mga kahilingan."
-  },
   "amount": {
     "message": "Halaga"
   },
@@ -1222,9 +1219,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Paganahin ang tagapagbigay ng seguridad"
-  },
   "enableSmartTransactions": {
     "message": "Payagan ang mga smart transaction"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Makakuha ng mga babala mula sa OpenSea sa tuwing makakatanggap ka ng kilalang malisyosong kahilingan."
   },
   "goBack": {
     "message": "Bumalik"
@@ -2278,9 +2269,6 @@
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
   },
-  "notNow": {
-    "message": "Hindi ngayon"
-  },
   "notifications": {
     "message": "Mga Abiso"
   },
@@ -2610,12 +2598,6 @@
   },
   "openSea": {
     "message": "OpenSea na (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Tagapagbigay ng seguridad ng OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "Ang OpenSea ay ang unang tagapagbigay ng seguridad para sa tampok na ito. Marami pang mga provider ang paparating!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3517,9 +3499,6 @@
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Manatiling ligtas sa OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Ikonekta ang iyong Lattice1"

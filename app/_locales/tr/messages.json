@@ -329,9 +329,6 @@
     "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Talepleri onaylamadan önce her zaman bunu gerekli özeni göstererek yaptığınızdan emin olun."
-  },
   "amount": {
     "message": "Tutar"
   },
@@ -1222,9 +1219,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Güvenlik sağlayıcısını etkinleştir"
-  },
   "enableSmartTransactions": {
     "message": "Akıllı işlemleri etkinleştir"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Genel"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Bilinen bir kötü amaçlı talep aldığınızda OpenSea'den uyarı alın."
   },
   "goBack": {
     "message": "Geri git"
@@ -2278,9 +2269,6 @@
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
   },
-  "notNow": {
-    "message": "Şimdi değil"
-  },
   "notifications": {
     "message": "Bildirimler"
   },
@@ -2610,12 +2598,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea güvenlik sağlayıcısı"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea bu özellik için birinci güvenlik sağlayıcısıdır. Daha fazla sağlayıcı çok yakında gelecektir!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3517,9 +3499,6 @@
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
-  },
-  "staySafeWithOpenSea": {
-    "message": "OpenSea ile güvende kalın"
   },
   "step1LatticeWallet": {
     "message": "Lattice1'inizi bağlayın"
