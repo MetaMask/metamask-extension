@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -69,7 +69,13 @@ const Popover = ({
   footerProps = defaultFooterProps,
 }) => {
   const t = useI18nContext();
+  const headingRef = useRef();
   const showHeader = title || onBack || subtitle || onClose;
+
+  useEffect(() => {
+    headingRef?.current?.focus();
+  });
+
   const Header = () => (
     <Box
       {...{ ...defaultHeaderProps, ...headerProps }}
@@ -99,6 +105,8 @@ const Popover = ({
           variant={TextVariant.headingSm}
           as="h2"
           width={BLOCK_SIZES.FULL}
+          ref={headingRef}
+          tabIndex="0"
         >
           {title}
         </Text>
