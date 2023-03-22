@@ -228,7 +228,7 @@
     "@metamask/approval-controller": "^1.0.0",
     "@metamask/assets-controllers": "^4.0.1",
     "@metamask/base-controller": "^1.0.0",
-    "@metamask/contract-metadata": "^2.2.0",
+    "@metamask/contract-metadata": "^2.3.1",
     "@metamask/controller-utils": "^1.0.0",
     "@metamask/design-tokens": "^1.9.0",
     "@metamask/desktop": "^0.3.0",
