@@ -162,12 +162,12 @@ export const SizeStory = (args) => (
       </ButtonLink>
     </Text>
     <Text variant={TextVariant.bodyXs}>
-      Inherits the font-size of the parent element and example with textProps
-      override for a success color.{' '}
+      Inherits the font-size of the parent element and example with override for
+      a success color.{' '}
       <ButtonLink
         {...args}
         size={Size.inherit}
-        textProps={{ color: TextColor.successDefault }}
+        color={TextColor.successDefault}
       >
         Learn more
       </ButtonLink>
