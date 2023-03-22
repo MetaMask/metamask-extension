@@ -171,6 +171,9 @@
   "addANickname": {
     "message": "Add a nickname"
   },
+  "addAccount": {
+    "message": "Add account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -758,6 +761,9 @@
   },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Connecting to Linea Goerli test network"
   },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
@@ -1371,17 +1377,20 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
-  "expandExperience": {
-    "message": "Expand your web3 experience with MetaMask Snaps"
-  },
   "expandView": {
     "message": "Expand view"
   },
   "experimental": {
     "message": "Experimental"
   },
+  "exploreMetaMaskSnaps": {
+    "message": "Explore MetaMask Snaps"
+  },
   "exportPrivateKey": {
     "message": "Export private key"
+  },
+  "extendWalletWithSnaps": {
+    "message": "Extend the wallet experience."
   },
   "externalExtension": {
     "message": "External extension"
@@ -1593,6 +1602,9 @@
   },
   "hardware": {
     "message": "Hardware"
+  },
+  "hardwareWallet": {
+    "message": "Hardware wallet"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
@@ -1964,6 +1976,9 @@
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli test network"
+  },
   "link": {
     "message": "Link"
   },
@@ -2023,9 +2038,6 @@
   },
   "malformedData": {
     "message": "Malformed data"
-  },
-  "manageSnaps": {
-    "message": "Manage your installed snaps"
   },
   "max": {
     "message": "Max"
@@ -2312,7 +2324,7 @@
     "message": "No NFTs yet"
   },
   "noSnaps": {
-    "message": "No Snaps installed"
+    "message": "You don't have any snaps installed."
   },
   "noThanksVariant2": {
     "message": "No, thanks."
@@ -3245,7 +3257,7 @@
     "message": "Reveal seed phrase"
   },
   "reviewSpendingCap": {
-    "message": "Review your spending cap"
+    "message": "Review the spending cap for your"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
@@ -4634,6 +4646,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnExplorer": {
+    "message": "View on explorer"
   },
   "viewOnOpensea": {
     "message": "View on Opensea"

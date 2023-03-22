@@ -711,6 +711,9 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
+  },
   "connectingToMainnet": {
     "message": "Ethereum Mainnet से कनेक्ट हो रहा है"
   },
@@ -1320,9 +1323,6 @@
   "etherscanViewOn": {
     "message": "Etherscan पर देखें"
   },
-  "expandExperience": {
-    "message": "MetaMask स्नैप्स के साथ अपने web3 अनुभव का विस्तार करें"
-  },
   "expandView": {
     "message": "दृश्य का विस्तार करें"
   },
@@ -1895,6 +1895,9 @@
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli टेस्ट नेटवर्क"
+  },
   "link": {
     "message": "लिंक"
   },
@@ -1954,9 +1957,6 @@
   },
   "malformedData": {
     "message": "विकृत डेटा"
-  },
-  "manageSnaps": {
-    "message": "अपने इंस्टाल किए गए स्नैप्स मैनेज करें"
   },
   "max": {
     "message": "अधिकतम"

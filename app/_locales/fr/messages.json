@@ -711,6 +711,9 @@
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Connexion au réseau de test Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Connexion au réseau principal Ethereum"
   },
@@ -1320,9 +1323,6 @@
   "etherscanViewOn": {
     "message": "Afficher sur Etherscan"
   },
-  "expandExperience": {
-    "message": "Développez votre expérience web3 avec les Snaps MetaMask"
-  },
   "expandView": {
     "message": "Agrandir la vue"
   },
@@ -1895,6 +1895,9 @@
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
+  "lineatestnet": {
+    "message": "Réseau de test Linea Goerli"
+  },
   "link": {
     "message": "Associer"
   },
@@ -1954,9 +1957,6 @@
   },
   "malformedData": {
     "message": "Données malformées"
-  },
-  "manageSnaps": {
-    "message": "Gérez vos Snaps installés"
   },
   "max": {
     "message": "Max."
