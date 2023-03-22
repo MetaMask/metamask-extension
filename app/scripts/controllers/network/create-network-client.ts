@@ -141,15 +141,10 @@ function createNetworkAndChainIdMiddleware({
   });
 }
 
-const createChainIdMiddleware: JsonRpcMiddleware<unknown, unknown> = (
+const createChainIdMiddleware = (
   chainId: string,
-) => {
-  return (
-    req: any,
-    res: any,
-    next: () => Promise<void>,
-    end: () => Promise<void>,
-  ) => {
+): JsonRpcMiddleware<unknown, unknown> => {
+  return (req, res, next, end) => {
     if (req.method === 'eth_chainId') {
       res.result = chainId;
       return end();
