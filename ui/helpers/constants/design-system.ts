@@ -46,6 +46,8 @@ export enum Color {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
+  lineaTestnetInverse = 'lineatestnet-inverse',
   transparent = 'transparent',
   localhost = 'localhost',
   inherit = 'inherit',
@@ -75,6 +77,7 @@ export enum BackgroundColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
   transparent = 'transparent',
   localhost = 'localhost',
 }
@@ -100,6 +103,7 @@ export enum BorderColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
   transparent = 'transparent',
   localhost = 'localhost',
 }
@@ -122,6 +126,8 @@ export enum TextColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
+  lineaTestnetInverse = 'lineatestnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
 }
@@ -144,6 +150,8 @@ export enum IconColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
+  lineaTestnet = 'lineatestnet',
+  lineaTestnetInverse = 'lineatestnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
 }
