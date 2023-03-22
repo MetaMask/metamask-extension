@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -33,9 +32,9 @@ describe('Test Snap Installed', function () {
         await driver.delay(1000);
         const confirmButton = await driver.findElement('#connectDialogSnap');
         await driver.scrollToElement(confirmButton);
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#connectDialogSnap');
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -77,7 +76,7 @@ describe('Test Snap Installed', function () {
 
         const errorButton = await driver.findElement('#connectErrorSnap');
         await driver.scrollToElement(errorButton);
-        await driver.delay(1000);
+        await driver.delay(500);
         await driver.clickElement('#connectErrorSnap');
 
         // switch to metamask extension and click connect
@@ -109,17 +108,9 @@ describe('Test Snap Installed', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectErrorSnap',
-          text: 'Reconnect to Error Snap',
+          css: '#installedSnapsResult',
+          text: 'npm:@metamask/test-snap-dialog, npm:@metamask/test-snap-error',
         });
-
-        const result = await driver.findElement('#installedSnapsResult');
-        await driver.scrollToElement(result);
-        await driver.delay(1000);
-        assert.equal(
-          await result.getText(),
-          'npm:@metamask/test-snap-dialog, npm:@metamask/test-snap-error',
-        );
       },
     );
   });

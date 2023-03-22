@@ -81,7 +81,7 @@ describe('Test Snap Error', function () {
 
         // switch back to the extension page
         await driver.switchToWindow(extensionPage);
-        await driver.delay(1000);
+        await driver.delay(500);
 
         // look for the actual error and check if it is correct
         const error = await driver.findElement(
