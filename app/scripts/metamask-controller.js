@@ -918,8 +918,6 @@ export default class MetamaskController extends EventEmitter {
       getNetworkId: () => this.networkController.store.getState().networkId,
       getNetworkStatus: () =>
         this.networkController.store.getState().networkStatus,
-      // TODO: This option should probably listen for networkDidChange
-      // rather than networkIdStore
       onNetworkStateChange: (listener) =>
         this.networkController.networkIdStore.subscribe(listener),
       getCurrentChainId: () =>
