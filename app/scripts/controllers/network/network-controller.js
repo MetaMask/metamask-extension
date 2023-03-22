@@ -10,7 +10,8 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import { v4 as random } from 'uuid';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, isPlainObject } from '@metamask/utils';
+import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   INFURA_PROVIDER_TYPES,
   BUILT_IN_NETWORKS,
@@ -249,18 +250,18 @@ export default class NetworkController extends EventEmitter {
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
     } catch (error) {
-      let data;
-      if (hasProperty(error, 'data')) {
-        data = error.data;
-      } else if (hasProperty(error, 'code')) {
+      if (error instanceof EthereumRpcError) {
+        let responseBody;
         try {
-          data = JSON.parse(error.message);
+          responseBody = JSON.parse(error.message);
         } catch {
-          // error.message must not be JSON for some reason
+          // error.message must not be JSON
         }
-      }
-      if (data) {
-        if (data.error === INFURA_BLOCKED_KEY) {
+
+        if (
+          isPlainObject(responseBody) &&
+          responseBody.error === INFURA_BLOCKED_KEY
+        ) {
           networkStatus = NetworkStatus.Blocked;
         } else {
           networkStatus = NetworkStatus.Unavailable;
