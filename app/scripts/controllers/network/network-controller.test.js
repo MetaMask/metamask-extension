@@ -664,9 +664,10 @@ describe('NetworkController', () => {
                   // of the network selected, it just needs to exist
                   chainId: '0x9999999',
                 },
-              },
-              networkDetails: {
-                EIPS: {},
+                networkDetails: {
+                  EIPS: {},
+                  other: 'details',
+                },
               },
             },
             async ({ controller, network }) => {
@@ -676,9 +677,12 @@ describe('NetworkController', () => {
 
               await controller.initializeProvider();
 
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBe(true);
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: true,
+                },
+                other: 'details',
+              });
             },
           );
         });
@@ -869,6 +873,10 @@ describe('NetworkController', () => {
                   id: 'testNetworkConfigurationId',
                 },
               },
+              networkDetails: {
+                EIPS: {},
+                other: 'details',
+              },
             },
           },
           async ({ controller, network }) => {
@@ -878,9 +886,12 @@ describe('NetworkController', () => {
 
             await controller.initializeProvider();
 
-            expect(
-              controller.store.getState().networkDetails.EIPS['1559'],
-            ).toBe(true);
+            expect(controller.store.getState().networkDetails).toStrictEqual({
+              EIPS: {
+                1559: true,
+              },
+              other: 'details',
+            });
           },
         );
       });
@@ -1554,6 +1565,7 @@ describe('NetworkController', () => {
                     EIPS: {
                       1559: true,
                     },
+                    other: 'details',
                   },
                 },
               },
@@ -1578,8 +1590,12 @@ describe('NetworkController', () => {
                   },
                 });
                 expect(
-                  controller.store.getState().networkDetails.EIPS['1559'],
-                ).toBeUndefined();
+                  controller.store.getState().networkDetails,
+                ).toStrictEqual({
+                  EIPS: {
+                    1559: undefined,
+                  },
+                });
               },
             );
           });
@@ -1788,6 +1804,7 @@ describe('NetworkController', () => {
                     EIPS: {
                       1559: true,
                     },
+                    other: 'details',
                   },
                 },
               },
@@ -1818,8 +1835,12 @@ describe('NetworkController', () => {
                   },
                 });
                 expect(
-                  controller.store.getState().networkDetails.EIPS['1559'],
-                ).toBeUndefined();
+                  controller.store.getState().networkDetails,
+                ).toStrictEqual({
+                  EIPS: {
+                    1559: undefined,
+                  },
+                });
               },
             );
           });
@@ -2107,8 +2128,12 @@ describe('NetworkController', () => {
                 });
 
                 expect(
-                  controller.store.getState().networkDetails.EIPS['1559'],
-                ).toBe(false);
+                  controller.store.getState().networkDetails,
+                ).toStrictEqual({
+                  EIPS: {
+                    1559: false,
+                  },
+                });
               },
             );
           });
@@ -2518,6 +2543,7 @@ describe('NetworkController', () => {
                   EIPS: {
                     1559: true,
                   },
+                  other: 'details',
                 },
               },
             },
@@ -2544,9 +2570,11 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBeUndefined();
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: undefined,
+                },
+              });
             },
           );
         });
@@ -2743,6 +2771,7 @@ describe('NetworkController', () => {
                   EIPS: {
                     1559: true,
                   },
+                  other: 'details',
                 },
               },
             },
@@ -2766,9 +2795,11 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBeUndefined();
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: undefined,
+                },
+              });
             },
           );
         });
@@ -2982,6 +3013,7 @@ describe('NetworkController', () => {
                 },
                 networkDetails: {
                   EIPS: {},
+                  other: 'details',
                 },
               },
             },
@@ -3028,9 +3060,11 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBe(false);
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: false,
+                },
+              });
             },
           );
         });
@@ -3234,6 +3268,7 @@ describe('NetworkController', () => {
                 },
                 networkDetails: {
                   EIPS: {},
+                  other: 'details',
                 },
               },
             },
@@ -3279,9 +3314,11 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBe(false);
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: false,
+                },
+              });
             },
           );
         });
@@ -3877,6 +3914,7 @@ describe('NetworkController', () => {
           state: {
             networkDetails: {
               EIPS: {},
+              other: 'details',
             },
             networkConfigurations: {
               testNetworkConfigurationId: {
@@ -3910,9 +3948,11 @@ describe('NetworkController', () => {
             },
           });
 
-          expect(controller.store.getState().networkDetails.EIPS['1559']).toBe(
-            true,
-          );
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: true,
+            },
+          });
         },
       );
     });
@@ -4321,6 +4361,7 @@ describe('NetworkController', () => {
               state: {
                 networkDetails: {
                   EIPS: {},
+                  other: 'details',
                 },
               },
             },
@@ -4346,9 +4387,11 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBe(true);
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: true,
+                },
+              });
             },
           );
         });
@@ -4664,9 +4707,11 @@ describe('NetworkController', () => {
                 latestBlock: POST_1559_BLOCK,
               });
 
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBeUndefined();
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: undefined,
+                },
+              });
 
               await waitForStateChanges({
                 controller,
@@ -4676,9 +4721,11 @@ describe('NetworkController', () => {
                 },
               });
 
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBe(true);
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: true,
+                },
+              });
             },
           );
         });
@@ -5053,9 +5100,11 @@ describe('NetworkController', () => {
               latestBlock: POST_1559_BLOCK,
             });
 
-            expect(
-              controller.store.getState().networkDetails.EIPS['1559'],
-            ).toBeUndefined();
+            expect(controller.store.getState().networkDetails).toStrictEqual({
+              EIPS: {
+                1559: undefined,
+              },
+            });
 
             await waitForStateChanges({
               controller,
@@ -5065,9 +5114,11 @@ describe('NetworkController', () => {
               },
             });
 
-            expect(
-              controller.store.getState().networkDetails.EIPS['1559'],
-            ).toBe(true);
+            expect(controller.store.getState().networkDetails).toStrictEqual({
+              EIPS: {
+                1559: true,
+              },
+            });
           },
         );
       });
@@ -5706,9 +5757,11 @@ describe('NetworkController', () => {
                   controller.setActiveNetwork('testNetworkConfigurationId');
                 },
               });
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBe(false);
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: false,
+                },
+              });
 
               await waitForLookupNetworkToComplete({
                 controller,
@@ -5717,9 +5770,11 @@ describe('NetworkController', () => {
                   controller.rollbackToPreviousProvider();
                 },
               });
-              expect(
-                controller.store.getState().networkDetails.EIPS['1559'],
-              ).toBe(true);
+              expect(controller.store.getState().networkDetails).toStrictEqual({
+                EIPS: {
+                  1559: true,
+                },
+              });
             },
           );
         });
@@ -6333,9 +6388,11 @@ describe('NetworkController', () => {
                 controller.setProviderType('goerli');
               },
             });
-            expect(
-              controller.store.getState().networkDetails.EIPS['1559'],
-            ).toBe(false);
+            expect(controller.store.getState().networkDetails).toStrictEqual({
+              EIPS: {
+                1559: false,
+              },
+            });
 
             await waitForLookupNetworkToComplete({
               controller,
@@ -6343,9 +6400,11 @@ describe('NetworkController', () => {
                 controller.rollbackToPreviousProvider();
               },
             });
-            expect(
-              controller.store.getState().networkDetails.EIPS['1559'],
-            ).toBe(true);
+            expect(controller.store.getState().networkDetails).toStrictEqual({
+              EIPS: {
+                1559: true,
+              },
+            });
           },
         );
       });

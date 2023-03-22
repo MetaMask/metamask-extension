@@ -10,7 +10,7 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import { v4 as random } from 'uuid';
-import { hasProperty, isPlainObject } from '@metamask/utils';
+import { isPlainObject } from '@metamask/utils';
 import { EthereumRpcError } from 'eth-rpc-errors';
 import {
   INFURA_PROVIDER_TYPES,
@@ -199,7 +199,7 @@ export default class NetworkController extends EventEmitter {
       return EIPS[1559];
     }
     const supportsEIP1559 = await this._determineEIP1559Compatibility();
-    this.networkDetails.putState({
+    this.networkDetails.updateState({
       EIPS: {
         ...this.networkDetails.getState().EIPS,
         1559: supportsEIP1559,
@@ -418,7 +418,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   /**
-   * Clears EIP support for the network.
+   * Clears details previously stored for the network.
    */
   _resetNetworkDetails() {
     this.networkDetails.putState(buildDefaultNetworkDetailsState());
