@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect, useRef } from 'react';
+import React, { PureComponent, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -70,11 +70,22 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const headingRef = useRef();
+  const [launchingElement, setLaunchingElement] = useState(null);
   const showHeader = title || onBack || subtitle || onClose;
 
+  const close = () => {
+    onClose?.();
+    try {
+      launchingElement?.focus();
+    } catch (e) {
+      console.log('Popover close error: ', e);
+    }
+  };
+
   useEffect(() => {
-    headingRef?.current?.focus();
-  });
+    setLaunchingElement(document.activeElement);
+    headingRef.current?.focus();
+  }, [setLaunchingElement]);
 
   const Header = () => (
     <Box
@@ -115,7 +126,7 @@ const Popover = ({
             iconName={ICON_NAMES.CLOSE}
             ariaLabel={t('close')}
             data-testid="popover-close"
-            onClick={onClose}
+            onClick={close}
             size={Size.SM}
           />
         ) : null}
@@ -127,9 +138,9 @@ const Popover = ({
   return (
     <div className="popover-container">
       {CustomBackground ? (
-        <CustomBackground onClose={onClose} />
+        <CustomBackground onClose={close} />
       ) : (
-        <div className="popover-bg" onClick={onClose} />
+        <div className="popover-bg" onClick={close} />
       )}
       <section
         className={classnames('popover-wrap', className)}
