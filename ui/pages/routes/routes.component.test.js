@@ -55,7 +55,7 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
   describe('render during send flow', () => {
-    it('should render while adding recipient for send flow', () => {
+    it('should render with network and account change disabled while adding recipient for send flow', () => {
       const store = configureMockStore()({
         ...mockSendState,
         send: {
@@ -71,7 +71,7 @@ describe('Routes Component', () => {
       fireEvent.click(networkDisplay);
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
-    it('should render draft send page', () => {
+    it('should render with network and account change disabled while user is in send page', () => {
       const store = configureMockStore()({
         ...mockSendState,
       });
@@ -83,7 +83,7 @@ describe('Routes Component', () => {
       fireEvent.click(networkDisplay);
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
-    it('should render while editing a send transaction', () => {
+    it('should render with network and account change disabled while editing a send transaction', () => {
       const store = configureMockStore()({
         ...mockSendState,
         send: {
@@ -100,7 +100,7 @@ describe('Routes Component', () => {
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
     it('should render when send transaction is not active', () => {
-      const store = configureMockStore([thunk])({
+      const store = configureMockStore()({
         ...mockSendState,
         metamask: {
           ...mockSendState.metamask,
