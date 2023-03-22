@@ -177,12 +177,12 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(4);
+      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(5);
     });
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        1,
+        3,
       );
     });
 

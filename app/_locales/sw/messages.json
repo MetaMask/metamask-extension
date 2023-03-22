@@ -157,6 +157,9 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Inaunganisha kwenye Mtandao Mkuu wa Ethereum"
   },
@@ -398,6 +401,9 @@
   },
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
+  },
+  "lineatestnet": {
+    "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
     "message": "Viungo"

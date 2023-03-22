@@ -65,7 +65,6 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IN
-import { setNewCustomNetworkAdded } from '../ducks/app/app';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -87,6 +86,12 @@ import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-ma
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import {
+  checkForUnapprovedTypedMessages,
+  updateCustodyState,
+} from './institutional/institution-actions';
+///: END:ONLY_INCLUDE_IN
 import {
   generateActionId,
   callBackgroundMethod,
@@ -714,6 +719,11 @@ export function signPersonalMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -841,6 +851,11 @@ export function signTypedMsg(
     }
 
     dispatch(updateMetamaskState(newState));
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    if (newState.unapprovedTypedMessages) {
+      return checkForUnapprovedTypedMessages(msgData, newState);
+    }
+    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1849,6 +1864,10 @@ export function updateMetamaskState(
 
       dispatch(initializeSendState({ chainHasChanged: true }));
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    updateCustodyState(dispatch, newState, getState());
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -2457,47 +2476,75 @@ export function setProviderType(
   };
 }
 
-export function updateAndSetCustomRpc(
-  newRpcUrl: string,
-  chainId: string,
-  ticker: EtherDenomination,
-  nickname: string,
-  rpcPrefs: RPCDefinition['rpcPrefs'],
+export function upsertNetworkConfiguration(
+  {
+    rpcUrl,
+    chainId,
+    nickname,
+    rpcPrefs,
+    ticker = EtherDenomination.ETH,
+  }: {
+    rpcUrl: string;
+    chainId: string;
+    nickname: string;
+    rpcPrefs: RPCDefinition['rpcPrefs'];
+    ticker: string;
+  },
+  {
+    setActive,
+    source,
+  }: {
+    setActive: boolean;
+    source: string;
+  },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch) => {
     log.debug(
-      `background.updateAndSetCustomRpc: ${newRpcUrl} ${chainId} ${
-        ticker ?? EtherDenomination.ETH
-      } ${nickname}`,
+      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
     );
-
+    let networkConfigurationId;
     try {
-      await submitRequestToBackground('updateAndSetCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
-        rpcPrefs,
-      ]);
+      networkConfigurationId = await submitRequestToBackground(
+        'upsertNetworkConfiguration',
+        [
+          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+          { setActive, source, referrer: ORIGIN_METAMASK },
+        ],
+      );
     } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
+      log.error(error);
+      dispatch(displayWarning('Had a problem adding network!'));
     }
+    return networkConfigurationId;
   };
 }
 
-export function editRpc(
-  oldRpcUrl: string,
-  newRpcUrl: string,
-  chainId: string,
-  ticker: EtherDenomination,
-  nickname: string,
-  rpcPrefs: RPCDefinition['rpcPrefs'],
+export function editAndSetNetworkConfiguration(
+  {
+    networkConfigurationId,
+    rpcUrl,
+    chainId,
+    nickname,
+    rpcPrefs,
+    ticker = EtherDenomination.ETH,
+  }: {
+    networkConfigurationId: string;
+    rpcUrl: string;
+    chainId: string;
+    nickname: string;
+    rpcPrefs: RPCDefinition['rpcPrefs'];
+    ticker: string;
+  },
+  { source }: { source: string },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
+  return async (dispatch) => {
+    log.debug(
+      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+    );
     try {
-      submitRequestToBackground('delCustomRpc', [oldRpcUrl]);
+      await submitRequestToBackground('removeNetworkConfiguration', [
+        networkConfigurationId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem removing network!'));
@@ -2505,12 +2552,15 @@ export function editRpc(
     }
 
     try {
-      await submitRequestToBackground('updateAndSetCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
-        rpcPrefs,
+      await submitRequestToBackground('upsertNetworkConfiguration', [
+        {
+          rpcUrl,
+          chainId,
+          ticker,
+          nickname: nickname || rpcUrl,
+          rpcPrefs,
+        },
+        { setActive: true, referrer: ORIGIN_METAMASK, source },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -2519,23 +2569,14 @@ export function editRpc(
   };
 }
 
-export function setRpcTarget(
-  newRpcUrl: string,
-  chainId: string,
-  ticker?: EtherDenomination,
-  nickname?: string,
+export function setActiveNetwork(
+  networkConfigurationId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(
-      `background.setRpcTarget: ${newRpcUrl} ${chainId} ${ticker} ${nickname}`,
-    );
-
+  return async (dispatch) => {
+    log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
-      await submitRequestToBackground('setCustomRpc', [
-        newRpcUrl,
-        chainId,
-        ticker ?? EtherDenomination.ETH,
-        nickname || newRpcUrl,
+      await submitRequestToBackground('setActiveNetwork', [
+        networkConfigurationId,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -2560,21 +2601,27 @@ export function rollbackToPreviousProvider(): ThunkAction<
   };
 }
 
-export function delRpcTarget(
-  oldRpcUrl: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.delRpcTarget: ${oldRpcUrl}`);
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('delCustomRpc', [oldRpcUrl], (err) => {
-        if (err) {
-          logErrorWithMessage(err);
-          dispatch(displayWarning('Had a problem removing network!'));
-          reject(err);
-          return;
-        }
-        resolve();
-      });
+export function removeNetworkConfiguration(
+  networkConfigurationId: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch) => {
+    log.debug(
+      `background.removeNetworkConfiguration: ${networkConfigurationId}`,
+    );
+    return new Promise((resolve, reject) => {
+      callBackgroundMethod(
+        'removeNetworkConfiguration',
+        [networkConfigurationId],
+        (err) => {
+          if (err) {
+            logErrorWithMessage(err);
+            dispatch(displayWarning('Had a problem removing network!'));
+            reject(err);
+            return;
+          }
+          resolve();
+        },
+      );
     });
   };
 }
@@ -3649,6 +3696,7 @@ export function approvePermissionsRequest(
       if (err) {
         dispatch(displayWarning(err));
       }
+      forceUpdateMetamaskState(dispatch);
     });
   };
 }
@@ -3691,6 +3739,35 @@ export function removePermissionsFor(
     });
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * Updates the caveat value for the specified origin, permission and caveat type.
+ *
+ * @param origin
+ * @param target
+ * @param caveatType
+ * @param caveatValue
+ */
+export function updateCaveat(
+  origin: string,
+  target: string,
+  caveatType: string,
+  caveatValue: Record<string, Json>,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch) => {
+    callBackgroundMethod(
+      'updateCaveat',
+      [origin, target, caveatType, caveatValue],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+  };
+}
+///: END:ONLY_INCLUDE_IN
 
 // Pending Approvals
 
@@ -3755,21 +3832,25 @@ export function setFirstTimeFlowType(
   };
 }
 
-export function setSelectedSettingsRpcUrl(
-  newRpcUrl: string,
+export function setSelectedNetworkConfigurationId(
+  networkConfigurationId: string,
 ): PayloadAction<string> {
   return {
-    type: actionConstants.SET_SELECTED_SETTINGS_RPC_URL,
-    payload: newRpcUrl,
+    type: actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID,
+    payload: networkConfigurationId,
   };
 }
 
-export function setNewNetworkAdded(
-  newNetworkAdded: string,
-): PayloadAction<string> {
+export function setNewNetworkAdded({
+  networkConfigurationId,
+  nickname,
+}: {
+  networkConfigurationId: string;
+  nickname: string;
+}): PayloadAction<object> {
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
-    payload: newNetworkAdded,
+    payload: { networkConfigurationId, nickname },
   };
 }
 
@@ -4494,12 +4575,11 @@ export function hideBetaHeader() {
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('setTransactionSecurityCheckEnabled', [
         transactionSecurityCheckEnabled,
       ]);
-      await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -4508,19 +4588,6 @@ export function setTransactionSecurityCheckEnabled(
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
-}
-
-export function setOpenSeaTransactionSecurityProviderPopoverHasBeenShown(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    await submitRequestToBackground(
-      'setOpenSeaTransactionSecurityProviderPopoverHasBeenShown',
-    );
-  };
 }
 
 // QR Hardware Wallets
@@ -4563,36 +4630,27 @@ export function cancelQRHardwareSignRequest(): ThunkAction<
   };
 }
 
-export function addCustomNetwork(
-  customRpc: RPCDefinition,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function requestUserApproval({
+  origin,
+  type,
+  requestData,
+}: {
+  origin: string;
+  type: string;
+  requestData: object;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      dispatch(setNewCustomNetworkAdded(customRpc));
-      await submitRequestToBackground('addCustomNetwork', [
-        customRpc,
-        generateActionId(),
+      await submitRequestToBackground('requestUserApproval', [
+        {
+          origin,
+          type,
+          requestData,
+        },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
-    }
-  };
-}
-
-export function requestAddNetworkApproval(
-  customRpc: RPCDefinition,
-  originIsMetaMask: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('requestAddNetworkApproval', [
-        customRpc,
-        originIsMetaMask,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem changing networks!'));
+      dispatch(displayWarning('Had trouble requesting user approval'));
     }
   };
 }
