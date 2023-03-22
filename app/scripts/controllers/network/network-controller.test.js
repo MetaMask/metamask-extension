@@ -898,25 +898,18 @@ describe('NetworkController', () => {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
-                  nickname: 'test-chain',
-                  ticker: 'TEST',
-                  rpcPrefs: {
-                    blockExplorerUrl: 'test-block-explorer.com',
-                  },
-                  id: 'testNetworkConfigurationId',
-                },
-                networkConfigurations: {
-                  testNetworkConfigurationId: {
-                    rpcUrl: 'https://mock-rpc-url',
-                    chainId: '0x1337',
-                    ticker: 'TEST',
-                    id: 'testNetworkConfigurationId',
-                  },
                 },
               },
             },
-            async ({ controller, network }) => {
-              network.mockEssentialRpcCalls();
+            async ({ controller, network: network1 }) => {
+              network1.mockEssentialRpcCalls();
+              const network2 = new NetworkCommunications({
+                networkClientType: 'infura',
+                networkClientOptions: {
+                  infuraNetwork: networkType,
+                },
+              });
+              network2.mockEssentialRpcCalls();
               await controller.initializeProvider();
               const { provider } = controller.getProviderAndBlockTracker();
 
@@ -1414,7 +1407,7 @@ describe('NetworkController', () => {
                 const network2 = new NetworkCommunications({
                   networkClientType: 'rpc',
                   networkClientOptions: {
-                    customRpcUrl: 'http://some-rpc-url',
+                    customRpcUrl: 'https://mock-rpc-url',
                   },
                 });
                 network2.mockEssentialRpcCalls();
@@ -2980,11 +2973,11 @@ describe('NetworkController', () => {
             messenger,
             eventType: 'NetworkController:networkDidChange',
             operation: () => {
-              controller.setRpcTarget('https://mock-rpc-url', '0x1337');
+              controller.setActiveNetwork('testNetworkConfigurationId');
             },
           });
 
-          expect(networkDidChange).toBe(true);
+          expect(networkDidChange).toBeTruthy();
         },
       );
     });
@@ -3023,7 +3016,7 @@ describe('NetworkController', () => {
             },
           });
 
-          expect(infuraIsUnblocked).toBe(true);
+          expect(infuraIsUnblocked).toBeTruthy();
         },
       );
     });
