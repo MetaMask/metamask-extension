@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -55,80 +55,96 @@ export default function CustomSpendingCap({
     return inputValue.replace(/,/gu, '.');
   };
 
-  const decConversionGreaterThan = (tokenValue, tokenBalance) => {
+  const decConversionGreaterThan = useCallback((tokenValue, tokenBalance) => {
     return new Numeric(Number(replaceCommaToDot(tokenValue)), 10).greaterThan(
       Number(tokenBalance),
       10,
     );
-  };
+  }, []);
 
-  const getInputTextLogic = (inputNumber) => {
-    if (
-      new Numeric(Number(replaceCommaToDot(inputNumber)), 10).lessThanOrEqualTo(
-        new Numeric(Number(currentTokenBalance), 10),
-      )
-    ) {
+  const getInputTextLogic = useCallback(
+    (inputNumber) => {
+      if (
+        new Numeric(
+          Number(replaceCommaToDot(inputNumber)),
+          10,
+        ).lessThanOrEqualTo(new Numeric(Number(currentTokenBalance), 10))
+      ) {
+        return {
+          className: 'custom-spending-cap__lowerValue',
+          description: t('inputLogicEqualOrSmallerNumber', [
+            <Typography
+              key="custom-spending-cap"
+              variant={TypographyVariant.H6}
+              fontWeight={FONT_WEIGHT.BOLD}
+              className="custom-spending-cap__input-value-and-token-name"
+            >
+              {replaceCommaToDot(inputNumber)} {tokenName}
+            </Typography>,
+          ]),
+        };
+      } else if (decConversionGreaterThan(inputNumber, currentTokenBalance)) {
+        return {
+          className: 'custom-spending-cap__higherValue',
+          description: t('inputLogicHigherNumber'),
+        };
+      }
       return {
-        className: 'custom-spending-cap__lowerValue',
-        description: t('inputLogicEqualOrSmallerNumber', [
-          <Typography
-            key="custom-spending-cap"
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.BOLD}
-            className="custom-spending-cap__input-value-and-token-name"
-          >
-            {replaceCommaToDot(inputNumber)} {tokenName}
-          </Typography>,
-        ]),
+        className: 'custom-spending-cap__emptyState',
+        description: t('inputLogicEmptyState'),
       };
-    } else if (decConversionGreaterThan(inputNumber, currentTokenBalance)) {
-      return {
-        className: 'custom-spending-cap__higherValue',
-        description: t('inputLogicHigherNumber'),
-      };
-    }
-    return {
-      className: 'custom-spending-cap__emptyState',
-      description: t('inputLogicEmptyState'),
-    };
-  };
+    },
+    [currentTokenBalance, decConversionGreaterThan, t, tokenName],
+  );
 
   const [customSpendingCapText, setCustomSpendingCapText] = useState(
     getInputTextLogic(value).description,
   );
 
-  const handleChange = (valueInput) => {
-    let spendingCapError = '';
-    const inputTextLogic = getInputTextLogic(valueInput);
-    const inputTextLogicDescription = inputTextLogic.description;
-    const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
-    if (match?.[1]?.length > decimals) {
-      return;
-    }
-
-    if (valueInput && !NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(valueInput)) {
-      spendingCapError = t('spendingCapError');
-      setCustomSpendingCapText(t('spendingCapErrorDescription', [siteOrigin]));
-      setError(spendingCapError);
-    } else {
-      setCustomSpendingCapText(inputTextLogicDescription);
-      setError('');
-    }
-
-    const maxTokenAmount = calcTokenAmount(
-      MAX_TOKEN_ALLOWANCE_AMOUNT,
-      decimals,
-    );
-    if (Number(valueInput.length) > 1 && Number(valueInput)) {
-      const customSpendLimitNumber = new BigNumber(valueInput);
-      if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
-        spendingCapError = t('spendLimitTooLarge');
-        setError(spendingCapError);
+  const handleChange = useCallback(
+    (valueInput) => {
+      let spendingCapError = '';
+      const inputTextLogic = getInputTextLogic(valueInput);
+      const inputTextLogicDescription = inputTextLogic.description;
+      const match = DECIMAL_REGEX.exec(replaceCommaToDot(valueInput));
+      if (match?.[1]?.length > decimals) {
+        return;
       }
-    }
 
-    dispatch(setCustomTokenAmount(String(valueInput)));
-  };
+      if (
+        valueInput &&
+        !NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(valueInput)
+      ) {
+        spendingCapError = t('spendingCapError');
+        setCustomSpendingCapText(
+          t('spendingCapErrorDescription', [siteOrigin]),
+        );
+        setError(spendingCapError);
+      } else {
+        setCustomSpendingCapText(inputTextLogicDescription);
+        setError('');
+      }
+
+      const maxTokenAmount = calcTokenAmount(
+        MAX_TOKEN_ALLOWANCE_AMOUNT,
+        decimals,
+      );
+      if (Number(valueInput.length) > 1 && Number(valueInput)) {
+        const customSpendLimitNumber = new BigNumber(valueInput);
+        if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
+          spendingCapError = t('spendLimitTooLarge');
+          setError(spendingCapError);
+        }
+      }
+
+      dispatch(setCustomTokenAmount(String(valueInput)));
+    },
+    [decimals, dispatch, getInputTextLogic, siteOrigin, t],
+  );
+
+  useEffect(() => {
+    handleChange(dappProposedValue);
+  }, [dappProposedValue, dispatch, handleChange]);
 
   useEffect(() => {
     if (value !== String(dappProposedValue)) {
