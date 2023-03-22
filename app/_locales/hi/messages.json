@@ -1355,18 +1355,6 @@
     "message": "फाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "विवरण देखें",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "जोड़ा गया",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "से",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "आपको इस एक्सटेन्शन को अनइंस्टाल करना चाहिए",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "अपने स्नैप्स प्रबंधित करें"
-  },
-  "snapsStatus": {
-    "message": "स्नैप स्टेटस एक्टिविटी पर निर्भर करता है।"
   },
   "snapsToggle": {
     "message": "कोई स्नैप तभी चलेगा जब उसे सक्षम किया गया हो"

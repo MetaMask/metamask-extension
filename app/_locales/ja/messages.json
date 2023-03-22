@@ -1355,18 +1355,6 @@
     "message": "ファイルのインポートが機能していない場合ここをクリックしてください!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "詳細を表示",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "追加日",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "元",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "スナップの管理"
-  },
-  "snapsStatus": {
-    "message": "スナップのステータスはアクティビティによります。"
   },
   "snapsToggle": {
     "message": "スナップは有効になっている場合にのみ実行されます"

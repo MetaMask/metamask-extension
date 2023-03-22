@@ -1355,18 +1355,6 @@
     "message": "Dateiimport fehlgeschlagen? Bitte hier klicken!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Details ansehen",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Hinzugefügt am",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "von",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "Sie sollten diese Erweiterung deinstallieren",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Verwalten Sie Ihre Snaps"
-  },
-  "snapsStatus": {
-    "message": "Snap-Status ist von der Aktivität abhängig."
   },
   "snapsToggle": {
     "message": "Ein Snap wird nur ausgeführt, wenn er aktiviert ist"

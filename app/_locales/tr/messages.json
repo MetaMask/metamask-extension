@@ -1355,18 +1355,6 @@
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Ayrıntıları gör",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Şu tarihte eklendi:",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "şurada:",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmalısın",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Snap'lerini yönet"
-  },
-  "snapsStatus": {
-    "message": "Snap durumu etkinliğe bağlıdır."
   },
   "snapsToggle": {
     "message": "Bir snap yalnızca etkinleştirilmişse çalışır"

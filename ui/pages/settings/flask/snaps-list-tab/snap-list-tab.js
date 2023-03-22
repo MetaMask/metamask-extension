@@ -33,6 +33,7 @@ const SnapListTab = () => {
   const snaps = useSelector(getSnaps);
   const settingsRef = useRef();
   const onClick = (snap) => {
+    console.log(snap);
     history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`);
   };
   const onToggle = (snap) => {

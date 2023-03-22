@@ -1355,18 +1355,6 @@
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "세부 정보 보기",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "추가하기",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "발신",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "이 확장 프로그램을 삭제해야 합니다",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "스냅 관리"
-  },
-  "snapsStatus": {
-    "message": "스냅 상태는 활동에 따라 달라집니다."
   },
   "snapsToggle": {
     "message": "스냅은 활성화된 상태에서만 작동합니다."

@@ -1355,18 +1355,6 @@
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Tingnan ang mga detalye",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Dinagdag sa",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "mula sa",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Pamahalaan ang iyong mga Snap"
-  },
-  "snapsStatus": {
-    "message": "Ang lagay ng Snap ay nakadepende sa aktibidad."
   },
   "snapsToggle": {
     "message": "Tatakbo lamang ang snap kapag pinagana ito"

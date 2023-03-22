@@ -1355,18 +1355,6 @@
     "message": "文件导入失败？点击这里！",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "查看详细信息",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "添加于",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "自",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "您应该卸载此扩展程序",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "管理您的Snap"
-  },
-  "snapsStatus": {
-    "message": "Snap状态取决于活动。"
   },
   "snapsToggle": {
     "message": "Snap仅在启用后才会运行"

@@ -1355,18 +1355,6 @@
     "message": "Tính năng nhập tập tin không hoạt động? Nhấn vào đây!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Xem chi tiết",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Đã thêm vào",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "từ",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "bạn nên gỡ cài đặt tiện ích mở rộng này",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -3363,9 +3351,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Quản lý Snap"
-  },
-  "snapsStatus": {
-    "message": "Trạng thái Snap tùy thuộc vào hoạt động."
   },
   "snapsToggle": {
     "message": "Snap chỉ hoạt động khi đã bật"
