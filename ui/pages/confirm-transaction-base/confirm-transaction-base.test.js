@@ -23,7 +23,11 @@ setBackgroundConnection({
 });
 
 const baseStore = {
-  send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+  send: {
+    ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+    currentTransactionUUID: null,
+    draftTransactions: {},
+  },
   DNS: domainInitialState,
   gas: {
     customData: { limit: null, price: null },
@@ -139,6 +143,10 @@ const baseStore = {
   appState: {
     sendInputCurrencySwitched: false,
   },
+  // send: {
+  //   currentTransactionUUID: null,
+  //   draftTransactions: {},
+  // },
 };
 
 describe('Confirm Transaction Base', () => {

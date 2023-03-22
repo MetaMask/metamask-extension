@@ -154,10 +154,7 @@ export default function GasDisplay({ gasError }) {
         <TransactionDetail
           userAcknowledgedGasMissing={false}
           rows={[
-            <ConfirmGasDisplay
-              key="gas-display"
-              draftTransaction={draftTransaction}
-            />,
+            <ConfirmGasDisplay key="gas-display" />,
             (gasError || isInsufficientTokenError) && (
               <TransactionDetailItem
                 key="total-item"

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -27,12 +26,14 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { getCurrentDraftTransaction } from '../../../../ducks/send';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
-const ConfirmLegacyGasDisplay = ({ draftTransaction = {} }) => {
+const ConfirmLegacyGasDisplay = () => {
   const t = useI18nContext();
+  const draftTransaction = useSelector(getCurrentDraftTransaction);
 
   // state selectors
   const isMainnet = useSelector(getIsMainnet);
@@ -193,10 +194,6 @@ const ConfirmLegacyGasDisplay = ({ draftTransaction = {} }) => {
       }
     />
   );
-};
-
-ConfirmLegacyGasDisplay.propTypes = {
-  draftTransaction: PropTypes.object,
 };
 
 export default ConfirmLegacyGasDisplay;

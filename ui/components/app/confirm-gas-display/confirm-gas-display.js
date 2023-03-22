@@ -9,10 +9,7 @@ import GasDetailsItem from '../gas-details-item';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
 
-const ConfirmGasDisplay = ({
-  userAcknowledgedGasMissing = false,
-  draftTransaction = {},
-}) => {
+const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {
   const { txParams } = useSelector((state) => txDataSelector(state));
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
@@ -20,18 +17,14 @@ const ConfirmGasDisplay = ({
   const isLegacyTxn = isLegacyTransaction(txParams);
   const supportsEIP1559 = networkAndAccountSupports1559 && !isLegacyTxn;
   return supportsEIP1559 ? (
-    <GasDetailsItem
-      userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-      draftTransaction={draftTransaction}
-    />
+    <GasDetailsItem userAcknowledgedGasMissing={userAcknowledgedGasMissing} />
   ) : (
-    <ConfirmLegacyGasDisplay draftTransaction={draftTransaction} />
+    <ConfirmLegacyGasDisplay />
   );
 };
 
 ConfirmGasDisplay.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
-  draftTransaction: PropTypes.object,
 };
 
 export default ConfirmGasDisplay;

@@ -19,16 +19,10 @@ export default {
       page: README,
     },
   },
-  argTypes: {
-    draftTransaction: 'object',
-  },
-  args: {
-    draftTransaction: {},
-  },
 };
 
-export const DefaultStory = (args) => {
-  return <ConfirmLegacyGasDisplay {...args} />;
+export const DefaultStory = () => {
+  return <ConfirmLegacyGasDisplay />;
 };
 
 DefaultStory.storyName = 'Default';

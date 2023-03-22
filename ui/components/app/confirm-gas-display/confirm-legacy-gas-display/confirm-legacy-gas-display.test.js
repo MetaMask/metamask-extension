@@ -80,6 +80,7 @@ describe('ConfirmLegacyGasDisplay', () => {
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
+
   it('should render label and gas details with draftTransaction', async () => {
     render({
       send: {

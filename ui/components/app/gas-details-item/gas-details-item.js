@@ -11,6 +11,7 @@ import {
   getUseCurrencyRateCheck,
   transactionFeeSelector,
 } from '../../../selectors';
+import { getCurrentDraftTransaction } from '../../../ducks/send';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -22,11 +23,9 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
 import GasDetailsItemTitle from './gas-details-item-title';
 
-const GasDetailsItem = ({
-  userAcknowledgedGasMissing = false,
-  draftTransaction = {},
-}) => {
+const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   const t = useI18nContext();
+  const draftTransaction = useSelector(getCurrentDraftTransaction);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   let transactionData = {};
   if (Object.keys(draftTransaction).length !== 0) {
@@ -150,7 +149,6 @@ const GasDetailsItem = ({
 
 GasDetailsItem.propTypes = {
   userAcknowledgedGasMissing: PropTypes.bool,
-  draftTransaction: PropTypes.object,
 };
 
 export default GasDetailsItem;
