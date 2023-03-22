@@ -14648,13 +14648,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emojis-list@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "emojis-list@npm:2.1.0"
-  checksum: fb61fa6356dfcc9fbe6db8e334c29da365a34d3d82a915cb59621883d3023d804fd5edad5acd42b8eec016936e81d3b38e2faf921b32e073758374253afe1272
-  languageName: node
-  linkType: hard
-
 "emojis-list@npm:^3.0.0":
   version: 3.0.0
   resolution: "emojis-list@npm:3.0.0"
@@ -23288,17 +23281,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:1.2.3":
-  version: 1.2.3
-  resolution: "loader-utils@npm:1.2.3"
-  dependencies:
-    big.js: ^5.2.2
-    emojis-list: ^2.0.0
-    json5: ^1.0.1
-  checksum: 385407fc2683b6d664276fd41df962296de4a15030bb24389de77b175570c3b56bd896869376ba14cf8b33a9e257e17a91d395739ba7e23b5b68a8749a41df7e
-  languageName: node
-  linkType: hard
-
 "loader-utils@npm:^1.1.0, loader-utils@npm:^1.2.3":
   version: 1.4.0
   resolution: "loader-utils@npm:1.4.0"
@@ -23311,13 +23293,13 @@ __metadata:
   linkType: hard
 
 "loader-utils@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "loader-utils@npm:2.0.0"
+  version: 2.0.4
+  resolution: "loader-utils@npm:2.0.4"
   dependencies:
     big.js: ^5.2.2
     emojis-list: ^3.0.0
     json5: ^2.1.2
-  checksum: 6856423131b50b6f5f259da36f498cfd7fc3c3f8bb17777cf87fdd9159e797d4ba4288d9a96415fd8da62c2906960e88f74711dee72d03a9003bddcd0d364a51
+  checksum: a5281f5fff1eaa310ad5e1164095689443630f3411e927f95031ab4fb83b4a98f388185bb1fe949e8ab8d4247004336a625e9255c22122b815bb9a4c5d8fc3b7
   languageName: node
   linkType: hard
 
@@ -24536,7 +24518,7 @@ __metadata:
     remove-trailing-slash: ^0.1.1
     require-from-string: ^2.0.2
     reselect: ^3.0.1
-    resolve-url-loader: ^3.1.2
+    resolve-url-loader: ^3.1.5
     safe-event-emitter: ^1.0.1
     sass: ^1.32.4
     sass-loader: ^10.1.1
@@ -27730,14 +27712,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:7.0.21":
-  version: 7.0.21
-  resolution: "postcss@npm:7.0.21"
+"postcss@npm:7.0.36":
+  version: 7.0.36
+  resolution: "postcss@npm:7.0.36"
   dependencies:
     chalk: ^2.4.2
     source-map: ^0.6.1
     supports-color: ^6.1.0
-  checksum: 5c11d58a4ffd54ddaf2f2f18ef7be10fc44405559ee56b52e41db8305d1b184d162138994dcce506ab77eef7283887a72d1b81cd1036c7fee106f50af0ef86d3
+  checksum: 4cfc0989b9ad5d0e8971af80d87f9c5beac5c84cb89ff22ad69852edf73c0a2fa348e7e0a135b5897bf893edad0fe86c428769050431ad9b532f072ff530828d
   languageName: node
   linkType: hard
 
@@ -30027,21 +30009,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve-url-loader@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "resolve-url-loader@npm:3.1.2"
+"resolve-url-loader@npm:^3.1.5":
+  version: 3.1.5
+  resolution: "resolve-url-loader@npm:3.1.5"
   dependencies:
     adjust-sourcemap-loader: 3.0.0
     camelcase: 5.3.1
     compose-function: 3.0.3
     convert-source-map: 1.7.0
     es6-iterator: 2.0.3
-    loader-utils: 1.2.3
-    postcss: 7.0.21
+    loader-utils: ^1.2.3
+    postcss: 7.0.36
     rework: 1.0.1
     rework-visit: 1.0.0
     source-map: 0.6.1
-  checksum: 02e559af8d10a8fda8d2cb1c61290b932787309309839288820438b4f25339a8c8cbd52598af89c1c1d277133d74914407e7a760e49acd966425a038798a6e70
+  checksum: eb52911eff20723f07409cc12138d254fa0dd4a4f3b1ba11ee1b29912afb03f1272aaddb523658be1e3a946e0d1bf6f603d0e107753ab83d48ad2116cf04b7f6
   languageName: node
   linkType: hard
 
