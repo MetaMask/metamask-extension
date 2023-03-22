@@ -28,7 +28,6 @@ export const AccountPicker = ({ account, onClick }) => {
         <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
           {account.name}
         </Text>
-        <Icon name={ICON_NAMES.ARROW_DOWN} size={Size.SM} />
       </Box>
     </ButtonBase>
   );
