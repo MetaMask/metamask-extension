@@ -15,6 +15,8 @@ import {
   Size,
   BorderColor,
   IconColor,
+  TEXT_ALIGN,
+  BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import {
   ButtonIcon,
@@ -76,9 +78,10 @@ const Popover = ({
       <Box
         display={DISPLAY.FLEX}
         alignItems={AlignItems.center}
-        justifyContent={
-          centerTitle ? JustifyContent.center : JustifyContent.spaceBetween
-        }
+        justifyContent={centerTitle ? null : JustifyContent.spaceBetween}
+        className={classnames('popover-header__title', {
+          'popover-header__title--center': centerTitle,
+        })}
         marginBottom={2}
       >
         {onBack ? (
@@ -90,7 +93,13 @@ const Popover = ({
             size={Size.SM}
           />
         ) : null}
-        <Text ellipsis variant={TextVariant.headingSm} as="h2">
+        <Text
+          textAlign={centerTitle ? TEXT_ALIGN.CENTER : TEXT_ALIGN.START}
+          ellipsis
+          variant={TextVariant.headingSm}
+          as="h2"
+          width={BLOCK_SIZES.FULL}
+        >
           {title}
         </Text>
         {onClose ? (

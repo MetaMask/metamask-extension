@@ -3704,10 +3704,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/contract-metadata@npm:^2.1.0, @metamask/contract-metadata@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@metamask/contract-metadata@npm:2.2.0"
-  checksum: 31b94274c7c0a2d03377f3fa5e46574cde6607fd3a3b571cb7ffa4f7ce6dc90e2bfe2a4b2eb9eb4ebcd07cb7d6918da893356b699e91bc6e005b472ca7279370
+"@metamask/contract-metadata@npm:^2.1.0, @metamask/contract-metadata@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "@metamask/contract-metadata@npm:2.3.1"
+  checksum: 95dcc27f661a3e380c0cca8c6d90fb1777e31ab3fe16909fd5c67844125510e3f8e9eca05c9069fde34c77df3b66e56111c7a908a07623e88052ef147eff4315
   languageName: node
   linkType: hard
 
@@ -24259,7 +24259,7 @@ __metadata:
     "@metamask/assets-controllers": ^4.0.1
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^1.0.0
-    "@metamask/contract-metadata": ^2.2.0
+    "@metamask/contract-metadata": ^2.3.1
     "@metamask/controller-utils": ^1.0.0
     "@metamask/design-tokens": ^1.9.0
     "@metamask/desktop": ^0.3.0
