@@ -20,6 +20,8 @@ export const AccountPicker = ({ account, onClick }) => {
       className="multichain-account-picker"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
+      endIconName={ICON_NAMES.ARROW_DOWN}
+      ellipsis
     >
       <Box display={DISPLAY.FLEX}>
         <AvatarAccount address={account.address} size={Size.SM} />
