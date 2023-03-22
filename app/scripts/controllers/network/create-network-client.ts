@@ -56,7 +56,6 @@ export function createNetworkClient(
 ): { provider: SafeEventEmitterProvider; blockTracker: PollingBlockTracker } {
   /* eslint-disable @typescript-eslint/no-require-imports,@typescript-eslint/no-shadow */
   const fetch = global.fetch || require('node-fetch');
-  const btoa = global.btoa || require('btoa');
 
   const rpcApiMiddleware =
     networkConfig.type === NetworkClientType.Infura
@@ -66,7 +65,11 @@ export function createNetworkClient(
           maxAttempts: 5,
           source: 'metamask',
         })
-      : createFetchMiddleware({ btoa, fetch, rpcUrl: networkConfig.rpcUrl });
+      : createFetchMiddleware({
+          btoa: global.btoa,
+          fetch,
+          rpcUrl: networkConfig.rpcUrl,
+        });
 
   const rpcProvider = providerFromMiddleware(rpcApiMiddleware);
 
