@@ -23,6 +23,7 @@ import {
 import {
   getConversionRate,
   getNativeCurrency,
+  getNftContracts,
 } from '../../ducks/metamask/metamask';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import {
@@ -54,17 +55,27 @@ export default function ConfirmTokenTransactionBase({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const userAddress = useSelector(getSelectedAddress);
+  const nftCollections = useSelector(getNftContracts);
 
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),
   );
 
-  const getTitleTokenDescription = () => {
+  const getTitleTokenDescription = (renderType) => {
     const useBlockExplorer =
       rpcPrefs?.blockExplorerUrl ||
       [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
 
-    const titleTokenDescription = tokenSymbol ?? t('thisCollection');
+    const nftCollection = nftCollections.find(
+      (collection) =>
+        collection.address.toLowerCase() === tokenAddress.toLowerCase(),
+    );
+    const titleTokenDescription =
+      tokenSymbol || nftCollection?.name || t('unkownCollection');
+
+    if (renderType === 'text') {
+      return titleTokenDescription;
+    }
 
     if (useBlockExplorer) {
       const blockExplorerLink = getTokenTrackerLink(
@@ -91,7 +102,6 @@ export default function ConfirmTokenTransactionBase({
       );
       return blockExplorerElement;
     }
-
     return (
       <>
         <span
@@ -104,13 +114,16 @@ export default function ConfirmTokenTransactionBase({
     );
   };
 
-  let title, subtitle;
+  const assetImage = image;
+  let title, subtitle, subtotalDisplay;
   if (
     assetStandard === TokenStandard.ERC721 ||
     assetStandard === TokenStandard.ERC1155
   ) {
     title = assetName || getTitleTokenDescription();
     subtitle = `#${tokenId}`;
+    subtotalDisplay =
+      assetName || `${getTitleTokenDescription('text')} #${tokenId}`;
   } else if (assetStandard === TokenStandard.ERC20) {
     title = `${tokenAmount} ${tokenSymbol}`;
   }
@@ -175,13 +188,13 @@ export default function ConfirmTokenTransactionBase({
   return (
     <ConfirmTransactionBase
       toAddress={toAddress}
-      image={image}
+      image={assetImage}
       onEdit={onEdit}
       tokenAddress={tokenAddress}
       title={title}
       subtitleComponent={subtitleComponent()}
-      primaryTotalTextOverride={`${title} + ${ethTransactionTotal} ${nativeCurrency}`}
-      primaryTotalTextOverrideMaxAmount={`${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
+      primaryTotalTextOverride={`${subtotalDisplay} + ${ethTransactionTotal} ${nativeCurrency}`}
+      primaryTotalTextOverrideMaxAmount={`${subtotalDisplay} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );
