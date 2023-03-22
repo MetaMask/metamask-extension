@@ -5,13 +5,13 @@ exports[`Compliance Settings shows disconnect when Compliance is activated 1`] =
   <div
     class="box box--flex-direction-row"
   >
-    <div
-      class="box institutional-feature__content box--flex-direction-row"
+    <p
+      class="box mm-text institutional-feature__content mm-text--body-md mm-text--color-text-default box--flex-direction-row"
     >
       Change your settings or view reports by opening up Codefi Compliance or disconnect below.
-    </div>
-    <footer
-      class="institutional-feature__footer"
+    </p>
+    <div
+      class="box institutional-feature__footer box--padding-4 box--sm:padding-6 box--flex-direction-row"
     >
       <button
         class="button btn--rounded btn-default btn--large"
@@ -29,7 +29,7 @@ exports[`Compliance Settings shows disconnect when Compliance is activated 1`] =
       >
         Open Codefi Compliance
       </button>
-    </footer>
+    </div>
   </div>
 </div>
 `;
@@ -79,9 +79,8 @@ exports[`Compliance Settings shows start btn when Compliance its not activated 1
     <div
       class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
-      <footer
-        class="institutional-feature__footer"
-        padding="4,6"
+      <div
+        class="box institutional-feature__footer box--padding-4 box--sm:padding-6 box--flex-direction-row"
       >
         <button
           class="button btn--rounded btn-primary"
@@ -91,7 +90,7 @@ exports[`Compliance Settings shows start btn when Compliance its not activated 1
         >
           Open Codefi Compliance
         </button>
-      </footer>
+      </div>
     </div>
   </div>
 </div>

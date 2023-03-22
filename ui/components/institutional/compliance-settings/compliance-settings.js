@@ -25,44 +25,36 @@ const ComplianceSettings = () => {
     await dispatch(mmiActions.deleteComplianceAuthData());
   };
 
-  const renderDisconnect = () => {
-    return (
-      <Button
-        type="default"
-        large
-        onClick={disconnectFromCompliance}
-        data-testid="disconnect-compliance"
-      >
-        {t('disconnect')}
-      </Button>
-    );
-  };
-
-  const renderLinkButton = () => {
-    return (
-      <Button
-        type="primary"
-        data-testid="start-compliance"
-        onClick={() => {
-          global.platform.openTab({
-            url: 'https://start.compliance.codefi.network/',
-          });
-        }}
-      >
-        {t('openCodefiCompliance')}
-      </Button>
-    );
-  };
+  const renderLinkButton = (
+    <Button
+      type="primary"
+      data-testid="start-compliance"
+      onClick={() => {
+        global.platform.openTab({
+          url: 'https://start.compliance.codefi.network/',
+        });
+      }}
+    >
+      {t('openCodefiCompliance')}
+    </Button>
+  );
 
   return complianceActivated ? (
     <Box>
-      <Box className="institutional-feature__content">
+      <Text className="institutional-feature__content">
         {t('complianceSettingsExplanation')}
+      </Text>
+      <Box padding={[4, 6]} className="institutional-feature__footer">
+        <Button
+          type="default"
+          large
+          onClick={disconnectFromCompliance}
+          data-testid="disconnect-compliance"
+        >
+          {t('disconnect')}
+        </Button>
+        {renderLinkButton}
       </Box>
-      <footer className="institutional-feature__footer">
-        {renderDisconnect()}
-        {renderLinkButton()}
-      </footer>
     </Box>
   ) : (
     <Box
@@ -87,9 +79,9 @@ const ComplianceSettings = () => {
         flexDirection={FLEX_DIRECTION.ROW}
         justifyContent={JustifyContent.center}
       >
-        <footer padding={[4, 6]} className="institutional-feature__footer">
-          {renderLinkButton()}
-        </footer>
+        <Box padding={[4, 6]} className="institutional-feature__footer">
+          {renderLinkButton}
+        </Box>
       </Box>
     </Box>
   );
