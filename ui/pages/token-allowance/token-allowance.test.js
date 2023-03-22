@@ -206,6 +206,16 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
+  it('should set the default value of the spending cap to the dappProposed', () => {
+    const { getByTestId } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+
+    const input = getByTestId('custom-spending-cap-input');
+    expect(input.value).toBe('1');
+  });
+
   it('should click Use default and set input value to default', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
