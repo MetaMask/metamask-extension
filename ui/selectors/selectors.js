@@ -27,11 +27,11 @@ import {
   NetworkStatus,
 } from '../../shared/constants/network';
 import {
-  HardwareKeyringTypes,
   WebHIDConnectedStatuses,
   LedgerTransportTypes,
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
@@ -125,7 +125,7 @@ export function hasUnsignedQRHardwareTransaction(state) {
   }
   const { from } = txParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -143,7 +143,7 @@ export function hasUnsignedQRHardwareMessage(state) {
   }
   const { from } = msgParams;
   const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === HardwareKeyringTypes.qr);
+  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
   if (!qrKeyring) {
     return false;
   }
@@ -230,11 +230,11 @@ export function getAccountType(state) {
   const type = currentKeyring && currentKeyring.type;
 
   switch (type) {
-    case HardwareKeyringTypes.trezor:
-    case HardwareKeyringTypes.ledger:
-    case HardwareKeyringTypes.lattice:
+    case KeyringType.trezor:
+    case KeyringType.ledger:
+    case KeyringType.lattice:
       return 'hardware';
-    case HardwareKeyringTypes.imported:
+    case KeyringType.imported:
       return 'imported';
     default:
       return 'default';
@@ -932,8 +932,7 @@ export const getUnreadNotificationsCount = createSelector(
  */
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger =
-    currentKeyring?.type === HardwareKeyringTypes.ledger;
+  const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
   const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
@@ -1362,9 +1361,3 @@ export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
 ///: END:ONLY_INCLUDE_IN
-
-export function getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown(
-  state,
-) {
-  return state.metamask.openSeaTransactionSecurityProviderPopoverHasBeenShown;
-}

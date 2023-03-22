@@ -171,6 +171,9 @@
   "addANickname": {
     "message": "Add a nickname"
   },
+  "addAccount": {
+    "message": "Add account"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -321,6 +324,10 @@
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
   },
+  "allYourNFTsOf": {
+    "message": "All of your NFTs from $1",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
@@ -334,9 +341,6 @@
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
-  "alwaysBeSureTo": {
-    "message": "Always be sure to do your own due diligence before approving any requests."
   },
   "amount": {
     "message": "Amount"
@@ -368,6 +372,10 @@
     "message": "Allow access to and transfer of all your $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
+  "approveAllTokensTitleWithoutSymbol": {
+    "message": "Allow access to and transfer all of your NFTs from $1?",
+    "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "approveAndInstall": {
     "message": "Approve & install"
   },
@@ -383,6 +391,10 @@
   },
   "approveTokenDescription": {
     "message": "This allows a third party to access and transfer the following NFTs without further notice until you revoke its access."
+  },
+  "approveTokenDescriptionWithoutSymbol": {
+    "message": "This allows a third party to access and transfer all of your NFTs from $1 without further notice until you revoke its access.",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "approveTokenTitle": {
     "message": "Allow access to and transfer of your $1?",
@@ -719,6 +731,9 @@
   },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Connecting to Linea Goerli test network"
   },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
@@ -1231,9 +1246,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Enable security provider"
-  },
   "enableSmartTransactions": {
     "message": "Enable smart transactions"
   },
@@ -1332,17 +1344,20 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
-  "expandExperience": {
-    "message": "Expand your web3 experience with MetaMask Snaps"
-  },
   "expandView": {
     "message": "Expand view"
   },
   "experimental": {
     "message": "Experimental"
   },
+  "exploreMetaMaskSnaps": {
+    "message": "Explore MetaMask Snaps"
+  },
   "exportPrivateKey": {
     "message": "Export private key"
+  },
+  "extendWalletWithSnaps": {
+    "message": "Extend the wallet experience."
   },
   "externalExtension": {
     "message": "External extension"
@@ -1534,9 +1549,6 @@
   "general": {
     "message": "General"
   },
-  "getWarningsFromOpenSea": {
-    "message": "Get warnings from OpenSea whenever you receive a known malicious request."
-  },
   "goBack": {
     "message": "Go back"
   },
@@ -1554,6 +1566,9 @@
   },
   "hardware": {
     "message": "Hardware"
+  },
+  "hardwareWallet": {
+    "message": "Hardware wallet"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
@@ -1925,6 +1940,9 @@
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli test network"
+  },
   "link": {
     "message": "Link"
   },
@@ -1984,9 +2002,6 @@
   },
   "malformedData": {
     "message": "Malformed data"
-  },
-  "manageSnaps": {
-    "message": "Manage your installed snaps"
   },
   "max": {
     "message": "Max"
@@ -2224,9 +2239,6 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
   },
@@ -2276,7 +2288,7 @@
     "message": "No NFTs yet"
   },
   "noSnaps": {
-    "message": "No Snaps installed"
+    "message": "You don't have any snaps installed."
   },
   "noThanksVariant2": {
     "message": "No, thanks."
@@ -2310,9 +2322,6 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
-  },
-  "notNow": {
-    "message": "Not now"
   },
   "notifications": {
     "message": "Notifications"
@@ -2673,12 +2682,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "OpenSea security provider"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea is the first security provider for this feature. More providers coming soon!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3206,15 +3209,23 @@
     "message": "Reveal seed phrase"
   },
   "reviewSpendingCap": {
-    "message": "Review your spending cap"
+    "message": "Review the spending cap for your"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
   },
+  "revokeAllTokensTitleWithoutSymbol": {
+    "message": "Revoke permission to access and transfer all of your NFTs from $1?",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
   "revokeApproveForAllDescription": {
     "message": "This revokes the permission for a third party to access and transfer all of your $1 without further notice.",
     "description": "$1 is either a string or link of a given token symbol or name"
+  },
+  "revokeApproveForAllDescriptionWithoutSymbol": {
+    "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
@@ -3679,9 +3690,6 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Stay safe with OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
@@ -4196,6 +4204,9 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thisCollection": {
+    "message": "this collection"
+  },
   "thisIsBasedOn": {
     "message": "This is based on information from "
   },
@@ -4584,6 +4595,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnExplorer": {
+    "message": "View on explorer"
   },
   "viewOnOpensea": {
     "message": "View on Opensea"

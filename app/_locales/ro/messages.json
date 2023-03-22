@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Se conectează la rețeaua de test Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
   },
@@ -401,6 +404,9 @@
   },
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
+  },
+  "lineatestnet": {
+    "message": "Rețea de test Linea Goerli"
   },
   "links": {
     "message": "Link-uri"
