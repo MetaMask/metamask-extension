@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Compliance Settings shows disconnect when Compliance is activated 1`] = `
+<div>
+  <div
+    class="box box--flex-direction-row"
+  >
+    <div
+      class="box institutional-feature__content box--flex-direction-row"
+    >
+      Change your settings or view reports by opening up Codefi Compliance or disconnect below.
+    </div>
+    <footer
+      class="institutional-feature__footer"
+    >
+      <button
+        class="button btn--rounded btn-default btn--large"
+        data-testid="disconnect-compliance"
+        role="button"
+        tabindex="0"
+      >
+        Disconnect
+      </button>
+      <button
+        class="button btn--rounded btn-primary"
+        data-testid="start-compliance"
+        role="button"
+        tabindex="0"
+      >
+        Open Codefi Compliance
+      </button>
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Compliance Settings shows start btn when Compliance its not activated 1`] = `
+<div>
+  <div
+    class="box box--sm:padding-6 box--flex-direction-row box--color-text-alternative"
+    data-testid="institutional-content"
+  >
+    <div
+      class="box institutional-feature__content box--flex-direction-row"
+    >
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--padding-bottom-3 box--flex-direction-row"
+      >
+        DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties.
+      </p>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--padding-bottom-3 box--flex-direction-row"
+      >
+        Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting.
+      </p>
+      <p
+        class="box mm-text mm-text--body-md mm-text--color-text-default box--padding-bottom-3 box--flex-direction-row"
+      >
+        Steps to enable AML/CFT Compliance:
+      </p>
+      <ol>
+        <li>
+          Sign up to Codefi Compliance below
+        </li>
+        <li>
+          Create an organisation
+        </li>
+        <li>
+          Create a project
+        </li>
+        <li>
+          Set your compliance settings
+        </li>
+        <li>
+          Click the "Enable Compliance in MMI" button
+        </li>
+      </ol>
+    </div>
+    <div
+      class="box box--display-flex box--flex-direction-row box--justify-content-center"
+    >
+      <footer
+        class="institutional-feature__footer"
+        padding="4,6"
+      >
+        <button
+          class="button btn--rounded btn-primary"
+          data-testid="start-compliance"
+          role="button"
+          tabindex="0"
+        >
+          Open Codefi Compliance
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;
