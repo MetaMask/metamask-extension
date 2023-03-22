@@ -25,12 +25,7 @@ export const AccountPicker = ({ account, onClick }) => {
     >
       <Box display={DISPLAY.FLEX} gap={2}>
         <AvatarAccount address={account.address} size={Size.SM} />
-        <Text
-          marginLeft={1}
-          marginRight={1}
-          fontWeight={FONT_WEIGHT.BOLD}
-          ellipsis
-        >
+        <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
           {account.name}
         </Text>
         <Icon name={ICON_NAMES.ARROW_DOWN} size={Size.SM} />
