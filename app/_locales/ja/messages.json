@@ -711,6 +711,9 @@
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
+  "connectingToLineaTestnet": {
+    "message": "Linea Goerli テストネットワークに接続中"
+  },
   "connectingToMainnet": {
     "message": "イーサリアムメインネットに接続中"
   },
@@ -1320,9 +1323,6 @@
   "etherscanViewOn": {
     "message": "Etherscanで表示"
   },
-  "expandExperience": {
-    "message": "MetaMask Snaps で web3 エクスペリエンスを拡張"
-  },
   "expandView": {
     "message": "ビューを展開"
   },
@@ -1895,6 +1895,9 @@
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
   },
+  "lineatestnet": {
+    "message": "Linea Goerli テストネットワーク"
+  },
   "link": {
     "message": "リンク"
   },
@@ -1954,9 +1957,6 @@
   },
   "malformedData": {
     "message": "不正な形式のデータ"
-  },
-  "manageSnaps": {
-    "message": "インストールされたスナップの管理"
   },
   "max": {
     "message": "最大"
