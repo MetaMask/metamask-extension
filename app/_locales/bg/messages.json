@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Свързване с тестова мрежа на Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
   },
@@ -407,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
+  },
+  "lineatestnet": {
+    "message": "Тестова мрежа на Linea Goerli"
   },
   "links": {
     "message": "Връзки"
