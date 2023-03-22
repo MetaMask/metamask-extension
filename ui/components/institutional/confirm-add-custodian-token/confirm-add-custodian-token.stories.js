@@ -36,11 +36,8 @@ export default {
   title: 'Components/Institutional/ConfirmAddCustodianToken',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: ConfirmAddCustodianToken,
-  args: {
-    /**/
-  },
 };
 
-export const DefaultStory = (args) => <ConfirmAddCustodianToken {...args} />;
+export const DefaultStory = () => <ConfirmAddCustodianToken />;
 
 DefaultStory.storyName = 'ConfirmAddCustodianToken';
