@@ -130,7 +130,7 @@ describe('Test Snap bip-32', function () {
         });
 
         // scroll further into messages section
-        const snapButton4 = await driver.findElement('#bip32Message-ed25519');
+        const snapButton4 = await driver.findElement('#sendBip32-ed25519');
         await driver.scrollToElement(snapButton4);
 
         // wait then run ed25519 test
