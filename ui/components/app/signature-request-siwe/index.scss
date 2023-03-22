@@ -20,27 +20,6 @@
     border-radius: 8px;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   }
-
-  /** @todo replace ActionableMessage or remove overwritten code. */
-  .signature-request-siwe__actionable-message {
-    margin: 0 16px;
-    flex-direction: row;
-    align-items: initial;
-
-    .icon {
-      position: absolute;
-      left: 17px;
-      top: 13px;
-    }
-
-    .actionable-message__message {
-      padding-left: 16px;
-    }
-
-    &.actionable-message--with-icon {
-      padding-left: 16px;
-    }
-  }
 }
 
 .signature-request-siwe__warning-popover {
