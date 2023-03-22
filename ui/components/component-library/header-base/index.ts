@@ -1,2 +1,2 @@
 export { HeaderBase } from './header-base';
-export { HeaderBaseProps } from './header-base.types';
+export type { HeaderBaseProps } from './header-base.types';
