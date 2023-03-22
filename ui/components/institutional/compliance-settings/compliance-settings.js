@@ -8,7 +8,6 @@ import {
   TextVariant,
   BorderStyle,
   BorderColor,
-  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
