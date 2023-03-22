@@ -17,6 +17,7 @@ export default {
       },
     },
     onTabClick: { action: 'onTabClick' },
+    onChange: { action: 'onChange' },
   },
   args: {
     tabs: [
@@ -47,6 +48,7 @@ export const DefaultStory = (args) => {
           { name: 'Insight Snap', value: 'Insight Snap' },
           { name: 'Tenderly Insight', value: 'Tenderly Insight' },
         ]}
+        onChange={args.onChange}
       >
         This is a dropdown Tab
       </DropdownTab>
