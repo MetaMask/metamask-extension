@@ -1,4 +1,5 @@
-import React, { useSelector } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';

@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { action } from '@storybook/addon-actions';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
-import ComplianceSettings from '.';
+import ComplianceFeaturePage from '.';
 
 const customData = {
   ...testData,
@@ -20,9 +20,9 @@ const customData = {
 const store = configureStore(customData);
 
 export default {
-  title: 'Components/Institutional/ComplianceSettings',
+  title: 'Pages/Institutional/ComplianceFeaturePage',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
-  component: ComplianceSettings,
+  component: ComplianceFeaturePage,
   args: {
     onClick: () => {
       action('onClick');
@@ -30,6 +30,6 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <ComplianceSettings {...args} />;
+export const DefaultStory = (args) => <ComplianceFeaturePage {...args} />;
 
-DefaultStory.storyName = 'ComplianceSettings';
+DefaultStory.storyName = 'ComplianceFeaturePage';
