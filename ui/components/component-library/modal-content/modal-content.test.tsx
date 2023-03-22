@@ -21,16 +21,14 @@ describe('ModalContent', () => {
     );
     expect(getByText('test')).toHaveClass('test-class');
   });
-  it('should render with different sizes', () => {
+  it('should render with size sm', () => {
     const { getByText } = render(
       <>
+        <ModalContent>default</ModalContent>
         <ModalContent size={ModalContentSize.Sm}>sm</ModalContent>
-        <ModalContent size={ModalContentSize.Md}>md</ModalContent>
-        <ModalContent size={ModalContentSize.Lg}>lg</ModalContent>
       </>,
     );
     expect(getByText('sm')).toHaveClass('mm-modal-content--size-sm');
-    expect(getByText('md')).toHaveClass('mm-modal-content--size-md');
-    expect(getByText('lg')).toHaveClass('mm-modal-content--size-lg');
+    expect(getByText('default')).toHaveClass('mm-modal-content--size-sm');
   });
 });

@@ -1,6 +1,6 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
-import { ModalContent } from './modal-content';
+import { ModalContent } from './modal-content.types';
 
 # ModalContent
 
@@ -39,23 +39,38 @@ import { ModalContent, Text } from '../../component-library';
 
 ### Size
 
-Use the `size` prop and `ModalContentSize` enum to set the size of the `ModalContent`
-Defaults to `ModalContentSize.Sm`
+Currently the `ModalContent` supports a single size, this decision was made after we ran an audit on all modal sizes in the extension codebase and found that all modals could be made to fit the `ModalContentSize.Sm`(360px) size.
+
+If you do require a larger modal size you can use the Box props or add a className to override the default size.
 
 <Canvas>
   <Story id="components-componentlibrary-modalcontent--size" />
 </Canvas>
 
 ```jsx
-import { ModalContent, ModalContentSize, Text } from '../../component-library';
+import { BLOCK_SIZES } from '../../../helpers/constants/design-system';
+import { ModalContent,s Text } from '../../component-library';
 
-<ModalContent size={ModalContentSize.Sm}>
-  <Text>Modal Content</Text>
+<ModalContent {...args} marginBottom={4}>
+  <Text>ModalContentSize.Sm default and only size 360px max-width</Text>
 </ModalContent>
-<ModalContent size={ModalContentSize.Md}>
-  <Text>Modal Content</Text>
+<ModalContent
+  {...args}
+  width={[
+    BLOCK_SIZES.FULL,
+    BLOCK_SIZES.THREE_FOURTHS,
+    BLOCK_SIZES.HALF,
+    BLOCK_SIZES.ONE_THIRD,
+  ]}
+  marginBottom={4}
+>
+  <Text>
+    Using width Box props and responsive array props <br /> [
+    BLOCK_SIZES.FULL, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.HALF,
+    BLOCK_SIZES.ONE_THIRD, ]
+  </Text>
 </ModalContent>
-<ModalContent size={ModalContentSize.Lg}>
-  <Text>Modal Content</Text>
+<ModalContent {...args} marginBottom={4} style={{ maxWidth: 800 }}>
+  Adding a className and setting a max width (max-width: 800px)
 </ModalContent>
 ```

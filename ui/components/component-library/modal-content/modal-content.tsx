@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useImperativeHandle } from 'react';
+import React, { forwardRef } from 'react';
 import classnames from 'classnames';
 
 import {
@@ -14,33 +14,28 @@ import { ModalContentProps, ModalContentSize } from './modal-content.types';
 export const ModalContent = forwardRef<HTMLElement, ModalContentProps>(
   (
     {
-      children,
-      size = ModalContentSize.Md,
       className = '',
+      children,
+      size = ModalContentSize.Sm,
+      width,
       ...props
     }: ModalContentProps,
     ref,
-  ) => {
-    const boxRef = useRef<HTMLElement>(null);
-
-    useImperativeHandle(ref, () => boxRef.current);
-
-    return (
-      <Box
-        className={classnames(
-          'mm-modal-content',
-          `mm-modal-content--size-${size}`,
-          className,
-        )}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.LG}
-        width={BLOCK_SIZES.FULL}
-        padding={4}
-        ref={boxRef}
-        {...props}
-      >
-        {children}
-      </Box>
-    );
-  },
+  ) => (
+    <Box
+      className={classnames(
+        'mm-modal-content',
+        { [`mm-modal-content--size-${size}`]: !width },
+        className,
+      )}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.LG}
+      width={width || BLOCK_SIZES.FULL}
+      padding={4}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </Box>
+  ),
 );

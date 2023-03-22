@@ -89,14 +89,27 @@ export const Children: ComponentStory<typeof ModalContent> = (args) => (
 
 export const Size: ComponentStory<typeof ModalContent> = (args) => (
   <>
-    <ModalContent {...args} size={ModalContentSize.Sm} marginBottom={4}>
-      ModalContentSize.Sm
+    <ModalContent {...args} marginBottom={4}>
+      <Text>ModalContentSize.Sm default and only size 360px max-width</Text>
     </ModalContent>
-    <ModalContent {...args} size={ModalContentSize.Md} marginBottom={4}>
-      ModalContentSize.Md
+    <ModalContent
+      {...args}
+      width={[
+        BLOCK_SIZES.FULL,
+        BLOCK_SIZES.THREE_FOURTHS,
+        BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD,
+      ]}
+      marginBottom={4}
+    >
+      <Text>
+        Using width Box props and responsive array props <br /> [
+        BLOCK_SIZES.FULL, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.HALF,
+        BLOCK_SIZES.ONE_THIRD, ]
+      </Text>
     </ModalContent>
-    <ModalContent {...args} size={ModalContentSize.Lg} marginBottom={4}>
-      ModalContentSize.Lg
+    <ModalContent {...args} marginBottom={4} style={{ maxWidth: 800 }}>
+      Adding a className and setting a max width (max-width: 800px)
     </ModalContent>
   </>
 );
@@ -105,7 +118,7 @@ export const Ref: ComponentStory<typeof ModalContent> = (args) => {
   const modalContentRef = React.useRef<HTMLDivElement>(null);
   return (
     <>
-      <ModalContent {...args} boxRef={modalContentRef}>
+      <ModalContent {...args} ref={modalContentRef}>
         Modal with ref
       </ModalContent>
     </>
