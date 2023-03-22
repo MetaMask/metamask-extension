@@ -208,10 +208,10 @@ export default function createRPCMethodTrackingMiddleware({
                     METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
                       .SIWE,
                   ])
-                : properties.ui_customizations.push([
+                : properties.ui_customizations.push(
                     METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
                       .SIWE,
-                  ]);
+                  );
             }
           }
         } catch (e) {
@@ -305,10 +305,10 @@ export default function createRPCMethodTrackingMiddleware({
                     METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
                       .SIWE,
                   ])
-                : properties.ui_customizations.push([
+                : properties.ui_customizations.push(
                     METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
                       .SIWE,
-                  ]);
+                  );
             }
           }
         } catch (e) {
