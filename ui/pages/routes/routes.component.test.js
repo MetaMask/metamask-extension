@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
-import thunk from 'redux-thunk';
 
 import { SEND_STAGES } from '../../ducks/send';
 import { renderWithProvider } from '../../../test/jest';
