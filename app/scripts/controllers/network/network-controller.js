@@ -30,7 +30,6 @@ import createJsonRpcClient from './createJsonRpcClient';
 
 /**
  * @typedef {object} NetworkConfiguration
- * @property {string} id - The ID of the network configuration.
  * @property {string} rpcUrl - RPC target URL.
  * @property {string} chainId - Network ID as per EIP-155.
  * @property {string} ticker - Currency ticker.
