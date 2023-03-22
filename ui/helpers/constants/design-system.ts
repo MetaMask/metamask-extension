@@ -130,6 +130,7 @@ export enum TextColor {
   lineaTestnetInverse = 'lineatestnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
+  transparent = 'transparent',
 }
 
 export enum IconColor {
