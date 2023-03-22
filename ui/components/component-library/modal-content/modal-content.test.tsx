@@ -31,4 +31,9 @@ describe('ModalContent', () => {
     expect(getByText('sm')).toHaveClass('mm-modal-content--size-sm');
     expect(getByText('default')).toHaveClass('mm-modal-content--size-sm');
   });
+  it('should render with a ref', () => {
+    const ref = React.createRef<HTMLDivElement>();
+    render(<ModalContent modalContentRef={ref}>test</ModalContent>);
+    expect(ref.current).toBeDefined();
+  });
 });

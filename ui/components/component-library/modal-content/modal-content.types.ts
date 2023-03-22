@@ -23,7 +23,7 @@ export interface ModalContentProps extends BoxProps {
   children?: React.ReactNode;
   /**
    * The size of ModalContent
-   * currently only one size is supported ModalContentSize.Sm 360px
+   * Currently only one size is supported ModalContentSize.Sm 360px
    * See docs for more info
    */
   size?: ModalContentSize;
@@ -31,5 +31,10 @@ export interface ModalContentProps extends BoxProps {
    * To override the default width of the ModalContent component
    * Accepts all BLOCK_SIZES from design-system
    */
-  width: BoxWidth | BoxWidthArray;
+  width?: BoxWidth | BoxWidthArray;
+  /**
+   * The ref of the ModalContent component
+   * Used with Modal and closeOnOutsideClick prop
+   */
+  modalContentRef?: React.RefObject<HTMLElement>;
 }

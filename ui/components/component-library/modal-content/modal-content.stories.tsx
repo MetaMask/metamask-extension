@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import {
@@ -12,7 +12,7 @@ import {
 
 import Box from '../../ui/box';
 
-import { Text } from '..';
+import { Button, Text } from '..';
 
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
@@ -114,13 +114,31 @@ export const Size: ComponentStory<typeof ModalContent> = (args) => (
   </>
 );
 
-export const Ref: ComponentStory<typeof ModalContent> = (args) => {
-  const modalContentRef = React.useRef<HTMLDivElement>(null);
+export const ModalContentRef: ComponentStory<typeof ModalContent> = (args) => {
+  const [show, setShow] = useState(false);
+  const modalContentRef = useRef<HTMLDivElement>(null);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      modalContentRef?.current &&
+      !modalContentRef.current.contains(event.target as Node)
+    ) {
+      setShow(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   return (
     <>
-      <ModalContent {...args} ref={modalContentRef}>
-        Modal with ref
-      </ModalContent>
+      <Button onClick={() => setShow(true)}>Show ModalContent</Button>
+      {show && (
+        <ModalContent {...args} modalContentRef={modalContentRef}>
+          Click outside of this ModalContent to close
+        </ModalContent>
+      )}
     </>
   );
 };

@@ -74,3 +74,42 @@ import { ModalContent,s Text } from '../../component-library';
   Adding a className and setting a max width (max-width: 800px)
 </ModalContent>
 ```
+
+### Modal Content Ref
+
+Use the `modalContentRef` prop to pass a ref to the `ModalContent` component. This is primarily used with the `closeOnOutsideClick` prop on the `Modal` component. It allows the `Modal` to close when the user clicks outside of the `ModalContent` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--modal-content-ref" />
+</Canvas>
+
+```jsx
+import React, { useEffect, useRef, useState } from 'react';
+import { ModalContent, Text } from '../../component-library';
+
+const [show, setShow] = useState(false);
+const modalContentRef = useRef<HTMLDivElement>(null);
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (
+    modalContentRef?.current &&
+    !modalContentRef.current.contains(event.target as Node)
+  ) {
+    setShow(false);
+  }
+};
+
+useEffect(() => {
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
+
+<Button onClick={() => setShow(true)}>Show ModalContent</Button>
+{show && (
+  <ModalContent modalContentRef={modalContentRef}>
+    Click outside of this ModalContent to close
+  </ModalContent>
+)}
+```
