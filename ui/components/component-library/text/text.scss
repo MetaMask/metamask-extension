@@ -78,7 +78,7 @@ $text-variants: (
 
   @each $overflow in $overflow-wrap {
     &--overflow-wrap-#{$overflow} {
-      overflow-wrap: $overflow;
+      word-break: $overflow;
     }
   }
 

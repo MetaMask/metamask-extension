@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import Box from '../../ui/box/box';
-import { Icon, ICON_NAMES, Text, ButtonBase } from '../../component-library';
+import { ICON_NAMES, ButtonBase } from '../../component-library';
 import {
   BackgroundColor,
   IconColor,
@@ -11,7 +9,7 @@ import {
   Size,
   BorderRadius,
   AlignItems,
-  DISPLAY,
+  OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -36,31 +34,17 @@ export const AddressCopyButton = ({
         paddingRight={3}
         paddingLeft={3}
         size={Size.SM}
-        className={classnames('multichain-address-copy-button', {
-          'multichain-address-copy-button--wrap': wrap,
-        })}
+        className="multichain-address-copy-button"
         borderRadius={BorderRadius.pill}
         alignItems={AlignItems.center}
+        variant={TextVariant.bodyXs}
+        overflowWrap={wrap ? OVERFLOW_WRAP.BREAK_WORD : OVERFLOW_WRAP.NORMAL}
+        color={TextColor.primaryDefault}
+        endIconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+        endIconProps={{ size: Size.SM, color: IconColor.primaryDefault }}
+        data-testid="address-copy-button-text"
       >
-        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-          <Text
-            variant={TextVariant.bodyXs}
-            color={TextColor.primaryDefault}
-            data-testid="address-copy-button-text"
-            className={classnames({
-              'multichain-address-copy-button__address--wrap': wrap,
-            })}
-            as="span"
-            marginInlineEnd={1}
-          >
-            {displayAddress}
-          </Text>
-          <Icon
-            color={IconColor.primaryDefault}
-            name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
-            size={Size.SM}
-          />
-        </Box>
+        {displayAddress}
       </ButtonBase>
     </Tooltip>
   );
