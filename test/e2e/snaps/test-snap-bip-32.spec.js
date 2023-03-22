@@ -134,6 +134,7 @@ describe('Test Snap bip-32', function () {
         await driver.scrollToElement(snapButton4);
 
         // wait then run ed25519 test
+        await driver.delay(500);
         await driver.fill('#bip32Message-ed25519', 'foo bar');
         await driver.clickElement('#sendBip32-ed25519');
 
