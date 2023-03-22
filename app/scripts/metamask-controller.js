@@ -74,7 +74,10 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import {
+  HardwareDeviceNames,
+  HardwareKeyringType,
+} from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
   CaveatTypes,
@@ -2791,7 +2794,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName);
     let status = false;
     // ledger state becomes stale and must be explicitly accessed
-    if (keyring.type === HardwareKeyringTypes.ledger) {
+    if (keyring.type === HardwareKeyringType.ledger) {
       try {
         // unlock creates app and then attempts to read address from device
         // attemptMakeApp will still return true when device locked

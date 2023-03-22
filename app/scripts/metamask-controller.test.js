@@ -11,7 +11,10 @@ import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import {
+  HardwareDeviceNames,
+  HardwareKeyringType,
+} from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
 
@@ -638,7 +641,7 @@ describe('MetaMaskController', function () {
       unlock = sinon.stub();
       mockKeyrings = [
         {
-          type: HardwareKeyringTypes.ledger,
+          type: HardwareKeyringType.ledger,
           unlock,
         },
       ];
@@ -681,7 +684,7 @@ describe('MetaMaskController', function () {
     it('should not call underlying device for other devices', async function () {
       mockKeyrings = [
         {
-          type: HardwareKeyringTypes.trezor,
+          type: HardwareKeyringType.trezor,
           unlock,
           getModel: () => 'mock trezor',
           isUnlocked: () => false,
