@@ -13,7 +13,7 @@ import {
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
-import { HardwareKeyringTypes } from '../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../shared/constants/keyring';
 import {
   AssetType,
   TokenStandard,
@@ -1278,7 +1278,7 @@ describe('Send Slice', () => {
             identities: { '0xAddress': { address: '0xAddress' } },
             keyrings: [
               {
-                type: HardwareKeyringTypes.hdKeyTree,
+                type: KeyringType.hdKeyTree,
                 accounts: ['0xAddress'],
               },
             ],
