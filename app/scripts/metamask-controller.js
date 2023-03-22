@@ -74,10 +74,8 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
-import {
-  HardwareDeviceNames,
-  HardwareKeyringTypes,
-} from '../../shared/constants/hardware-wallets';
+import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -2373,7 +2371,7 @@ export default class MetamaskController extends EventEmitter {
       );
 
       const [primaryKeyring] = keyringController.getKeyringsByType(
-        HardwareKeyringTypes.hdKeyTree,
+        KeyringType.hdKeyTree,
       );
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
@@ -2497,10 +2495,10 @@ export default class MetamaskController extends EventEmitter {
 
     // Accounts
     const [hdKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
@@ -2664,7 +2662,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getPrimaryKeyringMnemonic() {
     const [keyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     if (!keyring.mnemonic) {
       throw new Error('Primary keyring mnemonic unavailable.');
@@ -2832,12 +2830,12 @@ export default class MetamaskController extends EventEmitter {
   async getAccountType(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case HardwareKeyringTypes.trezor:
-      case HardwareKeyringTypes.lattice:
-      case HardwareKeyringTypes.qr:
-      case HardwareKeyringTypes.ledger:
+      case KeyringType.trezor:
+      case KeyringType.lattice:
+      case KeyringType.qr:
+      case KeyringType.ledger:
         return 'hardware';
-      case HardwareKeyringTypes.imported:
+      case KeyringType.imported:
         return 'imported';
       default:
         return 'MetaMask';
@@ -2855,14 +2853,14 @@ export default class MetamaskController extends EventEmitter {
   async getDeviceModel(address) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     switch (keyring.type) {
-      case HardwareKeyringTypes.trezor:
+      case KeyringType.trezor:
         return keyring.getModel();
-      case HardwareKeyringTypes.qr:
+      case KeyringType.qr:
         return keyring.getName();
-      case HardwareKeyringTypes.ledger:
+      case KeyringType.ledger:
         // TODO: get model after ledger keyring exposes method
         return HardwareDeviceNames.ledger;
-      case HardwareKeyringTypes.lattice:
+      case KeyringType.lattice:
         // TODO: get model after lattice keyring exposes method
         return HardwareDeviceNames.lattice;
       default:
@@ -2936,7 +2934,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async addNewAccount(accountCount) {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -2981,7 +2979,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async verifySeedPhrase() {
     const [primaryKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.hdKeyTree,
+      KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
@@ -3103,7 +3101,7 @@ export default class MetamaskController extends EventEmitter {
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
     const keyring = await this.keyringController.addNewKeyring(
-      HardwareKeyringTypes.imported,
+      KeyringType.imported,
       [privateKey],
     );
     const [firstAccount] = await keyring.getAccounts();
@@ -3258,7 +3256,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.keyringController.getKeyringForAccount(address);
 
     switch (keyring.type) {
-      case HardwareKeyringTypes.ledger: {
+      case KeyringType.ledger: {
         return new Promise((_, reject) => {
           reject(
             new Error('Ledger does not support eth_getEncryptionPublicKey.'),
@@ -3266,7 +3264,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case HardwareKeyringTypes.trezor: {
+      case KeyringType.trezor: {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
@@ -3274,7 +3272,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case HardwareKeyringTypes.lattice: {
+      case KeyringType.lattice: {
         return new Promise((_, reject) => {
           reject(
             new Error('Lattice does not support eth_getEncryptionPublicKey.'),
@@ -3282,7 +3280,7 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
-      case HardwareKeyringTypes.qr: {
+      case KeyringType.qr: {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
         );
@@ -4325,14 +4323,14 @@ export default class MetamaskController extends EventEmitter {
    */
   setLocked() {
     const [trezorKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.trezor,
+      KeyringType.trezor,
     );
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
 
     const [ledgerKeyring] = this.keyringController.getKeyringsByType(
-      HardwareKeyringTypes.ledger,
+      KeyringType.ledger,
     );
     ledgerKeyring?.destroy?.();
 
