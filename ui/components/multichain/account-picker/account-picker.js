@@ -23,7 +23,7 @@ export const AccountPicker = ({ account, onClick }) => {
       endIconName={ICON_NAMES.ARROW_DOWN}
       ellipsis
     >
-      <Box display={DISPLAY.FLEX}>
+      <Box display={DISPLAY.FLEX} gap={2}>
         <AvatarAccount address={account.address} size={Size.SM} />
         <Text
           marginLeft={1}
