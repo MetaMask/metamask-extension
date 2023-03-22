@@ -24,10 +24,6 @@ const ComplianceSettings = () => {
     Boolean(state.metamask.institutionalFeatures?.complianceProjectId),
   );
 
-  const disconnectFromCompliance = async () => {
-    await dispatch(mmiActions.deleteComplianceAuthData());
-  };
-
   const linkButton = (
     <Button
       type="primary"
@@ -61,7 +57,9 @@ const ComplianceSettings = () => {
         <Button
           type="default"
           large
-          onClick={disconnectFromCompliance}
+          onClick={() => {
+            dispatch(mmiActions.deleteComplianceAuthData());
+          }}
           data-testid="disconnect-compliance"
         >
           {t('disconnect')}
