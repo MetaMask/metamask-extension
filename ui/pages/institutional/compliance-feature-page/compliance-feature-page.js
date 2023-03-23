@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
@@ -17,7 +17,9 @@ import {
   ButtonIcon,
   ICON_NAMES,
   ICON_SIZES,
+  Text,
 } from '../../../components/component-library';
+import Box from '../../../components/ui/box';
 import ComplianceSettings from '../../../components/institutional/compliance-settings';
 
 const ComplianceFeaturePage = () => {
@@ -28,8 +30,11 @@ const ComplianceFeaturePage = () => {
     Boolean(state.metamask.institutionalFeatures?.complianceProjectId),
   );
 
-  const renderSelectInstitutionalFeature = () => {
-    return (
+  return (
+    <Box
+      className="institutional-entity"
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
       <>
         <Box
           display={DISPLAY.FLEX}
@@ -65,6 +70,7 @@ const ComplianceFeaturePage = () => {
               {t('codefiCompliance')}
               {complianceActivated && (
                 <Text
+                  as="h6"
                   margin={[2, 2, 0, 2]}
                   color={TextColor.textMuted}
                   display={DISPLAY.FLEX}
@@ -82,15 +88,6 @@ const ComplianceFeaturePage = () => {
         </Box>
         <ComplianceSettings />
       </>
-    );
-  };
-
-  return (
-    <Box
-      className="institutional-entity"
-      backgroundColor={BackgroundColor.backgroundDefault}
-    >
-      {renderSelectInstitutionalFeature()}
     </Box>
   );
 };

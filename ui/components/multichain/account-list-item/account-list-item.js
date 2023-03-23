@@ -31,7 +31,7 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
-  HardwareKeyringTypes,
+  HardwareKeyringType,
   HardwareKeyringNames,
 } from '../../../../shared/constants/hardware-wallets';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -45,15 +45,15 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 function getLabel(keyring = {}, t) {
   const { type } = keyring;
   switch (type) {
-    case HardwareKeyringTypes.qr:
+    case HardwareKeyringType.qr:
       return HardwareKeyringNames.qr;
-    case HardwareKeyringTypes.imported:
+    case HardwareKeyringType.imported:
       return t('imported');
-    case HardwareKeyringTypes.trezor:
+    case HardwareKeyringType.trezor:
       return HardwareKeyringNames.trezor;
-    case HardwareKeyringTypes.ledger:
+    case HardwareKeyringType.ledger:
       return HardwareKeyringNames.ledger;
-    case HardwareKeyringTypes.lattice:
+    case HardwareKeyringType.lattice:
       return HardwareKeyringNames.lattice;
     default:
       return null;
@@ -212,7 +212,7 @@ export const AccountListItem = ({
             blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}
-            isRemovable={keyring?.type !== HardwareKeyringTypes.hdKeyTree}
+            isRemovable={keyring?.type !== HardwareKeyringType.hdKeyTree}
             closeMenu={closeMenu}
           />
         ) : null}

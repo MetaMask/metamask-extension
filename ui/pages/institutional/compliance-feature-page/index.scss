@@ -1,53 +1,10 @@
 .institutional-entity {
-  width: 375px;
   box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
-  z-index: 25;
-  height: unset;
-  overflow: auto;
-  scrollbar-width: none;
 }
 
 .feature-connect {
-  // padding: 20px 30px 10px;
-  // border-bottom: 1px solid #d2d8dd;
-  // width: 100%;
-
-  &__header {
-    &__back-btn {
-      color: var(--color-text-alternative);
-      background: var(--color-background-default);
-      width: auto;
-      display: flex;
-      padding: 0;
-      margin: 25px 0 10px 0;
-      line-height: 100%;
-      flex-direction: row;
-      align-items: center;
-
-      &__chevron-left {
-        margin: 0 10px 0 0;
-        font-size: 9px;
-      }
-    }
-
-    &__title {
-      @include H4;
-    }
-  }
-
   &__list {
-    width: 100%;
-
     &__list-item {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid #d2d8dd;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin: 0 0 16px 0;
-
       &__img {
         height: 32px;
         width: 32px;
@@ -57,16 +14,7 @@
   }
 
   &__label {
-    background: var(--color-overlay-inverse);
-    border: 1px solid;
-    height: 115px;
-    width: 150px;
-
-    border-radius: 5px;
-    padding: 0;
-
     &__text {
-      @include H6;
       font-size: 0.6rem;
 
       &--activated {

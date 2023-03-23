@@ -1182,7 +1182,7 @@ const state = {
         ],
       },
       {
-        type: HardwareKeyringTypes.ledger,
+        type: KeyringType.ledger,
         accounts: [
           '0x9d0ba4ddac06032527b140912ec808ab9451b788'
         ],
