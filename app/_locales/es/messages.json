@@ -329,9 +329,6 @@
     "message": "Permitir que se retire $1 y gastar hasta el siguiente importe:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Asegúrese siempre de hacer su propia diligencia debida antes de aprobar cualquier solicitud."
-  },
   "amount": {
     "message": "Importe"
   },
@@ -710,6 +707,9 @@
   },
   "connectingToGoerli": {
     "message": "Estableciendo conexión a la red de prueba Goerli"
+  },
+  "connectingToLineaTestnet": {
+    "message": "Conectando a la red de prueba Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Estableciendo conexión a la red principal de Ethereum"
@@ -1222,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Habilitar proveedor de seguridad"
-  },
   "enableSmartTransactions": {
     "message": "Habilitar transacciones inteligentes"
   },
@@ -1319,9 +1316,6 @@
   },
   "etherscanViewOn": {
     "message": "Ver en Etherscan"
-  },
-  "expandExperience": {
-    "message": "Amplíe su experiencia web3 con complementos de MetaMask"
   },
   "expandView": {
     "message": "Expandir vista"
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "General"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "Reciba advertencias de OpenSea cada vez que reciba una solicitud maliciosa conocida."
   },
   "goBack": {
     "message": "Volver"
@@ -1895,6 +1886,9 @@
   "likeToImportTokens": {
     "message": "¿Le gustaría agregar estos tokens?"
   },
+  "lineatestnet": {
+    "message": "Red de prueba Linea Goerli"
+  },
   "link": {
     "message": "Vínculo"
   },
@@ -1954,9 +1948,6 @@
   },
   "malformedData": {
     "message": "Datos con formato incorrecto"
-  },
-  "manageSnaps": {
-    "message": "Administre sus complementos instalados"
   },
   "max": {
     "message": "Máx."
@@ -2191,9 +2182,6 @@
     "message": "El nonce es superior al nonce sugerido de $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
-  "nft": {
-    "message": "NFT"
-  },
   "nftAddFailedMessage": {
     "message": "No se puede agregar el NFT porque los detalles de propiedad no coinciden. Asegúrese de haber ingresado la información correcta."
   },
@@ -2277,9 +2265,6 @@
   },
   "notEnoughGas": {
     "message": "No hay gas suficiente"
-  },
-  "notNow": {
-    "message": "Por ahora no"
   },
   "notifications": {
     "message": "Notificaciones"
@@ -2610,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Proveedor de seguridad de OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea es el primer proveedor de seguridad para esta función. ¡Más proveedores próximamente!"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3510,9 +3489,6 @@
   },
   "statusNotConnected": {
     "message": "No conectado"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Manténgase seguro con OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Conecte su Lattice1"
