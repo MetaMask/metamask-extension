@@ -6,6 +6,18 @@ describe('Recovery Phrase Chips Component', () => {
   const TEST_SEED =
     'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
+  it('should match snapshot', () => {
+    const props = {
+      secretRecoveryPhrase: TEST_SEED.split(' '),
+    };
+
+    const { container } = renderWithProvider(
+      <RecoveryPhraseChips {...props} />,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('should have seed phrase as proper element length', () => {
     const props = {
       secretRecoveryPhrase: TEST_SEED.split(' '),
