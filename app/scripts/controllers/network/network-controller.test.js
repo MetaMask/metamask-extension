@@ -1838,7 +1838,6 @@ describe('NetworkController', () => {
             );
           });
 
-
           it('clears the ID of the network from state', async () => {
             await withController(
               {
@@ -2156,7 +2155,7 @@ describe('NetworkController', () => {
                   },
                 });
                 expect(controller.store.getState().networkStatus).toBe(
-                  'unknown'
+                  'unknown',
                 );
               },
             );
@@ -2624,7 +2623,7 @@ describe('NetworkController', () => {
                     response: {
                       error: 'some error',
                       httpStatus: 405,
-                    }
+                    },
                   },
                 ],
                 eth_blockNumber: {
@@ -6076,9 +6075,7 @@ describe('NetworkController', () => {
                   controller.rollbackToPreviousProvider();
                 },
               });
-              expect(controller.store.getState().networkStatus).toBe(
-                'unknown',
-              );
+              expect(controller.store.getState().networkStatus).toBe('unknown');
             },
           );
         });
@@ -6706,9 +6703,7 @@ describe('NetworkController', () => {
                 controller.rollbackToPreviousProvider();
               },
             });
-            expect(controller.store.getState().networkStatus).toBe(
-              'unknown',
-            );
+            expect(controller.store.getState().networkStatus).toBe('unknown');
           },
         );
       });
