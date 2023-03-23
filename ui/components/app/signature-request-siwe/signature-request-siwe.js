@@ -51,8 +51,9 @@ export default function SignatureRequestSIWE({
     let isSIWEDomainValid = false;
 
     if (origin) {
-      const { host } = new URL(origin);
-      isSIWEDomainValid = parsedMessage.domain === host;
+      const { hostname, host } = new URL(origin);
+      isSIWEDomainValid =
+        parsedMessage.domain === hostname || parsedMessage.domain === host;
     }
     return isSIWEDomainValid;
   };

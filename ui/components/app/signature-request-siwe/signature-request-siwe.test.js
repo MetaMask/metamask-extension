@@ -7,6 +7,7 @@ import configureStore from '../../../store/store';
 import SignatureRequestSIWE from '.';
 
 const MOCK_ORIGIN = 'https://example-dapp.website';
+const MOCK_LOCAL_ORIGIN = 'http://localhost:8080';
 const MOCK_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const mockStoreInitialState = {
@@ -14,6 +15,10 @@ const mockStoreInitialState = {
     ...mockState.metamask,
     subjectMetadata: {
       [MOCK_ORIGIN]: {
+        iconUrl: 'https://example-dapp.website/favicon-32x32.png',
+        name: 'Example Test Dapp',
+      },
+      [MOCK_LOCAL_ORIGIN]: {
         iconUrl: 'https://example-dapp.website/favicon-32x32.png',
         name: 'Example Test Dapp',
       },
@@ -73,6 +78,43 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
 
     expect(bannerAlert).not.toBeTruthy();
     expect(await findByText('Sign-in request')).toBeInTheDocument();
+    expect(bannerAlert).toBeFalsy();
+  });
+
+  it('should render on localhost when the domain doesn"t have a port', async () => {
+    const store = configureStore(mockStoreInitialState);
+    const txData = cloneDeep(mockProps.txData);
+
+    txData.msgParams.origin = MOCK_LOCAL_ORIGIN;
+    txData.msgParams.siwe.parsedMessage.domain = 'localhost';
+
+    const { container, findByText } = renderWithProvider(
+      <SignatureRequestSIWE {...mockProps} txData={txData} />,
+      store,
+    );
+
+    expect(await findByText('Sign-in request')).toBeInTheDocument();
+
+    const bannerAlert = container.querySelector('.mm-banner-alert');
+    expect(bannerAlert).toBeFalsy();
+  });
+
+  it('should render on localhost when the domain has a port', async () => {
+    const store = configureStore(mockStoreInitialState);
+    const txData = cloneDeep(mockProps.txData);
+
+    txData.msgParams.origin = MOCK_LOCAL_ORIGIN;
+    txData.msgParams.siwe.parsedMessage.domain = 'localhost:8080';
+
+    const { container, findByText } = renderWithProvider(
+      <SignatureRequestSIWE {...mockProps} txData={txData} />,
+      store,
+    );
+
+    expect(await findByText('Sign-in request')).toBeInTheDocument();
+
+    const bannerAlert = container.querySelector('.mm-banner-alert');
+    expect(bannerAlert).toBeFalsy();
   });
 
   it('should render SiteOrigin', () => {
