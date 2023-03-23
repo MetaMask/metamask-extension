@@ -1150,7 +1150,7 @@ describe('Transaction Controller', function () {
       );
       const rawTx = await txController.signTransaction('1');
       const ethTx = TransactionFactory.fromSerializedData(toBuffer(rawTx));
-      assert.equal(ethTx.common.chainIdBN().toNumber(), 5);
+      assert.equal(Number(ethTx.common.chainId()), 5);
     });
   });
 

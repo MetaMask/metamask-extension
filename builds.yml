@@ -154,6 +154,9 @@ env:
   - APPLY_LAVAMOAT
   - FILE_NAMES
 
+  # This variable is read by Trezor's source and breaks build if not included
+  - ASSET_PREFIX: null
+
   ###
   # API keys to 3rd party services
   ###
