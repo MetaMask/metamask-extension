@@ -222,8 +222,8 @@ const Box = React.forwardRef(function Box(
     className,
     backgroundColor,
     color,
-    ariaLabel,
     as = 'div',
+    ariaLabel,
     ...props
   },
   ref,

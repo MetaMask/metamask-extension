@@ -118,60 +118,6 @@ async function withFixtures(options, testSuite) {
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await driver.checkBrowserForExceptions(failOnConsoleError);
-
-      // Getting a bunch of undefined errors with that line
-
-      //       eventDescriptions { eventDescriptions: [] }
-      // {
-      //   errors: [ undefined, undefined, undefined, undefined, undefined, undefined ]
-      // }
-      // Error:
-      //     at logBrowserError (/Users/pedro/repositories/metamask/metamask-extension/test/e2e/webdriver/driver.js:486:28)
-      //     at /Users/pedro/repositories/metamask/metamask-extension/test/e2e/webdriver/driver.js:478:7
-      //     at WebSocket.<anonymous> (/Users/pedro/repositories/metamask/metamask-extension/node_modules/selenium-webdriver/lib/webdriver.js:1412:9)
-      //     at WebSocket.emit (node:events:525:35)
-      //     at WebSocket.emit (node:domain:489:12)
-      //     at Receiver.receiverOnMessage (/Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/websocket.js:1178:20)
-      //     at Receiver.emit (node:events:513:28)
-      //     at Receiver.emit (node:domain:489:12)
-      //     at Receiver.dataMessage (/Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/receiver.js:528:14)
-      //     at /Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/receiver.js:479:23
-      //     at /Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/permessage-deflate.js:308:9
-      //     at /Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/permessage-deflate.js:391:7
-      //     at afterWrite (node:internal/streams/writable:499:5)
-      //     at onwrite (node:internal/streams/writable:479:7)
-      //     at Zlib.cb (node:internal/streams/transform:221:7)
-      //     at Zlib.processCallback (node:zlib:613:8)
-      // eventDescriptions { eventDescriptions: [] }
-      // {
-      //   errors: [
-      //     undefined,
-      //     undefined,
-      //     undefined,
-      //     undefined,
-      //     undefined,
-      //     undefined,
-      //     undefined
-      //   ]
-      // }
-      // Error:
-      //     at logBrowserError (/Users/pedro/repositories/metamask/metamask-extension/test/e2e/webdriver/driver.js:486:28)
-      //     at /Users/pedro/repositories/metamask/metamask-extension/test/e2e/webdriver/driver.js:478:7
-      //     at WebSocket.<anonymous> (/Users/pedro/repositories/metamask/metamask-extension/node_modules/selenium-webdriver/lib/webdriver.js:1412:9)
-      //     at WebSocket.emit (node:events:525:35)
-      //     at WebSocket.emit (node:domain:489:12)
-      //     at Receiver.receiverOnMessage (/Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/websocket.js:1178:20)
-      //     at Receiver.emit (node:events:513:28)
-      //     at Receiver.emit (node:domain:489:12)
-      //     at Receiver.dataMessage (/Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/receiver.js:528:14)
-      //     at /Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/receiver.js:479:23
-      //     at /Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/permessage-deflate.js:308:9
-      //     at /Users/pedro/repositories/metamask/metamask-extension/node_modules/ws/lib/permessage-deflate.js:391:7
-      //     at afterWrite (node:internal/streams/writable:499:5)
-      //     at onwrite (node:internal/streams/writable:479:7)
-      //     at Zlib.cb (node:internal/streams/transform:221:7)
-      //     at Zlib.processCallback (node:zlib:613:8)
-
       // await driver.checkBrowserForConsoleErrors(failOnConsoleError);
     }
 
