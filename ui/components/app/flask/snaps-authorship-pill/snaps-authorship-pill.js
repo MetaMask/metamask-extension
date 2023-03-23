@@ -14,23 +14,16 @@ import {
   AlignItems,
   DISPLAY,
   BorderRadius,
-  JustifyContent,
-  Size,
 } from '../../../../helpers/constants/design-system';
 import {
   getSnapName,
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
 import {
-  AvatarFavicon,
-  BadgeWrapper,
-  BadgeWrapperPosition,
   ICON_NAMES,
   ICON_SIZES,
-  AvatarIcon,
   Text,
   ButtonIcon,
-  AvatarBase,
 } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
