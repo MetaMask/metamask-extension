@@ -37,7 +37,7 @@ export const MultichainConnectedSiteMenu = ({
         title={
           status === 'STATUS_NOT_CONNECTED'
             ? t('statusNotConnectedAccount')
-            : `${selectedAccount?.name} ${text.toLowerCase()}`
+            : `${selectedAccount?.name} ${text?.toLowerCase()}`
         }
         data-testid="multichain-connected-site-menu__tooltip"
         position="bottom"
@@ -59,7 +59,7 @@ export const MultichainConnectedSiteMenu = ({
                   : BackgroundColor.backgroundDefault
               }
               borderWidth={
-                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT' ? 1 : 3
+                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT' ? 2 : 3
               }
             />
           }

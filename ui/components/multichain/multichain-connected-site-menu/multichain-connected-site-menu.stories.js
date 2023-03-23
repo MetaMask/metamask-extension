@@ -21,7 +21,6 @@ export default {
   },
   args: {
     globalMenuColor: Color.iconAlternative,
-    text: 'Not Connected',
     status: 'STATUS_NOT_CONNECTED',
   },
 };
@@ -42,5 +41,6 @@ ConnectedStory.args = {
 export const ConnectedtoAnotherAccountStory = Template.bind({});
 ConnectedtoAnotherAccountStory.args = {
   globalMenuColor: BackgroundColor.backgroundDefault,
+  text: 'Not Connected',
   status: 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT',
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest';
-import { Color } from '../../../helpers/constants/design-system';
+import { BackgroundColor, Color } from '../../../helpers/constants/design-system';
 import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
 
 describe('Multichain Connected Site Menu', () => {
@@ -51,7 +51,7 @@ describe('Multichain Connected Site Menu', () => {
   it('should render the site menu in not connected state', () => {
     const props = {
       globalMenuColor: Color.iconAlternative,
-      text: 'Not Connected',
+      status: 'STATUS_NOT_CONNECTED',
     };
     const store = configureMockStore()(mockStore);
     const { getByTestId, container } = renderWithProvider(
@@ -63,9 +63,9 @@ describe('Multichain Connected Site Menu', () => {
   });
   it('should render the site menu in not connected to current account state', () => {
     const props = {
-      globalMenuColor: Color.warningDefault,
+      globalMenuColor: BackgroundColor.backgroundDefault,
       text: 'Not Connected',
-      status: 'STATUS_NOT_CONNECTED',
+      status: 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT',
     };
     const store = configureMockStore()(mockStore);
     const { getByTestId, container } = renderWithProvider(

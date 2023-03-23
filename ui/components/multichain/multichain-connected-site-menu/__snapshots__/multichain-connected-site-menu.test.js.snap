@@ -46,7 +46,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
       <div
         aria-describedby="tippy-tooltip-2"
         class=""
-        data-original-title="Account 2 not connected"
+        data-original-title="No accounts connected"
         data-tooltipped=""
         style="display: inline;"
         tabindex="0"
@@ -82,7 +82,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
       <div
         aria-describedby="tippy-tooltip-3"
         class=""
-        data-original-title="No accounts connected"
+        data-original-title="Account 2 not connected"
         data-tooltipped=""
         style="display: inline;"
         tabindex="0"
@@ -98,7 +98,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
             class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right box--flex-direction-row"
           >
             <div
-              class="box multichain-connected-site-menu__badge  box--flex-direction-row box--background-color-warning-default box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
+              class="box multichain-connected-site-menu__badge not-connected box--flex-direction-row box--background-color-background-default box--rounded-full box--border-color-success-default box--border-width-2 box--border-style-solid"
             />
           </div>
         </div>
