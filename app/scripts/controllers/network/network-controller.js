@@ -29,7 +29,7 @@ import { createNetworkClient } from './create-network-client';
 /**
  * @typedef {object} NetworkConfiguration
  * @property {string} rpcUrl - RPC target URL.
- * @property {string} chainId - Network ID as per EIP-155.
+ * @property {string} chainId - Network ID as per EIP-155
  * @property {string} ticker - Currency ticker.
  * @property {object} [rpcPrefs] - Personalized preferences.
  * @property {string} [nickname] - Personalized network name.
