@@ -17,7 +17,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { Label, Text } from '../../../components/component-library';
+import { Label, Text, ButtonLink } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
 
 const ConfirmAddCustodianToken = () => {
@@ -67,14 +67,14 @@ const ConfirmAddCustodianToken = () => {
         </Text>
         {!showMore && (
           <Box paddingLeft={2}>
-            <a
+            <ButtonLink
               rel="noopener noreferrer"
               onClick={() => {
                 setShowMore(true);
               }}
             >
               {t('ShowMore')}
-            </a>
+            </ButtonLink>
           </Box>
         )}
       </Box>
@@ -127,7 +127,6 @@ const ConfirmAddCustodianToken = () => {
               marginRight={4}
               marginLeft={4}
               color={TextColor.textAlternative}
-              fontSize="14"
               className="add_custodian_token_confirm__url"
             >
               {custodianLabel}
