@@ -183,7 +183,6 @@ export default function ConfirmApprove({
             useNonceField={useNonceField}
             currentCurrency={currentCurrency}
             nativeCurrency={nativeCurrency}
-            ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexTransactionTotal={hexTransactionTotal}
             txData={transaction}

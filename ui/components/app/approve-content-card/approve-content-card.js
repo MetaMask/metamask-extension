@@ -139,8 +139,8 @@ export default function ApproveContentCard({
                       justifyContent={JustifyContent.spaceBetween}
                       width={BLOCK_SIZES.FULL}
                     >
-                      <Box>{t('transactionDetailLayer2GasHeading')}</Box>
-                      <Box>{`${ethTransactionTotal} ${nativeCurrency}`}</Box>
+                      <span>{t('transactionDetailLayer2GasHeading')}</span>
+                      <span>{`${ethTransactionTotal} ${nativeCurrency}`}</span>
                     </Text>
                   </Box>
                   <MultiLayerFeeMessage

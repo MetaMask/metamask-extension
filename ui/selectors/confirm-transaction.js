@@ -259,7 +259,11 @@ export const contractExchangeRateSelector = createSelector(
     ],
 );
 
-export const transactionFeeSelector = function (state, txData) {
+export const transactionFeeSelector = function (
+  state,
+  txData,
+  options = { numberOfDecimals: 6 },
+) {
   const currentCurrency = currentCurrencySelector(state);
   const conversionRate = conversionRateSelector(state);
   const nativeCurrency = getNativeCurrency(state);
@@ -361,7 +365,7 @@ export const transactionFeeSelector = function (state, txData) {
     value: hexMinimumTransactionFee,
     fromCurrency: nativeCurrency,
     toCurrency: nativeCurrency,
-    numberOfDecimals: 12,
+    numberOfDecimals: options.numberOfDecimals,
     conversionRate,
   });
 
@@ -369,7 +373,11 @@ export const transactionFeeSelector = function (state, txData) {
     fiatMinimumTransactionFee,
     fiatTransactionAmount,
   );
-  const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount);
+  const ethTransactionTotal = addEth(
+    options.numberOfDecimals,
+    ethTransactionFee,
+    ethTransactionAmount,
+  );
   const hexTransactionTotal = sumHexes(value, hexMinimumTransactionFee);
 
   return {

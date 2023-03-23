@@ -72,7 +72,6 @@ export default function TokenAllowance({
   useNonceField,
   currentCurrency,
   nativeCurrency,
-  ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
   txData,
@@ -152,7 +151,9 @@ export default function TokenAllowance({
     };
   }
 
-  const fee = useSelector((state) => transactionFeeSelector(state, fullTxData));
+  const { ethTransactionTotal, gasEstimationObject } = useSelector((state) =>
+    transactionFeeSelector(state, fullTxData, { numberOfDecimals: 12 }),
+  );
   const methodData = useSelector((state) => getKnownMethodData(state, data));
 
   const { balanceError } = useGasFeeContext();
@@ -187,8 +188,8 @@ export default function TokenAllowance({
   const handleApprove = () => {
     const { name } = methodData;
 
-    if (fee.gasEstimationObject.baseFeePerGas) {
-      fullTxData.estimatedBaseFee = fee.gasEstimationObject.baseFeePerGas;
+    if (gasEstimationObject.baseFeePerGas) {
+      fullTxData.estimatedBaseFee = gasEstimationObject.baseFeePerGas;
     }
 
     if (name) {
@@ -557,10 +558,6 @@ TokenAllowance.propTypes = {
    * Current native currency (e.g. RopstenETH)
    */
   nativeCurrency: PropTypes.string,
-  /**
-   * Total sum of the transaction in native currency
-   */
-  ethTransactionTotal: PropTypes.string,
   /**
    * Total sum of the transaction in fiat currency
    */

@@ -20,15 +20,14 @@ describe('Confirm Transaction utils', () => {
   });
 
   describe('addEth', () => {
-    it('should add two values together rounding to 12 decimal places', () => {
-      expect(utils.addEth('0.1234567891012', '0')).toStrictEqual(
-        '0.123456789101',
-      );
+    it('should add two values together rounding to 6 decimal places', () => {
+      expect(utils.addEth(6, '0.12345678', '0')).toStrictEqual('0.123457');
     });
 
-    it('should add any number of values together rounding to 12 decimal places', () => {
+    it('should add any number of values together rounding to 6 decimal places', () => {
       expect(
         utils.addEth(
+          6,
           '0.1',
           '0.02',
           '0.003',
@@ -36,13 +35,8 @@ describe('Confirm Transaction utils', () => {
           '0.00005',
           '0.000006',
           '0.0000007',
-          '0.00000008',
-          '0.000000009',
-          '0.0000000001',
-          '0.00000000002',
-          '0.000000000003',
         ),
-      ).toStrictEqual('0.123456789123');
+      ).toStrictEqual('0.123457');
     });
   });
 

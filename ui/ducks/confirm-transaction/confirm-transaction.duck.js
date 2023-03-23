@@ -245,7 +245,11 @@ export function updateTxDataAndCalculate(txData) {
       fiatTransactionFee,
       fiatTransactionAmount,
     );
-    const ethTransactionTotal = addEth(ethTransactionFee, ethTransactionAmount);
+    const ethTransactionTotal = addEth(
+      6,
+      ethTransactionFee,
+      ethTransactionAmount,
+    );
     const hexTransactionTotal = sumHexes(value, hexTransactionFee);
 
     dispatch(
