@@ -3729,6 +3729,7 @@ export default class MetamaskController extends EventEmitter {
         getMetricsState: this.metaMetricsController.store.getState.bind(
           this.metaMetricsController.store,
         ),
+        securityProviderRequest: this.securityProviderRequest.bind(this),
       }),
     );
 
@@ -4383,11 +4384,11 @@ export default class MetamaskController extends EventEmitter {
     const { currentLocale, transactionSecurityCheckEnabled } =
       this.preferencesController.store.getState();
 
-    const chainId = Number(
-      hexToDecimal(this.networkController.store.getState().provider.chainId),
-    );
-
     if (transactionSecurityCheckEnabled) {
+      const chainId = Number(
+        hexToDecimal(this.networkController.store.getState().provider.chainId),
+      );
+
       try {
         const securityProviderResponse = await securityProviderCheck(
           requestData,
