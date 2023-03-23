@@ -10,6 +10,11 @@
     }
   }
 
+  a:hover,
+  a:focus {
+    color: inherit;
+  }
+
   &:hover,
   &:focus,
   &:focus-within {
