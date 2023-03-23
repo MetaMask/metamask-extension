@@ -68,7 +68,7 @@ describe('Onboaring Flow Switch Component', () => {
     expect(history.location.pathname).toStrictEqual(ONBOARDING_UNLOCK_ROUTE);
   });
 
-  it('should route to welcom route when not initialized', () => {
+  it('should route to welcome route when not initialized', () => {
     const mockState = {
       metamask: {
         seedPhraseBackedUp: null,
