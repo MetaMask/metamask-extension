@@ -454,7 +454,7 @@ export default class NetworkController extends EventEmitter {
     this._resetNetworkStatus();
     this._resetNetworkDetails();
     this._configureProvider(opts);
-    this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
+    this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE);
   }
 
   _configureProvider({ type, rpcUrl, chainId }) {
