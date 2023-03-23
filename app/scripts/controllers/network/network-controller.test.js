@@ -1228,6 +1228,91 @@ describe('NetworkController', () => {
       });
     });
 
+    describe('if the provider has initialized, but the current network has no chainId', () => {
+      it('does not update state in any way', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'http://example-custom-rpc.metamask.io',
+              },
+              networkDetails: {
+                EIPS: {
+                  1559: true,
+                },
+              },
+            },
+          },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
+            await controller.initializeProvider();
+            const stateAfterInitialization = controller.store.getState();
+
+            await controller.lookupNetwork();
+
+            expect(controller.store.getState()).toStrictEqual(
+              stateAfterInitialization,
+            );
+          },
+        );
+      });
+
+      it('does not emit infuraIsUnblocked', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'http://example-custom-rpc.metamask.io',
+              },
+            },
+          },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
+            await controller.initializeProvider();
+
+            const promiseForInfuraIsUnblocked = waitForEvent({
+              controller,
+              eventName: 'infuraIsUnblocked',
+              operation: async () => {
+                await controller.lookupNetwork();
+              },
+            });
+
+            await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+          },
+        );
+      });
+
+      it('does not emit infuraIsBlocked', async () => {
+        await withController(
+          {
+            state: {
+              provider: {
+                type: 'rpc',
+                rpcUrl: 'http://example-custom-rpc.metamask.io',
+              },
+            },
+          },
+          async ({ controller, network }) => {
+            network.mockEssentialRpcCalls();
+            await controller.initializeProvider();
+
+            const promiseForInfuraIsBlocked = waitForEvent({
+              controller,
+              eventName: 'infuraIsBlocked',
+              operation: async () => {
+                await controller.lookupNetwork();
+              },
+            });
+
+            await expect(promiseForInfuraIsBlocked).toNeverResolve();
+          },
+        );
+      });
+    });
+
     INFURA_NETWORKS.forEach(({ networkType, networkId }) => {
       describe(`when the type in the provider configuration is "${networkType}"`, () => {
         describe('if the request for eth_getBlockByNumber responds successfully', () => {
