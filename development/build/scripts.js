@@ -1112,7 +1112,6 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
     MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,
-    MULTICHAIN: config.MULTICHAIN === '1',
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
       config,
