@@ -949,6 +949,7 @@ describe('MetaMetricsController', function () {
         theme: 'default',
         useTokenDetection: true,
         desktopEnabled: false,
+        security_providers: [],
       });
 
       assert.deepEqual(traits, {
@@ -967,6 +968,7 @@ describe('MetaMetricsController', function () {
         [TRAITS.THEME]: 'default',
         [TRAITS.TOKEN_DETECTION_ENABLED]: true,
         [TRAITS.DESKTOP_ENABLED]: false,
+        [TRAITS.SECURITY_PROVIDERS]: [],
       });
     });
 
