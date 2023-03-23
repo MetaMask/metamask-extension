@@ -4,11 +4,17 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import { BadgeWrapper, Icon, ICON_NAMES } from '../../component-library';
+import {
+  BadgeWrapper,
+  BadgeWrapperPosition,
+  Icon,
+  ICON_NAMES,
+} from '../../component-library';
 import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
@@ -19,6 +25,7 @@ export const MultichainConnectedSiteMenu = ({
   status,
   text,
 }) => {
+  console.log(globalMenuColor, status, text);
   const selectedAccount = useSelector(getSelectedIdentity);
   return (
     <Box
@@ -31,24 +38,34 @@ export const MultichainConnectedSiteMenu = ({
             ? text
             : `${selectedAccount?.name} ${text.toLowerCase()}`
         }
-        data-testid="multichain-connected-site-menu'__tooltip"
+        data-testid="multichain-connected-site-menu__tooltip"
         position="bottom"
       >
         <BadgeWrapper
+          position={BadgeWrapperPosition.bottomRight}
           badge={
             <Box
               backgroundColor={globalMenuColor}
-              className="multichain-connected-site-menu__badge"
+              className={`multichain-connected-site-menu__badge ${
+                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT'
+                  ? 'not-connected'
+                  : ''
+              }`}
               borderRadius={BorderRadius.full}
-              borderColor={BackgroundColor.backgroundDefault}
-              borderWidth={3}
-              style={{ width: 12, height: 12 }} // TODO: Remove this once we have the multichain folder to include scss
+              borderColor={
+                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT'
+                  ? BorderColor.successDefault
+                  : BackgroundColor.backgroundDefault
+              }
+              borderWidth={
+                status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT' ? 1 : 3
+              }
             />
           }
         >
           <Icon
             name={ICON_NAMES.GLOBAL}
-            size={Size.XL}
+            size={Size.LG}
             color={IconColor.iconDefault}
           />
         </BadgeWrapper>

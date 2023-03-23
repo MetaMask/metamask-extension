@@ -8,7 +8,7 @@ import {
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import ColorIndicator from '../../ui/color-indicator';
-import { Color } from '../../../helpers/constants/design-system';
+import { BackgroundColor, Color } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAddressConnectedSubjectMap,
@@ -47,14 +47,14 @@ export default function ConnectedStatusIndicator({ onClick }) {
     globalMenuColor = Color.successDefault;
   } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
     indicatorColor = Color.errorDefault;
-    globalMenuColor = Color.warningDefault;
+    globalMenuColor = BackgroundColor.backgroundDefault;
   }
 
   const text =
     status === STATUS_CONNECTED
       ? t('statusConnected')
       : t('statusNotConnected');
-
+  console.log(status, text);
   return (
     <button className="connected-status-indicator" onClick={onClick}>
       {process.env.MULTICHAIN ? (

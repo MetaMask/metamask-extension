@@ -13,6 +13,9 @@ export default {
     text: {
       control: 'text',
     },
+    status: {
+      control: 'text',
+    },
   },
   args: {
     globalMenuColor: Color.iconAlternative,
@@ -35,4 +38,5 @@ ConnectedStory.args = {
 export const ConnectedtoAnotherAccountStory = Template.bind({});
 ConnectedtoAnotherAccountStory.args = {
   globalMenuColor: Color.warningDefault,
+  status: 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT',
 };
