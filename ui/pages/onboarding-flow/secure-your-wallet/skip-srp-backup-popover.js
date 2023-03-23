@@ -87,7 +87,7 @@ export default function SkipSRPBackup({ handleClose }) {
           color={IconColor.errorDefault}
         />
         <Typography
-          variant={TypographyVariant.h3}
+          variant={TypographyVariant.H3}
           fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('skipAccountSecurity')}
@@ -102,7 +102,7 @@ export default function SkipSRPBackup({ handleClose }) {
             />
             <Typography
               className="skip-srp-backup-popover__details"
-              variant={TypographyVariant.h7}
+              variant={TypographyVariant.H7}
             >
               {t('skipAccountSecurityDetails')}
             </Typography>

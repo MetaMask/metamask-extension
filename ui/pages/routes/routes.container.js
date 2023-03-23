@@ -18,6 +18,7 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
+  toggleAccountMenu,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -55,6 +56,7 @@ function mapStateToProps(state) {
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,
+    isAccountMenuOpen: state.metamask.isAccountMenuOpen,
   };
 }
 
@@ -67,6 +69,7 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
+    toggleAccountMenu: () => dispatch(toggleAccountMenu()),
   };
 }
 

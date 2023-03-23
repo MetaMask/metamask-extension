@@ -22,6 +22,10 @@
 
   &-header {
     position: relative;
+
+    &__title--center {
+      flex: 1;
+    }
   }
 
   &-bg {
