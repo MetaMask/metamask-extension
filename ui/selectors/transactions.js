@@ -29,14 +29,14 @@ export const incomingTxListSelector = (state) => {
   }
 
   const {
-    network,
+    networkId,
     provider: { chainId },
   } = state.metamask;
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
       tx.txParams.to === selectedAddress &&
-      transactionMatchesNetwork(tx, chainId, network),
+      transactionMatchesNetwork(tx, chainId, networkId),
   );
 };
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
