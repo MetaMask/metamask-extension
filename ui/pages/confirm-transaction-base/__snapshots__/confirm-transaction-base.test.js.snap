@@ -254,7 +254,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           class="confirm-page-container-summary__title"
         >
           <h3
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography confirm-page-container-summary__title-text typography--h3 typography--weight-normal typography--style-normal typography--color-text-default"
+            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
           >
             <div
               class="currency-display-component"
