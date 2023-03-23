@@ -1625,11 +1625,11 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    function selectPublicState(chainId, { isUnlocked, network }) {
+    function selectPublicState(chainId, { isUnlocked, networkId }) {
       return {
         isUnlocked,
         chainId,
-        networkVersion: network,
+        networkVersion: networkId ?? 'loading',
       };
     }
 
