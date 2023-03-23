@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash';
+import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
  * methods that add or manipulate networks in MetaMask state.
@@ -300,6 +300,13 @@ export const BUILT_IN_NETWORKS = {
     chainId: CHAIN_IDS.LOCALHOST,
   },
 } as const;
+
+export const BUILT_IN_INFURA_NETWORKS = pick(
+  BUILT_IN_NETWORKS,
+  INFURA_PROVIDER_TYPES,
+);
+
+export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
