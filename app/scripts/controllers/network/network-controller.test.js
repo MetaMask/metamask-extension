@@ -6445,6 +6445,15 @@ async function waitForStateChanges({
  * that this function returns (default: 150).
  * @param {() => void | Promise<void>} options.operation - A function to run
  * that will presumably produce the events in question.
+ * @param {() => void | Promise<void>} [options.beforeResolving] - In some
+ * tests, state updates happen so fast, we need to make an assertion immediately
+ * after the event in question occurs. However, if we wait until the promise
+ * this function returns resolves to do so, some other state update to the same
+ * property may have happened. This option allows you to make an assertion
+ * _before_ the promise resolves. This has the added benefit of allowing you to
+ * maintain the "arrange, act, assert" ordering in your test, meaning that you
+ * can still call the method that kicks off the event and then make the
+ * assertion afterward instead of the other way around.
  * @returns A promise that resolves to the list of payloads for the set of
  * events, optionally filtered, when a specific number of them have occurred.
  */
@@ -6455,6 +6464,9 @@ async function waitForPublishedEvents({
   filter: isEventPayloadInteresting = () => true,
   wait: timeBeforeAssumingNoMoreEvents = 150,
   operation = () => {
+    // do nothing
+  },
+  beforeResolving = async () => {
     // do nothing
   },
 }) {
@@ -6472,22 +6484,24 @@ async function waitForPublishedEvents({
 
     const end = () => {
       if (!alreadyEnded) {
-        messenger.unsubscribe(eventType.toString(), eventListener);
-        if (interestingEventPayloads.length === expectedNumberOfEvents) {
-          resolve(interestingEventPayloads);
-        } else {
-          // Using a string instead of an Error leads to better backtraces.
-          /* eslint-disable-next-line prefer-promise-reject-errors */
-          reject(
-            `Expected to receive ${expectedNumberOfEvents} ${eventType} event(s), but received ${
-              interestingEventPayloads.length
-            } after ${timeBeforeAssumingNoMoreEvents}ms.\n\nAll payloads:\n\n${inspect(
-              allEventPayloads,
-              { depth: null },
-            )}`,
-          );
-        }
         alreadyEnded = true;
+        messenger.unsubscribe(eventType.toString(), eventListener);
+        Promise.resolve(beforeResolving()).then(() => {
+          if (interestingEventPayloads.length === expectedNumberOfEvents) {
+            resolve(interestingEventPayloads);
+          } else {
+            // Using a string instead of an Error leads to better backtraces.
+            /* eslint-disable-next-line prefer-promise-reject-errors */
+            reject(
+              `Expected to receive ${expectedNumberOfEvents} ${eventType} event(s), but received ${
+                interestingEventPayloads.length
+              } after ${timeBeforeAssumingNoMoreEvents}ms.\n\nAll payloads:\n\n${inspect(
+                allEventPayloads,
+                { depth: null },
+              )}`,
+            );
+          }
+        });
       }
     };
 
