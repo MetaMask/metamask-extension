@@ -17,6 +17,9 @@ import {
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Tooltip from '../../ui/tooltip/tooltip';
+
+const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
 export const NetworkListItem = ({
   name,
@@ -55,7 +58,17 @@ export const NetworkListItem = ({
               onClick();
             }}
           >
-            {name}
+            {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+              <Tooltip
+                title={name}
+                position="bottom"
+                wrapperClassName="network-list-item__tooltip"
+              >
+                {name}
+              </Tooltip>
+            ) : (
+              name
+            )}
           </a>
         </Text>
       </Box>

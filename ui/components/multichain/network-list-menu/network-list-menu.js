@@ -41,8 +41,6 @@ export const NetworkListMenu = ({ closeMenu }) => {
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
-  console.log("Menu received the following networks: ", networks)
-
   return (
     <Popover onClose={closeMenu} centerTitle title={t('networkMenuHeading')}>
       <Box>
