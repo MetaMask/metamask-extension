@@ -1,6 +1,7 @@
 .network-list-item {
   position: relative;
   width: 100%;
+  cursor: pointer;
 
   &:not(.network-list-item--selected) {
     &:hover,
