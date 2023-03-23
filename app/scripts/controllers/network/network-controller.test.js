@@ -2942,7 +2942,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it('does not emit infuraIsUnblocked', async () => {
+        it('emits infuraIsUnblocked', async () => {
           await withController(
             {
               state: {
@@ -2969,7 +2969,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              const promiseForInfuraIsUnblocked = waitForEvent({
+              const infuraIsUnblocked = await waitForEvent({
                 controller,
                 eventName: 'infuraIsUnblocked',
                 operation: async () => {
@@ -2977,7 +2977,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+              expect(infuraIsUnblocked).toBeTruthy();
             },
           );
         });
@@ -3199,7 +3199,7 @@ describe('NetworkController', () => {
           );
         });
 
-        it('does not emit infuraIsUnblocked', async () => {
+        it('emits infuraIsUnblocked', async () => {
           await withController(
             {
               state: {
@@ -3223,7 +3223,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              const promiseForInfuraIsUnblocked = waitForEvent({
+              const infuraIsUnblocked = await waitForEvent({
                 controller,
                 eventName: 'infuraIsUnblocked',
                 operation: async () => {
@@ -3231,7 +3231,7 @@ describe('NetworkController', () => {
                 },
               });
 
-              await expect(promiseForInfuraIsUnblocked).toNeverResolve();
+              expect(infuraIsUnblocked).toBeTruthy();
             },
           );
         });

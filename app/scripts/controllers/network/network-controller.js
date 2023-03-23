@@ -216,7 +216,7 @@ export default class NetworkController extends EventEmitter {
    * the results of these requests to determine the status of the network.
    */
   async lookupNetwork() {
-    const { chainId } = this.providerStore.getState();
+    const { chainId, type } = this.providerStore.getState();
     let networkChanged = false;
     let networkId;
     let supportsEIP1559;
@@ -238,6 +238,8 @@ export default class NetworkController extends EventEmitter {
       this._resetNetworkDetails();
       return;
     }
+
+    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
 
     this.once(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       networkChanged = true;
@@ -295,13 +297,22 @@ export default class NetworkController extends EventEmitter {
           1559: supportsEIP1559,
         },
       });
-      this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
     } else {
       this._resetNetworkId();
       this._resetNetworkDetails();
-      if (networkStatus === NetworkStatus.Blocked) {
+    }
+
+    if (isInfura) {
+      if (networkStatus === NetworkStatus.Available) {
+        this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
+      } else if (networkStatus === NetworkStatus.Blocked) {
         this.emit(NETWORK_EVENTS.INFURA_IS_BLOCKED);
       }
+    } else {
+      // Always emit infuraIsUnblocked regardless of network status to prevent
+      // consumers from being stuck in a blocked state if they were previously
+      // connected to an Infura network that was blocked
+      this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
     }
   }
 
