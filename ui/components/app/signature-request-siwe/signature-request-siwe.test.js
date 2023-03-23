@@ -64,7 +64,7 @@ const fromAccount = [
 const selectedAccount = {
   address: '0xAddress',
   balance: '0x0',
-}
+};
 
 jest.mock('../../../selectors', () => ({
   getTotalUnapprovedMessagesCount: () => 5,
@@ -76,7 +76,7 @@ jest.mock('../../../selectors', () => ({
   unapprovedEncryptionPublicKeyMsgsSelector: () => [],
   unconfirmedTransactionsHashSelector: () => uncofirmedTransactions,
   getTokenList: () => [],
-  getSelectedAccount: () => selectedAccount
+  getSelectedAccount: () => selectedAccount,
 }));
 
 const mockShowModal = jest.fn();
