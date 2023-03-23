@@ -210,11 +210,7 @@ export const AccountListItem = ({
             blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}
-<<<<<<< HEAD
-            isRemovable={keyring?.type !== HardwareKeyringType.hdKeyTree}
-=======
             isRemovable={keyring?.type !== KeyringType.hdKeyTree}
->>>>>>> develop
             closeMenu={closeMenu}
           />
         ) : null}
