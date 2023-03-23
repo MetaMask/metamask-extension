@@ -130,6 +130,7 @@ export enum TextColor {
   lineaTestnetInverse = 'lineatestnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
+  transparent = 'transparent',
 }
 
 export enum IconColor {
@@ -302,6 +303,7 @@ export const TEXT_ALIGN = {
   RIGHT: 'right',
   JUSTIFY: 'justify',
   END: 'end',
+  START: 'start',
 };
 
 export const TEXT_TRANSFORM = {
