@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
+  "connectingToLineaTestnet": {
+    "message": "Pieslēdzas Linea Goerli testa tīklam"
+  },
   "connectingToMainnet": {
     "message": "Savienojas ar galveno Ethereum tīklu"
   },
@@ -407,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testa tīkls"
   },
   "links": {
     "message": "Saites"

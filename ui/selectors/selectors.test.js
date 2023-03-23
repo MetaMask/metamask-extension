@@ -1,5 +1,5 @@
 import mockState from '../../test/data/mock-state.json';
-import { HardwareKeyringTypes } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import * as selectors from './selectors';
 
 describe('Selectors', () => {
@@ -105,38 +105,38 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
+      mockState.metamask.keyrings[0].type = KeyringType.imported;
       expect(selectors.isHardwareWallet(mockState)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
+      mockState.metamask.keyrings[0].type = KeyringType.ledger;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
+      mockState.metamask.keyrings[0].type = KeyringType.trezor;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.imported;
+      mockState.metamask.keyrings[0].type = KeyringType.imported;
       expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.ledger;
+      mockState.metamask.keyrings[0].type = KeyringType.ledger;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        HardwareKeyringTypes.ledger,
+        KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = HardwareKeyringTypes.trezor;
+      mockState.metamask.keyrings[0].type = KeyringType.trezor;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
-        HardwareKeyringTypes.trezor,
+        KeyringType.trezor,
       );
     });
   });
@@ -174,7 +174,7 @@ describe('Selectors', () => {
           ...mockState.metamask,
           keyrings: [
             {
-              type: HardwareKeyringTypes.ledger,
+              type: KeyringType.ledger,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
             },
           ],
@@ -389,5 +389,15 @@ describe('Selectors', () => {
   it('#getIsDesktopEnabled', () => {
     const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
     expect(isDesktopEnabled).toBeFalsy();
+  });
+
+  it('#getIsBridgeChain', () => {
+    mockState.metamask.provider.chainId = '0xa';
+    const isOptimismSupported = selectors.getIsBridgeChain(mockState);
+    expect(isOptimismSupported).toBeTruthy();
+
+    mockState.metamask.provider.chainId = '0xfa';
+    const isFantomSupported = selectors.getIsBridgeChain(mockState);
+    expect(isFantomSupported).toBeFalsy();
   });
 });
