@@ -25,7 +25,6 @@ export const MultichainConnectedSiteMenu = ({
   status,
   text,
 }) => {
-  console.log(globalMenuColor, status, text);
   const selectedAccount = useSelector(getSelectedIdentity);
   return (
     <Box

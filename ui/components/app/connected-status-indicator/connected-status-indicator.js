@@ -57,7 +57,6 @@ export default function ConnectedStatusIndicator({ onClick }) {
     status === STATUS_CONNECTED
       ? t('statusConnected')
       : t('statusNotConnected');
-  console.log(status, text);
   return (
     <button className="connected-status-indicator" onClick={onClick}>
       {process.env.MULTICHAIN ? (
