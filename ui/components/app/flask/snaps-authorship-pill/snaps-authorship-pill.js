@@ -33,6 +33,7 @@ import {
   AvatarBase,
 } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
+import SnapAvatar from '../snap-avatar';
 
 const SnapsAuthorshipPill = ({ snapId, className }) => {
   // We're using optional chaining with snapId, because with the current implementation
@@ -50,15 +51,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
     getTargetSubjectMetadata(state, snapId),
   );
 
-  const subjectName = subjectMetadata?.name ?? packageName;
-
-  const snapName = getSnapName(snapId);
-
-  const friendlyName = snapName === packageName ? subjectName : snapName;
-
-  const iconUrl = subjectMetadata?.iconUrl;
-
-  const fallbackIcon = friendlyName && friendlyName[0] ? friendlyName[0] : '?';
+  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   return (
     <Box
@@ -76,35 +69,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
       style={{ maxWidth: 'fit-content', width: '100%' }}
     >
       <Box>
-        <BadgeWrapper
-          badge={
-            <AvatarIcon
-              iconName={ICON_NAMES.SNAPS}
-              size={ICON_SIZES.XS}
-              backgroundColor={IconColor.infoDefault}
-              iconProps={{
-                size: ICON_SIZES.XS,
-                color: IconColor.infoInverse,
-              }}
-            />
-          }
-          position={BadgeWrapperPosition.bottomRight}
-        >
-          {iconUrl ? (
-            <AvatarFavicon size={Size.LG} src={iconUrl} />
-          ) : (
-            <AvatarBase
-              size={Size.LG}
-              display={DISPLAY.FLEX}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              color={TextColor.textAlternative}
-              style={{ borderWidth: '0px' }}
-            >
-              {fallbackIcon}
-            </AvatarBase>
-          )}
-        </BadgeWrapper>
+        <SnapAvatar snapId={snapId} />
       </Box>
       <Box
         marginLeft={4}
