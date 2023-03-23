@@ -1183,10 +1183,8 @@ const state = {
       },
       {
         type: KeyringType.ledger,
-        accounts: [
-          '0x9d0ba4ddac06032527b140912ec808ab9451b788'
-        ],
-      }
+        accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
+      },
     ],
     networkConfigurations: {
       'test-networkConfigurationId-1': {

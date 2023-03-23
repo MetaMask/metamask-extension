@@ -30,10 +30,8 @@ import {
   Size,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import {
-  HardwareKeyringType,
-  HardwareKeyringNames,
-} from '../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
@@ -45,15 +43,15 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 function getLabel(keyring = {}, t) {
   const { type } = keyring;
   switch (type) {
-    case HardwareKeyringType.qr:
+    case KeyringType.qr:
       return HardwareKeyringNames.qr;
-    case HardwareKeyringType.imported:
+    case KeyringType.imported:
       return t('imported');
-    case HardwareKeyringType.trezor:
+    case KeyringType.trezor:
       return HardwareKeyringNames.trezor;
-    case HardwareKeyringType.ledger:
+    case KeyringType.ledger:
       return HardwareKeyringNames.ledger;
-    case HardwareKeyringType.lattice:
+    case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
     default:
       return null;
@@ -212,7 +210,11 @@ export const AccountListItem = ({
             blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
             identity={identity}
             onClose={() => setAccountOptionsMenuOpen(false)}
+<<<<<<< HEAD
             isRemovable={keyring?.type !== HardwareKeyringType.hdKeyTree}
+=======
+            isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+>>>>>>> develop
             closeMenu={closeMenu}
           />
         ) : null}
