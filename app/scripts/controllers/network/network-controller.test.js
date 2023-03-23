@@ -3177,7 +3177,6 @@ describe('NetworkController', () => {
                         controller,
                         propertyPath: ['networkStatus'],
                         operation: () => {
-                          console.log('switching network to goerli');
                           controller.setProviderType('goerli');
                         },
                       });
@@ -3508,12 +3507,10 @@ describe('NetworkController', () => {
                       },
                     },
                     beforeCompleting: async () => {
-                      console.log('yes hi');
                       await waitForStateChanges({
                         controller,
                         propertyPath: ['networkStatus'],
                         operation: () => {
-                          console.log('switching network via setProviderType');
                           controller.setProviderType('goerli');
                         },
                       });
@@ -3533,7 +3530,6 @@ describe('NetworkController', () => {
                 },
               });
 
-              console.log('calling initializeProvider explicitly');
               await waitForStateChanges({
                 controller,
                 propertyPath: ['networkStatus'],
@@ -3549,7 +3545,6 @@ describe('NetworkController', () => {
               // block cache
               clock.runAll();
 
-              console.log('calling lookupNetwork explicitly');
               await waitForStateChanges({
                 controller,
                 propertyPath: ['networkStatus'],
