@@ -38,7 +38,7 @@ export const MultichainConnectedSiteMenu = ({
         position="bottom"
       >
         <BadgeWrapper
-          positionObj={{ bottom: 2, right: -4 , zIndex: 1}}
+          positionObj={{ bottom: 2, right: -4, zIndex: 1 }}
           badge={
             <Box
               backgroundColor={globalMenuColor}
