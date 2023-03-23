@@ -4,7 +4,6 @@ import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
 
 export default {
   title: 'Components/Multichain/MultichainConnectedSiteMenu',
-
   component: MultichainConnectedSiteMenu,
   argTypes: {
     globalMenuColor: {
@@ -20,6 +19,7 @@ export default {
   args: {
     globalMenuColor: Color.iconAlternative,
     text: 'Not Connected',
+    status: 'STATUS_NOT_CONNECTED',
   },
 };
 
@@ -33,6 +33,7 @@ export const ConnectedStory = Template.bind({});
 ConnectedStory.args = {
   globalMenuColor: Color.successDefault,
   text: 'Connected',
+  status: 'CONNECTED',
 };
 
 export const ConnectedtoAnotherAccountStory = Template.bind({});

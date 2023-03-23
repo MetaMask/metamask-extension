@@ -18,6 +18,7 @@ import {
 import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const MultichainConnectedSiteMenu = ({
   className,
@@ -25,6 +26,7 @@ export const MultichainConnectedSiteMenu = ({
   status,
   text,
 }) => {
+  const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedIdentity);
   return (
     <Box
@@ -34,7 +36,7 @@ export const MultichainConnectedSiteMenu = ({
       <Tooltip
         title={
           status === 'STATUS_NOT_CONNECTED'
-            ? text
+            ? t('statusNotConnectedAccount')
             : `${selectedAccount?.name} ${text.toLowerCase()}`
         }
         data-testid="multichain-connected-site-menu__tooltip"

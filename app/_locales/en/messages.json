@@ -3735,6 +3735,9 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
+  "statusNotConnectedAccount": {
+    "message": "No accounts connected"
+  },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"
   },
