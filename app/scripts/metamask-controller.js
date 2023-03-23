@@ -2629,7 +2629,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Automatic login via config password
       const password = process.env.CONF?.PASSWORD;
-      if (password) {
+      if (password && !process.env.IN_TEST) {
         await this.submitPassword(password);
       }
       // Automatic login via storage encryption key

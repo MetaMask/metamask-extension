@@ -155,8 +155,6 @@ describe('MV3 - Service worker restart', function () {
           mockedRequests[0].body.json.batch[0].properties.locale,
           'en',
         );
-
-        await new Promise((resolve) => setTimeout(resolve, 20_000));
       },
     );
   });
