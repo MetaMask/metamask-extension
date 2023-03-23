@@ -8,8 +8,7 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import { v4 as random } from 'uuid';
-import { isPlainObject } from '@metamask/utils';
-import { EthereumRpcError } from 'eth-rpc-errors';
+import { hasProperty, isPlainObject } from '@metamask/utils';
 import {
   INFURA_PROVIDER_TYPES,
   BUILT_IN_NETWORKS,
@@ -247,7 +246,7 @@ export default class NetworkController extends EventEmitter {
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
     } catch (error) {
-      if (error instanceof EthereumRpcError) {
+      if (hasProperty(error, 'code')) {
         let responseBody;
         try {
           responseBody = JSON.parse(error.message);
