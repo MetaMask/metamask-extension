@@ -30,6 +30,10 @@
     text-align: start;
   }
 
+  &__tooltip {
+    display: inline;
+  }
+
   &__selected-indicator {
     width: 4px;
     height: calc(100% - 8px);
