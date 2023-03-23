@@ -928,6 +928,8 @@ describe('util', () => {
           return 'Goerli test network';
         case 'sepolia':
           return 'Sepolia test network';
+        case 'lineatestnet':
+          return 'Linea Goerli test network';
         case 'localhost':
           return 'Localhost 8545';
         default:
@@ -976,6 +978,14 @@ describe('util', () => {
 
       expect(util.getNetworkName(provider, t)).toStrictEqual(
         'Sepolia test network',
+      );
+    });
+
+    it('should return Linea Goerli test network', () => {
+      provider.type = 'lineatestnet';
+
+      expect(util.getNetworkName(provider, t)).toStrictEqual(
+        'Linea Goerli test network',
       );
     });
 
