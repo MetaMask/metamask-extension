@@ -48,10 +48,13 @@ export const NetworkListItem = ({
       <AvatarNetwork name={name} src={iconSrc} />
       <Box className="network-list-item__network-name">
         <Text as="div" ellipsis>
-          <a href="#" onClick={(e) => {
-            e.preventDefault();
-            onClick()
-          }}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onClick();
+            }}
+          >
             {name}
           </a>
         </Text>

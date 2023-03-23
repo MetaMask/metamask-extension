@@ -1124,7 +1124,8 @@ export function getNetworkConfigurations(state) {
 export function getAllNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state);
   const showTestnetNetworks = getShowTestNetworks(state);
-  const localhostFilter = (network) => network.nickname?.toLowerCase().includes('localhost');
+  const localhostFilter = (network) =>
+    network.nickname?.toLowerCase().includes('localhost');
 
   const networks = [];
   // Mainnet always first
@@ -1141,7 +1142,8 @@ export function getAllNetworks(state) {
   networks.push(
     ...Object.entries(networkConfigurations)
       .filter(
-        ([, network]) => !localhostFilter(network) && !network.chainId === CHAIN_IDS.MAINNET,
+        ([, network]) =>
+          !localhostFilter(network) && network.chainId !== CHAIN_IDS.MAINNET,
       )
       .map(([, network]) => network),
   );
@@ -1163,9 +1165,7 @@ export function getAllNetworks(state) {
         },
       ], // Localhosts
       ...Object.entries(networkConfigurations)
-        .filter(([, network]) =>
-        localhostFilter(network),
-        )
+        .filter(([, network]) => localhostFilter(network))
         .map(([, network]) => network),
     );
   }
