@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import {
   ButtonBase,
   ICON_NAMES,
   AvatarAccount,
+  AvatarAccountVariant,
   Text,
 } from '../../component-library';
 import Box from '../../ui/box/box';
@@ -14,7 +16,9 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 
-export const AccountPicker = ({ account, onClick }) => {
+export const AccountPicker = ({ address, name, onClick }) => {
+  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+
   return (
     <ButtonBase
       className="multichain-account-picker"
@@ -24,9 +28,17 @@ export const AccountPicker = ({ account, onClick }) => {
       ellipsis
     >
       <Box display={DISPLAY.FLEX} gap={2}>
-        <AvatarAccount address={account.address} size={Size.SM} />
+        <AvatarAccount
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          address={address}
+          size={Size.SM}
+        />
         <Text as="span" fontWeight={FONT_WEIGHT.BOLD} ellipsis>
-          {account.name}
+          {name}
         </Text>
       </Box>
     </ButtonBase>
@@ -35,13 +47,13 @@ export const AccountPicker = ({ account, onClick }) => {
 
 AccountPicker.propTypes = {
   /**
-   * Account object
+   * Account name
    */
-  account: PropTypes.shape({
-    address: PropTypes.string,
-    name: PropTypes.string,
-    balance: PropTypes.string,
-  }).isRequired,
+  name: PropTypes.string.isRequired,
+  /**
+   * Account address, used for blockie or jazzicon
+   */
+  address: PropTypes.string.isRequired,
   /**
    * Action to perform when the account picker is clicked
    */

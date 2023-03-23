@@ -4,26 +4,26 @@ import { AccountPicker } from '.';
 const CHAOS_ACCOUNT = {
   address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',
   name: 'Account That Has A Really Really Really Really Really Long Name',
-  balance: '0x152387ad22c3f0',
 };
 
 export default {
   title: 'Components/Multichain/AccountPicker',
   component: AccountPicker,
   argTypes: {
-    account: {
-      control: 'object',
+    name: {
+      control: 'string',
+    },
+    address: {
+      control: 'string',
     },
     onClick: {
       action: 'onClick',
     },
   },
   args: {
-    account: {
-      address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',
-      name: 'Account 1',
-      balance: '0x152387ad22c3f0',
-    },
+    address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',
+    name: 'Account 1',
+    onClick: () => undefined,
   },
 };
 
@@ -38,4 +38,4 @@ export const ChaosStory = (args) => (
   </div>
 );
 ChaosStory.storyName = 'Chaos';
-ChaosStory.args = { account: CHAOS_ACCOUNT };
+ChaosStory.args = { name: CHAOS_ACCOUNT.name };
