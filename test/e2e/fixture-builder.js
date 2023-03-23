@@ -311,7 +311,8 @@ function onboardingFixture() {
         },
       },
       NetworkController: {
-        network: '1337',
+        networkId: '1337',
+        networkStatus: 'available',
         provider: {
           ticker: 'ETH',
           type: 'rpc',
