@@ -63,7 +63,7 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
-    network,
+    networkId,
     blockGasLimit,
     provider: { chainId },
   } = useSelector((state) => state.metamask);
@@ -76,7 +76,7 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       {},
-      network,
+      networkId,
       chainId,
     );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
@@ -101,7 +101,7 @@ const ConfirmTxScreen = ({ match }) => {
         {},
         {},
         {},
-        network,
+        networkId,
         chainId,
       );
       const prevTxData = prevUnconfTxList[prevIndex] || {};
@@ -114,7 +114,7 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       {},
-      network,
+      networkId,
       chainId,
     );
 
@@ -137,7 +137,7 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     currentNetworkTxList,
     match,
-    network,
+    networkId,
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
@@ -151,7 +151,7 @@ const ConfirmTxScreen = ({ match }) => {
       unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
-      network,
+      networkId,
       chainId,
     );
 
