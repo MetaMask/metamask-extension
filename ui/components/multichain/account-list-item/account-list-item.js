@@ -87,9 +87,7 @@ export const AccountListItem = ({
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
       })}
-      as="button"
-      onClick={(e) => {
-        e.preventDefault();
+      onClick={() => {
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
@@ -127,10 +125,14 @@ export const AccountListItem = ({
                   position="bottom"
                   wrapperClassName="multichain-account-list-item__tooltip"
                 >
-                  {identity.name}
+                  <a href="#" onClick={onClick}>
+                    {identity.name}
+                  </a>
                 </Tooltip>
               ) : (
-                identity.name
+                <a href="#" onClick={onClick}>
+                  {identity.name}
+                </a>
               )}
             </Text>
             <Box
@@ -194,13 +196,6 @@ export const AccountListItem = ({
           onClick={(e) => {
             e.stopPropagation();
             setAccountOptionsMenuOpen(true);
-          }}
-          as="div"
-          tabIndex={0}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              setAccountOptionsMenuOpen(true);
-            }
           }}
           data-testid="account-list-item-menu-button"
         />
