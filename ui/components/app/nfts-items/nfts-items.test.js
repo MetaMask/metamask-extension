@@ -41,7 +41,7 @@ describe('NFTs Item Component', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   it('should expand NFT collection showing individual NFTs', async () => {
-    const { queryByTestId, queryAllByTestId, rerender } = renderWithProvider(
+    const { queryByTestId, queryAllByTestId } = renderWithProvider(
       <NftsItems {...props} />,
       mockStore,
     );
@@ -54,16 +54,20 @@ describe('NFTs Item Component', () => {
 
     fireEvent.click(collectionExpanderButton);
 
-    expect(updateNftDropDownState).toHaveBeenCalledWith({
+    const expectedParams = {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
         '0x5': {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': true,
           '0x495f947276749Ce646f68AC8c248420045cb7b5e': false,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': true,
         },
       },
-    });
+    };
 
-    rerender(<NftsItems {...props} />, mockStore);
+    expect(updateNftDropDownState).toHaveBeenCalledWith(expectedParams);
+
+    // Force rerender component with state/store update
+    mockState.metamask.nftsDropdownState = expectedParams;
+    renderWithProvider(<NftsItems {...props} />, mockStore);
 
     expect(queryAllByTestId('nft-wrapper')).toHaveLength(8);
   });

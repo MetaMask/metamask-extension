@@ -67,7 +67,7 @@ import { ButtonLink, Text, TextVariant } from '../../component-library';
 </Text>
 
 <Text variant={TextVariant.bodyXs}>
-  Inherits the font-size of the parent element and example with textProps override for a success color.
+  Inherits the font-size of the parent element and example with override for a success color.
    <ButtonLink size={Size.inherit}>Learn more</ButtonLink>
 </Text>
 ```
@@ -99,6 +99,24 @@ When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 import { ButtonLink } from '../../component-library';
 
 <ButtonLink href="/">Href example</ButtonLink>;
+```
+
+### External Link
+
+When an `externalLink` prop is passed it adds the `target="_blank"` and `rel="noopener noreferrer"` attributes.
+
+`rel="noreferrer noopener"` is used in links to prevent security vulnerabilities that can be exploited by malicious websites. It disables the window.opener property and prevents the new page from sending the referrer information, providing an additional layer of security.
+
+<Canvas>
+  <Story id="components-componentlibrary-buttonlink--external-link" />
+</Canvas>
+
+```jsx
+import { ButtonLink } from '../../component-library';
+
+<ButtonLink href="https://metamask.io" externalLink>
+  Anchor element with external link
+</ButtonLink>;
 ```
 
 ### Hit area

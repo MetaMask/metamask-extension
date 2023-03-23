@@ -6,7 +6,7 @@
 
     width: 100%;
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--color-border-default);
+    border-bottom: 1px solid var(--color-border-muted);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -21,9 +21,30 @@
       font-size: 1rem;
       text-align: center;
     }
+
+    .mm-avatar-icon {
+      margin: 16px 16px 16px 0;
+    }
+
+    &__tooltip-icon {
+      margin-left: auto !important;
+      padding-left: 16px;
+
+      i {
+        color: var(--color-icon-muted);
+      }
+
+      &__warning i {
+        color: var(--color-warning-default);
+      }
+    }
   }
 
   .permission-label-item {
     font-weight: bold;
   }
+}
+
+.tooltip-label-item {
+  font-weight: bold;
 }

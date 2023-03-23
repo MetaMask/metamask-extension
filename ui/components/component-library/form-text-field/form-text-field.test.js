@@ -234,17 +234,6 @@ describe('FormTextField', () => {
     expect(getByRole('textbox')).toHaveValue('test value');
     expect(getByRole('textbox')).toHaveAttribute('readonly', '');
   });
-  // required
-  it('should render with required asterisk after Label', () => {
-    const { getByTestId } = render(
-      <FormTextField
-        required
-        label="test label"
-        labelProps={{ 'data-testid': 'label-test-id' }}
-      />,
-    );
-    expect(getByTestId('label-test-id')).toHaveTextContent('test label*');
-  });
   // size = SIZES.MD
   it('should render with different size classes', () => {
     const { getByTestId } = render(

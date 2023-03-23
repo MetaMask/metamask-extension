@@ -1,7 +1,6 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
-import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { NETWORK_EVENTS } from './network';
@@ -12,7 +11,6 @@ export default class PreferencesController {
    * @typedef {object} PreferencesController
    * @param {object} opts - Overrides the defaults for the initial state of this.store
    * @property {object} store The stored object containing a users preferences, stored in local storage
-   * @property {Array} store.frequentRpcList A list of custom rpcs to provide the user
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
    * @property {object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
@@ -25,7 +23,6 @@ export default class PreferencesController {
    */
   constructor(opts = {}) {
     const initState = {
-      frequentRpcListDetail: [],
       useBlockie: false,
       useNonceField: false,
       usePhishDetect: true,
@@ -70,7 +67,6 @@ export default class PreferencesController {
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
-      openSeaTransactionSecurityProviderPopoverHasBeenShown: false,
       ...opts.initState,
     };
 
@@ -204,16 +200,6 @@ export default class PreferencesController {
   setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
     this.store.updateState({
       transactionSecurityCheckEnabled,
-    });
-  }
-
-  /**
-   * Setter for the `openSeaTransactionSecurityProviderPopoverHasBeenShown` property
-   *
-   */
-  setOpenSeaTransactionSecurityProviderPopoverHasBeenShown() {
-    this.store.updateState({
-      openSeaTransactionSecurityProviderPopoverHasBeenShown: true,
     });
   }
 
@@ -397,67 +383,6 @@ export default class PreferencesController {
     identities[address].name = label;
     this.store.updateState({ identities });
     return label;
-  }
-
-  /**
-   * Adds custom RPC url to state.
-   *
-   * @param {string} rpcUrl - The RPC url to add to frequentRpcList.
-   * @param {string} chainId - The chainId of the selected network.
-   * @param {string} [ticker] - Ticker symbol of the selected network.
-   * @param {string} [nickname] - Nickname of the selected network.
-   * @param {object} [rpcPrefs] - Optional RPC preferences, such as the block explorer URL
-   */
-  upsertToFrequentRpcList(
-    rpcUrl,
-    chainId,
-    ticker = 'ETH',
-    nickname = '',
-    rpcPrefs = {},
-  ) {
-    const rpcList = this.getFrequentRpcListDetail();
-
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === rpcUrl;
-    });
-    if (index !== -1) {
-      rpcList.splice(index, 1, { rpcUrl, chainId, ticker, nickname, rpcPrefs });
-      return;
-    }
-
-    if (!isPrefixedFormattedHexString(chainId)) {
-      throw new Error(`Invalid chainId: "${chainId}"`);
-    }
-
-    rpcList.push({ rpcUrl, chainId, ticker, nickname, rpcPrefs });
-    this.store.updateState({ frequentRpcListDetail: rpcList });
-  }
-
-  /**
-   * Removes custom RPC url from state.
-   *
-   * @param {string} url - The RPC url to remove from frequentRpcList.
-   * @returns {Promise<Array>} Promise resolving to updated frequentRpcList.
-   */
-  async removeFromFrequentRpcList(url) {
-    const rpcList = this.getFrequentRpcListDetail();
-    const index = rpcList.findIndex((element) => {
-      return element.rpcUrl === url;
-    });
-    if (index !== -1) {
-      rpcList.splice(index, 1);
-    }
-    this.store.updateState({ frequentRpcListDetail: rpcList });
-    return rpcList;
-  }
-
-  /**
-   * Getter for the `frequentRpcListDetail` property.
-   *
-   * @returns {Array<Array>} An array of rpc urls.
-   */
-  getFrequentRpcListDetail() {
-    return this.store.getState().frequentRpcListDetail;
   }
 
   /**
