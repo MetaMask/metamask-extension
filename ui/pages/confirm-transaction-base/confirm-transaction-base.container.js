@@ -64,7 +64,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '../../../shared/constants/transaction';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -106,8 +105,6 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     nextNonce,
-    allNftContracts,
-    selectedAddress,
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -185,12 +182,6 @@ const mapStateToProps = (state, ownProps) => {
     customTxParamsData,
   );
 
-  const isNftTransfer = Boolean(
-    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
-      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
-    }),
-  );
-
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
@@ -237,7 +228,6 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state) && !isNftTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,

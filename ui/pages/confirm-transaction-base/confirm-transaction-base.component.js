@@ -59,6 +59,8 @@ import {
 import TransactionAlerts from '../../components/app/transaction-alerts';
 import { ConfirmHexData } from '../../components/app/confirm-hexdata';
 import { ConfirmData } from '../../components/app/confirm-data';
+import { ConfirmTitle } from '../../components/app/confirm-title';
+import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -109,7 +111,6 @@ export default class ConfirmTransactionBase extends Component {
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
-    hideSubtitle: PropTypes.bool,
     tokenAddress: PropTypes.string,
     customTokenAmount: PropTypes.string,
     dappProposedTokenAmount: PropTypes.string,
@@ -854,38 +855,24 @@ export default class ConfirmTransactionBase extends Component {
   renderTitleComponent() {
     const { title, hexTransactionAmount, txData } = this.props;
 
-    // Title string passed in by props takes priority
-    if (title) {
-      return null;
-    }
-
-    const isContractInteraction =
-      txData.type === TransactionType.contractInteraction;
-
     return (
-      <UserPreferencedCurrencyDisplay
-        value={hexTransactionAmount}
-        type={PRIMARY}
-        showEthLogo
-        ethLogoHeight={24}
-        hideLabel={!isContractInteraction}
-        showCurrencySuffix={isContractInteraction}
+      <ConfirmTitle
+        title={title}
+        hexTransactionAmount={hexTransactionAmount}
+        txData={txData}
       />
     );
   }
 
   renderSubtitleComponent() {
-    const { subtitleComponent, hexTransactionAmount } = this.props;
+    const { subtitleComponent, hexTransactionAmount, txData } = this.props;
 
     return (
-      subtitleComponent || (
-        <UserPreferencedCurrencyDisplay
-          value={hexTransactionAmount}
-          type={SECONDARY}
-          showEthLogo
-          hideLabel
-        />
-      )
+      <ConfirmSubTitle
+        hexTransactionAmount={hexTransactionAmount}
+        subtitleComponent={subtitleComponent}
+        txData={txData}
+      />
     );
   }
 
@@ -963,8 +950,6 @@ export default class ConfirmTransactionBase extends Component {
       toEns,
       toNickname,
       methodData,
-      title,
-      hideSubtitle,
       tokenAddress,
       contentComponent,
       onEdit,
@@ -1042,11 +1027,9 @@ export default class ConfirmTransactionBase extends Component {
           toNickname={toNickname}
           showEdit={!isContractInteractionFromDapp && Boolean(onEdit)}
           action={functionType}
-          title={title}
           image={image}
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
-          hideSubtitle={hideSubtitle}
           detailsComponent={this.renderDetails()}
           dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
