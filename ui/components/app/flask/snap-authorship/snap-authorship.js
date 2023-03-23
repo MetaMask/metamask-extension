@@ -28,7 +28,7 @@ import {
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 
-const SnapsAuthorshipPill = ({ snapId, className }) => {
+const SnapAuthorship = ({ snapId, className }) => {
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata
@@ -48,7 +48,7 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
 
   return (
     <Box
-      className={classnames('snaps-authorship-pill', className)}
+      className={classnames('snaps-authorship', className)}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
@@ -92,15 +92,15 @@ const SnapsAuthorshipPill = ({ snapId, className }) => {
   );
 };
 
-SnapsAuthorshipPill.propTypes = {
+SnapAuthorship.propTypes = {
   /**
    * The id of the snap
    */
   snapId: PropTypes.string,
   /**
-   * The className of the SnapsAuthorshipPill
+   * The className of the SnapAuthorship
    */
   className: PropTypes.string,
 };
 
-export default SnapsAuthorshipPill;
+export default SnapAuthorship;
