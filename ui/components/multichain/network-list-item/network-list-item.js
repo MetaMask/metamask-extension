@@ -35,7 +35,6 @@ export const NetworkListItem = ({
       className={classnames('network-list-item', {
         'network-list-item--selected': selected,
       })}
-      as="button"
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
@@ -49,7 +48,9 @@ export const NetworkListItem = ({
       <AvatarNetwork name={name} src={iconSrc} />
       <Box className="network-list-item__network-name">
         <Text as="div" ellipsis>
-          {name}
+          <a href="#" onClick={onClick}>
+            {name}
+          </a>
         </Text>
       </Box>
       {onDeleteClick ? (
@@ -59,11 +60,8 @@ export const NetworkListItem = ({
           iconName={ICON_NAMES.TRASH}
           ariaLabel={t('deleteNetwork')}
           size={Size.SM}
-          as="div"
-          tabIndex={0}
           onClick={(e) => {
             e.stopPropagation();
-            e.preventDefault();
             onDeleteClick();
           }}
         />
