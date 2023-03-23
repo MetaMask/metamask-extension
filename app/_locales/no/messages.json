@@ -160,6 +160,9 @@
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Oppretter forbindelse med Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
   },

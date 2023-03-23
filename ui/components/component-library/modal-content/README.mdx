@@ -1,0 +1,115 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { ModalContent } from './modal-content';
+
+# ModalContent
+
+`ModalContent` is the container for the modal dialog's content
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--default-story" />
+</Canvas>
+
+## Props
+
+The `ModalContent` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+
+<ArgsTable of={ModalContent} />
+
+### Children
+
+Use the `children` prop to render the content of `ModalContent`
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--children" />
+</Canvas>
+
+```jsx
+import { ModalContent, Text } from '../../component-library';
+
+<ModalContent>
+  <ModalHeader />
+  <Text>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio,
+    reiciendis assumenda dolorum mollitia saepe, optio at aliquam molestias
+    omnis quae corporis nesciunt natus, quas tempore ut ullam eaque fuga. Velit.
+  </Text>
+</ModalContent>;
+```
+
+### Size
+
+Currently the `ModalContent` supports a single size, this decision was made after we ran an audit on all modal sizes in the extension codebase and found that all modals could be made to fit the `ModalContentSize.Sm`(360px) size.
+
+If you do require a larger modal size you can use the Box props or add a className to override the default size.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--size" />
+</Canvas>
+
+```jsx
+import { BLOCK_SIZES } from '../../../helpers/constants/design-system';
+import { ModalContent,s Text } from '../../component-library';
+
+<ModalContent {...args} marginBottom={4}>
+  <Text>ModalContentSize.Sm default and only size 360px max-width</Text>
+</ModalContent>
+<ModalContent
+  {...args}
+  width={[
+    BLOCK_SIZES.FULL,
+    BLOCK_SIZES.THREE_FOURTHS,
+    BLOCK_SIZES.HALF,
+    BLOCK_SIZES.ONE_THIRD,
+  ]}
+  marginBottom={4}
+>
+  <Text>
+    Using width Box props and responsive array props <br /> [
+    BLOCK_SIZES.FULL, BLOCK_SIZES.THREE_FOURTHS, BLOCK_SIZES.HALF,
+    BLOCK_SIZES.ONE_THIRD, ]
+  </Text>
+</ModalContent>
+<ModalContent {...args} marginBottom={4} style={{ maxWidth: 800 }}>
+  Adding a className and setting a max width (max-width: 800px)
+</ModalContent>
+```
+
+### Modal Content Ref
+
+Use the `modalContentRef` prop to pass a ref to the `ModalContent` component. This is primarily used with the `closeOnOutsideClick` prop on the `Modal` component. It allows the `Modal` to close when the user clicks outside of the `ModalContent` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--modal-content-ref" />
+</Canvas>
+
+```jsx
+import React, { useEffect, useRef, useState } from 'react';
+import { ModalContent, Text } from '../../component-library';
+
+const [show, setShow] = useState(false);
+const modalContentRef = useRef<HTMLDivElement>(null);
+
+const handleClickOutside = (event: MouseEvent) => {
+  if (
+    modalContentRef?.current &&
+    !modalContentRef.current.contains(event.target as Node)
+  ) {
+    setShow(false);
+  }
+};
+
+useEffect(() => {
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
+
+<Button onClick={() => setShow(true)}>Show ModalContent</Button>
+{show && (
+  <ModalContent modalContentRef={modalContentRef}>
+    Click outside of this ModalContent to close
+  </ModalContent>
+)}
+```
