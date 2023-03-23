@@ -1,5 +1,5 @@
 import React from 'react';
-import { Color } from '../../../helpers/constants/design-system';
+import { BackgroundColor, Color } from '../../../helpers/constants/design-system';
 import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
 
 export default {
@@ -38,6 +38,6 @@ ConnectedStory.args = {
 
 export const ConnectedtoAnotherAccountStory = Template.bind({});
 ConnectedtoAnotherAccountStory.args = {
-  globalMenuColor: Color.warningDefault,
+  globalMenuColor: BackgroundColor.backgroundDefault,
   status: 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT',
 };
