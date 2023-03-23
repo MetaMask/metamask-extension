@@ -4,7 +4,7 @@ exports[`Input should render correctly 1`] = `
 <div>
   <input
     autocomplete="off"
-    class="box mm-text mm-input mm-text--body-md mm-text--color-text-default box--flex-direction-row box--background-color-transparent box--border-style-none"
+    class="box mm-text mm-input mm-text--body-md box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
     type="text"
     value=""
   />

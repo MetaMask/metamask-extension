@@ -100,6 +100,24 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
+export function getConnectedSubjectsForAllAddresses(state) {
+  const subjects = getPermissionSubjects(state);
+  const subjectMetadata = getSubjectMetadata(state);
+
+  const accountsToConnections = {};
+  Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
+    const exposedAccounts = getAccountsFromSubject(subjectValue);
+    exposedAccounts.forEach((address) => {
+      if (!accountsToConnections[address]) {
+        accountsToConnections[address] = [];
+      }
+      accountsToConnections[address].push(subjectMetadata[subjectKey] || {});
+    });
+  });
+
+  return accountsToConnections;
+}
+
 export function getSubjectsWithPermission(state, permissionName) {
   const subjects = getPermissionSubjects(state);
 

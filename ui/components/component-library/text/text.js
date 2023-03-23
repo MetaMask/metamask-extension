@@ -89,7 +89,6 @@ export const Text = React.forwardRef(
         [`mm-text--ellipsis`]: Boolean(ellipsis),
         [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
         [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
-        [`mm-text--color-${color}`]: Boolean(color),
         [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },
     );
@@ -100,6 +99,7 @@ export const Text = React.forwardRef(
         className={classnames(computedClassName)}
         as={Tag}
         dir={textDirection}
+        color={color}
         {...props}
       >
         {children}
