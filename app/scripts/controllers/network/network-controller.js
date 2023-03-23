@@ -25,6 +25,8 @@ import {
 import { EVENT } from '../../../../shared/constants/metametrics';
 import { createNetworkClient } from './create-network-client';
 
+// log.enableAll();
+
 /**
  * @typedef {object} NetworkConfiguration
  * @property {string} rpcUrl - RPC target URL.
@@ -33,6 +35,12 @@ import { createNetworkClient } from './create-network-client';
  * @property {object} [rpcPrefs] - Personalized preferences.
  * @property {string} [nickname] - Personalized network name.
  */
+
+/**
+ * The error code that is used for RPC requests that produce an "internal"
+ * error, borrowed from `eth-rpc-errors`.
+ */
+const INTERNAL_RPC_ERROR_CODE = -32603;
 
 function buildDefaultProviderConfigState() {
   if (process.env.IN_TEST) {
@@ -237,6 +245,8 @@ export default class NetworkController extends EventEmitter {
       networkChanged = true;
     });
 
+    // console.log('looking up network');
+
     try {
       const results = await Promise.all([
         this._getNetworkId(),
@@ -246,6 +256,17 @@ export default class NetworkController extends EventEmitter {
       supportsEIP1559 = results[1];
       networkStatus = NetworkStatus.Available;
     } catch (error) {
+      /*
+      console.log(
+        'error',
+        error,
+        'error.code',
+        error.code,
+        'error.message',
+        error.message,
+      );
+      */
+
       if (hasProperty(error, 'code')) {
         let responseBody;
         try {
@@ -259,6 +280,8 @@ export default class NetworkController extends EventEmitter {
           responseBody.error === INFURA_BLOCKED_KEY
         ) {
           networkStatus = NetworkStatus.Blocked;
+        } else if (error.code === INTERNAL_RPC_ERROR_CODE) {
+          networkStatus = NetworkStatus.Unknown;
         } else {
           networkStatus = NetworkStatus.Unavailable;
         }
@@ -274,6 +297,7 @@ export default class NetworkController extends EventEmitter {
     if (networkChanged) {
       // If the network has changed, then `lookupNetwork` either has been or is
       // in the process of being called, so we don't need to go further.
+      // console.log('network has changed! not continuing');
       return;
     }
 
@@ -365,10 +389,19 @@ export default class NetworkController extends EventEmitter {
     const { provider } = this.getProviderAndBlockTracker();
     const ethQuery = new EthQuery(provider);
 
+    // console.log('fetching eth_getBlockByNumber...');
     return new Promise((resolve, reject) => {
       ethQuery.sendAsync(
         { method: 'eth_getBlockByNumber', params: ['latest', false] },
         (error, result) => {
+          /*
+          console.log(
+            'eth_getBlockByNumber resolved with error',
+            error,
+            'result',
+            result,
+          );
+          */
           if (error) {
             reject(error);
           } else {
@@ -388,8 +421,10 @@ export default class NetworkController extends EventEmitter {
     const { provider } = this.getProviderAndBlockTracker();
     const ethQuery = new EthQuery(provider);
 
+    // console.log('fetching net_version...');
     return await new Promise((resolve, reject) => {
       ethQuery.sendAsync({ method: 'net_version' }, (error, result) => {
+        // console.log('net_version resolved with error', error, 'result', result);
         if (error) {
           reject(error);
         } else {

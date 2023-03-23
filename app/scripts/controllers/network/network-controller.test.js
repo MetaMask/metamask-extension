@@ -1535,8 +1535,8 @@ describe('NetworkController', () => {
                 });
                 expect(controller.store.getState().networkId).toBe(networkId);
 
-                // Advance block tracker loop to force a fresh call to
-                // eth_getBlockByNumber
+                // Force the block tracker to request a new block to clear the
+                // block cache
                 clock.runAll();
 
                 await waitForStateChanges({
@@ -1678,7 +1678,7 @@ describe('NetworkController', () => {
         });
 
         describe('if the request for eth_getBlockByNumber responds with a generic error', () => {
-          it('stores the fact that the network is unavailable', async () => {
+          it('stores the network status as unavailable if the error does not translate to an internal RPC error', async () => {
             await withController(
               {
                 state: {
@@ -1692,16 +1692,57 @@ describe('NetworkController', () => {
               },
               async ({ controller, network }) => {
                 network.mockEssentialRpcCalls({
-                  eth_getBlockByNumber: {
-                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  net_version: {
+                    times: 2,
                   },
+                  // Ensure that each call to eth_blockNumber returns a different
+                  // block number, otherwise the first eth_getBlockByNumber
+                  // response will get cached under the first block number
+                  eth_blockNumber: [
+                    {
+                      response: {
+                        result: '0x1',
+                      },
+                    },
+                    {
+                      response: {
+                        result: '0x2',
+                      },
+                    },
+                  ],
+                  eth_getBlockByNumber: [
+                    {
+                      request: {
+                        params: ['0x1', false],
+                      },
+                      response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+                    },
+                    {
+                      request: {
+                        params: ['0x2', false],
+                      },
+                      response: {
+                        error: 'some error',
+                        httpStatus: 405,
+                      },
+                    },
+                  ],
                 });
-                await withoutCallingLookupNetwork({
+
+                await waitForStateChanges({
                   controller,
+                  propertyPath: ['networkStatus'],
                   operation: async () => {
                     await controller.initializeProvider();
                   },
                 });
+                expect(controller.store.getState().networkStatus).toBe(
+                  'available',
+                );
+
+                // Force the block tracker to request a new block to clear the
+                // block cache
+                clock.runAll();
 
                 await waitForStateChanges({
                   controller,
@@ -1716,6 +1757,87 @@ describe('NetworkController', () => {
               },
             );
           });
+
+          it('stores the network status as unknown if the error translates to an internal RPC error', async () => {
+            await withController(
+              {
+                state: {
+                  provider: {
+                    type: networkType,
+                    // NOTE: This doesn't need to match the logical chain ID of
+                    // the network selected, it just needs to exist
+                    chainId: '0x9999999',
+                  },
+                },
+              },
+              async ({ controller, network }) => {
+                network.mockEssentialRpcCalls({
+                  net_version: {
+                    times: 2,
+                  },
+                  // Ensure that each call to eth_blockNumber returns a different
+                  // block number, otherwise the first eth_getBlockByNumber
+                  // response will get cached under the first block number
+                  eth_blockNumber: [
+                    {
+                      response: {
+                        result: '0x1',
+                      },
+                    },
+                    {
+                      response: {
+                        result: '0x2',
+                      },
+                    },
+                  ],
+                  eth_getBlockByNumber: [
+                    {
+                      request: {
+                        params: ['0x1', false],
+                      },
+                      response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+                    },
+                    {
+                      request: {
+                        params: ['0x2', false],
+                      },
+                      response: {
+                        error: 'some error',
+                        httpStatus: 500,
+                      },
+                    },
+                  ],
+                });
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkStatus'],
+                  operation: async () => {
+                    await controller.initializeProvider();
+                  },
+                });
+                expect(controller.store.getState().networkStatus).toBe(
+                  'available',
+                );
+
+                // Force the block tracker to request a new block to clear the
+                // block cache
+                clock.runAll();
+
+                await waitForStateChanges({
+                  controller,
+                  propertyPath: ['networkStatus'],
+                  operation: async () => {
+                    await controller.lookupNetwork();
+                  },
+                });
+                expect(controller.store.getState().networkStatus).toBe(
+                  'unknown',
+                );
+              },
+            );
+          });
+
 
           it('clears the ID of the network from state', async () => {
             await withController(
@@ -1945,19 +2067,59 @@ describe('NetworkController', () => {
               },
               async ({ controller, network: network1 }) => {
                 network1.mockEssentialRpcCalls({
-                  eth_getBlockByNumber: {
-                    beforeCompleting: async () => {
-                      await waitForStateChanges({
-                        controller,
-                        propertyPath: ['networkStatus'],
-                        operation: () => {
-                          controller.setActiveNetwork(
-                            'testNetworkConfigurationId',
-                          );
-                        },
-                      });
-                    },
+                  net_version: {
+                    times: 2,
                   },
+                  // Ensure that each call to eth_blockNumber returns a different
+                  // block number, otherwise the first eth_getBlockByNumber
+                  // response will get cached under the first block number
+                  eth_blockNumber: [
+                    {
+                      response: {
+                        result: '0x1',
+                      },
+                    },
+                    {
+                      response: {
+                        result: '0x2',
+                      },
+                    },
+                  ],
+                  eth_getBlockByNumber: [
+                    {
+                      request: {
+                        params: ['0x1', false],
+                      },
+                      response: {
+                        result: {
+                          ...BLOCK,
+                          number: '0x1',
+                        },
+                      },
+                    },
+                    {
+                      request: {
+                        params: ['0x2', false],
+                      },
+                      response: {
+                        result: {
+                          ...BLOCK,
+                          number: '0x2',
+                        },
+                      },
+                      beforeCompleting: async () => {
+                        await waitForStateChanges({
+                          controller,
+                          propertyPath: ['networkStatus'],
+                          operation: () => {
+                            controller.setActiveNetwork(
+                              'testNetworkConfigurationId',
+                            );
+                          },
+                        });
+                      },
+                    },
+                  ],
                 });
                 const network2 = new NetworkCommunications({
                   networkClientType: 'custom',
@@ -1970,12 +2132,21 @@ describe('NetworkController', () => {
                     response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
                   },
                 });
-                await withoutCallingLookupNetwork({
+
+                await waitForStateChanges({
                   controller,
+                  propertyPath: ['networkStatus'],
                   operation: async () => {
                     await controller.initializeProvider();
                   },
                 });
+                expect(controller.store.getState().networkStatus).toBe(
+                  'available',
+                );
+
+                // Force the block tracker to request a new block to clear the
+                // block cache
+                clock.runAll();
 
                 await waitForStateChanges({
                   controller,
@@ -1984,9 +2155,8 @@ describe('NetworkController', () => {
                     await controller.lookupNetwork();
                   },
                 });
-
                 expect(controller.store.getState().networkStatus).toBe(
-                  'unavailable',
+                  'unknown'
                 );
               },
             );
@@ -2433,7 +2603,7 @@ describe('NetworkController', () => {
       });
 
       describe('if the request for eth_getBlockByNumber responds successfully, but the request for net_version responds with a generic error', () => {
-        it('stores the fact that the network is unavailable', async () => {
+        it('stores the network status as available if the error does not translate to an internal RPC error', async () => {
           await withController(
             {
               state: {
@@ -2446,19 +2616,36 @@ describe('NetworkController', () => {
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls({
-                // This results in a successful call to eth_getBlockByNumber
-                // implicitly
-                latestBlock: BLOCK,
-                net_version: {
-                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                net_version: [
+                  {
+                    response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                  },
+                  {
+                    response: {
+                      error: 'some error',
+                      httpStatus: 405,
+                    }
+                  },
+                ],
+                eth_blockNumber: {
+                  times: 2,
                 },
               });
-              await withoutCallingLookupNetwork({
+
+              await waitForStateChanges({
                 controller,
+                propertyPath: ['networkStatus'],
                 operation: async () => {
                   await controller.initializeProvider();
                 },
               });
+              expect(controller.store.getState().networkStatus).toBe(
+                'available',
+              );
+
+              // Force the block tracker to request a new block to clear the
+              // block cache
+              clock.runAll();
 
               await waitForStateChanges({
                 controller,
@@ -2467,10 +2654,62 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
-
               expect(controller.store.getState().networkStatus).toBe(
                 'unavailable',
               );
+            },
+          );
+        });
+
+        it('stores the network status as unknown if the error translates to an internal RPC error', async () => {
+          await withController(
+            {
+              state: {
+                provider: {
+                  type: 'rpc',
+                  rpcUrl: 'https://mock-rpc-url',
+                  chainId: '0x1337',
+                },
+              },
+            },
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls({
+                net_version: [
+                  {
+                    response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                  },
+                  {
+                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  },
+                ],
+                eth_blockNumber: {
+                  times: 2,
+                },
+              });
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkStatus'],
+                operation: async () => {
+                  await controller.initializeProvider();
+                },
+              });
+              expect(controller.store.getState().networkStatus).toBe(
+                'available',
+              );
+
+              // Force the block tracker to request a new block to clear the
+              // block cache
+              clock.runAll();
+
+              await waitForStateChanges({
+                controller,
+                propertyPath: ['networkStatus'],
+                operation: async () => {
+                  await controller.lookupNetwork();
+                },
+              });
+              expect(controller.store.getState().networkStatus).toBe('unknown');
             },
           );
         });
@@ -2674,16 +2913,54 @@ describe('NetworkController', () => {
             },
             async ({ controller, network }) => {
               network.mockEssentialRpcCalls({
-                eth_getBlockByNumber: {
-                  response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                net_version: {
+                  times: 2,
                 },
+                // Ensure that each call to eth_blockNumber returns a different
+                // block number, otherwise the first eth_getBlockByNumber
+                // response will get cached under the first block number
+                eth_blockNumber: [
+                  {
+                    response: {
+                      result: '0x1',
+                    },
+                  },
+                  {
+                    response: {
+                      result: '0x2',
+                    },
+                  },
+                ],
+                eth_getBlockByNumber: [
+                  {
+                    request: {
+                      params: ['0x1', false],
+                    },
+                    response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
+                  },
+                  {
+                    request: {
+                      params: ['0x2', false],
+                    },
+                    response: UNSUCCESSFUL_JSON_RPC_RESPONSE,
+                  },
+                ],
               });
-              await withoutCallingLookupNetwork({
+
+              await waitForStateChanges({
                 controller,
+                propertyPath: ['networkStatus'],
                 operation: async () => {
                   await controller.initializeProvider();
                 },
               });
+              expect(controller.store.getState().networkStatus).toBe(
+                'available',
+              );
+
+              // Force the block tracker to request a new block to clear the
+              // block cache
+              clock.runAll();
 
               await waitForStateChanges({
                 controller,
@@ -2692,10 +2969,7 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
-
-              expect(controller.store.getState().networkStatus).toBe(
-                'unavailable',
-              );
+              expect(controller.store.getState().networkStatus).toBe('unknown');
             },
           );
         });
@@ -2886,29 +3160,70 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: 'rpc',
-                  rpcUrl: 'https://mock-rpc-url-2',
+                  rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
-                  ticker: 'RPC',
-                },
-                networkDetails: {
-                  EIPS: {},
                 },
               },
             },
             async ({ controller, network: network1 }) => {
               network1.mockEssentialRpcCalls({
-                net_version: {
-                  response: SUCCESSFUL_NET_VERSION_RESPONSE,
-                  beforeCompleting: async () => {
-                    await waitForStateChanges({
-                      controller,
-                      propertyPath: ['networkStatus'],
-                      operation: () => {
-                        controller.setProviderType('goerli');
-                      },
-                    });
+                net_version: [
+                  {
+                    response: SUCCESSFUL_NET_VERSION_RESPONSE,
                   },
-                },
+                  {
+                    response: SUCCESSFUL_NET_VERSION_RESPONSE,
+                    beforeCompleting: async () => {
+                      await waitForStateChanges({
+                        controller,
+                        propertyPath: ['networkStatus'],
+                        operation: () => {
+                          console.log('switching network to goerli');
+                          controller.setProviderType('goerli');
+                        },
+                      });
+                    },
+                  },
+                ],
+                // Ensure that each call to eth_blockNumber returns a different
+                // block number, otherwise the first eth_getBlockByNumber
+                // response will get cached under the first block number
+                eth_blockNumber: [
+                  {
+                    response: {
+                      result: '0x1',
+                    },
+                  },
+                  {
+                    response: {
+                      result: '0x2',
+                    },
+                  },
+                ],
+                eth_getBlockByNumber: [
+                  {
+                    request: {
+                      params: ['0x1', false],
+                    },
+                    response: {
+                      result: {
+                        ...BLOCK,
+                        number: '0x1',
+                      },
+                    },
+                  },
+                  {
+                    request: {
+                      params: ['0x2', false],
+                    },
+                    response: {
+                      result: {
+                        ...BLOCK,
+                        number: '0x2',
+                      },
+                    },
+                  },
+                ],
               });
               const network2 = new NetworkCommunications({
                 networkClientType: 'infura',
@@ -2922,12 +3237,20 @@ describe('NetworkController', () => {
                 },
               });
 
-              await withoutCallingLookupNetwork({
+              await waitForStateChanges({
                 controller,
+                propertyPath: ['networkStatus'],
                 operation: async () => {
                   await controller.initializeProvider();
                 },
               });
+              expect(controller.store.getState().networkStatus).toBe(
+                'available',
+              );
+
+              // Force the block tracker to request a new block to clear the
+              // block cache
+              clock.runAll();
 
               await waitForStateChanges({
                 controller,
@@ -2936,10 +3259,7 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
-
-              expect(controller.store.getState().networkStatus).toBe(
-                'unavailable',
-              );
+              expect(controller.store.getState().networkStatus).toBe('unknown');
             },
           );
         });
@@ -3137,7 +3457,7 @@ describe('NetworkController', () => {
               state: {
                 provider: {
                   type: 'rpc',
-                  rpcUrl: 'https://mock-rpc-url-2',
+                  rpcUrl: 'https://mock-rpc-url-1',
                   chainId: '0x1337',
                   ticker: 'RPC',
                 },
@@ -3148,20 +3468,59 @@ describe('NetworkController', () => {
             },
             async ({ controller, network: network1 }) => {
               network1.mockEssentialRpcCalls({
-                // This results in a successful call to eth_getBlockByNumber
-                // implicitly
-                latestBlock: BLOCK,
-                eth_getBlockByNumber: {
-                  beforeCompleting: async () => {
-                    await waitForStateChanges({
-                      controller,
-                      propertyPath: ['networkStatus'],
-                      operation: () => {
-                        controller.setProviderType('goerli');
-                      },
-                    });
-                  },
+                net_version: {
+                  times: 2,
                 },
+                // Ensure that each call to eth_blockNumber returns a different
+                // block number, otherwise the first eth_getBlockByNumber
+                // response will get cached under the first block number
+                eth_blockNumber: [
+                  {
+                    response: {
+                      result: '0x1',
+                    },
+                  },
+                  {
+                    response: {
+                      result: '0x2',
+                    },
+                  },
+                ],
+                eth_getBlockByNumber: [
+                  {
+                    request: {
+                      params: ['0x1', false],
+                    },
+                    response: {
+                      result: {
+                        ...BLOCK,
+                        number: '0x1',
+                      },
+                    },
+                  },
+                  {
+                    request: {
+                      params: ['0x2', false],
+                    },
+                    response: {
+                      result: {
+                        ...BLOCK,
+                        number: '0x2',
+                      },
+                    },
+                    beforeCompleting: async () => {
+                      console.log('yes hi');
+                      await waitForStateChanges({
+                        controller,
+                        propertyPath: ['networkStatus'],
+                        operation: () => {
+                          console.log('switching network via setProviderType');
+                          controller.setProviderType('goerli');
+                        },
+                      });
+                    },
+                  },
+                ],
               });
               const network2 = new NetworkCommunications({
                 networkClientType: 'infura',
@@ -3175,13 +3534,23 @@ describe('NetworkController', () => {
                 },
               });
 
-              await withoutCallingLookupNetwork({
+              console.log('calling initializeProvider explicitly');
+              await waitForStateChanges({
                 controller,
+                propertyPath: ['networkStatus'],
                 operation: async () => {
                   await controller.initializeProvider();
                 },
               });
+              expect(controller.store.getState().networkStatus).toBe(
+                'available',
+              );
 
+              // Force the block tracker to request a new block to clear the
+              // block cache
+              clock.runAll();
+
+              console.log('calling lookupNetwork explicitly');
               await waitForStateChanges({
                 controller,
                 propertyPath: ['networkStatus'],
@@ -3189,10 +3558,7 @@ describe('NetworkController', () => {
                   await controller.lookupNetwork();
                 },
               });
-
-              expect(controller.store.getState().networkStatus).toBe(
-                'unavailable',
-              );
+              expect(controller.store.getState().networkStatus).toBe('unknown');
             },
           );
         });
@@ -5711,7 +6077,7 @@ describe('NetworkController', () => {
                 },
               });
               expect(controller.store.getState().networkStatus).toBe(
-                'unavailable',
+                'unknown',
               );
             },
           );
@@ -6341,7 +6707,7 @@ describe('NetworkController', () => {
               },
             });
             expect(controller.store.getState().networkStatus).toBe(
-              'unavailable',
+              'unknown',
             );
           },
         );
