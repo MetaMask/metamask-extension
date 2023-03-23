@@ -24,7 +24,7 @@ exports[`Multichain Connected Site Menu should render the site menu in connected
           />
           <div
             class="box mm-badge-wrapper__badge-container box--flex-direction-row"
-            style="bottom: 2px; right: -4px;"
+            style="bottom: 2px; right: -4px; z-index: 1;"
           >
             <div
               class="box multichain-connected-site-menu__badge  box--flex-direction-row box--background-color-success-default box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
@@ -61,7 +61,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
           />
           <div
             class="box mm-badge-wrapper__badge-container box--flex-direction-row"
-            style="bottom: 2px; right: -4px;"
+            style="bottom: 2px; right: -4px; z-index: 1;"
           >
             <div
               class="box multichain-connected-site-menu__badge  box--flex-direction-row box--background-color-icon-alternative box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
@@ -98,7 +98,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
           />
           <div
             class="box mm-badge-wrapper__badge-container box--flex-direction-row"
-            style="bottom: 2px; right: -4px;"
+            style="bottom: 2px; right: -4px; z-index: 1;"
           >
             <div
               class="box multichain-connected-site-menu__badge not-connected box--flex-direction-row box--background-color-background-default box--rounded-full box--border-color-success-default box--border-width-2 box--border-style-solid"
