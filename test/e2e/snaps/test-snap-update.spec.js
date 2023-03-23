@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -122,9 +121,10 @@ describe('Test Snap update', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // look for the correct version text
-        const versionResult = await driver.findElement('#updateSnapVersion');
-        await driver.delay(1000);
-        assert.equal(await versionResult.getText(), '"5.0.1"');
+        await driver.waitForSelector({
+          css: '#updateSnapVersion',
+          text: '"5.0.1"',
+        });
       },
     );
   });
