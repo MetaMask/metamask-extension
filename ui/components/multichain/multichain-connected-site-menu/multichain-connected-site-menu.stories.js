@@ -1,5 +1,8 @@
 import React from 'react';
-import { BackgroundColor, Color } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  Color,
+} from '../../../helpers/constants/design-system';
 import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
 
 export default {
