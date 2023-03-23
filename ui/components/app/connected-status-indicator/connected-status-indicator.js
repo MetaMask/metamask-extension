@@ -8,7 +8,10 @@ import {
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import ColorIndicator from '../../ui/color-indicator';
-import { BackgroundColor, Color } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  Color,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAddressConnectedSubjectMap,
