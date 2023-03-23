@@ -898,18 +898,25 @@ describe('NetworkController', () => {
                   type: 'rpc',
                   rpcUrl: 'https://mock-rpc-url',
                   chainId: '0x1337',
+                  nickname: 'test-chain',
+                  ticker: 'TEST',
+                  rpcPrefs: {
+                    blockExplorerUrl: 'test-block-explorer.com',
+                  },
+                  id: 'testNetworkConfigurationId',
+                },
+                networkConfigurations: {
+                  testNetworkConfigurationId: {
+                    rpcUrl: 'https://mock-rpc-url',
+                    chainId: '0x1337',
+                    ticker: 'TEST',
+                    id: 'testNetworkConfigurationId',
+                  },
                 },
               },
             },
-            async ({ controller, network: network1 }) => {
-              network1.mockEssentialRpcCalls();
-              const network2 = new NetworkCommunications({
-                networkClientType: 'infura',
-                networkClientOptions: {
-                  infuraNetwork: networkType,
-                },
-              });
-              network2.mockEssentialRpcCalls();
+            async ({ controller, network }) => {
+              network.mockEssentialRpcCalls();
               await controller.initializeProvider();
               const { provider } = controller.getProviderAndBlockTracker();
 
