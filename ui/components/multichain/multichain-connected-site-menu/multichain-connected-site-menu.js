@@ -9,12 +9,7 @@ import {
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import {
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  Icon,
-  ICON_NAMES,
-} from '../../component-library';
+import { BadgeWrapper, Icon, ICON_NAMES } from '../../component-library';
 import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
@@ -43,7 +38,7 @@ export const MultichainConnectedSiteMenu = ({
         position="bottom"
       >
         <BadgeWrapper
-          position={BadgeWrapperPosition.bottomRight}
+          positionObj={{ bottom: 2, right: -4 }}
           badge={
             <Box
               backgroundColor={globalMenuColor}

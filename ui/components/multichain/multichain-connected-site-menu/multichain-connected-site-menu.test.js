@@ -1,7 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest';
-import { BackgroundColor, Color } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  Color,
+} from '../../../helpers/constants/design-system';
 import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
 
 describe('Multichain Connected Site Menu', () => {
