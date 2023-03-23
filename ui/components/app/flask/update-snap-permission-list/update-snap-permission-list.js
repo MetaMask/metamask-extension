@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isFunction } from 'lodash';
-import { getWeightedPermissions } from '../../../../helpers/utils/permission';
+import {
+  getRightIcon,
+  getWeightedPermissions,
+} from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatDate } from '../../../../helpers/utils/util';
 import Typography from '../../../ui/typography/typography';
@@ -15,8 +18,9 @@ export default function UpdateSnapPermissionList({
   const t = useI18nContext();
 
   const Permissions = ({ className, permissions, subText }) => {
-    return getWeightedPermissions(t, permissions).map(
-      ({ label, rightIcon, permissionName, permissionValue }) => (
+    return getWeightedPermissions(t, permissions).map((permission) => {
+      const { label, permissionName, permissionValue } = permission;
+      return (
         <div className={className} key={permissionName}>
           <i className="fas fa-x" />
           <div className="permission-description">
@@ -31,10 +35,10 @@ export default function UpdateSnapPermissionList({
                 : subText}
             </Typography>
           </div>
-          {rightIcon && <i className={rightIcon} />}
+          {getRightIcon(permission)}
         </div>
-      ),
-    );
+      );
+    });
   };
 
   return (
