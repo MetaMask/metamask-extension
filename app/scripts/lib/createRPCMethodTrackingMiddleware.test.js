@@ -282,7 +282,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: EVENT_NAMES.SIGNATURE_REQUESTED,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN,
-          ui_customizations: null,
         },
         referrer: { url: 'some.dapp' },
       });
