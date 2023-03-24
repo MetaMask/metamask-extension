@@ -650,8 +650,6 @@ export default class Home extends PureComponent {
               defaultActiveTabKey={defaultHomeActiveTabName}
               onTabClick={onTabClick}
               tabsClassName="home__tabs"
-              paddingLeft={4}
-              paddingRight={4}
             >
               <Tab
                 activeClassName="home__tab--active"
