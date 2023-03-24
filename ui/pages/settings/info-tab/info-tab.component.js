@@ -205,18 +205,7 @@ export default class InfoTab extends PureComponent {
                 ref={this.settingsRefs[0]}
                 className="info-tab__version-header"
               >
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
-                  isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')
-                  ///: END:ONLY_INCLUDE_IN
-                }
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-                  isBeta()
-                    ? t('betaMetamaskInstitutionalVersion')
-                    : t('metamaskInstitutionalVersion')
-                  ///: END:ONLY_INCLUDE_IN
-                }
+                {isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')}
               </div>
               <div className="info-tab__version-number">
                 {this.state.version}
