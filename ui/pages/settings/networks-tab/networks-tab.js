@@ -30,11 +30,13 @@ import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
 import NetworksFormSubheader from './networks-tab-subheader';
 
-const defaultNetworks = defaultNetworksData.map((network) => ({
-  ...network,
-  viewOnly: true,
-  isATestNetwork: TEST_CHAINS.includes(network.chainId),
-}));
+const defaultNetworks = defaultNetworksData
+  .map((network) => ({
+    ...network,
+    viewOnly: true,
+    isATestNetwork: TEST_CHAINS.includes(network.chainId),
+  }))
+  .filter((network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET);
 
 const NetworksTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
@@ -55,8 +57,8 @@ const NetworksTab = ({ addNewNetwork }) => {
     getNetworksTabSelectedNetworkConfigurationId,
   );
 
-  const networkConfigurationsList = Object.entries(networkConfigurations)
-    .map(([networkConfigurationId, networkConfiguration]) => {
+  const networkConfigurationsList = Object.entries(networkConfigurations).map(
+    ([networkConfigurationId, networkConfiguration]) => {
       return {
         label: networkConfiguration.nickname,
         iconColor: 'var(--color-icon-alternative)',
@@ -68,8 +70,8 @@ const NetworksTab = ({ addNewNetwork }) => {
         isATestNetwork: TEST_CHAINS.includes(networkConfiguration.chainId),
         networkConfigurationId,
       };
-    })
-    .filter((network) => network.chainId !== CHAIN_IDS.LINEA_TESTNET);
+    },
+  );
 
   let networksToRender = [...defaultNetworks, ...networkConfigurationsList];
   if (!SHOULD_SHOW_LINEA_TESTNET_NETWORK) {
