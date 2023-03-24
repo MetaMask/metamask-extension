@@ -1,10 +1,7 @@
 import nock from 'nock';
 import sinon from 'sinon';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { providerFromEngine } from '@metamask/eth-json-rpc-middleware';
 import EthQuery from 'eth-query';
-import createInfuraClient from '../createInfuraClient';
-import createJsonRpcClient from '../createJsonRpcClient';
+import { createNetworkClient } from '../create-network-client';
 
 /**
  * @typedef {import('nock').Scope} NockScope
@@ -414,20 +411,21 @@ export async function withNetworkClient(
   delete process.env.IN_TEST;
   const clientUnderTest =
     providerType === 'infura'
-      ? createInfuraClient({
+      ? createNetworkClient({
           network: infuraNetwork,
-          projectId: MOCK_INFURA_PROJECT_ID,
+          infuraProjectId: MOCK_INFURA_PROJECT_ID,
+          type: 'infura',
         })
-      : createJsonRpcClient({ rpcUrl: customRpcUrl, chainId: customChainId });
+      : createNetworkClient({
+          chainId: customChainId,
+          rpcUrl: customRpcUrl,
+          type: 'custom',
+        });
   process.env.IN_TEST = inTest;
 
-  const { networkMiddleware, blockTracker } = clientUnderTest;
+  const { provider, blockTracker } = clientUnderTest;
 
-  const engine = new JsonRpcEngine();
-  engine.push(networkMiddleware);
-  const provider = providerFromEngine(engine);
   const ethQuery = new EthQuery(provider);
-
   const curriedMakeRpcCall = (request) => makeRpcCall(ethQuery, request);
   const makeRpcCallsInSeries = async (requests) => {
     const responses = [];
