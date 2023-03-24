@@ -1,6 +1,7 @@
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import * as selectors from './selectors';
+import { CHAIN_IDS, LOCALHOST_DISPLAY_NAME, MAINNET_DISPLAY_NAME } from '../../shared/constants/network';
 
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
@@ -101,6 +102,51 @@ describe('Selectors', () => {
         }),
       ).toStrictEqual(networkConfigurations);
     });
+  });
+
+  describe('#getAllNetworks', () => {
+    it('returns an array even if there are no custom networks', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: false
+          },
+        },
+      });
+      expect(networks instanceof Array).toBe(true);
+      // The only returning item should be Ethereum Mainnet
+      expect(networks.length).toStrictEqual(1);
+      expect(networks[0].nickname).toStrictEqual(MAINNET_DISPLAY_NAME);
+    });
+
+    it('returns more test networks with showTestNetworks on', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true
+          },
+        },
+      });
+      expect(networks.length).toBeGreaterThan(1);
+    });
+
+    it('sorts Localhost to the bottom of the test lists', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: LOCALHOST_DISPLAY_NAME
+            }
+          }
+        },
+      });
+      const lastItem = networks.pop();
+      expect(lastItem.nickname.toLowerCase()).toContain('localhost');
+    })
   });
 
   describe('#isHardwareWallet', () => {
