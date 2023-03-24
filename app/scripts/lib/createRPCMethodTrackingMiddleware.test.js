@@ -356,7 +356,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
     describe('when request flagged as safety unknown by security provider', () => {
       beforeEach(() => {
-        metricsState.participateInMetaMetrics = true;
         flagAsDangerous = 2;
       });
 
