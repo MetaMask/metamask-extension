@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Dropdown from '../../dropdown';
+import Box from '../../box';
 
 export const DropdownTab = (props) => {
   const {
@@ -17,7 +18,8 @@ export const DropdownTab = (props) => {
   } = props;
 
   return (
-    <li
+    <Box
+      as="li"
       className={classnames('tab', className, {
         'tab--active': isActive,
         [activeClassName]: activeClassName && isActive,
@@ -33,7 +35,7 @@ export const DropdownTab = (props) => {
         selectedOption={selectedOption}
         onChange={onChange}
       />
-    </li>
+    </Box>
   );
 };
 

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Box from '../box';
+import {
+  BackgroundColor,
+  DISPLAY,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 
 const Tabs = ({
   defaultActiveTabKey,
@@ -63,18 +69,24 @@ const Tabs = ({
     }
 
     return validChildren[activeTabIndex]
-      ? validChildren[activeTabIndex].children
-      : validChildren.children;
+      ? validChildren[activeTabIndex].props.children
+      : validChildren.props.children;
   };
 
   return (
-    <div className="tabs">
-      <ul className={classnames('tabs__list', tabsClassName)}>
+    <Box className="tabs">
+      <Box
+        as="ul"
+        display={DISPLAY.FLEX}
+        justifyContent={JustifyContent.flexStart}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        className={classnames('tabs__list', tabsClassName)}
+      >
         {renderTabs()}
-      </ul>
+      </Box>
       {subHeader}
-      <div className="tabs__content">{renderActiveTabContent()}</div>
-    </div>
+      <Box className="tabs__content">{renderActiveTabContent()}</Box>
+    </Box>
   );
 };
 
