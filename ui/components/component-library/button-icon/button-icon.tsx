@@ -16,18 +16,21 @@ import { Icon } from '../icon';
 import { ButtonIconSize, ButtonIconProps } from './button-icon.types';
 
 export const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonIconProps>(
-  ({
-    ariaLabel,
-    as = 'button',
-    className = '',
-    color = IconColor.iconDefault,
-    href,
-    size = ButtonIconSize.LG,
-    iconName,
-    disabled,
-    iconProps,
-    ...props
-  }) => {
+  (
+    {
+      ariaLabel,
+      as = 'button',
+      className = '',
+      color = IconColor.iconDefault,
+      href,
+      size = ButtonIconSize.LG,
+      iconName,
+      disabled,
+      iconProps,
+      ...props
+    },
+    ref: Ref<HTMLDivElement>,
+  ) => {
     const Tag = href ? 'a' : as;
     return (
       <Box
@@ -49,6 +52,7 @@ export const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonIconProps>(
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.transparent}
         href={href}
+        ref={ref}
         {...props}
       >
         <Icon name={iconName} size={size} {...iconProps} />
