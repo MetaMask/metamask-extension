@@ -1,5 +1,5 @@
 export { Text } from './text';
-export {
+export type {
   TextProps,
   ValidTag,
   TextDirection,
