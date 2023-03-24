@@ -15,6 +15,9 @@ const customNetworkStore = configureStore({
   ...testData,
   metamask: {
     ...testData.metamask,
+    preferences: {
+      showTestNetworks: true,
+    },
     networkConfigurations: {
       ...testData.metamask.networkConfigurations,
       ...{
