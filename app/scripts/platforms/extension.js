@@ -2,7 +2,6 @@ import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
-import log from 'loglevel';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
@@ -191,21 +190,12 @@ export default class ExtensionPlatform {
   async _showNotification(title, message, url) {
     const iconUrl = await browser.runtime.getURL('../../images/icon-64.png');
 
-    try {
-      await browser.notifications.create(url, {
-        type: 'basic',
-        title,
-        iconUrl,
-        message,
-      });
-    } catch (error) {
-      log.debug('Failed to create notification', {
-        title,
-        message,
-        url,
-        error,
-      });
-    }
+    await browser.notifications.create(url, {
+      type: 'basic',
+      title,
+      iconUrl,
+      message,
+    });
   }
 
   _subscribeToNotificationClicked() {
