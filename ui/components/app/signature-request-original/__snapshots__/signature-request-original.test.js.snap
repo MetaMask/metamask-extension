@@ -182,6 +182,7 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
       >
         <div
           class="site-origin"
+          title="https://happydapp.website/governance?futarchy=true"
         >
           <div
             class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
