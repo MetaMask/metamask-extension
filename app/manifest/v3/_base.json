@@ -65,15 +65,5 @@
   },
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "permissions": [
-    "activeTab",
-    "alarms",
-    "clipboardWrite",
-    "notifications",
-    "scripting",
-    "storage",
-    "unlimitedStorage",
-    "webRequest"
-  ],
   "short_name": "__MSG_appName__"
 }

@@ -1,5 +1,6 @@
 import Bowser from 'bowser';
 import { BN } from 'ethereumjs-util';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
@@ -905,6 +906,16 @@ describe('util', () => {
           'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
         ),
       ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
+    });
+  });
+
+  describe('isDefaultMetaMaskChain()', () => {
+    it('should return true if the provided chainId is a default MetaMask chain', () => {
+      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
+    });
+
+    it('should return false if the provided chainId is a not default MetaMask chain', () => {
+      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
     });
   });
 });
