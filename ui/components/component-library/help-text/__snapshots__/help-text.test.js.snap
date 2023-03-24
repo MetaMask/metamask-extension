@@ -3,7 +3,7 @@
 exports[`HelpText should match snapshot 1`] = `
 <div>
   <p
-    class="box mm-text mm-help-text mm-text--body-xs mm-text--color-text-default box--flex-direction-row"
+    class="box mm-text mm-help-text mm-text--body-xs box--flex-direction-row box--color-text-default"
   >
     help text
   </p>

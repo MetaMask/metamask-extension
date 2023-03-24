@@ -17,12 +17,12 @@ exports[`BannerTip should render BannerTip element correctly 1`] = `
     </div>
     <div>
       <h5
-        class="box mm-text mm-banner-base__title mm-text--body-lg-medium mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text mm-banner-base__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
       >
         BannerTip test
       </h5>
       <p
-        class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         should render BannerTip element correctly
       </p>
