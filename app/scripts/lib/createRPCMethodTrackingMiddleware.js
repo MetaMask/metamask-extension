@@ -194,9 +194,13 @@ export default function createRPCMethodTrackingMiddleware({
           );
 
           if (securityProviderResponse?.flagAsDangerous === 1) {
-            eventProperties.ui_customizations = ['flagged_as_malicious'];
+            eventProperties.ui_customizations = [
+              METAMETRIC_KEY_OPTIONS.ui_customizations.flaggedAsMalicious,
+            ];
           } else if (securityProviderResponse?.flagAsDangerous === 2) {
-            eventProperties.ui_customizations = ['flagged_as_safety_unknown'];
+            eventProperties.ui_customizations = [
+              METAMETRIC_KEY_OPTIONS.ui_customizations.flaggedAsSafetyUnknown,
+            ];
           } else {
             eventProperties.ui_customizations = null;
           }

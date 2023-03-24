@@ -473,6 +473,8 @@ export const METAMETRIC_KEY = {
  */
 export const METAMETRIC_KEY_OPTIONS = {
   [METAMETRIC_KEY.UI_CUSTOMIZATIONS]: {
+    flaggedAsMalicious: 'flagged_as_malicious',
+    flaggedAsSafetyUnknown: 'flagged_as_safety_unknown',
     SIWE: 'sign_in_with_ethereum',
   },
 };
