@@ -1,7 +1,11 @@
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
+import {
+  CHAIN_IDS,
+  LOCALHOST_DISPLAY_NAME,
+  MAINNET_DISPLAY_NAME,
+} from '../../shared/constants/network';
 import * as selectors from './selectors';
-import { CHAIN_IDS, LOCALHOST_DISPLAY_NAME, MAINNET_DISPLAY_NAME } from '../../shared/constants/network';
 
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
@@ -109,13 +113,13 @@ describe('Selectors', () => {
       const networks = selectors.getAllNetworks({
         metamask: {
           preferences: {
-            showTestNetworks: false
+            showTestNetworks: false,
           },
         },
       });
       expect(networks instanceof Array).toBe(true);
       // The only returning item should be Ethereum Mainnet
-      expect(networks.length).toStrictEqual(1);
+      expect(networks).toHaveLength(1);
       expect(networks[0].nickname).toStrictEqual(MAINNET_DISPLAY_NAME);
     });
 
@@ -123,7 +127,7 @@ describe('Selectors', () => {
       const networks = selectors.getAllNetworks({
         metamask: {
           preferences: {
-            showTestNetworks: true
+            showTestNetworks: true,
           },
         },
       });
@@ -134,19 +138,19 @@ describe('Selectors', () => {
       const networks = selectors.getAllNetworks({
         metamask: {
           preferences: {
-            showTestNetworks: true
+            showTestNetworks: true,
           },
           networkConfigurations: {
             'some-config-name': {
               chainId: CHAIN_IDS.LOCALHOST,
-              nickname: LOCALHOST_DISPLAY_NAME
-            }
-          }
+              nickname: LOCALHOST_DISPLAY_NAME,
+            },
+          },
         },
       });
       const lastItem = networks.pop();
       expect(lastItem.nickname.toLowerCase()).toContain('localhost');
-    })
+    });
   });
 
   describe('#isHardwareWallet', () => {

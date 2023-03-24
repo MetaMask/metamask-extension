@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkListItem renders properly 1`] = `
+<div>
+  <div
+    class="box network-list-item box--padding-4 box--gap-2 box--flex-direction-row box--justify-content-space-between box--align-items-center box--background-color-transparent box--display-flex"
+  >
+    <div
+      class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+    >
+      <img
+        alt="Polygon logo"
+        class="mm-avatar-network__network-image"
+        src="./images/matic-token.png"
+      />
+    </div>
+    <div
+      class="box network-list-item__network-name box--flex-direction-row"
+    >
+      <div
+        class="box mm-text mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
+      >
+        <a
+          href="#"
+        >
+          Polygon
+        </a>
+      </div>
+    </div>
+    <button
+      aria-label="[deleteNetwork]"
+      class="box mm-button-icon mm-button-icon--size-sm network-list-item__delete box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-error-default box--background-color-transparent box--rounded-lg"
+    >
+      <span
+        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+        style="mask-image: url('./images/icons/trash.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;
