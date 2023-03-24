@@ -1,16 +1,16 @@
 import sinon from 'sinon';
 
 import InstitutionalReducer, {
-  // fetchHistoricalReports,
-  // getComplianceClientId,
-  // getComplianceProjectId,
-  // getComplianceTenantSubdomain,
-  // getComplianceHistoricalReports,
-  // getComplianceReportsInProgress,
+  fetchHistoricalReports,
+  getComplianceClientId,
+  getComplianceProjectId,
+  getComplianceTenantSubdomain,
+  getComplianceHistoricalReports,
+  getComplianceReportsInProgress,
   getInstitutionalConnectRequests,
   complianceActivated,
-  // getComplianceReportsInProgressByAddress,
-  // generateComplianceReport,
+  getComplianceReportsInProgressByAddress,
+  generateComplianceReport,
 } from './institutional';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
@@ -20,8 +20,8 @@ jest.mock('../../../shared/lib/storage-helpers', () => ({
 
 const mockSyncReportsInProgress = jest.fn();
 const mockGenerateComplianceReport = jest.fn();
-jest.mock('../../../store/institutional/institution-background', () => ({
-  mmiActionsFactory: () => ({
+jest.mock('../../store/actions', () => ({
+  getMMIActions: () => ({
     generateComplianceReport: mockGenerateComplianceReport,
     getComplianceHistoricalReportsByAddress: jest.fn(),
     syncReportsInProgress: mockSyncReportsInProgress,
@@ -60,22 +60,22 @@ describe('Institutional Duck', () => {
           historicalReports: { id: [{ reportId: 'id' }] },
         },
       };
-      // expect(getComplianceProjectId(state)).toBe('complianceProjectId');
-      // expect(getComplianceClientId(state)).toBe('complianceClientId');
-      // expect(getComplianceTenantSubdomain(state)).toBe('subdomain');
-      // expect(getComplianceHistoricalReports(state).id[0].reportId).toBe('id');
-      // expect(getComplianceReportsInProgress(state).id).toHaveLength(1);
+      expect(getComplianceProjectId(state)).toBe('complianceProjectId');
+      expect(getComplianceClientId(state)).toBe('complianceClientId');
+      expect(getComplianceTenantSubdomain(state)).toBe('subdomain');
+      expect(getComplianceHistoricalReports(state).id[0].reportId).toBe('id');
+      expect(getComplianceReportsInProgress(state).id).toHaveLength(1);
       expect(getInstitutionalConnectRequests(state)).toHaveLength(1);
       expect(complianceActivated(state)).toBe(true);
-      // expect(getComplianceReportsInProgressByAddress('id')(state)).toHaveLength(
-      //   1,
-      // );
-      // await fetchHistoricalReports('0xAddress', 'projectId')(
-      //   jest.fn().mockReturnValue({ items: [{ status: 'test' }] }),
-      //   () => state,
-      // );
+      expect(getComplianceReportsInProgressByAddress('id')(state)).toHaveLength(
+        1,
+      );
+      await fetchHistoricalReports('0xAddress', 'projectId')(
+        jest.fn().mockReturnValue({ items: [{ status: 'test' }] }),
+        () => state,
+      );
       expect(mockSyncReportsInProgress).toHaveBeenCalled();
-      // await generateComplianceReport('0xAddress')(jest.fn(), () => state);
+      await generateComplianceReport('0xAddress')(jest.fn(), () => state);
       expect(mockGenerateComplianceReport).toHaveBeenCalled();
     });
   });
