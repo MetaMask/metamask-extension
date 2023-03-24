@@ -38,7 +38,7 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   ButtonIcon,
-  BUTTON_ICON_SIZES,
+  ButtonIconSize,
   Icon,
   ICON_NAMES,
 } from '../../component-library';
@@ -102,7 +102,7 @@ const EthOverview = ({ className }) => {
                 color={IconColor.primaryDefault}
                 iconName={ICON_NAMES.DIAGRAM}
                 ariaLabel={t('portfolio')}
-                size={BUTTON_ICON_SIZES.LG}
+                size={ButtonIconSize.LG}
                 onClick={() => {
                   const portfolioUrl = process.env.PORTFOLIO_URL;
                   global.platform.openTab({

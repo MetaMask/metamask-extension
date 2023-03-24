@@ -1,4 +1,5 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   AlignItems,
   Color,
@@ -8,27 +9,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { ICON_NAMES } from '../icon';
-import { BUTTON_ICON_SIZES } from './button-icon.constants';
+import { ButtonIconSize } from './button-icon.types';
 import { ButtonIcon } from './button-icon';
 import README from './README.mdx';
-
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
 
 export default {
   title: 'Components/ComponentLibrary/ButtonIcon',
@@ -40,25 +23,13 @@ export default {
     },
   },
   argTypes: {
-    ariaLabel: {
-      control: 'text',
-    },
     as: {
       control: 'select',
       options: ['button', 'a'],
     },
-    className: {
-      control: 'text',
-    },
     color: {
       control: 'select',
       options: Object.values(Color),
-    },
-    disabled: {
-      control: 'boolean',
-    },
-    href: {
-      control: 'text',
     },
     iconName: {
       control: 'select',
@@ -66,32 +37,16 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_ICON_SIZES),
-    },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
+      options: Object.values(ButtonIconSize),
     },
   },
-};
+} as ComponentMeta<typeof ButtonIcon>;
 
-export const DefaultStory = (args) => <ButtonIcon {...args} />;
+const Template: ComponentStory<typeof ButtonIcon> = (args) => (
+  <ButtonIcon {...args} />
+);
+
+export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   iconName: ICON_NAMES.CLOSE,
