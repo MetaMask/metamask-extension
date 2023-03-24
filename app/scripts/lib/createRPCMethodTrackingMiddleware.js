@@ -1,5 +1,6 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
+import { TransactionStatus } from '../../../shared/constants/transaction';
 import { SECOND } from '../../../shared/constants/time';
 import { detectSIWE } from '../../../shared/modules/siwe';
 import {
@@ -182,7 +183,7 @@ export default function createRPCMethodTrackingMiddleware({
 
         const msgData = {
           msgParams,
-          status: 'unapproved',
+          status: TransactionStatus.unapproved,
           type: req.method,
         };
 
