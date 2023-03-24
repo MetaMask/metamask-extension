@@ -8,55 +8,26 @@ import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/ro
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
-import { getMMIActions } from '../../../store/actions';
+import { Text } from '../../../components/component-library';
+import {
+  TextColor,
+  TextVariant,
+  OVERFLOW_WRAP,
+  TEXT_ALIGN,
+} from '../../../helpers/constants/design-system';
+import Box from '../../../components/ui/box';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 
 export default function ConfirmAddInstitutionalFeature({ history }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const MMIActions = getMMIActions();
+  const mmiActions = mmiActionsFactory();
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const connectRequests = useSelector(getInstitutionalConnectRequests);
   const trackEvent = useContext(MetaMetricsContext);
   const connectRequest = connectRequests[0];
-
-  const handleConnectError = ({ message }) => {
-    let error = message.startsWith('401') ? t('projectIdInvalid') : message;
-    if (!error) {
-      error = 'Connection error';
-    }
-    setIsLoading(false);
-    setConnectError(error);
-
-    trackEvent({
-      category: 'MMI',
-      event: 'Institutional feature connection',
-      properties: {
-        actions: 'Institutional feature RPC error',
-      },
-    });
-  };
-
-  const removeConnectInstitutionalFeature = ({ actions, service, push }) => {
-    dispatch(
-      MMIActions.removeConnectInstitutionalFeature({
-        origin: connectRequest.origin,
-        projectId: connectRequest.token.projectId,
-      }),
-    );
-
-    trackEvent({
-      category: 'MMI',
-      event: 'Institutional feature connection',
-      properties: {
-        actions,
-        service,
-      },
-    });
-
-    history.push(push);
-  };
 
   if (!connectRequest) {
     history.push(mostRecentOverviewPage);
@@ -66,40 +37,121 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   const serviceLabel = connectRequest.labels.find(
     (label) => label.key === 'service',
   );
-  // TODO: Replace project ID here with something more generic
-  trackEvent({
-    category: 'MMI',
-    event: 'Institutional feature connection',
-    properties: {
-      actions: 'Institutional feature RPC request',
-      service: serviceLabel.value,
-    },
+
+  const setTrackEvent = ({ actions, service }) => {
+    trackEvent({
+      category: 'MMI',
+      event: 'Institutional feature connection',
+      properties: {
+        actions,
+        service,
+      },
+    });
+  };
+
+  const handleConnectError = ({ message }) => {
+    console.log('caca', message);
+    let error = message.startsWith('401') ? t('projectIdInvalid') : message;
+    if (!error) {
+      error = 'Connection error';
+    }
+    setIsLoading(false);
+    setConnectError(error);
+    setTrackEvent({ actions: 'Institutional feature RPC error' });
+  };
+
+  const removeConnectInstitutionalFeature = ({ actions, service, push }) => {
+    dispatch(
+      mmiActions.removeConnectInstitutionalFeature({
+        origin: connectRequest.origin,
+        projectId: connectRequest.token.projectId,
+      }),
+    );
+    setTrackEvent({ actions, service });
+    history.push(push);
+  };
+
+  const confirmAddInstitutionalFeature = async () => {
+    setIsLoading(true);
+    setConnectError('');
+
+    try {
+      await dispatch(
+        mmiActions.setComplianceAuthData({
+          clientId: connectRequest.token.clientId,
+          projectId: connectRequest.token.projectId,
+        }),
+      );
+      removeConnectInstitutionalFeature({
+        actions: 'Institutional feature RPC confirm',
+        service: serviceLabel.value,
+        push: {
+          pathname: INSTITUTIONAL_FEATURES_DONE_ROUTE,
+          state: {
+            imgSrc: 'images/compliance-logo.png',
+            title: t('complianceActivatedTitle'),
+            description: t('complianceActivatedDesc'),
+          },
+        },
+      });
+    } catch (e) {
+      handleConnectError(e);
+    }
+  };
+
+  setTrackEvent({
+    actions: 'Institutional feature RPC request',
+    service: serviceLabel.value,
   });
 
   return (
-    <div className="page-container">
-      <div className="page-container__header">
-        <div className="page-container__title">Institutional Feature</div>
-        <div className="page-container__subtitle">
+    <Box className="page-container">
+      <Box className="page-container__header">
+        <Text className="page-container__title">
+          {t('institutionalFeatures')}
+        </Text>
+        <Text className="page-container__subtitle">
           {t('mmiAuthenticate', [connectRequest.origin, serviceLabel.value])}
-        </div>
-      </div>
-      <div className="page-container__content">
-        <div className="institutional_feature_spacing">Project Name</div>
-        <div className="institutional_feature_confirm__token">
+        </Text>
+      </Box>
+      <Box className="page-container__content">
+        <Text
+          variant={TextVariant.bodySm}
+          marginTop={3}
+          marginRight={8}
+          marginBottom={0}
+          marginLeft={8}
+        >
+          {t('projectName')}
+        </Text>
+        <Text
+          variant={TextVariant.bodyLgMedium}
+          color={TextColor.textDefault}
+          marginTop={1}
+          marginRight={8}
+          marginBottom={1}
+          marginLeft={8}
+          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+        >
           {connectRequest?.token?.projectName}
-        </div>
-        <div className="institutional_feature_confirm__token--projectId">
-          ID: {connectRequest?.token?.projectId}
-        </div>
-      </div>
+        </Text>
+        <Text
+          variant={TextVariant.bodyXs}
+          marginRight={8}
+          marginLeft={8}
+          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+          color={TextColor.textMuted}
+        >
+          {t('id')}: {connectRequest?.token?.projectId}
+        </Text>
+      </Box>
       {connectError && (
-        <div className="institutional_feature_confirm__error">
-          <p className="error">{connectError}</p>
-        </div>
+        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={4}>
+          {connectError}
+        </Text>
       )}
 
-      <div className="page-container__footer">
+      <Box className="page-container__footer">
         {isLoading ? (
           <footer>
             <PulseLoader />
@@ -109,7 +161,6 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
             <Button
               type="default"
               large
-              className="page-container__footer-button"
               onClick={() => {
                 removeConnectInstitutionalFeature({
                   actions: 'Institutional feature RPC cancel',
@@ -123,42 +174,14 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
             <Button
               type="primary"
               large
-              className="page-container__footer-button"
-              onClick={async () => {
-                setIsLoading(true);
-                setConnectError('');
-
-                try {
-                  await dispatch(
-                    MMIActions.setComplianceAuthData({
-                      clientId: connectRequest.token.clientId,
-                      projectId: connectRequest.token.projectId,
-                    }),
-                  );
-
-                  removeConnectInstitutionalFeature({
-                    actions: 'Institutional feature RPC confirm',
-                    service: serviceLabel.value,
-                    push: {
-                      pathname: INSTITUTIONAL_FEATURES_DONE_ROUTE,
-                      state: {
-                        imgSrc: 'images/compliance-logo.png',
-                        title: t('complianceActivatedTitle'),
-                        description: t('complianceActivatedDesc'),
-                      },
-                    },
-                  });
-                } catch (e) {
-                  handleConnectError(e);
-                }
-              }}
+              onClick={confirmAddInstitutionalFeature}
             >
               {t('confirm')}
             </Button>
           </footer>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

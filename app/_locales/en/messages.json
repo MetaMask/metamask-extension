@@ -630,6 +630,12 @@
   "coingecko": {
     "message": "CoinGecko"
   },
+  "complianceActivatedDesc": {
+    "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
+  },
+  "complianceActivatedTitle": {
+    "message": "Your compliance feature is activated"
+  },
   "confirm": {
     "message": "Confirm"
   },
@@ -1639,6 +1645,9 @@
   "holdToRevealTitle": {
     "message": "Keep your SRP safe"
   },
+  "id": {
+    "message": "Id"
+  },
   "ignoreAll": {
     "message": "Ignore all"
   },
@@ -1739,6 +1748,9 @@
   },
   "install": {
     "message": "Install"
+  },
+  "institutionalFeatures": {
+    "message": "Institutional Features"
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
@@ -2062,6 +2074,9 @@
   },
   "missingToken": {
     "message": "Don't see your token?"
+  },
+  "mmiAuthenticate": {
+    "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
@@ -2986,6 +3001,12 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
+  },
+  "projectIdInvalid": {
+    "message": "Provided Project ID is invalid"
+  },
+  "projectName": {
+    "message": "Project Name"
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"

@@ -1,141 +1,112 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import sinon from 'sinon';
-import { mount } from 'enzyme';
+import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { Provider } from 'react-redux';
-import ConfirmAddInstitutionalFeature from './confirm-add-institutional-feature.container';
+import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import ConfirmAddInstitutionalFeature from '.';
 
-describe('Confirm Add Institutional Feature', function () {
-  let wrapper;
+const mockRemoveConnectInstitutionalFeature = jest
+  .fn()
+  .mockReturnValue({ type: 'TYPE' });
 
-  const mockStore = {
+let mockSetComplianceAuthData = jest.fn().mockReturnValue({ type: 'TYPE' });
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    setComplianceAuthData: mockSetComplianceAuthData,
+    removeConnectInstitutionalFeature: mockRemoveConnectInstitutionalFeature,
+  }),
+}));
+
+const connectRequests = [
+  {
+    labels: [
+      {
+        key: 'service',
+        value: 'test',
+      },
+    ],
+    origin: 'origin',
+    token: {
+      projectName: 'projectName',
+      projectId: 'projectId',
+      clientId: 'clientId',
+    },
+  },
+];
+
+const props = {
+  history: {
+    push: jest.fn(),
+  },
+};
+
+const render = ({ newState } = {}) => {
+  const state = {
+    ...mockState,
     metamask: {
       provider: {
         type: 'test',
       },
       institutionalFeatures: {
         complianceProjectId: '',
+        connectRequests,
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      ...newState,
     },
   };
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
+  const store = mockStore(state);
 
-  const store = configureMockStore()(mockStore);
+  return renderWithProvider(
+    <ConfirmAddInstitutionalFeature {...props} />,
+    store,
+  );
+};
 
-  const props = {
-    history: {
-      push: sinon.spy(),
-    },
-    mostRecentOverviewPage: sinon.spy(),
-    removeConnectInstitutionalFeature: sinon.stub().throws(new Error('')),
-    setComplianceAuthData: sinon.spy(),
-    connectRequests: [
-      {
-        labels: [
-          {
-            key: 'service',
-            value: 'test',
-          },
-        ],
-        origin: 'origin',
-        token: {
-          projectName: 'projectName',
-          projectId: 'projectId',
-          clientId: 'clientId',
-        },
-      },
-    ],
-  };
-
-  beforeEach(() => {
-    wrapper = mount(
-      <Provider store={store}>
-        <ConfirmAddInstitutionalFeature.WrappedComponent {...props} />
-      </Provider>,
-      {
-        context: {
-          t: (str) => str,
-          store,
-          trackEvent: () => undefined,
-        },
-        childContextTypes: {
-          t: PropTypes.func,
-          store: PropTypes.object,
-          trackEvent: () => undefined,
-        },
-      },
-    );
-  });
-
-  afterEach(() => {
-    props.history.push.resetHistory();
-  });
-
-  it('opens confirm institutional features with correct projectId', () => {
-    const projectIdContainer = wrapper.find(
-      '.institutional_feature_confirm__token',
-    );
-    expect(projectIdContainer.html()).toContain('projectName');
+describe('Confirm Add Institutional Feature', function () {
+  it('opens confirm institutional sucessfully', () => {
+    const { container } = render();
+    expect(container).toMatchSnapshot();
+    expect(
+      screen.getByText(`Id: ${connectRequests[0].token.projectId}`),
+    ).toBeInTheDocument();
   });
 
   it('runs removeConnectInstitutionalFeature on cancel click', () => {
-    const cancelButton = wrapper.find(
-      '.btn-default.page-container__footer-button',
-    );
-    try {
-      cancelButton.simulate('click');
-    } catch (e) {
-      console.log('handle error', e);
-    }
-    expect(props.removeConnectInstitutionalFeature.called).toBe(true);
+    render();
+    fireEvent.click(screen.queryByText('Cancel'));
+    expect(mockRemoveConnectInstitutionalFeature).toHaveBeenCalledTimes(1);
+    expect(props.history.push).toHaveBeenCalledTimes(1);
   });
 
   it('runs setComplianceAuthData on confirm click', () => {
-    const confirmButton = wrapper.find(
-      '.btn-primary.page-container__footer-button',
-    );
-    confirmButton.simulate('click');
-    expect(props.setComplianceAuthData.called).toBe(true);
+    render();
+    fireEvent.click(screen.queryByText('Confirm'));
+    expect(mockSetComplianceAuthData).toHaveBeenCalledTimes(1);
   });
 
   it('handles error', () => {
-    const confirmButton = wrapper.find(
-      '.btn-primary.page-container__footer-button',
-    );
-    try {
-      confirmButton.simulate('click');
-    } catch (e) {
-      const errorMessage = wrapper.find('.error');
-      // TODO: write test without disabling eslint rule
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(errorMessage.html()).toContain('testError');
-    }
+    mockSetComplianceAuthData = jest
+      .fn()
+      .mockReturnValue(new Error('Async error message'));
+    const { container } = render();
+    fireEvent.click(screen.queryByText('Confirm'));
+    expect(container).toMatchSnapshot();
   });
+
   it('does not render without connectRequest', () => {
-    const newProps = {
-      ...props,
-      connectRequests: [],
-    };
-    wrapper = mount(
-      <Provider store={store}>
-        <ConfirmAddInstitutionalFeature.WrappedComponent {...newProps} />
-      </Provider>,
-      {
-        context: {
-          t: (str) => str,
-          store,
-          trackEvent: () => undefined,
-        },
-        childContextTypes: {
-          t: PropTypes.func,
-          store: PropTypes.object,
-          trackEvent: () => undefined,
-        },
+    const newState = {
+      institutionalFeatures: {
+        connectRequests: [],
       },
-    );
-    expect(wrapper.html()).toBeFalsy();
+    };
+    const { container } = render({ newState });
+    expect(container).toMatchSnapshot();
   });
 });
