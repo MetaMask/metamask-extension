@@ -31,10 +31,10 @@ describe('Eth sign', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement('#ethSign');
 
+        await driver.delay(1000);
         const ethSignButton = await driver.findElement('#ethSign');
         const exceptionString =
           'ERROR: ETH_SIGN HAS BEEN DISABLED. YOU MUST ENABLE IT IN THE ADVANCED SETTINGS';
-
         assert.equal(await ethSignButton.getText(), exceptionString);
       },
     );
