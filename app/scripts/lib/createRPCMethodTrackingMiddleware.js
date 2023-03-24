@@ -165,8 +165,6 @@ export default function createRPCMethodTrackingMiddleware({
         ? eventType.REQUESTED
         : EVENT_NAMES.PROVIDER_METHOD_CALLED;
 
-      let msgParams;
-
       if (event === EVENT_NAMES.SIGNATURE_REQUESTED) {
         eventProperties.signature_type = method;
 
@@ -174,15 +172,13 @@ export default function createRPCMethodTrackingMiddleware({
         const from = req?.params?.[1];
         const paramsExamplePassword = req?.params?.[2];
 
-        msgParams = {
-          ...paramsExamplePassword,
-          from,
-          data,
-          origin,
-        };
-
         const msgData = {
-          msgParams,
+          msgParams: {
+            ...paramsExamplePassword,
+            from,
+            data,
+            origin,
+          },
           status: TransactionStatus.unapproved,
           type: req.method,
         };
