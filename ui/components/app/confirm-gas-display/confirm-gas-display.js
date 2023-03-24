@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+
 import {
   checkNetworkAndAccountSupports1559,
   txDataSelector,
 } from '../../../selectors';
-import GasDetailsItem from '../gas-details-item';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import GasDetailsItem from '../gas-details-item';
 import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
 
 const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {

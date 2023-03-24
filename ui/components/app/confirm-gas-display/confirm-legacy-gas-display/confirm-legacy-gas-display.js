@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  checkNetworkAndAccountSupports1559,
   getIsMainnet,
   getPreferences,
   getUnapprovedTransactions,
@@ -11,11 +10,8 @@ import {
   transactionFeeSelector,
   txDataSelector,
 } from '../../../../selectors';
-import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
-import { isLegacyTransaction } from '../../../../helpers/utils/transactions.util';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 
-import GasTiming from '../../gas-timing';
 import TransactionDetailItem from '../../transaction-detail-item';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 import InfoTooltip from '../../../ui/info-tooltip';
@@ -26,58 +22,28 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { getCurrentDraftTransaction } from '../../../../ducks/send';
+import { useDraftTransactionGasValues } from '../../../../hooks/useDraftTransactionGasValues';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
 const ConfirmLegacyGasDisplay = () => {
   const t = useI18nContext();
-  const draftTransaction = useSelector(getCurrentDraftTransaction);
 
   // state selectors
   const isMainnet = useSelector(getIsMainnet);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  let transactionData = {};
-  if (Object.keys(draftTransaction).length !== 0) {
-    const editingTransaction = unapprovedTxs[draftTransaction.id];
-    transactionData = {
-      txParams: {
-        gasPrice: draftTransaction.gas?.gasPrice,
-        gas: editingTransaction?.userEditedGasLimit
-          ? editingTransaction?.txParams?.gas
-          : draftTransaction.gas?.gasLimit,
-        maxFeePerGas: editingTransaction?.txParams?.maxFeePerGas
-          ? editingTransaction?.txParams?.maxFeePerGas
-          : draftTransaction.gas?.maxFeePerGas,
-        maxPriorityFeePerGas: editingTransaction?.txParams?.maxPriorityFeePerGas
-          ? editingTransaction?.txParams?.maxPriorityFeePerGas
-          : draftTransaction.gas?.maxPriorityFeePerGas,
-        value: draftTransaction.amount?.value,
-        type: draftTransaction.transactionType,
-      },
-      userFeeLevel: editingTransaction?.userFeeLevel,
-    };
-  }
+  const { transactionData } = useDraftTransactionGasValues();
   const txData = useSelector((state) => txDataSelector(state));
-  const { id: transactionId, dappSuggestedGasFees, txParams } = txData;
-  const transaction = Object.keys(draftTransaction).length
+  const { id: transactionId, dappSuggestedGasFees } = txData;
+  const transaction = Object.keys(transactionData).length
     ? transactionData
     : unapprovedTxs[transactionId] || {};
-  const {
-    hexMinimumTransactionFee,
-    hexMaximumTransactionFee,
-    gasEstimationObject,
-  } = useSelector((state) => transactionFeeSelector(state, transaction));
-  const networkAndAccountSupports1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
+  const { hexMinimumTransactionFee, hexMaximumTransactionFee } = useSelector(
+    (state) => transactionFeeSelector(state, transaction),
   );
-  const isLegacyTxn = isLegacyTransaction(
-    transactionData?.txParams || txParams,
-  );
-  const supportsEIP1559 = networkAndAccountSupports1559 && !isLegacyTxn;
 
   return (
     <TransactionDetailItem
@@ -175,20 +141,6 @@ const ConfirmLegacyGasDisplay = () => {
             </Text>
           ) : (
             ''
-          )}
-          {supportsEIP1559 && (
-            <GasTiming
-              maxPriorityFeePerGas={hexWEIToDecGWEI(
-                transactionData?.txParams?.maxPriorityFeePerGas ||
-                  gasEstimationObject.maxPriorityFeePerGas ||
-                  txParams.maxPriorityFeePerGas,
-              ).toString()}
-              maxFeePerGas={hexWEIToDecGWEI(
-                transactionData?.txParams?.maxFeePerGas ||
-                  gasEstimationObject.maxFeePerGas ||
-                  txParams.maxFeePerGas,
-              ).toString()}
-            />
           )}
         </>
       }

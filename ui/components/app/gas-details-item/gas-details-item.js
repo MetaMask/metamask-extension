@@ -7,7 +7,6 @@ import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   getPreferences,
-  getUnapprovedTransactions,
   getUseCurrencyRateCheck,
   transactionFeeSelector,
 } from '../../../selectors';
@@ -21,33 +20,14 @@ import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
+import { useDraftTransactionGasValues } from '../../../hooks/useDraftTransactionGasValues';
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   const t = useI18nContext();
   const draftTransaction = useSelector(getCurrentDraftTransaction);
-  const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  let transactionData = {};
-  if (Object.keys(draftTransaction).length !== 0) {
-    const editingTransaction = unapprovedTxs[draftTransaction.id];
-    transactionData = {
-      txParams: {
-        gasPrice: draftTransaction.gas?.gasPrice,
-        gas: editingTransaction?.userEditedGasLimit
-          ? editingTransaction?.txParams?.gas
-          : draftTransaction.gas?.gasLimit,
-        maxFeePerGas: editingTransaction?.txParams?.maxFeePerGas
-          ? editingTransaction?.txParams?.maxFeePerGas
-          : draftTransaction.gas?.maxFeePerGas,
-        maxPriorityFeePerGas: editingTransaction?.txParams?.maxPriorityFeePerGas
-          ? editingTransaction?.txParams?.maxPriorityFeePerGas
-          : draftTransaction.gas?.maxPriorityFeePerGas,
-        value: draftTransaction.amount?.value,
-        type: draftTransaction.transactionType,
-      },
-      userFeeLevel: editingTransaction?.userFeeLevel,
-    };
-  }
+  const { transactionData } = useDraftTransactionGasValues();
+
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
     hexMaximumTransactionFee: draftHexMaximumTransactionFee,

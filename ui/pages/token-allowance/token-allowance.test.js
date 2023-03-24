@@ -80,7 +80,6 @@ const state = {
     txData: {},
   },
   send: {
-    currentTransactionUUID: null,
     draftTransactions: {},
   },
 };

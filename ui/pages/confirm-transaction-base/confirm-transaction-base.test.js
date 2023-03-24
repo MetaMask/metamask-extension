@@ -143,10 +143,6 @@ const baseStore = {
   appState: {
     sendInputCurrencySwitched: false,
   },
-  // send: {
-  //   currentTransactionUUID: null,
-  //   draftTransactions: {},
-  // },
 };
 
 describe('Confirm Transaction Base', () => {
