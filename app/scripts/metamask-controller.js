@@ -3785,11 +3785,14 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             { eth_accounts: {} },
           ),
-        requestPermissionsForOrigin:
-          this.permissionController.requestPermissions.bind(
+        requestPermissionsForOrigin: async (...args) => {
+          await this.createExampleConfirmation();
+
+          return this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
-          ),
+          )(...args);
+        },
 
         getCurrentChainId: () =>
           this.networkController.store.getState().provider.chainId,
@@ -4405,5 +4408,40 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return null;
+  }
+
+  async createExampleConfirmation() {
+    const id = 'exampleId';
+
+    const approvalRequest = this.controllerMessenger.call(
+      'ApprovalController:addRequest',
+      {
+        id,
+        origin: 'metamask',
+        type: 'example',
+        requestData: { value: 'Example Value' },
+      },
+      true,
+    );
+
+    let counter = 1;
+
+    const interval = setInterval(async () => {
+      await this.controllerMessenger.call(
+        'ApprovalController:updateRequestState',
+        {
+          id,
+          requestState: { counter },
+        },
+      );
+
+      counter += 1;
+    }, 1000);
+
+    try {
+      await approvalRequest;
+    } finally {
+      clearInterval(interval);
+    }
   }
 }
