@@ -21,6 +21,7 @@ const Template: ComponentStory<typeof PopoverHeader> = (args) => {
     <PopoverHeader
       onBack={() => console.log('back')}
       onClose={() => console.log('close')}
+      backButtonProps={{ 'data-testid': 'back' }}
       {...args}
     >
       PopoverHeader

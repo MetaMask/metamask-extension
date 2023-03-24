@@ -17,7 +17,7 @@ import { PopoverHeaderProps } from '.';
 export const PopoverHeader = forwardRef<PopoverHeaderProps>(
   ({
     children,
-    className,
+    className = '',
     startAccessory,
     endAccessory,
     onClose,
