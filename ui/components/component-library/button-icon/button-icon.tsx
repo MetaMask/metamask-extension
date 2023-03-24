@@ -19,7 +19,7 @@ export const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonIconProps>(
   ({
     ariaLabel,
     as = 'button',
-    className,
+    className = '',
     color = IconColor.iconDefault,
     href,
     size = ButtonIconSize.LG,
