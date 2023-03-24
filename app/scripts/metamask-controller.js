@@ -748,7 +748,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     const snapExecutionServiceArgs = {
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/0.13.0',
+        'https://metamask.github.io/iframe-execution-environment/0.14.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
@@ -3729,6 +3729,7 @@ export default class MetamaskController extends EventEmitter {
         getMetricsState: this.metaMetricsController.store.getState.bind(
           this.metaMetricsController.store,
         ),
+        securityProviderRequest: this.securityProviderRequest.bind(this),
       }),
     );
 
@@ -4383,11 +4384,11 @@ export default class MetamaskController extends EventEmitter {
     const { currentLocale, transactionSecurityCheckEnabled } =
       this.preferencesController.store.getState();
 
-    const chainId = Number(
-      hexToDecimal(this.networkController.store.getState().provider.chainId),
-    );
-
     if (transactionSecurityCheckEnabled) {
+      const chainId = Number(
+        hexToDecimal(this.networkController.store.getState().provider.chainId),
+      );
+
       try {
         const securityProviderResponse = await securityProviderCheck(
           requestData,
