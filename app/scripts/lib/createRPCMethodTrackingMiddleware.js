@@ -142,6 +142,8 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[method];
 
+    const properties = {};
+
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
@@ -161,8 +163,6 @@ export default function createRPCMethodTrackingMiddleware({
       const event = eventType
         ? eventType.REQUESTED
         : EVENT_NAMES.PROVIDER_METHOD_CALLED;
-
-      const properties = {};
 
       let msgParams;
 
@@ -242,8 +242,6 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      const properties = {};
-
       // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
       const isDisabledEthSignAdvancedSetting =
         method === MESSAGE_TYPE.ETH_SIGN &&
@@ -259,65 +257,6 @@ export default function createRPCMethodTrackingMiddleware({
         event = eventType.REJECTED;
       } else {
         event = eventType.APPROVED;
-      }
-
-      let msgParams;
-
-      if (eventType.REQUESTED === EVENT_NAMES.SIGNATURE_REQUESTED) {
-        properties.signature_type = method;
-
-        const data = req?.params?.[0];
-        const from = req?.params?.[1];
-        const paramsExamplePassword = req?.params?.[2];
-
-        msgParams = {
-          ...paramsExamplePassword,
-          from,
-          data,
-          origin,
-        };
-
-        const msgData = {
-          msgParams,
-          status: 'unapproved',
-          type: req.method,
-        };
-
-        try {
-          const securityProviderResponse = await securityProviderRequest(
-            msgData,
-            req.method,
-          );
-
-          if (securityProviderResponse?.flagAsDangerous === 1) {
-            properties.ui_customizations = ['flagged_as_malicious'];
-          } else if (securityProviderResponse?.flagAsDangerous === 2) {
-            properties.ui_customizations = ['flagged_as_safety_unknown'];
-          } else {
-            properties.ui_customizations = null;
-          }
-
-          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
-            const { isSIWEMessage } = detectSIWE({ data });
-            if (isSIWEMessage) {
-              properties.ui_customizations === null
-                ? (properties.ui_customizations = [
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  ])
-                : properties.ui_customizations.push(
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  );
-            }
-          }
-        } catch (e) {
-          console.warn(
-            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
-          );
-        }
-      } else {
-        properties.method = method;
       }
 
       trackEvent({
