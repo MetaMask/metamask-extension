@@ -1,6 +1,7 @@
 # TODO(ritave): Add support for METAMASK_ENVIRONMENT
+# TODO(ritave): Add support for build targets (<root>/development/build/constants.js:@BUILD_TARGETS)
 # The build type to use when no build type provided
-default: main
+default: &default main
 
 # Declaration of build types
 # Each build type is composed of features, env variables and assets.
@@ -10,7 +11,7 @@ builds:
     # and required
     # (Potentially set to undefined)
     env:
-      - INFURA_BETA_PROJECT_ID
+      - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
     # Variables that modify the build process itself
     # It's an escape hatch for backwards compatibility
@@ -78,7 +79,21 @@ builds:
 
 # Env variables that are required for all types of builds
 # (Potentially set to undefined)
+#
+# env object supports both declarations (- FOO), and definitions (- FOO: BAR).
+# Variables that were declared have to be defined somewhere using normal maskenv loading behavior.
+# order of priority: prompt, .metamaskrc, .env, buids.yumll
 env:
-  - PUBNUB_PUB_KEY
-  - PUBNUB_SUB_KEY
-  - SENTRY_DSN
+  - PUBNUB_PUB_KEY: null
+  - PUBNUB_SUB_KEY: null
+  - SENTRY_DSN: null
+  - INFURA_PROJECT_ID: '00000000000'
+  - SEGMENT_WRITE_KEY: null
+  - SWAPS_USE_DEV_APIS: null
+  - PORTFOLIO_URL: null
+  - TRANSACTION_SECURITY_PROVIDER: null
+  - PASSWORD: METAMASK PASSWORD
+  # Set this to test changes to the phishing warning page.
+  - PHISHING_WARNING_PAGE_URL: null
+  # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
+  - METAMASK_BUILD_TYPE_DEFAULT: *default

@@ -5,7 +5,7 @@ const { hideBin } = require('yargs/helpers');
 
 const { runCommand, runInShell } = require('./lib/run-command');
 const { getVersion } = require('./lib/get-version');
-const { BuildType, loadBuildTypesConfig } = require('./lib/build-type');
+const { loadBuildTypesConfig } = require('./lib/build-type');
 
 start().catch((error) => {
   console.error(error);
@@ -31,7 +31,7 @@ async function start() {
         .option('build-type', {
           default: loadBuildTypesConfig().default,
           description: 'The MetaMask extension build type',
-          choices: Object.values(BuildType),
+          choices: Object.keys(loadBuildTypesConfig().builds),
         })
         .option('build-version', {
           default: 0,

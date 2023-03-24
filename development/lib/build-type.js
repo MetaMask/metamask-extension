@@ -1,4 +1,3 @@
-const { en } = require('.storybook/locales');
 const {
   object,
   string,
@@ -10,6 +9,8 @@ const {
   Struct,
   any,
   boolean,
+  coerce,
+  union,
 } = require('superstruct');
 /**
  * The distribution this build is intended for.
@@ -39,10 +40,26 @@ const unique = (struct) =>
     }
   });
 
+const EnvDefinitionStruct = coerce(
+  object({ key: string(), value: any() }),
+  refine(record(string(), any()), 'Env variable declaration', (value) => {
+    if (Object.keys(value).length !== 1) {
+      return 'Declaration should have only one property, the name';
+    }
+    return true;
+  }),
+  (value) => ({ key: Object.keys(value)[0], value: Object.values(value)[0] }),
+);
+
+/**
+ * @type {import('superstruct').Struct<string | {key: string, value?: any}, null>}
+ */
+const EnvDeclarationStruct = union(string(), EnvDefinitionStruct);
+
 const BuildTypeStruct = object({
   features: optional(unique(array(string()))),
   isPrerelease: optional(boolean()),
-  env: optional(unique(array(string()))),
+  env: optional(unique(array(EnvDeclarationStruct))),
   var: optional(record(string(), any())),
   // TODO(ritave): Check if the paths exist
   assets: optional(array(object({ src: string(), dest: string() }))),
@@ -52,7 +69,7 @@ const BuildTypesStruct = refine(
   object({
     default: string(),
     builds: record(string(), BuildTypeStruct),
-    env: unique(array(string())),
+    env: unique(array(EnvDeclarationStruct)),
   }),
   'BuildTypes',
   function* (value) {
@@ -97,22 +114,4 @@ function loadBuildTypesConfig() {
   return buildsData;
 }
 
-/**
- * Load definitions of build types and selects the active one.
- *
- * @param {string} requestedBuildType - Build type the user has requested to build.
- */
-function getBuildTypeConfig(requestedBuildType) {
-  const buildConfig = loadBuildTypesConfig().builds[requestedBuildType];
-  if (buildConfig === undefined) {
-    throw new Error(`Invalid build type "${requestedBuildType}"`);
-  }
-  return buildConfig;
-}
-
-/** @deprecated Use {@link getBuildTypeConfig} instead */
-const BuildType = Object.fromEntries(
-  Object.keys(loadBuildTypesConfig().builds).map((key) => [key, key]),
-);
-
-module.exports = { BuildType, loadBuildTypesConfig, getBuildTypeConfig };
+module.exports = { loadBuildTypesConfig };

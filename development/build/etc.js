@@ -6,7 +6,7 @@ const del = require('del');
 const pify = require('pify');
 const pump = pify(require('pump'));
 
-const { BuildType, loadBuildTypesConfig } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 const { TASKS } = require('./constants');
 const { createTask, composeParallel } = require('./task');
 

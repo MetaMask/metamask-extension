@@ -31,7 +31,7 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
-const { BuildType, loadBuildTypesConfig } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 const { generateIconNames } = require('../generate-icon-names');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const {

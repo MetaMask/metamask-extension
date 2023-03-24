@@ -11,7 +11,7 @@ const { hideBin } = require('yargs/helpers');
 const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
 const { getVersion } = require('../lib/get-version');
-const { BuildType, loadBuildTypesConfig } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 const { TASKS, ENVIRONMENT } = require('./constants');
 const {
   createTask,
@@ -277,7 +277,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
         .option('build-type', {
           default: loadBuildTypesConfig().default,
           description: 'The type of build to create.',
-          choices: Object.keys(BuildType),
+          choices: Object.keys(loadBuildTypesConfig().builds),
         })
         .option('build-version', {
           default: 0,
@@ -381,7 +381,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
  */
 function getIgnoredFiles(currentBuildType) {
   const inheritedBuildTypes = BuildTypeInheritance[currentBuildType] || [];
-  const excludedFiles = Object.values(BuildType)
+  const excludedFiles = Object.keys(loadBuildTypesConfig().builds)
     // This filter removes "main" and the current build type. The files of any
     // build types that remain in the array will be excluded. "main" is the
     // default build type, and has no files that are excluded from other builds.
