@@ -63,7 +63,7 @@ describe('Failing contract interaction ', function () {
         // dismiss warning and confirm the transaction
         await driver.clickElement({
           text: 'I want to proceed anyway',
-          tag: 'span',
+          tag: 'button',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
@@ -149,7 +149,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         // dismiss warning and confirm the transaction
         await driver.clickElement({
           text: 'I want to proceed anyway',
-          tag: 'span',
+          tag: 'button',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);

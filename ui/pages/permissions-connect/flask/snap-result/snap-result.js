@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
-
-import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Box from '../../../../components/ui/box/box';
@@ -100,9 +98,6 @@ export default function SnapResult({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <Box className="snap-install__footer--no-source-code" paddingTop={4}>
-          <PermissionsConnectFooter />
-        </Box>
         <PageContainerFooter
           hideCancel
           disabled={isLoading}

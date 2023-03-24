@@ -37,6 +37,8 @@ const props = {
   rpcPrefs: {},
   isContract: true,
   useCurrencyRateCheck: true,
+  isSetApproveForAll: false,
+  isApprovalOrRejection: true,
 };
 
 describe('ConfirmApproveContent Component', () => {
@@ -280,5 +282,47 @@ describe('ConfirmApproveContent Component', () => {
         '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('should render Confirm approve page correctly and display fallback copy for when we are able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when giving a setApprovalForAll allowance', () => {
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: 'ZenAcademy',
+      isSetApproveForAll: true,
+    });
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render Confirm approve page correctly and display fallback copy for when we are not able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when giving a setApprovalForAll allowance', () => {
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: '',
+      isSetApproveForAll: true,
+    });
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render Confirm approve page correctly and display fallback copy for when we are able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when revoking a setApprovalForAll allowance', () => {
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: 'ZenAcademy',
+      isSetApproveForAll: true,
+      isApprovalOrRejection: false,
+    });
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render Confirm approve page correctly and display fallback copy for when we are not able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when revoking a setApprovalForAll allowance', () => {
+    const { container } = renderComponent({
+      ...props,
+      tokenSymbol: '',
+      isSetApproveForAll: true,
+      isApprovalOrRejection: false,
+    });
+
+    expect(container).toMatchSnapshot();
   });
 });

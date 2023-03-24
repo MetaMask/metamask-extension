@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
+  "connectingToLineaTestnet": {
+    "message": "Csatlakozás a Linea Goerli teszthálózathoz"
+  },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
   },
@@ -407,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli teszthálózat"
   },
   "links": {
     "message": "Linkek"
