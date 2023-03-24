@@ -25,7 +25,9 @@ describe('NetworkListItem', () => {
     const { container } = render(
       <NetworkListItem {...DEFAULT_PROPS} onDeleteClick={null} />,
     );
-    expect(container.querySelector('.network-list-item__delete')).toBeNull();
+    expect(
+      container.querySelector('.multichain-network-list-item__delete'),
+    ).toBeNull();
   });
 
   it('shows as selected when selected', () => {
@@ -33,7 +35,9 @@ describe('NetworkListItem', () => {
       <NetworkListItem {...DEFAULT_PROPS} selected />,
     );
     expect(
-      container.querySelector('.network-list-item__selected-indicator'),
+      container.querySelector(
+        '.multichain-network-list-item__selected-indicator',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -45,7 +49,7 @@ describe('NetworkListItem', () => {
       />,
     );
     expect(
-      container.querySelector('.network-list-item__tooltip'),
+      container.querySelector('.multichain-network-list-item__tooltip'),
     ).toBeInTheDocument();
   });
 
@@ -54,7 +58,7 @@ describe('NetworkListItem', () => {
     const { container } = render(
       <NetworkListItem {...DEFAULT_PROPS} onClick={onClick} />,
     );
-    fireEvent.click(container.querySelector('.network-list-item'));
+    fireEvent.click(container.querySelector('.multichain-network-list-item'));
     expect(onClick).toHaveBeenCalled();
   });
 
@@ -68,7 +72,9 @@ describe('NetworkListItem', () => {
         onClick={onClick}
       />,
     );
-    fireEvent.click(container.querySelector('.network-list-item__delete'));
+    fireEvent.click(
+      container.querySelector('.multichain-network-list-item__delete'),
+    );
     expect(onDeleteClick).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledTimes(0);
   });
