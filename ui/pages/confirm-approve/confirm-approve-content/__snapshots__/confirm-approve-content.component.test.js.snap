@@ -32,16 +32,16 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
       data-testid="confirm-approve-title"
     >
       <span>
-
-        Allow access to and transfer of all your
+         
+        Allow access to and transfer of all your 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
           ZenAcademy
         </span>
-
+        
         ?
-
+         
       </span>
     </div>
     <div
@@ -135,22 +135,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box custom-nonce__header box--flex-direction-row box--justify-content-flex-start box--align-items-center box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="box mm-text mm-text--body-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-button-base mm-button-link mm-button-link--size-auto box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
               >
-                <span
-                  class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-                >
-                  Edit
-                </span>
+                Edit
               </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
@@ -210,32 +206,32 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
       data-testid="confirm-approve-title"
     >
       <span>
-
-        Revoke permission to access and transfer all of your
+         
+        Revoke permission to access and transfer all of your 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
           ZenAcademy
         </span>
-
+        
         ?
-
+         
       </span>
     </div>
     <div
       class="confirm-approve-content__description"
     >
       <span>
-
-        This revokes the permission for a third party to access and transfer all of your
+         
+        This revokes the permission for a third party to access and transfer all of your 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
           ZenAcademy
         </span>
-
+        
          without further notice.
-
+         
       </span>
     </div>
     <div
@@ -324,22 +320,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box custom-nonce__header box--flex-direction-row box--justify-content-flex-start box--align-items-center box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="box mm-text mm-text--body-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-button-base mm-button-link mm-button-link--size-auto box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
               >
-                <span
-                  class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-                >
-                  Edit
-                </span>
+                Edit
               </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
@@ -399,32 +391,32 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
       data-testid="confirm-approve-title"
     >
       <span>
-
-        Allow access to and transfer all of your NFTs from
+         
+        Allow access to and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
           this collection
         </span>
-
+        
         ?
-
+         
       </span>
     </div>
     <div
       class="confirm-approve-content__description"
     >
       <span>
-
-        This allows a third party to access and transfer all of your NFTs from
+         
+        This allows a third party to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
           this collection
         </span>
-
+        
          without further notice until you revoke its access.
-
+         
       </span>
     </div>
     <div
@@ -513,22 +505,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box custom-nonce__header box--flex-direction-row box--justify-content-flex-start box--align-items-center box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="box mm-text mm-text--body-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-button-base mm-button-link mm-button-link--size-auto box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
               >
-                <span
-                  class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-                >
-                  Edit
-                </span>
+                Edit
               </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
@@ -588,32 +576,32 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
       data-testid="confirm-approve-title"
     >
       <span>
-
-        Revoke permission to access and transfer all of your NFTs from
+         
+        Revoke permission to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
           this collection
         </span>
-
+        
         ?
-
+         
       </span>
     </div>
     <div
       class="confirm-approve-content__description"
     >
       <span>
-
-        This revokes the permission for a third party to access and transfer all of your NFTs from
+         
+        This revokes the permission for a third party to access and transfer all of your NFTs from 
         <span
           class="confirm-approve-content__approval-asset-title"
         >
           this collection
         </span>
-
+        
          without further notice.
-
+         
       </span>
     </div>
     <div
@@ -702,22 +690,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="box custom-nonce__header box--flex-direction-row box--justify-content-flex-start box--align-items-center box--display-flex"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="box mm-text mm-text--body-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-button-base mm-button-link mm-button-link--size-auto box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
               >
-                <span
-                  class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-                >
-                  Edit
-                </span>
+                Edit
               </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
             >
               2
             </h6>
