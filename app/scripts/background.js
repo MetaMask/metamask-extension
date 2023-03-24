@@ -660,7 +660,7 @@ export function setupController(initState, initLangCode, overrides) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.encryptionPublicKeyManager.on(
+  controller.encryptionPublicKeyController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -701,8 +701,6 @@ export function setupController(initState, initLangCode, overrides) {
   function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const { unapprovedEncryptionPublicKeyMsgCount } =
-      controller.encryptionPublicKeyManager;
     const pendingApprovalCount =
       controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
@@ -710,7 +708,6 @@ export function setupController(initState, initLangCode, overrides) {
     return (
       unapprovedTxCount +
       unapprovedDecryptMsgCount +
-      unapprovedEncryptionPublicKeyMsgCount +
       pendingApprovalCount +
       waitingForUnlockCount
     );
@@ -742,14 +739,9 @@ export function setupController(initState, initLangCode, overrides) {
           REJECT_NOTFICIATION_CLOSE,
         ),
       );
-    controller.encryptionPublicKeyManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.encryptionPublicKeyManager.rejectMsg(
-          tx.id,
-          REJECT_NOTFICIATION_CLOSE,
-        ),
-      );
+    controller.encryptionPublicKeyController.rejectUnapproved(
+      REJECT_NOTFICIATION_CLOSE,
+    );
 
     // Finally, resolve snap dialog approvals on Flask and reject all the others managed by the ApprovalController.
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
