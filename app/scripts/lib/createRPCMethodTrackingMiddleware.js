@@ -7,7 +7,6 @@ import {
   EVENT,
   EVENT_NAMES,
   METAMETRIC_KEY_OPT,
-  METAMETRIC_KEY,
 } from '../../../shared/constants/metametrics';
 
 /**
