@@ -1,6 +1,5 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { action } from '@storybook/addon-actions';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import ComplianceSettings from '.';
@@ -24,7 +23,7 @@ export default {
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: ComplianceSettings,
   argTypes: {
-        onClick: {
+    onClick: {
       action: 'onClick',
     },
   },
