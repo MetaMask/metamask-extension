@@ -1,9 +1,9 @@
-.network-list-item {
+.multichain-network-list-item {
   position: relative;
   width: 100%;
   cursor: pointer;
 
-  &:not(.network-list-item--selected) {
+  &:not(.multichain-network-list-item--selected) {
     &:hover,
     &:focus-within {
       background: var(--color-background-default-hover);
@@ -18,7 +18,7 @@
   &:hover,
   &:focus,
   &:focus-within {
-    .network-list-item__delete {
+    .multichain-network-list-item__delete {
       visibility: visible;
     }
   }

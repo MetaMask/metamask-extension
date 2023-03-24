@@ -44,7 +44,7 @@ export const NetworkListMenu = ({ closeMenu }) => {
   return (
     <Popover onClose={closeMenu} centerTitle title={t('networkMenuHeading')}>
       <Box>
-        <Box className="network-list-menu">
+        <Box className="multichain-network-list-menu">
           {networks.map((network) => {
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =

@@ -35,21 +35,21 @@ export const NetworkListItem = ({
       padding={4}
       gap={2}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
-      className={classnames('network-list-item', {
-        'network-list-item--selected': selected,
+      className={classnames('multichain-network-list-item', {
+        'multichain-network-list-item--selected': selected,
       })}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
       {selected && (
         <Box
-          className="network-list-item__selected-indicator"
+          className="multichain-network-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
           backgroundColor={Color.primaryDefault}
         />
       )}
       <AvatarNetwork name={name} src={iconSrc} />
-      <Box className="network-list-item__network-name">
+      <Box className="multichain-network-list-item__network-name">
         <Text as="div" ellipsis>
           <a
             href="#"
@@ -62,7 +62,7 @@ export const NetworkListItem = ({
               <Tooltip
                 title={name}
                 position="bottom"
-                wrapperClassName="network-list-item__tooltip"
+                wrapperClassName="multichain-network-list-item__tooltip"
               >
                 {name}
               </Tooltip>
@@ -74,7 +74,7 @@ export const NetworkListItem = ({
       </Box>
       {onDeleteClick ? (
         <ButtonIcon
-          className="network-list-item__delete"
+          className="multichain-network-list-item__delete"
           color={IconColor.errorDefault}
           iconName={ICON_NAMES.TRASH}
           ariaLabel={t('deleteNetwork')}
