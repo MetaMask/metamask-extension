@@ -208,7 +208,7 @@ export default function createRPCMethodTrackingMiddleware({
             if (isSIWEMessage) {
               eventProperties.ui_customizations = (
                 eventProperties.ui_customizations || []
-              ).push(METAMETRIC_KEY_OPT[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE);
+              ).push(METAMETRIC_KEY_OPT.ui_customizations.SIWE);
             }
           }
         } catch (e) {
