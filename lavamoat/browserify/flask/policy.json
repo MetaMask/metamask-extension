@@ -1977,6 +1977,12 @@
         "@metamask/utils>@ethereumjs/tx>ethereum-cryptography>@noble/secp256k1": true
       }
     },
+    "@metamask/utils>superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
     "@ngraveio/bc-ur": {
       "packages": {
         "@ngraveio/bc-ur>@apocentre/alias-sampling": true,
@@ -3018,11 +3024,6 @@
         "document.body.appendChild": true,
         "document.body.removeChild": true,
         "document.createElement": true
-      }
-    },
-    "btoa": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "classnames": {

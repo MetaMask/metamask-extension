@@ -165,9 +165,13 @@
     },
     "@babel/eslint-parser": {
       "builtin": {
-        "path": true
+        "module": true,
+        "path": true,
+        "worker_threads": true
       },
       "globals": {
+        "__dirname": true,
+        "process.cwd": true,
         "process.versions": true
       },
       "packages": {
@@ -1029,11 +1033,11 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-core": true,
         "nyc>convert-source-map": true,
         "through2": true
       }
@@ -1059,28 +1063,6 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
-      }
-    },
-    "@lavamoat/lavapack>lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.writeFileSync": true,
-        "path.extname": true,
-        "path.join": true
-      },
-      "globals": {
-        "__dirname": true,
-        "console.error": true,
-        "console.warn": true,
-        "define": true
-      },
-      "packages": {
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
       }
     },
     "@lavamoat/lavapack>readable-stream": {
@@ -2850,6 +2832,9 @@
         "util": true
       },
       "globals": {
+        "__filename": true,
+        "process.cwd": true,
+        "process.emitWarning": true,
         "process.platform": true
       },
       "packages": {
@@ -8008,6 +7993,7 @@
       },
       "globals": {
         "Error": true,
+        "__dirname": true,
         "console": true,
         "process": true
       },
@@ -8022,6 +8008,9 @@
       }
     },
     "yargs>cliui": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "eslint>strip-ansi": true,
         "yargs>cliui>wrap-ansi": true,

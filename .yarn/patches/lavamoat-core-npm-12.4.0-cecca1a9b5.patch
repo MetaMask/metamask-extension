@@ -1,0 +1,13 @@
+diff --git a/src/generatePolicy.js b/src/generatePolicy.js
+index eb28319fb56873ad2816bf4dabf79543f6814028..c38e63491c7cedb42d88f37914b60d1c3de584c7 100644
+--- a/src/generatePolicy.js
++++ b/src/generatePolicy.js
+@@ -97,7 +97,7 @@ function createModuleInspector (opts = {}) {
+     // skip json files
+     const filename = moduleRecord.file || 'unknown'
+     const fileExtension = path.extname(filename)
+-    if (fileExtension !== '.js') {
++    if (fileExtension === '.json') {
+       return
+     }
+     // get ast (parse or use cached)

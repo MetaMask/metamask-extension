@@ -204,7 +204,11 @@
     "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
+    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
+    "lavamoat-core@^10.0.1": "patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch",
+    "lavamoat-core@^14.0.0": "patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch",
+    "lavamoat-core@^12.3.0": "patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch",
+    "lavamoat-core@^12.4.0": "patch:lavamoat-core@npm%3A12.4.0#./.yarn/patches/lavamoat-core-npm-12.4.0-cecca1a9b5.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
