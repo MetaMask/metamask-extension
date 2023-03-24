@@ -23,9 +23,9 @@ export default {
   title: 'Components/Institutional/ComplianceSettings',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   component: ComplianceSettings,
-  args: {
-    onClick: () => {
-      action('onClick');
+  argTypes: {
+        onClick: {
+      action: 'onClick',
     },
   },
 };
