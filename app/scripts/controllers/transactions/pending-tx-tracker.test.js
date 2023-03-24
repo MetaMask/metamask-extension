@@ -374,6 +374,43 @@ describe('PendingTransactionTracker', function () {
         'should NOT try to publish transaction',
       );
     });
+
+    it('should return undefined if txMeta has custodyId property', async function () {
+      const txMeta = {
+        custodyId: 1,
+        id: 1,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.signed,
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+        history: [{}],
+        rawTx:
+          '0xf86c808504a817c80086a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+      };
+      const approveTransaction = sinon.spy();
+      const publishTransaction = sinon.spy();
+      const pendingTxTracker = new PendingTransactionTracker({
+        query: {
+          getTransactionReceipt: sinon.stub(),
+        },
+        nonceTracker: {
+          getGlobalLock: sinon.stub().resolves({
+            releaseLock: sinon.spy(),
+          }),
+        },
+        getPendingTransactions: sinon.stub().returns([]),
+        getCompletedTransactions: sinon.stub().returns([]),
+        approveTransaction,
+        publishTransaction,
+        confirmTransaction: sinon.spy(),
+      });
+
+      const result = await pendingTxTracker._resubmitTx(txMeta);
+      assert.equal(result, undefined);
+    });
   });
 
   describe('#_checkIfTxWasDropped', function () {
