@@ -52,12 +52,16 @@ export default class InfoTab extends PureComponent {
 
   renderInfoLinks() {
     const { t } = this.context;
-    let privacyUrl = 'https://metamask.io/privacy.html';
-    let siteUrl = 'https://metamask.io/';
+    let privacyUrl, siteUrl;
 
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
     privacyUrl = 'https://consensys.net/codefi/about/privacy-policy/';
     siteUrl = MMI_WEB_SITE;
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+    privacyUrl = 'https://metamask.io/privacy.html';
+    siteUrl = 'https://metamask.io/';
     ///: END:ONLY_INCLUDE_IN
 
     return (
