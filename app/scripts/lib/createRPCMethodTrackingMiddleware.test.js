@@ -1,7 +1,11 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { EVENT_NAMES } from '../../../shared/constants/metametrics';
+import {
+  EVENT_NAMES,
+  METAMETRIC_KEY_OPT,
+} from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
+import { detectSIWE } from '../../../shared/modules/siwe';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
@@ -51,6 +55,12 @@ function getNext(timeout = 500) {
 
 const waitForSeconds = async (seconds) =>
   await new Promise((resolve) => setTimeout(resolve, SECOND * seconds));
+
+jest.mock('../../../shared/modules/siwe', () => ({
+  detectSIWE: jest.fn().mockImplementation(() => {
+    return { isSIWEMessage: false };
+  }),
+}));
 
 describe('createRPCMethodTrackingMiddleware', () => {
   afterEach(() => {
@@ -228,6 +238,36 @@ describe('createRPCMethodTrackingMiddleware', () => {
       expect(trackEvent).toHaveBeenCalledTimes(2);
       expect(trackEvent.mock.calls[0][0].properties.method).toBe('eth_chainId');
       expect(trackEvent.mock.calls[1][0].properties.method).toBe('eth_chainId');
+    });
+
+    it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
+      const req = {
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+      const res = {
+        error: null,
+      };
+      const { next, executeMiddlewareStack } = getNext();
+
+      detectSIWE.mockImplementation(() => {
+        return { isSIWEMessage: true };
+      });
+
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      expect(trackEvent).toHaveBeenCalledTimes(2);
+
+      expect(trackEvent.mock.calls[1][0]).toMatchObject({
+        category: 'inpage_provider',
+        event: EVENT_NAMES.SIGNATURE_APPROVED,
+        properties: {
+          signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
+          ui_customizations: [METAMETRIC_KEY_OPT.ui_customizations.SIWE],
+        },
+        referrer: { url: 'some.dapp' },
+      });
     });
 
     describe(`when '${MESSAGE_TYPE.ETH_SIGN}' is disabled in advanced settings`, () => {
