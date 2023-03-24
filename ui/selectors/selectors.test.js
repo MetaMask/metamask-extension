@@ -390,4 +390,14 @@ describe('Selectors', () => {
     const isDesktopEnabled = selectors.getIsDesktopEnabled(mockState);
     expect(isDesktopEnabled).toBeFalsy();
   });
+
+  it('#getIsBridgeChain', () => {
+    mockState.metamask.provider.chainId = '0xa';
+    const isOptimismSupported = selectors.getIsBridgeChain(mockState);
+    expect(isOptimismSupported).toBeTruthy();
+
+    mockState.metamask.provider.chainId = '0xfa';
+    const isFantomSupported = selectors.getIsBridgeChain(mockState);
+    expect(isFantomSupported).toBeFalsy();
+  });
 });
