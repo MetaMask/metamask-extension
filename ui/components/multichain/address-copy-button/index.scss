@@ -1,8 +1,8 @@
 .multichain-address-copy-button {
-  min-height: 32px;
-  height: auto;
 
   &__address--wrap {
     word-break: break-word;
+    min-height: 32px;
+    height: auto;
   }
 }
