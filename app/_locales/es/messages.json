@@ -736,6 +736,9 @@
   "connectingToGoerli": {
     "message": "Estableciendo conexión a la red de prueba Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Conectando a la red de prueba Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Estableciendo conexión a la red principal de Ethereum"
   },
@@ -1812,6 +1815,9 @@
   },
   "likeToImportTokens": {
     "message": "¿Le gustaría agregar estos tokens?"
+  },
+  "lineatestnet": {
+    "message": "Red de prueba Linea Goerli"
   },
   "link": {
     "message": "Vínculo"

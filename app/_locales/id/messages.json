@@ -736,6 +736,9 @@
   "connectingToGoerli": {
     "message": "Menghubungkan ke jaringan uji Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Menghubungkan ke jaringan uji Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Menghubungkan ke Ethereum Mainnet"
   },
@@ -1812,6 +1815,9 @@
   },
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
+  },
+  "lineatestnet": {
+    "message": "Jaringan uji Linea Goerli"
   },
   "link": {
     "message": "Tautan"

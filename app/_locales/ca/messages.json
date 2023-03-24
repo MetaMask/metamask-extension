@@ -175,6 +175,9 @@
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
+  "connectingToLineaTestnet": {
+    "message": "Connectant a Xarxa de Prova Linea Goerli"
+  },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
   },
@@ -423,6 +426,9 @@
   },
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
+  },
+  "lineatestnet": {
+    "message": "Xarxa de test Linea Goerli"
   },
   "links": {
     "message": "Enllaços"

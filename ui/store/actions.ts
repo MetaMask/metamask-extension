@@ -2512,6 +2512,7 @@ export function setRpcTarget(
   chainId: string,
   ticker?: EtherDenomination,
   nickname?: string,
+  rpcPrefs?: object,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
@@ -2524,6 +2525,7 @@ export function setRpcTarget(
         chainId,
         ticker ?? EtherDenomination.ETH,
         nickname || newRpcUrl,
+        rpcPrefs,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
