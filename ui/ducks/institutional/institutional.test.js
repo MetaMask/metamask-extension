@@ -20,8 +20,8 @@ jest.mock('../../../shared/lib/storage-helpers', () => ({
 
 const mockSyncReportsInProgress = jest.fn();
 const mockGenerateComplianceReport = jest.fn();
-jest.mock('../../store/actions', () => ({
-  getMMIActions: () => ({
+jest.mock('../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
     generateComplianceReport: mockGenerateComplianceReport,
     getComplianceHistoricalReportsByAddress: jest.fn(),
     syncReportsInProgress: mockSyncReportsInProgress,
