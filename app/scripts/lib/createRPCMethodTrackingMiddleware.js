@@ -201,22 +201,16 @@ export default function createRPCMethodTrackingMiddleware({
             eventProperties.ui_customizations = [
               METAMETRIC_KEY_OPTIONS.ui_customizations.flaggedAsSafetyUnknown,
             ];
-          } else {
-            eventProperties.ui_customizations = null;
           }
 
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              eventProperties.ui_customizations === null
-                ? (eventProperties.ui_customizations = [
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  ])
-                : eventProperties.ui_customizations.push(
-                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                      .SIWE,
-                  );
+              eventProperties.ui_customizations = (
+                eventProperties.ui_customizations || []
+              ).push(
+                METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS].SIWE,
+              );
             }
           }
         } catch (e) {
