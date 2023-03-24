@@ -64,6 +64,7 @@ export default class PermissionsConnectHeader extends Component {
         <SiteOrigin
           chip
           siteOrigin={siteOrigin}
+          title={siteOrigin}
           iconSrc={iconUrl}
           name={iconName}
           leftIcon={leftIcon}

@@ -41,6 +41,8 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
+
 import {
   shortenAddress,
   getAccountByAddress,
@@ -750,6 +752,11 @@ export function getIsSwapsChain(state) {
     : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
+export function getIsBridgeChain(state) {
+  const chainId = getCurrentChainId(state);
+  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
+}
+
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
@@ -1363,9 +1370,3 @@ export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
 ///: END:ONLY_INCLUDE_IN
-
-export function getHasTheOpenSeaTransactionSecurityProviderPopoverBeenShown(
-  state,
-) {
-  return state.metamask.openSeaTransactionSecurityProviderPopoverHasBeenShown;
-}

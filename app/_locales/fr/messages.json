@@ -329,9 +329,6 @@
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
-  "alwaysBeSureTo": {
-    "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
-  },
   "amount": {
     "message": "Montant"
   },
@@ -1225,9 +1222,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
   },
-  "enableOpenSeaSecurityProvider": {
-    "message": "Activer le fournisseur de services de sécurité"
-  },
   "enableSmartTransactions": {
     "message": "Activer les transactions intelligentes"
   },
@@ -1518,9 +1512,6 @@
   },
   "general": {
     "message": "Général"
-  },
-  "getWarningsFromOpenSea": {
-    "message": "OpenSea vous avertira dès que vous recevrez une requête malveillante."
   },
   "goBack": {
     "message": "Retour"
@@ -2275,9 +2266,6 @@
   "notEnoughGas": {
     "message": "Pas assez de gaz"
   },
-  "notNow": {
-    "message": "Pas maintenant"
-  },
   "notifications": {
     "message": "Notifications"
   },
@@ -2607,12 +2595,6 @@
   },
   "openSea": {
     "message": "OpenSea (Beta)"
-  },
-  "openSeaAltText": {
-    "message": "Fournisseur de services de sécurité OpenSea"
-  },
-  "openSeaDescription": {
-    "message": "OpenSea est le premier fournisseur de services de sécurité à offrir cette fonctionnalité. D’autres fournisseurs seront bientôt ajoutés !"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3507,9 +3489,6 @@
   },
   "statusNotConnected": {
     "message": "Non connecté"
-  },
-  "staySafeWithOpenSea": {
-    "message": "Restez en sécurité avec OpenSea"
   },
   "step1LatticeWallet": {
     "message": "Connectez votre Lattice1"
