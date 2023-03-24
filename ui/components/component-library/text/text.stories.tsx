@@ -1,4 +1,5 @@
 import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   DISPLAY,
   BackgroundColor,
@@ -16,16 +17,15 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
-import { ValidTags, Text } from './text';
-import { TEXT_DIRECTIONS } from './text.constants';
-
 import README from './README.mdx';
+import { ValidTag, Text, TextDirection } from '.';
 
 const sizeKnobOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
 
 export default {
   title: 'Components/ComponentLibrary/Text',
+  component: Text,
 
   parameters: {
     docs: {
@@ -66,11 +66,11 @@ export default {
     },
     as: {
       control: { type: 'select' },
-      options: ValidTags,
+      options: ValidTag,
     },
     textDirection: {
       control: { type: 'select' },
-      options: Object.values(TEXT_DIRECTIONS),
+      options: Object.values(TextDirection),
     },
     className: {
       control: { type: 'text' },
@@ -124,7 +124,7 @@ export default {
       table: { category: 'box props' },
     },
   },
-};
+} as ComponentMeta<typeof Text>;
 
 function renderBackgroundColor(color) {
   let bgColor;
@@ -164,13 +164,17 @@ function renderBackgroundColor(color) {
   return bgColor;
 }
 
-export const DefaultStory = (args) => <Text {...args}>{args.children}</Text>;
+const Template: ComponentStory<typeof Text> = (args) => (
+  <Text {...args}>{args.children}</Text>
+);
 
-DefaultStory.storyName = 'Default';
+export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   children: 'The quick orange fox jumped over the lazy dog.',
 };
+
+DefaultStory.storyName = 'Default';
 
 export const Variant = (args) => (
   <>
@@ -247,7 +251,7 @@ export const OverflowWrap = (args) => (
   <Box
     borderColor={BorderColor.warningDefault}
     display={DISPLAY.BLOCK}
-    width={FRACTIONS.ONE_THIRD}
+    style={{ width: 200 }}
   >
     <Text {...args} overflowWrap={OVERFLOW_WRAP.NORMAL}>
       {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
@@ -275,8 +279,8 @@ export const Ellipsis = (args) => (
 
 export const As = (args) => (
   <>
-    {ValidTags.map((tag) => {
-      if (tag === 'input') {
+    {Object.values(ValidTag).map((tag) => {
+      if (tag === ValidTag.Input) {
         return <Text key={tag} {...args} as={tag} placeholder={tag} />;
       }
       return (
@@ -290,21 +294,21 @@ export const As = (args) => (
   </>
 );
 
-export const TextDirection = (args) => (
+export const TextDirectionStory = (args) => (
   <Box
     style={{ maxWidth: 300 }}
     display={DISPLAY.FLEX}
     flexDirection={FLEX_DIRECTION.COLUMN}
     gap={4}
   >
-    <Text {...args} textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>
+    <Text {...args} textDirection={TextDirection.LeftToRight}>
       This is left to right (ltr) for English and most languages
     </Text>
-    <Text {...args} textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>
+    <Text {...args} textDirection={TextDirection.RightToLeft}>
       This is right to left (rtl) for use with other laguanges such as Arabic.
       This Enlgish example is incorrect usage.
     </Text>
-    <Text {...args} textDirection={TEXT_DIRECTIONS.AUTO}>
+    <Text {...args} textDirection={TextDirection.Auto}>
       Let the user agent decide with the auto option
     </Text>
   </Box>

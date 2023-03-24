@@ -10,7 +10,7 @@ import {
   TextVariant,
   Color,
 } from '../../../helpers/constants/design-system';
-import { Text, TEXT_DIRECTIONS } from '.';
+import { Text, TextDirection } from '.';
 
 describe('Text', () => {
   it('should render the Text without crashing', () => {
@@ -230,9 +230,9 @@ describe('Text', () => {
   it('should render the Text with proper direction', () => {
     const { getByText } = render(
       <>
-        <Text textDirection={TEXT_DIRECTIONS.AUTO}>auto</Text>
-        <Text textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>ltr</Text>
-        <Text textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>rtl</Text>
+        <Text textDirection={TextDirection.Auto}>auto</Text>
+        <Text textDirection={TextDirection.LeftToRight}>ltr</Text>
+        <Text textDirection={TextDirection.RightToLeft}>rtl</Text>
       </>,
     );
     expect(getByText('auto')).toHaveAttribute('dir', 'auto');
