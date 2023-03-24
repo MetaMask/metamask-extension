@@ -142,6 +142,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [Developing on MetaMask](./development/README.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
+- [How to add new confirmations](./docs/confirmations.md)
 
 ## Dapp Developer Resources
 
