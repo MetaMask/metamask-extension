@@ -17,7 +17,7 @@ import {
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/flask/install-error/install-error';
-import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill/snaps-authorship-pill';
+import SnapAuthorship from '../../../../components/app/flask/snap-authorship';
 import { Text } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -88,10 +88,7 @@ export default function SnapInstall({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <SnapsAuthorshipPill
-          snapId={targetSubjectMetadata.origin}
-          version={targetSubjectMetadata.version}
-        />
+        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {!hasError && (
           <Text padding={[4, 4, 0, 4]} variant={TextVariant.headingLg}>
             {t('snapInstall')}
