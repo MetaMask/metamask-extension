@@ -142,7 +142,7 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[method];
 
-    const properties = {};
+    const eventProperties = {};
 
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
@@ -167,7 +167,7 @@ export default function createRPCMethodTrackingMiddleware({
       let msgParams;
 
       if (event === EVENT_NAMES.SIGNATURE_REQUESTED) {
-        properties.signature_type = method;
+        eventProperties.signature_type = method;
 
         const data = req?.params?.[0];
         const from = req?.params?.[1];
@@ -193,22 +193,22 @@ export default function createRPCMethodTrackingMiddleware({
           );
 
           if (securityProviderResponse?.flagAsDangerous === 1) {
-            properties.ui_customizations = ['flagged_as_malicious'];
+            eventProperties.ui_customizations = ['flagged_as_malicious'];
           } else if (securityProviderResponse?.flagAsDangerous === 2) {
-            properties.ui_customizations = ['flagged_as_safety_unknown'];
+            eventProperties.ui_customizations = ['flagged_as_safety_unknown'];
           } else {
-            properties.ui_customizations = null;
+            eventProperties.ui_customizations = null;
           }
 
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              properties.ui_customizations === null
-                ? (properties.ui_customizations = [
+              eventProperties.ui_customizations === null
+                ? (eventProperties.ui_customizations = [
                     METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
                       .SIWE,
                   ])
-                : properties.ui_customizations.push(
+                : eventProperties.ui_customizations.push(
                     METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
                       .SIWE,
                   );
@@ -220,7 +220,7 @@ export default function createRPCMethodTrackingMiddleware({
           );
         }
       } else {
-        properties.method = method;
+        eventProperties.method = method;
       }
 
       trackEvent({
@@ -229,7 +229,7 @@ export default function createRPCMethodTrackingMiddleware({
         referrer: {
           url: origin,
         },
-        properties,
+        properties: eventProperties,
       });
 
       rateLimitTimeouts[method] = setTimeout(() => {
@@ -252,7 +252,7 @@ export default function createRPCMethodTrackingMiddleware({
       let event;
       if (isDisabledRPCMethod) {
         event = eventType.FAILED;
-        properties.error = res.error;
+        eventProperties.error = res.error;
       } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else {
@@ -265,7 +265,7 @@ export default function createRPCMethodTrackingMiddleware({
         referrer: {
           url: origin,
         },
-        properties,
+        properties: eventProperties,
       });
 
       return callback();
