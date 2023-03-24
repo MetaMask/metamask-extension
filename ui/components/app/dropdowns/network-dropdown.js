@@ -286,22 +286,20 @@ class NetworkDropdown extends Component {
   }
 
   renderNonInfuraDefaultNetwork(networkConfigurations, network) {
-    const {
-      provider: { type: providerType },
-      setActiveNetwork,
-      upsertNetworkConfiguration,
-    } = this.props;
+    const { provider, setActiveNetwork, upsertNetworkConfiguration } =
+      this.props;
 
-    const isCurrentRpcTarget = providerType === NETWORK_TYPES.RPC;
+    const { chainId, ticker, blockExplorerUrl } = BUILT_IN_NETWORKS[network];
+    const networkName = NETWORK_TO_NAME_MAP[network];
+    const rpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
+
+    const isCurrentRpcTarget =
+      provider.type === NETWORK_TYPES.RPC && rpcUrl === provider.rpcUrl;
     return (
       <DropdownMenuItem
         key={network}
         closeMenu={this.props.hideNetworkDropdown}
         onClick={async () => {
-          const { chainId, ticker, blockExplorerUrl } =
-            BUILT_IN_NETWORKS[network];
-          const networkName = NETWORK_TO_NAME_MAP[network];
-
           const networkConfiguration = pickBy(
             networkConfigurations,
             (config) => config.rpcUrl === CHAIN_ID_TO_RPC_URL_MAP[chainId],
@@ -310,7 +308,6 @@ class NetworkDropdown extends Component {
           let configurationId = null;
           // eslint-disable-next-line no-extra-boolean-cast, no-implicit-coercion
           if (!!networkConfiguration) {
-            const rpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
             configurationId = await upsertNetworkConfiguration(
               {
                 rpcUrl,
@@ -346,7 +343,7 @@ class NetworkDropdown extends Component {
           data-testid={`${network}-network-item`}
           style={{
             color:
-              providerType === network
+              provider.type === network
                 ? 'var(--color-text-default)'
                 : 'var(--color-text-alternative)',
           }}
