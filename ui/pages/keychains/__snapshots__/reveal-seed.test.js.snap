@@ -6,31 +6,27 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     class="box page-container box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
   >
     <h2
-      class="box mm-text mm-text--heading-lg mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--heading-lg box--flex-direction-row box--color-text-default"
     >
       Secret Recovery Phrase
     </h2>
     <p
-      class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
     >
       <span>
          
         The 
         <a
-          class="box mm-button-base mm-button-link mm-button-link--size-inherit box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
           href="https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure"
           rel="noopener noreferrer"
           target="_blank"
         >
-          <span
-            class="box mm-text mm-button-base__content mm-text--inherit mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-          >
-            Secret Recovery Phrase (SRP)
-          </span>
+          Secret Recovery Phrase (SRP)
         </a>
          provides 
         <strong
-          class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold mm-text--color-text-default box--flex-direction-row"
+          class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
         >
           full access to your wallet and funds.
 
@@ -40,22 +36,18 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       </span>
     </p>
     <p
-      class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
     >
       <span>
          
         MetaMask is a 
         <a
-          class="box mm-button-base mm-button-link mm-button-link--size-inherit box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
           href="https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet"
           rel="noopener noreferrer"
           target="_blank"
         >
-          <span
-            class="box mm-text mm-button-base__content mm-text--inherit mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-          >
-            non-custodial wallet
-          </span>
+          non-custodial wallet
         </a>
         . That means you're the owner of your SRP.
          
@@ -70,13 +62,13 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       />
       <div>
         <p
-          class="box mm-text mm-text--body-md mm-text--color-text-default box--flex-direction-row"
+          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
         >
           <span>
              
             Make sure no one is looking at your screen. 
             <strong
-              class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold mm-text--color-text-default box--flex-direction-row"
+              class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
             >
               MetaMask Support will never request this.
             </strong>
@@ -88,7 +80,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     </div>
     <form>
       <label
-        class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-text--color-text-default box--display-inline-flex box--flex-direction-row box--align-items-center"
+        class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
         for="password-box"
       >
         Enter password to continue
@@ -98,7 +90,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       >
         <input
           autocomplete="off"
-          class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-text--color-text-default box--padding-right-4 box--padding-left-4 box--flex-direction-row box--background-color-transparent box--border-style-none"
+          class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
           data-testid="input-password"
           focused="true"
           id="password-box"
@@ -112,23 +104,15 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       class="box box--margin-top-auto box--display-flex box--gap-4 box--flex-direction-row"
     >
       <button
-        class="box mm-button-base mm-button-base--size-lg mm-button-secondary box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-full box--color-primary-default box--background-color-transparent box--rounded-pill box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-full box--color-primary-default box--background-color-transparent box--rounded-pill box--border-color-primary-default box--border-style-solid box--border-width-1"
       >
-        <span
-          class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-        >
-          Cancel
-        </span>
+        Cancel
       </button>
       <button
-        class="box mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-full box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-full box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
         disabled=""
       >
-        <span
-          class="box mm-text mm-button-base__content mm-text--body-md mm-text--color-inherit box--gap-2 box--flex-direction-row box--justify-content-center box--align-items-center box--display-flex"
-        >
-          Next
-        </span>
+        Next
       </button>
     </div>
   </div>
