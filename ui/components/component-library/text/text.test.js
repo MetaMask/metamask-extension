@@ -126,40 +126,30 @@ describe('Text', () => {
         <Text color={TextColor.infoInverse}>info-inverse</Text>
       </>,
     );
-    expect(getByText('text-default')).toHaveClass(
-      'mm-text--color-text-default',
-    );
+    expect(getByText('text-default')).toHaveClass('box--color-text-default');
     expect(getByText('text-alternative')).toHaveClass(
-      'mm-text--color-text-alternative',
+      'box--color-text-alternative',
     );
-    expect(getByText('text-muted')).toHaveClass('mm-text--color-text-muted');
+    expect(getByText('text-muted')).toHaveClass('box--color-text-muted');
     expect(getByText('primary-default')).toHaveClass(
-      'mm-text--color-primary-default',
+      'box--color-primary-default',
     );
     expect(getByText('primary-inverse')).toHaveClass(
-      'mm-text--color-primary-inverse',
+      'box--color-primary-inverse',
     );
-    expect(getByText('error-default')).toHaveClass(
-      'mm-text--color-error-default',
-    );
-    expect(getByText('error-inverse')).toHaveClass(
-      'mm-text--color-error-inverse',
-    );
+    expect(getByText('error-default')).toHaveClass('box--color-error-default');
+    expect(getByText('error-inverse')).toHaveClass('box--color-error-inverse');
     expect(getByText('success-default')).toHaveClass(
-      'mm-text--color-success-default',
+      'box--color-success-default',
     );
     expect(getByText('success-inverse')).toHaveClass(
-      'mm-text--color-success-inverse',
+      'box--color-success-inverse',
     );
     expect(getByText('warning-inverse')).toHaveClass(
-      'mm-text--color-warning-inverse',
+      'box--color-warning-inverse',
     );
-    expect(getByText('info-default')).toHaveClass(
-      'mm-text--color-info-default',
-    );
-    expect(getByText('info-inverse')).toHaveClass(
-      'mm-text--color-info-inverse',
-    );
+    expect(getByText('info-default')).toHaveClass('box--color-info-default');
+    expect(getByText('info-inverse')).toHaveClass('box--color-info-inverse');
   });
 
   it('should render the Text with proper font style class name', () => {
