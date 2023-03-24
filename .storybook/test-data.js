@@ -1,5 +1,5 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
-import { HardwareKeyringTypes } from '../shared/constants/hardware-wallets';
+import { KeyringType } from '../shared/constants/keyring';
 
 const state = {
   invalidCustomNetwork: {
@@ -1168,19 +1168,22 @@ const state = {
     unapprovedTypedMessages: {},
     unapprovedTypedMessagesCount: 0,
     keyringTypes: [
-      HardwareKeyringTypes.imported,
-      HardwareKeyringTypes.hdKeyTree,
-      HardwareKeyringTypes.trezor,
-      HardwareKeyringTypes.ledger,
+      KeyringType.imported,
+      KeyringType.hdKeyTree,
+      KeyringType.trezor,
+      KeyringType.ledger,
     ],
     keyrings: [
       {
-        type: HardwareKeyringTypes.hdKeyTree,
+        type: KeyringType.hdKeyTree,
         accounts: [
           '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-          '0x9d0ba4ddac06032527b140912ec808ab9451b788',
         ],
+      },
+      {
+        type: KeyringType.ledger,
+        accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
       },
     ],
     networkConfigurations: {

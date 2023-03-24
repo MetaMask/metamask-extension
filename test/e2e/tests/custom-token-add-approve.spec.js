@@ -162,7 +162,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         await driver.findElement({
-          text: 'Review your spending cap',
+          text: 'Review the spending cap for your',
           tag: 'div',
         });
 

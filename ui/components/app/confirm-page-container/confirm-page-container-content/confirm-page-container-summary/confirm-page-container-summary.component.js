@@ -14,8 +14,6 @@ import { getIpfsGateway } from '../../../../../selectors';
 import Identicon from '../../../../ui/identicon';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import NicknamePopovers from '../../../modals/nickname-popovers';
-import { Text } from '../../../../component-library';
-import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../ui/site-origin';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
@@ -23,16 +21,13 @@ import { getAssetImageURL } from '../../../../../helpers/utils/util';
 const ConfirmPageContainerSummary = (props) => {
   const {
     action,
-    title,
     titleComponent,
     subtitleComponent,
-    hideSubtitle,
     className,
     tokenAddress,
     toAddress,
     nonce,
     origin,
-    hideTitle,
     image,
     transactionType,
   } = props;
@@ -130,26 +125,9 @@ const ConfirmPageContainerSummary = (props) => {
       <>
         <div className="confirm-page-container-summary__title">
           {renderImage()}
-          {!hideTitle ? (
-            <Text
-              className="confirm-page-container-summary__title-text"
-              variant={
-                title && title.length < 10
-                  ? TextVariant.displayMd
-                  : TextVariant.headingMd
-              }
-              as={title && title.length < 10 ? 'h1' : 'h3'}
-              title={title}
-            >
-              {titleComponent || title}
-            </Text>
-          ) : null}
+          {titleComponent}
         </div>
-        {hideSubtitle ? null : (
-          <div className="confirm-page-container-summary__subtitle">
-            {subtitleComponent}
-          </div>
-        )}
+        {subtitleComponent}
       </>
       {showNicknamePopovers && (
         <NicknamePopovers
@@ -163,17 +141,14 @@ const ConfirmPageContainerSummary = (props) => {
 
 ConfirmPageContainerSummary.propTypes = {
   action: PropTypes.string,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   image: PropTypes.string,
   titleComponent: PropTypes.node,
   subtitleComponent: PropTypes.node,
-  hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
   tokenAddress: PropTypes.string,
   toAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
-  hideTitle: PropTypes.bool,
   transactionType: PropTypes.string,
 };
 

@@ -157,6 +157,9 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
+  "connectingToLineaTestnet": {
+    "message": "Ansluter till Linea Goerli Test Network"
+  },
   "connectingToMainnet": {
     "message": "Koppla till Ethereums huvudnätverk"
   },
@@ -401,6 +404,9 @@
   },
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli testnätverk"
   },
   "links": {
     "message": "Länkar"

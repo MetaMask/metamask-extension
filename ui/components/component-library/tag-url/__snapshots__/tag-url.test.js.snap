@@ -7,7 +7,7 @@ exports[`TagUrl should render the label inside the TagUrl 1`] = `
     data-testid="tag-url"
   >
     <div
-      class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-text--color-text-default box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <span
         class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-default"
@@ -15,7 +15,7 @@ exports[`TagUrl should render the label inside the TagUrl 1`] = `
       />
     </div>
     <p
-      class="box mm-text mm-text--body-md mm-text--ellipsis mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
     >
       https://app.uniswap.org
     </p>
