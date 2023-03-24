@@ -21,7 +21,8 @@ const Tab = (props) => {
   } = props;
 
   return (
-    <li
+    <Box
+      as="li"
       className={classnames('tab', className, {
         'tab--active': isActive,
         [activeClassName]: activeClassName && isActive,
@@ -42,7 +43,7 @@ const Tab = (props) => {
       >
         {name}
       </Box>
-    </li>
+    </Box>
   );
 };
 

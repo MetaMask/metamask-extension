@@ -23,7 +23,6 @@
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
   &__main-view &__tabs {
     border: none;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 
   &__main-view &__tab {

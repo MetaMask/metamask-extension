@@ -81,6 +81,7 @@ const Tabs = ({
         justifyContent={JustifyContent.flexStart}
         backgroundColor={BackgroundColor.backgroundDefault}
         className={classnames('tabs__list', tabsClassName)}
+        gap={1}
       >
         {renderTabs()}
       </Box>

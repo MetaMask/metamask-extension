@@ -43,6 +43,15 @@ export const DefaultStory = (args) => {
       onTabClick={args.onTabClick}
     >
       {args.tabs.map((tabProps, i) => renderTab(tabProps, i, args.t))}
+    </Tabs>
+  );
+};
+
+DefaultStory.storyName = 'Default';
+
+export const DropdownStory = (args) => {
+  return (
+    <Tabs>
       <DropdownTab
         options={[
           { name: 'Insight Snap', value: 'Insight Snap' },
@@ -55,5 +64,3 @@ export const DefaultStory = (args) => {
     </Tabs>
   );
 };
-
-DefaultStory.storyName = 'Default';
