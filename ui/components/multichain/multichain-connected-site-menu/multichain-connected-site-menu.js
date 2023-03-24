@@ -38,7 +38,11 @@ export const MultichainConnectedSiteMenu = ({
         position="bottom"
       >
         <BadgeWrapper
-          positionObj={{ bottom: 2, right: -4, zIndex: 1 }}
+          positionObj={
+            status === 'STATUS_CONNECTED_TO_ANOTHER_ACCOUNT'
+              ? { bottom: 4, right: -1, zIndex: 1 }
+              : { bottom: 2, right: -4, zIndex: 1 }
+          }
           badge={
             <Box
               backgroundColor={globalMenuColor}
