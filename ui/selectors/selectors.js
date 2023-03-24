@@ -1123,7 +1123,7 @@ export function getNetworkConfigurations(state) {
 }
 
 export function getAllNetworks(state) {
-  const networkConfigurations = getNetworkConfigurations(state);
+  const networkConfigurations = getNetworkConfigurations(state) || {};
   const showTestnetNetworks = getShowTestNetworks(state);
   const localhostFilter = (network) => network.chainId === CHAIN_IDS.LOCALHOST;
 
