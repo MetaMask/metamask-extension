@@ -24,6 +24,7 @@
   },
   "manifest_version": 2,
   "permissions": [
+    "scripting",
     "storage",
     "unlimitedStorage",
     "clipboardWrite",
