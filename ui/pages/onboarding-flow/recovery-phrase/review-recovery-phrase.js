@@ -20,7 +20,7 @@ import {
 } from '../../../components/app/step-progress-bar';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import { Icon, IconName } from '../../../components/component-library';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
@@ -120,7 +120,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 }}
                 icon={
                   <Icon
-                    name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                    name={copied ? IconName.CopySuccuss : IconName.Copy}
                     color={IconColor.primaryDefault}
                   />
                 }

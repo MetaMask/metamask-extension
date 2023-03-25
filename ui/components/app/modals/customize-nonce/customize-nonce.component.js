@@ -15,7 +15,7 @@ import Box from '../../../ui/box';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { ButtonIcon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
+import { ButtonIcon, IconName, IconSize } from '../../../component-library';
 
 const CustomizeNonce = ({
   hideModal,
@@ -54,9 +54,9 @@ const CustomizeNonce = ({
             {t('editNonceField')}
           </Typography>
           <ButtonIcon
-            iconName={ICON_NAMES.CLOSE}
+            iconName={IconName.Close}
             className="customize-nonce-modal__close"
-            size={ICON_SIZES.SM}
+            size={IconSize.Sm}
             ariaLabel={t('close')}
             onClick={hideModal}
           />

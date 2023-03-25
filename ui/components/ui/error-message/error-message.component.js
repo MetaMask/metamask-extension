@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { IconColor, Size } from '../../../helpers/constants/design-system';
 
 /**
@@ -19,7 +19,7 @@ const ErrorMessage = (props, context) => {
     <div className="error-message">
       <Icon
         className="error-message__icon"
-        name={ICON_NAMES.WARNING}
+        name={IconName.Warning}
         size={Size.SM}
         color={IconColor.errorDefault}
         marginRight={2}

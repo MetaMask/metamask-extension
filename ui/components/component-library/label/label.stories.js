@@ -9,7 +9,7 @@ import {
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES, TextField } from '..';
+import { Icon, IconName, TextField } from '..';
 
 import { Label } from './label';
 
@@ -56,7 +56,7 @@ export const Children = (args) => (
       Text and icon
       <Icon
         color={IconColor.iconAlternative}
-        name={ICON_NAMES.INFO}
+        name={IconName.Info}
         size={Size.inherit}
       />
     </Label>

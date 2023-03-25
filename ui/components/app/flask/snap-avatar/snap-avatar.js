@@ -15,8 +15,8 @@ import {
   AvatarFavicon,
   BadgeWrapper,
   BadgeWrapperPosition,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
   AvatarIcon,
   AvatarBase,
 } from '../../../component-library';
@@ -38,11 +38,11 @@ const SnapAvatar = ({ snapId, className }) => {
       className={classnames('snap-avatar', className)}
       badge={
         <AvatarIcon
-          iconName={ICON_NAMES.SNAPS}
-          size={ICON_SIZES.XS}
+          iconName={IconName.Snaps}
+          size={IconSize.Xs}
           backgroundColor={IconColor.infoDefault}
           iconProps={{
-            size: ICON_SIZES.XS,
+            size: IconSize.Xs,
             color: IconColor.infoInverse,
           }}
         />

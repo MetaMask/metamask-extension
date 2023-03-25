@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
 import {
   ButtonLink,
-  ICON_NAMES,
+  IconName,
   TextFieldSearch,
   Text,
 } from '../../component-library';
@@ -119,7 +119,7 @@ export const AccountListMenu = ({ onClose }) => {
           <Box marginBottom={4}>
             <ButtonLink
               size={Size.SM}
-              startIconName={ICON_NAMES.ADD}
+              startIconName={IconName.Add}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -139,7 +139,7 @@ export const AccountListMenu = ({ onClose }) => {
           <Box marginBottom={4}>
             <ButtonLink
               size={Size.SM}
-              startIconName={ICON_NAMES.IMPORT}
+              startIconName={IconName.Import}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({
@@ -159,7 +159,7 @@ export const AccountListMenu = ({ onClose }) => {
           <Box>
             <ButtonLink
               size={Size.SM}
-              startIconName={ICON_NAMES.HARDWARE}
+              startIconName={IconName.Hardware}
               onClick={() => {
                 dispatch(toggleAccountMenu());
                 trackEvent({

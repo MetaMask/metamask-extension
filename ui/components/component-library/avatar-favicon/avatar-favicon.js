@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { AvatarBase } from '../avatar-base';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, Icon } from '../icon';
+import { IconName, Icon } from '../icon';
 import {
   BorderColor,
   Size,
@@ -43,7 +43,7 @@ export const AvatarFavicon = ({
         />
       ) : (
         <Icon
-          name={ICON_NAMES.GLOBAL}
+          name={IconName.Global}
           color={IconColor.iconDefault}
           size={size}
           {...fallbackIconProps}

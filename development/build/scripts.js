@@ -30,7 +30,6 @@ const bifyModuleGroups = require('bify-module-groups');
 const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
 const { BuildType } = require('../lib/build-type');
-const { generateIconNames } = require('../generate-icon-names');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 const { getConfig, getProductionConfig } = require('./config');
 const {
@@ -1106,9 +1105,7 @@ async function getEnvironmentVariables({ buildTarget, buildType, version }) {
 
   const devMode = isDevBuild(buildTarget);
   const testing = isTestBuild(buildTarget);
-  const iconNames = await generateIconNames();
   return {
-    ICON_NAMES: iconNames,
     MULTICHAIN: config.MULTICHAIN === '1',
     CONF: devMode ? config : {},
     IN_TEST: testing,

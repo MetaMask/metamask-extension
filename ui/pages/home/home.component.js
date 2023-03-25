@@ -33,8 +33,8 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import {
   ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
   Text,
 } from '../../components/component-library';
 
@@ -337,8 +337,8 @@ export default class Home extends PureComponent {
                   {t('newNftAddedMessage')}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={IconSize.Sm}
                   ariaLabel={t('close')}
                 />
               </Box>
@@ -359,8 +359,8 @@ export default class Home extends PureComponent {
                   {t('removeNftMessage')}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={IconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -379,8 +379,8 @@ export default class Home extends PureComponent {
                   {t('newNetworkAdded', [newNetworkAddedName])}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={IconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={() => clearNewNetworkAdded()}
                   className="home__new-network-notification-close"
@@ -414,8 +414,8 @@ export default class Home extends PureComponent {
                 </Box>
 
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={IconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
                   className="home__new-tokens-imported-notification-close"

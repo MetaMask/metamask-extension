@@ -7,7 +7,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, ButtonLink, ButtonPrimary } from '..';
+import { IconName, ButtonLink, ButtonPrimary } from '..';
 import README from './README.mdx';
 import { BannerAlert, BANNER_ALERT_SEVERITIES } from '.';
 
@@ -164,7 +164,7 @@ ActionButton.args = {
   actionButtonLabel: 'Action',
   actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
-    endIconName: ICON_NAMES.ARROW_2_RIGHT,
+    endIconName: IconName.Arrow2Right,
   },
   children:
     'Use actionButtonLabel for action text, actionButtonOnClick for the onClick handler, and actionButtonProps to pass any ButtonLink prop types such as iconName',

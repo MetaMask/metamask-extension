@@ -12,18 +12,18 @@ import {
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
 } from '../transaction-activity-log.constants';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../../component-library';
+import { Icon, IconName, IconSize } from '../../../component-library';
 import { Color } from '../../../../helpers/constants/design-system';
 
 export const ACTIVITY_ICONS = {
-  [TRANSACTION_CREATED_EVENT]: ICON_NAMES.ADD,
-  [TRANSACTION_SUBMITTED_EVENT]: ICON_NAMES.ARROW_UP,
-  [TRANSACTION_RESUBMITTED_EVENT]: ICON_NAMES.PROGRAMMING_ARROWS,
-  [TRANSACTION_CONFIRMED_EVENT]: ICON_NAMES.CHECK,
-  [TRANSACTION_DROPPED_EVENT]: ICON_NAMES.CLOSE,
-  [TRANSACTION_ERRORED_EVENT]: ICON_NAMES.DANGER,
-  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: ICON_NAMES.CLOSE,
-  [TRANSACTION_CANCEL_SUCCESS_EVENT]: ICON_NAMES.CLOSE,
+  [TRANSACTION_CREATED_EVENT]: IconName.Add,
+  [TRANSACTION_SUBMITTED_EVENT]: IconName.ArrowUp,
+  [TRANSACTION_RESUBMITTED_EVENT]: IconName.ProgrammingArrows,
+  [TRANSACTION_CONFIRMED_EVENT]: IconName.Check,
+  [TRANSACTION_DROPPED_EVENT]: IconName.Close,
+  [TRANSACTION_ERRORED_EVENT]: IconName.Danger,
+  [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: IconName.Close,
+  [TRANSACTION_CANCEL_SUCCESS_EVENT]: IconName.Close,
 };
 
 export default class TransactionActivityLogIcon extends PureComponent {
@@ -43,7 +43,7 @@ export default class TransactionActivityLogIcon extends PureComponent {
     return (
       <div className={classnames('transaction-activity-log-icon', className)}>
         {icon ? (
-          <Icon name={icon} color={Color.iconDefault} size={ICON_SIZES.SM} />
+          <Icon name={icon} color={Color.iconDefault} size={IconSize.Sm} />
         ) : null}
       </div>
     );

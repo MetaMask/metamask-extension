@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES } from '..';
+import { Icon, IconName } from '..';
 
 import { HelpText } from './help-text';
 
@@ -59,7 +59,7 @@ export const Children = (args) => (
       <Icon
         marginLeft={1}
         color={IconColor.iconAlternative}
-        name={ICON_NAMES.WARNING}
+        name={IconName.Warning}
         size={Size.inherit}
         as="span"
       />

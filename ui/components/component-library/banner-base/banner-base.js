@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { ButtonIcon, ButtonLink, ICON_NAMES, Text } from '..';
+import { ButtonIcon, ButtonLink, IconName, Text } from '..';
 
 import Box from '../../ui/box';
 
@@ -72,7 +72,7 @@ export const BannerBase = ({
         <ButtonIcon
           className="mm-banner-base__close-button"
           marginLeft="auto"
-          iconName={ICON_NAMES.CLOSE}
+          iconName={IconName.Close}
           size={Size.SM}
           ariaLabel="Close" // TODO: i18n
           onClick={onClose}

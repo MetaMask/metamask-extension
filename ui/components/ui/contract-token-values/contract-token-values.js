@@ -16,7 +16,7 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { ButtonIcon, IconName } from '../../component-library';
 
 export default function ContractTokenValues({
   address,
@@ -50,7 +50,7 @@ export default function ContractTokenValues({
         title={copied ? t('copiedExclamation') : t('copyToClipboard')}
       >
         <ButtonIcon
-          iconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+          iconName={copied ? IconName.CopySuccuss : IconName.Copy}
           color={Color.iconMuted}
           onClick={() => handleCopy(address)}
           ariaLabel={copied ? t('copiedExclamation') : t('copyToClipboard')}
@@ -59,7 +59,7 @@ export default function ContractTokenValues({
       <Tooltip position="top" title={t('openInBlockExplorer')}>
         <ButtonIcon
           display={DISPLAY.FLEX}
-          iconName={ICON_NAMES.EXPORT}
+          iconName={IconName.Export}
           color={Color.iconMuted}
           onClick={() => {
             const blockExplorerTokenLink = getAccountLink(

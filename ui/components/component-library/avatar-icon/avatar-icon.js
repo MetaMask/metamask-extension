@@ -14,7 +14,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, IconName } from '../icon';
 import { AvatarBase } from '../avatar-base';
 
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
@@ -53,9 +53,9 @@ export const AvatarIcon = ({
 AvatarIcon.propTypes = {
   /**
    *
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
+  iconName: PropTypes.oneOf(Object.values(IconName)).isRequired,
   /**
    * Props for the icon inside AvatarIcon. All Icon props can be used
    */

@@ -19,7 +19,7 @@ import {
   AvatarNetwork,
   AvatarToken,
   Icon,
-  ICON_NAMES,
+  IconName,
   Tag,
 } from '..';
 import {
@@ -165,7 +165,7 @@ export const Badge = () => (
       }
     >
       <Icon
-        name={ICON_NAMES.GLOBAL}
+        name={IconName.Global}
         size={Size.XL}
         color={IconColor.iconAlternative}
       />

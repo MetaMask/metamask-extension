@@ -35,8 +35,8 @@ import { AssetType } from '../../../shared/constants/transaction';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 import {
   ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../components/component-library';
 
 export default function AddNft() {
@@ -160,8 +160,8 @@ export default function AddNft() {
                     </Typography>
                     <ButtonIcon
                       className="add-nft__close"
-                      iconName={ICON_NAMES.CLOSE}
-                      size={ICON_SIZES.SM}
+                      iconName={IconName.Close}
+                      size={IconSize.Sm}
                       ariaLabel={t('close')}
                       data-testid="add-nft-error-close"
                       onClick={() => setNftAddFailed(false)}

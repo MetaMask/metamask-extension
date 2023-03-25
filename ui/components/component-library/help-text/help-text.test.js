@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { Color, SEVERITIES } from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, IconName } from '../icon';
 
 import { HelpText } from './help-text';
 
@@ -25,8 +25,7 @@ describe('HelpText', () => {
   it('should render with react nodes inside the HelpText', () => {
     const { getByText, getByTestId } = render(
       <HelpText>
-        help text{' '}
-        <Icon name={ICON_NAMES.WARNING} data-testid="icon" as="span" />
+        help text <Icon name={IconName.Warning} data-testid="icon" as="span" />
       </HelpText>,
     );
     expect(getByText('help text')).toBeDefined();
@@ -67,7 +66,7 @@ describe('HelpText', () => {
       <>
         <HelpText>help text as p</HelpText>
         <HelpText data-testid="help-text-div">
-          <span>help text as div</span> <Icon name={ICON_NAMES.WARNING} />
+          <span>help text as div</span> <Icon name={IconName.Warning} />
         </HelpText>
       </>,
     );

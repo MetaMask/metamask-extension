@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import Box from '../../ui/box';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, IconName } from '../icon';
 import { Text } from '../text';
 
 import {
@@ -111,7 +111,7 @@ export const ButtonBase = ({
       {loading && (
         <Icon
           className="mm-button-base__icon-loading"
-          name={ICON_NAMES.LOADING}
+          name={IconName.Loading}
           color={color}
           size={Size.MD}
           {...iconLoadingProps}
@@ -160,18 +160,18 @@ ButtonBase.propTypes = {
   externalLink: PropTypes.bool,
   /**
    * Add icon to start (left side) of button text passing icon name
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  startIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  startIconName: PropTypes.oneOf(Object.values(IconName)),
   /**
    * iconProps accepts all the props from Icon
    */
   startIconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * Add icon to end (right side) of button text passing icon name
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  endIconName: PropTypes.oneOf(Object.values(ICON_NAMES)),
+  endIconName: PropTypes.oneOf(Object.values(IconName)),
   /**
    * iconProps accepts all the props from Icon
    */

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { BannerBase, Icon, ICON_NAMES } from '..';
+import { BannerBase, Icon, IconName } from '..';
 
 import {
   BackgroundColor,
@@ -22,23 +22,23 @@ export const BannerAlert = ({
     switch (severity) {
       case SEVERITIES.DANGER:
         return {
-          name: ICON_NAMES.DANGER,
+          name: IconName.Danger,
           color: IconColor.errorDefault,
         };
       case SEVERITIES.WARNING:
         return {
-          name: ICON_NAMES.WARNING,
+          name: IconName.Warning,
           color: IconColor.warningDefault,
         };
       case SEVERITIES.SUCCESS:
         return {
-          name: ICON_NAMES.CONFIRMATION,
+          name: IconName.Confirmation,
           color: IconColor.successDefault,
         };
       // Defaults to SEVERITIES.INFO
       default:
         return {
-          name: ICON_NAMES.INFO,
+          name: IconName.Info,
           color: IconColor.primaryDefault,
         };
     }

@@ -62,7 +62,7 @@ import {
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import { Icon, IconName } from '../../components/component-library';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 
 export default function TokenAllowance({
@@ -424,7 +424,7 @@ export default function TokenAllowance({
             </Box>
           )}
           <ApproveContentCard
-            symbol={<Icon name={ICON_NAMES.TAG} />}
+            symbol={<Icon name={IconName.Tag} />}
             title={t('transactionFee')}
             showEdit
             showAdvanceGasFeeOptions

@@ -1,4 +1,4 @@
-import { ICON_NAMES } from '../../components/component-library';
+import { IconName } from '../../components/component-library';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -19,21 +19,21 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('currencyConversion'),
     descriptionMessage: (t) => t('currencyConversion'),
     route: `${GENERAL_ROUTE}#currency-conversion`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('primaryCurrencySetting'),
     descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
     route: `${GENERAL_ROUTE}#primary-currency`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currentLanguage'),
     descriptionMessage: (t) => t('currentLanguage'),
     route: `${GENERAL_ROUTE}#current-language`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
@@ -47,14 +47,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('hideZeroBalanceTokens'),
     descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('advanced'),
@@ -145,7 +145,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    icon: ICON_NAMES.BOOK,
+    icon: IconName.Book,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   {
@@ -224,7 +224,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: ICON_NAMES.NOTIFICATION,
+    iconName: IconName.Notification,
   },
   {
     tabMessage: (t) => t('alerts'),

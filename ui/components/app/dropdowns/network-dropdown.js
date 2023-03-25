@@ -28,12 +28,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  Icon,
-  ButtonIcon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../component-library';
+import { Icon, ButtonIcon, IconName, IconSize } from '../../component-library';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -186,7 +181,7 @@ class NetworkDropdown extends Component {
             }}
           >
             {isCurrentRpcTarget ? (
-              <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+              <Icon name={IconName.Check} color={IconColor.successDefault} />
             ) : (
               <div className="network-check__transparent">✓</div>
             )}
@@ -209,8 +204,8 @@ class NetworkDropdown extends Component {
             {isCurrentRpcTarget ? null : (
               <ButtonIcon
                 className="delete"
-                iconName={ICON_NAMES.CLOSE}
-                size={ICON_SIZES.SM}
+                iconName={IconName.Close}
+                size={IconSize.Sm}
                 ariaLabel={this.context.t('delete')}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -260,7 +255,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {providerType === network ? (
-          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+          <Icon name={IconName.Check} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}
@@ -329,7 +324,7 @@ class NetworkDropdown extends Component {
         style={DROP_DOWN_MENU_ITEM_STYLE}
       >
         {isCurrentRpcTarget ? (
-          <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+          <Icon name={IconName.Check} color={IconColor.successDefault} />
         ) : (
           <div className="network-check__transparent">✓</div>
         )}

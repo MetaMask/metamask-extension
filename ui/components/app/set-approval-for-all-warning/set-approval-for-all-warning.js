@@ -16,7 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Identicon from '../../ui/identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 
 const SetApproveForAllWarning = ({
   collectionName,
@@ -62,7 +62,7 @@ const SetApproveForAllWarning = ({
         className="set-approval-for-all-warning__content__header"
       >
         <Icon
-          name={ICON_NAMES.DANGER}
+          name={IconName.Danger}
           className="set-approval-for-all-warning__content__header__warning-icon"
         />
         <Typography

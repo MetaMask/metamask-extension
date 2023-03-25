@@ -22,8 +22,8 @@ import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../components/component-library';
 
 import Box from '../../../components/ui/box/box';
@@ -95,7 +95,7 @@ export default function OnboardingMetametrics() {
       <ul>
         <li>
           <Icon
-            name={ICON_NAMES.CHECK}
+            name={IconName.Check}
             color={IconColor.successDefault}
             marginInlineEnd={3}
           />
@@ -103,7 +103,7 @@ export default function OnboardingMetametrics() {
         </li>
         <li>
           <Icon
-            name={ICON_NAMES.CHECK}
+            name={IconName.Check}
             color={IconColor.successDefault}
             marginInlineEnd={3}
           />
@@ -113,8 +113,8 @@ export default function OnboardingMetametrics() {
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={ICON_NAMES.CLOSE}
-              size={ICON_SIZES.SM}
+              name={IconName.Close}
+              size={IconSize.Sm}
               color={IconColor.errorDefault}
             />
             {t('onboardingMetametricsNeverCollect', [
@@ -133,8 +133,8 @@ export default function OnboardingMetametrics() {
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={ICON_NAMES.CLOSE}
-              size={ICON_SIZES.SM}
+              name={IconName.Close}
+              size={IconSize.Sm}
               color={IconColor.errorDefault}
             />
             {t('onboardingMetametricsNeverCollectIP', [
@@ -152,8 +152,8 @@ export default function OnboardingMetametrics() {
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={ICON_NAMES.CLOSE}
-              size={ICON_SIZES.SM}
+              name={IconName.Close}
+              size={IconSize.Sm}
               color={IconColor.errorDefault}
             />
             {t('onboardingMetametricsNeverSellData', [

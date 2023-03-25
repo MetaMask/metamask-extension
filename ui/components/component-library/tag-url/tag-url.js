@@ -15,7 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AvatarFavicon } from '../avatar-favicon';
 import { ButtonLink } from '../button-link';
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, IconName } from '../icon';
 
 export const TagUrl = ({
   label,
@@ -47,7 +47,7 @@ export const TagUrl = ({
       {showLockIcon && (
         <Icon
           className="mm-tag-url__lock-icon"
-          name={ICON_NAMES.LOCK}
+          name={IconName.Lock}
           color={IconColor.iconAlternative}
           size={Size.SM}
           aria-label="https://"

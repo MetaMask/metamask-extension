@@ -16,7 +16,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Button from '../../../ui/button';
 import Box from '../../../ui/box/box';
-import { Icon, ICON_NAMES } from '../../../component-library';
+import { Icon, IconName } from '../../../component-library';
 
 export default function SnapContentFooter({ snapName, snapId }) {
   const t = useI18nContext();
@@ -36,7 +36,7 @@ export default function SnapContentFooter({ snapName, snapId }) {
       className="snap-content-footer"
     >
       <Icon
-        name={ICON_NAMES.WARNING}
+        name={IconName.Warning}
         size={Size.SM}
         color={IconColor.iconMuted}
         paddingRight={1}

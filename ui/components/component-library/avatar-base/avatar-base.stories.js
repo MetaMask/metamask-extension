@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { Icon, ICON_NAMES } from '../icon';
+import { Icon, IconName } from '../icon';
 import README from './README.mdx';
 import { AvatarBase } from './avatar-base';
 import { AVATAR_BASE_SIZES } from './avatar-base.constants';
@@ -124,7 +124,7 @@ export const Children = (args) => (
       backgroundColor={BackgroundColor.infoMuted}
       borderColor={BorderColor.infoMuted}
     >
-      <Icon name={ICON_NAMES.USER} color={Color.infoDefault} />
+      <Icon name={IconName.User} color={Color.infoDefault} />
     </AvatarBase>
   </Box>
 );

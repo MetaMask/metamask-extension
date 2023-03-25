@@ -3,8 +3,6 @@ const path = require('path');
 const { ProvidePlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const { generateIconNames } = require('../development/generate-icon-names');
-
 module.exports = {
   core: {
     builder: 'webpack5',
@@ -23,19 +21,11 @@ module.exports = {
     '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
     'storybook-dark-mode',
-    '@whitespace/storybook-addon-html'
+    '@whitespace/storybook-addon-html',
   ],
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({ overrides: options.overrides }),
-  // Sets env variables https://storybook.js.org/docs/react/configure/environment-variables/
-  env: async (config) => {
-    return {
-      ...config,
-      // Creates the icon names environment variable for the component-library/icon/icon.js component
-      ICON_NAMES: generateIconNames(),
-    };
-  },
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {

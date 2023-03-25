@@ -6,7 +6,7 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '../icon';
+import { IconName } from '../icon';
 import { BUTTON_LINK_SIZES } from '../button-link/button-link.constants';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
@@ -66,11 +66,11 @@ export default {
     },
     startIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
     },
     endIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
     },
     startIconProps: {
       control: 'object',
@@ -214,13 +214,13 @@ Loading.args = {
 };
 
 export const StartIconName = (args) => (
-  <Button {...args} startIconName={ICON_NAMES.ADD_SQUARE}>
+  <Button {...args} startIconName={IconName.AddSquare}>
     Button
   </Button>
 );
 
 export const EndIconName = (args) => (
-  <Button {...args} endIconName={ICON_NAMES.ARROW_2_RIGHT}>
+  <Button {...args} endIconName={IconName.Arrow2Right}>
     Button
   </Button>
 );

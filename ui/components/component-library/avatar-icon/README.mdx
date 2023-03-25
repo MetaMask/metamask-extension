@@ -44,7 +44,7 @@ Defaults to `Size.MD`
 
 ```jsx
 import { Size } from '../../../helpers/constants/design-system';
-import { AvatarIcon, ICON_NAMES } from '../ui/component-library';
+import { AvatarIcon, IconName } from '../ui/component-library';
 
     <AvatarIcon {...args} size={Size.XS} />
     <AvatarIcon {...args} size={Size.SM} />
@@ -55,22 +55,22 @@ import { AvatarIcon, ICON_NAMES } from '../ui/component-library';
 
 ### Icon Name<span style={{ color: 'red' }}>\*</span>
 
-Use the required `iconName` prop with `ICON_NAMES` object from `./ui/components/component-library` to select icon
+Use the required `iconName` prop with `IconName` object from `./ui/components/component-library` to select icon
 
 Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
 
 <Canvas>
-  <Story id="components-componentlibrary-avataricon--icon-name" />
+  <Story id="components-componentlibrary-avataricon--icon-name-story" />
 </Canvas>
 
 ```jsx
-import { AvatarIcon, ICON_NAMES } from '../ui/component-library';
+import { AvatarIcon, IconName } from '../ui/component-library';
 
-<AvatarIcon iconName={ICON_NAMES.SWAP_HORIZONTAL} />
-<AvatarIcon iconName={ICON_NAMES.CONFIRMATION} />
-<AvatarIcon iconName={ICON_NAMES.INFO} />
-<AvatarIcon iconName={ICON_NAMES.WARNING} />
-<AvatarIcon iconName={ICON_NAMES.DANGER} />
+<AvatarIcon iconName={IconName.SwapHorizontal} />
+<AvatarIcon iconName={IconName.Confirmation} />
+<AvatarIcon iconName={IconName.Info} />
+<AvatarIcon iconName={IconName.Warning} />
+<AvatarIcon iconName={IconName.Danger} />
 ```
 
 ### Color and Background Color

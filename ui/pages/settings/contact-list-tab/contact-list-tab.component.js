@@ -13,8 +13,8 @@ import {
 } from '../../../helpers/utils/settings-search';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
 } from '../../../components/component-library';
 import { Color } from '../../../helpers/constants/design-system';
 import EditContact from './edit-contact';
@@ -79,10 +79,10 @@ export default class ContactListTab extends Component {
       <div className="address-book__container">
         <div>
           <Icon
-            name={ICON_NAMES.BOOK}
+            name={IconName.Book}
             color={Color.iconMuted}
             className="address-book__icon"
-            size={ICON_SIZES.XL}
+            size={IconSize.Xl}
           />
           <h4 className="address-book__title">{t('buildContactList')}</h4>
           <p className="address-book__sub-title">

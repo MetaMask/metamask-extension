@@ -53,7 +53,7 @@ import {
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 import NftDefaultImage from '../nft-default-image';
-import { ButtonIcon, ICON_NAMES } from '../../component-library';
+import { ButtonIcon, IconName } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 
@@ -426,7 +426,7 @@ export default function NftDetails({ nft }) {
                     handleAddressCopy(address);
                   }}
                   iconName={
-                    addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                    addressCopied ? IconName.CopySuccuss : IconName.Copy
                   }
                 />
               </Tooltip>

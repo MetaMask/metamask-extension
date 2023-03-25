@@ -19,7 +19,7 @@ import {
   ButtonSecondary,
   HelpText,
   Icon,
-  ICON_NAMES,
+  IconName,
   Label,
   Text,
   TEXT_FIELD_SIZES,
@@ -374,7 +374,7 @@ export const FormExample = () => {
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
-      <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
+      <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
         Clear form
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
@@ -407,7 +407,7 @@ export const CustomLabelOrHelpText = () => (
         import the Label component separately */}
         <Label htmlFor="custom-spending-cap">Custom spending cap</Label>
         <Icon
-          name={ICON_NAMES.INFO}
+          name={IconName.Info}
           size={Size.SM}
           marginLeft={1}
           color={IconColor.iconAlternative}

@@ -21,8 +21,8 @@ import {
   BannerTipLogoType,
   ButtonLink,
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
+  IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 
@@ -91,10 +91,10 @@ const SnapListTab = () => {
             alignItems={AlignItems.center}
           >
             <Icon
-              name={ICON_NAMES.SNAPS}
+              name={IconName.Snaps}
               color={Color.iconMuted}
               className="snap-list-tab__no-snaps_icon"
-              size={ICON_SIZES.AUTO}
+              size={IconSize.Inherit}
             />
             <Text
               color={Color.textMuted}

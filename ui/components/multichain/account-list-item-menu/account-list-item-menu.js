@@ -12,7 +12,7 @@ import {
 } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { ICON_NAMES, Text } from '../../component-library';
+import { IconName, Text } from '../../component-library';
 import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
@@ -69,7 +69,7 @@ export const AccountListItemMenu = ({
             : openBlockExplorer
         }
         subtitle={blockExplorerUrlSubTitle || null}
-        iconName={ICON_NAMES.EXPORT}
+        iconName={IconName.Export}
         data-testid="account-list-menu-open-explorer"
       >
         <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
@@ -87,7 +87,7 @@ export const AccountListItemMenu = ({
           onClose();
           closeMenu?.();
         }}
-        iconName={ICON_NAMES.SCAN_BARCODE}
+        iconName={IconName.ScanBarcode}
       >
         <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>
@@ -103,7 +103,7 @@ export const AccountListItemMenu = ({
             );
             onClose();
           }}
-          iconName={ICON_NAMES.TRASH}
+          iconName={IconName.Trash}
         >
           <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
         </MenuItem>

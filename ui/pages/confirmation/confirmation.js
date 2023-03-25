@@ -33,7 +33,7 @@ import {
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
-import { Icon, ICON_NAMES } from '../../components/component-library';
+import { Icon, IconName } from '../../components/component-library';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -302,7 +302,7 @@ export default function ConfirmationPage({
                 setCurrentPendingConfirmation(currentPendingConfirmation - 1)
               }
             >
-              <Icon name={ICON_NAMES.ARROW_LEFT} />
+              <Icon name={IconName.ArrowLeft} />
             </button>
           )}
           <button
@@ -314,7 +314,7 @@ export default function ConfirmationPage({
               setCurrentPendingConfirmation(currentPendingConfirmation + 1)
             }
           >
-            <Icon name={ICON_NAMES.ARROW_RIGHT} />
+            <Icon name={IconName.ArrowRight} />
           </button>
         </div>
       )}

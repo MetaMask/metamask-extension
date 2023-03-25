@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { Size } from '../../../helpers/constants/design-system';
 
 const Disclosure = ({ children, title, size }) => {
@@ -27,7 +27,7 @@ const Disclosure = ({ children, title, size }) => {
           <summary className="disclosure__summary">
             <Icon
               className="disclosure__summary--icon"
-              name={ICON_NAMES.ADD}
+              name={IconName.Add}
               size={Size.SM}
               marginInlineEnd={2}
             />

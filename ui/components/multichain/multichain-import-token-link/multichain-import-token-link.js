@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { ButtonLink, ICON_NAMES } from '../../component-library';
+import { ButtonLink, IconName } from '../../component-library';
 import {
   AlignItems,
   DISPLAY,
@@ -43,7 +43,7 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
         <ButtonLink
           size={Size.MD}
           data-testid="import-token-button"
-          startIconName={ICON_NAMES.ADD}
+          startIconName={IconName.Add}
           onClick={() => {
             history.push(IMPORT_TOKEN_ROUTE);
             trackEvent({
@@ -68,7 +68,7 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
         paddingTop={4}
       >
         <ButtonLink
-          startIconName={ICON_NAMES.REFRESH}
+          startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
           onClick={() => detectNewTokens()}
         >

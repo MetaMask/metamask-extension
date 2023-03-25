@@ -38,7 +38,7 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
 import { EVENT } from '../../../../shared/constants/metametrics';
 
 const AddNetwork = () => {
@@ -241,9 +241,9 @@ const AddNetwork = () => {
                       >
                         <Icon
                           className="add-network__warning-icon"
-                          name={ICON_NAMES.DANGER}
+                          name={IconName.Danger}
                           color={IconColor.iconMuted}
-                          size={ICON_SIZES.SM}
+                          size={IconSize.Sm}
                         />
                       </Tooltip>
                     )
