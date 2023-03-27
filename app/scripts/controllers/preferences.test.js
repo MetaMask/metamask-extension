@@ -330,28 +330,4 @@ describe('preferences controller', function () {
       );
     });
   });
-
-  describe('setOpenSeaTransactionSecurityProviderPopoverHasBeenShown', function () {
-    it('should default to value "false"', function () {
-      const state = preferencesController.store.getState();
-      assert.equal(
-        state.openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        false,
-      );
-    });
-
-    it('should set the openSeaTransactionSecurityProviderPopoverHasBeenShown to true', function () {
-      const state = preferencesController.store.getState();
-      assert.equal(
-        state.openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        false,
-      );
-      preferencesController.setOpenSeaTransactionSecurityProviderPopoverHasBeenShown();
-      assert.equal(
-        preferencesController.store.getState()
-          .openSeaTransactionSecurityProviderPopoverHasBeenShown,
-        true,
-      );
-    });
-  });
 });

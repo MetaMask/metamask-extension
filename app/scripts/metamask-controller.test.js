@@ -11,10 +11,8 @@ import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
-import {
-  HardwareDeviceNames,
-  HardwareKeyringTypes,
-} from '../../shared/constants/hardware-wallets';
+import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
+import { KeyringType } from '../../shared/constants/keyring';
 import { deferredPromise } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -275,7 +273,7 @@ describe('MetaMaskController', function () {
     it('adds private key to keyrings in KeyringController', async function () {
       const simpleKeyrings =
         metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.imported,
+          KeyringType.imported,
         );
       const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
       const privKeyHex = await simpleKeyrings[0].exportAccount(
@@ -555,11 +553,11 @@ describe('MetaMaskController', function () {
         .catch(() => null);
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.trezor,
+          KeyringType.trezor,
         );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        [HardwareKeyringTypes.trezor],
+        [KeyringType.trezor],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -571,11 +569,11 @@ describe('MetaMaskController', function () {
         .catch(() => null);
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.ledger,
+          KeyringType.ledger,
         );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        [HardwareKeyringTypes.ledger],
+        [KeyringType.ledger],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -651,7 +649,7 @@ describe('MetaMaskController', function () {
       await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.trezor,
+          KeyringType.trezor,
         );
 
       assert.deepEqual(keyrings[0].accounts, []);
@@ -711,7 +709,7 @@ describe('MetaMaskController', function () {
     it('should set unlockedAccount in the keyring', async function () {
       const keyrings =
         await metamaskController.keyringController.getKeyringsByType(
-          HardwareKeyringTypes.trezor,
+          KeyringType.trezor,
         );
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
     });

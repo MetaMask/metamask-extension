@@ -313,11 +313,10 @@ describe('MetaMask', function () {
         text: 'Transfer',
       });
 
-      const tokenAmount = await driver.findElement(
-        '.confirm-page-container-summary__title-text',
-      );
-      const tokenAmountText = await tokenAmount.getText();
-      assert.equal(tokenAmountText, '1 TST');
+      await driver.findElement({
+        tag: 'h1',
+        text: '1 TST',
+      });
 
       await driver.waitForSelector({
         tag: 'p',
@@ -419,11 +418,10 @@ describe('MetaMask', function () {
     });
 
     it('submits the transaction', async function () {
-      const tokenAmount = await driver.findElement(
-        '.confirm-page-container-summary__title-text',
-      );
-      const tokenAmountText = await tokenAmount.getText();
-      assert.equal(tokenAmountText, '1.5 TST');
+      await driver.findElement({
+        tag: 'h1',
+        text: '1.5 TST',
+      });
 
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(regularDelayMs);

@@ -1,8 +1,6 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { providerFromEngine } from '@metamask/eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
@@ -24,8 +22,7 @@ import {
   isSafeChainId,
 } from '../../../../shared/modules/network.utils';
 import { EVENT } from '../../../../shared/constants/metametrics';
-import createInfuraClient from './createInfuraClient';
-import createJsonRpcClient from './createJsonRpcClient';
+import { createNetworkClient } from './create-network-client';
 
 /**
  * @typedef {object} NetworkConfiguration
@@ -428,7 +425,10 @@ export default class NetworkController extends EventEmitter {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
     if (isInfura) {
-      this._configureInfuraProvider(type, this._infuraProjectId);
+      this._configureInfuraProvider({
+        type,
+        infuraProjectId: this._infuraProjectId,
+      });
       // url-based rpc endpoints
     } else if (type === NETWORK_TYPES.RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
@@ -439,25 +439,23 @@ export default class NetworkController extends EventEmitter {
     }
   }
 
-  _configureInfuraProvider(type, projectId) {
+  _configureInfuraProvider({ type, infuraProjectId }) {
     log.info('NetworkController - configureInfuraProvider', type);
-    const networkClient = createInfuraClient({
+    const { provider, blockTracker } = createNetworkClient({
       network: type,
-      projectId,
+      infuraProjectId,
+      type: 'infura',
     });
-    this._setNetworkClient(networkClient);
+    this._setProviderAndBlockTracker({ provider, blockTracker });
   }
 
   _configureStandardProvider(rpcUrl, chainId) {
     log.info('NetworkController - configureStandardProvider', rpcUrl);
-    const networkClient = createJsonRpcClient({ rpcUrl, chainId });
-    this._setNetworkClient(networkClient);
-  }
-
-  _setNetworkClient({ networkMiddleware, blockTracker }) {
-    const engine = new JsonRpcEngine();
-    engine.push(networkMiddleware);
-    const provider = providerFromEngine(engine);
+    const { provider, blockTracker } = createNetworkClient({
+      chainId,
+      rpcUrl,
+      type: 'custom',
+    });
     this._setProviderAndBlockTracker({ provider, blockTracker });
   }
 

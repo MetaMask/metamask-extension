@@ -62,6 +62,7 @@ export function isDefaultMetaMaskChain(chainId) {
     chainId === CHAIN_IDS.MAINNET ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
+    chainId === CHAIN_IDS.LINEA_TESTNET ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -557,8 +558,14 @@ export function getSnapDerivationPathName(path, curve) {
 export const removeSnapIdPrefix = (snapId) =>
   snapId.replace(getSnapPrefix(snapId), '');
 
-export const getSnapName = (snapId) =>
-  SNAPS_METADATA[snapId]?.name ?? removeSnapIdPrefix(snapId);
+export const getSnapName = (snapId, subjectMetadata) => {
+  if (SNAPS_METADATA[snapId]?.name) {
+    return SNAPS_METADATA[snapId].name;
+  }
+
+  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+};
+
 ///: END:ONLY_INCLUDE_IN
 
 /**

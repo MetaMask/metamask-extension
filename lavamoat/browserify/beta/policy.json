@@ -871,8 +871,9 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util": true,
+        "@metamask/eth-json-rpc-infura>@metamask/utils": true,
         "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>pify": true,
+        "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "browserify>browser-resolve": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
@@ -881,57 +882,19 @@
         "vinyl>clone": true
       }
     },
-    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util": {
-      "packages": {
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": true,
-        "ethereumjs-abi": true
-      }
-    },
-    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util": {
-      "packages": {
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethereum-cryptography": true,
-        "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ganache>secp256k1>elliptic": true
-      }
-    },
-    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethereum-cryptography": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
-        "ethereumjs-wallet>randombytes": true
-      }
-    },
-    "@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>eth-sig-util>ethereumjs-util>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
         "URL": true,
-        "btoa": true,
         "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
         "@metamask/eth-json-rpc-middleware>pify": true,
+        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
-        "browserify>browser-resolve": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
-        "json-rpc-engine>@metamask/safe-event-emitter": true,
-        "lavamoat>json-stable-stringify": true,
         "vinyl>clone": true
       }
     },
@@ -945,6 +908,12 @@
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true
+      }
+    },
+    "@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "json-rpc-engine": true,
+        "json-rpc-engine>@metamask/safe-event-emitter": true
       }
     },
     "@metamask/eth-keyring-controller": {
@@ -2608,6 +2577,11 @@
         "document.body.appendChild": true,
         "document.body.removeChild": true,
         "document.createElement": true
+      }
+    },
+    "btoa": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "classnames": {
