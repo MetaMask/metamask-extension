@@ -23,20 +23,5 @@
     "default_popup": "popup.html"
   },
   "manifest_version": 2,
-  "permissions": [
-    "alarms",
-    "storage",
-    "unlimitedStorage",
-    "clipboardWrite",
-    "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://*.codefi.network/",
-    "https://chainid.network/chains.json",
-    "https://lattice.gridplus.io/*",
-    "tabs",
-    "activeTab",
-    "webRequest",
-    "*://*.eth/",
-    "notifications"
-  ]
+  "permissions": ["tabs"]
 }
