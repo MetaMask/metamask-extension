@@ -307,7 +307,7 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('about'),
-        icon: <i className="fa fa-info-circle" />,
+        icon: <Icon name={ICON_NAMES.INFO} />,
         key: ABOUT_US_ROUTE,
       },
     ];

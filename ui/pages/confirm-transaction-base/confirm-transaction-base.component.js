@@ -60,6 +60,7 @@ import { ConfirmHexData } from '../../components/app/confirm-hexdata';
 import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
+import { Icon, ICON_NAMES } from '../../components/component-library';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -456,7 +457,7 @@ export default class ConfirmTransactionBase extends Component {
                   contentText={t('transactionDetailDappGasTooltip')}
                   position="top"
                 >
-                  <i className="fa fa-info-circle" />
+                  <Icon name={ICON_NAMES.INFO} />
                 </InfoTooltip>
               </>
             ) : (
@@ -484,7 +485,7 @@ export default class ConfirmTransactionBase extends Component {
                   }
                   position="top"
                 >
-                  <i className="fa fa-info-circle" />
+                  <Icon name={ICON_NAMES.INFO} />
                 </InfoTooltip>
               </>
             )

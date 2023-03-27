@@ -15,6 +15,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
+import { ICON_NAMES } from '../../../components/component-library';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -280,10 +281,9 @@ function getValues(pendingApproval, t, actions, history) {
                 },
                 children: [
                   {
-                    element: 'i',
-                    key: 'info-circle',
+                    element: 'Icon',
                     props: {
-                      className: 'fas fa-info-circle',
+                      name: ICON_NAMES.INFO,
                       style: {
                         marginLeft: '4px',
                         color: 'var(--color-icon-default)',

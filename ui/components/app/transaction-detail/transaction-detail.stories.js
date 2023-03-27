@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon, ICON_NAMES } from '../../component-library';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
@@ -27,7 +28,7 @@ const rows = [
       <>
         Estimated gas fee
         <InfoTooltip contentText="This is the tooltip text" position="top">
-          <i className="fa fa-info-circle" />
+          <Icon name={ICON_NAMES.INFO} />
         </InfoTooltip>
       </>
     }

@@ -8,6 +8,7 @@ import Identicon from '../identicon';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../tooltip';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 const AccountList = ({
   selectNewAccountViaModal,
@@ -61,7 +62,7 @@ const AccountList = ({
                 </div>
               }
             >
-              <i className="fa fa-info-circle" />
+              <Icon name={ICON_NAMES.INFO} />
             </Tooltip>
           </div>
         ) : null}
@@ -114,7 +115,7 @@ const AccountList = ({
                       addressLastConnectedMap[address]
                     }`}
                   >
-                    <i className="fa fa-info-circle" />
+                    <Icon name={ICON_NAMES.INFO} />
                   </Tooltip>
                 ) : null}
               </div>

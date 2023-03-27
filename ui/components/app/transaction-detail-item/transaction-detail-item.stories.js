@@ -1,6 +1,6 @@
 import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
-
+import { Icon, ICON_NAMES } from '../../component-library';
 import { TextColor } from '../../../helpers/constants/design-system';
 
 import README from './README.mdx';
@@ -45,7 +45,7 @@ DefaultStory.args = {
     <>
       <strong>Estimated gas fee</strong>
       <InfoTooltip contentText="This is the tooltip text" position="top">
-        <i className="fa fa-info-circle" />
+        <Icon name={ICON_NAMES.INFO} />
       </InfoTooltip>
     </>
   ),

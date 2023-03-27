@@ -13,6 +13,7 @@ import Typography from '../typography/typography';
 import ActionableMessage from '../actionable-message/actionable-message';
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { Icon, ICON_NAMES } from '../../component-library';
 
 export default function DeprecatedTestNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
@@ -45,7 +46,10 @@ export default function DeprecatedTestNetworks() {
             className="deprecated-test-networks__content"
           >
             <Box marginRight={2} color={Color.warningDefault}>
-              <i className="fa fa-info-circle deprecated-test-networks__content__icon" />
+              <Icon
+                name={ICON_NAMES.INFO}
+                className="deprecated-test-networks__content__icon"
+              />
             </Box>
             <Box justifyContent={JustifyContent.spaceBetween}>
               <Typography

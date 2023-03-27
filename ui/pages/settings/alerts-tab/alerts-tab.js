@@ -9,6 +9,7 @@ import { setAlertEnabledness } from '../../../store/actions';
 import { getAlertEnabledness } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
+import { Icon, ICON_NAMES } from '../../../components/component-library';
 
 const AlertSettingsEntry = ({ alertId, description, title }) => {
   const t = useI18nContext();
@@ -30,7 +31,10 @@ const AlertSettingsEntry = ({ alertId, description, title }) => {
             title={description}
             wrapperClassName="alerts-tab__description"
           >
-            <i className="fa fa-info-circle alerts-tab__description__icon" />
+            <Icon
+              name={ICON_NAMES.INFO}
+              className="alerts-tab__description__icon"
+            />
           </Tooltip>
           <ToggleButton
             offLabel={t('off')}
