@@ -87,10 +87,7 @@ export default class Home extends PureComponent {
     forgottenPassword: PropTypes.bool,
     suggestedAssets: PropTypes.array,
     unconfirmedTransactionsCount: PropTypes.number,
-    shouldShowSeedPhraseReminder: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.object,
-    ]).isRequired,
+    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
@@ -157,7 +154,6 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
-    showSeedPhraseReminder: false,
   };
 
   constructor(props) {
@@ -217,14 +213,8 @@ export default class Home extends PureComponent {
     }
   }
 
-  async componentDidMount() {
-    const { shouldShowSeedPhraseReminder } = this.props;
-
+  componentDidMount() {
     this.checkStatusAndNavigate();
-
-    const showSRP = await shouldShowSeedPhraseReminder;
-
-    this.setState({ showSeedPhraseReminder: showSRP });
   }
 
   static getDerivedStateFromProps(props) {
@@ -234,12 +224,8 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  async componentDidUpdate(_prevProps, prevState) {
-    const {
-      closeNotificationPopup,
-      isNotification,
-      shouldShowSeedPhraseReminder,
-    } = this.props;
+  componentDidUpdate(_prevProps, prevState) {
+    const { closeNotificationPopup, isNotification } = this.props;
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
@@ -247,10 +233,6 @@ export default class Home extends PureComponent {
     } else if (isNotification) {
       this.checkStatusAndNavigate();
     }
-
-    const showSRP = await shouldShowSeedPhraseReminder;
-
-    this.setState({ showSeedPhraseReminder: showSRP });
   }
 
   onRecoveryPhraseReminderClose = () => {
@@ -295,6 +277,7 @@ export default class Home extends PureComponent {
       clearNewNetworkAdded,
       setActiveNetwork,
       balance,
+      shouldShowSeedPhraseReminder,
     } = this.props;
 
     const onAutoHide = () => {
@@ -468,7 +451,7 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {balance && this.state.showSeedPhraseReminder ? (
+        {balance && shouldShowSeedPhraseReminder ? (
           <HomeNotification
             descriptionText={t('backupApprovalNotice')}
             acceptText={t('backupNow')}
