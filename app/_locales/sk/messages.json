@@ -650,12 +650,6 @@
   "settings": {
     "message": "Nastavení"
   },
-  "showAdvancedGasInline": {
-    "message": "Pokročilé ovládacie prvky GAS"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vyberte túto možnosť vtedy, keď chcete priamo na obrazovke odosielania a potvrdenia zobraziť ceny za GAS a ovládacie prvky limitov."
-  },
   "showFiatConversionInTestnets": {
     "message": "Zobraziť konverziu na Testnets"
   },
