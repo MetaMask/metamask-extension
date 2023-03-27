@@ -254,6 +254,7 @@ export default class Home extends PureComponent {
 
     const {
       history,
+      shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
       setWeb3ShimUsageAlertDismissed,
@@ -277,7 +278,6 @@ export default class Home extends PureComponent {
       clearNewNetworkAdded,
       setActiveNetwork,
       balance,
-      shouldShowSeedPhraseReminder,
     } = this.props;
 
     const onAutoHide = () => {
