@@ -26,15 +26,13 @@ import {
   EVENT_NAMES,
 } from '../../../../../shared/constants/metametrics';
 
-const HoldToRevealModal = ({ onLongPressed, willHide, hideModal }) => {
+const HoldToRevealModal = ({ onLongPressed, hideModal }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
   const unlock = () => {
     onLongPressed();
-    if (willHide) {
-      hideModal();
-    }
+    hideModal();
   };
 
   const handleCancel = () => {
@@ -128,7 +126,6 @@ HoldToRevealModal.propTypes = {
   // The function to be executed after the hold to reveal long press has been completed
   onLongPressed: PropTypes.func.isRequired,
   hideModal: PropTypes.func,
-  willHide: PropTypes.bool,
 };
 
 export default withModalProps(HoldToRevealModal);
