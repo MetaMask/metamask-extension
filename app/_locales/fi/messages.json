@@ -675,12 +675,6 @@
   "settings": {
     "message": "Asetukset"
   },
-  "showAdvancedGasInline": {
-    "message": "Bensan lisävalvonta"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valitse tämä näyttääksesi gas-hinta ja rajoittaaksesi  säätimiä suoraan lähetä- ja vahvista-ruuduissa."
-  },
   "showFiatConversionInTestnets": {
     "message": "Näytä vaihtokurssi koeverkoissa"
   },
