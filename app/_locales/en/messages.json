@@ -3423,12 +3423,6 @@
   "show": {
     "message": "Show"
   },
-  "showAdvancedGasInline": {
-    "message": "Advanced gas controls"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
-  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },

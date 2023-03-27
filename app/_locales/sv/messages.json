@@ -662,12 +662,6 @@
   "settings": {
     "message": "Inställningar"
   },
-  "showAdvancedGasInline": {
-    "message": "Avancerade gaskontroller"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Välj detta för att visa gas-pris och gränskontroller direkt på skicka och bekräfta-skärmarna."
-  },
   "showFiatConversionInTestnets": {
     "message": "Visa omvandling på testnätverk"
   },
