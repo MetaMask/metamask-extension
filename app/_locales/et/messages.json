@@ -668,12 +668,6 @@
   "settings": {
     "message": "Seaded"
   },
-  "showAdvancedGasInline": {
-    "message": "Täiustatud gaasijuhikud"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valige see, et kuvada gaasi hinda ja piirangut otse saatmise ning kinnitamise kuval."
-  },
   "showFiatConversionInTestnets": {
     "message": "Kuva teisendus Testnetsis"
   },

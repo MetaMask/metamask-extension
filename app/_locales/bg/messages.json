@@ -674,12 +674,6 @@
   "settings": {
     "message": "Настройки"
   },
-  "showAdvancedGasInline": {
-    "message": "Разширено управление на газа"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Изберете това, за да покажете цените на газа и ограничите контрола директно на екраните за изпращане и потвърждение."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показване на преобразуването на Testnets"
   },
