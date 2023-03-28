@@ -163,6 +163,9 @@
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
+  "connectingToLineaTestnet": {
+    "message": "Csatlakozás a Linea Goerli teszthálózathoz"
+  },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
   },
@@ -407,6 +410,9 @@
   },
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
+  },
+  "lineatestnet": {
+    "message": "Linea Goerli teszthálózat"
   },
   "links": {
     "message": "Linkek"
@@ -664,12 +670,6 @@
   },
   "settings": {
     "message": "Beállítások"
-  },
-  "showAdvancedGasInline": {
-    "message": "Speciális gázszabályzók"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Jelöld meg ezt a gázárak és korlátozásellenőrzés mutatásához közvetlenül a küldési és megerősítési képernyőkön."
   },
   "showFiatConversionInTestnets": {
     "message": "Konverzió mutatása Testnetsen"

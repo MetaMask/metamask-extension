@@ -228,7 +228,7 @@ describe('Navigate transactions', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -236,10 +236,11 @@ describe('Navigate transactions', function () {
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
         await driver.clickElement({ text: 'Reject all', tag: 'button' });
-        const balance = await driver.findElement(
+        const balance = await ganacheServer.getBalance();
+        const balanceElement = await driver.findElement(
           '[data-testid="eth-overview__primary-currency"]',
         );
-        assert.ok(/^25\sETH$/u.test(await balance.getText()));
+        assert.equal(`${balance}\nETH`, await balanceElement.getText());
       },
     );
   });

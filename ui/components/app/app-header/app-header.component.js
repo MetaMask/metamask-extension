@@ -26,14 +26,12 @@ export default class AppHeader extends PureComponent {
     isAccountMenuOpen: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     unreadNotificationsCount: PropTypes.number,
+    desktopEnabled: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(beta)
     showBetaHeader: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
     onClick: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    desktopEnabled: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -125,7 +123,7 @@ export default class AppHeader extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IN(beta)
       showBetaHeader,
       ///: END:ONLY_INCLUDE_IN(beta)
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       desktopEnabled,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -150,7 +148,7 @@ export default class AppHeader extends PureComponent {
               }}
             />
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
               desktopEnabled && process.env.METAMASK_DEBUG && (
                 <div data-testid="app-header-desktop-dev-logo">
                   <MetaFoxLogo

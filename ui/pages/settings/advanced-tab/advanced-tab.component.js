@@ -41,8 +41,6 @@ export default class AdvancedTab extends PureComponent {
     warning: PropTypes.string,
     history: PropTypes.object,
     sendHexData: PropTypes.bool,
-    setAdvancedInlineGasFeatureFlag: PropTypes.func,
-    advancedInlineGas: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
@@ -60,7 +58,7 @@ export default class AdvancedTab extends PureComponent {
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     desktopEnabled: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -262,43 +260,13 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderAdvancedGasInputInline() {
-    const { t } = this.context;
-    const { advancedInlineGas, setAdvancedInlineGasFeatureFlag } = this.props;
-
-    return (
-      <div
-        ref={this.settingsRefs[3]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-advanced-gas-inline"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('showAdvancedGasInline')}</span>
-          <div className="settings-page__content-description">
-            {t('showAdvancedGasInlineDescription')}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={advancedInlineGas}
-              onToggle={(value) => setAdvancedInlineGasFeatureFlag(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   renderHexDataOptIn() {
     const { t } = this.context;
     const { sendHexData, setHexDataFeatureFlag } = this.props;
 
     return (
       <div
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         data-testid="advanced-setting-hex-data"
       >
@@ -329,7 +297,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -361,7 +329,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -391,7 +359,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-custom-nonce"
       >
@@ -422,7 +390,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
       >
@@ -469,12 +437,12 @@ export default class AdvancedTab extends PureComponent {
       ledgerTransportType,
       setLedgerTransportPreference,
       userHasALedgerAccount,
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       desktopEnabled,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     if (desktopEnabled) {
       return null;
     }
@@ -510,7 +478,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testId="ledger-live-control"
       >
@@ -576,7 +544,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
       >
@@ -754,7 +722,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderStateLogs()}
         {this.renderMobileSync()}
         {this.renderResetAccount()}
-        {this.renderAdvancedGasInputInline()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}

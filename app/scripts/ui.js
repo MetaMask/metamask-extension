@@ -22,7 +22,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   registerDesktopErrorActions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/lib/error-utils';
@@ -264,7 +264,7 @@ async function start() {
       (
         err,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
         backgroundConnection,
         ///: END:ONLY_INCLUDE_IN
       ) => {
@@ -274,7 +274,7 @@ async function start() {
             'troubleStarting',
             err,
             store,
-            ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
             backgroundConnection,
             ///: END:ONLY_INCLUDE_IN
           );
@@ -302,7 +302,7 @@ async function start() {
         displayCriticalError(
           'troubleStarting',
           err,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           undefined,
           backgroundConnection,
           ///: END:ONLY_INCLUDE_IN
@@ -345,7 +345,7 @@ function initializeUi(activeTab, connectionStream, cb) {
       cb(
         err,
         null,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
         backgroundConnection,
         ///: END:ONLY_INCLUDE_IN
       );
@@ -367,7 +367,7 @@ async function displayCriticalError(
   errorKey,
   err,
   metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   backgroundConnection,
   ///: END:ONLY_INCLUDE_IN
 ) {
@@ -375,14 +375,14 @@ async function displayCriticalError(
     errorKey,
     SUPPORT_LINK,
     metamaskState,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     err,
     ///: END:ONLY_INCLUDE_IN
   );
 
   container.innerHTML = html;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   registerDesktopErrorActions(backgroundConnection, browser);
   ///: END:ONLY_INCLUDE_IN
 

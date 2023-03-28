@@ -8,7 +8,7 @@ import {
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
+import { setSelectedNetworkConfigurationId } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
@@ -26,7 +26,7 @@ import { IconColor } from '../../../../helpers/constants/design-system';
 const NetworksListItem = ({
   network,
   networkIsSelected,
-  selectedRpcUrl,
+  selectedNetworkConfigurationId,
   setSearchQuery,
   setSearchedNetworks,
 }) => {
@@ -38,11 +38,14 @@ const NetworksListItem = ({
   const {
     label,
     labelKey,
+    networkConfigurationId,
     rpcUrl,
     providerType: currentProviderType,
   } = network;
 
-  const listItemNetworkIsSelected = selectedRpcUrl && selectedRpcUrl === rpcUrl;
+  const listItemNetworkIsSelected =
+    selectedNetworkConfigurationId &&
+    selectedNetworkConfigurationId === networkConfigurationId;
   const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
     provider.type !== NETWORK_TYPES.RPC &&
@@ -64,12 +67,12 @@ const NetworksListItem = ({
   return (
     <div
       ref={settingsRefs}
-      key={`settings-network-list-item:${rpcUrl}`}
+      key={`settings-network-list-item:${networkConfigurationId}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
         setSearchQuery('');
         setSearchedNetworks([]);
-        dispatch(setSelectedSettingsRpcUrl(rpcUrl));
+        dispatch(setSelectedNetworkConfigurationId(networkConfigurationId));
         if (!isFullScreen) {
           global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
         }
@@ -133,7 +136,7 @@ const NetworksListItem = ({
 NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
-  selectedRpcUrl: PropTypes.string,
+  selectedNetworkConfigurationId: PropTypes.string,
   setSearchQuery: PropTypes.func,
   setSearchedNetworks: PropTypes.func,
 };

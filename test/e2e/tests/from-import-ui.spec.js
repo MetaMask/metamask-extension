@@ -315,7 +315,7 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Import account', tag: 'div' });
 
-        await driver.clickElement('.new-account-import-form__select');
+        await driver.clickElement('.dropdown__select');
         await driver.clickElement({ text: 'JSON File', tag: 'option' });
 
         const fileInput = await driver.findElement('input[type="file"]');
@@ -396,7 +396,7 @@ describe('MetaMask Import UI', function () {
 
         // error should occur
         await driver.waitForSelector({
-          css: '.error',
+          css: '.mm-help-text',
           text: 'The account you are trying to import is a duplicate',
         });
       },
