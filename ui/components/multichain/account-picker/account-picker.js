@@ -26,6 +26,7 @@ export const AccountPicker = ({ address, name, onClick }) => {
       backgroundColor={BackgroundColor.transparent}
       endIconName={ICON_NAMES.ARROW_DOWN}
       ellipsis
+      textProps={{ display: DISPLAY.FLEX, gap: 2 }}
     >
       <Box display={DISPLAY.FLEX} gap={2}>
         <AvatarAccount
