@@ -656,12 +656,6 @@
   "settings": {
     "message": "Configuració"
   },
-  "showAdvancedGasInline": {
-    "message": "Controls de gas avançats"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selecciona això per a mostrar el preu del gas i els controls de límit directament a les pantalles d'enviament i confirmació."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostra Conversió a Testnets"
   },
