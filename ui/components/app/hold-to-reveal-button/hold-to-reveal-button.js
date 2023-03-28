@@ -92,7 +92,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         <Box className="hold-to-reveal-button__absolute-fill">
           <svg className="hold-to-reveal-button__circle-svg">
             <circle
-              aria-label="hold-to-reveal-circle"
+              aria-label="hold to reveal circle locked"
               onTransitionEnd={onProgressComplete}
               className="hold-to-reveal-button__circle-foreground"
               cx={radius}
@@ -152,7 +152,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           </svg>
         </div>
         <div
-          aria-label="hold-to-reveal-circle-unlocked"
+          aria-label="hold to reveal circle unlocked"
           className="hold-to-reveal-button__unlock-icon-container"
           onAnimationEnd={triggerOnLongPressed}
         >
@@ -171,8 +171,9 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       className="hold-to-reveal-button__button-hold"
+      textProps={{ display: DISPLAY.FLEX, alignItems: AlignItems.center }}
     >
-      <Box className="hold-to-reveal-button__icon-container">
+      <Box className="hold-to-reveal-button__icon-container" marginRight={2}>
         {renderPreCompleteContent()}
         {renderPostCompleteContent()}
       </Box>

@@ -80,12 +80,12 @@ describe('Hold to Reveal Modal', () => {
     );
 
     const holdButton = getByText('Hold to reveal SRP');
-    const circleLocked = queryByLabelText('hold-to-reveal-circle');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
 
     fireEvent.mouseDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('hold-to-reveal-circle-unlocked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {
@@ -109,8 +109,8 @@ describe('Hold to Reveal Modal', () => {
 
     fireEvent.click(holdButton);
 
-    const circleLocked = queryByLabelText('hold-to-reveal-circle');
-    const circleUnlocked = queryByLabelText('hold-to-reveal-circle-unlocked');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
 
     await waitFor(() => {
       expect(circleLocked).toBeInTheDocument();
@@ -131,12 +131,12 @@ describe('Hold to Reveal Modal', () => {
     );
 
     const holdButton = getByText('Hold to reveal SRP');
-    const circleLocked = queryByLabelText('hold-to-reveal-circle');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
 
     fireEvent.mouseDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('hold-to-reveal-circle-unlocked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {
@@ -159,12 +159,12 @@ describe('Hold to Reveal Modal', () => {
     );
 
     const holdButton = getByText('Hold to reveal SRP');
-    const circleLocked = queryByLabelText('hold-to-reveal-circle');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
 
     fireEvent.mouseDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('hold-to-reveal-circle-unlocked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {
