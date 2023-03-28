@@ -114,6 +114,7 @@ export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitSeconds,
+  securityProviderRequest,
 }) {
   let finalRateLimitSeconds = rateLimitSeconds;
 
@@ -212,13 +213,13 @@ export default function createRPCMethodTrackingMiddleware({
             if (isSIWEMessage) {
               properties.ui_customizations === null
                 ? (properties.ui_customizations = [
-                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                    .SIWE,
-                ])
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ])
                 : properties.ui_customizations.push(
-                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                    .SIWE,
-                );
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  );
             }
           }
         } catch (e) {
@@ -309,13 +310,13 @@ export default function createRPCMethodTrackingMiddleware({
             if (isSIWEMessage) {
               properties.ui_customizations === null
                 ? (properties.ui_customizations = [
-                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                    .SIWE,
-                ])
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  ])
                 : properties.ui_customizations.push(
-                  METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
-                    .SIWE,
-                );
+                    METAMETRIC_KEY_OPTIONS[METAMETRIC_KEY.UI_CUSTOMIZATIONS]
+                      .SIWE,
+                  );
             }
           }
         } catch (e) {
