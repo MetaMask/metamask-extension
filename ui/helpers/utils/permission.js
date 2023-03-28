@@ -384,12 +384,17 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: RIGHT_INFO_ICON,
     weight: 2,
   }),
-  [EndowmentPermissions['endowment:ethereum-provider']]: ({ t }) => ({
+  [EndowmentPermissions['endowment:ethereum-provider']]: ({
+    t,
+    targetSubjectMetadata,
+  }) => ({
     label: t('permission_ethereumProvider'),
     description: t('permission_ethereumProviderDescription'),
     leftIcon: getLeftIcon(ICON_NAMES.ETHEREUM),
     rightIcon: RIGHT_INFO_ICON,
     weight: 1,
+    id: 'ethereum-provider-access',
+    message: t('ethereumProviderAccess', [targetSubjectMetadata.origin]),
   }),
   [EndowmentPermissions['endowment:rpc']]: ({ t, permissionValue }) => {
     const baseDescription = {
