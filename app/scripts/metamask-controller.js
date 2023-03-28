@@ -826,10 +826,12 @@ export default class MetamaskController extends EventEmitter {
 
           const originMetadata = subjectMetadataState.subjectMetadata[origin];
 
-          this.platform._showNotification(
-            originMetadata?.name ?? origin,
-            message,
-          );
+          this.platform
+            ._showNotification(originMetadata?.name ?? origin, message)
+            .catch((error) => {
+              log.error('Failed to create notification', error);
+            });
+
           return null;
         },
         showInAppNotification: (origin, message) => {
