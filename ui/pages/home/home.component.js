@@ -87,7 +87,10 @@ export default class Home extends PureComponent {
     forgottenPassword: PropTypes.bool,
     suggestedAssets: PropTypes.array,
     unconfirmedTransactionsCount: PropTypes.number,
-    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
+    shouldShowSeedPhraseReminder: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object,
+    ]).isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
@@ -154,6 +157,7 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
+    shouldShowSrpReminder: false,
   };
 
   constructor(props) {
@@ -215,6 +219,15 @@ export default class Home extends PureComponent {
 
   componentDidMount() {
     this.checkStatusAndNavigate();
+
+    const checkSrpReminder = async () => {
+      const shouldShowSrpReminder = await this.props
+        .shouldShowSeedPhraseReminder;
+
+      this.setState({ shouldShowSrpReminder });
+    };
+
+    checkSrpReminder();
   }
 
   static getDerivedStateFromProps(props) {
@@ -254,7 +267,6 @@ export default class Home extends PureComponent {
 
     const {
       history,
-      shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
       setWeb3ShimUsageAlertDismissed,
@@ -451,7 +463,7 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {balance && shouldShowSeedPhraseReminder ? (
+        {balance && this.state.shouldShowSrpReminder ? (
           <HomeNotification
             descriptionText={t('backupApprovalNotice')}
             acceptText={t('backupNow')}

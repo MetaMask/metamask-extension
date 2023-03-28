@@ -1353,22 +1353,26 @@ export function getIsAnyAccountWithBalanceOnNonTestNetwork(state) {
   return balancesOnNonTestNetworks.includes(false);
 }
 
-export function getIsAnyTokenWithNonZeroBalance(state) {
+export async function getIsAnyTokenWithNonZeroBalance(state) {
   const { tokens } = state.metamask;
   const selectedAddress = getSelectedAddress(state);
 
-  for (let i = 0; i < tokens.length; i++) {
-    const res = getERC20Balance(tokens[i], selectedAddress);
+  const balances = [];
 
-    if (res !== '0x0') {
-      return true;
-    }
+  for (let i = 0; i < tokens.length; i++) {
+    balances.push(getERC20Balance(tokens[i], selectedAddress));
+  }
+
+  const res = await Promise.all(balances);
+
+  if (res.indexOf('0x0') !== -1 || res.indexOf('0x00') !== -1) {
+    return true;
   }
 
   return false;
 }
 
-export function getShouldShowSeedPhraseReminder(state) {
+export async function getShouldShowSeedPhraseReminder(state) {
   const { seedPhraseBackedUp, dismissSeedBackUpReminder } = state.metamask;
 
   if (seedPhraseBackedUp || dismissSeedBackUpReminder) {
@@ -1380,7 +1384,9 @@ export function getShouldShowSeedPhraseReminder(state) {
   const isHardwareWalletConnected = isHardwareWallet(state);
   const isAnyAccountWithBalanceOnNonTestNetwork =
     getIsAnyAccountWithBalanceOnNonTestNetwork(state);
-  const isAnyTokenWithNonZeroBalance = getIsAnyTokenWithNonZeroBalance(state);
+  const isAnyTokenWithNonZeroBalance = await getIsAnyTokenWithNonZeroBalance(
+    state,
+  );
 
   return (
     !isHardwareWalletConnected &&
