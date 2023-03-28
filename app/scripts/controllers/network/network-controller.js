@@ -1,6 +1,9 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
+///: END:ONLY_INCLUDE_IN
 import log from 'loglevel';
 import {
   createSwappableProxy,
@@ -121,6 +124,14 @@ export default class NetworkController extends EventEmitter {
       networkDetails: this.networkDetails,
       networkConfigurations: this.networkConfigurationsStore,
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.handleMmiPortfolio = state.handleMmiPortfolio;
+
+    if (!process.env.IN_TEST) {
+      this.mmiConfigurationStore = state.mmiConfigurationStore.getState();
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     // provider and block tracker
     this._provider = null;
@@ -575,6 +586,10 @@ export default class NetworkController extends EventEmitter {
       this.setActiveNetwork(newNetworkConfigurationId);
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.prepareMmiPortfolio();
+    ///: END:ONLY_INCLUDE_IN
+
     return newNetworkConfigurationId;
   }
 
@@ -589,5 +604,21 @@ export default class NetworkController extends EventEmitter {
     };
     delete networkConfigurations[networkConfigurationId];
     this.networkConfigurationsStore.putState(networkConfigurations);
+    ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+    this.prepareMmiPortfolio();
+    ///: END:ONLY_INCLUDE_IN
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  async prepareMmiPortfolio() {
+    if (!process.env.IN_TEST) {
+      this.handleMmiPortfolio().then((mmiDashboardData) => {
+        setDashboardCookie(
+          mmiDashboardData,
+          this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls,
+        );
+      });
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
 }

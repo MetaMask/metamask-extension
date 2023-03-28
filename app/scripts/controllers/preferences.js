@@ -1,5 +1,8 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
+///: BEGIN:ONLY_INCLUDE_IN(mmi)
+import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
+///: END:ONLY_INCLUDE_IN
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -82,6 +85,10 @@ export default class PreferencesController {
 
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
     this.handleMmiPortfolio = opts.handleMmiPortfolio;
+
+    if (!process.env.IN_TEST) {
+      this.mmiConfigurationStore = opts.mmiConfigurationStore.getState();
+    }
     ///: END:ONLY_INCLUDE_IN
 
     this._subscribeToInfuraAvailability();
@@ -255,7 +262,7 @@ export default class PreferencesController {
     }, {});
 
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    this.setMmiPortfolioCookie();
+    this.prepareMmiPortfolio();
     ///: END:ONLY_INCLUDE_IN
 
     this.store.updateState({ identities });
@@ -284,7 +291,7 @@ export default class PreferencesController {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    this.setMmiPortfolioCookie();
+    this.prepareMmiPortfolio();
     ///: END:ONLY_INCLUDE_IN
 
     return address;
@@ -344,7 +351,7 @@ export default class PreferencesController {
     this.addAddresses(addresses);
 
     ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-    this.setMmiPortfolioCookie();
+    this.prepareMmiPortfolio();
     ///: END:ONLY_INCLUDE_IN
 
     // If the selected account is no longer valid,
@@ -528,9 +535,14 @@ export default class PreferencesController {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  async setMmiPortfolioCookie() {
+  async prepareMmiPortfolio() {
     if (!process.env.IN_TEST) {
-      this.handleMmiPortfolio();
+      this.handleMmiPortfolio().then((mmiDashboardData) => {
+        setDashboardCookie(
+          mmiDashboardData,
+          this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls,
+        );
+      });
     }
   }
   ///: END:ONLY_INCLUDE_IN
