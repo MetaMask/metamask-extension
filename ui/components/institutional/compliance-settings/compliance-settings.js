@@ -11,9 +11,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { Text } from '../../component-library';
+import {
+  Text,
+  Button,
+  BUTTON_TYPES,
+  BUTTON_SIZES,
+} from '../../component-library';
 import Box from '../../ui/box';
-import Button from '../../ui/button';
 
 const ComplianceSettings = () => {
   const t = useContext(I18nContext);
@@ -26,7 +30,8 @@ const ComplianceSettings = () => {
 
   const linkButton = (
     <Button
-      type="primary"
+      type={BUTTON_TYPES.LINK}
+      size={BUTTON_SIZES.LG}
       data-testid="start-compliance"
       onClick={() => {
         global.platform.openTab({
@@ -55,8 +60,7 @@ const ComplianceSettings = () => {
         className="institutional-feature__footer"
       >
         <Button
-          type="default"
-          large
+          size={BUTTON_SIZES.LG}
           onClick={() => {
             dispatch(mmiActions.deleteComplianceAuthData());
           }}
