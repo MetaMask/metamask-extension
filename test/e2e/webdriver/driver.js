@@ -58,7 +58,7 @@ class Driver {
    * @param extensionUrl
    * @param {number} timeout
    */
-  constructor(driver, browser, extensionUrl, timeout = 60_000) {
+  constructor(driver, browser, extensionUrl, timeout = 10000) {
     this.driver = driver;
     this.browser = browser;
     this.extensionUrl = extensionUrl;
