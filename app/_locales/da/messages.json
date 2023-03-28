@@ -656,12 +656,6 @@
   "settings": {
     "message": "Indstillinger "
   },
-  "showAdvancedGasInline": {
-    "message": "Avanceret Gas-styring"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vælg dette for at vise brændstofprisen og begræns styringen direkte på afsendelses- og bekræftelseskærmene."
-  },
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på testnet"
   },
