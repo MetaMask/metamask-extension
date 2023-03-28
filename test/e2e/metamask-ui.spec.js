@@ -346,13 +346,10 @@ describe('MetaMask', function () {
     });
 
     it('finds the transaction in the transactions list', async function () {
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
-          text: '-1 TST',
-        },
-        { timeout: 10000 },
-      );
+      await driver.waitForSelector({
+        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        text: '-1 TST',
+      });
 
       await driver.waitForSelector({
         css: '.list-item__heading',
@@ -380,13 +377,10 @@ describe('MetaMask', function () {
       await driver.delay(largeDelayMs);
 
       await driver.findElements('.transaction-list__pending-transactions');
-      await driver.waitForSelector(
-        {
-          css: '.transaction-list-item__primary-currency',
-          text: '-1.5 TST',
-        },
-        { timeout: 10000 },
-      );
+      await driver.waitForSelector({
+        css: '.transaction-list-item__primary-currency',
+        text: '-1.5 TST',
+      });
       await driver.clickElement('.transaction-list-item__primary-currency');
       await driver.delay(regularDelayMs);
 
