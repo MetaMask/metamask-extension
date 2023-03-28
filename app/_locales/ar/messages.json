@@ -675,12 +675,6 @@
   "settings": {
     "message": "الإعدادات"
   },
-  "showAdvancedGasInline": {
-    "message": "أدوات التحكم المتقدمة للغاز"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "حدد هذا لإظهار سعر عملة جاس والحد من الضوابط مباشرة على شاشات الإرسال والتأكيد."
-  },
   "showFiatConversionInTestnets": {
     "message": "عرض التحويل على Testnets"
   },

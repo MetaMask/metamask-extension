@@ -675,12 +675,6 @@
   "settings": {
     "message": "הגדרות"
   },
-  "showAdvancedGasInline": {
-    "message": "אמצעי שליטה מתקדמים בדלק"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "בחר/י באפשרות זו כדי להציג אמצעי שליטה במחיר הדלק וההגבלה (limit) ישירות במסכי השליחה והאישור."
-  },
   "showFiatConversionInTestnets": {
     "message": "הצג המרה -Testnets"
   },
