@@ -13,10 +13,10 @@ export async function securityProviderCheck(
 
   if (methodName === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     dataToValidate = {
-      host_name: requestData.msgParams.origin,
+      host_name: requestData.messageParams.origin,
       rpc_method_name: methodName,
       chain_id: chainId,
-      data: requestData.msgParams.data,
+      data: requestData.messageParams.data,
       currentLocale,
     };
   } else if (
@@ -24,12 +24,12 @@ export async function securityProviderCheck(
     methodName === MESSAGE_TYPE.PERSONAL_SIGN
   ) {
     dataToValidate = {
-      host_name: requestData.msgParams.origin,
+      host_name: requestData.messageParams.origin,
       rpc_method_name: methodName,
       chain_id: chainId,
       data: {
-        signer_address: requestData.msgParams.from,
-        msg_to_sign: requestData.msgParams.data,
+        signer_address: requestData.messageParams.from,
+        msg_to_sign: requestData.messageParams.data,
       },
       currentLocale,
     };

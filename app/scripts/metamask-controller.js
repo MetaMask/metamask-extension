@@ -4492,6 +4492,8 @@ export default class MetamaskController extends EventEmitter {
           currentLocale,
         );
 
+        log.debug('securityProviderResponse >>>', securityProviderResponse);
+
         return securityProviderResponse;
       } catch (err) {
         log.error(err.message);

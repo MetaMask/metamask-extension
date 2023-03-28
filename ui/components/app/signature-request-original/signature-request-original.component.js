@@ -141,6 +141,10 @@ export default class SignatureRequestOriginal extends Component {
       ? subjectMetadata?.[txData.msgParams.origin]
       : null;
 
+    console.log(
+      '>>>>>>>>>>>> txData?.securityProviderResponse?',
+      txData?.securityProviderResponse,
+    );
     return (
       <div className="request-signature__body">
         {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
